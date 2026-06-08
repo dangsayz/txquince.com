@@ -1,26 +1,110 @@
 @import "tailwindcss";
 
+/*
+  TX QUINCE — DESIGN SYSTEM
+  Editorial, elegant, cinematic. The photos are the design; the UI is restraint.
+  Base warm ivory · charcoal ink · soft greige sections · ONE muted accent (deep wine).
+  Fonts are injected as CSS variables by next/font in layout.tsx.
+*/
+
+@theme {
+  /* ---- Color: warm neutrals + one premium accent ---- */
+  --color-cream: #faf7f2; /* base background */
+  --color-ivory: #fffdf9; /* lighter cards / hero text bg */
+  --color-greige: #ece6dd; /* alternating section bg */
+  --color-ink: #1a1a1a; /* primary text */
+  --color-ink-soft: #56504a; /* secondary text (warm gray) */
+  --color-ink-faint: #8a837b; /* labels / meta */
+  --color-line: #e6ddd1; /* hairline borders on cream */
+  --color-wine: #6b2230; /* THE accent — deep wine/burgundy */
+  --color-wine-deep: #4f1822; /* accent hover */
+  --color-wine-tint: #f3e9e9; /* faint accent wash for bands */
+
+  /* ---- Type ---- */
+  --font-display: var(--font-cormorant), Georgia, "Times New Roman", serif;
+  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* ---- Spacing scale: one rhythm everywhere ---- */
+  --spacing-section: 5.5rem;
+  --spacing-section-lg: 9rem;
+
+  /* ---- Motion ---- */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-feature-settings: "kern", "liga", "calt";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Display serif: tight tracking, refined leading — used for oversized headings */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.015em;
+  font-weight: 500;
+}
+
+/* Small uppercase tracked labels — the editorial counterpoint to big serif */
+.eyebrow {
+  font-family: var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--color-ink-faint);
+}
+
+/* Contained editorial text column */
+.measure {
+  max-width: 42rem; /* ~672px */
+}
+
+/* ---- Subtle scroll-reveal motion (CSS only; JS just toggles a class) ---- */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 0.9s var(--ease-out-soft),
+      transform 0.9s var(--ease-out-soft);
+    will-change: opacity, transform;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Focus visibility for keyboard users */
+:focus-visible {
+  outline: 2px solid var(--color-wine);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Horizontal media rails: keep scroll, hide bar */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* yet-another-react-lightbox: tone its chrome to the brand */
+.yarl__root {
+  --yarl__color_backdrop: rgba(20, 16, 14, 0.94);
 }
