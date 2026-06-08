@@ -95,11 +95,11 @@ export default function InvestmentPage() {
 
               <div className="mt-10">
                 <CTAButton
-                  href={site.cta.href}
+                  href={`/reserve?collection=${p.id}`}
                   variant={p.highlight ? "onDark" : "ink"}
                   className="w-full"
                 >
-                  {site.cta.label}
+                  Reserve {p.name}
                 </CTAButton>
               </div>
             </Reveal>

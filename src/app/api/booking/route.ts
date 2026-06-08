@@ -13,19 +13,20 @@
  *
  * Payment plans: we do NOT restrict payment_method_types in stripe.ts, so Stripe
  * Checkout auto-surfaces Affirm / Klarna / Afterpay when enabled in the Stripe
- * Dashboard (Settings → Payment methods). The $500 deposit qualifies for BNPL.
+ * Dashboard (Settings → Payment methods). The deposit (from $500) qualifies for BNPL.
  */
 import { NextResponse, type NextRequest } from "next/server";
 import {
   bookingSchema,
   HONEYPOT_FIELD,
   TURNSTILE_FIELD,
-  DEPOSIT_CENTS,
   DEPOSIT_CURRENCY,
   HOLD_MINUTES,
   formatEventDate,
   packageLabel,
+  serviceForCollection,
 } from "@/lib/booking";
+import { depositForCollection, collectionLabel } from "@/content/packages";
 import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
 import { verifyTurnstile } from "@/lib/turnstile";
 import {
@@ -138,6 +139,12 @@ export async function POST(req: NextRequest) {
 
   const supabase = getServiceSupabase();
 
+  // Deposit + service are ALWAYS derived server-side from the collection — never
+  // trusted from the client (a tampered body can't lower the deposit or mismatch
+  // the tier). Signature/Legacy normalize to "both"; Essential keeps its craft.
+  const depositCents = depositForCollection(data.collection);
+  const service = serviceForCollection(data.collection, data.package);
+
   // 6) Atomic date-hold. Raises 'date_unavailable' if the date is taken.
   let hold: BookingHold;
   try {
@@ -146,9 +153,9 @@ export async function POST(req: NextRequest) {
       p_email: data.email,
       p_phone: data.phone || null,
       p_event_date: data.event_date,
-      p_package: data.package,
+      p_package: service,
       p_notes: data.notes || null,
-      p_deposit_cents: DEPOSIT_CENTS,
+      p_deposit_cents: depositCents,
       p_currency: DEPOSIT_CURRENCY,
       p_hold_minutes: HOLD_MINUTES,
     });
@@ -193,8 +200,8 @@ export async function POST(req: NextRequest) {
       session = await createStripeCheckoutSession({
         amountCents: hold.deposit_amount_cents,
         currency: hold.currency,
-        productName: `${site.brand} — Date Reservation Deposit`,
-        productDescription: `Deposit to reserve ${prettyDate} · ${packageLabel(data.package)}`,
+        productName: `${site.brand} — ${collectionLabel(data.collection)} Deposit`,
+        productDescription: `Deposit to reserve ${prettyDate} · ${collectionLabel(data.collection)} (${packageLabel(service)})`,
         clientReferenceId: hold.booking_id,
         customerEmail: data.email,
         successUrl: `${siteUrl}/reserve/success?session_id={CHECKOUT_SESSION_ID}`,
@@ -204,7 +211,8 @@ export async function POST(req: NextRequest) {
           source: "txquince",
           booking_id: hold.booking_id,
           event_date: hold.event_date,
-          package: data.package,
+          collection: data.collection,
+          package: service,
         },
       });
     } catch (stripeErr) {
@@ -224,10 +232,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Attach the checkout session so the webhook can match it back to the booking.
+    // Attach the checkout session so the webhook can match it back to the
+    // booking, and store the chosen collection (create_booking_hold predates the
+    // collection column, so we set it here on the freshly-held row).
     const { error: updateError } = await supabase
       .from("bookings")
-      .update({ stripe_checkout_session_id: session.id })
+      .update({
+        stripe_checkout_session_id: session.id,
+        collection: data.collection,
+      })
       .eq("id", hold.booking_id);
 
     if (updateError) {

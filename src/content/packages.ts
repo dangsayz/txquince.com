@@ -10,8 +10,10 @@
  * The budget-range dropdown on the form mirrors these (lowest = $2,500).
  */
 
+export type CollectionId = "essential" | "signature" | "legacy";
+
 export type Package = {
-  id: "essential" | "signature" | "legacy";
+  id: CollectionId;
   name: string;
   price: number; // USD, whole dollars
   priceLabel: string; // pre-formatted for display
@@ -23,6 +25,13 @@ export type Package = {
   includes: string[];
   // One-line teaser used on the Home packages strip.
   teaser: string;
+  /**
+   * Deposit to reserve the date for this collection (cents). Scales with the
+   * collection so the commitment matches the investment — bigger day, bigger
+   * hold. Operator-editable. Each applies to the final balance.
+   */
+  depositCents: number;
+  depositLabel: string;
 };
 
 export const packages: Package[] = [
@@ -33,6 +42,8 @@ export const packages: Package[] = [
     priceLabel: "$2,500",
     tagline: "One artist, one craft, beautifully done.",
     role: "FILTER + floor. The cheapest number on the page. Not meant to be sold.",
+    depositCents: 50_000, // $500
+    depositLabel: "$500",
     teaser: "Photo or film, one artist, the full day's milestones.",
     includes: [
       "Photo OR film — one service, one artist",
@@ -50,6 +61,8 @@ export const packages: Package[] = [
     role: "THE TARGET SALE. Steer everyone here.",
     highlight: true,
     badge: "Most Popular",
+    depositCents: 75_000, // $750
+    depositLabel: "$750",
     teaser: "Photo + film, two storytellers, your full day with a same-week sneak peek.",
     includes: [
       "Photo + film — two storytellers, all day",
@@ -66,6 +79,8 @@ export const packages: Package[] = [
     priceLabel: "$5,500",
     tagline: "The complete cinematic record, nothing left out.",
     role: "ANCHOR at the market ceiling so $3,900 reads as the sensible choice.",
+    depositCents: 100_000, // $1,000
+    depositLabel: "$1,000",
     teaser: "Everything in Signature, plus long-form film, drone, and a premium album.",
     includes: [
       "Everything in Signature",
@@ -77,6 +92,35 @@ export const packages: Package[] = [
     ],
   },
 ];
+
+/** Lookup a collection by id. */
+export function collectionById(id: string): Package | undefined {
+  return packages.find((p) => p.id === id);
+}
+
+/** Is this a valid collection id? (narrows unknown query/body values.) */
+export function isCollectionId(value: unknown): value is CollectionId {
+  return (
+    value === "essential" || value === "signature" || value === "legacy"
+  );
+}
+
+/** Display name for a collection id ("signature" → "Signature"). */
+export function collectionLabel(id: string | null | undefined): string {
+  return collectionById(id ?? "")?.name ?? "—";
+}
+
+/**
+ * Deposit (cents) to reserve a given collection. Server-side source of truth —
+ * the deposit is ALWAYS derived from the collection here, never trusted from
+ * the client. Falls back to the floor ($500) for any unknown id.
+ */
+export function depositForCollection(id: string): number {
+  return collectionById(id)?.depositCents ?? packages[0].depositCents;
+}
+
+/** The lowest deposit across collections — the "from $X" floor for copy. */
+export const depositFloorLabel = packages[0].depositLabel;
 
 /** The hook above the tiers. */
 export const investmentIntro = {

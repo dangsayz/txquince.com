@@ -25,6 +25,21 @@ const packageValues = PACKAGE_OPTIONS.map((p) => p.value) as [
   "both",
 ];
 
+const collectionValues = ["essential", "signature", "legacy"] as const;
+
+/**
+ * Normalize the service from the chosen collection. Signature + Legacy are
+ * always photo + film by definition; only Essential is a one-craft choice.
+ * Used server-side so the stored `package` is always consistent with the tier.
+ */
+export function serviceForCollection(
+  collection: string,
+  pickedPackage: string,
+): "photo" | "video" | "both" {
+  if (collection !== "essential") return "both";
+  return pickedPackage === "video" ? "video" : "photo";
+}
+
 /** Deposit config (operator-editable in src/content/site.ts). */
 export const DEPOSIT_CENTS = site.booking.depositCents;
 export const DEPOSIT_CURRENCY = site.booking.currency;
@@ -58,6 +73,9 @@ export const bookingSchema = z.object({
     .refine((v) => isFutureWithinRange(v), {
       message: "Choose a future date within the next three years.",
     }),
+  collection: z.enum(collectionValues, {
+    message: "Please choose a collection.",
+  }),
   package: z.enum(packageValues, {
     message: "Please choose photo, film, or both.",
   }),
@@ -74,6 +92,7 @@ export interface BookingRecord {
   phone: string | null;
   event_date: string;
   package: "photo" | "video" | "both";
+  collection: string | null;
   notes: string | null;
   status: string;
   deposit_amount_cents: number;

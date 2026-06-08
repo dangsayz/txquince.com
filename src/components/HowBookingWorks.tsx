@@ -10,7 +10,7 @@ import { Reveal } from "@/components/Reveal";
 const STEPS = [
   {
     title: "Reserve your date",
-    body: `Choose your date and pay a ${site.booking.depositLabel} deposit — your day is held instantly, and you can pay in full or in interest-free installments at checkout.`,
+    body: `Choose your collection and date, then pay a deposit from ${site.booking.depositLabel} — your day is held instantly, and you can pay in full or in interest-free installments at checkout.`,
   },
   {
     title: "We plan it together",

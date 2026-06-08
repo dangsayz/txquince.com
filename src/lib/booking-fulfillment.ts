@@ -40,7 +40,7 @@ export async function fulfillCheckoutSession(
   const { data: booking, error: readError } = await supabase
     .from("bookings")
     .select(
-      "id, name, email, phone, event_date, package, notes, status, deposit_amount_cents, currency, confirmation_sent_at",
+      "id, name, email, phone, event_date, package, collection, notes, status, deposit_amount_cents, currency, confirmation_sent_at",
     )
     .eq("id", bookingId as string)
     .single();

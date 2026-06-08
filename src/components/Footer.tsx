@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { site } from "@/content/site";
+import { locations } from "@/content/locations";
 import { CTAButton } from "@/components/CTAButton";
 
 export function Footer() {
@@ -17,6 +18,30 @@ export function Footer() {
           </div>
           <div className="flex flex-col gap-4">
             <CTAButton href={site.cta.href}>{site.cta.label}</CTAButton>
+          </div>
+        </div>
+
+        {/* Areas served — internal links to the local landing pages. */}
+        <div className="mt-14 border-t border-line pt-8">
+          <p className="text-[0.7rem] uppercase tracking-[0.18em] text-ink-faint">
+            Quinceañera photographer serving
+          </p>
+          <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-ink-soft">
+            {locations.map((l) => (
+              <Link
+                key={l.slug}
+                href={`/quinceanera-photographer/${l.slug}`}
+                className="hover:text-ink"
+              >
+                {l.city}
+              </Link>
+            ))}
+            <Link
+              href="/quinceanera-photographer"
+              className="text-wine hover:text-wine-deep"
+            >
+              All areas →
+            </Link>
           </div>
         </div>
 

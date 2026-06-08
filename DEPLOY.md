@@ -66,9 +66,14 @@ npx wrangler secret put CRON_SECRET              # see §5
 - Until both secrets are set, `/reserve` shows a graceful "deposits not live yet"
   notice and steers to the inquiry form. Nothing breaks.
 
-## 5. Lead follow-up nurture (optional but recommended)
+## 5. Lead nurture + booking recovery (optional but recommended)
 
-The 3-touch sequence is built and inert until activated:
+Two revenue-saving jobs, both built and inert until activated:
+- **Lead follow-ups** — 3-touch nurture for inquiries that haven't booked
+  (`/api/cron/followups`); each email carries a one-click unsubscribe.
+- **Abandoned-booking recovery** — one "your date is still open" email when a
+  hold expires unpaid and the date is still free (`/api/cron/booking-recovery`);
+  single send, guarded by `recovery_sent_at` (migration `0006`).
 
 1. Set `CRON_SECRET` on the app (§2) **and** on the cron worker.
 2. Deploy the cron worker (separate, in `cron-worker/`):
@@ -77,8 +82,9 @@ The 3-touch sequence is built and inert until activated:
    npx wrangler deploy
    npx wrangler secret put CRON_SECRET     # same value as the app's
    ```
-   It pings `/api/cron/followups` daily (16:00 UTC). Every email carries a
-   one-click unsubscribe.
+   It runs **hourly** and pings both endpoints. Follow-ups are day-paced
+   internally, so hourly only matters for recovery (fires within ~an hour of a
+   hold expiring). Both 401 until the secret is set — nothing sends before that.
 
 ## 6. Content unlocks (convert "built" → "booking")
 
@@ -88,6 +94,30 @@ The 3-touch sequence is built and inert until activated:
   (`released: true`). Reviews slots on `/reserve` + `/investment` light up.
 - Verify the **Resend sending domain** (SPF/DKIM) so emails send from
   `hello@txquince.com` instead of the sandbox sender.
+
+## 7. Domain — connect www.txquince.com (registered at GoDaddy)
+
+Cloudflare Workers custom domains require the DNS **zone on Cloudflare**. You keep
+the registration at GoDaddy; you only re-point its nameservers (a delegation, not
+a transfer).
+
+1. **Cloudflare dashboard → Add a site →** `txquince.com` → Free plan. Cloudflare
+   scans your GoDaddy DNS and gives you **2 nameservers** (e.g. `dana.ns.cloudflare.com`).
+2. **GoDaddy → your domain → Nameservers → Change → "I'll use my own" →** paste the
+   2 Cloudflare nameservers. Save.
+3. Wait for activation (~10 min–2 hrs; Cloudflare emails you).
+4. `npm run deploy:cloudflare` — wrangler reads the `routes` in `wrangler.jsonc`
+   and **auto-creates** the proxied DNS + SSL certs for `txquince.com` and
+   `www.txquince.com`. No manual A/CNAME needed.
+
+**⚠️ Don't lose these in the nameserver move:**
+- **Email DNS.** Moving nameservers moves *all* DNS. After Cloudflare imports your
+  records, confirm **MX + the Resend SPF/DKIM** records are present in Cloudflare
+  DNS, or email (and `hello@txquince.com` sending) breaks. Re-add if missing.
+- **Canonical = apex.** `site.ts` canonicalizes to `https://txquince.com` (apex).
+  Add a Cloudflare **Redirect Rule**: `www.txquince.com/*` → `https://txquince.com/$1`
+  (301) so www and apex don't split SEO. (Change the canonical in `site.ts` first if
+  you'd rather standardize on www.)
 
 ---
 

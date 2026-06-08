@@ -21,6 +21,7 @@ import {
   formatMoney,
   packageLabel,
 } from "@/lib/booking";
+import { collectionLabel } from "@/content/packages";
 
 let cached: Resend | null = null;
 
@@ -207,6 +208,7 @@ export async function sendBookingOperatorEmail(
     field("Email", booking.email),
     field("Phone", booking.phone ?? ""),
     field("Event date", dateStr),
+    field("Collection", collectionLabel(booking.collection)),
     field("Package", packageLabel(booking.package)),
     field("Deposit paid", deposit),
     "",
@@ -223,6 +225,7 @@ export async function sendBookingOperatorEmail(
         ["Email", `<a href="mailto:${esc(booking.email)}">${esc(booking.email)}</a>`],
         ["Phone", booking.phone ? `<a href="tel:${esc(booking.phone)}">${esc(booking.phone)}</a>` : "—"],
         ["Event date", esc(dateStr)],
+        ["Collection", esc(collectionLabel(booking.collection))],
         ["Package", esc(packageLabel(booking.package))],
         ["Deposit paid", esc(deposit)],
       ]
@@ -342,7 +345,8 @@ function followupHtml(opts: {
   bodyHtml: string;
   ctaUrl: string;
   ctaLabel: string;
-  unsubscribeUrl: string;
+  /** Omitted for one-time transactional sends (e.g. booking recovery). */
+  unsubscribeUrl?: string;
 }): string {
   return `
   <div style="background:${CREAM};padding:32px 0;font-family:ui-sans-serif,system-ui,Arial,sans-serif">
@@ -359,8 +363,11 @@ function followupHtml(opts: {
       </div>
     </div>
     <p style="max-width:520px;margin:16px auto 0;text-align:center;font-size:12px;color:#8a837b">
-      ${site.brand} · ${site.serviceArea}<br/>
-      Not planning a quinceañera anymore? <a href="${opts.unsubscribeUrl}" style="color:#8a837b">Unsubscribe</a> and I won't reach out again.
+      ${site.brand} · ${site.serviceArea}${
+        opts.unsubscribeUrl
+          ? `<br/>Not planning a quinceañera anymore? <a href="${opts.unsubscribeUrl}" style="color:#8a837b">Unsubscribe</a> and I won't reach out again.`
+          : ""
+      }
     </p>
   </div>`;
 }
@@ -463,6 +470,71 @@ export async function sendFollowupEmail(
         "List-Unsubscribe": `<${unsubscribeUrl}>`,
         "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
       },
+    });
+    if (error) return { ok: false, error: String(error.message ?? error) };
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: String(err) };
+  }
+}
+
+// ============================================================================
+// BOOKING RECOVERY — one transactional nudge when a hold expires unpaid and the
+// date is still open. They were one click from paying; this brings them back.
+// Single send (guarded by recovery_sent_at), so no unsubscribe sequence needed.
+// ============================================================================
+
+/** "Your date is still open" — sent once by /api/cron/booking-recovery. */
+export async function sendBookingRecoveryEmail(
+  booking: BookingRecord,
+): Promise<{ ok: boolean; error?: string }> {
+  const resend = getResend();
+  if (!resend) return { ok: false, error: "resend-not-configured" };
+
+  const firstName = booking.name.split(" ")[0] || "there";
+  const siteUrl = getSiteUrl();
+  const dateStr = formatEventDate(booking.event_date);
+  const tier = collectionLabel(booking.collection);
+  const tierSuffix = tier && tier !== "—" ? ` (${tier})` : "";
+  // Resume with their collection preselected so it's truly two clicks back in.
+  const ctaUrl = booking.collection
+    ? `${siteUrl}/reserve?collection=${encodeURIComponent(booking.collection)}`
+    : `${siteUrl}${site.cta.href}`;
+
+  const subject = `${firstName}, your date is still open — ${dateStr}`;
+
+  const text = [
+    `Hi ${firstName},`,
+    "",
+    `You started reserving ${dateStr}${tierSuffix} but the checkout didn't finish — and nothing was charged.`,
+    "",
+    "Good news: that date is still open. I only book one quinceañera a day, though, so it's first to reserve.",
+    "",
+    `Pick up right where you left off — it takes about two minutes: ${ctaUrl}`,
+    "",
+    "If the timing changed or you've decided to go another way, no worries at all — just reply and I'll close out your file.",
+    "",
+    site.brand,
+  ].join("\n");
+
+  const bodyHtml = `
+    <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">You started reserving <strong style="color:${INK}">${esc(dateStr)}</strong>${esc(tierSuffix)} but the checkout didn&apos;t finish — and <strong style="color:${INK}">nothing was charged.</strong></p>
+    <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">Good news: that date is still open. I only book one quinceañera a day, though, so it goes to whoever reserves first.</p>
+    <p style="margin:0;font-size:15px;line-height:1.7;color:#56504a">Pick up right where you left off — it takes about two minutes. If the timing changed, just reply and I&apos;ll close out your file.</p>`;
+
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM,
+      to: booking.email,
+      replyTo: process.env.OPERATOR_NOTIFY_EMAIL || undefined,
+      subject,
+      text,
+      html: followupHtml({
+        firstName,
+        bodyHtml,
+        ctaUrl,
+        ctaLabel: "Finish reserving my date",
+      }),
     });
     if (error) return { ok: false, error: String(error.message ?? error) };
     return { ok: true };

@@ -73,7 +73,7 @@ export const site = {
     currency: "usd",
     holdMinutes: 30, // how long the date is held during Stripe checkout
     policyNote:
-      "Your $500 deposit reserves your date and is applied to your final balance. Fully refundable if I ever have to cancel.",
+      "Your deposit reserves your date and is applied to your final balance. Fully refundable if I ever have to cancel.",
   },
 
   /**

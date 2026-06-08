@@ -25,21 +25,27 @@ interface Ctx {
 
 export default {
   async scheduled(_event: unknown, env: Env, ctx: Ctx): Promise<void> {
-    const run = async (): Promise<void> => {
+    const ping = async (path: string, tag: string): Promise<void> => {
       try {
-        const res = await fetch(`${env.TARGET_URL}/api/cron/followups`, {
+        const res = await fetch(`${env.TARGET_URL}${path}`, {
           headers: { Authorization: `Bearer ${env.CRON_SECRET}` },
         });
         const body = await res.text();
         if (!res.ok) {
-          console.error("[followups-cron] failed", res.status, body);
+          console.error(`[${tag}] failed`, res.status, body);
         } else {
-          console.log("[followups-cron] ok", body);
+          console.log(`[${tag}] ok`, body);
         }
       } catch (err) {
-        console.error("[followups-cron] error", err);
+        console.error(`[${tag}] error`, err);
       }
     };
-    ctx.waitUntil(run());
+
+    ctx.waitUntil(
+      Promise.all([
+        ping("/api/cron/followups", "followups-cron"),
+        ping("/api/cron/booking-recovery", "booking-recovery-cron"),
+      ]).then(() => undefined),
+    );
   },
 };

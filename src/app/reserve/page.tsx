@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { site } from "@/content/site";
-import { packages } from "@/content/packages";
+import { packages, isCollectionId, depositFloorLabel } from "@/content/packages";
 import { BookingForm } from "@/components/BookingForm";
 import { SocialProofStrip } from "@/components/SocialProofStrip";
 import { HowBookingWorks } from "@/components/HowBookingWorks";
@@ -24,9 +24,10 @@ export const metadata: Metadata = {
 export default async function ReservePage({
   searchParams,
 }: {
-  searchParams: Promise<{ canceled?: string }>;
+  searchParams: Promise<{ canceled?: string; collection?: string }>;
 }) {
-  const { canceled } = await searchParams;
+  const { canceled, collection } = await searchParams;
+  const defaultCollection = isCollectionId(collection) ? collection : undefined;
   const signature = packages.find((p) => p.id === "signature") ?? packages[1];
   const floor = packages[0];
 
@@ -47,9 +48,10 @@ export default async function ReservePage({
             Lock in her date today.
           </h1>
           <p className="mt-6 max-w-md text-base leading-relaxed text-ink-soft">
-            A {site.booking.depositLabel} deposit holds your day on my calendar —
-            instantly, no back-and-forth. Pay in full or in interest-free
-            installments at checkout.
+            A deposit from {depositFloorLabel} holds your day on my calendar —
+            instantly, no back-and-forth. It scales with your collection and
+            applies to your balance. Pay in full or in interest-free installments
+            at checkout.
           </p>
 
           <div className="mt-8 border-l-2 border-wine pl-5">
@@ -112,7 +114,7 @@ export default async function ReservePage({
               date isn&apos;t reserved yet. Finish below whenever you&apos;re ready.
             </p>
           ) : null}
-          <BookingForm />
+          <BookingForm defaultCollection={defaultCollection} />
         </div>
       </div>
 

@@ -30,7 +30,7 @@ const NEXT_STEPS = [
   },
   {
     title: "You reserve your day",
-    body: `If it's open, you lock it with a ${site.booking.depositLabel} deposit (pay in full or in installments). One celebration per day — once it's yours, it's yours.`,
+    body: `If it's open, you lock it with a deposit from ${site.booking.depositLabel} (pay in full or in installments). One celebration per day — once it's yours, it's yours.`,
   },
 ] as const;
 
@@ -73,7 +73,7 @@ export default function CheckYourDatePage() {
             >
               Reserve your date now
             </a>{" "}
-            with a {site.booking.depositLabel} deposit.
+            with a deposit from {site.booking.depositLabel}.
           </p>
 
           <p className="mt-4 text-sm text-ink-faint">

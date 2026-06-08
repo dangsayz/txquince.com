@@ -1,12 +1,39 @@
 import Link from "next/link";
 import { getPortfolioImages, getVideos } from "@/lib/content-db";
+import {
+  getBookings,
+  getInquiries,
+  countPaid,
+  countOpenLeads,
+} from "@/lib/clients-db";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminDashboard() {
-  const [images, videos] = await Promise.all([getPortfolioImages(), getVideos()]);
+  const [images, videos, bookings, inquiries] = await Promise.all([
+    getPortfolioImages(),
+    getVideos(),
+    getBookings(),
+    getInquiries(),
+  ]);
 
+  const paid = countPaid(bookings);
+  const openLeads = countOpenLeads(inquiries);
+
+  // Clients first — the pipeline the business runs on — then the site content.
   const cards = [
+    {
+      href: "/admin/bookings",
+      title: "Bookings",
+      count: `${paid} paid · ${bookings.length} total`,
+      desc: "Every reserved date: client, collection, payment status, and contact — your whole booking pipeline in one place.",
+    },
+    {
+      href: "/admin/inquiries",
+      title: "Leads",
+      count: `${openLeads} open · ${inquiries.length} total`,
+      desc: "Inquiries from your contact form, with date, budget, and message so you can follow up before anyone else does.",
+    },
     {
       href: "/admin/portfolio",
       title: "Portfolio",
