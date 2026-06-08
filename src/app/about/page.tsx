@@ -33,9 +33,7 @@ export default function AboutPage() {
         <div className="flex flex-col justify-center md:order-1">
           <Reveal>
             <p className="eyebrow mb-5">{about.eyebrow}</p>
-            <h1 className="font-display text-4xl leading-[1.06] text-ink text-balance md:text-5xl">
-              {about.heading}
-            </h1>
+            <h1 className="display-2 text-ink text-balance">{about.heading}</h1>
           </Reveal>
         </div>
       </section>

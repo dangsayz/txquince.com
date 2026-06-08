@@ -4,7 +4,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { site } from "@/content/site";
-import { CTAButton } from "@/components/CTAButton";
+
+const navPill =
+  "inline-flex items-center justify-center rounded-full border border-wine uppercase tracking-[0.22em] text-wine transition-colors duration-300 hover:bg-wine hover:text-cream";
 
 /**
  * Minimal nav: logo · Portfolio · Investment · About · [Check Your Date].
@@ -46,23 +48,23 @@ export function Nav() {
             <Link
               key={item.href}
               href={item.href}
-              className={`text-sm tracking-wide transition-colors hover:text-ink ${
+              className={`text-[0.7rem] uppercase tracking-[0.18em] transition-colors hover:text-wine ${
                 pathname === item.href ? "text-ink" : "text-ink-soft"
               }`}
             >
               {item.label}
             </Link>
           ))}
-          <CTAButton href={site.cta.href} className="px-6 py-3 text-[0.8rem]">
+          <Link href={site.cta.href} className={`${navPill} px-6 py-2.5 text-[0.64rem]`}>
             {site.cta.label}
-          </CTAButton>
+          </Link>
         </div>
 
         {/* Mobile: CTA + menu toggle */}
-        <div className="flex items-center gap-3 md:hidden">
-          <CTAButton href={site.cta.href} className="px-5 py-2.5 text-[0.78rem]">
+        <div className="flex items-center gap-2 md:hidden">
+          <Link href={site.cta.href} className={`${navPill} px-4 py-2 text-[0.58rem]`}>
             {site.cta.label}
-          </CTAButton>
+          </Link>
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}

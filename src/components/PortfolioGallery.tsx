@@ -5,43 +5,40 @@ import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { Figure } from "@/components/Figure";
 import { Reveal } from "@/components/Reveal";
-import { mediaUrl } from "@/content/media";
-import type { GalleryImage } from "@/content/gallery";
+
+export type GalleryItem = {
+  url: string | null;
+  alt: string;
+  ratio?: "portrait" | "landscape" | "square";
+  feature?: boolean;
+};
 
 /**
- * Editorial gallery grid with a brand-toned lightbox. Only release-cleared
- * images that resolve to a real R2 URL are clickable/zoomable; placeholders
- * render as labeled figures (LAW 5).
+ * Editorial gallery grid with a brand-toned lightbox. Items with a real URL are
+ * clickable/zoomable; URL-less items render as labeled placeholder fields.
  */
-export function PortfolioGallery({ images }: { images: GalleryImage[] }) {
+export function PortfolioGallery({ images }: { images: GalleryItem[] }) {
   const [index, setIndex] = useState(-1);
 
-  // Build lightbox slides from images that have a real URL, preserving order.
   const slides = images
-    .map((img) => ({ url: mediaUrl(img.key), alt: img.alt }))
-    .filter((s): s is { url: string; alt: string } => Boolean(s.url))
-    .map((s) => ({ src: s.url, alt: s.alt }));
+    .filter((i) => i.url)
+    .map((i) => ({ src: i.url as string, alt: i.alt }));
 
-  // Map each grid image to its index within `slides` (or -1 if placeholder).
-  const slideIndexFor = (img: GalleryImage): number => {
-    const url = mediaUrl(img.key);
-    if (!url) return -1;
-    return slides.findIndex((s) => s.src === url);
-  };
+  const slideIndexFor = (item: GalleryItem) =>
+    item.url ? slides.findIndex((s) => s.src === item.url) : -1;
 
   return (
     <>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
         {images.map((img, i) => {
           const si = slideIndexFor(img);
-          const clickable = si >= 0;
+          const ratio = img.ratio ?? (img.feature ? "landscape" : "portrait");
+          const sizes = img.feature ? "100vw" : "(max-width: 640px) 100vw, 50vw";
+          // Cap big feature tiles so a full-width landscape never eats the screen.
+          const figClass = img.feature ? "max-h-[70vh]" : "";
           return (
-            <Reveal
-              key={i}
-              delay={(i % 3) * 80}
-              className={img.feature ? "sm:col-span-2" : ""}
-            >
-              {clickable ? (
+            <Reveal key={i} delay={(i % 3) * 80} className={img.feature ? "sm:col-span-2" : ""}>
+              {si >= 0 ? (
                 <button
                   type="button"
                   onClick={() => setIndex(si)}
@@ -50,22 +47,12 @@ export function PortfolioGallery({ images }: { images: GalleryImage[] }) {
                 >
                   <div className="overflow-hidden">
                     <div className="transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]">
-                      <Figure
-                        imageKey={img.key}
-                        alt={img.alt}
-                        ratio={img.ratio ?? (img.feature ? "landscape" : "portrait")}
-                        sizes={img.feature ? "100vw" : "(max-width: 640px) 100vw, 50vw"}
-                      />
+                      <Figure src={img.url} alt={img.alt} ratio={ratio} sizes={sizes} className={figClass} />
                     </div>
                   </div>
                 </button>
               ) : (
-                <Figure
-                  imageKey={img.key}
-                  alt={img.alt}
-                  ratio={img.ratio ?? (img.feature ? "landscape" : "portrait")}
-                  sizes={img.feature ? "100vw" : "(max-width: 640px) 100vw, 50vw"}
-                />
+                <Figure src={img.url} alt={img.alt} ratio={ratio} sizes={sizes} className={figClass} />
               )}
             </Reveal>
           );

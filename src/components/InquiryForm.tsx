@@ -215,7 +215,7 @@ export function InquiryForm() {
       <button
         type="submit"
         disabled={submitting}
-        className="inline-flex items-center justify-center gap-3 self-start bg-wine px-10 py-4 text-sm tracking-wide text-cream transition-all duration-300 hover:bg-wine-deep hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0"
+        className="inline-flex items-center justify-center gap-3 self-start rounded-full bg-wine px-10 py-4 text-[0.7rem] uppercase tracking-[0.2em] text-cream transition-all duration-300 hover:bg-wine-deep disabled:cursor-not-allowed disabled:opacity-70"
       >
         {submitting ? (
           <>

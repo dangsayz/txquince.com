@@ -34,6 +34,10 @@ const nextConfig: NextConfig = {
       // Fallbacks so it still works if the env hostname shape changes
       { protocol: "https", hostname: "*.r2.dev", pathname: "/**" },
       { protocol: "https", hostname: "*.r2.cloudflarestorage.com", pathname: "/**" },
+      // Supabase Storage (uploaded portfolio images)
+      { protocol: "https", hostname: "*.supabase.co", pathname: "/storage/v1/object/public/**" },
+      // YouTube/Vimeo poster thumbnails for the video gallery
+      { protocol: "https", hostname: "i.ytimg.com", pathname: "/**" },
     ],
     // The hero/portfolio imagery is large and editorial — allow modern formats.
     formats: ["image/avif", "image/webp"],

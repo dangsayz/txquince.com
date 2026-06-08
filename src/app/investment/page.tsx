@@ -4,6 +4,8 @@ import { site } from "@/content/site";
 import { Reveal } from "@/components/Reveal";
 import { CTAButton } from "@/components/CTAButton";
 import { FinalCTA } from "@/components/FinalCTA";
+import { SocialProofStrip } from "@/components/SocialProofStrip";
+import { Testimonials } from "@/components/Testimonials";
 
 export const metadata: Metadata = {
   title: "Investment — Quinceañera Collections",
@@ -25,7 +27,7 @@ export default function InvestmentPage() {
       <section className="mx-auto max-w-4xl px-5 pt-section text-center md:px-8 md:pt-section-lg">
         <Reveal>
           <p className="eyebrow mb-5">{investmentIntro.eyebrow}</p>
-          <h1 className="mx-auto max-w-2xl font-display text-4xl leading-[1.06] text-ink text-balance md:text-5xl">
+          <h1 className="mx-auto max-w-3xl display-2 text-ink text-balance">
             {investmentIntro.heading}
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-ink-soft">
@@ -34,6 +36,7 @@ export default function InvestmentPage() {
           <p className="mx-auto mt-6 inline-block border-y border-line py-3 text-sm tracking-wide text-wine">
             {investmentIntro.hook}
           </p>
+          <SocialProofStrip className="mt-10" />
         </Reveal>
       </section>
 
@@ -93,7 +96,7 @@ export default function InvestmentPage() {
               <div className="mt-10">
                 <CTAButton
                   href={site.cta.href}
-                  variant={p.highlight ? "onDark" : "ghost"}
+                  variant={p.highlight ? "onDark" : "ink"}
                   className="w-full"
                 >
                   {site.cta.label}
@@ -112,9 +115,7 @@ export default function InvestmentPage() {
       {/* FAQ */}
       <section className="bg-greige">
         <div className="mx-auto max-w-3xl px-5 py-section md:px-8 md:py-section-lg">
-          <h2 className="font-display text-3xl text-ink md:text-4xl">
-            Questions, answered.
-          </h2>
+          <h2 className="display-2 text-ink">Questions, answered.</h2>
           <dl className="mt-10 divide-y divide-line border-y border-line">
             {investmentFaqs.map((f) => (
               <div key={f.q} className="py-7">
@@ -125,6 +126,10 @@ export default function InvestmentPage() {
           </dl>
         </div>
       </section>
+
+      {/* Reviews on the pricing page — 56% want proof before they inquire.
+          Renders only when release-cleared testimonials exist. */}
+      <Testimonials className="mx-auto max-w-7xl px-5 py-section md:px-8 md:py-section-lg" />
 
       <FinalCTA />
     </>

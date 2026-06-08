@@ -2,24 +2,23 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 /**
- * The ONE primary CTA, site-wide (CONVERSION MECHANICS LAW): "Check Your Date".
- * - primary: filled wine accent
- * - ghost: outlined, for on-image or secondary placement (still the same label)
- * - text: inline arrow link ("See full galleries →")
+ * The ONE primary CTA, site-wide: "Check Your Date". Couture button language —
+ * thin outlined pills that fill on hover (not heavy filled blocks).
+ * - primary: wine outline on light, fills wine on hover
+ * - onDark:  cream outline over photos/dark, fills cream on hover
+ * - ink:     charcoal outline on light
+ * - text:    inline arrow link
  */
-type Variant = "primary" | "ghost" | "text" | "onDark";
-
-const base =
-  "inline-flex items-center justify-center gap-2 font-body text-sm tracking-wide transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]";
+type Variant = "primary" | "onDark" | "ink" | "text";
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-wine text-cream px-8 py-4 hover:bg-wine-deep hover:-translate-y-0.5",
+    "btn-pill text-wine hover:bg-wine hover:text-cream",
   onDark:
-    "bg-cream text-ink px-8 py-4 hover:bg-ivory hover:-translate-y-0.5",
-  ghost:
-    "border border-ink/25 text-ink px-8 py-4 hover:border-ink hover:bg-ink hover:text-cream",
-  text: "text-ink underline-offset-4 hover:underline px-0 py-1 text-[0.95rem]",
+    "btn-pill text-cream hover:bg-cream hover:text-ink",
+  ink: "btn-pill text-ink hover:bg-ink hover:text-cream",
+  text:
+    "inline-flex items-center gap-2 text-[0.72rem] uppercase tracking-[0.2em] text-ink hover:text-wine transition-colors",
 };
 
 export function CTAButton({
@@ -34,7 +33,7 @@ export function CTAButton({
   className?: string;
 }) {
   return (
-    <Link href={href} className={`${base} ${variants[variant]} ${className}`}>
+    <Link href={href} className={`${variants[variant]} ${className}`}>
       {children}
       {variant === "text" ? <span aria-hidden>→</span> : null}
     </Link>

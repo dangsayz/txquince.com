@@ -1,34 +1,40 @@
-import Link from "next/link";
 import { site } from "@/content/site";
 import { Reveal } from "@/components/Reveal";
+import { CTAButton } from "@/components/CTAButton";
 
 /**
- * Accent CTA band — scarcity-driven, reused across pages. The ONE primary CTA.
- * `headline`/`sub` default to the global scarcity copy but can be overridden
- * per page.
+ * Closing CTA — light, editorial, scarcity-driven. A script accent over a serif
+ * line and a single outlined pill (the ONE primary CTA). Reused across pages.
  */
 export function FinalCTA({
+  accent = "A few dates remain",
   headline = site.scarcity.finalBand,
   sub = "Tell me about your celebration and I'll personally reply within 24 hours.",
 }: {
+  accent?: string;
   headline?: string;
   sub?: string;
 }) {
   return (
-    <section className="bg-wine text-cream">
-      <div className="mx-auto max-w-4xl px-5 py-section text-center md:px-8 md:py-section-lg">
+    <section className="border-t border-line bg-cream">
+      <div className="mx-auto max-w-3xl px-5 py-section text-center md:px-8 md:py-section-lg">
         <Reveal>
-          <h2 className="mx-auto max-w-2xl font-display text-3xl leading-tight text-cream text-balance sm:text-4xl md:text-5xl">
+          <p
+            className="script text-wine"
+            style={{ fontSize: "clamp(1.7rem,4.5vw,2.6rem)" }}
+          >
+            {accent}
+          </p>
+          <h2 className="mx-auto mt-3 max-w-2xl display-2 text-ink text-balance">
             {headline}
           </h2>
-          <p className="mx-auto mt-5 max-w-md text-sm text-cream/75">{sub}</p>
-          <div className="mt-9 flex justify-center">
-            <Link
-              href={site.cta.href}
-              className="inline-flex items-center justify-center bg-cream px-10 py-4 text-sm tracking-wide text-ink transition-all duration-300 hover:bg-ivory hover:-translate-y-0.5"
-            >
+          <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-ink-soft">
+            {sub}
+          </p>
+          <div className="mt-10 flex justify-center">
+            <CTAButton href={site.cta.href} variant="primary">
               {site.cta.label}
-            </Link>
+            </CTAButton>
           </div>
         </Reveal>
       </div>

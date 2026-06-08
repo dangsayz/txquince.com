@@ -17,3 +17,16 @@ export function trackInquirySubmitted(props: {
     // analytics must never break the UX
   }
 }
+
+/**
+ * Fired the moment a family is handed off to Stripe Checkout for the deposit —
+ * the booking equivalent of the inquiry conversion. `package` proves which tier
+ * actually reserves dates (not just inquires).
+ */
+export function trackBookingStarted(props: { package: string }) {
+  try {
+    track("booking_started", props);
+  } catch {
+    // analytics must never break the UX
+  }
+}

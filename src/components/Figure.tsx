@@ -10,12 +10,34 @@ const RATIO: Record<Ratio, string> = {
 };
 
 /**
- * Figure — renders a release-cleared R2 image, or a tasteful, clearly-labeled
- * placeholder when no media is configured yet (LAW 5: placeholders never pretend
- * to be a real photo). ALT TEXT is required (accessibility + image SEO).
+ * Art-directed placeholder fields in the brand palette. Until real release-cleared
+ * media is on R2, these read as intentional editorial color fields (not broken
+ * gray boxes). Deterministic per-alt so SSR and client match (no hydration shift).
+ */
+// Light, airy duotones to match the editorial aesthetic — with one deep-wine
+// accent for rhythm. Real release-cleared photos replace these instantly.
+const FIELDS: { bg: string; fg: string }[] = [
+  { bg: "linear-gradient(150deg,#f1e5d8 0%,#ddc6b2 100%)", fg: "#6b2230" }, // sand
+  { bg: "linear-gradient(150deg,#f2e1d9 0%,#d9b7a9 100%)", fg: "#6b2230" }, // blush
+  { bg: "linear-gradient(150deg,#e8dac9 0%,#c4a791 100%)", fg: "#5b2a30" }, // taupe
+  { bg: "linear-gradient(150deg,#ecdcd3 0%,#bd968c 100%)", fg: "#5b2a30" }, // rose-taupe
+  { bg: "linear-gradient(150deg,#e0d3c5 0%,#b39c88 100%)", fg: "#4a352f" }, // greige
+  { bg: "linear-gradient(150deg,#6b2230 0%,#3a1b22 100%)", fg: "#f3e3d8" }, // deep wine accent
+];
+
+function fieldFor(seed: string): { bg: string; fg: string } {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+  return FIELDS[h % FIELDS.length];
+}
+
+/**
+ * Figure — renders a release-cleared R2 image, or an elegant placeholder field
+ * when no media is set yet. ALT TEXT is required (accessibility + image SEO).
  */
 export function Figure({
   imageKey,
+  src,
   alt,
   ratio = "portrait",
   priority = false,
@@ -23,20 +45,22 @@ export function Figure({
   className = "",
 }: {
   imageKey?: string;
+  /** Direct resolved URL (e.g. Supabase Storage). Takes precedence over imageKey. */
+  src?: string | null;
   alt: string;
   ratio?: Ratio;
   priority?: boolean;
   sizes?: string;
   className?: string;
 }) {
-  const url = mediaUrl(imageKey);
+  const url = src ?? mediaUrl(imageKey);
 
-  return (
-    <div
-      className={`relative overflow-hidden bg-greige ${className}`}
-      style={{ aspectRatio: RATIO[ratio] }}
-    >
-      {url ? (
+  if (url) {
+    return (
+      <div
+        className={`relative overflow-hidden bg-greige ${className}`}
+        style={{ aspectRatio: RATIO[ratio] }}
+      >
         <Image
           src={url}
           alt={alt}
@@ -45,29 +69,45 @@ export function Figure({
           priority={priority}
           className="object-cover"
         />
-      ) : (
-        <Placeholder alt={alt} />
-      )}
-    </div>
-  );
-}
+      </div>
+    );
+  }
 
-/** Editorial placeholder: a subtle frame + monogram + the alt as a quiet hint. */
-function Placeholder({ alt }: { alt: string }) {
+  const field = fieldFor(alt + ratio);
   return (
-    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center">
-      <div className="absolute inset-3 border border-line/70" aria-hidden />
-      <span
-        className="font-display text-3xl text-ink/25"
+    <div
+      className={`grain relative overflow-hidden ${className}`}
+      style={{ aspectRatio: RATIO[ratio], background: field.bg }}
+      role="img"
+      aria-label={alt}
+    >
+      {/* soft directional sheen for depth */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(120% 90% at 78% 12%, rgba(255,255,255,0.10), transparent 55%)",
+        }}
         aria-hidden
-        style={{ letterSpacing: "0.04em" }}
-      >
-        TX
-      </span>
-      <span className="eyebrow text-ink-faint/80">Release-cleared photo</span>
-      <span className="max-w-[22ch] text-[11px] leading-relaxed text-ink-faint/70">
-        {alt}
-      </span>
+      />
+      {/* monogram watermark + hairline frame */}
+      <div className="absolute inset-0 flex items-center justify-center" aria-hidden>
+        <div
+          className="absolute inset-4 border"
+          style={{ borderColor: field.fg, opacity: 0.18 }}
+        />
+        <span
+          className="font-display"
+          style={{
+            color: field.fg,
+            opacity: 0.3,
+            fontSize: "clamp(1.8rem, 5vw, 4rem)",
+            letterSpacing: "0.06em",
+          }}
+        >
+          TX
+        </span>
+      </div>
     </div>
   );
 }
