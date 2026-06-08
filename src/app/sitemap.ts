@@ -11,10 +11,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/about", priority: 0.7 },
     { path: "/check-your-date", priority: 0.9 },
     { path: "/quinceanera-photographer", priority: 0.8 },
+    { path: "/es/fotografo-de-quinceaneras", priority: 0.8 },
     { path: "/privacy", priority: 0.2 },
-    // Local SEO landing pages — one per DFW city served.
+    // Local SEO landing pages — one per DFW city served, EN + ES.
     ...locations.map((l) => ({
       path: `/quinceanera-photographer/${l.slug}`,
+      priority: 0.7,
+    })),
+    ...locations.map((l) => ({
+      path: `/es/fotografo-de-quinceaneras/${l.slug}`,
       priority: 0.7,
     })),
   ];

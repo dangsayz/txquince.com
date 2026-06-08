@@ -6,10 +6,6 @@ import { packages } from "@/content/packages";
 import { locations, getLocation, nearbyLocations } from "@/content/locations";
 import { Reveal } from "@/components/Reveal";
 import { CTAButton } from "@/components/CTAButton";
-import { FinalCTA } from "@/components/FinalCTA";
-import { SocialProofStrip } from "@/components/SocialProofStrip";
-import { HowBookingWorks } from "@/components/HowBookingWorks";
-import { Testimonials } from "@/components/Testimonials";
 
 export function generateStaticParams() {
   return locations.map((l) => ({ city: l.slug }));
@@ -24,41 +20,50 @@ export async function generateMetadata({
   const loc = getLocation(city);
   if (!loc) return {};
 
-  const title = `Quinceañera Photographer in ${loc.city}, TX`;
-  const description = `Cinematic quinceañera photography & film in ${loc.city}, Texas. Fixed-price collections from $2,500 — la misa, portraits, and the reception, start to finish. Reserve your date.`;
-  const url = `${site.url}/quinceanera-photographer/${loc.slug}`;
+  const title = `Fotógrafo de Quinceañeras en ${loc.city}, TX`;
+  const description = `Fotografía y video de quinceañera en ${loc.city}, Texas. Colecciones a precio fijo desde $2,500 — la misa, las fotos y la recepción, de principio a fin. Reserva tu fecha.`;
   const esUrl = `${site.url}/es/fotografo-de-quinceaneras/${loc.slug}`;
+  const enUrl = `${site.url}/quinceanera-photographer/${loc.slug}`;
 
   return {
     title,
     description,
     alternates: {
-      canonical: `/quinceanera-photographer/${loc.slug}`,
-      languages: { "en-US": url, "es-MX": esUrl, "x-default": url },
+      canonical: `/es/fotografo-de-quinceaneras/${loc.slug}`,
+      languages: { "en-US": enUrl, "es-MX": esUrl, "x-default": enUrl },
     },
     openGraph: {
       title: `${title} · ${site.brand}`,
       description,
-      url,
+      url: esUrl,
+      locale: "es_MX",
     },
   };
 }
 
-/** Shared FAQs appended to every city's local ones. */
-function sharedFaqs(city: string) {
+/** Spanish collection blurbs (packages.ts copy is English-only). */
+const TIER_ES: Record<string, string> = {
+  essential: "Foto o video, un artista, los momentos clave del día.",
+  signature:
+    "Foto + video, dos narradores, tu día completo con un adelanto la misma semana.",
+  legacy:
+    "Todo lo de Signature, más video de larga duración, dron y un álbum premium.",
+};
+
+function sharedFaqsEs(city: string) {
   return [
     {
-      q: "Do you charge a travel fee?",
-      a: `No — ${city} is inside my Dallas–Fort Worth service area, so there's no travel fee. Coverage hours are the same whether your church and venue are close together or across town.`,
+      q: "¿Cobras por traslado?",
+      a: `No — ${city} está dentro de mi área de Dallas–Fort Worth, así que no hay cargo por traslado. Las horas de cobertura son las mismas, esté tu iglesia y salón cerca o al otro lado de la ciudad.`,
     },
     {
-      q: "Do you offer payment plans?",
-      a: "Yes. You reserve your date with a deposit and split the balance into interest-free installments before the day — pay in full or in payments, your choice at checkout.",
+      q: "¿Tienen planes de pago?",
+      a: "Sí. Reservas tu fecha con un depósito y divides el resto en mensualidades sin intereses antes del día — paga completo o en pagos, tú eliges en el checkout.",
     },
   ];
 }
 
-export default async function CityPage({
+export default async function CityPageEs({
   params,
 }: {
   params: Promise<{ city: string }>;
@@ -67,22 +72,20 @@ export default async function CityPage({
   const loc = getLocation(city);
   if (!loc) notFound();
 
-  const faqs = [...loc.faqs, ...sharedFaqs(loc.city)];
+  const faqs = [...loc.faqsEs, ...sharedFaqsEs(loc.city)];
   const nearby = nearbyLocations(loc.slug);
-  const url = `${site.url}/quinceanera-photographer/${loc.slug}`;
+  const esUrl = `${site.url}/es/fotografo-de-quinceaneras/${loc.slug}`;
   const prices = packages.map((p) => p.price);
 
-  // Per-city structured data: a ProfessionalService scoped to this city + the
-  // FAQPage. Mirrors the global JsonLd but with areaServed = this city.
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
       {
         "@type": "ProfessionalService",
-        "@id": `${url}#business`,
-        name: `${site.brand} — Quinceañera Photography in ${loc.city}`,
-        description: `Quinceañera photography & film serving ${loc.city}, ${loc.county}.`,
-        url,
+        "@id": `${esUrl}#business`,
+        name: `${site.brand} — Fotografía de Quinceañeras en ${loc.city}`,
+        description: `Fotografía y video de quinceañera en ${loc.city}, ${loc.county}.`,
+        url: esUrl,
         image: `${site.url}/opengraph-image`,
         email: site.contact.email,
         ...(site.contact.phoneE164 ? { telephone: site.contact.phoneE164 } : {}),
@@ -94,11 +97,12 @@ export default async function CityPage({
           addressCountry: "US",
         },
         priceRange: `$${Math.min(...prices)}–$${Math.max(...prices)}`,
-        knowsLanguage: ["en", "es"],
+        knowsLanguage: ["es", "en"],
       },
       {
         "@type": "FAQPage",
-        "@id": `${url}#faq`,
+        "@id": `${esUrl}#faq`,
+        inLanguage: "es",
         mainEntity: faqs.map((f) => ({
           "@type": "Question",
           name: f.q,
@@ -118,61 +122,60 @@ export default async function CityPage({
       {/* Hero */}
       <section className="mx-auto max-w-4xl px-5 pt-section text-center md:px-8 md:pt-section-lg">
         <Reveal>
-          <p className="eyebrow mb-5">Quinceañera Photography · {loc.city}, TX</p>
+          <p className="eyebrow mb-5">Fotografía de Quinceañeras · {loc.city}, TX</p>
           <h1 className="mx-auto max-w-3xl display-2 text-ink text-balance">
-            Quinceañera Photographer in {loc.city}
+            Fotógrafo de Quinceañeras en {loc.city}
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-ink-soft">
-            {loc.lead}
+            {loc.leadEs}
           </p>
           <p className="mt-4 text-sm">
             <Link
-              href={`/es/fotografo-de-quinceaneras/${loc.slug}`}
+              href={`/quinceanera-photographer/${loc.slug}`}
               className="text-wine underline underline-offset-2 hover:text-wine-deep"
-              hrefLang="es"
+              hrefLang="en"
             >
-              Ver esta página en español →
+              View this page in English →
             </Link>
           </p>
           <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
             <CTAButton href={site.cta.href} variant="primary">
-              {site.cta.label}
+              Reserva tu fecha
             </CTAButton>
             <CTAButton href={site.secondaryCta.href} variant="text">
-              {site.secondaryCta.label}
+              ¿Preguntas primero? Escríbeme
             </CTAButton>
           </div>
-          <SocialProofStrip className="mt-10" />
         </Reveal>
       </section>
 
-      {/* Local intro */}
+      {/* Intro local */}
       <section className="mx-auto max-w-3xl px-5 py-section md:px-8 md:py-section-lg">
         <Reveal className="flex flex-col gap-6">
-          {loc.intro.map((para) => (
+          {loc.introEs.map((para) => (
             <p key={para.slice(0, 24)} className="text-base leading-relaxed text-ink-soft">
               {para}
             </p>
           ))}
           <p className="text-sm text-ink-faint">
-            Serving {loc.areas.slice(0, -1).join(", ")}
-            {loc.areas.length > 1 ? `, and ${loc.areas[loc.areas.length - 1]}` : loc.areas[0]}
+            Cubriendo {loc.areas.slice(0, -1).join(", ")}
+            {loc.areas.length > 1 ? ` y ${loc.areas[loc.areas.length - 1]}` : loc.areas[0]}
             .
           </p>
         </Reveal>
       </section>
 
-      {/* Compact collections — full detail lives on /investment */}
+      {/* Colecciones */}
       <section className="bg-greige">
         <div className="mx-auto max-w-5xl px-5 py-section md:px-8 md:py-section-lg">
           <Reveal>
             <h2 className="display-2 text-ink text-center text-balance">
-              Fixed-price collections from {packages[0].priceLabel}
+              Colecciones a precio fijo desde {packages[0].priceLabel}
             </h2>
             <p className="mx-auto mt-5 max-w-xl text-center text-sm leading-relaxed text-ink-soft">
-              Every {loc.city} quinceañera is covered church-to-reception. Most
-              families choose Signature — two storytellers, the full day, film and
-              gallery both.
+              Cada quinceañera en {loc.city} se cubre de la iglesia a la recepción.
+              La mayoría elige Signature — dos narradores, el día completo, foto y
+              video.
             </p>
           </Reveal>
 
@@ -182,30 +185,27 @@ export default async function CityPage({
                 key={p.id}
                 delay={i * 80}
                 className={`flex h-full flex-col border p-7 ${
-                  p.highlight
-                    ? "border-wine bg-ivory"
-                    : "border-line bg-ivory"
+                  p.highlight ? "border-wine bg-ivory" : "border-line bg-ivory"
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <h3 className="font-display text-2xl text-ink">{p.name}</h3>
-                  {p.badge ? (
+                  {p.highlight ? (
                     <span className="bg-wine px-2.5 py-1 text-[0.6rem] uppercase tracking-[0.16em] text-cream">
-                      {p.badge}
+                      Más popular
                     </span>
                   ) : null}
                 </div>
-                <p className="mt-2 text-sm text-ink-soft">{p.tagline}</p>
                 <p className="mt-5 font-display text-4xl text-ink">{p.priceLabel}</p>
                 <p className="mt-4 flex-1 text-sm leading-relaxed text-ink-soft">
-                  {p.teaser}
+                  {TIER_ES[p.id]}
                 </p>
                 <CTAButton
                   href={`/reserve?collection=${p.id}`}
                   variant="ink"
                   className="mt-6 w-full"
                 >
-                  Reserve {p.name}
+                  Reservar {p.name}
                 </CTAButton>
               </Reveal>
             ))}
@@ -216,39 +216,63 @@ export default async function CityPage({
               href="/investment"
               className="text-wine underline underline-offset-2 hover:text-wine-deep"
             >
-              See everything included in each collection →
+              Ver todo lo que incluye cada colección →
             </Link>
           </p>
         </div>
       </section>
 
-      {/* How booking works */}
-      <section className="mx-auto max-w-7xl px-5 py-section md:px-8 md:py-section-lg">
-        <HowBookingWorks />
+      {/* Cómo funciona la reserva */}
+      <section className="mx-auto max-w-4xl px-5 py-section md:px-8 md:py-section-lg">
+        <h2 className="display-2 text-ink text-center text-balance">
+          Cómo funciona la reserva
+        </h2>
+        <ol className="mt-12 grid gap-8 md:grid-cols-3">
+          {[
+            {
+              t: "Reserva tu fecha",
+              b: "Elige tu colección y fecha y paga un depósito desde $500. Tu día queda apartado al instante; paga completo o en mensualidades sin intereses.",
+            },
+            {
+              t: "Lo planeamos juntos",
+              b: "Te contacto personalmente en menos de 24 horas para confirmar los detalles: tu itinerario, la iglesia y el salón, y los momentos que más importan.",
+            },
+            {
+              t: "Tu día, capturado completo",
+              b: "Una sola quinceañera al día. De la misa al último baile, con todo mi enfoque en tu celebración.",
+            },
+          ].map((step, i) => (
+            <li key={step.t} className="flex flex-col gap-3">
+              <span className="font-display text-3xl text-wine">{i + 1}</span>
+              <span className="font-display text-xl text-ink">{step.t}</span>
+              <span className="text-sm leading-relaxed text-ink-soft">{step.b}</span>
+            </li>
+          ))}
+        </ol>
       </section>
 
-      {/* Portfolio CTA */}
+      {/* Portafolio CTA */}
       <section className="bg-ink text-cream">
         <div className="mx-auto max-w-3xl px-5 py-section text-center md:px-8 md:py-section-lg">
           <h2 className="display-2 text-cream text-balance">
-            See full {loc.city} quinceañeras, start to finish.
+            Mira quinceañeras completas de {loc.city}, de principio a fin.
           </h2>
           <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-cream/75">
-            Not a highlight reel — complete galleries and films from real DFW
-            celebrations, so you know exactly what you&apos;re reserving.
+            No un reel de momentos — galerías y videos completos de celebraciones
+            reales de DFW, para que sepas exactamente lo que estás reservando.
           </p>
           <div className="mt-9 flex justify-center">
             <CTAButton href="/portfolio" variant="onDark">
-              View the galleries
+              Ver las galerías
             </CTAButton>
           </div>
         </div>
       </section>
 
-      {/* City FAQ */}
+      {/* Preguntas */}
       <section className="mx-auto max-w-3xl px-5 py-section md:px-8 md:py-section-lg">
         <h2 className="display-2 text-ink">
-          Quinceañera photography in {loc.city} — questions, answered.
+          Fotografía de quinceañeras en {loc.city} — preguntas, respondidas.
         </h2>
         <dl className="mt-10 divide-y divide-line border-y border-line">
           {faqs.map((f) => (
@@ -260,28 +284,37 @@ export default async function CityPage({
         </dl>
       </section>
 
-      {/* Nearby cities — internal link graph */}
+      {/* Ciudades cercanas */}
       <section className="bg-greige">
         <div className="mx-auto max-w-5xl px-5 py-section md:px-8 md:py-section-lg">
-          <p className="eyebrow mb-5">Also serving across DFW</p>
+          <p className="eyebrow mb-5">También en todo DFW</p>
           <div className="flex flex-wrap gap-3">
             {nearby.map((n) => (
               <Link
                 key={n.slug}
-                href={`/quinceanera-photographer/${n.slug}`}
+                href={`/es/fotografo-de-quinceaneras/${n.slug}`}
                 className="border border-line bg-ivory px-4 py-2 text-sm text-ink transition-colors hover:border-wine hover:text-wine"
               >
-                Quinceañera photographer in {n.city}
+                Fotógrafo de quinceañeras en {n.city}
               </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Testimonials — renders only when release-cleared ones exist. */}
-      <Testimonials className="mx-auto max-w-7xl px-5 py-section md:px-8 md:py-section-lg" />
-
-      <FinalCTA />
+      {/* CTA final */}
+      <section className="mx-auto max-w-3xl px-5 py-section text-center md:px-8 md:py-section-lg">
+        <h2 className="display-2 text-ink text-balance">Aparta su fecha hoy.</h2>
+        <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-ink-soft">
+          Solo reservo una quinceañera al día. Asegura la suya con un depósito —
+          checkout seguro, aplicado a tu saldo final.
+        </p>
+        <div className="mt-9 flex justify-center">
+          <CTAButton href={site.cta.href} variant="primary">
+            Reserva tu fecha
+          </CTAButton>
+        </div>
+      </section>
     </>
   );
 }
