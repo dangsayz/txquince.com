@@ -180,8 +180,9 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
       .filter((b) => b.status === "requested" || b.status === "pending_payment")
       .reduce((s, b) => s + valueOf(b.collection), 0);
 
+    // DB constraint allows new | won | lost | unsubscribed — only "new" is open.
     const openLeads = inquiries.filter(
-      (i) => i.status !== "booked" && i.status !== "closed" && !i.unsubscribed_at,
+      (i) => i.status === "new" && !i.unsubscribed_at,
     ).length;
     const totalInquiries = inquiries.length;
     const totalBookings = bookings.filter((b) => b.status === "requested" || b.status === "paid" || b.status === "pending_payment").length;

@@ -23,13 +23,12 @@ function shortDate(iso: string): string {
 function statusPill(i: InquiryRow): { label: string; cls: string } {
   if (i.unsubscribed_at)
     return { label: "Unsubscribed", cls: "bg-stone-100 text-stone-400 ring-stone-300/20" };
+  // Match the DB constraint: new | won | lost (unsubscribed handled above).
   switch (i.status) {
-    case "booked":
-      return { label: "Booked", cls: "bg-emerald-50 text-emerald-700 ring-emerald-600/20" };
-    case "closed":
-      return { label: "Closed", cls: "bg-stone-100 text-stone-500 ring-stone-400/20" };
-    case "contacted":
-      return { label: "Contacted", cls: "bg-sky-50 text-sky-700 ring-sky-600/20" };
+    case "won":
+      return { label: "Won", cls: "bg-emerald-50 text-emerald-700 ring-emerald-600/20" };
+    case "lost":
+      return { label: "Lost", cls: "bg-stone-100 text-stone-500 ring-stone-400/20" };
     default:
       return { label: "New", cls: "bg-amber-50 text-amber-700 ring-amber-600/20" };
   }

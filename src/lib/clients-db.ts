@@ -119,7 +119,6 @@ export function countPaid(bookings: BookingRow[]): number {
 
 /** Leads not yet turned into a paid booking — the active follow-up pile. */
 export function countOpenLeads(inquiries: InquiryRow[]): number {
-  return inquiries.filter(
-    (i) => i.status !== "booked" && i.status !== "closed" && !i.unsubscribed_at,
-  ).length;
+  // DB constraint allows new | won | lost | unsubscribed — only "new" is open.
+  return inquiries.filter((i) => i.status === "new" && !i.unsubscribed_at).length;
 }
