@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Figure } from "@/components/Figure";
 import { Reveal } from "@/components/Reveal";
 import { ShareModal } from "@/components/ShareModal";
@@ -10,6 +11,8 @@ export type GalleryItem = {
   alt: string;
   ratio?: "portrait" | "landscape" | "square";
   feature?: boolean;
+  width?: number | null;
+  height?: number | null;
 };
 
 const SITE_TITLE = "TX Quince — Quinceañera Photography & Film";
@@ -23,9 +26,9 @@ export function PortfolioGallery({ images }: { images: GalleryItem[] }) {
   const [shareOpen, setShareOpen] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
 
-  function openShare() {
+  function openShare(url: string) {
     if (typeof navigator !== "undefined") navigator.vibrate?.(8);
-    setShareUrl(window.location.origin);
+    setShareUrl(url);
     setShareOpen(true);
   }
 
@@ -43,18 +46,27 @@ export function PortfolioGallery({ images }: { images: GalleryItem[] }) {
             {img.url ? (
               <button
                 type="button"
-                onClick={openShare}
+                onClick={() => openShare(img.url as string)}
                 className="group relative block w-full overflow-hidden rounded-2xl bg-greige ring-1 ring-line/70 transition-shadow duration-500 hover:shadow-[0_18px_50px_-20px_rgba(44,29,18,0.45)]"
                 aria-label={`Share: ${img.alt}`}
               >
                 <div className="transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={img.url}
-                    alt={img.alt}
-                    loading="lazy"
-                    className="block h-auto w-full"
-                  />
+                  {img.width && img.height ? (
+                    // Known dimensions → next/image reserves the exact aspect
+                    // ratio (zero layout shift) and serves optimized sources.
+                    <Image
+                      src={img.url}
+                      alt={img.alt}
+                      width={img.width}
+                      height={img.height}
+                      sizes={sizes}
+                      className="block h-auto w-full"
+                    />
+                  ) : (
+                    // Legacy upload without stored dimensions.
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={img.url} alt={img.alt} loading="lazy" className="block h-auto w-full" />
+                  )}
                 </div>
                 {/* tap-to-share affordance */}
                 <div className="pointer-events-none absolute inset-0 flex items-end justify-end bg-gradient-to-t from-ink/35 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100">

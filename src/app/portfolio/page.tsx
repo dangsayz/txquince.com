@@ -25,8 +25,43 @@ export const metadata: Metadata = {
 export default async function PortfolioPage() {
   const [dbImages, videos] = await Promise.all([getPortfolioImages(), getVideos()]);
 
+  // VideoObject markup for the films (eligible for video rich results).
+  const videoJsonLd =
+    videos.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@graph": videos.map((v) => {
+            const thumb =
+              v.poster_url ||
+              (v.provider === "youtube" && v.video_id
+                ? `https://i.ytimg.com/vi/${v.video_id}/maxresdefault.jpg`
+                : undefined);
+            const embedUrl =
+              v.provider === "youtube" && v.video_id
+                ? `https://www.youtube.com/embed/${v.video_id}`
+                : v.provider === "vimeo" && v.video_id
+                  ? `https://player.vimeo.com/video/${v.video_id}`
+                  : v.url;
+            return {
+              "@type": "VideoObject",
+              name: v.title || "Quinceañera film",
+              description: `Quinceañera film by ${site.brand} — ${v.title || "a Dallas–Fort Worth celebration"}.`,
+              ...(thumb ? { thumbnailUrl: thumb } : {}),
+              embedUrl,
+              contentUrl: v.url,
+            };
+          }),
+        }
+      : null;
+
   return (
     <>
+      {videoJsonLd ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(videoJsonLd) }}
+        />
+      ) : null}
       <section className="mx-auto max-w-7xl px-5 pt-section md:px-8 md:pt-section-lg">
         <Reveal className="max-w-3xl">
           <p className="eyebrow mb-5">Portfolio</p>
@@ -51,6 +86,8 @@ export default async function PortfolioPage() {
               alt: i.alt || section.title,
               ratio: i.is_feature ? "landscape" : "portrait",
               feature: i.is_feature,
+              width: i.width,
+              height: i.height,
             }))
           : section.images.map((i) => ({
               url: null,

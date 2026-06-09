@@ -662,3 +662,65 @@ export async function sendReservationRequestClientEmail(
     return { ok: false, error: String(err) };
   }
 }
+
+/**
+ * Operator-triggered: send the family their secure deposit link (the manual
+ * step-two of the request-first flow). Fired from /admin/bookings → "Send
+ * deposit link" after the operator has confirmed the date.
+ */
+export async function sendDepositLinkEmail(
+  booking: BookingRecord,
+  checkoutUrl: string,
+): Promise<{ ok: boolean; error?: string }> {
+  const resend = getResend();
+  if (!resend) return { ok: false, error: "resend-not-configured" };
+
+  const firstName = booking.name.split(" ")[0] || "there";
+  const dateStr = formatEventDate(booking.event_date);
+  const tier = collectionLabel(booking.collection);
+  const deposit = (booking.deposit_amount_cents / 100).toLocaleString("en-US", {
+    style: "currency",
+    currency: (booking.currency || "usd").toUpperCase(),
+    maximumFractionDigits: 0,
+  });
+
+  const subject = `${firstName}, here's your link to lock in ${dateStr}`;
+
+  const text = [
+    `Hi ${firstName},`,
+    "",
+    `Your date is open and yours to claim — here's the secure link to place your ${deposit} deposit and reserve ${dateStr}${tier && tier !== "—" ? ` (the ${tier} collection)` : ""}:`,
+    "",
+    checkoutUrl,
+    "",
+    "The deposit applies to your final balance, and you can pay in full or split it interest-free at checkout. This link holds your date for the next 24 hours.",
+    "",
+    "Can't wait to tell her story,",
+    site.brand,
+  ].join("\n");
+
+  const bodyHtml = `
+    <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">Your date is open and yours to claim. Here&apos;s your secure link to place your <strong style="color:${INK}">${esc(deposit)} deposit</strong> and reserve <strong style="color:${INK}">${esc(dateStr)}</strong>${tier && tier !== "—" ? ` (the ${esc(tier)} collection)` : ""}.</p>
+    <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">The deposit applies to your final balance, and you can pay in full or split it interest-free at checkout.</p>
+    <p style="margin:0;font-size:14px;line-height:1.7;color:#8c7d69">This link holds your date for the next 24 hours.</p>`;
+
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM,
+      to: booking.email,
+      replyTo: process.env.OPERATOR_NOTIFY_EMAIL || undefined,
+      subject,
+      text,
+      html: followupHtml({
+        firstName,
+        bodyHtml,
+        ctaUrl: checkoutUrl,
+        ctaLabel: `Place your ${deposit} deposit`,
+      }),
+    });
+    if (error) return { ok: false, error: String(error.message ?? error) };
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: String(err) };
+  }
+}

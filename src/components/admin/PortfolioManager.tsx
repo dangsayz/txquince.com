@@ -30,7 +30,7 @@ function extOf(file: File): string {
  */
 async function optimize(
   file: File,
-): Promise<{ body: Blob; ext: string; type: string }> {
+): Promise<{ body: Blob; ext: string; type: string; width?: number; height?: number }> {
   if (!file.type.startsWith("image/")) {
     return { body: file, ext: extOf(file), type: file.type || "image/jpeg" };
   }
@@ -53,9 +53,9 @@ async function optimize(
     if (!blob) throw new Error("no-blob");
     // If compression somehow didn't help on an already-small file, keep original.
     if (blob.size >= file.size && file.size < 1_500_000) {
-      return { body: file, ext: extOf(file), type: file.type };
+      return { body: file, ext: extOf(file), type: file.type, width: w, height: h };
     }
-    return { body: blob, ext: "webp", type: "image/webp" };
+    return { body: blob, ext: "webp", type: "image/webp", width: w, height: h };
   } catch {
     return { body: file, ext: extOf(file), type: file.type || "image/jpeg" };
   }
@@ -94,7 +94,7 @@ export function PortfolioManager({ initial }: { initial: PortfolioImage[] }) {
 
     async function upload(file: File) {
       try {
-        const { body, ext, type } = await optimize(file);
+        const { body, ext, type, width, height } = await optimize(file);
         const signRes = await fetch("/api/admin/sign-upload", {
           method: "POST",
           headers: { "content-type": "application/json" },
@@ -111,7 +111,7 @@ export function PortfolioManager({ initial }: { initial: PortfolioImage[] }) {
         const recRes = await fetch("/api/admin/images", {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({ storage_path: path, section, alt: "" }),
+          body: JSON.stringify({ storage_path: path, section, alt: "", width, height }),
         });
         if (!recRes.ok) throw new Error("record failed");
         const { image } = (await recRes.json()) as { image: Omit<PortfolioImage, "url"> };

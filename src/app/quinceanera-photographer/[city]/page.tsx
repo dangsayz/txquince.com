@@ -105,6 +105,20 @@ export default async function CityPage({
           acceptedAnswer: { "@type": "Answer", text: f.a },
         })),
       },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${url}#breadcrumb`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: site.url },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Quinceañera Photographer",
+            item: `${site.url}/quinceanera-photographer`,
+          },
+          { "@type": "ListItem", position: 3, name: `${loc.city}, TX`, item: url },
+        ],
+      },
     ],
   };
 

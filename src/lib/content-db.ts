@@ -16,6 +16,8 @@ export type PortfolioImage = {
   section: string;
   is_feature: boolean;
   sort_order: number;
+  width: number | null;
+  height: number | null;
   url: string;
 };
 
@@ -37,7 +39,7 @@ export const getPortfolioImages = cache(async (): Promise<PortfolioImage[]> => {
     const supabase = getServiceSupabase();
     const { data, error } = await supabase
       .from("portfolio_images")
-      .select("id, storage_path, alt, section, is_feature, sort_order")
+      .select("id, storage_path, alt, section, is_feature, sort_order, width, height")
       .order("section", { ascending: true })
       .order("sort_order", { ascending: true });
     if (error || !data) return [];
