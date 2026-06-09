@@ -22,6 +22,36 @@ function extOf(file: File): string {
   return (file.name.split(".").pop() || "jpg").toLowerCase().replace("jpeg", "jpg");
 }
 
+const SECTION_ALT_PHRASE: Record<string, string> = {
+  "save-the-date": "Quinceañera save-the-date photo",
+  church: "Quinceañera church ceremony photo",
+  portraits: "Quinceañera portrait",
+  celebration: "Quinceañera celebration photo",
+  films: "Quinceañera film still",
+};
+
+/**
+ * Free, no-AI starting alt text built from what the upload already knows:
+ * the file name (if it's a real name, not a camera serial like IMG_4821),
+ * the section, and the tagged location. Always editable afterward.
+ */
+function defaultAlt(fileName: string, section: string, location: string): string {
+  const base = fileName
+    .replace(/\.[^.]+$/, "")
+    .replace(/[-_.]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  // Camera/phone serial names (IMG_4821, DSC0042, PXL_2026...) say nothing —
+  // fall back to the section phrase instead.
+  const isCameraName =
+    /^(img|dsc|dscf|dcim|pxl|gopr|mvimg|p|photo|image|untitled|screenshot|edit|export|final)?[\s\d()]*$/i.test(
+      base,
+    );
+  const subject = isCameraName || !base ? SECTION_ALT_PHRASE[section] ?? "Quinceañera photo" : base;
+  const loc = location.trim();
+  return (loc ? `${subject} at ${loc}` : subject).slice(0, 300);
+}
+
 /**
  * Resize (long edge ≤ 2400px) + recompress to WebP in the browser BEFORE upload.
  * Keeps full-resolution camera/phone files from bloating storage and wrecking
@@ -230,7 +260,7 @@ export function PortfolioManager({ initial }: { initial: PortfolioImage[] }) {
           body: JSON.stringify({
             storage_path: path,
             section,
-            alt: "",
+            alt: defaultAlt(file.name, section, uploadLocation),
             width,
             height,
             location: uploadLocation.trim() || undefined,
