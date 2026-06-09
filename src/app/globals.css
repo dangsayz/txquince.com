@@ -15,6 +15,7 @@
   --color-cream: #f4eae0; /* base background — Claura warm pink-cream */
   --color-ivory: #fcf7ef; /* lighter cards / inset (warm near-white) */
   --color-greige: #faf3e9; /* alternating section band (a touch lighter) */
+  --color-white: #ffffff; /* true white — Apple-clean section bands + cards */
   --color-ink: #2c1d12; /* primary text / dark pill buttons — espresso */
   --color-ink-soft: #8c7d69; /* secondary text (warm taupe) */
   --color-ink-faint: #a99a85; /* labels / meta */
@@ -83,6 +84,16 @@ body {
   font-size: clamp(1.6rem, 3vw, 2.4rem);
   line-height: 1.08;
   letter-spacing: -0.015em;
+}
+
+/* Apple-clean white card — crisp white, generous radius, layered soft shadow.
+   Floats on the warm cream/greige bands for a bright, modern contrast. */
+.card-apple {
+  background: var(--color-white);
+  border-radius: 1.5rem;
+  box-shadow:
+    0 1px 2px rgba(60, 40, 20, 0.04),
+    0 14px 38px -18px rgba(60, 40, 20, 0.22);
 }
 
 /* Couture script accent — used sparingly for emotional/section flourishes. */

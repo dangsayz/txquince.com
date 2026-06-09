@@ -5,6 +5,7 @@ import { Turnstile } from "@marsidev/react-turnstile";
 import { bookingSchema, HONEYPOT_FIELD } from "@/lib/booking";
 import { packages, type CollectionId } from "@/content/packages";
 import { trackBookingStarted } from "@/lib/analytics";
+import { trackEvent } from "@/components/Tracker";
 import { Select } from "@/components/Select";
 
 type Status = "idle" | "submitting" | "done" | "error";
@@ -221,7 +222,17 @@ export function BookingForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-8">
+    <form
+      onSubmit={handleSubmit}
+      noValidate
+      className="flex flex-col gap-8"
+      onFocusCapture={(e) => {
+        const f = e.currentTarget;
+        if (f.dataset.started) return;
+        f.dataset.started = "1";
+        trackEvent("form_started", "reserve");
+      }}
+    >
       {/* Honeypot */}
       <div aria-hidden className="absolute left-[-9999px] h-0 w-0 overflow-hidden">
         <label htmlFor={HONEYPOT_FIELD}>Do not fill this in</label>

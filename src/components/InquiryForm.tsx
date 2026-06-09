@@ -11,6 +11,7 @@ import {
   HONEYPOT_FIELD,
 } from "@/lib/inquiry";
 import { trackInquirySubmitted } from "@/lib/analytics";
+import { trackEvent } from "@/components/Tracker";
 
 type Status = "idle" | "submitting" | "error";
 type FieldErrors = Partial<Record<string, string[]>>;
@@ -112,7 +113,17 @@ export function InquiryForm() {
   const submitting = status === "submitting";
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-8">
+    <form
+      onSubmit={handleSubmit}
+      noValidate
+      className="flex flex-col gap-8"
+      onFocusCapture={(e) => {
+        const f = e.currentTarget;
+        if (f.dataset.started) return;
+        f.dataset.started = "1";
+        trackEvent("form_started", "inquiry");
+      }}
+    >
       {/* Honeypot — hidden from humans, obscure name; bots fill it and get dropped. */}
       <div aria-hidden className="absolute left-[-9999px] h-0 w-0 overflow-hidden">
         <label htmlFor={HONEYPOT_FIELD}>Do not fill this in</label>

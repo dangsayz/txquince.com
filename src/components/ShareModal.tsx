@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { trackEvent } from "@/components/Tracker";
 
 type Channel = {
   label: string;
@@ -154,7 +155,10 @@ export function ShareModal({
               href={c.href(url, title)}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => navigator.vibrate?.(6)}
+              onClick={() => {
+                navigator.vibrate?.(6);
+                trackEvent("share", c.label);
+              }}
               className="group flex flex-col items-center gap-1.5"
             >
               <span

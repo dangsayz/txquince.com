@@ -126,7 +126,8 @@ export default async function HomePage() {
       </section>
 
       {/* ---------- THE WORK (teaser grid) ---------- */}
-      <section className="mx-auto max-w-7xl px-5 py-section md:px-8 md:py-section-lg">
+      <section className="bg-white">
+       <div className="mx-auto max-w-7xl px-5 py-section md:px-8 md:py-section-lg">
         <div className="mb-12 flex flex-wrap items-end justify-between gap-6 md:mb-16">
           <SectionHeading eyebrow={home.work.eyebrow} className="max-w-2xl">
             {home.work.heading}
@@ -169,10 +170,11 @@ export default async function HomePage() {
             </Reveal>
           ))}
         </div>
+       </div>
       </section>
 
       {/* ---------- THE EXPERIENCE ---------- */}
-      <section className="bg-greige">
+      <section className="bg-cream">
         <div className="mx-auto max-w-7xl px-5 py-section md:px-8 md:py-section-lg">
           <SectionHeading eyebrow={home.experience.eyebrow} className="max-w-2xl">
             {home.experience.heading}
@@ -182,7 +184,7 @@ export default async function HomePage() {
               <Reveal
                 key={p.title}
                 delay={i * 90}
-                className="rounded-[1.5rem] border border-line bg-cream p-8 md:p-9"
+                className="card-apple p-8 md:p-9"
               >
                 <span className="font-display text-3xl text-wine">0{i + 1}</span>
                 <h3 className="mt-4 font-display text-2xl text-ink">{p.title}</h3>
@@ -194,7 +196,8 @@ export default async function HomePage() {
       </section>
 
       {/* ---------- FILM ---------- */}
-      <section className="mx-auto max-w-7xl px-5 py-section md:px-8 md:py-section-lg">
+      <section className="bg-white">
+       <div className="mx-auto max-w-7xl px-5 py-section md:px-8 md:py-section-lg">
         <div className="mx-auto mb-10 max-w-2xl text-center">
           <div className="mb-5">
             <span className="tag">{home.film.eyebrow}</span>
@@ -216,6 +219,7 @@ export default async function HomePage() {
             />
           </Reveal>
         )}
+       </div>
       </section>
 
       {/* ---------- PACKAGES TEASER (clean price list) ---------- */}

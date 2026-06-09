@@ -105,9 +105,11 @@ export async function POST(req: NextRequest) {
   const supabase = getServiceSupabase();
   const depositCents = depositForCollection(data.collection);
   const service = serviceForCollection(data.collection, data.package);
-  // expires_at is NOT NULL but only the pending_payment cron honors it; a
-  // 'requested' row never expires, so park it far in the future.
-  const expiresAt = new Date(Date.now() + 10 * 365 * 24 * 3600 * 1000).toISOString();
+  // Backstop: hold the date 21 days while we confirm + collect the deposit. If
+  // the family never confirms, the every-15-min cron frees the date (see
+  // release_expired_booking_holds / migration 0009). The operator can release
+  // it sooner from /admin/bookings.
+  const expiresAt = new Date(Date.now() + 21 * 24 * 3600 * 1000).toISOString();
 
   const { data: inserted, error } = await supabase
     .from("bookings")

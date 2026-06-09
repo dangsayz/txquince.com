@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getBookings, countPaid, type BookingRow } from "@/lib/clients-db";
 import { formatEventDate, formatMoney, packageLabel } from "@/lib/booking";
+import { BookingActions } from "@/components/admin/BookingActions";
 
 export const dynamic = "force-dynamic";
 
@@ -128,6 +129,8 @@ function BookingCard({ b }: { b: BookingRow }) {
       <p className="mt-4 text-[0.7rem] uppercase tracking-[0.14em] text-ink-faint">
         Reserved {shortDateTime(b.created_at)}
       </p>
+
+      <BookingActions id={b.id} status={b.status} />
     </div>
   );
 }

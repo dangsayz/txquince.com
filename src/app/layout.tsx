@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Inter, Pinyon_Script } from "next/font/google";
-import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { site } from "@/content/site";
 import { ScarcityBar } from "@/components/ScarcityBar";
@@ -8,6 +7,9 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { JsonLd } from "@/components/JsonLd";
+import { WebAnalytics } from "@/components/WebAnalytics";
+import { Tracker } from "@/components/Tracker";
+import { Suspense } from "react";
 
 // Display serif (refined, couture) + clean sans body.
 const cormorant = Cormorant_Garamond({
@@ -77,7 +79,10 @@ export default function RootLayout({
         <main className="flex-1">{children}</main>
         <Footer />
         <StickyMobileCTA />
-        <Analytics />
+        <Suspense fallback={null}>
+          <Tracker />
+        </Suspense>
+        <WebAnalytics />
         <JsonLd />
       </body>
     </html>
