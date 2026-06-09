@@ -50,11 +50,36 @@ export async function fulfillCheckoutSession(
     return;
   }
 
+  const record = booking as BookingRecord;
+
+  // Amount integrity (defense-in-depth): the deposit is priced server-side at
+  // session-create, but re-verify what Stripe ACTUALLY collected matches what we
+  // expect before telling the family their date is reserved. On a server-priced
+  // session this can't drift — if it ever does (a mutated/partial/BNPL edge case),
+  // hold it for manual review instead of auto-confirming a wrong amount as paid.
+  const amountMismatch =
+    typeof session.amount_total === "number" &&
+    (session.amount_total !== record.deposit_amount_cents ||
+      (session.currency ?? "").toLowerCase() !== (record.currency ?? "usd").toLowerCase());
+
+  if (amountMismatch) {
+    console.error(
+      `[booking] AMOUNT MISMATCH on ${record.id}: Stripe collected ${session.amount_total} ${session.currency ?? "?"}, expected ${record.deposit_amount_cents} ${record.currency}. Routing to payment_review.`,
+    );
+    if (record.status === "paid") {
+      await supabase
+        .from("bookings")
+        .update({ status: "payment_review" })
+        .eq("id", record.id);
+      record.status = "payment_review";
+    }
+  }
+
   // Already emailed (webhook retry) — stop here.
   if (booking.confirmation_sent_at) return;
 
-  const record = booking as BookingRecord;
-  const review = record.status !== "paid"; // 'payment_review' → don't confirm to client
+  // 'payment_review' (lost the date race OR amount mismatch) → don't confirm to client.
+  const review = record.status !== "paid";
 
   const [op, cl] = await Promise.all([
     sendBookingOperatorEmail(record, { review }),

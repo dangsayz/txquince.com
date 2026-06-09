@@ -135,6 +135,24 @@ export default async function AdminDashboard({
         </div>
       </div>
 
+      {/* payment-review alert — money collected but NOT auto-confirmed. Must never
+          be silently missed: a family paid and may be owed their date or a refund. */}
+      {s.paymentReview > 0 ? (
+        <Link
+          href="/admin/bookings"
+          className="mt-6 flex items-center justify-between gap-4 rounded-2xl border border-amber-400 bg-amber-50 p-5 transition-colors hover:border-amber-600"
+        >
+          <div>
+            <p className="text-[0.66rem] uppercase tracking-[0.18em] text-amber-700">Needs review</p>
+            <p className="mt-1 text-sm text-ink">
+              {s.paymentReview} payment{s.paymentReview === 1 ? "" : "s"} collected but not auto-confirmed
+              {s.paymentReviewValue ? ` · ${money(s.paymentReviewValue)} held` : ""} — verify the date or refund.
+            </p>
+          </div>
+          <span className="shrink-0 text-[0.62rem] uppercase tracking-[0.16em] text-amber-700">Open →</span>
+        </Link>
+      ) : null}
+
       {/* money + pipeline */}
       <section className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <MetricCard label="Booked value" value={money(s.bookedValue)} helper={`${s.paid} paid`} emphasis />

@@ -24,6 +24,8 @@ export type RangedStats = {
   // bookings / money
   requests: number;
   paid: number;
+  paymentReview: number;
+  paymentReviewValue: number;
   pendingHolds: number;
   openLeads: number;
   totalInquiries: number;
@@ -84,6 +86,8 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     shares: 0,
     requests: 0,
     paid: 0,
+    paymentReview: 0,
+    paymentReviewValue: 0,
     pendingHolds: 0,
     openLeads: 0,
     totalInquiries: 0,
@@ -161,6 +165,12 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     const requests = bookings.filter((b) => b.status === "requested").length;
     const paid = bookings.filter((b) => b.status === "paid").length;
     const pendingHolds = bookings.filter((b) => b.status === "pending_payment").length;
+    // Money collected but NOT auto-confirmed (lost the date race or amount mismatch)
+    // — needs the operator to verify or refund. Value = deposit actually charged.
+    const reviewBookings = bookings.filter((b) => b.status === "payment_review");
+    const paymentReview = reviewBookings.length;
+    const paymentReviewValue =
+      reviewBookings.reduce((s, b) => s + (b.deposit_amount_cents ?? 0), 0) / 100;
     const valueOf = (collection: string | null) =>
       collection ? (collectionById(collection)?.price ?? 0) : 0;
     const bookedValue = bookings
@@ -224,6 +234,8 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
       if (utmMap.size === 0 && rangeViews > 10)
         insights.push({ type: "info", text: "No UTM-tagged links detected — tag your Instagram bio + directory links to see what converts." });
     }
+    if (paymentReview > 0)
+      insights.push({ type: "warning", text: `${paymentReview} payment${paymentReview === 1 ? "" : "s"} need review — money was collected but the date wasn't auto-confirmed. Verify or refund.` });
     if (requests > 0)
       insights.push({ type: "warning", text: `${requests} date request${requests === 1 ? "" : "s"} awaiting your confirmation + deposit link.` });
     if (pipelineValue > 0)
@@ -249,6 +261,8 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
       shares,
       requests,
       paid,
+      paymentReview,
+      paymentReviewValue,
       pendingHolds,
       openLeads,
       totalInquiries,

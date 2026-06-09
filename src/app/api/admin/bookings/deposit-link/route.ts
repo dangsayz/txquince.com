@@ -46,6 +46,20 @@ export async function POST(request: Request) {
   }
   const b = booking as BookingRecord;
 
+  // Only send a deposit link for an UNCONFIRMED request. Never re-open a booking
+  // that's already paid / refunded / cancelled / under review — doing so would
+  // reset the hold, re-arm the recovery email, and risk charging a family twice.
+  const RESENDABLE = new Set(["requested", "pending_payment", "expired"]);
+  if (!RESENDABLE.has(b.status)) {
+    return NextResponse.json(
+      {
+        error: `This booking is "${b.status}" — a deposit link can only be sent for an unconfirmed request.`,
+        status: b.status,
+      },
+      { status: 409 },
+    );
+  }
+
   const siteUrl = getSiteUrl();
   const prettyDate = formatEventDate(b.event_date);
   const tier = collectionLabel(b.collection);
