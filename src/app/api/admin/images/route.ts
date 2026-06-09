@@ -21,6 +21,7 @@ const RecordSchema = z.object({
   section: z.enum(SECTIONS).optional().default("celebration"),
   width: z.number().int().positive().max(20000).optional(),
   height: z.number().int().positive().max(20000).optional(),
+  location: z.string().max(160).optional(),
 });
 
 export async function POST(request: Request) {
@@ -29,7 +30,7 @@ export async function POST(request: Request) {
   if (!parsed.success) {
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
   }
-  const { storage_path, alt, section, width, height } = parsed.data;
+  const { storage_path, alt, section, width, height, location } = parsed.data;
   if (!storage_path.startsWith("portfolio/")) {
     return NextResponse.json({ error: "Invalid storage path" }, { status: 400 });
   }
@@ -47,7 +48,7 @@ export async function POST(request: Request) {
 
   const { data, error } = await supabase
     .from("portfolio_images")
-    .insert({ storage_path, alt, section, sort_order, width: width ?? null, height: height ?? null })
+    .insert({ storage_path, alt, section, sort_order, width: width ?? null, height: height ?? null, location: location || null })
     .select()
     .single();
 
@@ -67,6 +68,7 @@ const UpdateSchema = z.object({
   is_feature: z.boolean().optional(),
   width: z.number().int().positive().max(20000).optional(),
   height: z.number().int().positive().max(20000).optional(),
+  location: z.string().max(160).nullable().optional(),
 });
 
 export async function PATCH(request: Request) {

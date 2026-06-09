@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import type { PortfolioImage } from "@/lib/content-db";
@@ -61,6 +61,107 @@ async function optimize(
   }
 }
 
+/**
+ * Location field with Facebook/Instagram-style autocomplete. Suggestions come
+ * from `suggestions` (the distinct locations already tagged across the gallery),
+ * so a place typed once reappears for every later photo and persists across
+ * sessions. Type a new place to create it; pick an existing one to reuse it.
+ */
+function LocationCombobox({
+  value,
+  suggestions,
+  onCommit,
+}: {
+  value: string | null;
+  suggestions: string[];
+  onCommit: (next: string | null) => void;
+}) {
+  const [draft, setDraft] = useState(value ?? "");
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState(-1);
+  const wrapRef = useRef<HTMLDivElement>(null);
+
+  // Close the dropdown when clicking outside this field.
+  useEffect(() => {
+    function onDoc(e: MouseEvent) {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, []);
+
+  const q = draft.trim().toLowerCase();
+  const matches = suggestions
+    .filter((s) => s.toLowerCase().includes(q) && s.toLowerCase() !== q)
+    .slice(0, 6);
+
+  function commit(next: string) {
+    const clean = next.trim();
+    setDraft(clean);
+    setOpen(false);
+    setActive(-1);
+    const normalized = clean || null;
+    if (normalized !== (value ?? null)) onCommit(normalized);
+  }
+
+  return (
+    <div ref={wrapRef} className="relative">
+      <input
+        value={draft}
+        placeholder="Location (where it was shot)"
+        onChange={(e) => {
+          setDraft(e.target.value);
+          setOpen(true);
+          setActive(-1);
+        }}
+        onFocus={() => setOpen(true)}
+        onKeyDown={(e) => {
+          if (e.key === "ArrowDown") {
+            e.preventDefault();
+            setOpen(true);
+            setActive((a) => Math.min(a + 1, matches.length - 1));
+          } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            setActive((a) => Math.max(a - 1, -1));
+          } else if (e.key === "Enter") {
+            e.preventDefault();
+            commit(active >= 0 && matches[active] ? matches[active] : draft);
+            (e.target as HTMLInputElement).blur();
+          } else if (e.key === "Escape") {
+            setOpen(false);
+            setActive(-1);
+          }
+        }}
+        onBlur={() => commit(draft)}
+        className="w-full border-b border-line bg-transparent pb-1 text-xs focus:border-wine focus:outline-none"
+      />
+      {open && matches.length > 0 ? (
+        <ul className="absolute left-0 right-0 z-20 mt-1 max-h-44 overflow-auto border border-line bg-ivory shadow-[0_12px_30px_-12px_rgba(44,29,18,0.4)]">
+          {matches.map((s, i) => (
+            <li key={s}>
+              <button
+                type="button"
+                // mousedown (not click) so it fires before the input blur,
+                // and preventDefault keeps focus so blur never overrides it.
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  commit(s);
+                }}
+                onMouseEnter={() => setActive(i)}
+                className={`block w-full px-2.5 py-1.5 text-left text-xs transition-colors ${
+                  i === active ? "bg-greige text-ink" : "text-ink-soft"
+                }`}
+              >
+                {s}
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </div>
+  );
+}
+
 export function PortfolioManager({ initial }: { initial: PortfolioImage[] }) {
   const [images, setImages] = useState<PortfolioImage[]>(initial);
   const [section, setSection] = useState<string>("celebration");
@@ -75,6 +176,19 @@ export function PortfolioManager({ initial }: { initial: PortfolioImage[] }) {
     for (const k of Object.keys(by))
       by[k].sort((a, b) => a.sort_order - b.sort_order);
     return by;
+  }, [images]);
+
+  // Distinct locations already tagged across the gallery, most-used first —
+  // the autocomplete source so a place typed once is reusable everywhere.
+  const locationSuggestions = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const img of images) {
+      const loc = img.location?.trim();
+      if (loc) counts.set(loc, (counts.get(loc) ?? 0) + 1);
+    }
+    return [...counts.entries()]
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+      .map(([name]) => name);
   }, [images]);
 
   async function handleFiles(files: FileList | null) {
@@ -306,6 +420,11 @@ export function PortfolioManager({ initial }: { initial: PortfolioImage[] }) {
                         </option>
                       ))}
                     </select>
+                    <LocationCombobox
+                      value={img.location}
+                      suggestions={locationSuggestions}
+                      onCommit={(location) => patch(img.id, { location })}
+                    />
                     <div className="flex items-center justify-between text-xs">
                       <label className="flex items-center gap-1.5 text-ink-soft">
                         <input
