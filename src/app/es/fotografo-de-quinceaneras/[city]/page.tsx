@@ -4,8 +4,17 @@ import { notFound } from "next/navigation";
 import { site } from "@/content/site";
 import { packages } from "@/content/packages";
 import { locations, getLocation, nearbyLocations } from "@/content/locations";
+import { getEsPost } from "@/content/blog";
 import { Reveal } from "@/components/Reveal";
 import { CTAButton } from "@/components/CTAButton";
+
+/** Curated ES guides surfaced on each city page (closes the city↔blog loop). */
+const ES_CITY_GUIDES = [
+  "mejores-lugares-para-fotos-de-quinceanera-dfw",
+  "salones-para-quinceaneras-dfw",
+  "cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth",
+  "cuando-reservar-fotografo-quinceanera-dfw",
+];
 
 export function generateStaticParams() {
   return locations.map((l) => ({ city: l.slug }));
@@ -74,6 +83,7 @@ export default async function CityPageEs({
 
   const faqs = [...loc.faqsEs, ...sharedFaqsEs(loc.city)];
   const nearby = nearbyLocations(loc.slug);
+  const guides = ES_CITY_GUIDES.map(getEsPost).filter((p) => p !== undefined);
   const esUrl = `${site.url}/es/fotografo-de-quinceaneras/${loc.slug}`;
   const prices = packages.map((p) => p.price);
 
@@ -283,6 +293,32 @@ export default async function CityPageEs({
           ))}
         </dl>
       </section>
+
+      {/* Guías para planear (cierra el círculo ciudad ↔ blog) */}
+      {guides.length ? (
+        <section className="mx-auto max-w-5xl px-5 py-section md:px-8 md:py-section-lg">
+          <p className="eyebrow mb-5">Para planear su quinceañera en {loc.city}</p>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {guides.map((g) => (
+              <Link
+                key={g.slug}
+                href={`/es/blog/${g.slug}`}
+                className="group rounded-2xl border border-line bg-white p-5 transition-colors hover:border-wine"
+              >
+                <h3 className="font-display text-lg leading-tight text-ink group-hover:text-wine">
+                  {g.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-ink-soft">{g.excerpt}</p>
+              </Link>
+            ))}
+          </div>
+          <p className="mt-6 text-sm">
+            <Link href="/es/blog" className="text-wine underline underline-offset-2 hover:text-wine-deep">
+              Ver toda la guía de quinceañera →
+            </Link>
+          </p>
+        </section>
+      ) : null}
 
       {/* Ciudades cercanas */}
       <section className="bg-greige">

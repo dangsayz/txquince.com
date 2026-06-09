@@ -4,7 +4,16 @@ import { notFound } from "next/navigation";
 import { site } from "@/content/site";
 import { packages } from "@/content/packages";
 import { locations, getLocation, nearbyLocations } from "@/content/locations";
+import { getPost } from "@/content/blog";
 import { Reveal } from "@/components/Reveal";
+
+/** Curated guides surfaced on each city page (closes the city↔blog loop). */
+const CITY_GUIDES = [
+  "best-quinceanera-photo-locations-dfw",
+  "quinceanera-reception-venues-dfw",
+  "quinceanera-photographer-cost-dallas-fort-worth",
+  "when-to-book-quinceanera-photographer-dfw",
+];
 import { CTAButton } from "@/components/CTAButton";
 import { FinalCTA } from "@/components/FinalCTA";
 import { SocialProofStrip } from "@/components/SocialProofStrip";
@@ -69,6 +78,7 @@ export default async function CityPage({
 
   const faqs = [...loc.faqs, ...sharedFaqs(loc.city)];
   const nearby = nearbyLocations(loc.slug);
+  const guides = CITY_GUIDES.map(getPost).filter((p) => p !== undefined);
   const url = `${site.url}/quinceanera-photographer/${loc.slug}`;
   const prices = packages.map((p) => p.price);
 
@@ -273,6 +283,32 @@ export default async function CityPage({
           ))}
         </dl>
       </section>
+
+      {/* Planning guides (closes the city ↔ blog loop) */}
+      {guides.length ? (
+        <section className="mx-auto max-w-5xl px-5 py-section md:px-8 md:py-section-lg">
+          <p className="eyebrow mb-5">Planning your {loc.city} quinceañera</p>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {guides.map((g) => (
+              <Link
+                key={g.slug}
+                href={`/blog/${g.slug}`}
+                className="group rounded-2xl border border-line bg-white p-5 transition-colors hover:border-wine"
+              >
+                <h3 className="font-display text-lg leading-tight text-ink group-hover:text-wine">
+                  {g.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-ink-soft">{g.excerpt}</p>
+              </Link>
+            ))}
+          </div>
+          <p className="mt-6 text-sm">
+            <Link href="/blog" className="text-wine underline underline-offset-2 hover:text-wine-deep">
+              See the full quinceañera guide →
+            </Link>
+          </p>
+        </section>
+      ) : null}
 
       {/* Nearby cities — internal link graph */}
       <section className="bg-greige">
