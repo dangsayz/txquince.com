@@ -21,8 +21,60 @@ export const metadata: Metadata = {
 };
 
 export default function InvestmentPage() {
+  // Machine-readable pricing (Service + Offer per collection) so the fixed
+  // prices win cost-query SERPs + AI overviews where rivals show "inquire for
+  // pricing". Plus FAQPage + breadcrumb. No Review/AggregateRating (no consented
+  // reviews — subjects are minors).
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Service",
+        "@id": `${site.url}/investment#service`,
+        name: "Quinceañera Photography & Film",
+        serviceType: "Quinceañera Photography & Film",
+        provider: { "@type": "Organization", name: site.brand, "@id": `${site.url}/#business` },
+        areaServed: { "@type": "City", name: "Dallas–Fort Worth, TX" },
+        url: `${site.url}/investment`,
+        offers: packages.map((p) => ({
+          "@type": "Offer",
+          price: String(p.price),
+          priceCurrency: "USD",
+          availability: "https://schema.org/InStock",
+          url: `${site.url}/reserve?collection=${p.id}`,
+          itemOffered: {
+            "@type": "Service",
+            name: `${p.name} Collection`,
+            description: p.teaser,
+          },
+        })),
+      },
+      {
+        "@type": "FAQPage",
+        "@id": `${site.url}/investment#faq`,
+        mainEntity: investmentFaqs.map((f) => ({
+          "@type": "Question",
+          name: f.q,
+          acceptedAnswer: { "@type": "Answer", text: f.a },
+        })),
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${site.url}/investment#breadcrumb`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: site.url },
+          { "@type": "ListItem", position: 2, name: "Investment", item: `${site.url}/investment` },
+        ],
+      },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Intro + hook */}
       <section className="mx-auto max-w-4xl px-5 pt-section text-center md:px-8 md:pt-section-lg">
         <Reveal>
