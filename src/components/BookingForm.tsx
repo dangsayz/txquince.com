@@ -5,7 +5,7 @@ import { Turnstile } from "@marsidev/react-turnstile";
 import { bookingSchema, HONEYPOT_FIELD } from "@/lib/booking";
 import { packages, type CollectionId } from "@/content/packages";
 import { trackBookingStarted } from "@/lib/analytics";
-import { trackEvent } from "@/components/Tracker";
+import { trackEvent, getFirstTouch } from "@/components/Tracker";
 import { Select } from "@/components/Select";
 
 type Status = "idle" | "submitting" | "done" | "error";
@@ -168,6 +168,7 @@ export function BookingForm({
           ...parsed.data,
           [HONEYPOT_FIELD]: honeypotRef.current?.value ?? "",
           "cf-turnstile-response": token,
+          attribution: getFirstTouch(),
         }),
       });
       const data = (await res.json().catch(() => ({}))) as {

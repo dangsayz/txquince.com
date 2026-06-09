@@ -11,7 +11,7 @@ import {
   HONEYPOT_FIELD,
 } from "@/lib/inquiry";
 import { trackInquirySubmitted } from "@/lib/analytics";
-import { trackEvent } from "@/components/Tracker";
+import { trackEvent, getFirstTouch } from "@/components/Tracker";
 
 type Status = "idle" | "submitting" | "error";
 type FieldErrors = Partial<Record<string, string[]>>;
@@ -85,6 +85,7 @@ export function InquiryForm() {
           ...parsed.data,
           [HONEYPOT_FIELD]: honeypotRef.current?.value ?? "",
           "cf-turnstile-response": token,
+          attribution: getFirstTouch(),
         }),
       });
 

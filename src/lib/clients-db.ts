@@ -27,6 +27,8 @@ export type BookingRow = {
   currency: string;
   paid_at: string | null;
   expires_at: string;
+  /** First-touch acquisition source { source, medium, campaign, referrer, landing, ts }. */
+  attribution: Record<string, string> | null;
 };
 
 export type InquiryRow = {
@@ -44,6 +46,7 @@ export type InquiryRow = {
   status: string | null;
   last_touch_at: string | null;
   unsubscribed_at: string | null;
+  attribution: Record<string, string> | null;
 };
 
 /**
@@ -57,7 +60,7 @@ export const getBookings = cache(async (): Promise<BookingRow[]> => {
     const { data, error } = await supabase
       .from("bookings")
       .select(
-        "id, created_at, name, email, phone, event_date, package, collection, notes, status, deposit_amount_cents, currency, paid_at, expires_at",
+        "id, created_at, name, email, phone, event_date, package, collection, notes, status, deposit_amount_cents, currency, paid_at, expires_at, attribution",
       )
       .order("created_at", { ascending: false });
     if (error || !data) return [];
@@ -75,7 +78,7 @@ export const getInquiries = cache(async (): Promise<InquiryRow[]> => {
     const { data, error } = await supabase
       .from("inquiries")
       .select(
-        "id, created_at, name, email, phone, event_date, venue, services, budget_range, referral, message, status, last_touch_at, unsubscribed_at",
+        "id, created_at, name, email, phone, event_date, venue, services, budget_range, referral, message, status, last_touch_at, unsubscribed_at, attribution",
       )
       .order("created_at", { ascending: false });
     if (error || !data) return [];

@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { getDashboardStats, type RangedStats } from "@/lib/analytics-db";
+import { getDashboardStats, getConversionChanges, type RangedStats } from "@/lib/analytics-db";
+import { ChangeLog } from "@/components/admin/ChangeLog";
 
 export const dynamic = "force-dynamic";
 
@@ -101,7 +102,7 @@ export default async function AdminDashboard({
   const range = RANGES.includes(Number(rangeParam) as (typeof RANGES)[number])
     ? (Number(rangeParam) as number)
     : 14;
-  const s = await getDashboardStats(range);
+  const [s, changes] = await Promise.all([getDashboardStats(range), getConversionChanges()]);
   const maxDaily = Math.max(...s.daily.map((d) => d.count), 1);
   const todayKey = new Date().toISOString().slice(0, 10);
 
@@ -199,6 +200,53 @@ export default async function AdminDashboard({
         <RankedList title="Top pages" items={s.topPages} empty="No page views yet" />
         <RankedList title="Referrers" items={s.topReferrers} empty="No referrer data yet" />
         <RankedList title="Campaigns (UTM)" items={s.utmSources} empty="No tagged traffic yet" />
+      </section>
+
+      {/* revenue & leads by source — which channel actually makes money */}
+      <section className="mt-4 rounded-2xl border border-line bg-white p-5">
+        <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">
+          Revenue &amp; leads by source
+        </p>
+        <p className="mt-1 text-xs text-ink-soft">
+          Where each booking &amp; lead first came from (tag your links with{" "}
+          <code className="text-ink">?utm_source=</code> to sharpen this).
+        </p>
+        {s.bySource.length === 0 ? (
+          <p className="mt-4 text-sm text-ink-faint">
+            No attributed leads or bookings yet — they&apos;ll appear here as inquiries and date
+            requests come in.
+          </p>
+        ) : (
+          <div className="mt-4 overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-[0.62rem] uppercase tracking-[0.14em] text-ink-faint">
+                  <th className="pb-2 font-medium">Source</th>
+                  <th className="pb-2 text-right font-medium">Leads</th>
+                  <th className="pb-2 text-right font-medium">Requests</th>
+                  <th className="pb-2 text-right font-medium">Booked&nbsp;$</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-line">
+                {s.bySource.map((r) => (
+                  <tr key={r.source}>
+                    <td className="py-2 capitalize text-ink">{r.source}</td>
+                    <td className="py-2 text-right tabular-nums text-ink-soft">{r.leads}</td>
+                    <td className="py-2 text-right tabular-nums text-ink-soft">{r.requests}</td>
+                    <td className="py-2 text-right tabular-nums font-medium text-ink">
+                      {r.bookedValue ? money(r.bookedValue) : "—"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      {/* improvement log — collect data → measure the lift */}
+      <section className="mt-4">
+        <ChangeLog initial={changes} />
       </section>
 
       {/* manage */}

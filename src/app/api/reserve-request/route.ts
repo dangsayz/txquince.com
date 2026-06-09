@@ -19,6 +19,7 @@ import {
   type BookingRecord,
 } from "@/lib/booking";
 import { depositForCollection } from "@/content/packages";
+import { sanitizeAttribution } from "@/lib/attribution";
 import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
 import { verifyTurnstile } from "@/lib/turnstile";
 import {
@@ -125,6 +126,7 @@ export async function POST(req: NextRequest) {
       deposit_amount_cents: depositCents,
       currency: DEPOSIT_CURRENCY,
       expires_at: expiresAt,
+      attribution: sanitizeAttribution(body.attribution),
     })
     .select(
       "id, name, email, phone, event_date, package, collection, notes, status, deposit_amount_cents, currency",

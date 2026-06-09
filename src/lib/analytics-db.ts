@@ -2,6 +2,7 @@ import "server-only";
 import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
 import { getBookings, getInquiries } from "@/lib/clients-db";
 import { collectionById } from "@/content/packages";
+import type { ConversionChange } from "@/components/admin/ChangeLog";
 
 export type RangedStats = {
   configured: boolean;
@@ -30,6 +31,7 @@ export type RangedStats = {
   pipelineValue: number;
   inquiryToBooked: number;
   funnel: { label: string; value: number }[];
+  bySource: { source: string; leads: number; requests: number; bookedValue: number }[];
   insights: { type: "success" | "warning" | "info"; text: string }[];
 };
 
@@ -89,6 +91,7 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     pipelineValue: 0,
     inquiryToBooked: 0,
     funnel: [],
+    bySource: [],
     insights: [],
   });
 
@@ -181,6 +184,27 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
       { label: "Paid", value: paid },
     ];
 
+    // ---- revenue & leads by first-touch source ----
+    const srcKey = (a: Record<string, string> | null) =>
+      (a?.source || "direct").toLowerCase();
+    const sourceMap = new Map<string, { source: string; leads: number; requests: number; bookedValue: number }>();
+    const bump = (key: string) => {
+      const row = sourceMap.get(key) ?? { source: key, leads: 0, requests: 0, bookedValue: 0 };
+      sourceMap.set(key, row);
+      return row;
+    };
+    for (const i of inquiries) bump(srcKey(i.attribution)).leads += 1;
+    for (const bk of bookings) {
+      if (bk.status === "requested" || bk.status === "pending_payment" || bk.status === "paid") {
+        const row = bump(srcKey(bk.attribution));
+        row.requests += 1;
+        if (bk.status === "paid") row.bookedValue += valueOf(bk.collection);
+      }
+    }
+    const bySource = Array.from(sourceMap.values())
+      .sort((a, b) => b.bookedValue - a.bookedValue || b.leads - a.leads || b.requests - a.requests)
+      .slice(0, 10);
+
     // ---- insights ----
     const insights: RangedStats["insights"] = [];
     if (rangeViews === 0) {
@@ -232,9 +256,27 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
       pipelineValue,
       inquiryToBooked,
       funnel,
+      bySource,
       insights,
     };
   } catch {
     return empty(true);
+  }
+}
+
+/** Recent change-log entries (non-archived first), for the dashboard panel. */
+export async function getConversionChanges(): Promise<ConversionChange[]> {
+  if (!isSupabaseConfigured()) return [];
+  try {
+    const supabase = getServiceSupabase();
+    const { data, error } = await supabase
+      .from("conversion_changes")
+      .select("id, created_at, title, area, reason, target_metric, baseline, status, notes")
+      .order("created_at", { ascending: false })
+      .limit(20);
+    if (error || !data) return [];
+    return data as ConversionChange[];
+  } catch {
+    return [];
   }
 }
