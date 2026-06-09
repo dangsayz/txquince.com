@@ -57,6 +57,48 @@ export async function getFeaturedImages(limit = 9): Promise<PortfolioImage[]> {
   return (featured.length ? featured : all).slice(0, limit);
 }
 
+export type HeroMedia = {
+  kind: "image" | "video";
+  imageUrl: string | null;
+  imageAlt: string;
+  videoUrl: string | null;
+  provider: VideoProvider | null;
+  videoId: string | null;
+  posterUrl: string | null;
+};
+
+/**
+ * The hero showcase media set in /admin/hero — a photo or a video link
+ * (YouTube/Vimeo/MP4). Null means "fall back to the top featured photo."
+ */
+export const getHeroMedia = cache(async (): Promise<HeroMedia | null> => {
+  if (!isSupabaseConfigured()) return null;
+  try {
+    const supabase = getServiceSupabase();
+    const { data, error } = await supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", "hero_media")
+      .maybeSingle();
+    if (error || !data?.value) return null;
+    const v = data.value as Partial<HeroMedia>;
+    if (v.kind !== "image" && v.kind !== "video") return null;
+    if (v.kind === "image" && !v.imageUrl) return null;
+    if (v.kind === "video" && !v.videoUrl) return null;
+    return {
+      kind: v.kind,
+      imageUrl: v.imageUrl ?? null,
+      imageAlt: v.imageAlt ?? "Quinceañera portrait",
+      videoUrl: v.videoUrl ?? null,
+      provider: (v.provider as VideoProvider) ?? null,
+      videoId: v.videoId ?? null,
+      posterUrl: v.posterUrl ?? null,
+    };
+  } catch {
+    return null;
+  }
+});
+
 /** All videos, ordered. */
 export const getVideos = cache(async (): Promise<VideoRow[]> => {
   if (!isSupabaseConfigured()) return [];

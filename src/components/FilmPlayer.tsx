@@ -68,7 +68,7 @@ export function FilmPlayer({
               />
             </span>
             {!hasVideo ? (
-              <span className="absolute bottom-6 eyebrow text-cream/70">
+              <span className="absolute bottom-6 text-[0.72rem] font-medium uppercase tracking-[0.22em] text-cream/70">
                 Film coming soon
               </span>
             ) : null}

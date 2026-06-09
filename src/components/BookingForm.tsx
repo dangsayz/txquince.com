@@ -5,15 +5,32 @@ import { Turnstile } from "@marsidev/react-turnstile";
 import { bookingSchema, HONEYPOT_FIELD } from "@/lib/booking";
 import { packages, type CollectionId } from "@/content/packages";
 import { trackBookingStarted } from "@/lib/analytics";
+import { Select } from "@/components/Select";
 
-type Status = "idle" | "submitting" | "redirecting" | "error";
+type Status = "idle" | "submitting" | "done" | "error";
 type FieldErrors = Partial<Record<string, string[]>>;
 
 const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+// Locked to production hostnames, so it errors on localhost (110200). Only
+// render in production; local dev skips the bot check (secret on the Worker).
+const SHOW_TURNSTILE =
+  Boolean(SITE_KEY) && process.env.NODE_ENV === "production";
+
+const DRAFT_KEY = "txq_reserve_draft";
 
 const inputBase =
   "w-full border-b border-line bg-transparent px-0 py-3 text-ink placeholder:text-ink-faint/70 transition-colors focus:border-wine focus:outline-none";
 const labelBase = "block text-sm font-medium text-ink";
+
+type Draft = {
+  name: string;
+  email: string;
+  phone: string;
+  eventDate: string;
+  collection: CollectionId;
+  essentialService: "photo" | "video";
+  notes: string;
+};
 
 export function BookingForm({
   defaultCollection,
@@ -24,47 +41,76 @@ export function BookingForm({
   const [errors, setErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [token, setToken] = useState<string>("");
-  // Default to the linked-in collection, else Signature (the recommended tier).
+
+  // Controlled fields (so we can auto-save the draft + restore it).
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [eventDate, setEventDate] = useState("");
   const [collection, setCollection] = useState<CollectionId>(
     defaultCollection ?? "signature",
   );
-  // Only meaningful for Essential (one craft); Signature/Legacy are always both.
   const [essentialService, setEssentialService] = useState<"photo" | "video">(
     "photo",
   );
+  const [notes, setNotes] = useState("");
   const honeypotRef = useRef<HTMLInputElement>(null);
+  const restored = useRef(false);
 
-  // Live date availability — fetched once, so a family learns their date is
-  // taken before filling the form (not at checkout). The server hold is still
-  // the real guard; this is the courtesy that prevents the worst drop-off.
-  const [eventDate, setEventDate] = useState("");
+  // Restore any saved draft on mount, so pressing back / reloading never loses
+  // what they typed. defaultCollection only wins if there's no saved draft.
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (raw) {
+        const d = JSON.parse(raw) as Partial<Draft>;
+        if (d.name) setName(d.name);
+        if (d.email) setEmail(d.email);
+        if (d.phone) setPhone(d.phone);
+        if (d.eventDate) setEventDate(d.eventDate);
+        if (d.collection) setCollection(d.collection);
+        if (d.essentialService) setEssentialService(d.essentialService);
+        if (d.notes) setNotes(d.notes);
+      }
+    } catch {
+      /* ignore */
+    }
+    restored.current = true;
+  }, []);
+
+  // Auto-save the draft on every change (after the initial restore).
+  useEffect(() => {
+    if (!restored.current || status === "done") return;
+    try {
+      localStorage.setItem(
+        DRAFT_KEY,
+        JSON.stringify({ name, email, phone, eventDate, collection, essentialService, notes }),
+      );
+    } catch {
+      /* ignore */
+    }
+  }, [name, email, phone, eventDate, collection, essentialService, notes, status]);
+
+  // Live date availability.
   const [takenDates, setTakenDates] = useState<Set<string> | null>(null);
-
   useEffect(() => {
     let alive = true;
     fetch("/api/availability")
       .then((r) => r.json())
       .then((d: { takenDates?: string[] }) => {
-        if (alive && Array.isArray(d.takenDates)) {
-          setTakenDates(new Set(d.takenDates));
-        }
+        if (alive && Array.isArray(d.takenDates)) setTakenDates(new Set(d.takenDates));
       })
-      .catch(() => {
-        /* degrade silently — the hold still guards on submit */
-      });
+      .catch(() => {});
     return () => {
       alive = false;
     };
   }, []);
 
   const dateTaken = Boolean(eventDate && takenDates?.has(eventDate));
-  const dateOpen = Boolean(
-    eventDate && takenDates && !takenDates.has(eventDate),
-  );
+  const dateOpen = Boolean(eventDate && takenDates && !takenDates.has(eventDate));
 
   const selectedCollection =
     packages.find((p) => p.id === collection) ?? packages[1];
-  const depositLabel = selectedCollection.depositLabel;
   const packageValue: "photo" | "video" | "both" =
     collection === "essential" ? essentialService : "both";
 
@@ -82,15 +128,14 @@ export function BookingForm({
     setFormError(null);
     setErrors({});
 
-    const fd = new FormData(e.currentTarget);
     const payload = {
-      name: String(fd.get("name") ?? ""),
-      email: String(fd.get("email") ?? ""),
-      phone: String(fd.get("phone") ?? ""),
-      event_date: String(fd.get("event_date") ?? ""),
+      name,
+      email,
+      phone,
+      event_date: eventDate,
       collection,
       package: packageValue,
-      notes: String(fd.get("notes") ?? ""),
+      notes,
     };
 
     const parsed = bookingSchema.safeParse(payload);
@@ -101,26 +146,21 @@ export function BookingForm({
       return;
     }
 
-    // Don't even start checkout for a date we already know is taken (the server
-    // hold is still the source of truth and will reject it too, but failing here
-    // is instant and kinder than a bounce at Stripe).
     if (takenDates?.has(parsed.data.event_date)) {
-      setErrors({
-        event_date: ["That date is already reserved. Please choose another."],
-      });
-      setFormError("That date is already reserved. Please choose another.");
+      setErrors({ event_date: ["That date is already requested. Please choose another."] });
+      setFormError("That date is already requested. Please choose another.");
       setStatus("error");
       return;
     }
 
-    if (SITE_KEY && !token) {
+    if (SHOW_TURNSTILE && !token) {
       setFormError("Please complete the verification below.");
       setStatus("error");
       return;
     }
 
     try {
-      const res = await fetch("/api/booking", {
+      const res = await fetch("/api/reserve-request", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
@@ -129,61 +169,77 @@ export function BookingForm({
           "cf-turnstile-response": token,
         }),
       });
-
       const data = (await res.json().catch(() => ({}))) as {
         ok?: boolean;
-        checkoutUrl?: string | null;
         error?: string;
         fieldErrors?: FieldErrors;
       };
 
-      if (!res.ok || !data.ok || !data.checkoutUrl) {
+      if (!res.ok || !data.ok) {
         if (data.fieldErrors) setErrors(data.fieldErrors);
         setFormError(data.error ?? "Something went wrong. Please try again.");
         setStatus("error");
         return;
       }
 
-      // Off to Stripe Checkout. Keep the button locked so they can't double-submit.
       trackBookingStarted({ package: parsed.data.package });
-      setStatus("redirecting");
-      window.location.assign(data.checkoutUrl);
+      try {
+        localStorage.removeItem(DRAFT_KEY);
+      } catch {
+        /* ignore */
+      }
+      setStatus("done");
     } catch {
       setFormError("Network error. Please check your connection and try again.");
       setStatus("error");
     }
   }
 
-  const busy = status === "submitting" || status === "redirecting";
+  const busy = status === "submitting";
+
+  // ---- Success state ----
+  if (status === "done") {
+    return (
+      <div className="rounded-[1.5rem] border border-line bg-ivory p-8 text-center md:p-10">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-cream ring-1 ring-line">
+          <svg width="20" height="16" viewBox="0 0 20 16" fill="none" aria-hidden="true">
+            <path d="M1 8.5L7 14.5L19 1.5" stroke="var(--color-wine)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+        <h3 className="mt-5 font-display text-2xl text-ink">Your date request is in.</h3>
+        <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-ink-soft">
+          Thank you, {name.split(" ")[0] || "there"}. I&apos;ll personally confirm your
+          date is open and reach out — usually within 24 hours — to talk through the
+          day and send you a secure link to place your {selectedCollection.depositLabel}{" "}
+          deposit. <strong className="text-ink">No payment is needed right now.</strong>
+        </p>
+        <p className="mt-4 text-xs text-ink-faint">
+          A confirmation is on its way to {email}.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-8">
-      {/* Honeypot — hidden from humans; bots fill it and get silently dropped. */}
+      {/* Honeypot */}
       <div aria-hidden className="absolute left-[-9999px] h-0 w-0 overflow-hidden">
         <label htmlFor={HONEYPOT_FIELD}>Do not fill this in</label>
-        <input
-          ref={honeypotRef}
-          id={HONEYPOT_FIELD}
-          name={HONEYPOT_FIELD}
-          type="text"
-          tabIndex={-1}
-          autoComplete="off"
-        />
+        <input ref={honeypotRef} id={HONEYPOT_FIELD} name={HONEYPOT_FIELD} type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
       <div className="grid gap-8 sm:grid-cols-2">
         <Field label="Your name" required error={errors.name}>
-          <input name="name" type="text" autoComplete="name" className={inputBase} placeholder="First and last" />
+          <input value={name} onChange={(e) => setName(e.target.value)} type="text" autoComplete="name" className={inputBase} placeholder="First and last" />
         </Field>
         <Field label="Email" required error={errors.email}>
-          <input name="email" type="email" autoComplete="email" className={inputBase} placeholder="you@email.com" />
+          <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" autoComplete="email" className={inputBase} placeholder="you@email.com" />
         </Field>
         <Field label="Phone" error={errors.phone}>
-          <input name="phone" type="tel" autoComplete="tel" className={inputBase} placeholder="(optional)" />
+          <input value={phone} onChange={(e) => setPhone(e.target.value)} type="tel" autoComplete="tel" className={inputBase} placeholder="(optional)" />
         </Field>
         <Field label="Event date" required error={errors.event_date} hint="The day to reserve">
           <input
-            name="event_date"
             type="date"
             min={todayStr}
             max={maxStr}
@@ -196,17 +252,13 @@ export function BookingForm({
             {dateTaken ? (
               <span className="mt-1.5 inline-flex items-center gap-1.5 text-xs text-wine">
                 <span aria-hidden>●</span>
-                That date is already reserved — pick another, or{" "}
-                <a href="/check-your-date" className="underline hover:text-wine-deep">
-                  join the waitlist
-                </a>
-                .
+                That date is already requested — pick another, or{" "}
+                <a href="/check-your-date" className="underline hover:text-wine-deep">join the waitlist</a>.
               </span>
             ) : dateOpen ? (
               <span className="mt-1.5 inline-flex items-center gap-1.5 text-xs text-green-700">
                 <span aria-hidden>●</span>
-                Open — I only book one celebration a day, so reserve before
-                it&apos;s claimed.
+                Open — I only book one celebration a day, so request it before it&apos;s claimed.
               </span>
             ) : null}
           </span>
@@ -219,41 +271,33 @@ export function BookingForm({
           hint="Applies to your final balance"
           className={collection === "essential" ? "" : "sm:col-span-2"}
         >
-          <select
-            name="collection"
+          <Select
             value={collection}
-            onChange={(e) => setCollection(e.target.value as CollectionId)}
-            className={`${inputBase} appearance-none`}
-          >
-            {packages.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name} · {p.priceLabel}
-                {p.highlight ? " — most popular" : ""}
-              </option>
-            ))}
-          </select>
+            onChange={(v) => setCollection(v as CollectionId)}
+            options={packages.map((p) => ({
+              value: p.id,
+              label: `${p.name} · ${p.priceLabel}${p.highlight ? " — most popular" : ""}`,
+            }))}
+          />
         </Field>
 
-        {/* Essential is one craft — ask which. Signature/Legacy are always both. */}
         {collection === "essential" && (
           <Field label="Photo or film?" required>
-            <select
-              name="essentialService"
+            <Select
               value={essentialService}
-              onChange={(e) =>
-                setEssentialService(e.target.value as "photo" | "video")
-              }
-              className={`${inputBase} appearance-none`}
-            >
-              <option value="photo">Photography</option>
-              <option value="video">Film / Video</option>
-            </select>
+              onChange={(v) => setEssentialService(v as "photo" | "video")}
+              options={[
+                { value: "photo", label: "Photography" },
+                { value: "video", label: "Film / Video" },
+              ]}
+            />
           </Field>
         )}
 
         <Field label="Anything you'd like me to know?" error={errors.notes} className="sm:col-span-2">
           <textarea
-            name="notes"
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
             rows={4}
             className={`${inputBase} resize-none`}
             placeholder="Theme, venue, timeline — anything that helps me plan her day."
@@ -261,7 +305,7 @@ export function BookingForm({
         </Field>
       </div>
 
-      {SITE_KEY ? (
+      {SHOW_TURNSTILE && SITE_KEY ? (
         <div>
           <Turnstile
             siteKey={SITE_KEY}
@@ -274,37 +318,30 @@ export function BookingForm({
       ) : null}
 
       <p className="text-xs leading-relaxed text-ink-faint">
-        You&apos;ll be taken to a secure Stripe checkout to pay the{" "}
-        {depositLabel} {selectedCollection.name} deposit — pay in full or in
-        interest-free installments. It applies to your final balance. By
-        reserving, you agree to be contacted about your event. See our{" "}
-        <a href="/privacy" className="underline underline-offset-2 hover:text-ink">
-          privacy policy
-        </a>
-        .
+        <strong className="text-ink-soft">No payment now.</strong> I&apos;ll confirm
+        your date is open and send a secure link to place your{" "}
+        {selectedCollection.depositLabel} {selectedCollection.name} deposit — it
+        applies to your final balance. By requesting, you agree to be contacted
+        about your event. See our{" "}
+        <a href="/privacy" className="underline underline-offset-2 hover:text-ink">privacy policy</a>.
       </p>
 
       {formError ? (
-        <p role="alert" className="text-sm text-wine">
-          {formError}
-        </p>
+        <p role="alert" className="text-sm text-wine">{formError}</p>
       ) : null}
 
       <button
         type="submit"
         disabled={busy}
-        className="inline-flex items-center justify-center gap-3 self-start rounded-full bg-wine px-10 py-4 text-[0.7rem] uppercase tracking-[0.2em] text-cream transition-all duration-300 hover:bg-wine-deep disabled:cursor-not-allowed disabled:opacity-70"
+        className="inline-flex items-center justify-center gap-3 self-start rounded-full bg-ink px-8 py-4 text-[0.95rem] font-medium text-cream transition-all duration-300 hover:bg-[#3c2a1b] disabled:cursor-not-allowed disabled:opacity-70"
       >
         {busy ? (
           <>
-            <span
-              className="h-4 w-4 animate-spin rounded-full border-2 border-cream/40 border-t-cream"
-              aria-hidden
-            />
-            {status === "redirecting" ? "Taking you to checkout…" : "Reserving…"}
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-cream/40 border-t-cream" aria-hidden />
+            Sending request…
           </>
         ) : (
-          `Reserve my date · ${depositLabel} deposit`
+          "Reserve my date"
         )}
       </button>
     </form>

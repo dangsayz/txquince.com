@@ -58,7 +58,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#faf7f2",
+  themeColor: "#f4eae0",
   width: "device-width",
   initialScale: 1,
 };
@@ -71,7 +71,7 @@ export default function RootLayout({
       lang="en"
       className={`${cormorant.variable} ${inter.variable} ${pinyon.variable} h-full`}
     >
-      <body className="flex min-h-full flex-col bg-cream">
+      <body className="flex min-h-screen flex-col bg-cream">
         <ScarcityBar />
         <Nav />
         <main className="flex-1">{children}</main>

@@ -9,8 +9,8 @@ import { site } from "@/content/site";
  */
 export function ScarcityBar() {
   return (
-    <div className="border-b border-line/70 bg-ivory">
-      <div className="mx-auto flex max-w-7xl items-center justify-center gap-2.5 px-4 py-2.5 text-center">
+    <div className="bg-cream">
+      <div className="mx-auto flex max-w-7xl items-center justify-center gap-2.5 px-4 pb-1.5 pt-2.5 text-center">
         {/* Live availability indicator — the one "alive" detail. */}
         <span className="relative flex h-1.5 w-1.5 shrink-0" aria-hidden>
           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-wine/50" />

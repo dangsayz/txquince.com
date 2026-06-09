@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { site } from "@/content/site";
-import { packages, isCollectionId, depositFloorLabel } from "@/content/packages";
+import { packages, isCollectionId } from "@/content/packages";
 import { BookingForm } from "@/components/BookingForm";
 import { SocialProofStrip } from "@/components/SocialProofStrip";
 import { HowBookingWorks } from "@/components/HowBookingWorks";
@@ -48,10 +48,10 @@ export default async function ReservePage({
             Lock in her date today.
           </h1>
           <p className="mt-6 max-w-md text-base leading-relaxed text-ink-soft">
-            A deposit from {depositFloorLabel} holds your day on my calendar —
-            instantly, no back-and-forth. It scales with your collection and
-            applies to your balance. Pay in full or in interest-free installments
-            at checkout.
+            Tell me your date and collection and I&apos;ll hold it for you. I
+            personally confirm it&apos;s open and send a secure deposit link to
+            lock it in — usually within 24 hours. <span className="text-ink">No
+            payment right now.</span>
           </p>
 
           <div className="mt-8 border-l-2 border-wine pl-5">
@@ -63,9 +63,9 @@ export default async function ReservePage({
 
           <ul className="mt-8 flex flex-col gap-3 text-sm text-ink-soft">
             {[
-              "Your date is held the moment your deposit clears.",
-              "The deposit applies to your final balance — it's not an extra fee.",
-              "Secure checkout by Stripe. Pay now, or split it interest-free.",
+              "Send your date — I confirm it's open within 24 hours.",
+              "Then I send a secure deposit link to lock it in.",
+              "The deposit applies to your final balance. Pay in full or split it interest-free.",
             ].map((line) => (
               <li key={line} className="flex gap-3">
                 <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-wine" />

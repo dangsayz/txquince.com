@@ -8,17 +8,20 @@
 */
 
 @theme {
-  /* ---- Color: warm neutrals + one premium accent ---- */
-  --color-cream: #faf7f2; /* base background */
-  --color-ivory: #fffdf9; /* lighter cards / hero text bg */
-  --color-greige: #ece6dd; /* alternating section bg */
-  --color-ink: #1a1a1a; /* primary text */
-  --color-ink-soft: #56504a; /* secondary text (warm gray) */
-  --color-ink-faint: #8a837b; /* labels / meta */
-  --color-line: #e6ddd1; /* hairline borders on cream */
-  --color-wine: #6b2230; /* THE accent — deep wine/burgundy */
-  --color-wine-deep: #4f1822; /* accent hover */
-  --color-wine-tint: #f3e9e9; /* faint accent wash for bands */
+  /* ---- Color: "Claura" warm system — cream page, espresso ink, warm accent ----
+     Warm ivory page floating on a sand frame; espresso-brown text + dark pill
+     buttons; one warm terracotta accent. Coral→blue gradients carry the imagery. */
+  --color-sand: #e4d3bc; /* outer page frame (the warm tan behind the card) */
+  --color-cream: #f4eae0; /* base background — Claura warm pink-cream */
+  --color-ivory: #fcf7ef; /* lighter cards / inset (warm near-white) */
+  --color-greige: #faf3e9; /* alternating section band (a touch lighter) */
+  --color-ink: #2c1d12; /* primary text / dark pill buttons — espresso */
+  --color-ink-soft: #8c7d69; /* secondary text (warm taupe) */
+  --color-ink-faint: #a99a85; /* labels / meta */
+  --color-line: #e8ddcb; /* hairline borders on cream */
+  --color-wine: #c0512f; /* warm accent (links / small touches) */
+  --color-wine-deep: #9f3f21; /* accent hover */
+  --color-wine-tint: #f4e7dd; /* faint accent wash for bands */
 
   /* ---- Type ---- */
   --font-display: var(--font-cormorant), Georgia, "Times New Roman", serif;
@@ -133,14 +136,21 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* Small uppercase tracked labels — the editorial counterpoint to big serif */
+/* Section label — a rounded Claura chip. Same look as .tag, so every eyebrow
+   across the site reads consistently (one label language). */
 .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  background: var(--color-ivory);
+  box-shadow: inset 0 0 0 1px var(--color-line);
+  padding: 0.4rem 0.9rem;
   font-family: var(--font-body);
-  text-transform: uppercase;
-  letter-spacing: 0.22em;
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   font-weight: 500;
-  color: var(--color-ink-faint);
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--color-ink-soft);
 }
 
 /* Contained editorial text column */
@@ -182,4 +192,163 @@ body {
 /* yet-another-react-lightbox: tone its chrome to the brand */
 .yarl__root {
   --yarl__color_backdrop: rgba(20, 16, 14, 0.94);
+}
+
+/* =====================================================================
+   CLAURA warm system — pill buttons, tags, and imagery placeholders.
+   Sentence-case buttons (not the old uppercase tracked pills), generous
+   radius, espresso primary + soft secondary.
+   ===================================================================== */
+
+.btn-espresso {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  background: var(--color-ink);
+  color: var(--color-cream);
+  padding: 0.85rem 1.7rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1;
+  transition: all 0.3s var(--ease-out-soft);
+}
+.btn-espresso:hover {
+  background: #3c2a1b;
+  transform: translateY(-1px);
+}
+
+.btn-soft {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  background: var(--color-ivory);
+  color: var(--color-ink);
+  padding: 0.85rem 1.7rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1;
+  box-shadow: inset 0 0 0 1px var(--color-line);
+  transition: all 0.3s var(--ease-out-soft);
+}
+.btn-soft:hover {
+  background: #fffdf9;
+  transform: translateY(-1px);
+}
+
+/* Small rounded tag/chip — section labels, category corner tags. */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  background: var(--color-ivory);
+  box-shadow: inset 0 0 0 1px var(--color-line);
+  padding: 0.4rem 0.9rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--color-ink-soft);
+}
+
+/* Soft warm peach→clay gradient stand-in for imagery — your quince photos
+   replace this. Tuned to the warm palette (no harsh rainbow); pair with blur
+   for the gentle Claura glow. */
+.claura-art {
+  background:
+    radial-gradient(62% 62% at 32% 36%, #ffcaa0 0%, rgba(255, 202, 160, 0) 68%),
+    radial-gradient(52% 52% at 68% 60%, #ef9277 0%, rgba(239, 146, 119, 0) 70%),
+    radial-gradient(58% 58% at 78% 30%, #e8c2b0 0%, rgba(232, 194, 176, 0) 66%),
+    linear-gradient(140deg, #f7ddc6 0%, #e8ab90 54%, #cf8f86 100%);
+  filter: saturate(1.02);
+}
+
+/* Soft fade at a section's bottom edge (Claura's signature reflection/glow). */
+.glow-edge {
+  -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
+}
+
+/* =====================================================================
+   MOTION — cohesive entrance + transition system (CSS-first).
+   Hero staggers in with a blur-up; the hero photo drifts (Ken Burns);
+   every route change fades + rises (app/template.tsx).
+   ===================================================================== */
+
+@keyframes hero-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+/* Apply to in-flow elements only (not transform-positioned ones). */
+.hero-enter {
+  animation: hero-fade-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.hero-delay-1 { animation-delay: 0.1s; }
+.hero-delay-2 { animation-delay: 0.22s; }
+.hero-delay-3 { animation-delay: 0.34s; }
+.hero-delay-4 { animation-delay: 0.48s; }
+.hero-delay-5 { animation-delay: 0.62s; }
+
+/* Opacity-only entrance for transform-positioned elements (e.g. the hero image
+   whose translate centering can't be clobbered by an animation transform). */
+@keyframes fade-only {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.fade-in-soft {
+  animation: fade-only 1s var(--ease-out-soft) both;
+  animation-delay: 0.3s;
+}
+
+/* Ken Burns — slow living drift. Put on an image inside an overflow-hidden,
+   non-transform-positioned wrapper so the scale doesn't fight positioning. */
+@keyframes ken-burns {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.07); }
+  100% { transform: scale(1); }
+}
+.ken-burns {
+  animation: ken-burns 26s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  will-change: transform;
+}
+
+/* Page transition — content fades + rises on every route change. */
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.page-enter {
+  animation: page-enter 0.55s var(--ease-out-soft) both;
+}
+
+/* Share window — backdrop fade + sheet pop (rises on mobile, scales on desktop). */
+@keyframes share-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes share-pop {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.share-fade { animation: share-fade 0.25s var(--ease-out-soft) both; }
+.share-pop { animation: share-pop 0.32s var(--ease-out-soft) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .share-fade,
+  .share-pop,
+  .hero-enter,
+  .fade-in-soft,
+  .ken-burns,
+  .page-enter {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
 }

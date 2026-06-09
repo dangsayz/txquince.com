@@ -37,8 +37,11 @@ export async function updateSession(request: NextRequest) {
 
   const path = request.nextUrl.pathname;
   const isLogin = path === "/admin/login";
+  // The reset-password page must be reachable while signed out — the recovery
+  // session is established client-side from the email link after this runs.
+  const isPublic = isLogin || path === "/admin/reset-password";
 
-  if (path.startsWith("/admin") && !isLogin && !isAuthorizedAdminUser(user)) {
+  if (path.startsWith("/admin") && !isPublic && !isAuthorizedAdminUser(user)) {
     const url = request.nextUrl.clone();
     url.pathname = "/admin/login";
     url.searchParams.set("next", path);

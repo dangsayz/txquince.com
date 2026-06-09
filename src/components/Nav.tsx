@@ -1,76 +1,43 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { site } from "@/content/site";
 
-const navPill =
-  "inline-flex items-center justify-center rounded-full border border-wine uppercase tracking-[0.22em] text-wine transition-colors duration-300 hover:bg-wine hover:text-cream";
-
 /**
- * Minimal nav: logo · Portfolio · Investment · About · [Check Your Date].
- * Phone-first: links collapse into a simple sheet on mobile. The accent CTA
- * stays visible at all sizes (single primary CTA, site-wide).
+ * Claura-style nav: left links · centered serif wordmark · espresso pill CTA.
+ * Static within the framed page (the frame's overflow-hidden rules out sticky).
+ * Phone-first: links collapse to a sheet behind a hamburger.
  */
 export function Nav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   return (
-    <header
-      className={`sticky top-0 z-40 border-b transition-colors duration-300 ${
-        scrolled
-          ? "border-line bg-cream/90 backdrop-blur-md"
-          : "border-transparent bg-cream/70 backdrop-blur-sm"
-      }`}
-    >
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-8">
-        <Link
-          href="/"
-          className="font-display text-xl tracking-tight text-ink md:text-2xl"
-          aria-label={`${site.brand} — home`}
-        >
-          {site.brand}
-        </Link>
-
-        {/* Desktop links */}
-        <div className="hidden items-center gap-9 md:flex">
-          {site.nav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`text-[0.7rem] uppercase tracking-[0.18em] transition-colors hover:text-wine ${
-                pathname === item.href ? "text-ink" : "text-ink-soft"
-              }`}
-            >
-              {item.label}
-            </Link>
-          ))}
-          <Link href={site.cta.href} className={`${navPill} px-6 py-2.5 text-[0.64rem]`}>
-            {site.cta.label}
-          </Link>
-        </div>
-
-        {/* Mobile: CTA + menu toggle */}
-        <div className="flex items-center gap-2 md:hidden">
-          <Link href={site.cta.href} className={`${navPill} px-4 py-2 text-[0.58rem]`}>
-            {site.cta.label}
-          </Link>
+    <header className="sticky top-0 z-40 border-b border-line bg-cream/85 backdrop-blur-md">
+      <nav className="mx-auto grid max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-3 px-5 py-4 md:px-8">
+        {/* Left — desktop links / mobile hamburger */}
+        <div className="flex items-center justify-start">
+          <div className="hidden items-center gap-7 md:flex">
+            {site.nav.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`text-[0.82rem] font-medium transition-colors hover:text-wine ${
+                  pathname === item.href ? "text-ink" : "text-ink-soft"
+                }`}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             aria-label="Menu"
-            className="flex h-10 w-10 items-center justify-center text-ink"
+            className="flex h-10 w-10 items-center justify-center text-ink md:hidden"
           >
             <span className="sr-only">Toggle menu</span>
             <div className="flex flex-col gap-[5px]">
@@ -83,6 +50,25 @@ export function Nav() {
               />
             </div>
           </button>
+        </div>
+
+        {/* Center — wordmark */}
+        <Link
+          href="/"
+          className="justify-self-center font-display text-2xl tracking-tight text-ink md:text-[1.7rem]"
+          aria-label={`${site.brand} — home`}
+        >
+          {site.brand}
+        </Link>
+
+        {/* Right — espresso pill CTA */}
+        <div className="flex items-center justify-end">
+          <Link
+            href={site.cta.href}
+            className="btn-espresso px-4 py-2.5 text-[0.8rem] sm:px-5 sm:text-[0.85rem]"
+          >
+            {site.cta.label}
+          </Link>
         </div>
       </nav>
 

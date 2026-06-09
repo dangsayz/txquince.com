@@ -35,6 +35,12 @@ export default async function AdminDashboard() {
       desc: "Inquiries from your contact form, with date, budget, and message so you can follow up before anyone else does.",
     },
     {
+      href: "/admin/hero",
+      title: "Homepage hero",
+      count: "photo or video",
+      desc: "Set the big visual at the top of your homepage — a featured photo or a video link (YouTube, Vimeo, or .mp4).",
+    },
+    {
       href: "/admin/portfolio",
       title: "Portfolio",
       count: `${images.length} image${images.length === 1 ? "" : "s"}`,

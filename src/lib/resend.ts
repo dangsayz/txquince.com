@@ -542,3 +542,123 @@ export async function sendBookingRecoveryEmail(
     return { ok: false, error: String(err) };
   }
 }
+
+// ============================================================================
+// RESERVATION REQUEST — capture-first flow. The family submits a request (no
+// payment); the operator confirms and sends a deposit link later. Two emails:
+// operator notification + client acknowledgement.
+// ============================================================================
+
+/** Operator notification — a new date request to follow up on. */
+export async function sendReservationRequestOperatorEmail(
+  booking: BookingRecord,
+): Promise<{ ok: boolean; error?: string }> {
+  const resend = getResend();
+  const to = process.env.OPERATOR_NOTIFY_EMAIL;
+  if (!resend) return { ok: false, error: "resend-not-configured" };
+  if (!to) return { ok: false, error: "operator-email-not-set" };
+
+  const dateStr = formatEventDate(booking.event_date);
+  const tier = collectionLabel(booking.collection);
+  const deposit = formatMoney(booking.deposit_amount_cents, booking.currency);
+
+  const rows: [string, string][] = [
+    ["Name", esc(booking.name)],
+    ["Email", `<a href="mailto:${esc(booking.email)}">${esc(booking.email)}</a>`],
+    ["Phone", booking.phone ? `<a href="tel:${esc(booking.phone)}">${esc(booking.phone)}</a>` : "—"],
+    ["Event date", esc(dateStr)],
+    ["Collection", `${esc(tier)} (${esc(packageLabel(booking.package))})`],
+    ["Deposit to collect", esc(deposit)],
+  ];
+
+  const html = `
+  <div style="font-family:ui-sans-serif,system-ui,Arial,sans-serif;color:${INK};max-width:560px">
+    <p style="font-weight:600;color:${WINE};margin:0 0 4px">NEW DATE REQUEST — reach out to confirm + send the deposit link.</p>
+    <table style="border-collapse:collapse;width:100%;font-size:14px">
+      ${rows.map(([k, v]) => `<tr><td style="padding:6px 12px 6px 0;color:#8a837b;white-space:nowrap;vertical-align:top">${k}</td><td style="padding:6px 0">${v}</td></tr>`).join("")}
+    </table>
+    <p style="font-size:14px;color:#8a837b;margin:16px 0 4px">Notes</p>
+    <p style="font-size:14px;white-space:pre-wrap;margin:0">${booking.notes?.trim() ? esc(booking.notes.trim()) : "—"}</p>
+  </div>`;
+
+  const text = [
+    `NEW DATE REQUEST — reach out to confirm + send the deposit link.`,
+    "",
+    `Name: ${booking.name}`,
+    `Email: ${booking.email}`,
+    `Phone: ${booking.phone ?? "—"}`,
+    `Event date: ${dateStr}`,
+    `Collection: ${tier} (${packageLabel(booking.package)})`,
+    `Deposit to collect: ${deposit}`,
+    "",
+    `Notes: ${booking.notes?.trim() ? booking.notes.trim() : "—"}`,
+  ].join("\n");
+
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM,
+      to,
+      replyTo: booking.email,
+      subject: `New date request — ${booking.name} · ${dateStr}`,
+      text,
+      html,
+    });
+    if (error) return { ok: false, error: String(error.message ?? error) };
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: String(err) };
+  }
+}
+
+/** Client acknowledgement — request received, deposit link coming. */
+export async function sendReservationRequestClientEmail(
+  booking: BookingRecord,
+): Promise<{ ok: boolean; error?: string }> {
+  const resend = getResend();
+  if (!resend) return { ok: false, error: "resend-not-configured" };
+
+  const firstName = booking.name.split(" ")[0] || "there";
+  const siteUrl = getSiteUrl();
+  const dateStr = formatEventDate(booking.event_date);
+  const tier = collectionLabel(booking.collection);
+
+  const subject = `${firstName}, I've got your date request — ${dateStr}`;
+
+  const text = [
+    `Hi ${firstName},`,
+    "",
+    `Thank you for choosing me for your daughter's quinceañera on ${dateStr}${tier && tier !== "—" ? ` (the ${tier} collection)` : ""}.`,
+    "",
+    "Here's what happens next: I'll personally confirm your date is open and reach out — usually within 24 hours — to talk through the day and send you a secure link to place your deposit and lock it in. No payment is needed right now.",
+    "",
+    "I only book one quinceañera a day, so your request holds your date while we connect.",
+    "",
+    "Talk soon,",
+    site.brand,
+  ].join("\n");
+
+  const bodyHtml = `
+    <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">Thank you for choosing me for your daughter&apos;s quinceañera on <strong style="color:${INK}">${esc(dateStr)}</strong>${tier && tier !== "—" ? ` (the ${esc(tier)} collection)` : ""}.</p>
+    <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">Here&apos;s what happens next: I&apos;ll personally confirm your date is open and reach out — usually within 24 hours — to talk through the day and send you a <strong style="color:${INK}">secure link to place your deposit</strong> and lock it in. <strong style="color:${INK}">No payment is needed right now.</strong></p>
+    <p style="margin:0;font-size:15px;line-height:1.7;color:#56504a">I only book one quinceañera a day, so your request holds your date while we connect.</p>`;
+
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM,
+      to: booking.email,
+      replyTo: process.env.OPERATOR_NOTIFY_EMAIL || undefined,
+      subject,
+      text,
+      html: followupHtml({
+        firstName,
+        bodyHtml,
+        ctaUrl: `${siteUrl}/portfolio`,
+        ctaLabel: "See the galleries",
+      }),
+    });
+    if (error) return { ok: false, error: String(error.message ?? error) };
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: String(err) };
+  }
+}

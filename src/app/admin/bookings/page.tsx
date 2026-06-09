@@ -13,6 +13,11 @@ const COLLECTION_LABEL: Record<string, string> = {
 /** status → { label, tone } for the pill. */
 function statusPill(status: string): { label: string; cls: string } {
   switch (status) {
+    case "requested":
+      return {
+        label: "Requested",
+        cls: "bg-sky-50 text-sky-700 ring-sky-600/20",
+      };
     case "paid":
       return {
         label: "Paid",

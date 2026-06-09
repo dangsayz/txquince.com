@@ -16,6 +16,10 @@ type Status = "idle" | "submitting" | "error";
 type FieldErrors = Partial<Record<string, string[]>>;
 
 const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+// Locked to production hostnames, so it errors on localhost (110200). Only render
+// in production; local dev skips the bot check (secret lives on the Worker).
+const SHOW_TURNSTILE =
+  Boolean(SITE_KEY) && process.env.NODE_ENV === "production";
 
 const inputBase =
   "w-full border-b border-line bg-transparent px-0 py-3 text-ink placeholder:text-ink-faint/70 transition-colors focus:border-wine focus:outline-none";
@@ -65,8 +69,8 @@ export function InquiryForm() {
       return;
     }
 
-    // Turnstile gate: require a token when a site key is configured.
-    if (SITE_KEY && !token) {
+    // Turnstile gate: require a token only when the widget is shown (production).
+    if (SHOW_TURNSTILE && !token) {
       setFormError("Please complete the verification below.");
       setStatus("error");
       return;
@@ -185,8 +189,8 @@ export function InquiryForm() {
         </Field>
       </div>
 
-      {/* Turnstile (primary abuse gate). Shows only when a site key is set. */}
-      {SITE_KEY ? (
+      {/* Turnstile (primary abuse gate). Production-only (errors on localhost). */}
+      {SHOW_TURNSTILE && SITE_KEY ? (
         <div>
           <Turnstile
             siteKey={SITE_KEY}

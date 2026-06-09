@@ -99,7 +99,7 @@ export const getTakenEventDates = cache(async (): Promise<string[]> => {
     const { data, error } = await supabase
       .from("bookings")
       .select("event_date")
-      .in("status", ["pending_payment", "paid"])
+      .in("status", ["requested", "pending_payment", "paid"])
       .gte("event_date", today);
     if (error || !data) return [];
     // De-dupe (a date can have one active row, but be defensive).

@@ -19,13 +19,8 @@ export function FinalCTA({
     <section className="border-t border-line bg-cream">
       <div className="mx-auto max-w-3xl px-5 py-section text-center md:px-8 md:py-section-lg">
         <Reveal>
-          <p
-            className="script text-wine"
-            style={{ fontSize: "clamp(1.7rem,4.5vw,2.6rem)" }}
-          >
-            {accent}
-          </p>
-          <h2 className="mx-auto mt-3 max-w-2xl display-2 text-ink text-balance">
+          <span className="tag">{accent}</span>
+          <h2 className="mx-auto mt-5 max-w-2xl display-2 text-ink text-balance">
             {headline}
           </h2>
           <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-ink-soft">
