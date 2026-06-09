@@ -141,15 +141,29 @@ import esFotoVideo from "./blog/posts/es/foto-o-video-quinceanera";
 import esCambioZapatillas from "./blog/posts/es/el-cambio-de-zapatillas-quinceanera";
 import esOrden from "./blog/posts/es/que-pasa-en-una-quinceanera-orden";
 import esSalones from "./blog/posts/es/salones-para-quinceaneras-dfw";
+import esComoElegir from "./blog/posts/es/como-elegir-fotografo-de-quinceanera-dfw";
+import esCronograma from "./blog/posts/es/como-planear-una-quinceanera-cronograma";
+import esCorteVals from "./blog/posts/es/la-corte-el-vals-y-el-baile-sorpresa";
+import esMisa from "./blog/posts/es/la-misa-de-quince-anos-dfw";
+import esPreQuince from "./blog/posts/es/sesion-de-fotos-pre-quince-dfw";
+import esLugares from "./blog/posts/es/mejores-lugares-para-fotos-de-quinceanera-dfw";
+import esPresupuesto from "./blog/posts/es/cuanto-cuesta-una-quinceanera-presupuesto-texas";
 
 export const esPosts: BlogPost[] = [
   esCosto,
   esCuandoReservar,
   esPreguntas,
+  esComoElegir,
   esFotoVideo,
   esPlanesPago,
+  esPresupuesto,
+  esCronograma,
   esOrden,
   esCambioZapatillas,
+  esCorteVals,
+  esMisa,
+  esPreQuince,
+  esLugares,
   esSalones,
 ];
 
@@ -175,6 +189,13 @@ const EN_ES_PAIRS: { en: string; es: string }[] = [
   { en: "changing-of-the-shoes-quinceanera", es: "el-cambio-de-zapatillas-quinceanera" },
   { en: "what-happens-at-a-quinceanera-order-of-events", es: "que-pasa-en-una-quinceanera-orden" },
   { en: "quinceanera-reception-venues-dfw", es: "salones-para-quinceaneras-dfw" },
+  { en: "how-to-choose-quinceanera-photographer-dfw", es: "como-elegir-fotografo-de-quinceanera-dfw" },
+  { en: "quinceanera-planning-timeline-checklist", es: "como-planear-una-quinceanera-cronograma" },
+  { en: "court-vals-surprise-dance-quinceanera", es: "la-corte-el-vals-y-el-baile-sorpresa" },
+  { en: "quinceanera-mass-dallas-fort-worth", es: "la-misa-de-quince-anos-dfw" },
+  { en: "pre-quince-photo-session-dfw", es: "sesion-de-fotos-pre-quince-dfw" },
+  { en: "best-quinceanera-photo-locations-dfw", es: "mejores-lugares-para-fotos-de-quinceanera-dfw" },
+  { en: "quinceanera-budget-breakdown-texas", es: "cuanto-cuesta-una-quinceanera-presupuesto-texas" },
 ];
 
 export function esSlugForEn(en: string): string | undefined {
