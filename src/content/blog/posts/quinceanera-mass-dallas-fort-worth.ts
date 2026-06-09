@@ -130,7 +130,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "We handle that coordination for you: contacting the parish or coordinator ahead of time, learning their rules, and working quietly within them so the Mass is never disrupted. You can see how that looks — altar, procession, and the offering to Our Lady, all captured without intruding — in our [church and altar coverage](/portfolio).",
+      text: "We handle that coordination for you: contacting the parish or coordinator ahead of time, learning their rules, and working quietly within them so the Mass is never disrupted. You can see how that looks — altar, procession, and the offering to Our Lady, all captured without intruding — in our [church and altar coverage](/portfolio#church).",
     },
     {
       type: "h3",

@@ -48,7 +48,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Verá este cambio de pareja, y la formación completa de la corte, en los videos del vals de nuestro [portafolio](/portfolio). Ver uno de verdad es la forma más rápida de entender cómo fluye la coreografía antes de empezar a planear la suya.",
+      text: "Verá este cambio de pareja, y la formación completa de la corte, en los videos del vals de nuestro [portafolio](/portfolio#films). Ver uno de verdad es la forma más rápida de entender cómo fluye la coreografía antes de empezar a planear la suya.",
     },
     {
       type: "h3",

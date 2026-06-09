@@ -134,7 +134,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Nosotros nos encargamos de esa coordinación por usted: contactamos a la parroquia o a la coordinadora con anticipación, aprendemos sus reglas y trabajamos con discreción dentro de ellas para que la misa nunca se interrumpa. Puede ver cómo se ve eso —el altar, la procesión y la ofrenda a la Virgen, capturados sin estorbar— en [nuestro portafolio](/portfolio).",
+      text: "Nosotros nos encargamos de esa coordinación por usted: contactamos a la parroquia o a la coordinadora con anticipación, aprendemos sus reglas y trabajamos con discreción dentro de ellas para que la misa nunca se interrumpa. Puede ver cómo se ve eso —el altar, la procesión y la ofrenda a la Virgen, capturados sin estorbar— en [nuestro portafolio](/portfolio#church).",
     },
     {
       type: "h3",

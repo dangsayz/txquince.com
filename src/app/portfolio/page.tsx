@@ -99,7 +99,8 @@ export default async function PortfolioPage() {
         return (
           <section
             key={section.id}
-            className="mx-auto max-w-7xl px-5 py-section md:px-8 md:py-section-lg"
+            id={section.id}
+            className="scroll-mt-24 mx-auto max-w-7xl px-5 py-section md:px-8 md:py-section-lg"
           >
             <Reveal className="mb-10 flex items-end justify-between gap-6 md:mb-12">
               <div className="max-w-2xl">

@@ -45,7 +45,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "You'll see this hand-off — and the full court formation — in the vals clips on our [portfolio](/portfolio). Watching a real one is the fastest way to understand how the choreography flows before you start planning your own.",
+      text: "You'll see this hand-off — and the full court formation — in the vals clips on our [portfolio](/portfolio#films). Watching a real one is the fastest way to understand how the choreography flows before you start planning your own.",
     },
     { type: "h3", text: "The vals and the father-daughter dance are not the same thing" },
     {
