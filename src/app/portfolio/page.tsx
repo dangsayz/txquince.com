@@ -24,6 +24,9 @@ export const metadata: Metadata = {
 
 export default async function PortfolioPage() {
   const [dbImages, videos] = await Promise.all([getPortfolioImages(), getVideos()]);
+  // Once any real photos exist, stop padding empty sections with placeholder
+  // blocks — a half-built portfolio shows only the sections that have real work.
+  const hasRealImages = dbImages.length > 0;
 
   // VideoObject markup for the films (eligible for video rich results).
   const videoJsonLd =
@@ -89,12 +92,17 @@ export default async function PortfolioPage() {
               width: i.width,
               height: i.height,
             }))
-          : section.images.map((i) => ({
-              url: null,
-              alt: i.alt,
-              ratio: i.ratio,
-              feature: i.feature,
-            }));
+          : hasRealImages
+            ? [] // real work exists elsewhere — don't pad this section with placeholders
+            : section.images.map((i) => ({
+                url: null,
+                alt: i.alt,
+                ratio: i.ratio,
+                feature: i.feature,
+              }));
+
+        // Hide an empty non-film section once the site has real photos.
+        if (!isFilms && items.length === 0) return null;
 
         return (
           <section
