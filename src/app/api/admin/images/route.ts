@@ -65,6 +65,8 @@ const UpdateSchema = z.object({
   alt: z.string().max(300).optional(),
   section: z.enum(SECTIONS).optional(),
   is_feature: z.boolean().optional(),
+  width: z.number().int().positive().max(20000).optional(),
+  height: z.number().int().positive().max(20000).optional(),
 });
 
 export async function PATCH(request: Request) {

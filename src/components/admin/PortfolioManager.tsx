@@ -152,6 +152,37 @@ export function PortfolioManager({ initial }: { initial: PortfolioImage[] }) {
     });
   }
 
+  // One-time: read intrinsic dimensions for images uploaded before we started
+  // storing them, so the public masonry grid reserves space (no layout shift).
+  async function backfillDimensions() {
+    const missing = images.filter((i) => !i.width || !i.height);
+    if (missing.length === 0) {
+      setStatus("All images already have sizes — nothing to fix.");
+      return;
+    }
+    setBusy(true);
+    let done = 0;
+    for (const img of missing) {
+      try {
+        const dims = await new Promise<{ w: number; h: number }>((res, rej) => {
+          const el = new window.Image();
+          el.onload = () => res({ w: el.naturalWidth, h: el.naturalHeight });
+          el.onerror = () => rej(new Error("load-failed"));
+          el.src = img.url;
+        });
+        if (dims.w && dims.h) {
+          await patch(img.id, { width: dims.w, height: dims.h });
+          done++;
+        }
+      } catch {
+        /* skip unreadable image */
+      }
+      setStatus(`Fixing image sizes… ${done}/${missing.length}`);
+    }
+    setStatus(`Done — added sizes to ${done} image${done === 1 ? "" : "s"}.`);
+    setBusy(false);
+  }
+
   async function remove(id: string) {
     if (!confirm("Delete this image? This cannot be undone.")) return;
     setImages((prev) => prev.filter((i) => i.id !== id));
@@ -205,6 +236,17 @@ export function PortfolioManager({ initial }: { initial: PortfolioImage[] }) {
           onChange={(e) => handleFiles(e.target.files)}
           className="text-sm text-ink-soft file:mr-3 file:rounded-full file:border file:border-wine file:bg-transparent file:px-5 file:py-2 file:text-[0.66rem] file:uppercase file:tracking-[0.16em] file:text-wine"
         />
+        {images.some((i) => !i.width || !i.height) ? (
+          <button
+            type="button"
+            onClick={backfillDimensions}
+            disabled={busy}
+            className="rounded-full border border-line px-4 py-2 text-[0.66rem] uppercase tracking-[0.16em] text-ink-soft transition-colors hover:border-wine hover:text-wine disabled:opacity-50"
+            title="Read sizes for older images so the public grid loads without shifting"
+          >
+            Fix image sizes
+          </button>
+        ) : null}
         {status ? <span className="text-xs text-ink-faint">{status}</span> : null}
       </div>
       <p className="mt-2 text-xs text-ink-faint">
