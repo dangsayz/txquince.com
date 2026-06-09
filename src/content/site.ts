@@ -59,6 +59,7 @@ export const site = {
   nav: [
     { href: "/portfolio", label: "Portfolio" },
     { href: "/investment", label: "Investment" },
+    { href: "/blog", label: "Guide" },
     { href: "/about", label: "About" },
   ],
 

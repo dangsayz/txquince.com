@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { site } from "@/content/site";
 import { locations } from "@/content/locations";
+import { getAllPosts } from "@/content/blog";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
@@ -13,6 +14,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/quinceanera-photographer", priority: 0.8 },
     { path: "/es/fotografo-de-quinceaneras", priority: 0.8 },
     { path: "/privacy", priority: 0.2 },
+    { path: "/blog", priority: 0.7 },
+    // Blog posts (the planning guide).
+    ...getAllPosts().map((p) => ({ path: `/blog/${p.slug}`, priority: 0.6 })),
     // Local SEO landing pages — one per DFW city served, EN + ES.
     ...locations.map((l) => ({
       path: `/quinceanera-photographer/${l.slug}`,
