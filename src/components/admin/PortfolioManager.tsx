@@ -165,8 +165,10 @@ function LocationCombobox({
 export function PortfolioManager({ initial }: { initial: PortfolioImage[] }) {
   const [images, setImages] = useState<PortfolioImage[]>(initial);
   const [section, setSection] = useState<string>("celebration");
+  const [uploadLocation, setUploadLocation] = useState<string>("");
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
+  const [describing, setDescribing] = useState<Set<string>>(new Set());
   const fileRef = useRef<HTMLInputElement>(null);
 
   const grouped = useMemo(() => {
@@ -225,7 +227,14 @@ export function PortfolioManager({ initial }: { initial: PortfolioImage[] }) {
         const recRes = await fetch("/api/admin/images", {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({ storage_path: path, section, alt: "", width, height }),
+          body: JSON.stringify({
+            storage_path: path,
+            section,
+            alt: "",
+            width,
+            height,
+            location: uploadLocation.trim() || undefined,
+          }),
         });
         if (!recRes.ok) throw new Error("record failed");
         const { image } = (await recRes.json()) as { image: Omit<PortfolioImage, "url"> };
@@ -264,6 +273,56 @@ export function PortfolioManager({ initial }: { initial: PortfolioImage[] }) {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ id, ...fields }),
     });
+  }
+
+  // Draft alt text for one image with the vision model and save it. The text is
+  // editable afterward — this just fills the blank so you're not staring at an
+  // empty field. Returns true on success so the bulk runner can pace itself.
+  async function describe(img: PortfolioImage): Promise<boolean> {
+    setDescribing((prev) => new Set(prev).add(img.id));
+    try {
+      const res = await fetch("/api/admin/describe", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ url: img.url }),
+      });
+      const data = (await res.json().catch(() => ({}))) as { alt?: string; error?: string };
+      if (res.ok && data.alt) {
+        await patch(img.id, { alt: data.alt });
+        return true;
+      }
+      setStatus(data.error || "Could not generate alt text.");
+      return false;
+    } catch {
+      setStatus("Could not generate alt text.");
+      return false;
+    } finally {
+      setDescribing((prev) => {
+        const next = new Set(prev);
+        next.delete(img.id);
+        return next;
+      });
+    }
+  }
+
+  // Fill every blank alt field, one at a time (keeps cost predictable and avoids
+  // hammering the model). Stops early if a request fails (e.g. key missing).
+  async function describeBlankAlts() {
+    const blanks = images.filter((i) => !i.alt?.trim());
+    if (blanks.length === 0) {
+      setStatus("Every image already has alt text.");
+      return;
+    }
+    setBusy(true);
+    let done = 0;
+    for (const img of blanks) {
+      setStatus(`Writing alt text… ${done}/${blanks.length}`);
+      const ok = await describe(img);
+      if (!ok) break;
+      done++;
+    }
+    setStatus(`Done — wrote alt text for ${done} image${done === 1 ? "" : "s"}.`);
+    setBusy(false);
   }
 
   // One-time: read intrinsic dimensions for images uploaded before we started
@@ -341,6 +400,16 @@ export function PortfolioManager({ initial }: { initial: PortfolioImage[] }) {
             ))}
           </select>
         </label>
+        <label className="flex items-center gap-2 text-sm text-ink">
+          at
+          <div className="w-52">
+            <LocationCombobox
+              value={uploadLocation || null}
+              suggestions={locationSuggestions}
+              onCommit={(loc) => setUploadLocation(loc ?? "")}
+            />
+          </div>
+        </label>
         <input
           ref={fileRef}
           type="file"
@@ -359,6 +428,17 @@ export function PortfolioManager({ initial }: { initial: PortfolioImage[] }) {
             title="Read sizes for older images so the public grid loads without shifting"
           >
             Fix image sizes
+          </button>
+        ) : null}
+        {images.some((i) => !i.alt?.trim()) ? (
+          <button
+            type="button"
+            onClick={describeBlankAlts}
+            disabled={busy}
+            className="rounded-full border border-line px-4 py-2 text-[0.66rem] uppercase tracking-[0.16em] text-ink-soft transition-colors hover:border-wine hover:text-wine disabled:opacity-50"
+            title="Draft alt text with AI for every image still missing it (you can edit after)"
+          >
+            Write blank alt text
           </button>
         ) : null}
         {status ? <span className="text-xs text-ink-faint">{status}</span> : null}
@@ -401,14 +481,26 @@ export function PortfolioManager({ initial }: { initial: PortfolioImage[] }) {
                     ) : null}
                   </div>
                   <div className="flex flex-col gap-2 p-2.5">
-                    <input
-                      defaultValue={img.alt}
-                      placeholder="Alt text (describe the photo)"
-                      onBlur={(e) =>
-                        e.target.value !== img.alt && patch(img.id, { alt: e.target.value })
-                      }
-                      className="w-full border-b border-line bg-transparent pb-1 text-xs focus:border-wine focus:outline-none"
-                    />
+                    <div className="flex items-end gap-1.5">
+                      <input
+                        key={`alt-${img.id}-${img.alt}`}
+                        defaultValue={img.alt}
+                        placeholder="Alt text (describe the photo)"
+                        onBlur={(e) =>
+                          e.target.value !== img.alt && patch(img.id, { alt: e.target.value })
+                        }
+                        className="w-full border-b border-line bg-transparent pb-1 text-xs focus:border-wine focus:outline-none"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => describe(img)}
+                        disabled={describing.has(img.id)}
+                        title="Draft alt text with AI (you can edit it)"
+                        className="shrink-0 rounded-full border border-line px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.12em] text-ink-soft transition-colors hover:border-wine hover:text-wine disabled:opacity-40"
+                      >
+                        {describing.has(img.id) ? "…" : "AI"}
+                      </button>
+                    </div>
                     <select
                       value={img.section}
                       onChange={(e) => patch(img.id, { section: e.target.value })}
