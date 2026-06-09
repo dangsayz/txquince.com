@@ -17,8 +17,8 @@
   --color-greige: #faf3e9; /* alternating section band (a touch lighter) */
   --color-white: #ffffff; /* true white — Apple-clean section bands + cards */
   --color-ink: #2c1d12; /* primary text / dark pill buttons — espresso */
-  --color-ink-soft: #8c7d69; /* secondary text (warm taupe) */
-  --color-ink-faint: #a99a85; /* labels / meta */
+  --color-ink-soft: #6f6253; /* secondary text (warm taupe) — WCAG AA 4.99:1 on cream */
+  --color-ink-faint: #726753; /* labels / meta — WCAG AA 4.68:1 on cream */
   --color-line: #e8ddcb; /* hairline borders on cream */
   --color-wine: #c0512f; /* warm accent (links / small touches) */
   --color-wine-deep: #9f3f21; /* accent hover */

@@ -23,7 +23,7 @@ const SHOW_TURNSTILE =
   Boolean(SITE_KEY) && process.env.NODE_ENV === "production";
 
 const inputBase =
-  "w-full border-b border-line bg-transparent px-0 py-3 text-ink placeholder:text-ink-faint/70 transition-colors focus:border-wine focus:outline-none";
+  "w-full border-b border-line bg-transparent px-0 py-3 text-ink placeholder:text-ink-faint transition-colors focus:border-wine focus:outline-none";
 const labelBase = "block text-sm font-medium text-ink";
 
 export function InquiryForm() {
