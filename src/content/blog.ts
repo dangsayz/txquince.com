@@ -109,14 +109,77 @@ export function getPostsByCategory(category: BlogCategory): BlogPost[] {
 
 /** Up to `n` related posts: explicit `related` slugs first, then same-category. */
 export function relatedPosts(post: BlogPost, n = 3): BlogPost[] {
+  return relatedFrom(post, getAllPosts(), getPost, n);
+}
+
+function relatedFrom(
+  post: BlogPost,
+  all: BlogPost[],
+  lookup: (slug: string) => BlogPost | undefined,
+  n: number,
+): BlogPost[] {
   const out: BlogPost[] = [];
   for (const slug of post.related ?? []) {
-    const p = getPost(slug);
+    const p = lookup(slug);
     if (p && p.slug !== post.slug && !out.includes(p)) out.push(p);
   }
-  for (const p of getAllPosts()) {
+  for (const p of all) {
     if (out.length >= n) break;
     if (p.slug !== post.slug && p.category === post.category && !out.includes(p)) out.push(p);
   }
   return out.slice(0, n);
+}
+
+// ---- Spanish (es) registry + helpers ----
+// World-class native Spanish posts, served at /es/blog/<slug>. Populated as the
+// ES posts are written (mirrors the EN registry pattern above).
+import esCosto from "./blog/posts/es/cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth";
+import esPlanesPago from "./blog/posts/es/planes-de-pago-fotografia-quinceanera-dfw";
+import esCuandoReservar from "./blog/posts/es/cuando-reservar-fotografo-quinceanera-dfw";
+import esPreguntas from "./blog/posts/es/preguntas-para-tu-fotografo-de-quinceanera";
+import esFotoVideo from "./blog/posts/es/foto-o-video-quinceanera";
+import esCambioZapatillas from "./blog/posts/es/el-cambio-de-zapatillas-quinceanera";
+import esOrden from "./blog/posts/es/que-pasa-en-una-quinceanera-orden";
+import esSalones from "./blog/posts/es/salones-para-quinceaneras-dfw";
+
+export const esPosts: BlogPost[] = [
+  esCosto,
+  esCuandoReservar,
+  esPreguntas,
+  esFotoVideo,
+  esPlanesPago,
+  esOrden,
+  esCambioZapatillas,
+  esSalones,
+];
+
+export function getAllEsPosts(): BlogPost[] {
+  return [...esPosts].sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1));
+}
+
+export function getEsPost(slug: string): BlogPost | undefined {
+  return esPosts.find((p) => p.slug === slug);
+}
+
+export function relatedEsPosts(post: BlogPost, n = 3): BlogPost[] {
+  return relatedFrom(post, getAllEsPosts(), getEsPost, n);
+}
+
+/** EN ↔ ES slug pairs, for hreflang alternates linking each translation. */
+const EN_ES_PAIRS: { en: string; es: string }[] = [
+  { en: "quinceanera-photographer-cost-dallas-fort-worth", es: "cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth" },
+  { en: "quinceanera-payment-plans-deposits-dfw", es: "planes-de-pago-fotografia-quinceanera-dfw" },
+  { en: "when-to-book-quinceanera-photographer-dfw", es: "cuando-reservar-fotografo-quinceanera-dfw" },
+  { en: "questions-to-ask-quinceanera-photographer", es: "preguntas-para-tu-fotografo-de-quinceanera" },
+  { en: "quinceanera-photo-vs-video", es: "foto-o-video-quinceanera" },
+  { en: "changing-of-the-shoes-quinceanera", es: "el-cambio-de-zapatillas-quinceanera" },
+  { en: "what-happens-at-a-quinceanera-order-of-events", es: "que-pasa-en-una-quinceanera-orden" },
+  { en: "quinceanera-reception-venues-dfw", es: "salones-para-quinceaneras-dfw" },
+];
+
+export function esSlugForEn(en: string): string | undefined {
+  return EN_ES_PAIRS.find((p) => p.en === en)?.es;
+}
+export function enSlugForEs(es: string): string | undefined {
+  return EN_ES_PAIRS.find((p) => p.es === es)?.en;
 }
