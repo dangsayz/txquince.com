@@ -166,7 +166,7 @@ export default async function AdminDashboard({
         <MetricCard label="Views today" value={String(s.today)} helper={`${s.last7} in 7 days`} />
         <MetricCard label="Visitors" value={String(s.uniqueSessions)} helper={`${s.pagesPerSession} pages/session`} />
         <MetricCard label="Bounce rate" value={`${s.bounceRate}%`} helper="Single-page sessions" />
-        <MetricCard label="Intent" value={String(s.formStarts + s.ctaClicks + s.shares)} helper={`${s.formStarts} starts · ${s.ctaClicks} CTA · ${s.shares} shares`} />
+        <MetricCard label="Intent" value={String(s.formStarts + s.ctaClicks + s.shares + s.dateChecks)} helper={`${s.dateChecks} date checks · ${s.formStarts} starts · ${s.ctaClicks} CTA · ${s.shares} shares`} />
       </section>
 
       {/* chart + insights */}

@@ -350,16 +350,32 @@ body {
 .share-fade { animation: share-fade 0.25s var(--ease-out-soft) both; }
 .share-pop { animation: share-pop 0.32s var(--ease-out-soft) both; }
 
+/* Editorial marquee — slow horizontal scroll (content is duplicated in the
+   markup; -50% loops seamlessly). Pure CSS, no JS. */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  animation: marquee 32s linear infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .share-fade,
   .share-pop,
   .hero-enter,
   .fade-in-soft,
   .ken-burns,
-  .page-enter {
+  .page-enter,
+  .marquee-track {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
     filter: none !important;
+  }
+  /* Tailwind utility animations (ping, spin, pulse) respect reduced motion too. */
+  .animate-ping,
+  .animate-pulse {
+    animation: none !important;
   }
 }

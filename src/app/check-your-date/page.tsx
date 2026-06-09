@@ -38,17 +38,20 @@ export default function CheckYourDatePage() {
   return (
     <>
       {/* Trust bar — proof before the ask. */}
-      <div className="border-b border-line bg-ivory">
-        <div className="mx-auto max-w-6xl px-5 py-5 md:px-8">
+      <div className="border-b border-ink/10 bg-white">
+        <div className="mx-auto max-w-[90rem] px-5 py-5 md:px-8">
           <SocialProofStrip />
         </div>
       </div>
 
-      <div className="mx-auto grid max-w-6xl gap-12 px-5 py-section md:grid-cols-[0.9fr_1.1fr] md:gap-16 md:px-8 md:py-section-lg">
+      <div className="mx-auto grid max-w-[90rem] gap-12 px-5 py-20 md:grid-cols-[0.9fr_1.1fr] md:gap-20 md:px-8 md:py-28">
         {/* Left: framing + scarcity (sold-out reality) */}
         <div className="md:sticky md:top-28 md:self-start">
-          <p className="eyebrow mb-5">Inquiries</p>
-          <h1 className="display-2 text-ink text-balance">
+          <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">Inquiries</p>
+          <h1
+            className="mt-5 font-display text-ink"
+            style={{ fontSize: "clamp(2.3rem,4.6vw,3.9rem)", lineHeight: 1, letterSpacing: "-0.022em" }}
+          >
             Let&apos;s see if your date is open.
           </h1>
           <p className="mt-6 max-w-md text-base leading-relaxed text-ink-soft">
@@ -93,39 +96,55 @@ export default function CheckYourDatePage() {
         </div>
       </div>
 
-      {/* What happens next — removes "what happens after I send this?" doubt. */}
-      <section className="bg-greige">
-        <div className="mx-auto max-w-5xl px-5 py-section md:px-8 md:py-section-lg">
-          <div className="mx-auto max-w-2xl text-center">
-            <p className="eyebrow mb-5">What happens next</p>
-            <h2 className="display-2 text-ink text-balance">
-              No mystery, no waiting in the dark.
-            </h2>
+      {/* What happens next — calm numbered rows, offset right. */}
+      <section className="border-y border-ink/10 bg-white">
+        <div className="mx-auto max-w-[90rem] px-5 py-20 md:px-8 md:py-28">
+          <div className="grid md:grid-cols-12">
+            <div className="md:col-span-4">
+              <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">
+                What happens next
+              </p>
+              <h2
+                className="mt-4 max-w-xs font-display text-ink"
+                style={{ fontSize: "clamp(2rem,3.8vw,3.2rem)", lineHeight: 1.04, letterSpacing: "-0.02em" }}
+              >
+                No mystery, no waiting in the dark.
+              </h2>
+            </div>
+            <ol className="mt-10 md:col-span-6 md:col-start-6 md:mt-0">
+              {NEXT_STEPS.map((step, i) => (
+                <Reveal
+                  key={step.title}
+                  delay={i * 70}
+                  className={`grid grid-cols-12 gap-4 py-8 ${i > 0 ? "border-t border-ink/10" : ""}`}
+                >
+                  <p className="col-span-2 font-display text-2xl text-ink/25">0{i + 1}</p>
+                  <div className="col-span-10">
+                    <h3 className="font-display text-xl text-ink">{step.title}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-ink-soft">{step.body}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </ol>
           </div>
-          <ol className="mt-12 grid gap-px overflow-hidden border border-line bg-line md:mt-14 md:grid-cols-3">
-            {NEXT_STEPS.map((step, i) => (
-              <Reveal key={step.title} delay={i * 80} className="bg-cream p-8 md:p-9">
-                <span className="font-display text-2xl text-wine">0{i + 1}</span>
-                <h3 className="mt-5 font-display text-xl text-ink">{step.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-ink-soft">{step.body}</p>
-              </Reveal>
-            ))}
-          </ol>
         </div>
       </section>
 
-      {/* See the real, full work — defuse the scam/"is this real?" fear. */}
-      <section className="mx-auto max-w-3xl px-5 py-section text-center md:px-8 md:py-section-lg">
-        <p className="eyebrow mb-5">See the work first</p>
-        <h2 className="display-2 text-ink text-balance">
+      {/* See the real, full work — defuse the "is this real?" fear. */}
+      <section className="mx-auto max-w-[90rem] px-5 py-24 md:px-8 md:py-36">
+        <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">See the work first</p>
+        <h2
+          className="mt-4 max-w-2xl font-display text-ink"
+          style={{ fontSize: "clamp(2rem,3.8vw,3.2rem)", lineHeight: 1.04, letterSpacing: "-0.02em" }}
+        >
           Full quinceañeras, not just highlights.
         </h2>
-        <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-ink-soft">
+        <p className="mt-5 max-w-md text-sm leading-relaxed text-ink-soft">
           Complete galleries and films from real DFW celebrations — so you know
           exactly who you&apos;re reaching out to.
         </p>
-        <div className="mt-9 flex justify-center">
-          <CTAButton href="/portfolio" variant="ink">
+        <div className="mt-8">
+          <CTAButton href="/portfolio" variant="text">
             View the galleries
           </CTAButton>
         </div>

@@ -35,8 +35,11 @@ type Draft = {
 
 export function BookingForm({
   defaultCollection,
+  defaultDate,
 }: {
   defaultCollection?: CollectionId;
+  /** Prefill from ?date= (e.g. the homepage date-checker). Wins over a saved draft. */
+  defaultDate?: string;
 } = {}) {
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -76,7 +79,13 @@ export function BookingForm({
     } catch {
       /* ignore */
     }
+    // A date arriving via URL is explicit intent (they just checked it) — it
+    // beats whatever date a stale draft remembered.
+    if (defaultDate && /^\d{4}-\d{2}-\d{2}$/.test(defaultDate)) {
+      setEventDate(defaultDate);
+    }
     restored.current = true;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Auto-save the draft on every change (after the initial restore).

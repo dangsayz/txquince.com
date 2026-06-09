@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Inter, Pinyon_Script } from "next/font/google";
 import "./globals.css";
 import { site } from "@/content/site";
-import { ScarcityBar } from "@/components/ScarcityBar";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
@@ -74,7 +73,6 @@ export default function RootLayout({
       className={`${cormorant.variable} ${inter.variable} ${pinyon.variable} h-full`}
     >
       <body className="flex min-h-screen flex-col bg-cream">
-        <ScarcityBar />
         <Nav />
         <main className="flex-1">{children}</main>
         <Footer />

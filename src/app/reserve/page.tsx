@@ -24,10 +24,11 @@ export const metadata: Metadata = {
 export default async function ReservePage({
   searchParams,
 }: {
-  searchParams: Promise<{ canceled?: string; collection?: string }>;
+  searchParams: Promise<{ canceled?: string; collection?: string; date?: string }>;
 }) {
-  const { canceled, collection } = await searchParams;
+  const { canceled, collection, date } = await searchParams;
   const defaultCollection = isCollectionId(collection) ? collection : undefined;
+  const defaultDate = date && /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : undefined;
   const signature = packages.find((p) => p.id === "signature") ?? packages[1];
   const floor = packages[0];
 
@@ -114,7 +115,7 @@ export default async function ReservePage({
               date isn&apos;t reserved yet. Finish below whenever you&apos;re ready.
             </p>
           ) : null}
-          <BookingForm defaultCollection={defaultCollection} />
+          <BookingForm defaultCollection={defaultCollection} defaultDate={defaultDate} />
         </div>
       </div>
 

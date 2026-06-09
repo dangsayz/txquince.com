@@ -495,7 +495,22 @@ export function PortfolioManager({ initial }: { initial: PortfolioImage[] }) {
             <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
               {grouped[s.value].map((img, i) => (
                 <div key={img.id} className="border border-line bg-ivory">
-                  <div className="relative aspect-[3/4] bg-greige">
+                  {/* Click the photo to set its focal anchor — cropped renders
+                      (homepage spreads, hero) keep that point in frame. */}
+                  <button
+                    type="button"
+                    title="Click where her face is — crops will keep that point in frame"
+                    onClick={(e) => {
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      const fx = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+                      const fy = Math.min(1, Math.max(0, (e.clientY - rect.top) / rect.height));
+                      patch(img.id, {
+                        focus_x: Math.round(fx * 100) / 100,
+                        focus_y: Math.round(fy * 100) / 100,
+                      });
+                    }}
+                    className="relative block aspect-[3/4] w-full cursor-crosshair bg-greige"
+                  >
                     <Image
                       src={img.url}
                       alt={img.alt || "portfolio image"}
@@ -504,12 +519,21 @@ export function PortfolioManager({ initial }: { initial: PortfolioImage[] }) {
                       className="object-cover"
                       unoptimized
                     />
+                    {/* current anchor marker */}
+                    <span
+                      aria-hidden
+                      className="absolute h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-cream bg-wine/80 shadow"
+                      style={{
+                        left: `${(img.focus_x ?? 0.5) * 100}%`,
+                        top: `${(img.focus_y ?? 0.5) * 100}%`,
+                      }}
+                    />
                     {img.is_feature ? (
                       <span className="absolute left-2 top-2 bg-wine px-2 py-0.5 text-[0.55rem] uppercase tracking-[0.14em] text-cream">
                         Featured
                       </span>
                     ) : null}
-                  </div>
+                  </button>
                   <div className="flex flex-col gap-2 p-2.5">
                     <div className="flex items-end gap-1.5">
                       <input

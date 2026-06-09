@@ -65,13 +65,17 @@ export default async function PortfolioPage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(videoJsonLd) }}
         />
       ) : null}
-      <section className="mx-auto max-w-7xl px-5 pt-section md:px-8 md:pt-section-lg">
-        <Reveal className="max-w-3xl">
-          <p className="eyebrow mb-5">Portfolio</p>
-          <h1 className="display-1 text-ink text-balance">
+      {/* Cover — editorial: overline, oversized statement, narrow standfirst. */}
+      <section className="mx-auto max-w-[90rem] px-5 pt-20 md:px-8 md:pt-32">
+        <Reveal>
+          <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">Portfolio</p>
+          <h1
+            className="mt-5 max-w-5xl font-display text-ink"
+            style={{ fontSize: "clamp(2.8rem,7vw,6.2rem)", lineHeight: 0.98, letterSpacing: "-0.028em" }}
+          >
             The day, kept exactly as it felt.
           </h1>
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-soft">
+          <p className="mt-7 max-w-md text-[0.95rem] leading-relaxed text-ink-soft">
             A selection from quinceañeras across Dallas–Fort Worth — from the quiet
             of la misa to the last dance of the night.
           </p>
@@ -105,32 +109,44 @@ export default async function PortfolioPage() {
         if (!isFilms && items.length === 0) return null;
 
         return (
-          <section
-            key={section.id}
-            id={section.id}
-            className="scroll-mt-24 mx-auto max-w-7xl px-5 py-section md:px-8 md:py-section-lg"
-          >
-            <Reveal className="mb-10 flex items-end justify-between gap-6 md:mb-12">
-              <div className="max-w-2xl">
-                <p className="eyebrow mb-4">
-                  <span className="text-wine">{num}</span> &nbsp;/&nbsp; {section.eyebrow}
+          // White band per section — the photographs sit on gallery-white,
+          // separated by hairlines and generous air.
+          <section key={section.id} id={section.id} className="scroll-mt-24 mt-20 border-t border-ink/10 bg-white md:mt-28">
+            <div className="mx-auto max-w-[90rem] px-5 py-16 md:px-8 md:py-24">
+              <Reveal className="mb-12 grid items-end md:mb-16 md:grid-cols-12">
+                <div className="md:col-span-7">
+                  <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">
+                    {section.eyebrow}
+                  </p>
+                  <h2
+                    className="mt-4 font-display text-ink"
+                    style={{ fontSize: "clamp(2.1rem,4.4vw,3.8rem)", lineHeight: 1, letterSpacing: "-0.02em" }}
+                  >
+                    {section.title}
+                  </h2>
+                  <p className="mt-5 max-w-md text-sm leading-relaxed text-ink-soft">
+                    {section.intro}
+                  </p>
+                </div>
+                <p
+                  aria-hidden
+                  className="hidden text-right font-display text-ink/10 md:col-span-5 md:block"
+                  style={{ fontSize: "5rem", lineHeight: 1 }}
+                >
+                  {num}
                 </p>
-                <h2 className="display-2 text-ink">{section.title}</h2>
-                <p className="mt-4 max-w-xl text-sm leading-relaxed text-ink-soft">
-                  {section.intro}
-                </p>
-              </div>
-            </Reveal>
+              </Reveal>
 
-            {isFilms ? (
-              videos.length ? (
-                <VideoGallery videos={videos} />
+              {isFilms ? (
+                videos.length ? (
+                  <VideoGallery videos={videos} />
+                ) : (
+                  <p className="accent text-xl text-ink-faint">Films coming soon.</p>
+                )
               ) : (
-                <p className="accent text-xl text-ink-faint">Films coming soon.</p>
-              )
-            ) : (
-              <PortfolioGallery images={items} />
-            )}
+                <PortfolioGallery images={items} />
+              )}
+            </div>
           </section>
         );
       })}

@@ -7,7 +7,7 @@ import { Reveal } from "@/components/Reveal";
  * on the conversion pages so paying the deposit feels like step one of a known
  * process, not a leap of faith.
  */
-const STEPS = [
+export const BOOKING_STEPS = [
   {
     title: "Reserve your date",
     body: `Choose your collection and date, then pay a deposit from ${site.booking.depositLabel} — your day is held instantly, and you can pay in full or in interest-free installments at checkout.`,
@@ -37,7 +37,7 @@ export function HowBookingWorks({ className = "" }: { className?: string }) {
       </div>
 
       <ol className="mt-12 grid gap-px overflow-hidden border border-line bg-line md:mt-14 md:grid-cols-4">
-        {STEPS.map((step, i) => (
+        {BOOKING_STEPS.map((step, i) => (
           <Reveal key={step.title} delay={i * 80} className="bg-cream p-8 md:p-9">
             <span className="font-display text-2xl text-wine">0{i + 1}</span>
             <h3 className="mt-5 font-display text-xl text-ink">{step.title}</h3>

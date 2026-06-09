@@ -19,6 +19,9 @@ export type PortfolioImage = {
   width: number | null;
   height: number | null;
   location: string | null;
+  /** Focal anchor (0..1 from left/top) — cropped renders align this point. */
+  focus_x?: number | null;
+  focus_y?: number | null;
   url: string;
 };
 
@@ -38,9 +41,12 @@ export const getPortfolioImages = cache(async (): Promise<PortfolioImage[]> => {
   if (!isSupabaseConfigured()) return [];
   try {
     const supabase = getServiceSupabase();
+    // select("*") so newly-added columns (e.g. focal anchors) flow through
+    // without a brittle hand-kept list — and a lagging migration can never
+    // blank the gallery.
     const { data, error } = await supabase
       .from("portfolio_images")
-      .select("id, storage_path, alt, section, is_feature, sort_order, width, height, location")
+      .select("*")
       .order("section", { ascending: true })
       .order("sort_order", { ascending: true });
     if (error || !data) return [];

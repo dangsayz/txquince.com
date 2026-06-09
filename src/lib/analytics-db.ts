@@ -21,6 +21,7 @@ export type RangedStats = {
   formStarts: number;
   ctaClicks: number;
   shares: number;
+  dateChecks: number;
   // bookings / money
   requests: number;
   paid: number;
@@ -84,6 +85,7 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     formStarts: 0,
     ctaClicks: 0,
     shares: 0,
+    dateChecks: 0,
     requests: 0,
     paid: 0,
     paymentReview: 0,
@@ -160,6 +162,8 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     const formStarts = events.filter((e) => e.event_type === "form_started").length;
     const ctaClicks = events.filter((e) => e.event_type === "cta_clicked").length;
     const shares = events.filter((e) => e.event_type === "share").length;
+    // Homepage date-checker usage — the checked→held gap is the sharpest funnel signal.
+    const dateChecks = events.filter((e) => e.event_type === "date_checked").length;
 
     // ---- bookings / money ----
     const requests = bookings.filter((b) => b.status === "requested").length;
@@ -235,6 +239,8 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
       if (utmMap.size === 0 && rangeViews > 10)
         insights.push({ type: "info", text: "No UTM-tagged links detected — tag your Instagram bio + directory links to see what converts." });
     }
+    if (dateChecks >= 5 && requests === 0)
+      insights.push({ type: "warning", text: `${dateChecks} date checks but no holds this window — families verify the date, then stall. The friction is after the check: review pricing clarity and trust on /reserve.` });
     if (paymentReview > 0)
       insights.push({ type: "warning", text: `${paymentReview} payment${paymentReview === 1 ? "" : "s"} need review — money was collected but the date wasn't auto-confirmed. Verify or refund.` });
     if (requests > 0)
@@ -260,6 +266,7 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
       formStarts,
       ctaClicks,
       shares,
+      dateChecks,
       requests,
       paid,
       paymentReview,

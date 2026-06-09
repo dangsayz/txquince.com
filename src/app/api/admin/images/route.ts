@@ -69,6 +69,9 @@ const UpdateSchema = z.object({
   width: z.number().int().positive().max(20000).optional(),
   height: z.number().int().positive().max(20000).optional(),
   location: z.string().max(160).nullable().optional(),
+  // Focal anchor — fractions of the frame (0..1 from left/top).
+  focus_x: z.number().min(0).max(1).nullable().optional(),
+  focus_y: z.number().min(0).max(1).nullable().optional(),
 });
 
 export async function PATCH(request: Request) {

@@ -68,10 +68,6 @@ export function Footer() {
           ) : null}
         </div>
 
-        {/* Centered imagery — your quince film still / portrait replaces this. */}
-        <div className="mx-auto mt-10 h-44 w-full max-w-sm">
-          <div className="claura-art glow-edge mx-auto h-full w-2/3 rounded-[1.5rem] opacity-90" />
-        </div>
       </div>
 
       {/* Link columns */}
