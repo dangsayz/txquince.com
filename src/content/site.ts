@@ -28,8 +28,8 @@ export const site = {
   },
 
   social: {
-    instagram: "https://instagram.com/", // TODO: operator's IG
-    facebook: "https://facebook.com/", // TODO: operator's FB / page
+    instagram: "https://www.instagram.com/txquince/",
+    facebook: "", // no public page yet (groups-only) — icon hidden until set
   },
 
   /**

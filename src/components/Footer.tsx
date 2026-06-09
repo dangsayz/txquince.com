@@ -55,15 +55,17 @@ export function Footer() {
           >
             <IgIcon />
           </a>
-          <a
-            href={site.social.facebook}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Facebook"
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-ivory text-ink-soft shadow-[inset_0_0_0_1px_var(--color-line)] transition-colors hover:text-wine"
-          >
-            <FbIcon />
-          </a>
+          {site.social.facebook ? (
+            <a
+              href={site.social.facebook}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-ivory text-ink-soft shadow-[inset_0_0_0_1px_var(--color-line)] transition-colors hover:text-wine"
+            >
+              <FbIcon />
+            </a>
+          ) : null}
         </div>
 
         {/* Centered imagery — your quince film still / portrait replaces this. */}
@@ -79,7 +81,7 @@ export function Footer() {
             <div key={col.title}>
               <p className="text-sm font-semibold text-ink">{col.title}</p>
               <ul className="mt-3 space-y-2.5">
-                {col.links.map((l) => (
+                {col.links.filter((l) => l.href).map((l) => (
                   <li key={l.label}>
                     {"external" in l && l.external ? (
                       <a
