@@ -76,35 +76,42 @@ export async function GET(
 
   // Cloudflare Images binding — present on Workers, absent in plain next dev.
   let images: CfImages | undefined;
+  let ctxNote = "ok";
   try {
     const { env } = getCloudflareContext();
     images = (env as { IMAGES?: CfImages }).IMAGES;
-  } catch {
-    /* local dev */
+    if (!images) ctxNote = "no-binding";
+  } catch (e) {
+    ctxNote = `no-ctx:${e instanceof Error ? e.message.slice(0, 40) : "?"}`;
   }
 
   if (!images) {
     // Dev fallback: pass through so the site renders locally.
     return new NextResponse(upstream.body, {
-      headers: { "content-type": upstream.headers.get("content-type") ?? "image/webp", "cache-control": CACHE },
+      headers: {
+        "content-type": upstream.headers.get("content-type") ?? "image/webp",
+        "cache-control": CACHE,
+        "x-img": `passthrough:${ctxNote}`,
+      },
     });
   }
 
   try {
     let chain = images.input(upstream.body).transform({ width: MAX_EDGE, height: MAX_EDGE, fit: "scale-down" });
 
-    // Watermark — drawn per-request at the edge; failure must never 500 the image.
+    // Watermark (PNG — SVG is not a valid Images input). Failure must never
+    // 500 the image; worst case we serve unwatermarked.
+    let wmNote = "wm";
     try {
       const origin = new URL(request.url).origin;
-      const wm = await fetch(`${origin}/brand/wm.svg`, { cf: { cacheTtl: 86400 } } as RequestInit);
+      const wm = await fetch(`${origin}/brand/wm.png`, { cf: { cacheTtl: 86400 } } as RequestInit);
       if (wm.ok && wm.body) {
-        chain = chain.draw(
-          images.input(wm.body).transform({ width: 300 }),
-          { bottom: 20, right: 20, opacity: 0.55 },
-        );
+        chain = chain.draw(images.input(wm.body), { bottom: 20, right: 20, opacity: 0.55 });
+      } else {
+        wmNote = `no-wm:${wm.status}`;
       }
-    } catch {
-      /* serve unwatermarked rather than break the image */
+    } catch (e) {
+      wmNote = `wm-err:${e instanceof Error ? e.message.slice(0, 40) : "?"}`;
     }
 
     const out = await chain.output({ format: "image/webp", quality: QUALITY });
@@ -114,6 +121,7 @@ export async function GET(
         "content-type": res.headers.get("content-type") ?? "image/webp",
         "cache-control": CACHE,
         "x-content-type-options": "nosniff",
+        "x-img": `transformed:${wmNote}`,
       },
     });
   } catch (err) {
@@ -121,7 +129,11 @@ export async function GET(
     // Last resort: re-fetch and pass through (transform consumed the stream).
     const retry = await fetch(sourceUrl);
     return new NextResponse(retry.body, {
-      headers: { "content-type": retry.headers.get("content-type") ?? "image/webp", "cache-control": CACHE },
+      headers: {
+        "content-type": retry.headers.get("content-type") ?? "image/webp",
+        "cache-control": CACHE,
+        "x-img": `fallback:${err instanceof Error ? err.message.slice(0, 60) : "?"}`,
+      },
     });
   }
 }
