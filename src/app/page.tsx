@@ -80,6 +80,7 @@ export default async function HomePage() {
                 alt={cover.alt || "Quinceañera portrait"}
                 fill
                 priority
+                unoptimized
                 sizes="(max-width: 768px) 100vw, 58vw"
                 className="object-cover"
                 style={{ objectPosition: coverFocal }}
@@ -190,7 +191,7 @@ export default async function HomePage() {
             <Link href="/portfolio" className="group block">
               <div className="relative aspect-[4/5] overflow-hidden sm:aspect-[16/11]">
                 {seqA?.url ? (
-                  <Image src={seqA.url} alt={seqA.alt} fill sizes="(max-width: 768px) 100vw, 74vw" className="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02]" style={{ objectPosition: focal(seqA, 50, 28) }} />
+                  <Image src={seqA.url} alt={seqA.alt} fill unoptimized sizes="(max-width: 768px) 100vw, 74vw" className="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02]" style={{ objectPosition: focal(seqA, 50, 28) }} />
                 ) : (
                   <div className="absolute inset-0 bg-greige" />
                 )}
@@ -206,7 +207,7 @@ export default async function HomePage() {
             <Link href="/portfolio" className="group block">
               <div className="relative aspect-[3/4.6] overflow-hidden">
                 {seqB?.url ? (
-                  <Image src={seqB.url} alt={seqB.alt} fill sizes="(max-width: 768px) 58vw, 24vw" className="object-cover transition-transform duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]" style={{ objectPosition: focal(seqB, 50, 35) }} />
+                  <Image src={seqB.url} alt={seqB.alt} fill unoptimized sizes="(max-width: 768px) 58vw, 24vw" className="object-cover transition-transform duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]" style={{ objectPosition: focal(seqB, 50, 35) }} />
                 ) : (
                   <div className="absolute inset-0 bg-greige" />
                 )}
@@ -219,7 +220,7 @@ export default async function HomePage() {
             <Link href="/portfolio" className="group block">
               <div className="relative aspect-square overflow-hidden">
                 {seqC?.url ? (
-                  <Image src={seqC.url} alt={seqC.alt} fill sizes="(max-width: 768px) 50vw, 24vw" className="object-cover transition-transform duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]" style={{ objectPosition: focal(seqC, 50, 22) }} />
+                  <Image src={seqC.url} alt={seqC.alt} fill unoptimized sizes="(max-width: 768px) 50vw, 24vw" className="object-cover transition-transform duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]" style={{ objectPosition: focal(seqC, 50, 22) }} />
                 ) : (
                   <div className="absolute inset-0 bg-greige" />
                 )}
@@ -234,7 +235,7 @@ export default async function HomePage() {
           <Link href="/portfolio" className="group block">
             <div className="relative aspect-[5/6] w-full overflow-hidden sm:aspect-[21/10]">
               {seqD?.url ? (
-                <Image src={seqD.url} alt={seqD.alt} fill sizes="100vw" className="object-cover transition-transform duration-[1400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.015]" style={{ objectPosition: focal(seqD, 50, 30) }} />
+                <Image src={seqD.url} alt={seqD.alt} fill unoptimized sizes="100vw" className="object-cover transition-transform duration-[1400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.015]" style={{ objectPosition: focal(seqD, 50, 30) }} />
               ) : (
                 <div className="absolute inset-0 bg-greige" />
               )}
@@ -421,6 +422,7 @@ export default async function HomePage() {
               src={closing.url}
               alt={closing.alt || "Quinceañera"}
               fill
+              unoptimized
               sizes="100vw"
               className="object-cover"
               style={{ objectPosition: focal(closing, 50, 25) }}

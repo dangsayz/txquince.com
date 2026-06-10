@@ -69,6 +69,7 @@ export function PortfolioGallery({ images }: { images: GalleryItem[] }) {
                       alt={img.alt}
                       width={img.width}
                       height={img.height}
+                      unoptimized
                       sizes={sizes}
                       draggable={false}
                       className="block h-auto w-full"
