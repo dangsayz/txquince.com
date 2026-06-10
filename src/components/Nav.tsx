@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { site } from "@/content/site";
+import { Wordmark } from "@/components/Wordmark";
 
 /**
  * Editorial nav — serif wordmark left; tiny-caps tracked links right; the CTA
@@ -25,14 +26,10 @@ export function Nav() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-ink/10 bg-cream/90 backdrop-blur-md">
-      <nav className="mx-auto flex max-w-[90rem] items-center justify-between px-5 py-5 md:px-8 md:py-6">
+      <nav className="mx-auto flex max-w-[90rem] items-center justify-between px-5 py-5 md:px-10 lg:px-16 md:py-6">
         {/* Wordmark — left, like a masthead */}
-        <Link
-          href="/"
-          className="font-display text-[1.45rem] tracking-tight text-ink md:text-[1.6rem]"
-          aria-label={`${site.brand} — home`}
-        >
-          {site.brand}
+        <Link href="/" aria-label={`${site.brand} — home`} className="block">
+          <Wordmark />
         </Link>
 
         {/* Right — tracked caps links + wine CTA */}

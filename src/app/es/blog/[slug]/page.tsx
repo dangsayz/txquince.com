@@ -130,7 +130,7 @@ export default async function EsBlogPostPage({
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <article className="mx-auto max-w-3xl px-5 pt-section md:px-8 md:pt-section-lg">
+      <article className="mx-auto max-w-3xl px-5 pt-section md:px-10 lg:px-16 md:pt-section-lg">
         <div className="flex items-center justify-between gap-4">
           <nav className="text-xs text-ink-faint" aria-label="Ruta">
             <Link href="/" className="hover:text-wine">Inicio</Link>
@@ -207,7 +207,7 @@ export default async function EsBlogPostPage({
 
       {/* Spanish closing CTA */}
       <section className="mt-section bg-ink text-cream">
-        <div className="mx-auto max-w-3xl px-5 py-section text-center md:px-8">
+        <div className="mx-auto max-w-3xl px-5 py-section text-center md:px-10 lg:px-16">
           <h2 className="display-2 text-cream text-balance">Reserva la fecha de su quinceañera</h2>
           <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-cream/75">
             Le confirmo que su fecha está disponible y le envío un enlace seguro para el depósito. Sin pago ahora mismo.

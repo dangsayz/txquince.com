@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { AdminHeader } from "@/components/admin/AdminHeader";
+import { AdminHint } from "@/components/EditMode";
 
 export const metadata: Metadata = {
   title: "Admin",
@@ -13,6 +14,8 @@ export default function AdminLayout({
 }) {
   return (
     <div className="min-h-screen bg-cream">
+      {/* Marks this browser so the public site offers on-page image editing. */}
+      <AdminHint />
       <AdminHeader />
       {children}
     </div>

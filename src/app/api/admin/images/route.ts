@@ -71,7 +71,7 @@ export async function POST(request: Request) {
   return NextResponse.json({ image: data });
 }
 
-// Update alt / section / feature flag.
+// Update alt / section / feature flag / focal anchor / in-place replacement.
 const UpdateSchema = z.object({
   id: z.string().uuid(),
   alt: z.string().max(300).optional(),
@@ -83,6 +83,8 @@ const UpdateSchema = z.object({
   // Focal anchor — fractions of the frame (0..1 from left/top).
   focus_x: z.number().min(0).max(1).nullable().optional(),
   focus_y: z.number().min(0).max(1).nullable().optional(),
+  // In-place photo replacement (slug/links stay; old object is removed).
+  storage_path: z.string().min(1).optional(),
 });
 
 export async function PATCH(request: Request) {
@@ -92,7 +94,22 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
   }
   const { id, ...fields } = parsed.data;
+  if (fields.storage_path && !fields.storage_path.startsWith("portfolio/")) {
+    return NextResponse.json({ error: "Invalid storage path" }, { status: 400 });
+  }
   const supabase = getServiceSupabase();
+
+  // Replacing the file? Remember the old object so we can clean it up.
+  let oldPath: string | null = null;
+  if (fields.storage_path) {
+    const { data: row } = await supabase
+      .from("portfolio_images")
+      .select("storage_path")
+      .eq("id", id)
+      .maybeSingle();
+    oldPath = row?.storage_path ?? null;
+  }
+
   const { data, error } = await supabase
     .from("portfolio_images")
     .update(fields)
@@ -100,6 +117,10 @@ export async function PATCH(request: Request) {
     .select()
     .single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  if (oldPath && fields.storage_path && oldPath !== fields.storage_path) {
+    await supabase.storage.from("portfolio").remove([oldPath]);
+  }
   bust();
   return NextResponse.json({ image: data });
 }

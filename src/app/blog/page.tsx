@@ -33,7 +33,7 @@ export default function BlogIndexPage() {
 
   return (
     <>
-      <section className="mx-auto max-w-7xl px-5 pt-section md:px-8 md:pt-section-lg">
+      <section className="mx-auto max-w-7xl px-5 pt-section md:px-10 lg:px-16 md:pt-section-lg">
         <Reveal className="max-w-3xl">
           <p className="eyebrow mb-5">The Quince Journal</p>
           <h1 className="display-1 text-ink text-balance">
@@ -48,7 +48,7 @@ export default function BlogIndexPage() {
 
       {/* Featured post */}
       {featured ? (
-        <section className="mx-auto max-w-7xl px-5 py-section md:px-8">
+        <section className="mx-auto max-w-7xl px-5 py-section md:px-10 lg:px-16">
           <Reveal>
             <Link
               href={`/blog/${featured.slug}`}
@@ -70,7 +70,7 @@ export default function BlogIndexPage() {
       ) : null}
 
       {/* Category sections */}
-      <section className="mx-auto max-w-7xl px-5 pb-section md:px-8 md:pb-section-lg">
+      <section className="mx-auto max-w-7xl px-5 pb-section md:px-10 lg:px-16 md:pb-section-lg">
         {BLOG_CATEGORIES.map((cat) => {
           const inCat = rest.filter((p) => p.category === cat);
           if (inCat.length === 0) return null;

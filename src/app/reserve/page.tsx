@@ -36,12 +36,12 @@ export default async function ReservePage({
     <>
       {/* Trust bar — proof before the ask (56% want proof before committing). */}
       <div className="border-b border-line bg-ivory">
-        <div className="mx-auto max-w-6xl px-5 py-5 md:px-8">
+        <div className="mx-auto max-w-6xl px-5 py-5 md:px-10 lg:px-16">
           <SocialProofStrip />
         </div>
       </div>
 
-      <div className="mx-auto grid max-w-6xl gap-12 px-5 py-section md:grid-cols-[0.9fr_1.1fr] md:gap-16 md:px-8 md:py-section-lg">
+      <div className="mx-auto grid max-w-6xl gap-12 px-5 py-section md:grid-cols-[0.9fr_1.1fr] md:gap-16 md:px-10 lg:px-16 md:py-section-lg">
         {/* Left: framing + what the deposit does */}
         <div className="md:sticky md:top-28 md:self-start">
           <p className="eyebrow mb-5">Reserve</p>
@@ -121,13 +121,13 @@ export default async function ReservePage({
 
       {/* How booking works — remove "what happens next?" uncertainty. */}
       <section className="bg-greige">
-        <div className="mx-auto max-w-7xl px-5 py-section md:px-8 md:py-section-lg">
+        <div className="mx-auto max-w-7xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
           <HowBookingWorks />
         </div>
       </section>
 
       {/* See the real, full work — defuse the scam/"is this real?" fear. */}
-      <section className="mx-auto max-w-3xl px-5 py-section text-center md:px-8 md:py-section-lg">
+      <section className="mx-auto max-w-3xl px-5 py-section text-center md:px-10 lg:px-16 md:py-section-lg">
         <p className="eyebrow mb-5">Before you reserve</p>
         <h2 className="display-2 text-ink text-balance">
           See full quinceañeras, start to finish.
@@ -144,7 +144,7 @@ export default async function ReservePage({
       </section>
 
       {/* Testimonials — renders only when release-cleared ones exist. */}
-      <Testimonials className="mx-auto max-w-7xl px-5 pb-section md:px-8 md:pb-section-lg" />
+      <Testimonials className="mx-auto max-w-7xl px-5 pb-section md:px-10 lg:px-16 md:pb-section-lg" />
     </>
   );
 }

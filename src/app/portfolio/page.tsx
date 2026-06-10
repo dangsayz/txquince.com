@@ -66,7 +66,7 @@ export default async function PortfolioPage() {
         />
       ) : null}
       {/* Cover — editorial: overline, oversized statement, narrow standfirst. */}
-      <section className="mx-auto max-w-[90rem] px-5 pt-20 md:px-8 md:pt-32">
+      <section className="mx-auto max-w-[90rem] px-5 pt-20 md:px-10 lg:px-16 md:pt-32">
         <Reveal>
           <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">Portfolio</p>
           <h1
@@ -97,6 +97,9 @@ export default async function PortfolioPage() {
               height: i.height,
               slug: i.slug,
               section: i.section,
+              id: i.id,
+              fx: i.focus_x,
+              fy: i.focus_y,
             }))
           : hasRealImages
             ? [] // real work exists elsewhere — don't pad this section with placeholders
@@ -114,7 +117,7 @@ export default async function PortfolioPage() {
           // White band per section — the photographs sit on gallery-white,
           // separated by hairlines and generous air.
           <section key={section.id} id={section.id} className="scroll-mt-24 mt-20 border-t border-ink/10 bg-white md:mt-28">
-            <div className="mx-auto max-w-[90rem] px-5 py-16 md:px-8 md:py-24">
+            <div className="mx-auto max-w-[90rem] px-5 py-16 md:px-10 lg:px-16 md:py-24">
               <Reveal className="mb-12 grid items-end md:mb-16 md:grid-cols-12">
                 <div className="md:col-span-7">
                   <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">

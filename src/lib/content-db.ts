@@ -13,9 +13,18 @@ export function storageUrl(path: string): string {
   return `${base}/storage/v1/object/public/portfolio/${path}`;
 }
 
+/** Tiny stable hash → cache-busting version tag derived from the storage path,
+ *  so replacing a photo in place (same permanent slug) busts the immutable
+ *  browser cache without breaking shared links. */
+function versionTag(s: string): string {
+  let h = 5381;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+  return (h >>> 0).toString(36);
+}
+
 /** Branded image bytes — the ONLY image src the public site renders. */
-export function imageServeUrl(slug: string): string {
-  return `/api/img/${slug}`;
+export function imageServeUrl(slug: string, storagePath?: string): string {
+  return `/api/img/${slug}${storagePath ? `?v=${versionTag(storagePath)}` : ""}`;
 }
 
 /** Shareable, indexable page for an image (what the share sheet copies). */
@@ -74,7 +83,7 @@ export const getPortfolioImages = cache(async (): Promise<PortfolioImage[]> => {
     // the last-resort fallback so a missing slug shows the photo rather than 404.
     return data.map((r) => ({
       ...r,
-      url: r.slug ? imageServeUrl(r.slug) : storageUrl(r.storage_path),
+      url: r.slug ? imageServeUrl(r.slug, r.storage_path) : storageUrl(r.storage_path),
     }));
   } catch {
     return [];
@@ -93,7 +102,7 @@ export const getImageBySlug = cache(
         .eq("slug", slug)
         .maybeSingle();
       if (error || !data) return null;
-      return { ...data, url: imageServeUrl(data.slug as string) };
+      return { ...data, url: imageServeUrl(data.slug as string, data.storage_path) };
     } catch {
       return null;
     }

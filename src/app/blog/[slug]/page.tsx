@@ -113,7 +113,7 @@ export default async function BlogPostPage({
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <article className="mx-auto max-w-3xl px-5 pt-section md:px-8 md:pt-section-lg">
+      <article className="mx-auto max-w-3xl px-5 pt-section md:px-10 lg:px-16 md:pt-section-lg">
         {/* breadcrumb */}
         <nav className="text-xs text-ink-faint" aria-label="Breadcrumb">
           <Link href="/" className="hover:text-wine">Home</Link>

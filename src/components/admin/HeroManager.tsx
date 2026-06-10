@@ -20,7 +20,7 @@ async function optimize(file: File): Promise<{ body: Blob; ext: string; type: st
   if (!file.type.startsWith("image/")) return fallback;
   try {
     const bitmap = await createImageBitmap(file);
-    const MAX = 2400;
+    const MAX = 3200;
     const scale = Math.min(1, MAX / Math.max(bitmap.width, bitmap.height));
     const w = Math.round(bitmap.width * scale);
     const h = Math.round(bitmap.height * scale);
@@ -31,7 +31,7 @@ async function optimize(file: File): Promise<{ body: Blob; ext: string; type: st
     if (!ctx) throw new Error("no-ctx");
     ctx.drawImage(bitmap, 0, 0, w, h);
     bitmap.close?.();
-    const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, "image/webp", 0.85));
+    const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, "image/webp", 0.9));
     if (!blob) throw new Error("no-blob");
     return { body: blob, ext: "webp", type: "image/webp" };
   } catch {

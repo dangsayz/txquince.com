@@ -10,6 +10,7 @@ import { DateChecker } from "@/components/DateChecker";
 import { BOOKING_STEPS } from "@/components/HowBookingWorks";
 import { VideoGallery } from "@/components/VideoGallery";
 import { Reveal } from "@/components/Reveal";
+import { EditOverlay } from "@/components/EditMode";
 
 export const revalidate = 60;
 
@@ -24,7 +25,21 @@ export const revalidate = 60;
  *  · in-page CTAs stay quiet (underlined); the nav + sticky bar carry the loud one
  */
 
-type Frame = { url: string | null; alt: string; fx?: number | null; fy?: number | null };
+type Frame = {
+  url: string | null;
+  alt: string;
+  fx?: number | null;
+  fy?: number | null;
+  /** DB identity — lets the admin overlay anchor/replace this image in place. */
+  id?: string | null;
+  slug?: string | null;
+};
+
+/** Admin-only edit chip for a frame (renders nothing for visitors). */
+function editable(f: Frame | null | undefined) {
+  if (!f) return null;
+  return <EditOverlay image={{ id: f.id, slug: f.slug, alt: f.alt, fx: f.fx, fy: f.fy }} />;
+}
 
 /** objectPosition from a frame's focal anchor (admin-set), else a slot default. */
 function focal(f: Frame | null | undefined, defX = 50, defY = 35): string {
@@ -46,7 +61,14 @@ export default async function HomePage() {
   ]);
 
   const frames: Frame[] = featured.length
-    ? featured.map((i) => ({ url: i.url, alt: i.alt, fx: i.focus_x, fy: i.focus_y }))
+    ? featured.map((i) => ({
+        url: i.url,
+        alt: i.alt,
+        fx: i.focus_x,
+        fy: i.focus_y,
+        id: i.id,
+        slug: i.slug,
+      }))
     : homeTeaser.slice(0, 6).map((i) => ({ url: null, alt: i.alt }));
 
   // Hero frame: admin-set hero (photo / film poster), else top featured.
@@ -80,7 +102,6 @@ export default async function HomePage() {
                 alt={cover.alt || "Quinceañera portrait"}
                 fill
                 priority
-                unoptimized
                 sizes="(max-width: 768px) 100vw, 58vw"
                 className="object-cover"
                 style={{ objectPosition: coverFocal }}
@@ -88,10 +109,11 @@ export default async function HomePage() {
             ) : (
               <div className="absolute inset-0 bg-greige" />
             )}
+            {editable(cover)}
           </div>
 
           {/* Type: pinned to the bottom of the cream field — museum air above. */}
-          <div className="order-2 flex flex-col justify-end px-5 pb-12 pt-14 md:order-1 md:col-span-5 md:pb-20 md:pl-8 md:pr-12 md:pt-24">
+          <div className="order-2 flex flex-col justify-end px-5 pb-12 pt-14 md:order-1 md:col-span-5 md:pb-20 md:pl-10 md:pr-12 md:pt-24 lg:pl-16">
             <p className="hero-enter hero-delay-1 text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">
               Quinceañera photography &amp; film
               <span className="mt-1 block">Dallas–Fort Worth</span>
@@ -145,7 +167,7 @@ export default async function HomePage() {
 
       {/* ================= CREDIBILITY — editorial stat line, not stars ================= */}
       <section className="border-y border-ink/10">
-        <div className="mx-auto grid max-w-[90rem] grid-cols-2 gap-y-8 px-5 py-12 md:grid-cols-4 md:px-8 md:py-14">
+        <div className="mx-auto grid max-w-[90rem] grid-cols-2 gap-y-8 px-5 py-12 md:grid-cols-4 md:px-10 lg:px-16 md:py-14">
           {[
             { n: "100+", l: "DFW families" },
             { n: "01", l: "celebration per day" },
@@ -170,7 +192,7 @@ export default async function HomePage() {
       {/* ================= THE WORK — a curated sequence, not a grid ================= */}
       <section className="pt-24 md:pt-36">
         {/* Spread title — oversized, left, with the section index far right. */}
-        <div className="mx-auto flex max-w-[90rem] items-end justify-between px-5 md:px-8">
+        <div className="mx-auto flex max-w-[90rem] items-end justify-between px-5 md:px-10 lg:px-16">
           <Reveal>
             <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">{home.work.eyebrow}</p>
             <h2
@@ -186,15 +208,16 @@ export default async function HomePage() {
         </div>
 
         {/* (a) Oversized — takes most of the width, deliberately off-center. */}
-        <div className="mx-auto mt-14 max-w-[90rem] px-5 md:mt-20 md:px-8">
+        <div className="mx-auto mt-14 max-w-[90rem] px-5 md:mt-20 md:px-10 lg:px-16">
           <Reveal className="md:mr-[18%]">
             <Link href="/portfolio" className="group block">
               <div className="relative aspect-[4/5] overflow-hidden sm:aspect-[16/11]">
                 {seqA?.url ? (
-                  <Image src={seqA.url} alt={seqA.alt} fill unoptimized sizes="(max-width: 768px) 100vw, 74vw" className="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02]" style={{ objectPosition: focal(seqA, 50, 28) }} />
+                  <Image src={seqA.url} alt={seqA.alt} fill sizes="(max-width: 768px) 100vw, 74vw" className="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02]" style={{ objectPosition: focal(seqA, 50, 28) }} />
                 ) : (
                   <div className="absolute inset-0 bg-greige" />
                 )}
+                {editable(seqA)}
               </div>
               <p className="mt-3 text-[0.6rem] uppercase tracking-[0.24em] text-ink-faint">{seqA?.alt}</p>
             </Link>
@@ -202,15 +225,16 @@ export default async function HomePage() {
         </div>
 
         {/* (b) + (c) Narrow vertical right · detail crop left, staggered. */}
-        <div className="mx-auto mt-16 grid max-w-[90rem] grid-cols-12 gap-y-16 px-5 md:mt-24 md:px-8">
+        <div className="mx-auto mt-16 grid max-w-[90rem] grid-cols-12 gap-y-16 px-5 md:mt-24 md:px-10 lg:px-16">
           <Reveal className="col-span-7 col-start-6 md:col-span-3 md:col-start-9">
             <Link href="/portfolio" className="group block">
               <div className="relative aspect-[3/4.6] overflow-hidden">
                 {seqB?.url ? (
-                  <Image src={seqB.url} alt={seqB.alt} fill unoptimized sizes="(max-width: 768px) 58vw, 24vw" className="object-cover transition-transform duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]" style={{ objectPosition: focal(seqB, 50, 35) }} />
+                  <Image src={seqB.url} alt={seqB.alt} fill sizes="(max-width: 768px) 58vw, 24vw" className="object-cover transition-transform duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]" style={{ objectPosition: focal(seqB, 50, 35) }} />
                 ) : (
                   <div className="absolute inset-0 bg-greige" />
                 )}
+                {editable(seqB)}
               </div>
               <p className="mt-3 text-[0.6rem] uppercase tracking-[0.24em] text-ink-faint">{seqB?.alt}</p>
             </Link>
@@ -220,35 +244,39 @@ export default async function HomePage() {
             <Link href="/portfolio" className="group block">
               <div className="relative aspect-square overflow-hidden">
                 {seqC?.url ? (
-                  <Image src={seqC.url} alt={seqC.alt} fill unoptimized sizes="(max-width: 768px) 50vw, 24vw" className="object-cover transition-transform duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]" style={{ objectPosition: focal(seqC, 50, 22) }} />
+                  <Image src={seqC.url} alt={seqC.alt} fill sizes="(max-width: 768px) 50vw, 24vw" className="object-cover transition-transform duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]" style={{ objectPosition: focal(seqC, 50, 22) }} />
                 ) : (
                   <div className="absolute inset-0 bg-greige" />
                 )}
+                {editable(seqC)}
               </div>
               <p className="mt-3 text-[0.6rem] uppercase tracking-[0.24em] text-ink-faint">{seqC?.alt}</p>
             </Link>
           </Reveal>
         </div>
 
-        {/* (d) Full-bleed cinematic — edge to edge, A24 still. */}
-        <Reveal className="mt-20 md:mt-28">
-          <Link href="/portfolio" className="group block">
-            <div className="relative aspect-[5/6] w-full overflow-hidden sm:aspect-[21/10]">
-              {seqD?.url ? (
-                <Image src={seqD.url} alt={seqD.alt} fill unoptimized sizes="100vw" className="object-cover transition-transform duration-[1400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.015]" style={{ objectPosition: focal(seqD, 50, 30) }} />
-              ) : (
-                <div className="absolute inset-0 bg-greige" />
-              )}
-            </div>
-          </Link>
-          <div className="mx-auto flex max-w-[90rem] items-baseline justify-between px-5 pt-3 md:px-8">
-            <p className="text-[0.6rem] uppercase tracking-[0.24em] text-ink-faint">{seqD?.alt}</p>
-            <Link href="/portfolio" className={quietLink("text-ink underline decoration-ink/30 hover:text-wine hover:decoration-wine")}>
-              {home.work.cta}
-              <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
+        {/* (d) Cinematic wide — contained with offset air, not a viewport-swallowing bleed. */}
+        <div className="mx-auto mt-20 max-w-[90rem] px-5 md:mt-28 md:px-10 lg:px-16">
+          <Reveal className="md:ml-[14%]">
+            <Link href="/portfolio" className="group block">
+              <div className="relative aspect-[4/5] overflow-hidden sm:aspect-[16/8]">
+                {seqD?.url ? (
+                  <Image src={seqD.url} alt={seqD.alt} fill sizes="(max-width: 768px) 100vw, 74vw" className="object-cover transition-transform duration-[1400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.015]" style={{ objectPosition: focal(seqD, 50, 30) }} />
+                ) : (
+                  <div className="absolute inset-0 bg-greige" />
+                )}
+                {editable(seqD)}
+              </div>
             </Link>
-          </div>
-        </Reveal>
+            <div className="flex items-baseline justify-between pt-3">
+              <p className="text-[0.6rem] uppercase tracking-[0.24em] text-ink-faint">{seqD?.alt}</p>
+              <Link href="/portfolio" className={quietLink("text-ink underline decoration-ink/30 hover:text-wine hover:decoration-wine")}>
+                {home.work.cta}
+                <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
+              </Link>
+            </div>
+          </Reveal>
+        </div>
       </section>
 
       {/* ================= AVAILABILITY — the one centered moment ================= */}
@@ -262,7 +290,7 @@ export default async function HomePage() {
 
       {/* ================= INVESTMENT — a lookbook list, not pricing cards ================= */}
       <section className="pt-24 md:pt-36">
-        <div className="mx-auto max-w-[90rem] px-5 md:px-8">
+        <div className="mx-auto max-w-[90rem] px-5 md:px-10 lg:px-16">
           <div className="grid md:grid-cols-12">
             <Reveal className="md:col-span-4">
               <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">{home.packages.eyebrow}</p>
@@ -323,7 +351,7 @@ export default async function HomePage() {
 
       {/* ================= PROCESS — a calm numbered column, offset right ================= */}
       <section className="pt-24 md:pt-36">
-        <div className="mx-auto max-w-[90rem] px-5 md:px-8">
+        <div className="mx-auto max-w-[90rem] px-5 md:px-10 lg:px-16">
           <div className="grid md:grid-cols-12">
             <Reveal className="md:col-span-3">
               <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">The process</p>
@@ -352,7 +380,7 @@ export default async function HomePage() {
       {/* ================= FILM — only when a real film exists ================= */}
       {videos.length > 0 ? (
         <section className="pt-24 md:pt-36">
-          <div className="mx-auto max-w-[90rem] px-5 md:px-8">
+          <div className="mx-auto max-w-[90rem] px-5 md:px-10 lg:px-16">
             <Reveal className="mb-10 max-w-xl">
               <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">{home.film.eyebrow}</p>
               <h2
@@ -369,7 +397,7 @@ export default async function HomePage() {
 
       {/* ================= GOOD TO KNOW — narrow editorial Q&A ================= */}
       <section className="pt-24 md:pt-36">
-        <div className="mx-auto max-w-[90rem] px-5 md:px-8">
+        <div className="mx-auto max-w-[90rem] px-5 md:px-10 lg:px-16">
           <div className="grid md:grid-cols-12">
             <Reveal className="md:col-span-3">
               <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">{home.faq.eyebrow}</p>
@@ -389,7 +417,7 @@ export default async function HomePage() {
       {/* ================= TESTIMONIALS — pull-quotes, when released ones exist ================= */}
       {testimonials.length > 0 ? (
         <section className="pt-24 md:pt-36">
-          <div className="mx-auto max-w-[90rem] px-5 md:px-8">
+          <div className="mx-auto max-w-[90rem] px-5 md:px-10 lg:px-16">
             <div className="grid gap-y-14 md:grid-cols-12">
               <Reveal className="md:col-span-3">
                 <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">{home.testimonials.eyebrow}</p>
@@ -422,7 +450,6 @@ export default async function HomePage() {
               src={closing.url}
               alt={closing.alt || "Quinceañera"}
               fill
-              unoptimized
               sizes="100vw"
               className="object-cover"
               style={{ objectPosition: focal(closing, 50, 25) }}
@@ -430,9 +457,10 @@ export default async function HomePage() {
           ) : (
             <div className="absolute inset-0 bg-ink" />
           )}
+          {editable(closing)}
           <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-ink/75 via-ink/15 to-transparent" />
           <div className="absolute inset-x-0 bottom-0">
-            <div className="mx-auto max-w-[90rem] px-5 pb-14 md:px-8 md:pb-20">
+            <div className="mx-auto max-w-[90rem] px-5 pb-14 md:px-10 lg:px-16 md:pb-20">
               <p
                 className="max-w-3xl font-display italic text-cream"
                 style={{ fontSize: "clamp(2rem,5vw,4.2rem)", lineHeight: 1.05 }}

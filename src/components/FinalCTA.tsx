@@ -17,7 +17,7 @@ export function FinalCTA({
 }) {
   return (
     <section className="border-t border-line bg-cream">
-      <div className="mx-auto max-w-3xl px-5 py-section text-center md:px-8 md:py-section-lg">
+      <div className="mx-auto max-w-3xl px-5 py-section text-center md:px-10 lg:px-16 md:py-section-lg">
         <Reveal>
           <span className="tag">{accent}</span>
           <h2 className="mx-auto mt-5 max-w-2xl display-2 text-ink text-balance">

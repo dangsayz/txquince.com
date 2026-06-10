@@ -44,7 +44,7 @@ export default function EsBlogIndexPage() {
 
   return (
     <>
-      <section className="mx-auto max-w-7xl px-5 pt-section md:px-8 md:pt-section-lg">
+      <section className="mx-auto max-w-7xl px-5 pt-section md:px-10 lg:px-16 md:pt-section-lg">
         <div className="flex justify-end">
           <Link href="/blog" hrefLang="en" className="text-xs text-wine underline underline-offset-2 hover:text-wine-deep">
             Read in English
@@ -61,7 +61,7 @@ export default function EsBlogIndexPage() {
       </section>
 
       {featured ? (
-        <section className="mx-auto max-w-7xl px-5 py-section md:px-8">
+        <section className="mx-auto max-w-7xl px-5 py-section md:px-10 lg:px-16">
           <Reveal>
             <Link
               href={`/es/blog/${featured.slug}`}
@@ -80,7 +80,7 @@ export default function EsBlogIndexPage() {
         </section>
       ) : null}
 
-      <section className="mx-auto max-w-7xl px-5 pb-section md:px-8 md:pb-section-lg">
+      <section className="mx-auto max-w-7xl px-5 pb-section md:px-10 lg:px-16 md:pb-section-lg">
         {CATEGORY_ORDER.map((cat) => {
           const inCat = rest.filter((p) => p.category === cat);
           if (inCat.length === 0) return null;
@@ -109,7 +109,7 @@ export default function EsBlogIndexPage() {
       </section>
 
       <section className="bg-ink text-cream">
-        <div className="mx-auto max-w-3xl px-5 py-section text-center md:px-8">
+        <div className="mx-auto max-w-3xl px-5 py-section text-center md:px-10 lg:px-16">
           <h2 className="display-2 text-cream text-balance">Reserva la fecha de su quinceañera</h2>
           <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-cream/75">
             Le confirmo que su fecha está disponible y le envío un enlace seguro para el depósito. Sin pago ahora mismo.

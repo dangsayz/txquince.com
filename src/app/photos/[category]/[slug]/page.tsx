@@ -14,6 +14,12 @@ import {
 } from "@/lib/content-db";
 import { Reveal } from "@/components/Reveal";
 import { ProtectedImg } from "@/components/ProtectedImg";
+import { EditOverlay } from "@/components/EditMode";
+
+/** Branded serve URL at an explicit derivative width. */
+function at(url: string, w: number): string {
+  return `${url}${url.includes("?") ? "&" : "?"}w=${w}`;
+}
 
 export const revalidate = 3600;
 
@@ -115,7 +121,7 @@ export default async function PhotoPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <article className="mx-auto max-w-[90rem] px-5 pb-24 pt-12 md:px-8 md:pb-36 md:pt-16">
+      <article className="mx-auto max-w-[90rem] px-5 pb-24 pt-12 md:px-10 lg:px-16 md:pb-36 md:pt-16">
         {/* Breadcrumb line */}
         <Reveal>
           <p className="text-[0.62rem] uppercase tracking-[0.28em] text-ink-faint">
@@ -132,14 +138,19 @@ export default async function PhotoPage({
         {/* The photograph — display derivative only; expanding never fetches more. */}
         <div className="mt-8 grid gap-10 md:grid-cols-12 md:gap-8">
           <Reveal className="md:col-span-7">
-            <ProtectedImg
-              src={img.url}
-              alt={img.alt}
-              width={img.width}
-              height={img.height}
-              loading="eager"
-              className="h-auto w-full"
-            />
+            <div className="relative">
+              <ProtectedImg
+                src={at(img.url, 1920)}
+                alt={img.alt}
+                width={img.width}
+                height={img.height}
+                loading="eager"
+                className="h-auto w-full"
+              />
+              <EditOverlay
+                image={{ id: img.id, slug: img.slug, alt: img.alt, fx: img.focus_x, fy: img.focus_y }}
+              />
+            </div>
           </Reveal>
 
           {/* Caption block — pinned low like a plate caption. */}
@@ -200,7 +211,7 @@ export default async function PhotoPage({
               {related.map((r) => (
                 <Link key={r.id} href={imagePagePath(r.section, r.slug as string)} className="group block overflow-hidden">
                   <ProtectedImg
-                    src={r.url}
+                    src={at(r.url, 640)}
                     alt={r.alt}
                     loading="lazy"
                     width={r.width}

@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function ThankYouPage() {
   return (
-    <section className="mx-auto flex min-h-[70svh] max-w-2xl flex-col items-center justify-center px-5 py-section text-center md:px-8">
+    <section className="mx-auto flex min-h-[70svh] max-w-2xl flex-col items-center justify-center px-5 py-section text-center md:px-10 lg:px-16">
       <p className="eyebrow mb-6">Inquiry received</p>
       <h1 className="font-display text-4xl leading-[1.08] text-ink text-balance md:text-5xl">
         Thank you — I&apos;ll personally reach out within 24 hours.

@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 export default function LocationsHubEs() {
   return (
     <>
-      <section className="mx-auto max-w-4xl px-5 pt-section text-center md:px-8 md:pt-section-lg">
+      <section className="mx-auto max-w-4xl px-5 pt-section text-center md:px-10 lg:px-16 md:pt-section-lg">
         <Reveal>
           <p className="eyebrow mb-5">Áreas que cubro</p>
           <h1 className="mx-auto max-w-3xl display-2 text-ink text-balance">
@@ -57,7 +57,7 @@ export default function LocationsHubEs() {
         </Reveal>
       </section>
 
-      <section className="mx-auto max-w-5xl px-5 py-section md:px-8 md:py-section-lg">
+      <section className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
         <div className="grid gap-5 sm:grid-cols-2">
           {locations.map((l, i) => (
             <Reveal key={l.slug} delay={i * 60}>

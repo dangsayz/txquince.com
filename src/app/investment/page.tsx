@@ -76,7 +76,7 @@ export default function InvestmentPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       {/* Cover — editorial: overline, oversized statement, narrow standfirst. */}
-      <section className="mx-auto max-w-[90rem] px-5 pt-20 md:px-8 md:pt-32">
+      <section className="mx-auto max-w-[90rem] px-5 pt-20 md:px-10 lg:px-16 md:pt-32">
         <Reveal>
           <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">
             {investmentIntro.eyebrow}
@@ -100,7 +100,7 @@ export default function InvestmentPage() {
       {/* Collections — a lookbook ledger: hairline rows, includes set like an
           index, emphasis through scale (no cards, no dark blocks, no badges). */}
       <section className="mt-20 border-y border-ink/10 bg-white md:mt-28">
-        <div className="mx-auto max-w-[90rem] px-5 py-8 md:px-8 md:py-12">
+        <div className="mx-auto max-w-[90rem] px-5 py-8 md:px-10 lg:px-16 md:py-12">
           {packages.map((p, i) => (
             <Reveal
               key={p.id}
@@ -162,7 +162,7 @@ export default function InvestmentPage() {
       </section>
 
       {/* FAQ — offset editorial Q&A */}
-      <section className="mx-auto max-w-[90rem] px-5 py-24 md:px-8 md:py-36">
+      <section className="mx-auto max-w-[90rem] px-5 py-24 md:px-10 lg:px-16 md:py-36">
         <div className="grid md:grid-cols-12">
           <div className="md:col-span-3">
             <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">Questions</p>
@@ -186,7 +186,7 @@ export default function InvestmentPage() {
 
       {/* Reviews on the pricing page — 56% want proof before they inquire.
           Renders only when release-cleared testimonials exist. */}
-      <Testimonials className="mx-auto max-w-7xl px-5 py-section md:px-8 md:py-section-lg" />
+      <Testimonials className="mx-auto max-w-7xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg" />
 
       <FinalCTA />
     </>

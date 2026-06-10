@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Figure } from "@/components/Figure";
 import { Reveal } from "@/components/Reveal";
 import { ShareModal } from "@/components/ShareModal";
+import { EditOverlay } from "@/components/EditMode";
 
 export type GalleryItem = {
   url: string | null;
@@ -16,6 +17,10 @@ export type GalleryItem = {
   /** Permanent slug + section → the branded share page (/photos/...). */
   slug?: string | null;
   section?: string;
+  /** DB identity + anchor — powers the admin on-page edit overlay. */
+  id?: string | null;
+  fx?: number | null;
+  fy?: number | null;
 };
 
 const SITE_TITLE = "TX Quince — Quinceañera Photography & Film";
@@ -69,7 +74,6 @@ export function PortfolioGallery({ images }: { images: GalleryItem[] }) {
                       alt={img.alt}
                       width={img.width}
                       height={img.height}
-                      unoptimized
                       sizes={sizes}
                       draggable={false}
                       className="block h-auto w-full"
@@ -89,6 +93,9 @@ export function PortfolioGallery({ images }: { images: GalleryItem[] }) {
                     Tap to share
                   </span>
                 </div>
+                <EditOverlay
+                  image={{ id: img.id, slug: img.slug, alt: img.alt, fx: img.fx, fy: img.fy }}
+                />
               </button>
             ) : (
               <div className="overflow-hidden rounded-2xl ring-1 ring-line/70">

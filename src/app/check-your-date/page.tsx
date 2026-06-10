@@ -39,12 +39,12 @@ export default function CheckYourDatePage() {
     <>
       {/* Trust bar — proof before the ask. */}
       <div className="border-b border-ink/10 bg-white">
-        <div className="mx-auto max-w-[90rem] px-5 py-5 md:px-8">
+        <div className="mx-auto max-w-[90rem] px-5 py-5 md:px-10 lg:px-16">
           <SocialProofStrip />
         </div>
       </div>
 
-      <div className="mx-auto grid max-w-[90rem] gap-12 px-5 py-20 md:grid-cols-[0.9fr_1.1fr] md:gap-20 md:px-8 md:py-28">
+      <div className="mx-auto grid max-w-[90rem] gap-12 px-5 py-20 md:grid-cols-[0.9fr_1.1fr] md:gap-20 md:px-10 lg:px-16 md:py-28">
         {/* Left: framing + scarcity (sold-out reality) */}
         <div className="md:sticky md:top-28 md:self-start">
           <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">Inquiries</p>
@@ -98,7 +98,7 @@ export default function CheckYourDatePage() {
 
       {/* What happens next — calm numbered rows, offset right. */}
       <section className="border-y border-ink/10 bg-white">
-        <div className="mx-auto max-w-[90rem] px-5 py-20 md:px-8 md:py-28">
+        <div className="mx-auto max-w-[90rem] px-5 py-20 md:px-10 lg:px-16 md:py-28">
           <div className="grid md:grid-cols-12">
             <div className="md:col-span-4">
               <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">
@@ -131,7 +131,7 @@ export default function CheckYourDatePage() {
       </section>
 
       {/* See the real, full work — defuse the "is this real?" fear. */}
-      <section className="mx-auto max-w-[90rem] px-5 py-24 md:px-8 md:py-36">
+      <section className="mx-auto max-w-[90rem] px-5 py-24 md:px-10 lg:px-16 md:py-36">
         <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">See the work first</p>
         <h2
           className="mt-4 max-w-2xl font-display text-ink"
@@ -151,7 +151,7 @@ export default function CheckYourDatePage() {
       </section>
 
       {/* Testimonials — renders only when release-cleared ones exist. */}
-      <Testimonials className="mx-auto max-w-7xl px-5 pb-section md:px-8 md:pb-section-lg" />
+      <Testimonials className="mx-auto max-w-7xl px-5 pb-section md:px-10 lg:px-16 md:pb-section-lg" />
     </>
   );
 }

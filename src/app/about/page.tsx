@@ -22,7 +22,7 @@ export default function AboutPage() {
   return (
     <>
       {/* Spread — portrait right, statement pinned low-left, museum air above. */}
-      <section className="mx-auto grid max-w-[90rem] gap-10 px-5 pt-16 md:grid-cols-12 md:gap-8 md:px-8 md:pt-24">
+      <section className="mx-auto grid max-w-[90rem] gap-10 px-5 pt-16 md:grid-cols-12 md:gap-8 md:px-10 lg:px-16 md:pt-24">
         <Reveal className="md:order-2 md:col-span-6 md:col-start-7">
           <Figure
             imageKey={about.portraitKey}
@@ -47,7 +47,7 @@ export default function AboutPage() {
       </section>
 
       {/* Story — narrow measure, offset right like a magazine column. */}
-      <section className="mx-auto max-w-[90rem] px-5 py-24 md:px-8 md:py-36">
+      <section className="mx-auto max-w-[90rem] px-5 py-24 md:px-10 lg:px-16 md:py-36">
         <div className="grid md:grid-cols-12">
           <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint md:col-span-3">
             The story
@@ -64,7 +64,7 @@ export default function AboutPage() {
 
       {/* Culture + approach — white band, hairline-separated columns. */}
       <section className="border-y border-ink/10 bg-white">
-        <div className="mx-auto grid max-w-[90rem] gap-14 px-5 py-20 md:grid-cols-2 md:gap-20 md:px-8 md:py-28">
+        <div className="mx-auto grid max-w-[90rem] gap-14 px-5 py-20 md:grid-cols-2 md:gap-20 md:px-10 lg:px-16 md:py-28">
           <Reveal>
             <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">La cultura</p>
             <h2 className="mt-4 font-display text-3xl text-ink md:text-4xl">
@@ -87,7 +87,7 @@ export default function AboutPage() {
       </section>
 
       {/* Closing — one italic line, left, large. */}
-      <section className="mx-auto max-w-[90rem] px-5 py-24 md:px-8 md:py-36">
+      <section className="mx-auto max-w-[90rem] px-5 py-24 md:px-10 lg:px-16 md:py-36">
         <Reveal>
           <p
             className="max-w-3xl font-display italic leading-snug text-ink"

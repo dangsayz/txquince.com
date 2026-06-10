@@ -140,7 +140,7 @@ export default async function CityPage({
       />
 
       {/* Hero */}
-      <section className="mx-auto max-w-4xl px-5 pt-section text-center md:px-8 md:pt-section-lg">
+      <section className="mx-auto max-w-4xl px-5 pt-section text-center md:px-10 lg:px-16 md:pt-section-lg">
         <Reveal>
           <p className="eyebrow mb-5">Quinceañera Photography · {loc.city}, TX</p>
           <h1 className="mx-auto max-w-3xl display-2 text-ink text-balance">
@@ -171,7 +171,7 @@ export default async function CityPage({
       </section>
 
       {/* Local intro */}
-      <section className="mx-auto max-w-3xl px-5 py-section md:px-8 md:py-section-lg">
+      <section className="mx-auto max-w-3xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
         <Reveal className="flex flex-col gap-6">
           {loc.intro.map((para) => (
             <p key={para.slice(0, 24)} className="text-base leading-relaxed text-ink-soft">
@@ -188,7 +188,7 @@ export default async function CityPage({
 
       {/* Compact collections — full detail lives on /investment */}
       <section className="bg-greige">
-        <div className="mx-auto max-w-5xl px-5 py-section md:px-8 md:py-section-lg">
+        <div className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
           <Reveal>
             <h2 className="display-2 text-ink text-center text-balance">
               Fixed-price collections from {packages[0].priceLabel}
@@ -247,13 +247,13 @@ export default async function CityPage({
       </section>
 
       {/* How booking works */}
-      <section className="mx-auto max-w-7xl px-5 py-section md:px-8 md:py-section-lg">
+      <section className="mx-auto max-w-7xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
         <HowBookingWorks />
       </section>
 
       {/* Portfolio CTA */}
       <section className="bg-ink text-cream">
-        <div className="mx-auto max-w-3xl px-5 py-section text-center md:px-8 md:py-section-lg">
+        <div className="mx-auto max-w-3xl px-5 py-section text-center md:px-10 lg:px-16 md:py-section-lg">
           <h2 className="display-2 text-cream text-balance">
             See full {loc.city} quinceañeras, start to finish.
           </h2>
@@ -270,7 +270,7 @@ export default async function CityPage({
       </section>
 
       {/* City FAQ */}
-      <section className="mx-auto max-w-3xl px-5 py-section md:px-8 md:py-section-lg">
+      <section className="mx-auto max-w-3xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
         <h2 className="display-2 text-ink">
           Quinceañera photography in {loc.city} — questions, answered.
         </h2>
@@ -286,7 +286,7 @@ export default async function CityPage({
 
       {/* Planning guides (closes the city ↔ blog loop) */}
       {guides.length ? (
-        <section className="mx-auto max-w-5xl px-5 py-section md:px-8 md:py-section-lg">
+        <section className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
           <p className="eyebrow mb-5">Planning your {loc.city} quinceañera</p>
           <div className="grid gap-4 sm:grid-cols-2">
             {guides.map((g) => (
@@ -312,7 +312,7 @@ export default async function CityPage({
 
       {/* Nearby cities — internal link graph */}
       <section className="bg-greige">
-        <div className="mx-auto max-w-5xl px-5 py-section md:px-8 md:py-section-lg">
+        <div className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
           <p className="eyebrow mb-5">Also serving across DFW</p>
           <div className="flex flex-wrap gap-3">
             {nearby.map((n) => (
@@ -329,7 +329,7 @@ export default async function CityPage({
       </section>
 
       {/* Testimonials — renders only when release-cleared ones exist. */}
-      <Testimonials className="mx-auto max-w-7xl px-5 py-section md:px-8 md:py-section-lg" />
+      <Testimonials className="mx-auto max-w-7xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg" />
 
       <FinalCTA />
     </>

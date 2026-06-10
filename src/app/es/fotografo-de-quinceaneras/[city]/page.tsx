@@ -130,7 +130,7 @@ export default async function CityPageEs({
       />
 
       {/* Hero */}
-      <section className="mx-auto max-w-4xl px-5 pt-section text-center md:px-8 md:pt-section-lg">
+      <section className="mx-auto max-w-4xl px-5 pt-section text-center md:px-10 lg:px-16 md:pt-section-lg">
         <Reveal>
           <p className="eyebrow mb-5">Fotografía de Quinceañeras · {loc.city}, TX</p>
           <h1 className="mx-auto max-w-3xl display-2 text-ink text-balance">
@@ -160,7 +160,7 @@ export default async function CityPageEs({
       </section>
 
       {/* Intro local */}
-      <section className="mx-auto max-w-3xl px-5 py-section md:px-8 md:py-section-lg">
+      <section className="mx-auto max-w-3xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
         <Reveal className="flex flex-col gap-6">
           {loc.introEs.map((para) => (
             <p key={para.slice(0, 24)} className="text-base leading-relaxed text-ink-soft">
@@ -177,7 +177,7 @@ export default async function CityPageEs({
 
       {/* Colecciones */}
       <section className="bg-greige">
-        <div className="mx-auto max-w-5xl px-5 py-section md:px-8 md:py-section-lg">
+        <div className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
           <Reveal>
             <h2 className="display-2 text-ink text-center text-balance">
               Colecciones a precio fijo desde {packages[0].priceLabel}
@@ -233,7 +233,7 @@ export default async function CityPageEs({
       </section>
 
       {/* Cómo funciona la reserva */}
-      <section className="mx-auto max-w-4xl px-5 py-section md:px-8 md:py-section-lg">
+      <section className="mx-auto max-w-4xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
         <h2 className="display-2 text-ink text-center text-balance">
           Cómo funciona la reserva
         </h2>
@@ -263,7 +263,7 @@ export default async function CityPageEs({
 
       {/* Portafolio CTA */}
       <section className="bg-ink text-cream">
-        <div className="mx-auto max-w-3xl px-5 py-section text-center md:px-8 md:py-section-lg">
+        <div className="mx-auto max-w-3xl px-5 py-section text-center md:px-10 lg:px-16 md:py-section-lg">
           <h2 className="display-2 text-cream text-balance">
             Mira quinceañeras completas de {loc.city}, de principio a fin.
           </h2>
@@ -280,7 +280,7 @@ export default async function CityPageEs({
       </section>
 
       {/* Preguntas */}
-      <section className="mx-auto max-w-3xl px-5 py-section md:px-8 md:py-section-lg">
+      <section className="mx-auto max-w-3xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
         <h2 className="display-2 text-ink">
           Fotografía de quinceañeras en {loc.city} — preguntas, respondidas.
         </h2>
@@ -296,7 +296,7 @@ export default async function CityPageEs({
 
       {/* Guías para planear (cierra el círculo ciudad ↔ blog) */}
       {guides.length ? (
-        <section className="mx-auto max-w-5xl px-5 py-section md:px-8 md:py-section-lg">
+        <section className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
           <p className="eyebrow mb-5">Para planear su quinceañera en {loc.city}</p>
           <div className="grid gap-4 sm:grid-cols-2">
             {guides.map((g) => (
@@ -322,7 +322,7 @@ export default async function CityPageEs({
 
       {/* Ciudades cercanas */}
       <section className="bg-greige">
-        <div className="mx-auto max-w-5xl px-5 py-section md:px-8 md:py-section-lg">
+        <div className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
           <p className="eyebrow mb-5">También en todo DFW</p>
           <div className="flex flex-wrap gap-3">
             {nearby.map((n) => (
@@ -339,7 +339,7 @@ export default async function CityPageEs({
       </section>
 
       {/* CTA final */}
-      <section className="mx-auto max-w-3xl px-5 py-section text-center md:px-8 md:py-section-lg">
+      <section className="mx-auto max-w-3xl px-5 py-section text-center md:px-10 lg:px-16 md:py-section-lg">
         <h2 className="display-2 text-ink text-balance">Aparta su fecha hoy.</h2>
         <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-ink-soft">
           Solo reservo una quinceañera al día. Asegura la suya con un depósito —

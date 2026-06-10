@@ -119,7 +119,7 @@ export function HeroCinematic({
 
       {/* ---- content on the scrim ---- */}
       <div className="absolute inset-x-0 bottom-0">
-        <div className="mx-auto max-w-7xl px-5 pb-12 md:px-8 md:pb-16">
+        <div className="mx-auto max-w-7xl px-5 pb-12 md:px-10 lg:px-16 md:pb-16">
           <div className="hero-enter hero-delay-1 flex items-center gap-3">
             <span className="script text-cream/90" style={{ fontSize: "1.6rem", lineHeight: 1 }}>
               Para siempre

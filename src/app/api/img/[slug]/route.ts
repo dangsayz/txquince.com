@@ -3,7 +3,8 @@
  *
  * Resolves a permanent slug → storage object, then serves a protected
  * derivative via the Cloudflare Images binding:
- *   · capped at 1600px long edge (originals never leave storage)
+ *   · responsive widths via ?w= (snapped to fixed steps, capped at 2400px —
+ *     originals never leave storage)
  *   · visible watermark drawn at transform time (never baked into originals)
  *   · WebP, quality-tuned; EXIF stripped by the transform pipeline
  *   · hotlink-checked (empty referer allowed — iMessage/OG fetchers send none)
@@ -19,8 +20,14 @@ import { site } from "@/content/site";
 
 export const dynamic = "force-dynamic";
 
-const MAX_EDGE = 1600;
-const QUALITY = 82;
+/**
+ * Derivative widths the route will produce (mirrors next.config deviceSizes +
+ * imageSizes). ?w= snaps UP to the nearest step so the edge cache stays small
+ * and srcset entries are pixel-true. No param → 1600 (OG fetchers, old links).
+ */
+const WIDTHS = [256, 384, 512, 640, 828, 1080, 1440, 1920, 2400];
+const MAX_EDGE = 2400;
+const QUALITY = 86;
 
 /** Minimal structural types for the Images binding (no generated env types). */
 interface CfImageTransformer {
@@ -45,6 +52,19 @@ function hotlinked(req: Request): boolean {
 }
 
 const CACHE = "public, max-age=31536000, immutable";
+// `hero` is the one mutable slug (admin can swap it) — short cache, no immutable.
+const HERO_CACHE = "public, max-age=3600";
+
+function pickWidth(request: Request): number {
+  let w = NaN;
+  try {
+    w = Number(new URL(request.url).searchParams.get("w"));
+  } catch {
+    /* default */
+  }
+  if (!Number.isFinite(w) || w <= 0) return 1600;
+  return WIDTHS.find((step) => step >= w) ?? MAX_EDGE;
+}
 
 /** Header-safe note: strip newlines/control chars (illegal in header values). */
 function hdr(s: string): string {
@@ -93,6 +113,8 @@ async function serve(
   if (hotlinked(request)) {
     return new NextResponse("Hotlinking is not permitted.", { status: 403 });
   }
+  const width = pickWidth(request);
+  const cacheHeader = slug === "hero" ? HERO_CACHE : CACHE;
 
   // Resolve the internal source (never revealed to the client).
   let sourceUrl: string | null = null;
@@ -127,23 +149,31 @@ async function serve(
     return new NextResponse(upstream.body, {
       headers: {
         "content-type": upstream.headers.get("content-type") ?? "image/webp",
-        "cache-control": CACHE,
+        "cache-control": cacheHeader,
         "x-img": `passthrough:${ctxNote}`,
       },
     });
   }
 
   try {
-    let chain = images.input(upstream.body).transform({ width: MAX_EDGE, height: MAX_EDGE, fit: "scale-down" });
+    let chain = images.input(upstream.body).transform({ width, height: width, fit: "scale-down" });
 
-    // Watermark (PNG — SVG is not a valid Images input). Failure must never
+    // Watermark (PNG — SVG is not a valid Images input), scaled to the
+    // derivative so it reads the same at every size. Failure must never
     // 500 the image; worst case we serve unwatermarked.
     let wmNote = "wm";
     try {
       const origin = new URL(request.url).origin;
       const wm = await fetch(`${origin}/brand/wm.png`, { cf: { cacheTtl: 86400 } } as RequestInit);
       if (wm.ok && wm.body) {
-        chain = chain.draw(images.input(wm.body), { bottom: 20, right: 20, opacity: 0.55 });
+        const wmWidth = Math.min(470, Math.max(110, Math.round(width * 0.18)));
+        const margin = Math.max(10, Math.round(width * 0.012));
+        chain = chain.draw(images.input(wm.body), {
+          bottom: margin,
+          right: margin,
+          width: wmWidth,
+          opacity: 0.55,
+        });
       } else {
         wmNote = `no-wm:${wm.status}`;
       }
@@ -156,9 +186,9 @@ async function serve(
     return new NextResponse(res.body, {
       headers: {
         "content-type": res.headers.get("content-type") ?? "image/webp",
-        "cache-control": CACHE,
+        "cache-control": cacheHeader,
         "x-content-type-options": "nosniff",
-        "x-img": `transformed:${wmNote}`,
+        "x-img": `transformed:${wmNote}:w${width}`,
       },
     });
   } catch (err) {
@@ -168,7 +198,7 @@ async function serve(
     return new NextResponse(retry.body, {
       headers: {
         "content-type": retry.headers.get("content-type") ?? "image/webp",
-        "cache-control": CACHE,
+        "cache-control": cacheHeader,
         "x-img": `fallback:${hdr(err instanceof Error ? err.message : "?")}`,
       },
     });

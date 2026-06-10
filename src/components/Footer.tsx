@@ -39,9 +39,11 @@ export function Footer() {
 
   return (
     <footer className="relative bg-cream pt-section">
-      <div className="mx-auto max-w-5xl px-5 text-center md:px-8">
-        {/* Wordmark + tagline */}
-        <p className="font-display text-4xl text-ink md:text-5xl">{site.brand}</p>
+      <div className="mx-auto max-w-5xl px-5 text-center md:px-10 lg:px-16">
+        {/* Wordmark + tagline — masthead lockup, scaled up for the close */}
+        <p className="font-display text-4xl tracking-[0.16em] text-ink md:text-5xl">
+          <span className="text-wine-deep">TX</span> QUINCE
+        </p>
         <p className="mt-3 text-sm leading-relaxed text-ink-soft">{site.tagline}</p>
 
         {/* Social pills */}
@@ -71,7 +73,7 @@ export function Footer() {
       </div>
 
       {/* Link columns */}
-      <div className="mx-auto max-w-5xl px-5 md:px-8">
+      <div className="mx-auto max-w-5xl px-5 md:px-10 lg:px-16">
         <div className="mt-12 grid grid-cols-2 gap-8 border-t border-line pt-10 sm:grid-cols-4">
           {COLUMNS.map((col) => (
             <div key={col.title}>
