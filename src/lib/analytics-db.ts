@@ -1,6 +1,7 @@
 import "server-only";
 import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
 import { getBookings, getInquiries } from "@/lib/clients-db";
+import { releasedTestimonials } from "@/content/testimonials";
 import { collectionById } from "@/content/packages";
 import type { ConversionChange } from "@/components/admin/ChangeLog";
 
@@ -36,6 +37,14 @@ export type RangedStats = {
   funnel: { label: string; value: number }[];
   bySource: { source: string; leads: number; requests: number; bookedValue: number }[];
   insights: { type: "success" | "warning" | "info"; text: string }[];
+  /** Sessions active in the last 5 minutes — who's on the site right now. */
+  liveNow: { path: string; seconds: number; pages: number }[];
+  /** Per-page behavior: where families spend time and where they leave. */
+  engagement: { path: string; views: number; avgSeconds: number; exitRate: number }[];
+  /** The weakest funnel edge vs. healthy baseline — the thing to fix next. */
+  bottleneck: { edge: string; rate: number; baseline: number; action: string } | null;
+  /** Weekly flywheel — computed to-dos from live data (events → proof → rank). */
+  flywheel: { label: string; done: boolean; detail: string }[];
 };
 
 type PV = {
@@ -99,6 +108,10 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     funnel: [],
     bySource: [],
     insights: [],
+    liveNow: [],
+    engagement: [],
+    bottleneck: null,
+    flywheel: [],
   });
 
   if (!isSupabaseConfigured()) return empty(false);
@@ -110,16 +123,30 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     const start7 = new Date(now - 7 * 86400_000).toISOString();
     const startRange = new Date(now - range * 86400_000).toISOString();
 
-    const [pvRes, leRes, bookings, inquiries] = await Promise.all([
-      supabase
-        .from("page_views")
-        .select("path, referrer, session_id, utm_source, utm_medium, created_at")
-        .gte("created_at", startRange)
-        .order("created_at", { ascending: true }),
-      supabase.from("lead_events").select("event_type").gte("created_at", startRange),
-      getBookings(),
-      getInquiries(),
-    ]);
+    const week = new Date(now - 7 * 86400_000).toISOString();
+    const [pvRes, leRes, bookings, inquiries, imgWeekRes, vidRes, lastChangeRes] =
+      await Promise.all([
+        supabase
+          .from("page_views")
+          .select("path, referrer, session_id, utm_source, utm_medium, created_at")
+          .gte("created_at", startRange)
+          .order("created_at", { ascending: true }),
+        supabase.from("lead_events").select("event_type").gte("created_at", startRange),
+        getBookings(),
+        getInquiries(),
+        // Flywheel inputs: fresh proof + iteration cadence.
+        supabase
+          .from("portfolio_images")
+          .select("id", { count: "exact", head: true })
+          .gte("created_at", week),
+        supabase.from("videos").select("id", { count: "exact", head: true }),
+        supabase
+          .from("conversion_changes")
+          .select("created_at")
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle(),
+      ]);
 
     const rows = (pvRes.data ?? []) as PV[];
     const events = (leRes.data ?? []) as LE[];
@@ -220,6 +247,124 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
       .sort((a, b) => b.bookedValue - a.bookedValue || b.leads - a.leads || b.requests - a.requests)
       .slice(0, 10);
 
+    // ---- session journeys: dwell per page, exits, live-now ----
+    // Dwell for page N = gap to page N+1 in the same session (capped at 10 min;
+    // a session's final page has unknown dwell and counts as its exit).
+    const journeys = new Map<string, { path: string; t: number }[]>();
+    for (const r of rows) {
+      const sid = r.session_id ?? "anon";
+      if (!journeys.has(sid)) journeys.set(sid, []);
+      journeys.get(sid)!.push({ path: r.path, t: new Date(r.created_at).getTime() });
+    }
+
+    const pageStats = new Map<string, { views: number; dwell: number; samples: number; exits: number }>();
+    const stat = (p: string) => {
+      const s = pageStats.get(p) ?? { views: 0, dwell: 0, samples: 0, exits: 0 };
+      pageStats.set(p, s);
+      return s;
+    };
+    const liveNow: RangedStats["liveNow"] = [];
+    const liveCutoff = now - 5 * 60_000;
+
+    for (const steps of journeys.values()) {
+      for (let i = 0; i < steps.length; i++) {
+        const s = stat(steps[i].path);
+        s.views += 1;
+        if (i < steps.length - 1) {
+          const gap = (steps[i + 1].t - steps[i].t) / 1000;
+          if (gap > 0 && gap <= 600) {
+            s.dwell += gap;
+            s.samples += 1;
+          }
+        } else {
+          s.exits += 1;
+        }
+      }
+      const last = steps[steps.length - 1];
+      if (last.t >= liveCutoff) {
+        liveNow.push({
+          path: last.path,
+          seconds: Math.round((last.t - steps[0].t) / 1000),
+          pages: steps.length,
+        });
+      }
+    }
+    liveNow.sort((a, b) => b.seconds - a.seconds);
+
+    const engagement: RangedStats["engagement"] = Array.from(pageStats.entries())
+      .map(([path, s]) => ({
+        path,
+        views: s.views,
+        avgSeconds: s.samples ? Math.round(s.dwell / s.samples) : 0,
+        exitRate: s.views ? Math.round((s.exits / s.views) * 100) : 0,
+      }))
+      .sort((a, b) => b.views - a.views)
+      .slice(0, 10);
+
+    // ---- bottleneck finder: weakest funnel edge vs. healthy baseline ----
+    // Only judge an edge once its denominator is meaningful (≥20).
+    const moneyPageSessions = Array.from(journeys.values()).filter((steps) =>
+      steps.some((s) => /^\/(investment|portfolio|reserve|photos)/.test(s.path)),
+    ).length;
+    const intentTotal = ctaClicks + formStarts + dateChecks;
+    const totalRequests = bookings.filter((b) =>
+      ["requested", "pending_payment", "paid"].includes(b.status),
+    ).length;
+    const edges: { edge: string; num: number; den: number; baseline: number; action: string }[] = [
+      { edge: "Visitors → viewing your work/pricing", num: moneyPageSessions, den: uniqueSessions, baseline: 0.35, action: "The homepage isn't pulling people deeper — strengthen the work section + CTAs above the fold." },
+      { edge: "Browsers → intent (date checks, CTA, form starts)", num: intentTotal, den: moneyPageSessions, baseline: 0.25, action: "They look but don't act — sharpen pricing clarity, availability urgency, and proof next to the ask." },
+      { edge: "Intent → an actual lead or date request", num: totalInquiries + totalRequests, den: intentTotal, baseline: 0.3, action: "They start but don't finish — shorten the form, reassure on payment, check mobile friction." },
+      { edge: "Date requests → paid deposits", num: paid, den: totalRequests, baseline: 0.5, action: "Requests stall before money — send deposit links faster and tighten the follow-up sequence." },
+    ];
+    let bottleneck: RangedStats["bottleneck"] = null;
+    let worst = 1;
+    for (const e of edges) {
+      if (e.den < 20) continue;
+      const rate = e.num / e.den;
+      const vsBaseline = rate / e.baseline;
+      if (vsBaseline < worst) {
+        worst = vsBaseline;
+        bottleneck = { edge: e.edge, rate: Math.round(rate * 100), baseline: Math.round(e.baseline * 100), action: e.action };
+      }
+    }
+
+    // ---- weekly flywheel: events → proof → content → rank → premium clients ----
+    const photosThisWeek = imgWeekRes.count ?? 0;
+    const filmCount = vidRes.count ?? 0;
+    const quotes = releasedTestimonials().length;
+    const lastChangeAt = (lastChangeRes.data as { created_at?: string } | null)?.created_at;
+    const lastChangeDays = lastChangeAt
+      ? Math.floor((now - new Date(lastChangeAt).getTime()) / 86400_000)
+      : Infinity;
+    const igTagged = Array.from(utmMap.keys()).some((k) => k.toLowerCase().includes("instagram"));
+    const flywheel: RangedStats["flywheel"] = [
+      {
+        label: "Upload this weekend's gallery",
+        done: photosThisWeek > 0,
+        detail: photosThisWeek > 0 ? `${photosThisWeek} new photo${photosThisWeek === 1 ? "" : "s"} this week` : "No new photos in 7 days — fresh proof is the flywheel's fuel",
+      },
+      {
+        label: "Publish one real film",
+        done: filmCount > 0,
+        detail: filmCount > 0 ? `${filmCount} film${filmCount === 1 ? "" : "s"} live` : "Zero films live — the film section hides until one exists",
+      },
+      {
+        label: "Collect a mom quote (text is enough)",
+        done: quotes > 0,
+        detail: quotes > 0 ? `${quotes} released quote${quotes === 1 ? "" : "s"}` : "Zero testimonials — your strongest missing trust block",
+      },
+      {
+        label: "Drive tagged Instagram traffic",
+        done: igTagged,
+        detail: igTagged ? "Instagram-tagged visits detected" : "No instagram-tagged visits — update the bio link + post",
+      },
+      {
+        label: "Log an improvement + baseline",
+        done: lastChangeDays <= 14,
+        detail: Number.isFinite(lastChangeDays) ? `Last entry ${lastChangeDays}d ago` : "No change-log entries yet",
+      },
+    ];
+
     // ---- insights ----
     const insights: RangedStats["insights"] = [];
     if (rangeViews === 0) {
@@ -280,6 +425,10 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
       funnel,
       bySource,
       insights,
+      liveNow: liveNow.slice(0, 12),
+      engagement,
+      bottleneck,
+      flywheel,
     };
   } catch {
     return empty(true);

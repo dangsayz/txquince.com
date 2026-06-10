@@ -1,6 +1,11 @@
 import Link from "next/link";
 import { getDashboardStats, getConversionChanges, type RangedStats } from "@/lib/analytics-db";
 import { ChangeLog } from "@/components/admin/ChangeLog";
+import { AutoRefresh } from "@/components/admin/AutoRefresh";
+
+function mins(s: number) {
+  return s >= 60 ? `${Math.floor(s / 60)}m ${s % 60}s` : `${s}s`;
+}
 
 export const dynamic = "force-dynamic";
 
@@ -107,7 +112,8 @@ export default async function AdminDashboard({
   const todayKey = new Date().toISOString().slice(0, 10);
 
   return (
-    <main className="mx-auto max-w-6xl px-5 py-10">
+    <main className="mx-auto max-w-6xl px-4 py-8 sm:px-5 md:py-10">
+      <AutoRefresh seconds={30} />
       {/* header + range */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
@@ -153,8 +159,50 @@ export default async function AdminDashboard({
         </Link>
       ) : null}
 
+      {/* THE BOTTLENECK — the one thing to fix, named automatically. */}
+      {s.bottleneck ? (
+        <section className="mt-6 rounded-2xl border-2 border-wine bg-white p-5">
+          <p className="text-[0.66rem] uppercase tracking-[0.18em] text-wine-deep">
+            Fix this first — your weakest funnel edge
+          </p>
+          <p className="mt-2 font-display text-xl text-ink">
+            {s.bottleneck.edge}:{" "}
+            <span className="text-wine-deep">{s.bottleneck.rate}%</span>
+            <span className="text-sm text-ink-faint"> (healthy ≈ {s.bottleneck.baseline}%)</span>
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-ink-soft">{s.bottleneck.action}</p>
+        </section>
+      ) : null}
+
+      {/* LIVE NOW — who's on the site this minute. */}
+      <section className="mt-4 rounded-2xl border border-line bg-white p-5">
+        <div className="flex items-center justify-between">
+          <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">
+            On the site right now
+          </p>
+          <span className="flex items-center gap-1.5 text-xs text-ink-soft">
+            <span aria-hidden className={`h-2 w-2 rounded-full ${s.liveNow.length ? "bg-emerald-500" : "bg-line"}`} />
+            {s.liveNow.length} visitor{s.liveNow.length === 1 ? "" : "s"}
+          </span>
+        </div>
+        {s.liveNow.length ? (
+          <ul className="mt-3 divide-y divide-line">
+            {s.liveNow.map((v, i) => (
+              <li key={i} className="flex items-baseline justify-between gap-3 py-2 text-sm">
+                <span className="truncate text-ink">{v.path === "/" ? "Homepage" : v.path}</span>
+                <span className="shrink-0 tabular-nums text-ink-soft">
+                  {v.pages} pg · {mins(v.seconds)}
+                </span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-3 text-sm text-ink-faint">Quiet right now — refreshes every 30s.</p>
+        )}
+      </section>
+
       {/* money + pipeline */}
-      <section className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <MetricCard label="Booked value" value={money(s.bookedValue)} helper={`${s.paid} paid`} emphasis />
         <MetricCard label="Pipeline" value={money(s.pipelineValue)} helper={`${s.requests} requests · ${s.pendingHolds} holds`} />
         <MetricCard label="Open leads" value={String(s.openLeads)} helper={`${s.totalInquiries} all-time`} />
@@ -211,6 +259,72 @@ export default async function AdminDashboard({
             );
           })}
         </div>
+      </section>
+
+      {/* PAGE ENGAGEMENT — where families spend time, where they leave. */}
+      <section className="mt-4 rounded-2xl border border-line bg-white p-5">
+        <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">
+          Page behavior · time on page &amp; exits
+        </p>
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full min-w-[420px] text-sm">
+            <thead>
+              <tr className="text-left text-[0.62rem] uppercase tracking-[0.14em] text-ink-faint">
+                <th className="pb-2 font-medium">Page</th>
+                <th className="pb-2 text-right font-medium">Views</th>
+                <th className="pb-2 text-right font-medium">Avg time</th>
+                <th className="pb-2 text-right font-medium">Exit %</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-line">
+              {s.engagement.map((p) => (
+                <tr key={p.path}>
+                  <td className="max-w-[14rem] truncate py-2 text-ink">
+                    {p.path === "/" ? "Homepage" : p.path}
+                  </td>
+                  <td className="py-2 text-right tabular-nums text-ink-soft">{p.views}</td>
+                  <td className="py-2 text-right tabular-nums text-ink-soft">
+                    {p.avgSeconds ? mins(p.avgSeconds) : "—"}
+                  </td>
+                  <td className={`py-2 text-right tabular-nums ${p.exitRate >= 70 ? "font-medium text-wine-deep" : "text-ink-soft"}`}>
+                    {p.exitRate}%
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="mt-3 text-xs text-ink-faint">
+          High exit % on a money page (investment, reserve) = the leak to fix. High exit on
+          blog posts is normal.
+        </p>
+      </section>
+
+      {/* WEEKLY FLYWHEEL — events → proof → content → rank → premium clients. */}
+      <section className="mt-4 rounded-2xl border border-line bg-white p-5">
+        <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">
+          This week&apos;s flywheel · computed from live data
+        </p>
+        <ul className="mt-4 space-y-3">
+          {s.flywheel.map((f) => (
+            <li key={f.label} className="flex gap-3">
+              <span
+                aria-hidden
+                className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[0.7rem] ${
+                  f.done ? "bg-emerald-600 text-white" : "border border-wine text-wine"
+                }`}
+              >
+                {f.done ? "✓" : "!"}
+              </span>
+              <span className="text-sm leading-snug">
+                <span className={f.done ? "text-ink-soft line-through decoration-ink/30" : "font-medium text-ink"}>
+                  {f.label}
+                </span>
+                <span className="block text-xs text-ink-faint">{f.detail}</span>
+              </span>
+            </li>
+          ))}
+        </ul>
       </section>
 
       {/* ranked lists */}
