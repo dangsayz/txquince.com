@@ -3,10 +3,24 @@ import { cache } from "react";
 import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
 import type { VideoProvider } from "@/lib/video";
 
-/** Public URL for an object in the (public) `portfolio` storage bucket. */
+/**
+ * INTERNAL storage URL — only ever fetched server-side (by /api/img). Raw
+ * bucket URLs must never reach the client: pages/share links use imagePageUrl,
+ * bytes are served from imageServeUrl (branded, capped, watermarked).
+ */
 export function storageUrl(path: string): string {
   const base = (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").replace(/\/$/, "");
   return `${base}/storage/v1/object/public/portfolio/${path}`;
+}
+
+/** Branded image bytes — the ONLY image src the public site renders. */
+export function imageServeUrl(slug: string): string {
+  return `/api/img/${slug}`;
+}
+
+/** Shareable, indexable page for an image (what the share sheet copies). */
+export function imagePagePath(section: string, slug: string): string {
+  return `/photos/${section}/${slug}`;
 }
 
 export type PortfolioImage = {
@@ -22,6 +36,12 @@ export type PortfolioImage = {
   /** Focal anchor (0..1 from left/top) — cropped renders align this point. */
   focus_x?: number | null;
   focus_y?: number | null;
+  /** Permanent SEO slug — /photos/{section}/{slug}, bytes at /api/img/{slug}. */
+  slug?: string | null;
+  title?: string | null;
+  caption?: string | null;
+  city?: string | null;
+  /** Branded serve URL (/api/img/{slug}) — never the raw bucket URL. */
   url: string;
 };
 
@@ -50,11 +70,35 @@ export const getPortfolioImages = cache(async (): Promise<PortfolioImage[]> => {
       .order("section", { ascending: true })
       .order("sort_order", { ascending: true });
     if (error || !data) return [];
-    return data.map((r) => ({ ...r, url: storageUrl(r.storage_path) }));
+    // Branded serve route when a slug exists (always, post-0017); raw URL is
+    // the last-resort fallback so a missing slug shows the photo rather than 404.
+    return data.map((r) => ({
+      ...r,
+      url: r.slug ? imageServeUrl(r.slug) : storageUrl(r.storage_path),
+    }));
   } catch {
     return [];
   }
 });
+
+/** One image by its permanent slug (image pages + the serve route). */
+export const getImageBySlug = cache(
+  async (slug: string): Promise<PortfolioImage | null> => {
+    if (!isSupabaseConfigured()) return null;
+    try {
+      const supabase = getServiceSupabase();
+      const { data, error } = await supabase
+        .from("portfolio_images")
+        .select("*")
+        .eq("slug", slug)
+        .maybeSingle();
+      if (error || !data) return null;
+      return { ...data, url: imageServeUrl(data.slug as string) };
+    } catch {
+      return null;
+    }
+  },
+);
 
 export async function getImagesBySection(section: string): Promise<PortfolioImage[]> {
   return (await getPortfolioImages()).filter((i) => i.section === section);
@@ -64,6 +108,23 @@ export async function getFeaturedImages(limit = 9): Promise<PortfolioImage[]> {
   const all = await getPortfolioImages();
   const featured = all.filter((i) => i.is_feature);
   return (featured.length ? featured : all).slice(0, limit);
+}
+
+/** Raw hero image source — server-only, consumed by /api/img/hero. */
+export async function getHeroRawImageUrl(): Promise<string | null> {
+  if (!isSupabaseConfigured()) return null;
+  try {
+    const supabase = getServiceSupabase();
+    const { data } = await supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", "hero_media")
+      .maybeSingle();
+    const v = data?.value as Partial<HeroMedia> | undefined;
+    return v?.kind === "image" && v.imageUrl ? v.imageUrl : null;
+  } catch {
+    return null;
+  }
 }
 
 export type HeroMedia = {
@@ -96,7 +157,9 @@ export const getHeroMedia = cache(async (): Promise<HeroMedia | null> => {
     if (v.kind === "video" && !v.videoUrl) return null;
     return {
       kind: v.kind,
-      imageUrl: v.imageUrl ?? null,
+      // Raw bucket URL stays server-side; the client gets the branded route
+      // (capped + watermarked) — /api/img/hero resolves the source itself.
+      imageUrl: v.kind === "image" && v.imageUrl ? "/api/img/hero" : null,
       imageAlt: v.imageAlt ?? "Quinceañera portrait",
       videoUrl: v.videoUrl ?? null,
       provider: (v.provider as VideoProvider) ?? null,

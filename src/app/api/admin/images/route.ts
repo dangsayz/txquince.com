@@ -46,9 +46,20 @@ export async function POST(request: Request) {
     .maybeSingle();
   const sort_order = (maxRow?.sort_order ?? -1) + 1;
 
+  // Permanent SEO slug, minted at insert (alt edits never change a shared
+  // link). Descriptive when alt exists; date-stamped fallback otherwise.
+  const base = (alt || `${section} quinceanera dfw`)
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 64);
+  const slug = `${base}-${crypto.randomUUID().slice(0, 4)}`;
+
   const { data, error } = await supabase
     .from("portfolio_images")
-    .insert({ storage_path, alt, section, sort_order, width: width ?? null, height: height ?? null, location: location || null })
+    .insert({ storage_path, alt, section, sort_order, width: width ?? null, height: height ?? null, location: location || null, slug, title: alt || null })
     .select()
     .single();
 

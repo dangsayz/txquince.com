@@ -2,8 +2,9 @@ import type { MetadataRoute } from "next";
 import { site } from "@/content/site";
 import { locations } from "@/content/locations";
 import { getAllPosts, getAllEsPosts } from "@/content/blog";
+import { getPortfolioImages } from "@/lib/content-db";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   const routes: { path: string; priority: number }[] = [
     { path: "", priority: 1 },
@@ -29,10 +30,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     })),
   ];
-  return routes.map((r) => ({
-    url: `${site.url}${r.path}`,
-    lastModified: now,
-    changeFrequency: "monthly",
-    priority: r.priority,
-  }));
+
+  // Every slugged photograph is an independently indexable page (+ its asset).
+  const photoEntries: MetadataRoute.Sitemap = (await getPortfolioImages())
+    .filter((i) => i.slug)
+    .map((i) => ({
+      url: `${site.url}/photos/${i.section}/${i.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.5,
+      images: [`${site.url}/api/img/${i.slug}`],
+    }));
+
+  return [
+    ...routes.map((r) => ({
+      url: `${site.url}${r.path}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: r.priority,
+    })),
+    ...photoEntries,
+  ];
 }

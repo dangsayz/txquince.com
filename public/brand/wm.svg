@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="72" viewBox="0 0 480 72">
+  <!-- Watermark wordmark drawn onto every served derivative at transform time. -->
+  <text x="6" y="50" font-family="Georgia, 'Times New Roman', serif" font-size="40" letter-spacing="6" fill="#000000" opacity="0.28">TXQUINCE.COM</text>
+  <text x="4" y="48" font-family="Georgia, 'Times New Roman', serif" font-size="40" letter-spacing="6" fill="#FCF7EF" opacity="0.85">TXQUINCE.COM</text>
+</svg>

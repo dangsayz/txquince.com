@@ -13,6 +13,9 @@ export type GalleryItem = {
   feature?: boolean;
   width?: number | null;
   height?: number | null;
+  /** Permanent slug + section → the branded share page (/photos/...). */
+  slug?: string | null;
+  section?: string;
 };
 
 const SITE_TITLE = "TX Quince — Quinceañera Photography & Film";
@@ -25,10 +28,16 @@ const SITE_TITLE = "TX Quince — Quinceañera Photography & Film";
 export function PortfolioGallery({ images }: { images: GalleryItem[] }) {
   const [shareOpen, setShareOpen] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
+  const [shareTitle, setShareTitle] = useState(SITE_TITLE);
 
-  function openShare(url: string) {
+  // Share the branded PAGE for this image — never a file URL.
+  function openShare(img: GalleryItem) {
     if (typeof navigator !== "undefined") navigator.vibrate?.(8);
-    setShareUrl(url);
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    const path =
+      img.slug && img.section ? `/photos/${img.section}/${img.slug}` : "/portfolio";
+    setShareUrl(`${origin}${path}`);
+    setShareTitle(img.alt ? `${img.alt} · TX Quince` : SITE_TITLE);
     setShareOpen(true);
   }
 
@@ -46,8 +55,9 @@ export function PortfolioGallery({ images }: { images: GalleryItem[] }) {
             {img.url ? (
               <button
                 type="button"
-                onClick={() => openShare(img.url as string)}
-                className="group relative block w-full overflow-hidden rounded-2xl bg-greige ring-1 ring-line/70 transition-shadow duration-500 hover:shadow-[0_18px_50px_-20px_rgba(44,29,18,0.45)]"
+                onClick={() => openShare(img)}
+                onContextMenu={(e) => e.preventDefault()}
+                className="group relative block w-full select-none overflow-hidden rounded-2xl bg-greige ring-1 ring-line/70 transition-shadow duration-500 hover:shadow-[0_18px_50px_-20px_rgba(44,29,18,0.45)]"
                 aria-label={`Share: ${img.alt}`}
               >
                 <div className="transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]">
@@ -60,12 +70,13 @@ export function PortfolioGallery({ images }: { images: GalleryItem[] }) {
                       width={img.width}
                       height={img.height}
                       sizes={sizes}
+                      draggable={false}
                       className="block h-auto w-full"
                     />
                   ) : (
                     // Legacy upload without stored dimensions.
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={img.url} alt={img.alt} loading="lazy" className="block h-auto w-full" />
+                    <img src={img.url} alt={img.alt} loading="lazy" draggable={false} className="block h-auto w-full" />
                   )}
                 </div>
                 {/* tap-to-share affordance */}
@@ -90,7 +101,7 @@ export function PortfolioGallery({ images }: { images: GalleryItem[] }) {
       <ShareModal
         open={shareOpen}
         url={shareUrl}
-        title={SITE_TITLE}
+        title={shareTitle}
         onClose={() => setShareOpen(false)}
       />
     </>

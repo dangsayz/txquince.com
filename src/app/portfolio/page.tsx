@@ -95,6 +95,8 @@ export default async function PortfolioPage() {
               feature: i.is_feature,
               width: i.width,
               height: i.height,
+              slug: i.slug,
+              section: i.section,
             }))
           : hasRealImages
             ? [] // real work exists elsewhere — don't pad this section with placeholders
