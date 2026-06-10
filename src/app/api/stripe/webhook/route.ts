@@ -13,6 +13,7 @@
 import { createHmac, timingSafeEqual } from "crypto";
 import { NextResponse, type NextRequest } from "next/server";
 import { fulfillCheckoutSession } from "@/lib/booking-fulfillment";
+import { getServiceSupabase } from "@/lib/supabase-server";
 import type { StripeCheckoutSession } from "@/lib/stripe";
 
 export const runtime = "nodejs";
@@ -125,17 +126,52 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid Stripe event." }, { status: 400 });
   }
 
-  if (event.type === "checkout.session.completed") {
-    const session = checkoutSessionFromEvent(event.data.object);
-    if (session) {
-      try {
-        await fulfillCheckoutSession(session);
-      } catch (err) {
-        console.error("[stripe-webhook] fulfillment error:", err);
-        // 500 → Stripe retries; our fulfillment is idempotent so retries are safe.
-        return NextResponse.json({ error: "Fulfillment failed." }, { status: 500 });
+  try {
+    switch (event.type) {
+      // Card payments AND async methods (Affirm/BNPL) that settle later —
+      // fulfill only acts when payment_status === 'paid', so both are safe here.
+      case "checkout.session.completed":
+      case "checkout.session.async_payment_succeeded": {
+        const session = checkoutSessionFromEvent(event.data.object);
+        if (session) await fulfillCheckoutSession(session);
+        break;
+      }
+
+      // The checkout died (abandoned, or the BNPL loan was declined) —
+      // release the date so another family can hold it.
+      case "checkout.session.expired":
+      case "checkout.session.async_payment_failed": {
+        const session = checkoutSessionFromEvent(event.data.object);
+        if (session?.id) {
+          const { error } = await getServiceSupabase()
+            .from("bookings")
+            .update({ status: "expired" })
+            .eq("stripe_checkout_session_id", session.id)
+            .eq("status", "pending_payment");
+          if (error) console.error("[stripe-webhook] release failed:", error.message);
+        }
+        break;
+      }
+
+      // A refund in Stripe frees the date and corrects the dashboard.
+      case "charge.refunded": {
+        const charge = event.data.object as { payment_intent?: unknown; refunded?: unknown };
+        const pi = typeof charge.payment_intent === "string" ? charge.payment_intent : null;
+        if (pi && charge.refunded === true) {
+          const { error } = await getServiceSupabase()
+            .from("bookings")
+            .update({ status: "refunded" })
+            .eq("stripe_payment_intent_id", pi)
+            .in("status", ["paid", "payment_review"]);
+          if (error) console.error("[stripe-webhook] refund-sync failed:", error.message);
+        }
+        break;
       }
     }
+  } catch (err) {
+    console.error("[stripe-webhook] handler error:", err);
+    // 500 → Stripe retries; all handlers above are idempotent so retries are safe.
+    return NextResponse.json({ error: "Webhook handling failed." }, { status: 500 });
   }
 
   return NextResponse.json({ received: true });

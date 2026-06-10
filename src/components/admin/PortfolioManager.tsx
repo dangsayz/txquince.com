@@ -268,7 +268,11 @@ export function PortfolioManager({ initial }: { initial: PortfolioImage[] }) {
         });
         if (!recRes.ok) throw new Error("record failed");
         const { image } = (await recRes.json()) as { image: Omit<PortfolioImage, "url"> };
-        setImages((prev) => [...prev, { ...image, url: publicUrl(image.storage_path) }]);
+        // Branded route (bucket may be private); raw URL only as last resort.
+        setImages((prev) => [
+          ...prev,
+          { ...image, url: image.slug ? `/api/img/${image.slug}` : publicUrl(image.storage_path) },
+        ]);
       } catch {
         failed++;
       } finally {

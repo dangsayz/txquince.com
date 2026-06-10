@@ -14,7 +14,6 @@
  * development still renders — protection applies on Cloudflare.
  */
 import { NextResponse } from "next/server";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getImageBySlug, getHeroRawImageUrl, storageUrl } from "@/lib/content-db";
 import { site } from "@/content/site";
 
@@ -47,7 +46,43 @@ function hotlinked(req: Request): boolean {
 
 const CACHE = "public, max-age=31536000, immutable";
 
+/** Header-safe note: strip newlines/control chars (illegal in header values). */
+function hdr(s: string): string {
+  return s.replace(/[^\x20-\x7E]+/g, " ").trim().slice(0, 48);
+}
+
+/**
+ * Fetch a storage object with service-role auth — works whether the bucket is
+ * public or PRIVATE (the bucket is locked; this route is the only reader).
+ */
+function fetchOriginal(url: string): Promise<Response> {
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (key && url.includes("/storage/v1/object/public/")) {
+    return fetch(url.replace("/storage/v1/object/public/", "/storage/v1/object/"), {
+      headers: { authorization: `Bearer ${key}`, apikey: key },
+      cf: { cacheTtl: 86400 },
+    } as RequestInit);
+  }
+  return fetch(url, { cf: { cacheTtl: 86400 } } as RequestInit);
+}
+
 export async function GET(
+  request: Request,
+  ctx: { params: Promise<{ slug: string }> },
+) {
+  try {
+    return await serve(request, ctx);
+  } catch (err) {
+    console.error("[img] handler crashed:", err);
+    const detail =
+      process.env.NODE_ENV !== "production" && err instanceof Error
+        ? `${err.message}\n${err.stack ?? ""}`
+        : "Image unavailable";
+    return new NextResponse(detail, { status: 500 });
+  }
+}
+
+async function serve(
   request: Request,
   { params }: { params: Promise<{ slug: string }> },
 ) {
@@ -69,20 +104,22 @@ export async function GET(
   }
   if (!sourceUrl) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  const upstream = await fetch(sourceUrl, { cf: { cacheTtl: 86400 } } as RequestInit);
+  const upstream = await fetchOriginal(sourceUrl);
   if (!upstream.ok || !upstream.body) {
     return NextResponse.json({ error: "Source unavailable" }, { status: 502 });
   }
 
   // Cloudflare Images binding — present on Workers, absent in plain next dev.
+  // Dynamic import so `next dev` (no OpenNext shim) can never crash the route.
   let images: CfImages | undefined;
   let ctxNote = "ok";
   try {
-    const { env } = getCloudflareContext();
+    const mod = await import("@opennextjs/cloudflare");
+    const { env } = mod.getCloudflareContext();
     images = (env as { IMAGES?: CfImages }).IMAGES;
     if (!images) ctxNote = "no-binding";
   } catch (e) {
-    ctxNote = `no-ctx:${e instanceof Error ? e.message.slice(0, 40) : "?"}`;
+    ctxNote = `no-ctx:${hdr(e instanceof Error ? e.message : "?")}`;
   }
 
   if (!images) {
@@ -111,7 +148,7 @@ export async function GET(
         wmNote = `no-wm:${wm.status}`;
       }
     } catch (e) {
-      wmNote = `wm-err:${e instanceof Error ? e.message.slice(0, 40) : "?"}`;
+      wmNote = `wm-err:${hdr(e instanceof Error ? e.message : "?")}`;
     }
 
     const out = await chain.output({ format: "image/webp", quality: QUALITY });
@@ -127,12 +164,12 @@ export async function GET(
   } catch (err) {
     console.error("[img] transform failed:", err);
     // Last resort: re-fetch and pass through (transform consumed the stream).
-    const retry = await fetch(sourceUrl);
+    const retry = await fetchOriginal(sourceUrl);
     return new NextResponse(retry.body, {
       headers: {
         "content-type": retry.headers.get("content-type") ?? "image/webp",
         "cache-control": CACHE,
-        "x-img": `fallback:${err instanceof Error ? err.message.slice(0, 60) : "?"}`,
+        "x-img": `fallback:${hdr(err instanceof Error ? err.message : "?")}`,
       },
     });
   }

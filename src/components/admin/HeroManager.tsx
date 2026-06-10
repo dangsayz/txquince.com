@@ -100,7 +100,8 @@ export function HeroManager({ initial }: { initial: HeroMedia | null }) {
       });
       const d = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(d.error ?? "Could not save.");
-      setMedia(d.value as HeroMedia);
+      // Preview through the branded route (the bucket may be private).
+      setMedia({ ...(d.value as HeroMedia), imageUrl: "/api/img/hero" });
       setStatus("Saved — live on your homepage within a minute.");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed.");
