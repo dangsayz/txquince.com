@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "txquince-followups-cron",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-06-01",
+  // Hourly. Lead follow-ups are day-paced internally (they only advance when a
+  // delay elapses), so hourly is harmless for them — but it lets abandoned-
+  // booking recovery go out within ~an hour of a hold expiring, when it matters.
+  "triggers": { "crons": ["0 * * * *"] },
+  "vars": { "TARGET_URL": "https://txquince.com" },
+  "observability": { "enabled": true }
+  // CRON_SECRET is set as a secret, not committed:
+  //   npx wrangler secret put CRON_SECRET
+}

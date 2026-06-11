@@ -28,8 +28,8 @@ export const site = {
   },
 
   social: {
-    instagram: "https://instagram.com/", // TODO: operator's IG
-    facebook: "https://facebook.com/", // TODO: operator's FB / page
+    instagram: "https://www.instagram.com/txquince/",
+    facebook: "", // no public page yet (groups-only) — icon hidden until set
   },
 
   /**
@@ -59,12 +59,35 @@ export const site = {
   nav: [
     { href: "/portfolio", label: "Portfolio" },
     { href: "/investment", label: "Investment" },
+    { href: "/blog", label: "Guide" },
     { href: "/about", label: "About" },
   ],
 
-  // The ONE primary CTA, site-wide (CONVERSION MECHANICS LAW).
+  /**
+   * SELF-SERVE BOOKING (deposit) config — operator-editable single source.
+   * The deposit reserves the date; the balance is settled later. Change the
+   * amount here and every surface (form, emails, success page) updates.
+   */
+  booking: {
+    depositCents: 50_000, // $500 — flat deposit to reserve any date
+    depositLabel: "$500",
+    currency: "usd",
+    holdMinutes: 30, // how long the date is held during Stripe checkout
+    policyNote:
+      "Your deposit reserves your date and is applied to your final balance. Fully refundable if I ever have to cancel.",
+  },
+
+  /**
+   * PRIMARY CTA, site-wide (CONVERSION MECHANICS LAW): ready-to-commit families
+   * reserve their date with a deposit. The SECONDARY CTA is the soft path for
+   * the still-deciding — questions first, no payment.
+   */
   cta: {
-    label: "Check Your Date",
+    label: "Reserve Your Date",
+    href: "/reserve",
+  },
+  secondaryCta: {
+    label: "Questions first? Inquire",
     href: "/check-your-date",
   },
 } as const;

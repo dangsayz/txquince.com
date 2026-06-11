@@ -17,6 +17,7 @@ import {
 import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { sendOperatorEmail, sendInquirerEmail } from "@/lib/resend";
+import { sanitizeAttribution } from "@/lib/attribution";
 
 // Always run server-side at request time.
 export const dynamic = "force-dynamic";
@@ -118,6 +119,7 @@ export async function POST(req: NextRequest) {
       budget_range: data.budget_range,
       referral: data.referral || null,
       message: data.message || null,
+      attribution: sanitizeAttribution(body.attribution),
     });
     if (error) {
       console.error("[inquiry] Supabase insert error:", error.message);

@@ -5,10 +5,11 @@ import { useEffect, useState } from "react";
 import { mediaUrl } from "@/content/media";
 
 /**
- * HeroMedia — the background layer for the hero (PERF LAW).
- * The poster still is the LCP element (priority). The compressed, muted, looping
- * video lazy-loads AFTER mount and only on larger screens; mobile keeps the
- * still. Never lets the film block LCP.
+ * HeroMedia — full-bleed background for the hero (PERF LAW).
+ * With a poster: the still is the LCP element, video lazy-loads after on desktop,
+ * and a soft dark scrim keeps white text legible. Without a poster: a light, airy
+ * cream/blush field (NOT a heavy dark void) so the hero reads clean and editorial
+ * even before real imagery is uploaded.
  */
 export function HeroMedia({
   posterKey,
@@ -29,7 +30,6 @@ export function HeroMedia({
 
   useEffect(() => {
     if (!mp4 && !webm) return;
-    // Desktop only + respect reduced motion. Defer until after first paint.
     const wantsMotion = window.matchMedia(
       "(prefers-reduced-motion: no-preference)",
     ).matches;
@@ -39,36 +39,49 @@ export function HeroMedia({
     return () => window.clearTimeout(t);
   }, [mp4, webm]);
 
-  return (
-    <div className="absolute inset-0 -z-10 bg-ink">
-      {poster ? (
-        <Image
-          src={poster}
-          alt={posterAlt}
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
-      ) : (
-        // Premium gradient placeholder until the release-cleared poster is on R2.
+  // ---- Empty state: light, airy editorial field ----
+  if (!poster) {
+    return (
+      <div className="absolute inset-0 -z-10 bg-cream">
         <div
-          className="absolute inset-0"
+          className="grain absolute inset-0"
+          aria-hidden
           style={{
             background:
-              "radial-gradient(120% 90% at 50% 18%, #5b3540 0%, #3a2128 42%, #1e1417 100%)",
+              "radial-gradient(80% 70% at 72% 18%, #fbf2ec 0%, #f3e7da 46%, #e9d7c6 100%)",
           }}
-          aria-hidden
         />
-      )}
+        {/* whisper-soft vignette to seat the type */}
+        <div
+          className="absolute inset-0"
+          aria-hidden
+          style={{
+            background:
+              "radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(120,90,70,0.10) 100%)",
+          }}
+        />
+      </div>
+    );
+  }
 
+  // ---- With a real photo ----
+  return (
+    <div className="absolute inset-0 -z-10 bg-ink">
+      <Image
+        src={poster}
+        alt={posterAlt}
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover"
+      />
       {mountVideo && (mp4 || webm) ? (
         <video
           autoPlay
           muted
           loop
           playsInline
-          poster={poster ?? undefined}
+          poster={poster}
           onCanPlay={() => setVideoReady(true)}
           className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
             videoReady ? "opacity-100" : "opacity-0"
@@ -78,15 +91,13 @@ export function HeroMedia({
           {mp4 ? <source src={mp4} type="video/mp4" /> : null}
         </video>
       ) : null}
-
-      {/* Subtle dark overlay so headline text stays legible over media. */}
       <div
         className="absolute inset-0"
+        aria-hidden
         style={{
           background:
-            "linear-gradient(to bottom, rgba(20,16,14,0.42) 0%, rgba(20,16,14,0.28) 38%, rgba(20,16,14,0.62) 100%)",
+            "linear-gradient(to bottom, rgba(20,16,14,0.34) 0%, rgba(20,16,14,0.18) 40%, rgba(20,16,14,0.5) 100%)",
         }}
-        aria-hidden
       />
     </div>
   );

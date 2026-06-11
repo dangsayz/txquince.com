@@ -2,24 +2,18 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 /**
- * The ONE primary CTA, site-wide (CONVERSION MECHANICS LAW): "Check Your Date".
- * - primary: filled wine accent
- * - ghost: outlined, for on-image or secondary placement (still the same label)
- * - text: inline arrow link ("See full galleries →")
+ * Site-wide CTA, in the Claura pill language (rounded, sentence-case).
+ * - primary / ink: solid espresso pill (the main action)
+ * - onDark:        soft light pill that reads on dark sections
+ * - text:          inline arrow link
  */
-type Variant = "primary" | "ghost" | "text" | "onDark";
-
-const base =
-  "inline-flex items-center justify-center gap-2 font-body text-sm tracking-wide transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]";
+type Variant = "primary" | "onDark" | "ink" | "text";
 
 const variants: Record<Variant, string> = {
-  primary:
-    "bg-wine text-cream px-8 py-4 hover:bg-wine-deep hover:-translate-y-0.5",
-  onDark:
-    "bg-cream text-ink px-8 py-4 hover:bg-ivory hover:-translate-y-0.5",
-  ghost:
-    "border border-ink/25 text-ink px-8 py-4 hover:border-ink hover:bg-ink hover:text-cream",
-  text: "text-ink underline-offset-4 hover:underline px-0 py-1 text-[0.95rem]",
+  primary: "btn-espresso",
+  onDark: "btn-soft",
+  ink: "btn-espresso",
+  text: "inline-flex items-center gap-1.5 text-sm font-medium text-ink transition-colors hover:text-wine",
 };
 
 export function CTAButton({
@@ -34,7 +28,7 @@ export function CTAButton({
   className?: string;
 }) {
   return (
-    <Link href={href} className={`${base} ${variants[variant]} ${className}`}>
+    <Link href={href} className={`${variants[variant]} ${className}`}>
       {children}
       {variant === "text" ? <span aria-hidden>→</span> : null}
     </Link>

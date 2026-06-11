@@ -1,0 +1,406 @@
+import Link from "next/link";
+import { getDashboardStats, getConversionChanges, type RangedStats } from "@/lib/analytics-db";
+import { ChangeLog } from "@/components/admin/ChangeLog";
+import { AutoRefresh } from "@/components/admin/AutoRefresh";
+
+function mins(s: number) {
+  return s >= 60 ? `${Math.floor(s / 60)}m ${s % 60}s` : `${s}s`;
+}
+
+export const dynamic = "force-dynamic";
+
+const RANGES = [7, 14, 30] as const;
+
+function money(n: number) {
+  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(n);
+}
+
+function MetricCard({
+  label,
+  value,
+  helper,
+  emphasis,
+}: {
+  label: string;
+  value: string;
+  helper?: string;
+  emphasis?: boolean;
+}) {
+  return (
+    <div className={`rounded-2xl border border-line p-5 ${emphasis ? "bg-ink text-cream" : "bg-white"}`}>
+      <p className={`text-[0.66rem] uppercase tracking-[0.18em] ${emphasis ? "text-cream/70" : "text-ink-faint"}`}>
+        {label}
+      </p>
+      <p className={`mt-3 font-display text-3xl tabular-nums ${emphasis ? "text-cream" : "text-ink"}`}>{value}</p>
+      {helper ? (
+        <p className={`mt-1.5 text-xs ${emphasis ? "text-cream/60" : "text-ink-soft"}`}>{helper}</p>
+      ) : null}
+    </div>
+  );
+}
+
+function RankedList({ title, items, empty }: { title: string; items: { label: string; count: number }[]; empty: string }) {
+  const max = Math.max(...items.map((i) => i.count), 1);
+  return (
+    <div className="rounded-2xl border border-line bg-white p-5">
+      <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">{title}</p>
+      <div className="mt-4 space-y-2.5">
+        {items.length === 0 ? (
+          <p className="text-sm text-ink-faint">{empty}</p>
+        ) : (
+          items.map((i) => (
+            <div key={i.label} className="relative">
+              <div className="flex items-center justify-between gap-3 text-sm">
+                <span className="truncate text-ink">{i.label}</span>
+                <span className="shrink-0 tabular-nums text-ink-soft">{i.count}</span>
+              </div>
+              <div className="mt-1 h-1 overflow-hidden rounded-full bg-greige">
+                <div className="h-full rounded-full bg-wine/60" style={{ width: `${(i.count / max) * 100}%` }} />
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
+function InsightPanel({ insights }: { insights: RangedStats["insights"] }) {
+  const tone = {
+    success: "text-emerald-700",
+    warning: "text-amber-700",
+    info: "text-ink-soft",
+  };
+  return (
+    <div className="rounded-2xl border border-line bg-white p-5">
+      <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">What to do next</p>
+      <ul className="mt-4 space-y-3">
+        {insights.length === 0 ? (
+          <li className="text-sm text-ink-faint">Insights appear as data comes in.</li>
+        ) : (
+          insights.map((ins, i) => (
+            <li key={i} className={`flex gap-2.5 text-sm leading-relaxed ${tone[ins.type]}`}>
+              <span aria-hidden className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-current" />
+              {ins.text}
+            </li>
+          ))
+        )}
+      </ul>
+    </div>
+  );
+}
+
+const MANAGE = [
+  { href: "/admin/bookings", title: "Bookings" },
+  { href: "/admin/inquiries", title: "Leads" },
+  { href: "/admin/hero", title: "Hero" },
+  { href: "/admin/portfolio", title: "Portfolio" },
+  { href: "/admin/videos", title: "Videos" },
+];
+
+export default async function AdminDashboard({
+  searchParams,
+}: {
+  searchParams: Promise<{ range?: string }>;
+}) {
+  const { range: rangeParam } = await searchParams;
+  const range = RANGES.includes(Number(rangeParam) as (typeof RANGES)[number])
+    ? (Number(rangeParam) as number)
+    : 14;
+  const [s, changes] = await Promise.all([getDashboardStats(range), getConversionChanges()]);
+  const maxDaily = Math.max(...s.daily.map((d) => d.count), 1);
+  const todayKey = new Date().toISOString().slice(0, 10);
+
+  return (
+    <main className="mx-auto max-w-6xl px-4 py-8 sm:px-5 md:py-10">
+      <AutoRefresh seconds={30} />
+      {/* header + range */}
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="text-[0.66rem] uppercase tracking-[0.28em] text-ink-faint">Business overview</p>
+          <h1 className="mt-2 font-display text-3xl text-ink">Studio</h1>
+          <p className="mt-1 text-sm text-ink-soft">
+            {s.configured
+              ? "Live traffic, bookings, and what to do next — last "
+              : "Connect Supabase to see live analytics — last "}
+            {range} days.
+          </p>
+        </div>
+        <div className="flex gap-1.5">
+          {RANGES.map((r) => (
+            <Link
+              key={r}
+              href={`/admin?range=${r}`}
+              className={`rounded-full px-4 py-1.5 text-[0.7rem] uppercase tracking-[0.14em] transition-colors ${
+                r === range ? "bg-ink text-cream" : "border border-line text-ink-soft hover:text-ink"
+              }`}
+            >
+              {r}d
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* payment-review alert — money collected but NOT auto-confirmed. Must never
+          be silently missed: a family paid and may be owed their date or a refund. */}
+      {s.paymentReview > 0 ? (
+        <Link
+          href="/admin/bookings"
+          className="mt-6 flex items-center justify-between gap-4 rounded-2xl border border-amber-400 bg-amber-50 p-5 transition-colors hover:border-amber-600"
+        >
+          <div>
+            <p className="text-[0.66rem] uppercase tracking-[0.18em] text-amber-700">Needs review</p>
+            <p className="mt-1 text-sm text-ink">
+              {s.paymentReview} payment{s.paymentReview === 1 ? "" : "s"} collected but not auto-confirmed
+              {s.paymentReviewValue ? ` · ${money(s.paymentReviewValue)} held` : ""} — verify the date or refund.
+            </p>
+          </div>
+          <span className="shrink-0 text-[0.62rem] uppercase tracking-[0.16em] text-amber-700">Open →</span>
+        </Link>
+      ) : null}
+
+      {/* THE BOTTLENECK — the one thing to fix, named automatically. */}
+      {s.bottleneck ? (
+        <section className="mt-6 rounded-2xl border-2 border-wine bg-white p-5">
+          <p className="text-[0.66rem] uppercase tracking-[0.18em] text-wine-deep">
+            Fix this first — your weakest funnel edge
+          </p>
+          <p className="mt-2 font-display text-xl text-ink">
+            {s.bottleneck.edge}:{" "}
+            <span className="text-wine-deep">{s.bottleneck.rate}%</span>
+            <span className="text-sm text-ink-faint"> (healthy ≈ {s.bottleneck.baseline}%)</span>
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-ink-soft">{s.bottleneck.action}</p>
+        </section>
+      ) : null}
+
+      {/* LIVE NOW — who's on the site this minute. */}
+      <section className="mt-4 rounded-2xl border border-line bg-white p-5">
+        <div className="flex items-center justify-between">
+          <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">
+            On the site right now
+          </p>
+          <span className="flex items-center gap-1.5 text-xs text-ink-soft">
+            <span aria-hidden className={`h-2 w-2 rounded-full ${s.liveNow.length ? "bg-emerald-500" : "bg-line"}`} />
+            {s.liveNow.length} visitor{s.liveNow.length === 1 ? "" : "s"}
+          </span>
+        </div>
+        {s.liveNow.length ? (
+          <ul className="mt-3 divide-y divide-line">
+            {s.liveNow.map((v, i) => (
+              <li key={i} className="flex items-baseline justify-between gap-3 py-2 text-sm">
+                <span className="truncate text-ink">{v.path === "/" ? "Homepage" : v.path}</span>
+                <span className="shrink-0 tabular-nums text-ink-soft">
+                  {v.pages} pg · {mins(v.seconds)}
+                </span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-3 text-sm text-ink-faint">Quiet right now — refreshes every 30s.</p>
+        )}
+      </section>
+
+      {/* money + pipeline */}
+      <section className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <MetricCard label="Booked value" value={money(s.bookedValue)} helper={`${s.paid} paid`} emphasis />
+        <MetricCard label="Pipeline" value={money(s.pipelineValue)} helper={`${s.requests} requests · ${s.pendingHolds} holds`} />
+        <MetricCard label="Open leads" value={String(s.openLeads)} helper={`${s.totalInquiries} all-time`} />
+        <MetricCard label="Inquiry → paid" value={`${s.inquiryToBooked}%`} helper="Conversion" />
+      </section>
+
+      {/* traffic */}
+      <section className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <MetricCard label="Views today" value={String(s.today)} helper={`${s.last7} in 7 days`} />
+        <MetricCard label="Visitors" value={String(s.uniqueSessions)} helper={`${s.pagesPerSession} pages/session`} />
+        <MetricCard label="Bounce rate" value={`${s.bounceRate}%`} helper="Single-page sessions" />
+        <MetricCard label="Intent" value={String(s.formStarts + s.ctaClicks + s.shares + s.dateChecks)} helper={`${s.dateChecks} date checks · ${s.formStarts} starts · ${s.ctaClicks} CTA · ${s.shares} shares`} />
+      </section>
+
+      {/* chart + insights */}
+      <section className="mt-8 grid gap-4 lg:grid-cols-[1.3fr_0.7fr]">
+        <div className="rounded-2xl border border-line bg-white p-5">
+          <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">Visits per day · last {range} days</p>
+          <div className="mt-6 flex h-40 items-end gap-1.5 border-b border-line pb-2">
+            {s.daily.map((d) => {
+              const isToday = d.date === todayKey;
+              return (
+                <div key={d.date} className="group flex h-full flex-1 flex-col justify-end" title={`${d.date}: ${d.count}`}>
+                  <div
+                    className={`w-full rounded-t-sm ${isToday ? "bg-ink" : "bg-wine/30 group-hover:bg-wine/55"}`}
+                    style={{ height: `${Math.max((d.count / maxDaily) * 100, d.count > 0 ? 6 : 1)}%` }}
+                  />
+                </div>
+              );
+            })}
+          </div>
+          <div className="mt-2 flex justify-between text-[0.62rem] uppercase tracking-[0.14em] text-ink-faint">
+            <span>{s.daily[0]?.date.slice(5)}</span>
+            <span>peak {maxDaily}</span>
+            <span>today</span>
+          </div>
+        </div>
+        <InsightPanel insights={s.insights} />
+      </section>
+
+      {/* funnel */}
+      <section className="mt-4 rounded-2xl border border-line bg-white p-5">
+        <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">Booking funnel · last {range} days traffic, all-time pipeline</p>
+        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {s.funnel.map((step, i) => {
+            const prev = i > 0 ? s.funnel[i - 1].value : 0;
+            const pct = i > 0 && prev > 0 ? Math.round((step.value / prev) * 100) : null;
+            return (
+              <div key={step.label} className="rounded-xl bg-greige p-4">
+                <p className="text-[0.62rem] uppercase tracking-[0.16em] text-ink-faint">{step.label}</p>
+                <p className="mt-2 font-display text-2xl text-ink tabular-nums">{step.value}</p>
+                {pct !== null ? <p className="mt-1 text-xs text-ink-soft">{pct}% of prior</p> : <p className="mt-1 text-xs text-ink-faint">top of funnel</p>}
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* PAGE ENGAGEMENT — where families spend time, where they leave. */}
+      <section className="mt-4 rounded-2xl border border-line bg-white p-5">
+        <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">
+          Page behavior · time on page &amp; exits
+        </p>
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full min-w-[420px] text-sm">
+            <thead>
+              <tr className="text-left text-[0.62rem] uppercase tracking-[0.14em] text-ink-faint">
+                <th className="pb-2 font-medium">Page</th>
+                <th className="pb-2 text-right font-medium">Views</th>
+                <th className="pb-2 text-right font-medium">Avg time</th>
+                <th className="pb-2 text-right font-medium">Exit %</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-line">
+              {s.engagement.map((p) => (
+                <tr key={p.path}>
+                  <td className="max-w-[14rem] truncate py-2 text-ink">
+                    {p.path === "/" ? "Homepage" : p.path}
+                  </td>
+                  <td className="py-2 text-right tabular-nums text-ink-soft">{p.views}</td>
+                  <td className="py-2 text-right tabular-nums text-ink-soft">
+                    {p.avgSeconds ? mins(p.avgSeconds) : "—"}
+                  </td>
+                  <td className={`py-2 text-right tabular-nums ${p.exitRate >= 70 ? "font-medium text-wine-deep" : "text-ink-soft"}`}>
+                    {p.exitRate}%
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="mt-3 text-xs text-ink-faint">
+          High exit % on a money page (investment, reserve) = the leak to fix. High exit on
+          blog posts is normal.
+        </p>
+      </section>
+
+      {/* WEEKLY FLYWHEEL — events → proof → content → rank → premium clients. */}
+      <section className="mt-4 rounded-2xl border border-line bg-white p-5">
+        <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">
+          This week&apos;s flywheel · computed from live data
+        </p>
+        <ul className="mt-4 space-y-3">
+          {s.flywheel.map((f) => (
+            <li key={f.label} className="flex gap-3">
+              <span
+                aria-hidden
+                className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[0.7rem] ${
+                  f.done ? "bg-emerald-600 text-white" : "border border-wine text-wine"
+                }`}
+              >
+                {f.done ? "✓" : "!"}
+              </span>
+              <span className="text-sm leading-snug">
+                <span className={f.done ? "text-ink-soft line-through decoration-ink/30" : "font-medium text-ink"}>
+                  {f.label}
+                </span>
+                <span className="block text-xs text-ink-faint">{f.detail}</span>
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* ranked lists */}
+      <section className="mt-4 grid gap-4 lg:grid-cols-3">
+        <RankedList title="Top pages" items={s.topPages} empty="No page views yet" />
+        <RankedList title="Referrers" items={s.topReferrers} empty="No referrer data yet" />
+        <RankedList title="Campaigns (UTM)" items={s.utmSources} empty="No tagged traffic yet" />
+      </section>
+
+      {/* revenue & leads by source — which channel actually makes money */}
+      <section className="mt-4 rounded-2xl border border-line bg-white p-5">
+        <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">
+          Revenue &amp; leads by source
+        </p>
+        <p className="mt-1 text-xs text-ink-soft">
+          Where each booking &amp; lead first came from (tag your links with{" "}
+          <code className="text-ink">?utm_source=</code> to sharpen this).
+        </p>
+        {s.bySource.length === 0 ? (
+          <p className="mt-4 text-sm text-ink-faint">
+            No attributed leads or bookings yet — they&apos;ll appear here as inquiries and date
+            requests come in.
+          </p>
+        ) : (
+          <div className="mt-4 overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-[0.62rem] uppercase tracking-[0.14em] text-ink-faint">
+                  <th className="pb-2 font-medium">Source</th>
+                  <th className="pb-2 text-right font-medium">Leads</th>
+                  <th className="pb-2 text-right font-medium">Requests</th>
+                  <th className="pb-2 text-right font-medium">Booked&nbsp;$</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-line">
+                {s.bySource.map((r) => (
+                  <tr key={r.source}>
+                    <td className="py-2 capitalize text-ink">{r.source}</td>
+                    <td className="py-2 text-right tabular-nums text-ink-soft">{r.leads}</td>
+                    <td className="py-2 text-right tabular-nums text-ink-soft">{r.requests}</td>
+                    <td className="py-2 text-right tabular-nums font-medium text-ink">
+                      {r.bookedValue ? money(r.bookedValue) : "—"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      {/* improvement log — collect data → measure the lift */}
+      <section className="mt-4">
+        <ChangeLog initial={changes} />
+      </section>
+
+      {/* manage */}
+      <section className="mt-10">
+        <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">Manage</p>
+        <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+          {MANAGE.map((m) => (
+            <Link
+              key={m.href}
+              href={m.href}
+              className="rounded-2xl border border-line bg-white p-5 text-center transition-colors hover:border-wine"
+            >
+              <span className="font-display text-lg text-ink">{m.title}</span>
+              <span className="mt-1 block text-[0.62rem] uppercase tracking-[0.16em] text-wine">Open →</span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {!s.configured ? (
+        <p className="mt-8 text-sm text-ink-faint">Analytics tables are ready; data will populate as visitors browse the live site.</p>
+      ) : null}
+    </main>
+  );
+}

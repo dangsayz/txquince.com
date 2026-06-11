@@ -20,10 +20,12 @@ export function SectionHeading({
     <Reveal
       className={`${align === "center" ? "text-center" : ""} ${className}`}
     >
-      {eyebrow ? <p className="eyebrow mb-5">{eyebrow}</p> : null}
-      <h2 className="font-display text-balance text-3xl leading-[1.08] text-ink sm:text-4xl md:text-5xl">
-        {children}
-      </h2>
+      {eyebrow ? (
+        <div className="mb-5">
+          <span className="tag">{eyebrow}</span>
+        </div>
+      ) : null}
+      <h2 className="display-2 text-balance text-ink">{children}</h2>
     </Reveal>
   );
 }

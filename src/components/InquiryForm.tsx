@@ -11,14 +11,19 @@ import {
   HONEYPOT_FIELD,
 } from "@/lib/inquiry";
 import { trackInquirySubmitted } from "@/lib/analytics";
+import { trackEvent, getFirstTouch } from "@/components/Tracker";
 
 type Status = "idle" | "submitting" | "error";
 type FieldErrors = Partial<Record<string, string[]>>;
 
 const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+// Locked to production hostnames, so it errors on localhost (110200). Only render
+// in production; local dev skips the bot check (secret lives on the Worker).
+const SHOW_TURNSTILE =
+  Boolean(SITE_KEY) && process.env.NODE_ENV === "production";
 
 const inputBase =
-  "w-full border-b border-line bg-transparent px-0 py-3 text-ink placeholder:text-ink-faint/70 transition-colors focus:border-wine focus:outline-none";
+  "w-full border-b border-line bg-transparent px-0 py-3 text-ink placeholder:text-ink-faint transition-colors focus:border-wine focus:outline-none";
 const labelBase = "block text-sm font-medium text-ink";
 
 export function InquiryForm() {
@@ -65,8 +70,8 @@ export function InquiryForm() {
       return;
     }
 
-    // Turnstile gate: require a token when a site key is configured.
-    if (SITE_KEY && !token) {
+    // Turnstile gate: require a token only when the widget is shown (production).
+    if (SHOW_TURNSTILE && !token) {
       setFormError("Please complete the verification below.");
       setStatus("error");
       return;
@@ -80,6 +85,7 @@ export function InquiryForm() {
           ...parsed.data,
           [HONEYPOT_FIELD]: honeypotRef.current?.value ?? "",
           "cf-turnstile-response": token,
+          attribution: getFirstTouch(),
         }),
       });
 
@@ -108,7 +114,17 @@ export function InquiryForm() {
   const submitting = status === "submitting";
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-8">
+    <form
+      onSubmit={handleSubmit}
+      noValidate
+      className="flex flex-col gap-8"
+      onFocusCapture={(e) => {
+        const f = e.currentTarget;
+        if (f.dataset.started) return;
+        f.dataset.started = "1";
+        trackEvent("form_started", "inquiry");
+      }}
+    >
       {/* Honeypot — hidden from humans, obscure name; bots fill it and get dropped. */}
       <div aria-hidden className="absolute left-[-9999px] h-0 w-0 overflow-hidden">
         <label htmlFor={HONEYPOT_FIELD}>Do not fill this in</label>
@@ -185,8 +201,8 @@ export function InquiryForm() {
         </Field>
       </div>
 
-      {/* Turnstile (primary abuse gate). Shows only when a site key is set. */}
-      {SITE_KEY ? (
+      {/* Turnstile (primary abuse gate). Production-only (errors on localhost). */}
+      {SHOW_TURNSTILE && SITE_KEY ? (
         <div>
           <Turnstile
             siteKey={SITE_KEY}
@@ -215,7 +231,7 @@ export function InquiryForm() {
       <button
         type="submit"
         disabled={submitting}
-        className="inline-flex items-center justify-center gap-3 self-start bg-wine px-10 py-4 text-sm tracking-wide text-cream transition-all duration-300 hover:bg-wine-deep hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0"
+        className="inline-flex items-center justify-center gap-3 self-start rounded-full bg-wine px-10 py-4 text-[0.7rem] uppercase tracking-[0.2em] text-cream transition-all duration-300 hover:bg-wine-deep disabled:cursor-not-allowed disabled:opacity-70"
       >
         {submitting ? (
           <>

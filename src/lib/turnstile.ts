@@ -24,8 +24,13 @@ export async function verifyTurnstile(
 ): Promise<{ ok: boolean; reason?: string }> {
   const secret = process.env.TURNSTILE_SECRET_KEY;
 
-  // No secret configured → dev/preview bypass (documented, not for production).
+  // No secret configured: dev/preview bypasses, but PRODUCTION FAILS CLOSED —
+  // a misconfigured prod must never silently remove the primary abuse gate.
   if (!secret) {
+    if (process.env.NODE_ENV === "production") {
+      console.error("[turnstile] TURNSTILE_SECRET_KEY missing in production — rejecting.");
+      return { ok: false, reason: "not-configured" };
+    }
     console.warn(
       "[turnstile] TURNSTILE_SECRET_KEY not set — skipping verification (dev only).",
     );

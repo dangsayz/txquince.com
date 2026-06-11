@@ -3,40 +3,20 @@ import type { NextConfig } from "next";
 /**
  * TX Quince — Next.js config
  *
- * MEDIA OWNERSHIP (LAW 4): all imagery/video is served from the operator's own
- * Cloudflare R2 bucket. Set NEXT_PUBLIC_R2_BASE_URL to your R2 public domain,
- * e.g. https://media.txquince.com  (custom domain on the bucket — recommended)
- * or  https://pub-xxxxxxxx.r2.dev  (the bucket's public r2.dev URL).
- *
- * We derive the allowed remote image hostname from that env var so next/image
- * works in production without hand-editing this file. Generic R2 patterns stay
- * as a fallback.
+ * MEDIA OWNERSHIP (LAW 4): every public image is served from /api/img/[slug]
+ * (private bucket behind it). next/image uses a custom loader (below) so the
+ * route gets explicit widths and the client gets a real responsive srcset.
  */
-function r2Hostname(): string | null {
-  const base = process.env.NEXT_PUBLIC_R2_BASE_URL;
-  if (!base) return null;
-  try {
-    return new URL(base).hostname;
-  } catch {
-    return null;
-  }
-}
-
-const dynamicR2 = r2Hostname();
-
 const nextConfig: NextConfig = {
   images: {
-    remotePatterns: [
-      // Operator's configured R2 public domain (custom domain or pub-*.r2.dev)
-      ...(dynamicR2
-        ? [{ protocol: "https" as const, hostname: dynamicR2, pathname: "/**" }]
-        : []),
-      // Fallbacks so it still works if the env hostname shape changes
-      { protocol: "https", hostname: "*.r2.dev", pathname: "/**" },
-      { protocol: "https", hostname: "*.r2.cloudflarestorage.com", pathname: "/**" },
-    ],
-    // The hero/portfolio imagery is large and editorial — allow modern formats.
-    formats: ["image/avif", "image/webp"],
+    // Every site image is served by /api/img (protected derivatives). A custom
+    // loader appends ?w= so next/image emits a true responsive srcset — sharp
+    // on retina full-bleeds, light on thumbnails — and the OpenNext optimizer
+    // (which 404s on relative dynamic routes) is never involved.
+    loader: "custom",
+    loaderFile: "./src/lib/image-loader.ts",
+    deviceSizes: [640, 828, 1080, 1440, 1920, 2400],
+    imageSizes: [256, 384, 512],
   },
   // Premium perception dies on a slow site (PERFORMANCE BUDGET LAW).
   poweredByHeader: false,

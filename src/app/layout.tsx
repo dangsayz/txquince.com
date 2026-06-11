@@ -1,13 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Inter } from "next/font/google";
-import { Analytics } from "@vercel/analytics/next";
+import { Cormorant_Garamond, Inter, Pinyon_Script } from "next/font/google";
 import "./globals.css";
 import { site } from "@/content/site";
-import { ScarcityBar } from "@/components/ScarcityBar";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { JsonLd } from "@/components/JsonLd";
+import { WebAnalytics } from "@/components/WebAnalytics";
+import { Tracker } from "@/components/Tracker";
+import { Suspense } from "react";
 
 // Display serif (refined, couture) + clean sans body.
 const cormorant = Cormorant_Garamond({
@@ -19,6 +20,13 @@ const cormorant = Cormorant_Garamond({
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
+});
+// Delicate copperplate script — used sparingly for couture accents.
+const pinyon = Pinyon_Script({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-script",
   display: "swap",
 });
 
@@ -51,7 +59,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#faf7f2",
+  themeColor: "#f4eae0",
   width: "device-width",
   initialScale: 1,
 };
@@ -62,15 +70,17 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${cormorant.variable} ${inter.variable} h-full`}
+      className={`${cormorant.variable} ${inter.variable} ${pinyon.variable} h-full`}
     >
-      <body className="flex min-h-full flex-col bg-cream">
-        <ScarcityBar />
+      <body className="flex min-h-screen flex-col bg-cream">
         <Nav />
         <main className="flex-1">{children}</main>
         <Footer />
         <StickyMobileCTA />
-        <Analytics />
+        <Suspense fallback={null}>
+          <Tracker />
+        </Suspense>
+        <WebAnalytics />
         <JsonLd />
       </body>
     </html>

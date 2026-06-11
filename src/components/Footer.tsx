@@ -1,72 +1,158 @@
 import Link from "next/link";
 import { site } from "@/content/site";
-import { CTAButton } from "@/components/CTAButton";
+import { locations } from "@/content/locations";
+
+const COLUMNS = [
+  {
+    title: "Navigate",
+    links: [
+      { label: "Home", href: "/" },
+      { label: "Portfolio", href: "/portfolio" },
+      { label: "Investment", href: "/investment" },
+      { label: "About", href: "/about" },
+    ],
+  },
+  {
+    title: "Book",
+    links: [
+      { label: "Reserve your date", href: "/reserve" },
+      { label: "Check your date", href: "/check-your-date" },
+      { label: "Areas served", href: "/quinceanera-photographer" },
+    ],
+  },
+  {
+    title: "Connect",
+    links: [
+      { label: "Instagram", href: site.social.instagram, external: true },
+      { label: "Facebook", href: site.social.facebook, external: true },
+      { label: site.contact.email, href: `mailto:${site.contact.email}` },
+    ],
+  },
+  {
+    title: "Legal",
+    links: [{ label: "Privacy", href: "/privacy" }],
+  },
+];
 
 export function Footer() {
   const year = new Date().getFullYear();
-  return (
-    <footer className="border-t border-line bg-greige">
-      <div className="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-20">
-        <div className="flex flex-col gap-12 md:flex-row md:items-end md:justify-between">
-          <div className="max-w-md">
-            <p className="font-display text-3xl text-ink md:text-4xl">{site.brand}</p>
-            <p className="mt-4 text-sm leading-relaxed text-ink-soft">
-              {site.tagline}
-            </p>
-            <p className="mt-2 text-sm text-ink-soft">Serving {site.serviceArea}.</p>
-          </div>
-          <div className="flex flex-col gap-4">
-            <CTAButton href={site.cta.href}>{site.cta.label}</CTAButton>
-          </div>
-        </div>
 
-        <div className="mt-14 flex flex-col gap-6 border-t border-line pt-8 text-sm text-ink-soft md:flex-row md:items-center md:justify-between">
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-            <a href={`mailto:${site.contact.email}`} className="hover:text-ink">
-              {site.contact.email}
-            </a>
-            {site.contact.phone ? (
-              <a href={`tel:${site.contact.phoneE164}`} className="hover:text-ink">
-                {site.contact.phone}
-              </a>
-            ) : null}
-            <a
-              href={site.social.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-ink"
-            >
-              Instagram
-            </a>
+  return (
+    <footer className="relative bg-cream pt-section">
+      <div className="mx-auto max-w-5xl px-5 text-center md:px-10 lg:px-16">
+        {/* Wordmark + tagline — masthead lockup, scaled up for the close */}
+        <p className="font-display text-4xl tracking-[0.16em] text-ink md:text-5xl">
+          <span className="text-wine-deep">TX</span> QUINCE
+        </p>
+        <p className="mt-3 text-sm leading-relaxed text-ink-soft">{site.tagline}</p>
+
+        {/* Social pills */}
+        <div className="mt-6 flex items-center justify-center gap-3">
+          <a
+            href={site.social.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-ivory text-ink-soft shadow-[inset_0_0_0_1px_var(--color-line)] transition-colors hover:text-wine"
+          >
+            <IgIcon />
+          </a>
+          {site.social.facebook ? (
             <a
               href={site.social.facebook}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-ink"
+              aria-label="Facebook"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-ivory text-ink-soft shadow-[inset_0_0_0_1px_var(--color-line)] transition-colors hover:text-wine"
             >
-              Facebook
+              <FbIcon />
             </a>
-            <Link href="/privacy" className="hover:text-ink">
-              Privacy
-            </Link>
-          </div>
+          ) : null}
+        </div>
 
-          <div className="flex items-center gap-5">
-            {/* EN/ES toggle placeholder (bilingual architecture ready; ES ships next) */}
-            <div
-              className="flex items-center gap-2 text-xs text-ink-faint"
-              aria-label="Language"
-            >
-              <span className="font-medium text-ink">EN</span>
-              <span aria-hidden>/</span>
-              <span title="Español — coming soon">ES</span>
+      </div>
+
+      {/* Link columns */}
+      <div className="mx-auto max-w-5xl px-5 md:px-10 lg:px-16">
+        <div className="mt-12 grid grid-cols-2 gap-8 border-t border-line pt-10 sm:grid-cols-4">
+          {COLUMNS.map((col) => (
+            <div key={col.title}>
+              <p className="text-sm font-semibold text-ink">{col.title}</p>
+              <ul className="mt-3 space-y-2.5">
+                {col.links.filter((l) => l.href).map((l) => (
+                  <li key={l.label}>
+                    {"external" in l && l.external ? (
+                      <a
+                        href={l.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-ink-soft transition-colors hover:text-ink"
+                      >
+                        {l.label}
+                      </a>
+                    ) : (
+                      <Link
+                        href={l.href}
+                        className="text-sm text-ink-soft transition-colors hover:text-ink"
+                      >
+                        {l.label}
+                      </Link>
+                    )}
+                  </li>
+                ))}
+              </ul>
             </div>
-            <span className="text-xs text-ink-faint">
-              © {year} {site.brand}
-            </span>
+          ))}
+        </div>
+
+        {/* Areas served — internal links to the local landing pages (SEO). */}
+        <div className="mt-10 border-t border-line pt-6">
+          <p className="text-[0.7rem] uppercase tracking-[0.18em] text-ink-faint">
+            Quinceañera photographer serving
+          </p>
+          <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-ink-soft">
+            {locations.map((l) => (
+              <Link
+                key={l.slug}
+                href={`/quinceanera-photographer/${l.slug}`}
+                className="transition-colors hover:text-ink"
+              >
+                {l.city}
+              </Link>
+            ))}
           </div>
         </div>
+
+        <p className="mt-8 pb-14 text-center text-xs text-ink-faint">
+          © {year} {site.brand} · {site.serviceArea} ·{" "}
+          <Link href="/admin/login" className="transition-colors hover:text-ink">
+            Studio
+          </Link>
+        </p>
       </div>
     </footer>
+  );
+}
+
+function IgIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="12" cy="12" r="3.6" stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="17.2" cy="6.8" r="1" fill="currentColor" />
+    </svg>
+  );
+}
+
+function FbIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M14 8.5V7c0-.7.3-1 1-1h1.5V3.2H14c-2 0-3.3 1.3-3.3 3.4V8.5H8.5v2.9h2.2V21h3.3v-9.6h2.3l.4-2.9H14Z"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }
