@@ -5,7 +5,6 @@
  * derivative via the Cloudflare Images binding:
  *   · responsive widths via ?w= (snapped to fixed steps, capped at 2400px —
  *     originals never leave storage)
- *   · visible watermark drawn at transform time (never baked into originals)
  *   · WebP, quality-tuned; EXIF stripped by the transform pipeline
  *   · hotlink-checked (empty referer allowed — iMessage/OG fetchers send none)
  *   · immutable edge cache (slugs are permanent)
@@ -156,30 +155,7 @@ async function serve(
   }
 
   try {
-    let chain = images.input(upstream.body).transform({ width, height: width, fit: "scale-down" });
-
-    // Watermark (PNG — SVG is not a valid Images input), scaled to the
-    // derivative so it reads the same at every size. Failure must never
-    // 500 the image; worst case we serve unwatermarked.
-    let wmNote = "wm";
-    try {
-      const origin = new URL(request.url).origin;
-      const wm = await fetch(`${origin}/brand/wm.png`, { cf: { cacheTtl: 86400 } } as RequestInit);
-      if (wm.ok && wm.body) {
-        const wmWidth = Math.min(470, Math.max(110, Math.round(width * 0.18)));
-        const margin = Math.max(10, Math.round(width * 0.012));
-        chain = chain.draw(images.input(wm.body), {
-          bottom: margin,
-          right: margin,
-          width: wmWidth,
-          opacity: 0.55,
-        });
-      } else {
-        wmNote = `no-wm:${wm.status}`;
-      }
-    } catch (e) {
-      wmNote = `wm-err:${hdr(e instanceof Error ? e.message : "?")}`;
-    }
+    const chain = images.input(upstream.body).transform({ width, height: width, fit: "scale-down" });
 
     const out = await chain.output({ format: "image/webp", quality: QUALITY });
     const res = out.response();
@@ -188,7 +164,7 @@ async function serve(
         "content-type": res.headers.get("content-type") ?? "image/webp",
         "cache-control": cacheHeader,
         "x-content-type-options": "nosniff",
-        "x-img": `transformed:${wmNote}:w${width}`,
+        "x-img": `transformed:w${width}`,
       },
     });
   } catch (err) {

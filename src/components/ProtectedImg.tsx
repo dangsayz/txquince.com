@@ -3,7 +3,7 @@
 /**
  * ProtectedImg — plain <img> with the deterrent layer: right-click and drag
  * disabled, long-press callout suppressed. The REAL protection is upstream
- * (/api/img serves capped, watermarked derivatives only); this just removes
+ * (/api/img serves capped derivatives only); this just removes
  * the casual save path.
  */
 export function ProtectedImg({

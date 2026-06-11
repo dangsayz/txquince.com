@@ -6,7 +6,7 @@ import type { VideoProvider } from "@/lib/video";
 /**
  * INTERNAL storage URL — only ever fetched server-side (by /api/img). Raw
  * bucket URLs must never reach the client: pages/share links use imagePageUrl,
- * bytes are served from imageServeUrl (branded, capped, watermarked).
+ * bytes are served from imageServeUrl (branded, capped).
  */
 export function storageUrl(path: string): string {
   const base = (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").replace(/\/$/, "");
@@ -15,10 +15,15 @@ export function storageUrl(path: string): string {
 
 /** Tiny stable hash → cache-busting version tag derived from the storage path,
  *  so replacing a photo in place (same permanent slug) busts the immutable
- *  browser cache without breaking shared links. */
+ *  browser cache without breaking shared links.
+ *  PIPELINE_EPOCH salts the tag — bump it whenever the serve pipeline's output
+ *  changes for every image (e.g. watermark removed), so year-long immutable
+ *  caches refresh without touching storage paths. */
+const PIPELINE_EPOCH = "2";
 function versionTag(s: string): string {
+  const input = `${PIPELINE_EPOCH}:${s}`;
   let h = 5381;
-  for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+  for (let i = 0; i < input.length; i++) h = ((h << 5) + h + input.charCodeAt(i)) | 0;
   return (h >>> 0).toString(36);
 }
 
@@ -167,7 +172,7 @@ export const getHeroMedia = cache(async (): Promise<HeroMedia | null> => {
     return {
       kind: v.kind,
       // Raw bucket URL stays server-side; the client gets the branded route
-      // (capped + watermarked) — /api/img/hero resolves the source itself.
+      // (capped) — /api/img/hero resolves the source itself.
       imageUrl: v.kind === "image" && v.imageUrl ? "/api/img/hero" : null,
       imageAlt: v.imageAlt ?? "Quinceañera portrait",
       videoUrl: v.videoUrl ?? null,
