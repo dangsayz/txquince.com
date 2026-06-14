@@ -481,7 +481,7 @@ export default async function CityPage({
               <Link
                 key={g.slug}
                 href={`/blog/${g.slug}`}
-                className="group rounded-2xl border border-line bg-white p-5 transition-colors hover:border-wine"
+                className="group border border-line bg-white p-5 transition-colors hover:border-wine"
               >
                 <h3 className="font-display text-lg leading-tight text-ink group-hover:text-wine">
                   {g.title}

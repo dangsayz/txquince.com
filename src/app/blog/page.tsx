@@ -82,7 +82,7 @@ export default function BlogIndexPage() {
                   <Reveal key={p.slug} delay={(i % 3) * 70}>
                     <Link
                       href={`/blog/${p.slug}`}
-                      className="group flex h-full flex-col rounded-2xl border border-line bg-white p-6 transition-colors hover:border-wine"
+                      className="group flex h-full flex-col border border-line bg-white p-6 transition-colors hover:border-wine"
                     >
                       <h3 className="font-display text-xl leading-tight text-ink group-hover:text-wine">
                         {p.title}

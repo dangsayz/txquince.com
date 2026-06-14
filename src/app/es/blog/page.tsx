@@ -92,7 +92,7 @@ export default function EsBlogIndexPage() {
                   <Reveal key={p.slug} delay={(i % 3) * 70}>
                     <Link
                       href={`/es/blog/${p.slug}`}
-                      className="group flex h-full flex-col rounded-2xl border border-line bg-white p-6 transition-colors hover:border-wine"
+                      className="group flex h-full flex-col border border-line bg-white p-6 transition-colors hover:border-wine"
                     >
                       <h3 className="font-display text-xl leading-tight text-ink group-hover:text-wine">{p.title}</h3>
                       <p className="mt-3 flex-1 text-sm leading-relaxed text-ink-soft">{p.excerpt}</p>

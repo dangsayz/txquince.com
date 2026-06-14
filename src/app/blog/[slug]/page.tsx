@@ -132,7 +132,7 @@ export default async function BlogPostPage({
 
         {/* TOC for longer posts */}
         {toc.length >= 4 ? (
-          <div className="mt-10 rounded-2xl border border-line bg-greige p-5">
+          <div className="mt-10 border border-line bg-greige p-5">
             <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">In this guide</p>
             <ul className="mt-3 flex flex-col gap-1.5">
               {toc.map((h) => (
@@ -174,7 +174,7 @@ export default async function BlogPostPage({
                 <Link
                   key={r.slug}
                   href={`/blog/${r.slug}`}
-                  className="group rounded-2xl border border-line bg-white p-5 transition-colors hover:border-wine"
+                  className="group border border-line bg-white p-5 transition-colors hover:border-wine"
                 >
                   <p className="text-[0.62rem] uppercase tracking-[0.16em] text-ink-faint">{r.category}</p>
                   <h3 className="mt-2 font-display text-lg leading-tight text-ink group-hover:text-wine">

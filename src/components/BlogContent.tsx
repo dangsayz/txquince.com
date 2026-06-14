@@ -95,7 +95,7 @@ export function BlogContent({ blocks }: { blocks: BlogBlock[] }) {
             );
           case "callout":
             return (
-              <div key={i} className="rounded-2xl border border-line bg-greige p-5 text-sm leading-relaxed text-ink">
+              <div key={i} className="border border-line bg-greige p-5 text-sm leading-relaxed text-ink">
                 {renderInline(b.text)}
               </div>
             );
