@@ -24,6 +24,14 @@ export function Reveal({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    // Already on-screen at mount (e.g. an above-the-fold hero)? Reveal immediately
+    // instead of waiting on the observer's first async callback — otherwise the
+    // hero can flash/stay blank if that callback is slow or missed.
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      setShown(true);
+      return;
+    }
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries) {
@@ -36,7 +44,12 @@ export function Reveal({
       { threshold: 0.12, rootMargin: "0px 0px -8% 0px" },
     );
     io.observe(el);
-    return () => io.disconnect();
+    // Safety net: never let content stay invisible if the observer misfires.
+    const fallback = setTimeout(() => setShown(true), 2500);
+    return () => {
+      io.disconnect();
+      clearTimeout(fallback);
+    };
   }, []);
 
   return (
