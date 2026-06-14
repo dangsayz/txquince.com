@@ -166,7 +166,7 @@ function LocationCombobox({
         className="w-full border-b border-line bg-transparent pb-1 text-xs focus:border-wine focus:outline-none"
       />
       {open && matches.length > 0 ? (
-        <ul className="absolute left-0 right-0 z-20 mt-1 max-h-44 overflow-auto border border-line bg-ivory shadow-[0_12px_30px_-12px_rgba(44,29,18,0.4)]">
+        <ul className="absolute left-0 right-0 z-20 mt-1 max-h-44 overflow-auto border border-line bg-ivory shadow-[0_12px_30px_-12px_rgba(28,26,23,0.4)]">
           {matches.map((s, i) => (
             <li key={s}>
               <button

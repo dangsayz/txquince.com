@@ -110,7 +110,7 @@ function LoginForm() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-cream px-5">
-      <div className="w-full max-w-sm rounded-[1.5rem] border border-line bg-ivory p-8 shadow-[0_24px_70px_-30px_rgba(60,40,20,0.3)]">
+      <div className="w-full max-w-sm rounded-[1.5rem] border border-line bg-ivory p-8 shadow-[0_24px_70px_-30px_rgba(28,26,23,0.3)]">
         <p className="font-display text-3xl text-ink">TX Quince</p>
         <p className="mt-1 text-sm text-ink-soft">
           {mode === "signin" ? "Studio admin" : "Reset your password"}
