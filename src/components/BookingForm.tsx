@@ -21,7 +21,10 @@ const DRAFT_KEY = "txq_reserve_draft";
 
 const inputBase =
   "w-full border-b border-line bg-transparent px-0 py-3 text-ink placeholder:text-ink-faint transition-colors focus:border-wine focus:outline-none";
-const labelBase = "block text-sm font-medium text-ink";
+// Editorial label: tiny tracked caps, quiet. No asterisks, no inline hints.
+// ink-soft (not ink-faint) so the small caps clear WCAG 4.5:1 on cream.
+const labelBase =
+  "block text-[0.66rem] font-medium uppercase tracking-[0.18em] text-ink-soft";
 
 type Draft = {
   name: string;
@@ -235,7 +238,7 @@ export function BookingForm({
     <form
       onSubmit={handleSubmit}
       noValidate
-      className="flex flex-col gap-8"
+      className="flex flex-col gap-10"
       onFocusCapture={(e) => {
         const f = e.currentTarget;
         if (f.dataset.started) return;
@@ -249,7 +252,7 @@ export function BookingForm({
         <input ref={honeypotRef} id={HONEYPOT_FIELD} name={HONEYPOT_FIELD} type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
-      <div className="grid gap-8 sm:grid-cols-2">
+      <div className="grid gap-x-10 gap-y-9 sm:grid-cols-2">
         <Field label="Your name" required error={errors.name}>
           <input value={name} onChange={(e) => setName(e.target.value)} type="text" autoComplete="name" className={inputBase} placeholder="First and last" />
         </Field>
@@ -338,13 +341,10 @@ export function BookingForm({
         </div>
       ) : null}
 
-      <p className="text-xs leading-relaxed text-ink-faint">
-        <strong className="text-ink-soft">No payment now.</strong> I&apos;ll confirm
-        your date is open and send a secure link to place your{" "}
-        {selectedCollection.depositLabel} {selectedCollection.name} deposit — it
-        applies to your final balance. By requesting, you agree to be contacted
-        about your event. See our{" "}
-        <a href="/privacy" className="underline underline-offset-2 hover:text-ink">privacy policy</a>.
+      <p className="text-xs leading-relaxed text-ink-soft">
+        No payment now — I&apos;ll confirm your date and send a secure deposit link,
+        applied to your final balance. By requesting you agree to be contacted.{" "}
+        <a href="/privacy" className="underline underline-offset-2 hover:text-ink">Privacy</a>.
       </p>
 
       {formError ? (
@@ -371,13 +371,12 @@ export function BookingForm({
 
 function Field({
   label,
-  required,
   error,
-  hint,
   className = "",
   children,
 }: {
   label: string;
+  /** Accepted for call-site clarity; not rendered (editorial labels stay clean). */
   required?: boolean;
   error?: string[];
   hint?: string;
@@ -385,14 +384,10 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <label className={`flex flex-col gap-1.5 ${className}`}>
-      <span className={labelBase}>
-        {label}
-        {required ? <span className="text-wine"> *</span> : null}
-        {hint ? <span className="ml-2 text-xs font-normal text-ink-faint">{hint}</span> : null}
-      </span>
+    <label className={`flex flex-col gap-2.5 ${className}`}>
+      <span className={labelBase}>{label}</span>
       {children}
-      {error?.length ? <span className="text-xs text-wine">{error[0]}</span> : null}
+      {error?.length ? <span className="text-xs normal-case tracking-normal text-wine">{error[0]}</span> : null}
     </label>
   );
 }
