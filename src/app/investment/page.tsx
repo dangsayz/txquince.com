@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { packages, investmentIntro, investmentFaqs } from "@/content/packages";
 import { site } from "@/content/site";
 import { Reveal } from "@/components/Reveal";
@@ -8,14 +9,16 @@ import { SocialProofStrip } from "@/components/SocialProofStrip";
 import { Testimonials } from "@/components/Testimonials";
 
 export const metadata: Metadata = {
-  title: "Investment — Quinceañera Collections",
+  // Title leads with the harvested search phrase (prices/packages), not the
+  // brand word "Investment" nobody searches. Renders "… · TX Quince" (~53 chars).
+  title: "Quinceañera Photography Prices & Packages",
   description:
-    "Fixed-price quinceañera photography & film collections from $2,500. Most families choose Signature ($3,900): two storytellers, the full day, film + gallery.",
+    "Quinceañera photography prices in Dallas–Fort Worth — fixed collections from $2,500, with Signature at $3,900. Every price stated plainly, no hidden costs.",
   alternates: { canonical: "/investment" },
   openGraph: {
-    title: "Investment — Quinceañera Collections · TX Quince",
+    title: "Quinceañera Photography Prices & Packages — Dallas–Fort Worth",
     description:
-      "Fixed-price collections from $2,500. Most families choose Signature ($3,900).",
+      "Fixed-price quinceañera collections from $2,500. Most families choose Signature at $3,900 — prices stated plainly.",
     url: `${site.url}/investment`,
   },
 };
@@ -156,7 +159,14 @@ export default function InvestmentPage() {
 
           <p className="border-t border-ink/10 pt-8 text-xs text-ink-faint">
             Payment plans available — reserve with a deposit and split the balance into
-            interest-free installments before your date.
+            interest-free installments before your date. Serving{" "}
+            <Link
+              href="/quinceanera-photographer"
+              className="text-wine-deep underline underline-offset-4 hover:text-wine"
+            >
+              quinceañera photography across Dallas–Fort Worth
+            </Link>
+            .
           </p>
         </div>
       </section>

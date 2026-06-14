@@ -124,17 +124,24 @@ export const depositFloorLabel = packages[0].depositLabel;
 
 /** The hook above the tiers. */
 export const investmentIntro = {
-  eyebrow: "Investment",
-  heading: "Collections built around one day you cannot repeat.",
+  // Eyebrow carries the searched keyword + geo (crawlable, prominent); the H1
+  // keeps the editorial voice. Mirrors the homepage system: keyword in the
+  // overline, emotion in the headline. Targets "quinceañera photography prices".
+  eyebrow: "Quinceañera Photography & Film · Dallas–Fort Worth",
+  heading: "Prices, stated plainly.",
   // The complimentary save-the-date is the hook that runs through every tier.
   hook: "Every collection includes a complimentary save-the-date session.",
   subhead:
-    "Fixed pricing, no surprises. Most families choose Signature — two of us, the full day, your film and gallery both.",
+    "Fixed pricing, no surprises. Most families choose Signature — two of us, the full day, your film and gallery both. Collections built around one day you cannot repeat.",
 };
 
 export type Faq = { q: string; a: string };
 
 export const investmentFaqs: Faq[] = [
+  {
+    q: "How much does a quinceañera photographer cost in Dallas–Fort Worth?",
+    a: "Our collections are fixed-price and start at $2,500. Most families choose Signature at $3,900 — two of us covering the full day with both film and a complete gallery — and Legacy is $5,500. Every price is listed right here, never “inquire for pricing,” and all three include a complimentary save-the-date session plus interest-free payment plans.",
+  },
   {
     q: "How far in advance should we book?",
     a: "As early as you can. I take a limited number of quinceañeras each season so every family gets my full attention, and the best dates go first — often a year out. If your date is close, reach out anyway; I'll tell you honestly what's still open.",
