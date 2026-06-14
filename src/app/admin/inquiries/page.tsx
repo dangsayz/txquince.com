@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getInquiries, countOpenLeads, type InquiryRow } from "@/lib/clients-db";
 import { formatEventDate } from "@/lib/booking";
+import { InquiryActions } from "@/components/InquiryActions";
 
 export const dynamic = "force-dynamic";
 
@@ -9,6 +10,19 @@ const SERVICE_LABEL: Record<string, string> = {
   video: "Film / Video",
   both: "Photo + Film",
 };
+
+const LOST_REASON_LABEL: Record<string, string> = {
+  price: "Price",
+  availability: "Availability",
+  ghosted: "Ghosted",
+  booked_competitor: "Booked competitor",
+  other: "Other",
+};
+
+/** Real first-touch channel (falls back to "direct" when no attribution). */
+function sourceOf(i: InquiryRow): string {
+  return (i.attribution?.source || "direct").toLowerCase();
+}
 
 function shortDate(iso: string): string {
   const d = new Date(iso);
@@ -73,6 +87,17 @@ function InquiryCard({ i }: { i: InquiryRow }) {
             {i.referral || <span className="text-ink-faint">—</span>}
           </dd>
         </div>
+        <div>
+          <dt className="text-[0.7rem] uppercase tracking-[0.14em] text-ink-faint">
+            First touch
+          </dt>
+          <dd className="text-ink capitalize">
+            {sourceOf(i)}
+            {i.attribution?.medium && (
+              <span className="text-ink-soft"> · {i.attribution.medium}</span>
+            )}
+          </dd>
+        </div>
         <div className="col-span-2">
           <dt className="text-[0.7rem] uppercase tracking-[0.14em] text-ink-faint">
             Contact
@@ -104,7 +129,23 @@ function InquiryCard({ i }: { i: InquiryRow }) {
       <p className="mt-4 text-[0.7rem] uppercase tracking-[0.14em] text-ink-faint">
         Inquired {shortDate(i.created_at)}
         {i.last_touch_at && <span> · last touch {shortDate(i.last_touch_at)}</span>}
+        {i.status === "lost" && i.lost_reason && (
+          <span>
+            {" · lost: "}
+            {LOST_REASON_LABEL[i.lost_reason] ?? i.lost_reason}
+            {i.competitor_name ? ` (${i.competitor_name})` : ""}
+          </span>
+        )}
       </p>
+
+      {!i.unsubscribed_at && (
+        <InquiryActions
+          id={i.id}
+          status={i.status}
+          lostReason={i.lost_reason}
+          competitorName={i.competitor_name}
+        />
+      )}
     </div>
   );
 }
@@ -112,6 +153,34 @@ function InquiryCard({ i }: { i: InquiryRow }) {
 export default async function AdminInquiries() {
   const inquiries = await getInquiries();
   const open = countOpenLeads(inquiries);
+
+  // Rollups: win/loss, why-we-lose, and per-source win rate.
+  const won = inquiries.filter((i) => i.status === "won").length;
+  const lost = inquiries.filter((i) => i.status === "lost").length;
+  const decided = won + lost;
+  const winRate = decided ? Math.round((won / decided) * 100) : null;
+
+  const lossRows = Object.entries(
+    inquiries
+      .filter((i) => i.status === "lost")
+      .reduce<Record<string, number>>((acc, i) => {
+        const key = i.lost_reason || "untagged";
+        acc[key] = (acc[key] ?? 0) + 1;
+        return acc;
+      }, {}),
+  ).sort((a, b) => b[1] - a[1]);
+
+  const sourceRows = Object.entries(
+    inquiries.reduce<Record<string, { total: number; won: number }>>((acc, i) => {
+      const key = sourceOf(i);
+      acc[key] = acc[key] || { total: 0, won: 0 };
+      acc[key].total += 1;
+      if (i.status === "won") acc[key].won += 1;
+      return acc;
+    }, {}),
+  )
+    .sort((a, b) => b[1].total - a[1].total)
+    .slice(0, 6);
 
   return (
     <main className="mx-auto max-w-4xl px-5 py-12">
@@ -127,6 +196,65 @@ export default async function AdminInquiries() {
           ? "Inquiries from your contact form will land here."
           : `${open} open · ${inquiries.length} total`}
       </p>
+
+      {inquiries.length > 0 && (
+        <div className="mt-6 border border-line bg-ivory p-5">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {[
+              { n: String(open), l: "Open" },
+              { n: String(won), l: "Won" },
+              { n: String(lost), l: "Lost" },
+              { n: winRate === null ? "—" : `${winRate}%`, l: "Win rate" },
+            ].map((s) => (
+              <div key={s.l}>
+                <p className="font-display text-2xl text-ink">{s.n}</p>
+                <p className="text-[0.7rem] uppercase tracking-[0.14em] text-ink-faint">
+                  {s.l}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {(lossRows.length > 0 || sourceRows.length > 0) && (
+            <div className="mt-5 grid gap-5 border-t border-line pt-5 sm:grid-cols-2">
+              {lossRows.length > 0 && (
+                <div>
+                  <p className="text-[0.7rem] uppercase tracking-[0.14em] text-ink-faint">
+                    Why we lose
+                  </p>
+                  <ul className="mt-2 space-y-1 text-sm text-ink-soft">
+                    {lossRows.map(([k, n]) => (
+                      <li key={k} className="flex justify-between gap-4">
+                        <span>
+                          {k === "untagged"
+                            ? "Untagged"
+                            : LOST_REASON_LABEL[k] ?? k}
+                        </span>
+                        <span className="text-ink">{n}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              <div>
+                <p className="text-[0.7rem] uppercase tracking-[0.14em] text-ink-faint">
+                  By source (won / total)
+                </p>
+                <ul className="mt-2 space-y-1 text-sm text-ink-soft">
+                  {sourceRows.map(([k, v]) => (
+                    <li key={k} className="flex justify-between gap-4">
+                      <span className="capitalize">{k}</span>
+                      <span className="text-ink">
+                        {v.won} / {v.total}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {inquiries.length === 0 ? (
         <div className="mt-10 border border-dashed border-line bg-ivory p-10 text-center">

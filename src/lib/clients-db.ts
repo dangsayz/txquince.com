@@ -47,6 +47,10 @@ export type InquiryRow = {
   last_touch_at: string | null;
   unsubscribed_at: string | null;
   attribution: Record<string, string> | null;
+  /** Why a 'lost' lead was lost (migration 0018) — optional until that runs. */
+  lost_reason?: string | null;
+  /** Who they booked instead, if known (migration 0018). */
+  competitor_name?: string | null;
 };
 
 /**
@@ -73,16 +77,24 @@ export const getBookings = cache(async (): Promise<BookingRow[]> => {
 /** All inquiries (leads), newest first. */
 export const getInquiries = cache(async (): Promise<InquiryRow[]> => {
   if (!isSupabaseConfigured()) return [];
+  const base =
+    "id, created_at, name, email, phone, event_date, venue, services, budget_range, referral, message, status, last_touch_at, unsubscribed_at, attribution";
   try {
     const supabase = getServiceSupabase();
-    const { data, error } = await supabase
+    // Try the enriched select; fall back to base if migration 0018 hasn't run
+    // yet, so the admin never blanks out on a missing-column error.
+    const enriched = await supabase
       .from("inquiries")
-      .select(
-        "id, created_at, name, email, phone, event_date, venue, services, budget_range, referral, message, status, last_touch_at, unsubscribed_at, attribution",
-      )
+      .select(`${base}, lost_reason, competitor_name`)
       .order("created_at", { ascending: false });
-    if (error || !data) return [];
-    return data as InquiryRow[];
+    if (!enriched.error && enriched.data) return enriched.data as InquiryRow[];
+
+    const basic = await supabase
+      .from("inquiries")
+      .select(base)
+      .order("created_at", { ascending: false });
+    if (basic.error || !basic.data) return [];
+    return basic.data as InquiryRow[];
   } catch {
     return [];
   }
