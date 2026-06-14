@@ -100,7 +100,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Anclado a nuestras colecciones, la cuenta es sencilla: Essential cuesta $2,500 por foto o video con un artista. Signature cuesta $3,900 por foto y video — dos artistas, cobertura de día completo y un adelanto la misma semana. Legacy cuesta $5,500 por la cobertura más amplia de ambos. Así que en cuanto quiere los dos, una colección Signature de $3,900 normalmente le gana a juntar dos proveedores aparte. Para ver qué incluye cada plan y [cuáles incluyen ambos](/investment), revise la página de colecciones; y para una mirada más amplia al costo, lea [cuánto cuesta un fotógrafo de quinceañera en DFW](/es/blog/cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth).",
+      text: "Anclado a nuestras colecciones, la cuenta es sencilla: Moments ($1,800, 5 horas) y Essential ($2,500, 6 horas) son foto o video con un artista. Signature cuesta $3,900 por foto y video — dos artistas, cobertura de día completo y un adelanto la misma semana. Legacy cuesta $5,500 por la cobertura más amplia de ambos. Así que en cuanto quiere los dos, una colección Signature de $3,900 normalmente le gana a juntar dos proveedores aparte. Para ver qué incluye cada plan y [cuáles incluyen ambos](/investment), revise la página de colecciones; y para una mirada más amplia al costo, lea [cuánto cuesta un fotógrafo de quinceañera en DFW](/es/blog/cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth).",
     },
     { type: "h2", text: "Si el presupuesto solo alcanza para uno" },
     {
@@ -139,7 +139,7 @@ const post: BlogPost = {
     },
     {
       q: "¿Cuáles colecciones de TX Quince incluyen foto y video?",
-      a: "Essential ($2,500) es foto o video con un artista. Signature ($3,900) y Legacy ($5,500) incluyen foto y video con dos artistas. Signature suma cobertura de día completo y un adelanto la misma semana; Legacy suma la cobertura más amplia de ambos. Puede comparar todo lo que incluye cada una en la página de colecciones.",
+      a: "Moments ($1,800) y Essential ($2,500) son foto o video con un artista — Moments cubre 5 horas, Essential 6. Signature ($3,900) y Legacy ($5,500) incluyen foto y video con dos artistas. Signature suma cobertura de día completo y un adelanto la misma semana; Legacy suma la cobertura más amplia de ambos. Puede comparar todo lo que incluye cada una en la página de colecciones.",
     },
     {
       q: "¿Un mismo equipo puede hacer la foto y el video?",

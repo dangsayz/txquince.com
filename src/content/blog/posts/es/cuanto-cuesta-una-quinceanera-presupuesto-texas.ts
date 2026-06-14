@@ -58,7 +58,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Una colección de foto y video es otro proveedor y otro oficio: los artistas que acompañan a su hija durante todo el día y le devuelven la historia completa. En [TX Quince](/investment) esas colecciones son fijas: $2,500, $3,900 y $5,500. Un paquete de salón de $3,000 y una colección de video de $3,900 son dos compras distintas que solo se parecen en el número — no deje que una hoja de cotización las revuelva.",
+      text: "Una colección de foto y video es otro proveedor y otro oficio: los artistas que acompañan a su hija durante todo el día y le devuelven la historia completa. En [TX Quince](/investment) esas colecciones son fijas: $1,800, $2,500, $3,900 y $5,500. Un paquete de salón de $3,000 y una colección de video de $3,900 son dos compras distintas que solo se parecen en el número — no deje que una hoja de cotización las revuelva.",
     },
     { type: "h2", text: "Por qué la foto y el video merecen su parte" },
     {
@@ -157,7 +157,7 @@ const post: BlogPost = {
     },
     {
       q: "¿Los paquetes del salón son lo mismo que las colecciones de fotografía?",
-      a: "No. Los paquetes de salón todo incluido (a menudo de $2,000 a $4,000 en DFW) le compran el lugar, las mesas y a veces el banquete o el DJ. Una colección de foto y video es otro proveedor y otro oficio — en TX Quince son fijas: $2,500, $3,900 y $5,500. Precios parecidos, compras totalmente distintas.",
+      a: "No. Los paquetes de salón todo incluido (a menudo de $2,000 a $4,000 en DFW) le compran el lugar, las mesas y a veces el banquete o el DJ. Una colección de foto y video es otro proveedor y otro oficio — en TX Quince son fijas: $1,800, $2,500, $3,900 y $5,500. Precios parecidos, compras totalmente distintas.",
     },
   ],
   related: [

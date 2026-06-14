@@ -121,7 +121,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Una última nota sobre el dinero: el salón y el banquete son su propia partida del presupuesto, completamente aparte de la fotografía. Nuestras colecciones de foto y video tienen precio fijo de $2,500, $3,900 y $5,500, así que una vez que elija su salón, el costo de su cobertura ya es un número conocido.",
+      text: "Una última nota sobre el dinero: el salón y el banquete son su propia partida del presupuesto, completamente aparte de la fotografía. Nuestras colecciones de foto y video tienen precio fijo de $1,800, $2,500, $3,900 y $5,500, así que una vez que elija su salón, el costo de su cobertura ya es un número conocido.",
     },
   ],
   faqs: [
@@ -139,7 +139,7 @@ const post: BlogPost = {
     },
     {
       q: "¿Cuánto cuestan los salones para quinceañera en Dallas?",
-      a: "El costo del salón varía mucho según el lugar, la temporada, el día de la semana y si incluye banquete, así que pida una cotización vigente a cada salón directamente; ese número es aparte de la fotografía. Como referencia, las colecciones de foto y video de TX Quince tienen precio fijo de $2,500, $3,900 y $5,500, sin importar qué salón reserve.",
+      a: "El costo del salón varía mucho según el lugar, la temporada, el día de la semana y si incluye banquete, así que pida una cotización vigente a cada salón directamente; ese número es aparte de la fotografía. Como referencia, las colecciones de foto y video de TX Quince tienen precio fijo de $1,800, $2,500, $3,900 y $5,500, sin importar qué salón reserve.",
     },
     {
       q: "¿Puedo llevar a mi propio fotógrafo a un salón de DFW?",

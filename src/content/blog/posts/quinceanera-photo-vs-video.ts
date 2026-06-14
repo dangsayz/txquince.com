@@ -98,7 +98,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Anchored to our collections, the math is simple: Essential is $2,500 for photo or film with one artist. Signature is $3,900 for photo + film — two artists, full-day coverage, a same-week sneak peek. Legacy is $5,500 for the most coverage of both. So the moment you want both, a Signature collection at $3,900 typically beats stitching together two separate vendors. For the full breakdown of every inclusion, see [which collections include film](/investment), and for a wider look at pricing read our [quinceañera photographer cost guide for DFW](/blog/quinceanera-photographer-cost-dallas-fort-worth).",
+      text: "Anchored to our collections, the math is simple: Moments ($1,800, 5 hours) and Essential ($2,500, 6 hours) are photo or film with one artist. Signature is $3,900 for photo + film — two artists, full-day coverage, a same-week sneak peek. Legacy is $5,500 for the most coverage of both. So the moment you want both, a Signature collection at $3,900 typically beats stitching together two separate vendors. For the full breakdown of every inclusion, see [which collections include film](/investment), and for a wider look at pricing read our [quinceañera photographer cost guide for DFW](/blog/quinceanera-photographer-cost-dallas-fort-worth).",
     },
     { type: "h2", text: "If your budget only stretches one way" },
     {
@@ -137,7 +137,7 @@ const post: BlogPost = {
     },
     {
       q: "Which TX Quince collections include both photo and film?",
-      a: "Essential ($2,500) is photo or film with one artist. Signature ($3,900) and Legacy ($5,500) both include photo + film with two artists. Signature adds full-day coverage and a same-week sneak peek; Legacy adds the most coverage of both. You can compare every inclusion on the investment page.",
+      a: "Moments ($1,800) and Essential ($2,500) are photo or film with one artist — Moments covers 5 hours, Essential 6. Signature ($3,900) and Legacy ($5,500) both include photo + film with two artists. Signature adds full-day coverage and a same-week sneak peek; Legacy adds the most coverage of both. You can compare every inclusion on the investment page.",
     },
     {
       q: "Can one team shoot both the photos and the video?",

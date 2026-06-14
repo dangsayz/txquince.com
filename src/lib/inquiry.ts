@@ -15,10 +15,12 @@ export const SERVICE_OPTIONS = [
 ] as const;
 
 /**
- * Budget ranges (req). The LOWEST option starts at $2,500 — THE FILTER.
- * There is intentionally no sub-$2,500 option: budget shoppers self-select away.
+ * Budget ranges (req). The LOWEST option ($1,800–$2,500) mirrors the Moments
+ * entry collection, so budget families have a bracket that fits instead of
+ * bouncing. The ladder still climbs to the Legacy ceiling for anchoring.
  */
 export const BUDGET_OPTIONS = [
+  { value: "$1,800–$2,500", label: "$1,800 – $2,500" },
   { value: "$2,500–$3,500", label: "$2,500 – $3,500" },
   { value: "$3,500–$4,500", label: "$3,500 – $4,500" },
   { value: "$4,500–$5,500+", label: "$4,500 – $5,500+" },
