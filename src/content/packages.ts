@@ -151,6 +151,41 @@ export function depositForCollection(id: string): number {
 /** The lowest deposit across collections — the "from $X" floor for copy. */
 export const depositFloorLabel = packages[0].depositLabel;
 
+/* ──────────────────────────────────────────────────────────────────────────
+ * DERIVED COPY HELPERS — single source of truth.
+ * Anything that mentions HOW MANY collections, the lowest price, or the price
+ * list should read from these, never hardcode "three"/"four"/"$2,500". Add or
+ * remove a collection above and every page that uses these updates itself.
+ * ────────────────────────────────────────────────────────────────────────── */
+
+/** How many collections exist right now. */
+export const packageCount = packages.length;
+
+const COUNT_WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+/** Count as a word, lowercase: "four". */
+export const packageCountWord = COUNT_WORDS[packageCount] ?? String(packageCount);
+/** Count as a word, capitalized: "Four" — e.g. `${packageCountWordCap} collections.` */
+export const packageCountWordCap =
+  packageCountWord.charAt(0).toUpperCase() + packageCountWord.slice(1);
+
+/** Lowest price label — the "from $X" floor used in marketing copy. */
+export const priceFloorLabel = packages[0].priceLabel;
+
+/** Hours range across the ladder, e.g. "5 to 8". */
+export const hoursRangeLabel = `${packages[0].hours} to ${packages[packages.length - 1].hours}`;
+
+/** Oxford-comma price list (EN): "$1,800, $2,500, $3,900, and $5,500". */
+export const priceListLabel = packages
+  .map((p) => p.priceLabel)
+  .join(", ")
+  .replace(/, ([^,]+)$/, packageCount > 1 ? ", and $1" : "$1");
+
+/** Spanish price list: "$1,800, $2,500, $3,900 y $5,500". */
+export const priceListLabelEs = packages
+  .map((p) => p.priceLabel)
+  .join(", ")
+  .replace(/, ([^,]+)$/, packageCount > 1 ? " y $1" : "$1");
+
 /** The hook above the tiers. */
 export const investmentIntro = {
   eyebrow: "Investment",

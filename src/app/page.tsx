@@ -3,7 +3,7 @@ import Image from "next/image";
 import { site } from "@/content/site";
 import { home } from "@/content/home";
 import { homeTeaser } from "@/content/gallery";
-import { packages } from "@/content/packages";
+import { packages, packageCountWordCap, hoursRangeLabel } from "@/content/packages";
 import { releasedTestimonials } from "@/content/testimonials";
 import { getFeaturedImages, getVideos, getHeroMedia } from "@/lib/content-db";
 import { DateChecker } from "@/components/DateChecker";
@@ -403,10 +403,10 @@ export default async function HomePage() {
                 className="mt-4 max-w-[12ch] font-display text-ink"
                 style={{ fontSize: "clamp(2.4rem,4.6vw,4rem)", lineHeight: 1, letterSpacing: "-0.02em" }}
               >
-                Four collections.
+                {packageCountWordCap} collections.
               </h2>
               <p className="mt-6 max-w-xs text-sm leading-relaxed text-ink-soft">
-                Fixed pricing, stated plainly — 5 to 8 hours of coverage by
+                Fixed pricing, stated plainly — {hoursRangeLabel} hours of coverage by
                 collection. {site.booking.depositLabel} reserves the date; the balance
                 splits into interest-free installments.
               </p>

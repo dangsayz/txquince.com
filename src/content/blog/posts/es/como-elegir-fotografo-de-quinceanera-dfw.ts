@@ -78,8 +78,8 @@ const post: BlogPost = {
     },
     {
       type: "cta",
-      heading: "Vea las tres colecciones y qué incluye cada una",
-      body: "Essential, Signature y Legacy: precios fijos, todo lo que incluye cada paquete y una verificación de fecha en tiempo real, todo en una sola página.",
+      heading: "Vea las cuatro colecciones y qué incluye cada una",
+      body: "Moments, Essential, Signature y Legacy: precios fijos, de 5 a 8 horas de cobertura, todo lo que incluye cada paquete y una verificación de fecha en tiempo real, todo en una sola página.",
       href: "/investment",
       label: "Ver colecciones y precios",
     },
