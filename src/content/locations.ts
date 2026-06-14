@@ -25,14 +25,16 @@ export type Location = {
   /** Real, well-known areas/landmarks — grounds the page locally (shared EN/ES). */
   areas: string[];
 
-  // English
+  // English. intro is a variable-length set of paragraphs ON PURPOSE — each
+  // city is written in its own voice and runs its own length, so these pages
+  // never read like one template with the name swapped out.
   lead: string;
-  intro: [string, string];
+  intro: string[];
   faqs: CityFaq[];
 
   // Spanish (natural Mexican Spanish, not a literal translation)
   leadEs: string;
-  introEs: [string, string];
+  introEs: string[];
   faqsEs: CityFaq[];
 };
 
@@ -179,34 +181,44 @@ export const locations: Location[] = [
       "Jefferson Boulevard",
       "the Kessler",
     ],
-    lead: "The heart of Mexican-American Dallas — Oak Cliff, West Dallas, Pleasant Grove.",
+    lead: "Oak Cliff, West Dallas, Pleasant Grove — where the DFW quinceañera grew up.",
     intro: [
-      "Dallas has the largest Mexican-American community in North Texas, and its quinceañera tradition runs deepest in Oak Cliff, West Dallas, and Pleasant Grove. From a misa near Jefferson Boulevard to portraits in Bishop Arts or the Kessler and a reception across the city, I photograph the full day the way Dallas families actually celebrate it — church first, nothing left out.",
-      "I only book one quinceañera a day. That means your daughter's celebration gets undivided attention from the first church photo to the last dance — not a slot squeezed between two other events.",
+      "If your family is from Oak Cliff, you already know Jefferson Boulevard. The dress shops, the panaderías, the photo studios that have been making quinceañera portraits on that strip since the late 1970s — that corridor has been the heart of the Dallas quince for longer than most photographers have been alive. I shoot here all the time, and I shoot it with respect for what it is: the largest, oldest Mexican-American community in North Texas, where families still do the day in full and the church still comes first.",
+      "A Dallas quince day moves fast, and it moves across the whole city — a morning misa near Jefferson or in West Dallas, portraits in Bishop Arts or down at the Kessler, then a reception anywhere from Pleasant Grove to a downtown hall. The thing families tell me they regret most about a past event isn't the venue or the dress. It's the moments the photographer missed because he was rushing or watching the clock. The entrada, the vals, your dad's face during the brindis — those happen once, and they happen fast.",
+      "That's why I only take one quinceañera a day. Your Saturday is the only thing on my calendar — no leaving early for a second event, no rushing the timeline. We build a shot list together beforehand so nothing important slips past, and I actually direct your court and your family, so the photos look like you instead of stiff and generic.",
     ],
     faqs: [
       {
         q: "Do you photograph quinceañeras across Dallas?",
-        a: "Yes — all of Dallas, with a special love for Oak Cliff, West Dallas, and Pleasant Grove. No travel fee anywhere in the metroplex. Church, portraits, and reception, start to finish.",
+        a: "Yes — all of Dallas, and especially the neighborhoods where the tradition runs deepest: Oak Cliff, West Dallas, and Pleasant Grove. No travel fee anywhere in the city. I cover the full day, from the first church photo to the last dance.",
       },
       {
-        q: "Can we do portraits in Bishop Arts or Oak Cliff?",
-        a: "Yes — Bishop Arts and the Kessler area make gorgeous portrait backdrops. We can shoot a save-the-date session there beforehand or work portraits into the day's timeline.",
+        q: "Do you know the photo rules at Dallas Catholic churches?",
+        a: "Yes. Most parishes in the Diocese of Dallas ask the photographer to hang back during the Mass — no walking the aisles, no flash during the liturgy. I've shot these churches long enough to catch the moments that matter — the entrada, the kneeling, the blessing — without stepping on the celebration or getting a talking-to from the priest. Tell me which parish you're at and I'll already know the room.",
+      },
+      {
+        q: "Where do Dallas families take quinceañera portraits?",
+        a: "Bishop Arts and the Kessler are the classic Oak Cliff backdrops, and Jefferson Boulevard itself — the murals, the old marquee signs — makes for portraits that actually feel like home. We can shoot a save-the-date session ahead of time or fold portraits into the day. Tell me what feels like your Dallas and we'll build around it.",
       },
     ],
-    leadEs: "El corazón del Dallas mexicano — Oak Cliff, West Dallas, Pleasant Grove.",
+    leadEs: "Oak Cliff, West Dallas, Pleasant Grove — donde creció la quinceañera de DFW.",
     introEs: [
-      "Dallas tiene la comunidad mexicana más grande del norte de Texas, y la tradición de la quinceañera se vive más fuerte en Oak Cliff, West Dallas y Pleasant Grove. Desde una misa cerca de Jefferson Boulevard hasta fotos en Bishop Arts o el Kessler y una recepción en cualquier parte de la ciudad, fotografío todo el día como de verdad lo celebran las familias de Dallas: primero la iglesia, sin dejar nada fuera.",
-      "Solo reservo una quinceañera al día. Eso significa que la celebración de tu hija tiene atención total, desde la primera foto en la iglesia hasta el último baile, no un huequito entre otros dos eventos.",
+      "Si tu familia es de Oak Cliff, ya conoces Jefferson Boulevard. Las tiendas de vestidos, las panaderías, los estudios de fotografía que han hecho retratos de quinceañera en esa calle desde finales de los años setenta — ese corredor ha sido el corazón de la quince en Dallas desde antes de que muchos fotógrafos nacieran. Aquí fotografío seguido, y lo hago con respeto por lo que es: la comunidad mexicana más grande y antigua del norte de Texas, donde las familias todavía hacen el día completo y la iglesia sigue siendo lo primero.",
+      "Un día de quince en Dallas va rápido, y va por toda la ciudad — una misa de mañana cerca de Jefferson o en West Dallas, fotos en Bishop Arts o en el Kessler, y luego una recepción que puede estar desde Pleasant Grove hasta un salón del downtown. Lo que más me dicen las familias que lamentan de un evento pasado no es el salón ni el vestido. Son los momentos que el fotógrafo dejó pasar por andar de prisa o pendiente del reloj. La entrada, el vals, la cara de tu papá en el brindis — eso pasa una sola vez, y pasa rápido.",
+      "Por eso solo tomo una quinceañera al día. Tu sábado es lo único en mi calendario — sin irse temprano a otro evento, sin apurar el itinerario. Armamos juntos una lista de fotos antes del día para que no se escape nada importante, y de verdad dirijo a tu corte y a tu familia, para que las fotos se vean como ustedes y no tiesas y genéricas.",
     ],
     faqsEs: [
       {
         q: "¿Fotografías quinceañeras en todo Dallas?",
-        a: "Sí — todo Dallas, con un cariño especial por Oak Cliff, West Dallas y Pleasant Grove. Sin cargo por traslado en todo el metroplex. Iglesia, fotos y recepción, de principio a fin.",
+        a: "Sí — todo Dallas, y en especial los barrios donde la tradición se vive más fuerte: Oak Cliff, West Dallas y Pleasant Grove. Sin cargo por traslado en toda la ciudad. Cubro el día completo, desde la primera foto en la iglesia hasta el último baile.",
       },
       {
-        q: "¿Podemos hacer fotos en Bishop Arts u Oak Cliff?",
-        a: "Sí — Bishop Arts y la zona del Kessler son fondos hermosos. Podemos hacer una sesión save-the-date ahí antes o acomodar las fotos en el itinerario del día.",
+        q: "¿Conoces las reglas de fotos en las iglesias católicas de Dallas?",
+        a: "Sí. La mayoría de las parroquias de la Diócesis de Dallas piden que el fotógrafo se mantenga atrás durante la misa — sin caminar por los pasillos, sin flash durante la liturgia. Llevo suficiente tiempo fotografiando en estas iglesias para captar los momentos que importan — la entrada, cuando se arrodilla, la bendición — sin estorbar la celebración ni que el padre me llame la atención. Dime en qué parroquia es y ya conozco el lugar.",
+      },
+      {
+        q: "¿Dónde hacen las fotos las familias de Dallas?",
+        a: "Bishop Arts y el Kessler son los fondos clásicos de Oak Cliff, y el mismo Jefferson Boulevard — los murales, los letreros viejos — da fotos que de verdad se sienten como en casa. Podemos hacer una sesión save-the-date antes o acomodar las fotos en el día. Dime qué se siente como tu Dallas y armamos todo alrededor de eso.",
       },
     ],
   },
@@ -308,34 +320,42 @@ export const locations: Location[] = [
       "South Pointe",
       "Mansfield ISD area",
     ],
-    lead: "Where DFW families go all-out on the celebration.",
+    lead: "Mansfield families don't cut corners on the day — and neither do I.",
     intro: [
-      "Mansfield families tend to do a quinceañera in full — the complete day, the larger court, the cinematic film and album to match. It's exactly the celebration my Signature and Legacy collections are built for: two storytellers, the whole day, the long-form film and drone coverage that do a milestone like this justice.",
-      "I book one quinceañera a day, so your celebration gets everything — la misa, portraits around Historic Downtown Mansfield or the Mansfield National area, el vals, and a reception captured start to finish, nothing rushed.",
+      "Mansfield has grown into one of the most prosperous corners of the metroplex, and the quinceañeras here reflect it — bigger courts, full-day celebrations, a film and album to match. When a family puts this much into a single day, the photography can't be the afterthought. This is exactly what my Signature and Legacy collections are built for: two storytellers, the whole day, a cinematic film and a real printed album — not a USB stick and a handshake.",
+      "What sets a Mansfield quince apart is how put-together the day is, and a day that organized deserves a photographer who isn't scrambling. I take one celebration a day, so I'm there from the misa through the last song — never watching the clock to get to a second event. We'll find the right light around Historic Downtown Mansfield or Oliver Nature Park for portraits, keep the timeline calm, and you'll have your gallery back when I promise it, not three months later.",
     ],
     faqs: [
       {
-        q: "Do you photograph quinceañeras in Mansfield?",
-        a: "Yes — Mansfield is part of my Dallas–Fort Worth service area with no travel fee. It's a natural fit for the Signature and Legacy collections, which cover the full day with film and album included.",
+        q: "Which collection do most Mansfield families choose?",
+        a: "Most go with Signature ($3,900) for the full day with photo and film, and a good number step up to Legacy ($5,500) for the long-form cinematic film, drone coverage, and a premium album. For the way families here do a quince, those two are the natural fit — see exactly what's included on the investment page.",
       },
       {
-        q: "Which collection do most Mansfield families choose?",
-        a: "Most go with Signature ($3,900) for the full day with photo and film, and many step up to Legacy ($5,500) for the long-form cinematic film, drone coverage, and a premium album. See exactly what's included on the investment page.",
+        q: "Will you stay for the whole reception?",
+        a: "Yes — and it's worth asking every photographer you talk to. Because I only book one quinceañera a day, I'm not slipping out of your reception early to make a second event. Signature and Legacy both cover the full day, so the baile sorpresa, the last dance, and the send-off all make the gallery — not cut off at hour six.",
+      },
+      {
+        q: "How long until we get the photos and film?",
+        a: "Galleries come back in a few weeks, not the months some families end up waiting. Late delivery is one of the most common quinceañera complaints out there, so I keep my calendar light enough to actually edit and deliver on time. You'll get a sneak peek first, then the full gallery and film.",
       },
     ],
-    leadEs: "Donde las familias de DFW se lucen con la celebración.",
+    leadEs: "Las familias de Mansfield no escatiman en el día — y yo tampoco.",
     introEs: [
-      "Las familias de Mansfield suelen hacer la quinceañera en grande: el día completo, la corte más grande, el video cinematográfico y el álbum a la altura. Es justo la celebración para la que están hechas mis colecciones Signature y Legacy: dos narradores, todo el día, el video de larga duración y la toma con dron que le hacen justicia a un momento así.",
-      "Reservo una quinceañera al día, así que tu celebración lo tiene todo: la misa, fotos por el Historic Downtown Mansfield o la zona de Mansfield National, el vals y una recepción capturada de principio a fin, sin prisas.",
+      "Mansfield se ha convertido en una de las zonas más prósperas del metroplex, y las quinceañeras aquí lo reflejan — cortes más grandes, celebraciones de día completo, un video y un álbum a la altura. Cuando una familia invierte tanto en un solo día, la fotografía no puede ser lo último en la lista. Para esto están hechas mis colecciones Signature y Legacy: dos narradores, todo el día, un video cinematográfico y un álbum impreso de verdad — no una memoria USB y un apretón de manos.",
+      "Lo que distingue a una quince en Mansfield es lo bien organizado que está el día, y un día así de cuidado merece un fotógrafo que no ande corriendo. Tomo una sola celebración al día, así que estoy presente desde la misa hasta la última canción — sin ver el reloj para llegar a otro evento. Buscamos la luz adecuada por el Historic Downtown Mansfield o el Oliver Nature Park para las fotos, mantenemos el itinerario tranquilo, y tendrás tu galería cuando te la prometo, no tres meses después.",
     ],
     faqsEs: [
       {
-        q: "¿Fotografías quinceañeras en Mansfield?",
-        a: "Sí — Mansfield es parte de mi área de Dallas–Fort Worth, sin cargo por traslado. Encaja perfecto con las colecciones Signature y Legacy, que cubren todo el día con video y álbum incluidos.",
+        q: "¿Qué colección eligen la mayoría de las familias de Mansfield?",
+        a: "La mayoría elige Signature ($3,900) por el día completo con foto y video, y muchas suben a Legacy ($5,500) por el video cinematográfico de larga duración, la toma con dron y un álbum premium. Por cómo hacen la quince las familias de aquí, esas dos son la opción natural — mira todo lo que incluye cada una en la página de inversión.",
       },
       {
-        q: "¿Qué colección eligen la mayoría de las familias de Mansfield?",
-        a: "La mayoría elige Signature ($3,900) por el día completo con foto y video, y muchas suben a Legacy ($5,500) por el video cinematográfico de larga duración, la toma con dron y un álbum premium. Mira todo lo que incluye cada una en la página de inversión.",
+        q: "¿Te quedas toda la recepción?",
+        a: "Sí — y vale la pena preguntárselo a cada fotógrafo que entrevistes. Como solo reservo una quinceañera al día, no me salgo temprano de tu recepción para llegar a otro evento. Signature y Legacy cubren el día completo, así que el baile sorpresa, el último baile y la despedida quedan todos en la galería — no cortados a la sexta hora.",
+      },
+      {
+        q: "¿Cuánto tardan en llegar las fotos y el video?",
+        a: "Las galerías llegan en unas semanas, no en los meses que algunas familias terminan esperando. La entrega tardía es una de las quejas más comunes sobre las quinceañeras, así que mantengo mi calendario ligero para de verdad editar y entregar a tiempo. Primero recibes un adelanto, luego la galería completa y el video.",
       },
     ],
   },
