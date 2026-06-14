@@ -25,6 +25,26 @@ export const metadata: Metadata = {
   },
 };
 
+/** Clean, viewer-facing alt — never the raw upload filename (e.g. "12img save
+ *  the date 6 13 26 ... jpg"). Junky alts fall back to a section-based phrase
+ *  that's meaningful to people AND keyword-relevant for SEO. */
+const SECTION_PHRASE: Record<string, string> = {
+  "save-the-date": "Quinceañera save-the-date portrait",
+  church: "Quinceañera church ceremony",
+  portraits: "Quinceañera portrait",
+  celebration: "Quinceañera celebration",
+  films: "Quinceañera film still",
+};
+function cleanAlt(raw: string | null | undefined, sectionId: string, fallback: string): string {
+  const a = (raw || "").trim();
+  const looksLikeFilename =
+    !a ||
+    /\b(jpe?g|png|webp|heic|avif)\b/i.test(a) ||
+    /\b12img\b/i.test(a) ||
+    /\d{1,2}[\s\-_]\d{1,2}[\s\-_]\d{2,4}/.test(a);
+  return looksLikeFilename ? SECTION_PHRASE[sectionId] ?? fallback : a;
+}
+
 export default async function PortfolioPage() {
   const [dbImages, videos] = await Promise.all([getPortfolioImages(), getVideos()]);
   // Once any real photos exist, stop padding empty sections with placeholder
@@ -93,7 +113,7 @@ export default async function PortfolioPage() {
         const items: GalleryItem[] = dbForSection.length
           ? dbForSection.map((i) => ({
               url: i.url,
-              alt: i.alt || section.title,
+              alt: cleanAlt(i.alt, section.id, section.title),
               ratio: i.is_feature ? "landscape" : "portrait",
               feature: i.is_feature,
               width: i.width,
