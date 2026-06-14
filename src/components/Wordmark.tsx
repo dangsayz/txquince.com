@@ -1,13 +1,27 @@
 /**
- * Wordmark — a single clean serif masthead string (Vogue-style).
- * "TX" in champagne gold (the Texas mark); the rest warm near-black ink.
- * Type-only by design: it scales, prints, and never pixelates. The
- * "Photography & Film" descriptor lives in the hero/footer — not repeated here.
+ * Wordmark — "Stacked Flag" brand mark (Vogue/editorial Didone).
+ *
+ * A large Didone "TX" monogram over a hairline-tracked gold label. Type-only,
+ * so it scales, prints, and never pixelates. The same mark serves the nav
+ * (small) and the footer/hero (large) via the `size` prop. This is also the
+ * social-avatar / favicon lockup — one mark everywhere.
  */
-export function Wordmark() {
+export function Wordmark({ size = "nav" }: { size?: "nav" | "masthead" }) {
+  const tx =
+    size === "masthead"
+      ? "text-5xl md:text-6xl"
+      : "text-[1.75rem] md:text-[1.95rem]";
+  const label =
+    size === "masthead"
+      ? "text-[0.7rem] tracking-[0.5em] indent-[0.5em] mt-2.5"
+      : "text-[0.5rem] tracking-[0.44em] indent-[0.44em] mt-1.5";
+
   return (
-    <span className="font-display text-[1.4rem] leading-none tracking-[0.16em] text-ink md:text-[1.6rem]">
-      <span className="text-wine">TX</span> QUINCE
+    <span className="inline-flex flex-col items-center leading-[0.84]">
+      <span className={`font-didone font-normal text-ink ${tx}`}>TX</span>
+      <span className={`font-body font-medium uppercase text-wine ${label}`}>
+        Quince · DFW
+      </span>
     </span>
   );
 }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { site } from "@/content/site";
 import { locations } from "@/content/locations";
+import { Wordmark } from "@/components/Wordmark";
 
 const COLUMNS = [
   {
@@ -41,11 +42,11 @@ export function Footer() {
   return (
     <footer className="relative bg-cream pt-section">
       <div className="mx-auto max-w-5xl px-5 text-center md:px-10 lg:px-16">
-        {/* Wordmark + tagline — masthead lockup, scaled up for the close */}
-        <p className="font-display text-4xl tracking-[0.16em] text-ink md:text-5xl">
-          <span className="text-wine-deep">TX</span> QUINCE
-        </p>
-        <p className="mt-3 text-sm leading-relaxed text-ink-soft">{site.tagline}</p>
+        {/* Wordmark — masthead lockup, scaled up for the close */}
+        <div className="flex justify-center">
+          <Wordmark size="masthead" />
+        </div>
+        <p className="mt-5 text-sm leading-relaxed text-ink-soft">{site.tagline}</p>
 
         {/* Social pills */}
         <div className="mt-6 flex items-center justify-center gap-3">

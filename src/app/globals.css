@@ -28,6 +28,7 @@
 
   /* ---- Type ---- */
   --font-display: var(--font-cormorant), Georgia, "Times New Roman", serif;
+  --font-didone: var(--font-bodoni), Didot, "Bodoni MT", "Times New Roman", serif;
   --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
   /* ---- Spacing scale: one rhythm everywhere ---- */
