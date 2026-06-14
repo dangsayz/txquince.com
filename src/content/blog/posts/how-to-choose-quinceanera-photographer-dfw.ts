@@ -77,8 +77,8 @@ const post: BlogPost = {
     },
     {
       type: "cta",
-      heading: "See the three collections and what's included",
-      body: "Essential, Signature, and Legacy — fixed prices, full inclusions, and a real-time date check on one page.",
+      heading: "See the four collections and what's included",
+      body: "Moments, Essential, Signature, and Legacy — fixed prices, 5 to 8 hours of coverage, full inclusions, and a real-time date check on one page.",
       href: "/investment",
       label: "View collections & pricing",
     },

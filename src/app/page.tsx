@@ -298,11 +298,12 @@ export default async function HomePage() {
                 className="mt-4 max-w-[12ch] font-display text-ink"
                 style={{ fontSize: "clamp(2.4rem,4.6vw,4rem)", lineHeight: 1, letterSpacing: "-0.02em" }}
               >
-                Three collections.
+                Four collections.
               </h2>
               <p className="mt-6 max-w-xs text-sm leading-relaxed text-ink-soft">
-                Fixed pricing, stated plainly. {site.booking.depositLabel} reserves the
-                date; the balance splits into interest-free installments.
+                Fixed pricing, stated plainly — 5 to 8 hours of coverage by
+                collection. {site.booking.depositLabel} reserves the date; the balance
+                splits into interest-free installments.
               </p>
             </Reveal>
 
