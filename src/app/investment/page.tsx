@@ -10,12 +10,12 @@ import { Testimonials } from "@/components/Testimonials";
 export const metadata: Metadata = {
   title: "Investment — Quinceañera Collections",
   description:
-    "Fixed-price quinceañera photography & film collections from $2,500. Most families choose Signature ($3,900): two storytellers, the full day, film + gallery.",
+    "Fixed-price quinceañera photography & film collections from $1,800. Most families choose Signature ($3,900): two storytellers, the full day, film + gallery.",
   alternates: { canonical: "/investment" },
   openGraph: {
     title: "Investment — Quinceañera Collections · TX Quince",
     description:
-      "Fixed-price collections from $2,500. Most families choose Signature ($3,900).",
+      "Fixed-price collections from $1,800. Most families choose Signature ($3,900).",
     url: `${site.url}/investment`,
   },
 };
@@ -97,68 +97,88 @@ export default function InvestmentPage() {
         </Reveal>
       </section>
 
-      {/* Collections — a lookbook ledger: hairline rows, includes set like an
-          index, emphasis through scale (no cards, no dark blocks, no badges). */}
-      <section className="mt-20 border-y border-ink/10 bg-white md:mt-28">
-        <div className="mx-auto max-w-[90rem] px-5 py-8 md:px-10 lg:px-16 md:py-12">
-          {packages.map((p, i) => (
-            <Reveal
-              key={p.id}
-              delay={i * 60}
-              className={`grid gap-y-8 py-12 md:grid-cols-12 md:gap-x-8 md:py-16 ${
-                i > 0 ? "border-t border-ink/10" : ""
-              }`}
-            >
-              {/* Name · tagline · price */}
-              <div className="md:col-span-4">
-                <h2
-                  className="font-display text-ink"
-                  style={{
-                    fontSize: p.highlight ? "clamp(2.2rem,4vw,3.4rem)" : "clamp(1.9rem,3.2vw,2.7rem)",
-                    lineHeight: 1,
-                    letterSpacing: "-0.02em",
-                  }}
-                >
-                  {p.name}
-                </h2>
-                {p.highlight ? (
-                  <p className="mt-3 text-[0.6rem] uppercase tracking-[0.26em] text-wine-deep">
-                    Most reserved
+      {/* Collections — four DISTINCT cards with real separation (the old flat
+          ledger blended into the page). Each tier is its own panel; Signature is
+          inverted to ink so it reads as the obvious choice, and every card wears
+          its hours of coverage as a chip. */}
+      <section className="mx-auto mt-16 max-w-[90rem] px-5 md:mt-24 md:px-10 lg:px-16">
+        <div className="flex flex-col gap-6">
+          {packages.map((p, i) => {
+            const dark = Boolean(p.highlight);
+            return (
+              <Reveal
+                key={p.id}
+                delay={i * 60}
+                className={`relative grid gap-y-8 rounded-[1.75rem] border p-7 md:grid-cols-12 md:gap-x-8 md:p-12 ${
+                  dark
+                    ? "border-wine bg-ink text-cream shadow-2xl shadow-ink/20"
+                    : "border-ink/15 bg-white text-ink"
+                }`}
+              >
+                {/* Name · hours · tagline · price */}
+                <div className="md:col-span-4">
+                  {dark ? (
+                    <span className="mb-4 inline-block rounded-full bg-wine px-3 py-1 text-[0.58rem] uppercase tracking-[0.24em] text-cream">
+                      Most reserved
+                    </span>
+                  ) : null}
+                  <h2
+                    className="font-display"
+                    style={{
+                      fontSize: p.highlight ? "clamp(2.2rem,4vw,3.4rem)" : "clamp(1.9rem,3.2vw,2.7rem)",
+                      lineHeight: 1,
+                      letterSpacing: "-0.02em",
+                    }}
+                  >
+                    {p.name}
+                  </h2>
+                  <p
+                    className={`mt-4 inline-flex items-center rounded-full border px-3 py-1 text-[0.6rem] uppercase tracking-[0.2em] ${
+                      dark ? "border-cream/30 text-cream/80" : "border-ink/20 text-ink-soft"
+                    }`}
+                  >
+                    {p.hours} hours of coverage
                   </p>
-                ) : null}
-                <p className="mt-4 max-w-xs text-sm leading-relaxed text-ink-soft">{p.tagline}</p>
-                <p
-                  className="mt-7 font-display text-ink"
-                  style={{ fontSize: "clamp(2.4rem,4.4vw,3.6rem)", lineHeight: 1 }}
-                >
-                  {p.priceLabel}
-                </p>
-              </div>
+                  <p className={`mt-5 max-w-xs text-sm leading-relaxed ${dark ? "text-cream/75" : "text-ink-soft"}`}>
+                    {p.tagline}
+                  </p>
+                  <p className="mt-7 font-display" style={{ fontSize: "clamp(2.6rem,4.6vw,3.9rem)", lineHeight: 1 }}>
+                    {p.priceLabel}
+                  </p>
+                </div>
 
-              {/* Includes — two quiet columns */}
-              <div className="md:col-span-6 md:col-start-6">
-                <p className="text-[0.62rem] uppercase tracking-[0.24em] text-ink-faint">Included</p>
-                <ul className="mt-5 grid gap-x-10 gap-y-3 sm:grid-cols-2">
-                  {p.includes.map((item) => (
-                    <li key={item} className="border-b border-ink/[0.06] pb-3 text-sm leading-relaxed text-ink-soft">
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-                <p className="mt-7">
-                  <CTAButton href={`/reserve?collection=${p.id}`} variant="text">
-                    Reserve {p.name}
-                  </CTAButton>
-                </p>
-              </div>
-            </Reveal>
-          ))}
-
-          <p className="border-t border-ink/10 pt-8 text-xs text-ink-faint">
-            Payment plans available — reserve with a deposit and split the balance into
-            interest-free installments before your date.
-          </p>
+                {/* Includes — two quiet columns */}
+                <div className="md:col-span-7 md:col-start-6">
+                  <p className={`text-[0.62rem] uppercase tracking-[0.24em] ${dark ? "text-cream/55" : "text-ink-faint"}`}>
+                    Included
+                  </p>
+                  <ul className="mt-5 grid gap-x-10 gap-y-3 sm:grid-cols-2">
+                    {p.includes.map((item) => (
+                      <li
+                        key={item}
+                        className={`border-b pb-3 text-sm leading-relaxed ${
+                          dark ? "border-cream/15 text-cream/85" : "border-ink/[0.08] text-ink-soft"
+                        }`}
+                      >
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="mt-7">
+                    <CTAButton href={`/reserve?collection=${p.id}`} variant={dark ? "onDark" : "ink"}>
+                      Reserve {p.name}
+                    </CTAButton>
+                  </p>
+                </div>
+              </Reveal>
+            );
+          })}
         </div>
+
+        <p className="mt-8 text-xs text-ink-faint">
+          Payment plans available — reserve with a deposit and split the balance into
+          interest-free installments before your date.
+        </p>
       </section>
 
       {/* FAQ — offset editorial Q&A */}

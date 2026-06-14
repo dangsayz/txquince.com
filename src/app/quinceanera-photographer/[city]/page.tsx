@@ -34,7 +34,7 @@ export async function generateMetadata({
   if (!loc) return {};
 
   const title = `Quinceañera Photographer in ${loc.city}, TX`;
-  const description = `Cinematic quinceañera photography & film in ${loc.city}, Texas. Fixed-price collections from $2,500 — la misa, portraits, and the reception, start to finish. Reserve your date.`;
+  const description = `Cinematic quinceañera photography & film in ${loc.city}, Texas. Fixed-price collections from $1,800 (5–8 hours) — la misa, portraits, and the reception. Reserve your date.`;
   const url = `${site.url}/quinceanera-photographer/${loc.slug}`;
   const esUrl = `${site.url}/es/fotografo-de-quinceaneras/${loc.slug}`;
 
@@ -200,33 +200,36 @@ export default async function CityPage({
             </p>
           </Reveal>
 
-          <div className="mt-12 grid gap-5 md:grid-cols-3">
+          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {packages.map((p, i) => (
               <Reveal
                 key={p.id}
                 delay={i * 80}
-                className={`flex h-full flex-col border p-7 ${
+                className={`flex h-full flex-col border p-6 ${
                   p.highlight
-                    ? "border-wine bg-ivory"
+                    ? "border-wine bg-ink text-cream"
                     : "border-line bg-ivory"
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <h3 className="font-display text-2xl text-ink">{p.name}</h3>
+                <div className="flex items-center justify-between gap-2">
+                  <h3 className="font-display text-2xl">{p.name}</h3>
                   {p.badge ? (
                     <span className="bg-wine px-2.5 py-1 text-[0.6rem] uppercase tracking-[0.16em] text-cream">
                       {p.badge}
                     </span>
                   ) : null}
                 </div>
-                <p className="mt-2 text-sm text-ink-soft">{p.tagline}</p>
-                <p className="mt-5 font-display text-4xl text-ink">{p.priceLabel}</p>
-                <p className="mt-4 flex-1 text-sm leading-relaxed text-ink-soft">
+                <p className={`mt-2 text-sm ${p.highlight ? "text-cream/75" : "text-ink-soft"}`}>{p.tagline}</p>
+                <p className="mt-5 font-display text-4xl">{p.priceLabel}</p>
+                <p className={`mt-1 text-[0.7rem] uppercase tracking-[0.16em] ${p.highlight ? "text-cream/60" : "text-ink-faint"}`}>
+                  {p.hours} hours of coverage
+                </p>
+                <p className={`mt-4 flex-1 text-sm leading-relaxed ${p.highlight ? "text-cream/80" : "text-ink-soft"}`}>
                   {p.teaser}
                 </p>
                 <CTAButton
                   href={`/reserve?collection=${p.id}`}
-                  variant="ink"
+                  variant={p.highlight ? "onDark" : "ink"}
                   className="mt-6 w-full"
                 >
                   Reserve {p.name}

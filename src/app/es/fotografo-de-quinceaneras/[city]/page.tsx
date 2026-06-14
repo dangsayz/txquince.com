@@ -30,7 +30,7 @@ export async function generateMetadata({
   if (!loc) return {};
 
   const title = `Fotógrafo de Quinceañeras en ${loc.city}, TX`;
-  const description = `Fotografía y video de quinceañera en ${loc.city}, Texas. Colecciones a precio fijo desde $2,500 — la misa, las fotos y la recepción, de principio a fin. Reserva tu fecha.`;
+  const description = `Fotografía y video de quinceañera en ${loc.city}, Texas. Colecciones a precio fijo desde $1,800 (5–8 horas) — la misa, las fotos y la recepción. Reserva tu fecha.`;
   const esUrl = `${site.url}/es/fotografo-de-quinceaneras/${loc.slug}`;
   const enUrl = `${site.url}/quinceanera-photographer/${loc.slug}`;
 
@@ -52,11 +52,20 @@ export async function generateMetadata({
 
 /** Spanish collection blurbs (packages.ts copy is English-only). */
 const TIER_ES: Record<string, string> = {
-  essential: "Foto o video, un artista, los momentos clave del día.",
+  moments: "Foto o video, un artista, 5 horas — de la misa a la recepción temprana.",
+  essential: "Foto o video, un artista, 6 horas de los momentos clave del día.",
   signature:
-    "Foto + video, dos narradores, tu día completo con un adelanto la misma semana.",
+    "Foto + video, dos narradores, 7 horas con un adelanto la misma semana.",
   legacy:
     "Todo lo de Signature, más video de larga duración, dron y un álbum premium.",
+};
+
+/** Spanish hours label per collection. */
+const HOURS_ES: Record<string, string> = {
+  moments: "5 horas de cobertura",
+  essential: "6 horas de cobertura",
+  signature: "7 horas de cobertura",
+  legacy: "8 horas de cobertura",
 };
 
 function sharedFaqsEs(city: string) {
@@ -189,30 +198,33 @@ export default async function CityPageEs({
             </p>
           </Reveal>
 
-          <div className="mt-12 grid gap-5 md:grid-cols-3">
+          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {packages.map((p, i) => (
               <Reveal
                 key={p.id}
                 delay={i * 80}
-                className={`flex h-full flex-col border p-7 ${
-                  p.highlight ? "border-wine bg-ivory" : "border-line bg-ivory"
+                className={`flex h-full flex-col border p-6 ${
+                  p.highlight ? "border-wine bg-ink text-cream" : "border-line bg-ivory"
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <h3 className="font-display text-2xl text-ink">{p.name}</h3>
+                <div className="flex items-center justify-between gap-2">
+                  <h3 className="font-display text-2xl">{p.name}</h3>
                   {p.highlight ? (
                     <span className="bg-wine px-2.5 py-1 text-[0.6rem] uppercase tracking-[0.16em] text-cream">
                       Más popular
                     </span>
                   ) : null}
                 </div>
-                <p className="mt-5 font-display text-4xl text-ink">{p.priceLabel}</p>
-                <p className="mt-4 flex-1 text-sm leading-relaxed text-ink-soft">
+                <p className="mt-5 font-display text-4xl">{p.priceLabel}</p>
+                <p className={`mt-1 text-[0.7rem] uppercase tracking-[0.16em] ${p.highlight ? "text-cream/60" : "text-ink-faint"}`}>
+                  {HOURS_ES[p.id]}
+                </p>
+                <p className={`mt-4 flex-1 text-sm leading-relaxed ${p.highlight ? "text-cream/80" : "text-ink-soft"}`}>
                   {TIER_ES[p.id]}
                 </p>
                 <CTAButton
                   href={`/reserve?collection=${p.id}`}
-                  variant="ink"
+                  variant={p.highlight ? "onDark" : "ink"}
                   className="mt-6 w-full"
                 >
                   Reservar {p.name}

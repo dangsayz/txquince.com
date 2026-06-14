@@ -8,7 +8,7 @@ import { CTAButton } from "@/components/CTAButton";
 export const metadata: Metadata = {
   title: "Fotógrafo de Quinceañeras — Dallas–Fort Worth",
   description:
-    "Fotografía y video de quinceañera en todo Dallas–Fort Worth — Grand Prairie, Irving, Garland, Dallas, Fort Worth, Arlington, Mansfield y Farmers Branch. Colecciones a precio fijo desde $2,500.",
+    "Fotografía y video de quinceañera en todo Dallas–Fort Worth — Grand Prairie, Irving, Garland, Dallas, Fort Worth, Arlington, Mansfield y Farmers Branch. Colecciones a precio fijo desde $1,800.",
   alternates: {
     canonical: "/es/fotografo-de-quinceaneras",
     languages: {
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `Fotógrafo de Quinceañeras — Dallas–Fort Worth · ${site.brand}`,
     description:
-      "Fotografía y video de quinceañera en todo el metroplex de DFW. Colecciones a precio fijo desde $2,500.",
+      "Fotografía y video de quinceañera en todo el metroplex de DFW. Colecciones a precio fijo desde $1,800.",
     url: `${site.url}/es/fotografo-de-quinceaneras`,
     locale: "es_MX",
   },

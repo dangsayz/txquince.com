@@ -330,6 +330,9 @@ export default async function HomePage() {
                       </p>
                     </div>
                     <p className="mt-3 max-w-md text-sm leading-relaxed text-ink-soft">{p.teaser}</p>
+                    <p className="mt-3 text-[0.62rem] uppercase tracking-[0.2em] text-ink-faint">
+                      {p.hours} hours of coverage
+                    </p>
                     <p className="mt-4 text-[0.62rem] uppercase tracking-[0.22em] text-ink-faint opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                       Reserve {p.name} →
                     </p>

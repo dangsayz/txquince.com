@@ -121,8 +121,10 @@ export function BookingForm({
 
   const selectedCollection =
     packages.find((p) => p.id === collection) ?? packages[1];
+  // Moments + Essential are single-craft (photo OR film); richer tiers are both.
+  const isOneCraft = collection === "essential" || collection === "moments";
   const packageValue: "photo" | "video" | "both" =
-    collection === "essential" ? essentialService : "both";
+    isOneCraft ? essentialService : "both";
 
   const { todayStr, maxStr } = useMemo(() => {
     const now = new Date();
@@ -289,20 +291,20 @@ export function BookingForm({
           label="Which collection?"
           required
           error={errors.collection}
-          hint="Applies to your final balance"
-          className={collection === "essential" ? "" : "sm:col-span-2"}
+          hint="Hours of coverage are shown — applies to your final balance"
+          className={isOneCraft ? "" : "sm:col-span-2"}
         >
           <Select
             value={collection}
             onChange={(v) => setCollection(v as CollectionId)}
             options={packages.map((p) => ({
               value: p.id,
-              label: `${p.name} · ${p.priceLabel}${p.highlight ? " — most popular" : ""}`,
+              label: `${p.name} · ${p.priceLabel} · ${p.hours} hrs${p.highlight ? " — most popular" : ""}`,
             }))}
           />
         </Field>
 
-        {collection === "essential" && (
+        {isOneCraft && (
           <Field label="Photo or film?" required>
             <Select
               value={essentialService}
@@ -339,6 +341,10 @@ export function BookingForm({
       ) : null}
 
       <p className="text-xs leading-relaxed text-ink-faint">
+        <strong className="text-ink-soft">
+          {selectedCollection.name} covers {selectedCollection.hours} hours of
+          coverage.
+        </strong>{" "}
         <strong className="text-ink-soft">No payment now.</strong> I&apos;ll confirm
         your date is open and send a secure link to place your{" "}
         {selectedCollection.depositLabel} {selectedCollection.name} deposit — it
