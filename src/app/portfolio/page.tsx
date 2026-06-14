@@ -7,7 +7,10 @@ import { VideoGallery } from "@/components/VideoGallery";
 import { Reveal } from "@/components/Reveal";
 import { FinalCTA } from "@/components/FinalCTA";
 
-export const revalidate = 60;
+// Render fresh each request — the ISR cache on Cloudflare was serving a stale
+// prerender (old design + before new uploads). Dynamic guarantees the live code
+// and the latest portfolio images always show.
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Portfolio",
