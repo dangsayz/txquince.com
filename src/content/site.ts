@@ -19,7 +19,7 @@ export const site = {
 
   contact: {
     // The operator's owned channels (LAW 4). Email is the reply-from identity too.
-    email: "hello@txquince.com",
+    email: "quincebookings@gmail.com",
     // Optional public phone — leave "" to hide it. Booking is a phone relationship,
     // but inquiries flow through the form first to stay qualified.
     phone: "",
