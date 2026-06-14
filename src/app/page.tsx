@@ -149,7 +149,15 @@ export default async function HomePage() {
               {site.tagline}. One celebration per day — never two.
             </p>
 
-            <div className="hero-enter hero-delay-4 mt-9 flex flex-wrap items-baseline gap-x-8 gap-y-3">
+            {/* Supporting keyword cluster — long-tail moments + suburb geo,
+                woven as a natural sentence (reinforces the H1, no stuffing). */}
+            <p className="hero-enter hero-delay-4 mt-4 max-w-md text-[0.8rem] leading-relaxed text-ink-faint">
+              Full-day quinceañera coverage — the save-the-date session, la misa,
+              portraits, el vals, and the reception — serving Dallas, Fort Worth,
+              Arlington, Irving, Garland, Grand Prairie, and Mansfield.
+            </p>
+
+            <div className="hero-enter hero-delay-5 mt-9 flex flex-wrap items-baseline gap-x-8 gap-y-3">
               <Link
                 href={site.cta.href}
                 className={quietLink("text-ink underline decoration-ink/30 hover:decoration-wine hover:text-wine")}
