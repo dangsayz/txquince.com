@@ -17,6 +17,7 @@
   --color-greige: #fdfbf7; /* alternating section band — whisper-warm near-white */
   --color-white: #ffffff; /* true white — clean section bands + cards */
   --color-ink: #2c1d12; /* primary text / dark pill buttons — espresso */
+  --color-dark: #1a1209; /* deep espresso — full-bleed DARK spreads (the contrast engine) */
   --color-ink-soft: #6f6253; /* secondary text — contrast only improves on the lighter page */
   --color-ink-faint: #726753; /* labels / meta — contrast only improves on the lighter page */
   --color-line: #eae3d6; /* hairline borders on near-white */

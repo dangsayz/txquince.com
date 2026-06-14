@@ -234,14 +234,14 @@ export default async function CityPageEs({
         <span className="text-ink-soft">{loc.city}, TX</span>
       </nav>
 
-      {/* Hero */}
-      <section className="mx-auto max-w-4xl px-5 pt-8 text-center md:px-10 lg:px-16 md:pt-12">
+      {/* Hero — alineado a la izquierda, editorial */}
+      <section className="mx-auto max-w-5xl px-5 pt-8 md:px-10 lg:px-16 md:pt-12">
         <Reveal>
           <p className="eyebrow mb-5">Fotografía y Video de Quinceañeras · {loc.city}, TX</p>
-          <h1 className="mx-auto max-w-3xl display-2 text-ink text-balance">
+          <h1 className="max-w-3xl display-2 text-ink text-balance">
             Fotógrafo de Quinceañeras en {loc.city}
           </h1>
-          <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-ink-soft">
+          <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-soft">
             {loc.leadEs}
           </p>
           <p className="mt-4 text-sm">
@@ -253,7 +253,7 @@ export default async function CityPageEs({
               View this page in English →
             </Link>
           </p>
-          <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
+          <div className="mt-9 flex flex-wrap items-center gap-4">
             <CTAButton href={site.cta.href} variant="primary">
               Reserva tu fecha
             </CTAButton>
@@ -284,54 +284,56 @@ export default async function CityPageEs({
       <section className="bg-greige">
         <div className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
           <Reveal>
-            <h2 className="display-2 text-ink text-center text-balance">
+            <h2 className="display-2 text-ink text-balance">
               Colecciones a precio fijo desde {packages[0].priceLabel}
             </h2>
-            <p className="mx-auto mt-5 max-w-xl text-center text-sm leading-relaxed text-ink-soft">
+            <p className="mt-5 max-w-xl text-sm leading-relaxed text-ink-soft">
               Cada quinceañera en {loc.city} se cubre de la iglesia a la recepción.
               La mayoría elige Signature — dos narradores, el día completo, foto y
               video.
             </p>
           </Reveal>
 
-          <div className="mt-12 grid gap-5 md:grid-cols-3">
+          <div className="mt-10 border-t border-line">
             {packages.map((p, i) => (
               <Reveal
                 key={p.id}
-                delay={i * 80}
-                className={`flex h-full flex-col border p-7 ${
-                  p.highlight ? "border-wine bg-ivory" : "border-line bg-ivory"
-                }`}
+                delay={i * 60}
+                className="grid gap-y-4 border-b border-line py-8 md:grid-cols-12 md:gap-x-8"
               >
-                <div className="flex items-center justify-between">
-                  <h3 className="font-display text-2xl text-ink">{p.name}</h3>
-                  {p.highlight ? (
-                    <span className="text-[0.6rem] uppercase tracking-[0.18em] text-wine-deep">
-                      Más popular
-                    </span>
-                  ) : null}
+                <div className="md:col-span-4">
+                  <div className="flex items-baseline gap-3">
+                    <h3 className="font-display text-3xl text-ink">{p.name}</h3>
+                    {p.highlight ? (
+                      <span className="text-[0.6rem] uppercase tracking-[0.18em] text-wine-deep">
+                        Más popular
+                      </span>
+                    ) : null}
+                  </div>
+                  <p className="mt-2 max-w-xs text-sm text-ink-soft">{TIER_ES[p.id]}</p>
+                  <p className="mt-4 font-display text-3xl text-ink">{p.priceLabel}</p>
                 </div>
-                <p className="mt-5 font-display text-4xl text-ink">{p.priceLabel}</p>
-                <p className="mt-4 text-sm leading-relaxed text-ink-soft">
-                  {TIER_ES[p.id]}
-                </p>
-                <ul className="mt-5 flex-1 space-y-2 border-t border-line pt-5 text-sm leading-relaxed text-ink-soft">
-                  {INCLUDES_ES[p.id].map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-                <CTAButton
-                  href={`/reserve?collection=${p.id}`}
-                  variant="ink"
-                  className="mt-6 w-full"
-                >
-                  Reservar {p.name}
-                </CTAButton>
+                <div className="md:col-span-7 md:col-start-6">
+                  <ul className="grid gap-x-8 gap-y-2 text-sm leading-relaxed text-ink-soft sm:grid-cols-2">
+                    {INCLUDES_ES[p.id].map((item) => (
+                      <li key={item} className="border-b border-line/70 pb-2">
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  <CTAButton
+                    href={`/reserve?collection=${p.id}`}
+                    variant="text"
+                    className="mt-5"
+                  >
+                    Reservar {p.name}
+                  </CTAButton>
+                </div>
               </Reveal>
             ))}
           </div>
 
-          <p className="mt-8 text-center text-sm">
+          <p className="mt-8 text-sm">
             <Link
               href="/investment"
               className="text-wine underline underline-offset-2 hover:text-wine-deep"
@@ -339,7 +341,7 @@ export default async function CityPageEs({
               Ver todo lo que incluye cada colección →
             </Link>
           </p>
-          <p className="mt-3 text-center text-sm">
+          <p className="mt-3 text-sm">
             <Link
               href="/es/save-the-date-quinceanera"
               className="text-wine underline underline-offset-2 hover:text-wine-deep"
@@ -498,17 +500,22 @@ export default async function CityPageEs({
         </div>
       </section>
 
-      {/* CTA final */}
-      <section className="mx-auto max-w-3xl px-5 py-section text-center md:px-10 lg:px-16 md:py-section-lg">
-        <h2 className="display-2 text-ink text-balance">Aparta su fecha hoy.</h2>
-        <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-ink-soft">
-          Solo reservo una quinceañera al día. Asegura la suya con un depósito —
-          checkout seguro, aplicado a tu saldo final.
-        </p>
-        <div className="mt-9 flex justify-center">
-          <CTAButton href={site.cta.href} variant="primary">
-            Reserva tu fecha
-          </CTAButton>
+      {/* CTA final — banda oscura (cierre de alto contraste) */}
+      <section className="bg-dark">
+        <div className="mx-auto max-w-3xl px-5 py-section text-center md:px-10 lg:px-16 md:py-section-lg">
+          <span className="text-[0.66rem] uppercase tracking-[0.24em] text-wine">
+            Quedan pocas fechas de {site.scarcity.reservingYear}
+          </span>
+          <h2 className="mt-5 display-2 text-cream text-balance">Aparta su fecha hoy.</h2>
+          <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-cream/70">
+            Solo reservo una quinceañera al día. Asegura la suya con un depósito —
+            checkout seguro, aplicado a tu saldo final.
+          </p>
+          <div className="mt-10 flex justify-center">
+            <CTAButton href={site.cta.href} variant="onDark">
+              Reserva tu fecha
+            </CTAButton>
+          </div>
         </div>
       </section>
     </>

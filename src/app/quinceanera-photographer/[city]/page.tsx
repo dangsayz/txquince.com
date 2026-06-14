@@ -242,14 +242,14 @@ export default async function CityPage({
         <span className="text-ink-soft">{loc.city}, TX</span>
       </nav>
 
-      {/* Hero */}
-      <section className="mx-auto max-w-4xl px-5 pt-8 text-center md:px-10 lg:px-16 md:pt-12">
+      {/* Hero — left-aligned editorial */}
+      <section className="mx-auto max-w-5xl px-5 pt-8 md:px-10 lg:px-16 md:pt-12">
         <Reveal>
           <p className="eyebrow mb-5">Quinceañera Photography &amp; Film · {loc.city}, TX</p>
-          <h1 className="mx-auto max-w-3xl display-2 text-ink text-balance">
+          <h1 className="max-w-3xl display-2 text-ink text-balance">
             {loc.city} Quinceañera Photographer
           </h1>
-          <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-ink-soft">
+          <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-soft">
             {loc.lead}
           </p>
           <p className="mt-4 text-sm">
@@ -261,7 +261,7 @@ export default async function CityPage({
               Ver esta página en español →
             </Link>
           </p>
-          <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
+          <div className="mt-9 flex flex-wrap items-center gap-4">
             <CTAButton href={site.cta.href} variant="primary">
               {site.cta.label}
             </CTAButton>
@@ -269,7 +269,7 @@ export default async function CityPage({
               {site.secondaryCta.label}
             </CTAButton>
           </div>
-          <SocialProofStrip className="mt-10" />
+          <SocialProofStrip className="mt-10 !justify-start" />
         </Reveal>
       </section>
 
@@ -293,10 +293,10 @@ export default async function CityPage({
       <section className="bg-greige">
         <div className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
           <Reveal>
-            <h2 className="display-2 text-ink text-center text-balance">
+            <h2 className="display-2 text-ink text-balance">
               Fixed-price collections from {packages[0].priceLabel}
             </h2>
-            <p className="mx-auto mt-5 max-w-xl text-center text-sm leading-relaxed text-ink-soft">
+            <p className="mt-5 max-w-xl text-sm leading-relaxed text-ink-soft">
               Fixed pricing, held for your {site.scarcity.bookedThrough.split(" ")[1]} or{" "}
               {site.scarcity.reservingYear} {loc.city} date — every quinceañera covered
               church-to-reception. Most families choose Signature: two storytellers,
@@ -304,47 +304,46 @@ export default async function CityPage({
             </p>
           </Reveal>
 
-          <div className="mt-12 grid gap-5 md:grid-cols-3">
+          <div className="mt-10 border-t border-line">
             {packages.map((p, i) => (
               <Reveal
                 key={p.id}
-                delay={i * 80}
-                className={`flex h-full flex-col border p-7 ${
-                  p.highlight
-                    ? "border-wine bg-ivory"
-                    : "border-line bg-ivory"
-                }`}
+                delay={i * 60}
+                className="grid gap-y-4 border-b border-line py-8 md:grid-cols-12 md:gap-x-8"
               >
-                <div className="flex items-center justify-between">
-                  <h3 className="font-display text-2xl text-ink">{p.name}</h3>
-                  {p.badge ? (
-                    <span className="text-[0.6rem] uppercase tracking-[0.18em] text-wine-deep">
-                      {p.badge}
-                    </span>
-                  ) : null}
+                <div className="md:col-span-4">
+                  <div className="flex items-baseline gap-3">
+                    <h3 className="font-display text-3xl text-ink">{p.name}</h3>
+                    {p.badge ? (
+                      <span className="text-[0.6rem] uppercase tracking-[0.18em] text-wine-deep">
+                        {p.badge}
+                      </span>
+                    ) : null}
+                  </div>
+                  <p className="mt-2 max-w-xs text-sm text-ink-soft">{p.tagline}</p>
+                  <p className="mt-4 font-display text-3xl text-ink">{p.priceLabel}</p>
                 </div>
-                <p className="mt-2 text-sm text-ink-soft">{p.tagline}</p>
-                <p className="mt-5 font-display text-4xl text-ink">{p.priceLabel}</p>
-                <p className="mt-4 text-sm leading-relaxed text-ink-soft">
-                  {p.teaser}
-                </p>
-                <ul className="mt-5 flex-1 space-y-2 border-t border-line pt-5 text-sm leading-relaxed text-ink-soft">
-                  {p.includes.slice(0, 4).map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-                <CTAButton
-                  href={`/reserve?collection=${p.id}`}
-                  variant="ink"
-                  className="mt-6 w-full"
-                >
-                  Reserve {p.name}
-                </CTAButton>
+                <div className="md:col-span-7 md:col-start-6">
+                  <ul className="grid gap-x-8 gap-y-2 text-sm leading-relaxed text-ink-soft sm:grid-cols-2">
+                    {p.includes.slice(0, 4).map((item) => (
+                      <li key={item} className="border-b border-line/70 pb-2">
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  <CTAButton
+                    href={`/reserve?collection=${p.id}`}
+                    variant="text"
+                    className="mt-5"
+                  >
+                    Reserve {p.name}
+                  </CTAButton>
+                </div>
               </Reveal>
             ))}
           </div>
 
-          <p className="mt-8 text-center text-sm">
+          <p className="mt-8 text-sm">
             <Link
               href="/investment"
               className="text-wine underline underline-offset-2 hover:text-wine-deep"
@@ -352,7 +351,7 @@ export default async function CityPage({
               See everything included in each collection →
             </Link>
           </p>
-          <p className="mt-3 text-center text-sm">
+          <p className="mt-3 text-sm">
             <Link
               href="/quinceanera-save-the-date"
               className="text-wine underline underline-offset-2 hover:text-wine-deep"
@@ -363,32 +362,36 @@ export default async function CityPage({
         </div>
       </section>
 
-      {/* Sample quinceañera day — topical depth + local relevance */}
-      <section className="mx-auto max-w-3xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
-        <Reveal>
-          <p className="eyebrow mb-5">A {loc.city} quinceañera, hour by hour</p>
-          <h2 className="display-2 text-ink text-balance">
-            The whole day, church to reception.
-          </h2>
-          <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-soft">
-            Every collection is built around the full celebration — not a two-hour
-            window. Here&apos;s how the day unfolds for most {loc.city} families, and
-            how I cover each part of it.
-          </p>
-        </Reveal>
-        <ol className="mt-10 divide-y divide-line border-y border-line">
-          {DAY_TIMELINE.map((t) => (
-            <li key={t.title} className="grid grid-cols-12 gap-4 py-6">
-              <p className="col-span-3 font-display text-xs uppercase tracking-[0.16em] text-ink-faint sm:col-span-2">
-                {t.when}
-              </p>
-              <div className="col-span-9 sm:col-span-10">
-                <h3 className="font-display text-xl text-ink">{t.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-ink-soft">{t.body}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
+      {/* Sample quinceañera day — DARK editorial spread (the contrast moment) */}
+      <section className="bg-dark">
+        <div className="mx-auto max-w-3xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
+          <Reveal>
+            <p className="mb-5 text-[0.66rem] uppercase tracking-[0.24em] text-wine">
+              A {loc.city} quinceañera, hour by hour
+            </p>
+            <h2 className="display-2 text-cream text-balance">
+              The whole day, church to reception.
+            </h2>
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-cream/70">
+              Every collection is built around the full celebration — not a two-hour
+              window. Here&apos;s how the day unfolds for most {loc.city} families, and
+              how I cover each part of it.
+            </p>
+          </Reveal>
+          <ol className="mt-10 divide-y divide-cream/15 border-y border-cream/15">
+            {DAY_TIMELINE.map((t) => (
+              <li key={t.title} className="grid grid-cols-12 gap-4 py-6">
+                <p className="col-span-3 font-display text-xs uppercase tracking-[0.16em] text-cream/45 sm:col-span-2">
+                  {t.when}
+                </p>
+                <div className="col-span-9 sm:col-span-10">
+                  <h3 className="font-display text-xl text-cream">{t.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-cream/70">{t.body}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
       </section>
 
       {/* How booking works */}
