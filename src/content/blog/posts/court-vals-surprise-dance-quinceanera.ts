@@ -11,7 +11,7 @@ const post: BlogPost = {
     "What the court is, how the vals and the surprise dance actually work, who partners with whom, and when to start rehearsing — explained plainly for parents.",
   publishedAt: "2026-06-09",
   readMinutes: 8,
-  lead: "The dances are the heart of a quinceañera — and the part most families have the most questions about. How big should the court be? Who dances with whom? What's the difference between the vals and the father-daughter dance? And what exactly is the surprise dance everyone keeps mentioning? Here's the honest, practical version, so you can plan the night with confidence.",
+  lead: "The dances are the heart of a quinceañera — and the part most families have the most questions about. How big should the court be? Who dances with whom? What's the difference between the vals and the father-daughter dance? And what exactly is the surprise dance everyone keeps mentioning? This guide walks through each dance plainly, so you can plan the night with confidence.",
   content: [
     { type: "h2", text: "The court of honor: damas and chambelanes" },
     {
@@ -41,7 +41,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Here's the moment that catches families off guard the first time they see it: midway through the vals, there's the father hand-off. Your daughter begins the waltz with her chambelán de honor, and partway through, her father cuts in — the chambelán steps back, and dad takes her hands to finish the waltz with her. It's one of the most emotional beats of the whole night, and it happens fast, which is exactly why it's worth capturing well.",
+      text: "One moment catches families off guard the first time they see it: midway through the vals comes the father hand-off. Your daughter begins the waltz with her chambelán de honor, and partway through, her father cuts in — the chambelán steps back, and dad takes her hands to finish the waltz with her. It's one of the most emotional beats of the whole night, and it happens fast, which is exactly why it's worth capturing well.",
     },
     {
       type: "p",
@@ -50,7 +50,7 @@ const post: BlogPost = {
     { type: "h3", text: "The vals and the father-daughter dance are not the same thing" },
     {
       type: "p",
-      text: "This trips a lot of families up. The vals is the group waltz with the whole court (with the father hand-off woven in). The father-daughter dance is a separate, slower moment — just your daughter and her dad, alone on the floor, often to a song he chose for her. Some families fold the father moment into the end of the vals; others keep it as its own distinct dance later in the night. There's no wrong choice — just decide ahead of time so your DJ and your photographer both know the plan.",
+      text: "This trips a lot of families up. The vals is the group waltz with the whole court (with the father hand-off woven in). The father-daughter dance is a separate, slower moment — just your daughter and her dad, alone on the floor, often to a song he chose for her. Some families fold the father moment into the end of the vals; others keep it as its own distinct dance later in the night. There's no wrong choice — decide ahead of time so your DJ and your photographer both know the plan.",
     },
     { type: "h2", text: "The surprise dance (el baile sorpresa)" },
     {
@@ -85,7 +85,7 @@ const post: BlogPost = {
     { type: "h2", text: "Why the dances are the moments most worth filming" },
     {
       type: "p",
-      text: "Here's the honest truth we tell every family: photos are perfect for the portraits, the gown, the details, and the faces around the room. But the dances are motion — the turn of the vals, your father's hands taking your daughter's, the beat-drop on the surprise dance, the chaos of the Hora Loca. Those don't live in a still frame. They live in sound and movement, and that's film.",
+      text: "This is what we tell every family: photos are perfect for the portraits, the gown, the details, and the faces around the room. But the dances are motion — the turn of the vals, your father's hands taking your daughter's, the beat-drop on the surprise dance, the chaos of the Hora Loca. Those don't live in a still frame. They live in sound and movement, and that's film.",
     },
     {
       type: "p",

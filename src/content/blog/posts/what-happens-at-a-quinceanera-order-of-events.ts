@@ -13,7 +13,7 @@ const post: BlogPost = {
     "The whole day in order — morning prep, la misa, portraits, the grand entrance, the vals, the changing of the shoes, dinner, the surprise dance, and the last dance. Plus how long it runs and how many hours of photo coverage you actually need.",
   publishedAt: "2026-06-09",
   readMinutes: 9,
-  lead: "A quinceañera is not one event — it's a full day of them, and they happen in a specific order that's been passed down for generations. If you're planning your daughter's quince (or you're a chambelán, a padrino, or a guest trying to know what comes next), here's the whole day laid out start to finish: what each moment means, roughly when it happens, and which ones you'll never want to be without photos of.",
+  lead: "A quinceañera is a full day of events, and they happen in a specific order that's been passed down for generations. If you're planning your daughter's quince (or you're a chambelán, a padrino, or a guest trying to know what comes next), here's the whole day laid out start to finish: what each moment means, roughly when it happens, and which ones you'll never want to be without photos of.",
   content: [
     { type: "h2", text: "The day in one glance" },
     {

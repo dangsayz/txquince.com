@@ -7,10 +7,10 @@ const post: BlogPost = {
     "A warm, accurate guide to the quinceañera Mass (Misa de Acción de Gracias) in Dallas–Fort Worth — what it is, common parish requirements, the order of the service, what to wear, and how your photographer works with the church.",
   category: "Traditions",
   excerpt:
-    "The misa is a Mass of Thanksgiving and a blessing — not a sacrament. Here's what happens, what most DFW parishes ask for, and how to prepare your family and your photographer.",
+    "The misa is a Mass of Thanksgiving and a blessing — not a sacrament. What happens during it, what most DFW parishes ask for, and how to prepare your family and your photographer.",
   publishedAt: "2026-06-09",
   readMinutes: 8,
-  lead: "Before the ballroom, before the vals, there is the church. For most Catholic families in Dallas–Fort Worth, the quinceañera begins with a Mass — a moment of thanksgiving that gives the whole day its meaning. If you've never planned one, the requirements and the order of the service can feel like a mystery. Here's an honest, respectful walk-through of what to expect, written so you can prepare your daughter, your padrinos, and your photographer with confidence.",
+  lead: "Before the ballroom, before the vals, there is the church. For most Catholic families in Dallas–Fort Worth, the quinceañera begins with a Mass — a moment of thanksgiving that gives the whole day its meaning. If you've never planned one, the requirements and the order of the service can feel like a mystery. This is a respectful walk-through of what to expect, written so you can prepare your daughter, your padrinos, and your photographer with confidence.",
   content: [
     { type: "h2", text: "Is the quinceañera Mass a sacrament?" },
     {
@@ -125,7 +125,7 @@ const post: BlogPost = {
         "No flash, or limited flash, during the liturgy — especially during the Eucharist.",
         "Designated positions — some priests ask photographers to stay toward the back or the sides and to move only between parts of the Mass.",
         "Reverence during Communion and the consecration — many parishes ask for no photos at all during these moments.",
-        "A quick word with the celebrant beforehand — a thirty-second hello often unlocks more access than any written rule.",
+        "A quick word with the celebrant beforehand — a thirty-second hello often earns more access than any written rule.",
       ],
     },
     {

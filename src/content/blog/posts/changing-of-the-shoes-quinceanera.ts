@@ -13,7 +13,7 @@ const post: BlogPost = {
     "Flats to heels, childhood to young womanhood — a 30-second ritual that says everything. What it means, who kneels, when it happens, and why you only get one take.",
   publishedAt: "2026-06-09",
   readMinutes: 6,
-  lead: "It takes about thirty seconds. A chair, a pair of heels, and someone who loves her kneeling at her feet. The changing of the shoes — el cambio de zapatos — is one of the quietest moments of the whole day, and one of the most photographed. Here's what it means, who does it, where it falls in the timeline, and how to make it feel like yours.",
+  lead: "It takes about thirty seconds. A chair, a pair of heels, and someone who loves her kneeling at her feet. The changing of the shoes — el cambio de zapatos — is one of the quietest moments of the whole day, and one of the most photographed. What it means, who kneels, where it lands in the day, and how to make it your own — that's what follows.",
   content: [
     { type: "h2", text: "What the changing of the shoes means" },
     {
@@ -26,7 +26,7 @@ const post: BlogPost = {
     },
     {
       type: "callout",
-      text: "It's not about the shoes. It's about the person kneeling to put them on. That's the photograph families keep.",
+      text: "The shoes are the smallest part. What families keep is the photograph of the person kneeling to put them on.",
     },
     { type: "h2", text: "Who changes the quinceañera's shoes?" },
     {
@@ -53,7 +53,7 @@ const post: BlogPost = {
     { type: "h2", text: "When does it happen in the day?" },
     {
       type: "p",
-      text: "The changing of the shoes almost always falls at the reception, right before the vals — the formal waltz. It's the bridge between the ceremony and the dancing: she's introduced, she takes her seat, the shoes are changed, and then she rises into her first dance. Placing it there isn't just tradition; it's practical. She needs the heels on before the waltz, and the change is what cues the room that the vals is about to begin.",
+      text: "The changing of the shoes almost always falls at the reception, right before the vals — the formal waltz. It's the bridge between the ceremony and the dancing: she's introduced, she takes her seat, the shoes are changed, and then she rises into her first dance. Placing it there is practical as well as traditional. She needs the heels on before the waltz, and the change is what cues the room that the vals is about to begin.",
     },
     {
       type: "p",
@@ -91,7 +91,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Here's the honest part. The changing of the shoes happens once. It is not staged for the camera, it cannot be re-created after the fact, and the best of it — the catch in his voice, her hand on his shoulder, the cousins wiping their eyes in the background — all happens in the same few seconds, in different places in the room.",
+      text: "The changing of the shoes happens once. It is not staged for the camera, it cannot be re-created after the fact, and the best of it — the catch in his voice, her hand on his shoulder, the cousins wiping their eyes in the background — all happens in the same few seconds, in different places in the room.",
     },
     {
       type: "p",

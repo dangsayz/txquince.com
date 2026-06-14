@@ -8,10 +8,10 @@ const post: BlogPost = {
     "How to book a quinceañera photographer in Dallas–Fort Worth without paying everything up front — deposits to lock your date, interest-free monthly plans, refund policy, and a lower-cost option for tight budgets.",
   category: "Cost & Budget",
   excerpt:
-    "A deposit holds your date; the rest is split into interest-free payments before the day. Here's exactly how payment plans work — and a lower-entry option if money is tight right now.",
+    "A deposit holds your date; the rest is split into interest-free payments before the day. This is how payment plans work — plus a lower-entry option if money is tight right now.",
   publishedAt: "2026-06-09",
   readMinutes: 7,
-  lead: "The price of a quinceañera photographer can look like a wall when you see it all in one number. It isn't. Almost no family pays the full amount in one payment — you put down a deposit to hold the date, then spread the rest across the months you already have before the celebration. Here's how that works at TX Quince, in plain terms, so you can book today and pay over time. (Hablamos español — si te sientes más cómoda en español, dilo y te explicamos todo paso a paso.)",
+  lead: "The price of a quinceañera photographer can look like a wall when you see it all in one number. It isn't. Almost no family pays the full amount in one payment — you put down a deposit to hold the date, then spread the rest across the months you already have before the celebration. We lay out exactly how that works at TX Quince, in plain terms, so you can book today and pay over time. (Hablamos español — si te sientes más cómoda en español, dilo y te explicamos todo paso a paso.)",
   content: [
     { type: "h2", text: "Do you offer payment plans? Yes — and most families use one." },
     {
@@ -37,12 +37,12 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "The deposit is not an extra fee. It applies to your collection total, so it simply becomes your first payment. Want the full breakdown of what each collection includes before you decide? See the [collections and pricing page](/investment), or read our [full cost guide for DFW](/blog/quinceanera-photographer-cost-dallas-fort-worth).",
+      text: "The deposit is not an extra fee. It applies to your collection total, so it becomes your first payment. Want the full breakdown of what each collection includes before you decide? See the [collections and pricing page](/investment), or read our [full cost guide for DFW](/blog/quinceanera-photographer-cost-dallas-fort-worth).",
     },
     { type: "h2", text: "How the interest-free monthly plan works" },
     {
       type: "p",
-      text: "Once your deposit is in, here is the rhythm — and it's intentionally simple, because the last thing a quince planning year needs is one more confusing bill.",
+      text: "Once your deposit is in, the rhythm is intentionally simple, because the last thing a quince planning year needs is one more confusing bill.",
     },
     {
       type: "ol",
@@ -64,7 +64,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Is the deposit refundable? The honest answer most studios won't put in writing: the deposit holds your date and applies to your balance, so it isn't designed to be handed back if plans change on your side. But if TX Quince ever has to cancel on you, your deposit is refunded in full. You are never out money because of something on our end.",
+      text: "Is the deposit refundable? Most studios won't spell this out, so we will: the deposit holds your date and applies to your balance, so it isn't designed to be handed back if plans change on your side. But if TX Quince ever has to cancel on you, your deposit is refunded in full. You are never out money because of something on our end.",
     },
     {
       type: "quote",

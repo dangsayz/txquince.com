@@ -24,7 +24,7 @@ const post: BlogPost = {
     { type: "h2", text: "Where the money actually goes" },
     {
       type: "p",
-      text: "Here's a typical breakdown as a share of the total. Your party won't match this to the dollar — nobody's does — but the percentages tell you where the weight sits, so you know which decisions move the needle and which barely matter.",
+      text: "Here's a typical breakdown as a share of the total. Your party won't match this to the dollar — nobody's does — but the percentages tell you where the weight sits, so you know which decisions shift the total and which barely matter.",
     },
     {
       type: "ul",
@@ -56,7 +56,7 @@ const post: BlogPost = {
     { type: "h2", text: "Why photo and film deserve their slice" },
     {
       type: "p",
-      text: "Here's the part most budget guides won't tell you straight: photography and film are the only things that outlive the day. The food is eaten. The flowers wilt by Monday. The dress goes in a closet. The hall is rented by someone else next Saturday. What you carry forward — the look on your daughter's face during the father-daughter vals, the surprise dance, your mother crying in the second row — lives entirely in what your photographer and filmmaker captured.",
+      text: "Most budget guides skip past this, so we'll say it plainly: photography and film are the only things that outlive the day. The food is eaten. The flowers wilt by Monday. The dress goes in a closet. The hall is rented by someone else next Saturday. What you carry forward — the look on your daughter's face during the father-daughter vals, the surprise dance, your mother crying in the second row — lives entirely in what your photographer and filmmaker captured.",
     },
     {
       type: "quote",
@@ -112,7 +112,7 @@ const post: BlogPost = {
     { type: "h2", text: "Padrinos: sharing the cost the traditional way" },
     {
       type: "p",
-      text: "You don't have to carry the whole number alone — and tradition says you shouldn't. Padrinos and madrinas are sponsors who each cover a specific piece of the celebration. It's not charity; it's an honor you offer to family and close friends, and it's woven into how quinceañeras have always worked.",
+      text: "You don't have to carry the whole number alone — and tradition says you shouldn't. Padrinos and madrinas are sponsors who each cover a specific piece of the celebration. Sponsoring a line is an honor you offer to family and close friends, woven into how quinceañeras have always worked — not a handout you're asking for.",
     },
     {
       type: "p",

@@ -7,15 +7,15 @@ const post: BlogPost = {
     "A real month-by-month quinceañera planning timeline for Dallas–Fort Worth families — what to do 12–18 months out, why the photographer and venue get booked first, and what to do if you only have 6 months.",
   category: "Planning",
   excerpt:
-    "Start 12–18 months out, book the photographer and venue first, and work backward from there. Here's the full checklist, month by month.",
+    "Start 12–18 months out, book the photographer and venue first, and work backward from there. A full month-by-month checklist.",
   publishedAt: "2026-06-09",
   readMinutes: 8,
-  lead: "Most families ask the same first question: how far in advance do we need to start? The honest answer is twelve to eighteen months — not because everything takes that long, but because the two vendors that book up earliest, the photographer and the venue, are the ones you can't replace. Here's a calm, month-by-month plan that works backward from the date, with a note up front for anyone who's getting a later start than they hoped.",
+  lead: "Twelve to eighteen months. That's how far out most Dallas–Fort Worth families start — not because everything takes that long, but because the two vendors that book up earliest, the photographer and the venue, are the ones you can't replace. What follows is a calm, month-by-month plan that works backward from the date, with a note up front for anyone who's getting a later start than they hoped.",
   content: [
     { type: "h2", text: "How far in advance should you plan a quinceañera?" },
     {
       type: "p",
-      text: "The consensus among planners and experienced families is to start twelve to eighteen months before the date. That window isn't about busywork — it exists because a handful of decisions create a chain reaction. Your venue sets your guest count and your date. Your date determines everything else. And the best photographers and venues in Dallas–Fort Worth fill their Saturdays nine to fourteen months out, so the families who wait are the ones choosing from what's left.",
+      text: "The consensus among planners and experienced families is to start twelve to eighteen months before the date. That window exists because a handful of decisions create a chain reaction. Your venue sets your guest count and your date. Your date determines everything else. And the best photographers and venues in Dallas–Fort Worth fill their Saturdays nine to fourteen months out, so the families who wait are the ones choosing from what's left.",
     },
     {
       type: "callout",
@@ -24,7 +24,7 @@ const post: BlogPost = {
     { type: "h3", text: "Is 6 months — or even 3 months — too late?" },
     {
       type: "p",
-      text: "No. Plenty of beautiful quinceañeras come together in six months, and a focused family can pull off three. A shorter timeline just changes the order of operations: you book the venue and photographer the same week you commit to the date, you say yes to the first dress that fits instead of ordering custom, and you keep the court small. You'll have fewer options and a little less breathing room — but a later start is a reason to move quickly, not a reason to compromise on the day itself. If you're in this spot, [see if your date is open](/check-your-date) before you do anything else.",
+      text: "No. Plenty of beautiful quinceañeras come together in six months, and a focused family can pull off three. A shorter timeline changes the order of operations: you book the venue and photographer the same week you commit to the date, you say yes to the first dress that fits instead of ordering custom, and you keep the court small. You'll have fewer options and a little less breathing room — but a later start is a reason to move quickly, not a reason to compromise on the day itself. If you're in this spot, [see if your date is open](/check-your-date) before you do anything else.",
     },
     { type: "h2", text: "12–18 months out: the foundation" },
     {
@@ -155,11 +155,11 @@ const post: BlogPost = {
   faqs: [
     {
       q: "How far in advance should I plan a quinceañera?",
-      a: "Twelve to eighteen months is the standard recommendation. The reason isn't that every task takes that long — it's that the venue and the photographer book up earliest, often nine to fourteen months out for prime spring and fall Saturdays in Dallas–Fort Worth. Start there and work backward through the dress, the court, invitations, and dance practice.",
+      a: "Twelve to eighteen months is the standard recommendation. Not because every task takes that long, but because the venue and the photographer book up earliest, often nine to fourteen months out for prime spring and fall Saturdays in Dallas–Fort Worth. Start there and work backward through the dress, the court, invitations, and dance practice.",
     },
     {
       q: "Is 6 months enough time to plan a quinceañera?",
-      a: "Yes. Six months is enough to plan a beautiful quinceañera, and a focused family can manage in three. A shorter timeline just means moving fast on the things that book up first — secure the venue and photographer in your first week, choose a dress that's available now rather than custom-ordered, and keep the court a manageable size.",
+      a: "Yes. Six months is enough to plan a beautiful quinceañera, and a focused family can manage in three. A shorter timeline means moving fast on the things that book up first — secure the venue and photographer in your first week, choose a dress that's available now rather than custom-ordered, and keep the court a manageable size.",
     },
     {
       q: "When should I book my photographer and venue?",

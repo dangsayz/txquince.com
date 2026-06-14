@@ -4,10 +4,10 @@ const post: BlogPost = {
   slug: "when-to-book-quinceanera-photographer-dfw",
   title: "When Should You Book Your Quinceañera Photographer in DFW?",
   description:
-    "Book your quinceañera photographer 9–14 months out — at the same time you lock your venue. Here's why early wins, what happens if you wait, and how DFW peak season fills.",
+    "Book your quinceañera photographer 9–14 months out, at the same time you lock your venue — why early wins, what happens if you wait, and how DFW peak season fills.",
   category: "Planning",
   excerpt:
-    "The short answer: book 9–14 months ahead, right after your date and venue. Here's why waiting costs you your Saturday — and never gets you a discount.",
+    "The short answer: book 9–14 months ahead, right after your date and venue. Waiting costs you your Saturday, and never gets you a discount.",
   publishedAt: "2026-06-09",
   readMinutes: 7,
   lead: "If you've set the date and you're starting to line up vendors, photography is one to handle early — not last. The best photographers in Dallas–Fort Worth take one quinceañera per day, and the prime spring and fall Saturdays go first. Here's exactly when to reach out, in plain terms, so the date you want is still open when you do.",
@@ -21,10 +21,10 @@ const post: BlogPost = {
       type: "callout",
       text: "One booking per day. The best DFW photographers don't double-book a Saturday — when your date is taken, it's taken. There is no waitlist that magically opens it back up the week of.",
     },
-    { type: "h2", text: "Why booking early actually helps you" },
+    { type: "h2", text: "Why booking early helps you" },
     {
       type: "p",
-      text: "Early isn't about pressure — it's about options. The further out you reach, the more open dates exist and the more freedom you have to pick the photographer whose work you actually love, instead of the one who happens to still be free.",
+      text: "Booking early gives you options, not pressure. The further out you reach, the more open dates exist and the more freedom you have to pick the photographer whose work you love, instead of the one who happens to still be free.",
     },
     {
       type: "ul",
@@ -37,7 +37,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "You can [check if your date is open](/check-your-date) in a few seconds before you do anything else — it shows the live calendar, so you'll know right away whether your Saturday is still free. If it is, that tells you how much time you really have.",
+      text: "You can [check if your date is open](/check-your-date) in a few seconds before you do anything else — it shows the live calendar, so you'll know right away whether your Saturday is still free. If it is, that tells you how much time you have.",
     },
     { type: "h2", text: "What happens if you wait" },
     {
@@ -112,7 +112,7 @@ const post: BlogPost = {
     { type: "h2", text: "The simple rule" },
     {
       type: "p",
-      text: "Lock your date and venue, then book your photographer right behind them — 9 to 14 months out, sooner for a spring or fall Saturday. It costs you nothing to be early and it can cost you your first choice to be late. Start by seeing whether your date is even available: [check if your date is open](/check-your-date), and if it is, hold it before someone else does.",
+      text: "Lock your date and venue, then book your photographer right behind them — 9 to 14 months out, sooner for a spring or fall Saturday. It costs you nothing to be early and it can cost you your first choice to be late. Start by seeing whether your date is still open: [check if your date is open](/check-your-date), and if it is, hold it before someone else does.",
     },
     {
       type: "p",

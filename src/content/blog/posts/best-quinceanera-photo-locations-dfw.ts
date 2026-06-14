@@ -121,7 +121,7 @@ const post: BlogPost = {
     { type: "h2", text: "Permits: which spots are free, which aren't" },
     {
       type: "p",
-      text: "This is the question that trips families up, so here's the honest breakdown for portrait sessions:",
+      text: "This is the question that trips families up, so here is where each spot lands for portrait sessions:",
     },
     {
       type: "ul",

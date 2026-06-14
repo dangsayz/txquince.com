@@ -10,7 +10,7 @@ const post: BlogPost = {
     "How to pick the right photographer for your daughter's quince — styles explained, what a real portfolio shows, and the questions that protect your money and your date.",
   publishedAt: "2026-06-09",
   readMinutes: 9,
-  lead: "Your daughter's quinceañera happens once. The photos and film are what's left after the flowers wilt and the dress goes in the closet — so choosing the right photographer matters more than almost any other vendor decision. This is the honest, DFW-specific guide: how to read a portfolio, what the styles actually mean, and exactly what to verify before you hand over a deposit.",
+  lead: "Your daughter's quinceañera happens once. The photos and film are what's left after the flowers wilt and the dress goes in the closet — so choosing the right photographer matters more than almost any other vendor decision. This DFW-specific guide walks you through it: how to read a portfolio, what the styles actually mean, and exactly what to verify before you hand over a deposit.",
   content: [
     { type: "h2", text: "Start with the style you actually want" },
     {

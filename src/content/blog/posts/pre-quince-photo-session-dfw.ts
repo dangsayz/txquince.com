@@ -16,7 +16,7 @@ const post: BlogPost = {
     { type: "h2", text: "What a pre-quince session actually is" },
     {
       type: "p",
-      text: "A pre-quince session — la sesión de fotos de quinceañera, or sesión de pre-quince — is a separate portrait shoot before the celebration itself. It's not the event-day coverage. It's a standalone session, usually a few weeks to a few months ahead, where the focus is entirely on your daughter and her dress without anything else competing for the camera.",
+      text: "A pre-quince session — la sesión de fotos de quinceañera, or sesión de pre-quince — is a separate portrait shoot before the celebration itself, distinct from the event-day coverage. It stands on its own, usually a few weeks to a few months ahead, where the focus is entirely on your daughter and her dress without anything else competing for the camera.",
     },
     {
       type: "p",

@@ -10,7 +10,7 @@ const post: BlogPost = {
     "Fixed-price collections, what each one includes, and exactly what drives the price up or down — no “inquire for pricing” games.",
   publishedAt: "2026-06-09",
   readMinutes: 7,
-  lead: "If you've started calling around, you've already noticed the problem: half the photographers won't tell you a price until you fill out a form. Here's the honest version — real numbers, what they include, and what actually changes the cost — so you can budget your daughter's quinceañera with no surprises.",
+  lead: "If you've started calling around, you've already noticed the problem: half the photographers won't tell you a price until you fill out a form. So let's put the numbers on the table — what each collection includes, and what actually changes the cost — so you can budget your daughter's quinceañera with no surprises.",
   content: [
     { type: "h2", text: "The short answer" },
     {
@@ -28,7 +28,7 @@ const post: BlogPost = {
     { type: "h2", text: "What you're actually paying for" },
     {
       type: "p",
-      text: "The number on the package is really four things bundled together — coverage hours, the number of artists, whether you get film as well as photos, and how the final gallery is delivered.",
+      text: "The number on the package is four things bundled together — coverage hours, the number of artists, whether you get film as well as photos, and how the final gallery is delivered.",
     },
     {
       type: "ul",
@@ -42,7 +42,7 @@ const post: BlogPost = {
     { type: "h2", text: "Photo only, or photo and film?" },
     {
       type: "p",
-      text: "This is the single biggest lever on price — and the most common regret. Families who book photo-only most often wish, afterward, that they had the vals and the surprise dance on video. If the budget only stretches one way, prioritize the moments that move: the [vals and the surprise dance](/portfolio) are made for film. See our full [collection breakdown](/investment) to compare photo-only against photo + film side by side.",
+      text: "This one choice changes the price more than any other — and it's the most common regret. Families who book photo-only most often wish, afterward, that they had the vals and the surprise dance on video. If the budget only stretches one way, prioritize the moments that move: the [vals and the surprise dance](/portfolio) are made for film. See our full [collection breakdown](/investment) to compare photo-only against photo + film side by side.",
     },
     { type: "h2", text: "Deposits and payment plans" },
     {
