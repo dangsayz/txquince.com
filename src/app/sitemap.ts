@@ -14,6 +14,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/check-your-date", priority: 0.9 },
     { path: "/quinceanera-photographer", priority: 0.8 },
     { path: "/es/fotografo-de-quinceaneras", priority: 0.8 },
+    { path: "/quinceanera-save-the-date", priority: 0.7 },
+    { path: "/es/save-the-date-quinceanera", priority: 0.7 },
     { path: "/privacy", priority: 0.2 },
     { path: "/blog", priority: 0.7 },
     // Blog posts (the planning guide), EN + ES.

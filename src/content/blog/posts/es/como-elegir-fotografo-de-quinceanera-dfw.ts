@@ -106,7 +106,7 @@ const post: BlogPost = {
     { type: "h2", text: "Conocer las locaciones de DFW es señal de calidad" },
     {
       type: "p",
-      text: "Un fotógrafo que de verdad trabaja en Dallas–Fort Worth sabe dónde cae bien la luz por la tarde, qué parques y salones permiten sesiones de retrato y cómo planear alrededor del tráfico y el clima del metroplex. Pregúntele dónde haría sus retratos pre-quince: un verdadero conocedor de la zona le nombrará lugares específicos (el Dallas Arboretum, los Fort Worth Water Gardens, Main Street en Grapevine) y le explicará por qué cada uno funciona con su vestido y su horario. Un fotógrafo que llega de fuera, sin conocer el área, no puede darle eso.",
+      text: "Un fotógrafo que de verdad trabaja en Dallas–Fort Worth sabe dónde cae bien la luz por la tarde, qué parques y salones permiten sesiones de retrato y cómo planear alrededor del tráfico y el clima del metroplex. Pregúntele dónde haría sus retratos pre-quince: un verdadero conocedor de la zona le nombrará lugares específicos (el Dallas Arboretum, los Fort Worth Water Gardens, Main Street en Grapevine) y le explicará por qué cada uno funciona con su vestido y su horario. Un fotógrafo que llega de fuera, sin conocer el área, no puede darle eso. Esa familiaridad con la zona es la razón por la que mantengo páginas dedicadas para las ciudades que más fotografío — [Irving](/es/fotografo-de-quinceaneras/irving), [Arlington](/es/fotografo-de-quinceaneras/arlington) y [Grand Prairie](/es/fotografo-de-quinceaneras/grand-prairie) — cada una con las parroquias, los salones y los lugares de retrato que de verdad le quedan a una quince ahí.",
     },
     {
       type: "quote",

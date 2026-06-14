@@ -18,6 +18,10 @@ const post: BlogPost = {
       text: "In Dallas–Fort Worth, professional quinceañera photography typically runs from about $1,500 for photo-only coverage with a single artist up to $5,000+ for a two-person photo-and-film team covering the whole day. At [TX Quince](/investment), collections are fixed at $2,500, $3,900, and $5,500 — published on the site, no quote form required.",
     },
     {
+      type: "p",
+      text: "Those prices hold across the whole metroplex — your collection costs the same whether the quince is in [Irving](/quinceanera-photographer/irving), [Arlington](/quinceanera-photographer/arlington), or [Garland](/quinceanera-photographer/garland), with no venue-based markup and no surprise quote.",
+    },
+    {
       type: "callout",
       text: "Why so many studios hide pricing: it lets them quote each family differently. Fixed, published pricing is the fairer model — you know what everyone pays before you ever reach out.",
     },
@@ -73,7 +77,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "When you're ready, you can [check if your date is open](/check-your-date) in a few seconds, or read [when to book your photographer](/blog/when-to-book-quinceanera-photographer-dfw) so you don't lose your Saturday.",
+      text: "When you're ready, you can [check if your date is open](/check-your-date) in a few seconds, or read [when to book your photographer](/blog/when-to-book-quinceanera-photographer-dfw) so you don't lose your Saturday. For local coverage, see our [quinceañera photographer in Dallas](/quinceanera-photographer/dallas) or [Fort Worth](/quinceanera-photographer/fort-worth).",
     },
   ],
   faqs: [

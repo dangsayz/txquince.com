@@ -4,6 +4,7 @@ import { site } from "@/content/site";
 import { home } from "@/content/home";
 import { homeTeaser } from "@/content/gallery";
 import { packages } from "@/content/packages";
+import { locations } from "@/content/locations";
 import { releasedTestimonials } from "@/content/testimonials";
 import { getFeaturedImages, getVideos, getHeroMedia } from "@/lib/content-db";
 import { DateChecker } from "@/components/DateChecker";
@@ -187,6 +188,11 @@ export default async function HomePage() {
             </Reveal>
           ))}
         </div>
+        <div className="mx-auto max-w-[90rem] border-t border-ink/10 px-5 py-5 text-center md:px-10 lg:px-16">
+          <p className="text-[0.64rem] uppercase tracking-[0.22em] text-ink-faint">
+            {site.proof.insuredLine} — your church &amp; venue covered
+          </p>
+        </div>
       </section>
 
       {/* ================= THE WORK — a curated sequence, not a grid ================= */}
@@ -341,6 +347,10 @@ export default async function HomePage() {
                   Interest-free installments &amp; Affirm at checkout ·{" "}
                   <Link href="/investment" className="text-wine-deep underline underline-offset-4 hover:text-wine">
                     everything included
+                  </Link>{" "}
+                  ·{" "}
+                  <Link href="/quinceanera-save-the-date" className="text-wine-deep underline underline-offset-4 hover:text-wine">
+                    Save-the-Date session included free
                   </Link>
                 </p>
               </Reveal>
@@ -410,6 +420,67 @@ export default async function HomePage() {
                 </Reveal>
               ))}
             </dl>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= ACROSS DFW — service-area band; carries link weight to the city pages ================= */}
+      <section className="pt-24 md:pt-36">
+        <div className="mx-auto max-w-[90rem] px-5 md:px-10 lg:px-16">
+          <div className="grid md:grid-cols-12">
+            <Reveal className="md:col-span-3">
+              <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">Across Dallas–Fort Worth</p>
+              <h2
+                className="mt-4 font-display text-ink"
+                style={{ fontSize: "clamp(2.2rem,4vw,3.4rem)", lineHeight: 1.02, letterSpacing: "-0.02em" }}
+              >
+                Your city.
+              </h2>
+            </Reveal>
+            <div className="mt-12 md:col-span-7 md:col-start-6 md:mt-2">
+              {/* The two head-term cities get full editorial links. */}
+              {locations
+                .filter((l) => l.slug === "dallas" || l.slug === "fort-worth")
+                .map((l, i) => (
+                  <Reveal key={l.slug} delay={i * 60}>
+                    <Link
+                      href={`/quinceanera-photographer/${l.slug}`}
+                      className={`group block py-8 ${i > 0 ? "border-t border-ink/10" : ""}`}
+                    >
+                      <h3
+                        className="font-display text-ink transition-colors group-hover:text-wine"
+                        style={{ fontSize: "clamp(1.7rem,3vw,2.4rem)", lineHeight: 1 }}
+                      >
+                        Quinceañera photographer in {l.city}
+                      </h3>
+                      <p className="mt-2 max-w-md text-sm leading-relaxed text-ink-soft">{l.lead}</p>
+                    </Link>
+                  </Reveal>
+                ))}
+              {/* The rest of the metroplex as quiet inline links, plus the hub. */}
+              <Reveal>
+                <div className="flex flex-wrap gap-x-6 gap-y-2.5 border-t border-ink/10 pt-7">
+                  {locations
+                    .filter((l) => l.slug !== "dallas" && l.slug !== "fort-worth")
+                    .map((l) => (
+                      <Link
+                        key={l.slug}
+                        href={`/quinceanera-photographer/${l.slug}`}
+                        className="text-sm text-ink-soft underline decoration-ink/20 underline-offset-4 transition-colors hover:text-wine hover:decoration-wine"
+                      >
+                        {l.city}
+                      </Link>
+                    ))}
+                  <Link
+                    href="/quinceanera-photographer"
+                    className={quietLink("text-wine-deep underline decoration-wine/40 hover:text-wine hover:decoration-wine")}
+                  >
+                    All areas
+                    <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
+                  </Link>
+                </div>
+              </Reveal>
+            </div>
           </div>
         </div>
       </section>

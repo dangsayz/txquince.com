@@ -105,7 +105,7 @@ const post: BlogPost = {
     { type: "h2", text: "Local DFW knowledge is a quality signal" },
     {
       type: "p",
-      text: "A photographer who actually works in Dallas–Fort Worth knows where the light is good in the afternoon, which parks and venues allow portrait sessions, and how to plan around the metroplex's traffic and weather. Ask where they'd shoot your pre-quince portraits — a real local will name specific spots (the Dallas Arboretum, the Fort Worth Water Gardens, Main Street in Grapevine) and explain why each one works for your dress and your timeline. A photographer driving in blind from out of town can't give you that.",
+      text: "A photographer who actually works in Dallas–Fort Worth knows where the light is good in the afternoon, which parks and venues allow portrait sessions, and how to plan around the metroplex's traffic and weather. Ask where they'd shoot your pre-quince portraits — a real local will name specific spots (the Dallas Arboretum, the Fort Worth Water Gardens, Main Street in Grapevine) and explain why each one works for your dress and your timeline. A photographer driving in blind from out of town can't give you that. That local fluency is why I keep dedicated pages for the cities I shoot most — [Dallas](/quinceanera-photographer/dallas), [Fort Worth](/quinceanera-photographer/fort-worth), [Irving](/quinceanera-photographer/irving), [Arlington](/quinceanera-photographer/arlington), and [Grand Prairie](/quinceanera-photographer/grand-prairie) — each with the parishes, venues, and portrait spots that actually fit a quince there.",
     },
     {
       type: "quote",

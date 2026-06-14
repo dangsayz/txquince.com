@@ -22,6 +22,8 @@ export function SocialProofStrip({ className = "" }: { className?: string }) {
       </span>
       <span className="hidden h-4 w-px bg-line sm:block" aria-hidden />
       <span className="text-sm text-ink-soft">{site.serviceArea}</span>
+      <span className="hidden h-4 w-px bg-line sm:block" aria-hidden />
+      <span className="text-sm text-ink-soft">{site.proof.insuredLine}</span>
     </div>
   );
 }

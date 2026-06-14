@@ -17,6 +17,7 @@ const COLUMNS = [
     links: [
       { label: "Reserve your date", href: "/reserve" },
       { label: "Check your date", href: "/check-your-date" },
+      { label: "Save-the-Date", href: "/quinceanera-save-the-date" },
       { label: "Areas served", href: "/quinceanera-photographer" },
     ],
   },

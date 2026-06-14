@@ -21,6 +21,10 @@ const post: BlogPost = {
       text: "En Dallas–Fort Worth, la fotografía profesional de quinceañera suele ir desde unos $1,500 por cobertura de solo foto con un artista, hasta más de $5,000 por un equipo de dos personas que cubre foto y video durante todo el día. En [TX Quince](/investment) las colecciones son fijas: $2,500, $3,900 y $5,500 — publicadas en el sitio, sin formulario de cotización.",
     },
     {
+      type: "p",
+      text: "Y el precio es el mismo en todo el metroplex — su colección cuesta igual ya sea que la quinceañera sea en [Irving](/es/fotografo-de-quinceaneras/irving), [Arlington](/es/fotografo-de-quinceaneras/arlington) o [Garland](/es/fotografo-de-quinceaneras/garland), sin recargo por el salón y sin cotización sorpresa.",
+    },
+    {
       type: "callout",
       text: "Por qué tantos estudios esconden el precio: así pueden cotizarle distinto a cada familia. El precio fijo y publicado es el modelo más justo — usted sabe lo que paga todo el mundo antes de siquiera escribir.",
     },

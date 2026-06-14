@@ -54,11 +54,15 @@ export const site = {
     familiesLine: "Trusted by 100+ DFW families",
     rating: "5.0",
     stars: 5,
+    // Trust signal DFW churches/venues screen for before they let a photographer
+    // shoot. Operator confirmed coverage is in place — keep this honest.
+    insuredLine: "Insured & venue-compliant",
   },
 
   nav: [
     { href: "/portfolio", label: "Portfolio" },
     { href: "/investment", label: "Investment" },
+    { href: "/quinceanera-photographer", label: "Areas Served" },
     { href: "/blog", label: "Guide" },
     { href: "/about", label: "About" },
   ],

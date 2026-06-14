@@ -90,6 +90,21 @@ export default async function ReservePage({
             >
               See what&apos;s included in each collection →
             </Link>
+            <p className="mt-3 text-sm text-ink-soft">
+              Serving{" "}
+              <Link href="/quinceanera-photographer/dallas" className="text-wine underline underline-offset-2 hover:text-wine-deep">
+                Dallas
+              </Link>
+              ,{" "}
+              <Link href="/quinceanera-photographer/fort-worth" className="text-wine underline underline-offset-2 hover:text-wine-deep">
+                Fort Worth
+              </Link>
+              , and{" "}
+              <Link href="/quinceanera-photographer" className="text-wine underline underline-offset-2 hover:text-wine-deep">
+                surrounding DFW cities
+              </Link>
+              .
+            </p>
           </div>
 
           <p className="mt-8 text-sm text-ink-faint">

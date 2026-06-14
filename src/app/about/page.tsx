@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { about } from "@/content/about";
 import { site } from "@/content/site";
 import { Figure } from "@/components/Figure";
@@ -96,6 +97,21 @@ export default function AboutPage() {
             {about.closing}
           </p>
         </Reveal>
+        <p className="mt-8 max-w-prose text-sm leading-relaxed text-ink-soft">
+          I photograph quinceañeras across Dallas–Fort Worth — see{" "}
+          <Link href="/quinceanera-photographer/dallas" className="text-wine underline underline-offset-2 hover:text-wine-deep">
+            Dallas
+          </Link>
+          ,{" "}
+          <Link href="/quinceanera-photographer/fort-worth" className="text-wine underline underline-offset-2 hover:text-wine-deep">
+            Fort Worth
+          </Link>
+          , or{" "}
+          <Link href="/quinceanera-photographer" className="text-wine underline underline-offset-2 hover:text-wine-deep">
+            every area I serve
+          </Link>
+          .
+        </p>
       </section>
 
       <FinalCTA />
