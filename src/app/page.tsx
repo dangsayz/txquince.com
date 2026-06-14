@@ -3,7 +3,8 @@ import Image from "next/image";
 import { site } from "@/content/site";
 import { home } from "@/content/home";
 import { homeTeaser } from "@/content/gallery";
-import { packages, packageCountWordCap, hoursRangeLabel } from "@/content/packages";
+import { packageCountWordCap, hoursRangeLabel } from "@/content/packages";
+import { HomePricing } from "@/components/HomePricing";
 import { releasedTestimonials } from "@/content/testimonials";
 import { getFeaturedImages, getVideos, getHeroMedia } from "@/lib/content-db";
 import { DateChecker } from "@/components/DateChecker";
@@ -412,48 +413,15 @@ export default async function HomePage() {
               </p>
             </Reveal>
 
-            <div className="mt-12 md:col-span-7 md:col-start-6 md:mt-0">
-              {packages.map((p, i) => (
-                <Reveal key={p.id} delay={i * 60}>
-                  <Link
-                    href={`/reserve?collection=${p.id}`}
-                    className={`group block py-9 md:py-10 ${i > 0 ? "border-t border-ink/10" : ""}`}
-                  >
-                    <div className="flex items-baseline justify-between gap-6">
-                      <h3
-                        className="font-display text-ink transition-colors group-hover:text-wine"
-                        style={{ fontSize: p.highlight ? "clamp(2rem,3.6vw,3rem)" : "clamp(1.7rem,3vw,2.4rem)", lineHeight: 1 }}
-                      >
-                        {p.name}
-                        {p.highlight ? (
-                          <span className="ml-4 align-middle text-[0.58rem] uppercase tracking-[0.26em] text-wine-deep">
-                            Most reserved
-                          </span>
-                        ) : null}
-                      </h3>
-                      <p className="whitespace-nowrap font-display text-ink" style={{ fontSize: "clamp(1.4rem,2.4vw,2rem)", lineHeight: 1 }}>
-                        {p.priceLabel}
-                      </p>
-                    </div>
-                    <p className="mt-3 max-w-md text-sm leading-relaxed text-ink-soft">{p.teaser}</p>
-                    <p className="mt-3 text-[0.62rem] uppercase tracking-[0.2em] text-ink-faint">
-                      {p.hours} hours of coverage
-                    </p>
-                    <p className="mt-4 text-[0.62rem] uppercase tracking-[0.22em] text-ink-faint opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                      Reserve {p.name} →
-                    </p>
-                  </Link>
-                </Reveal>
-              ))}
-              <Reveal>
-                <p className="border-t border-ink/10 pt-6 text-xs text-ink-faint">
-                  Interest-free installments &amp; Affirm at checkout ·{" "}
-                  <Link href="/investment" className="text-wine-deep underline underline-offset-4 hover:text-wine">
-                    everything included
-                  </Link>
-                </p>
-              </Reveal>
-            </div>
+            <Reveal className="mt-12 md:col-span-7 md:col-start-6 md:mt-0">
+              <HomePricing />
+              <p className="mt-6 text-xs text-ink-faint">
+                Every collection includes a complimentary save-the-date session ·{" "}
+                <Link href="/investment" className="text-wine-deep underline underline-offset-4 hover:text-wine">
+                  everything included
+                </Link>
+              </p>
+            </Reveal>
           </div>
         </div>
       </section>
