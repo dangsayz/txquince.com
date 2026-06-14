@@ -41,8 +41,8 @@ export function Footer() {
     <footer className="relative bg-cream pt-section">
       <div className="mx-auto max-w-5xl px-5 text-center md:px-10 lg:px-16">
         {/* Wordmark + tagline — masthead lockup, scaled up for the close */}
-        <p className="font-display text-4xl tracking-[0.16em] text-ink md:text-5xl">
-          <span className="text-wine-deep">TX</span> QUINCE
+        <p className="font-display text-4xl font-light tracking-[0.3em] text-ink md:text-5xl">
+          TX&nbsp;QUINCE
         </p>
         <p className="mt-3 text-sm leading-relaxed text-ink-soft">{site.tagline}</p>
 
