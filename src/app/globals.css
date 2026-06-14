@@ -34,6 +34,21 @@
 
   /* ---- Motion ---- */
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* ---- Radius: SHARP, editorial — NO rounded card/tile/panel edges. ----
+     STANDING RULE (see AGENTS.md): the whole numeric radius scale is flattened
+     to 0, so every rounded-{xs..4xl} renders square sitewide — now and for
+     anything added later. Only rounded-full (pills, dots, the coverage meter)
+     stays round. Don't reintroduce rounded card corners via arbitrary values
+     like rounded-[1rem] either. */
+  --radius-xs: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-4xl: 0px;
 }
 
 :root {

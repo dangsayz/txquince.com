@@ -65,7 +65,7 @@ export default function EsBlogIndexPage() {
           <Reveal>
             <Link
               href={`/es/blog/${featured.slug}`}
-              className="group block rounded-[1.75rem] border border-line bg-white p-8 transition-colors hover:border-wine md:p-12"
+              className="group block border border-line bg-white p-8 transition-colors hover:border-wine md:p-12"
             >
               <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">
                 {CATEGORY_ES[featured.category]} · Destacado

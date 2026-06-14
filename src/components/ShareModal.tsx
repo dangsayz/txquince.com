@@ -126,7 +126,7 @@ export function ShareModal({
       />
 
       {/* sheet */}
-      <div className="share-pop relative w-full max-w-sm rounded-t-[1.75rem] border border-line bg-cream p-6 shadow-[0_-20px_60px_-20px_rgba(44,29,18,0.4)] sm:rounded-[1.75rem] sm:shadow-[0_30px_80px_-30px_rgba(44,29,18,0.5)]">
+      <div className="share-pop relative w-full max-w-sm border border-line bg-cream p-6 shadow-[0_-20px_60px_-20px_rgba(44,29,18,0.4)] sm:shadow-[0_30px_80px_-30px_rgba(44,29,18,0.5)]">
         {/* grab handle (mobile) */}
         <div aria-hidden className="mx-auto mb-4 h-1 w-10 rounded-full bg-line sm:hidden" />
 

@@ -219,7 +219,7 @@ export function BookingForm({
   // ---- Success state ----
   if (status === "done") {
     return (
-      <div className="rounded-[1.5rem] border border-line bg-ivory p-8 text-center md:p-10">
+      <div className="border border-line bg-ivory p-8 text-center md:p-10">
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-cream ring-1 ring-line">
           <svg width="20" height="16" viewBox="0 0 20 16" fill="none" aria-hidden="true">
             <path d="M1 8.5L7 14.5L19 1.5" stroke="var(--color-wine)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
