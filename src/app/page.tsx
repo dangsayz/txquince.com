@@ -95,8 +95,10 @@ export default async function HomePage() {
       {/* ================= HERO — type bottom-left, image bleeding off the right edge ================= */}
       <section className="relative">
         <div className="grid md:grid-cols-12">
-          {/* Image: flush to the top + right edge of the viewport. */}
-          <div className="relative order-1 h-[62svh] md:order-2 md:col-span-7 md:h-[88svh]">
+          {/* Image: flush to the top + right edge of the viewport. On desktop it
+              stretches to the full grid-row height (matching the type column) with
+              an 88svh floor, so its bottom always meets the end of the div. */}
+          <div className="relative order-1 h-[62svh] md:order-2 md:col-span-7 md:h-auto md:min-h-[88svh]">
             {cover?.url ? (
               <Image
                 src={cover.url}
@@ -115,12 +117,12 @@ export default async function HomePage() {
 
           {/* Type: pinned to the bottom of the cream field — museum air above. */}
           <div className="order-2 flex flex-col justify-end px-5 pb-12 pt-14 md:order-1 md:col-span-5 md:pb-20 md:pl-10 md:pr-12 md:pt-24 lg:pl-16">
-            <p className="hero-enter hero-delay-1 text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">
-              Quinceañera photography &amp; film
-              <span className="mt-1 block">Dallas–Fort Worth</span>
-            </p>
-
             <h1 className="hero-enter hero-delay-2 mt-8">
+              {/* Target keyword leads the H1 (broad metro term — city pages own
+                  the city-specific phrases), then the emotional hook. */}
+              <span className="mb-6 block text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">
+                Dallas–Fort Worth Quinceañera Photographer &amp; Film
+              </span>
               <span
                 className="block font-display text-ink"
                 style={{
