@@ -50,19 +50,19 @@ export function PortfolioGallery({ images }: { images: GalleryItem[] }) {
 
   return (
     <>
-      <div className="columns-2 gap-3 sm:gap-5 md:columns-3 lg:columns-4 lg:gap-6">
+      <div className="columns-2 gap-5 sm:gap-8 lg:columns-3 lg:gap-12">
         {images.map((img, i) => (
           <Reveal
             key={i}
             delay={(i % 4) * 80}
-            className="mb-3 break-inside-avoid sm:mb-5 lg:mb-6"
+            className="mb-5 break-inside-avoid sm:mb-8 lg:mb-12"
           >
             {img.url ? (
               <button
                 type="button"
                 onClick={() => openShare(img)}
                 onContextMenu={(e) => e.preventDefault()}
-                className="group relative block w-full select-none overflow-hidden rounded-2xl bg-greige ring-1 ring-line/70 transition-shadow duration-500 hover:shadow-[0_18px_50px_-20px_rgba(44,29,18,0.45)]"
+                className="group relative block w-full select-none overflow-hidden bg-greige"
                 aria-label={`Share: ${img.alt}`}
               >
                 <div className="transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]">
@@ -98,7 +98,7 @@ export function PortfolioGallery({ images }: { images: GalleryItem[] }) {
                 />
               </button>
             ) : (
-              <div className="overflow-hidden rounded-2xl ring-1 ring-line/70">
+              <div className="overflow-hidden">
                 <Figure src={img.url} alt={img.alt} ratio={img.ratio ?? "portrait"} sizes={sizes} />
               </div>
             )}
