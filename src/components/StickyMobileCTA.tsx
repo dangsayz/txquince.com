@@ -18,7 +18,9 @@ const HIDE_ON = new Set([
 
 export function StickyMobileCTA() {
   const pathname = usePathname();
-  if (HIDE_ON.has(pathname)) return null;
+  // Never show on conversion pages, or anywhere in the admin dashboard (the
+  // bar would overlap admin controls at the bottom of the screen on mobile).
+  if (HIDE_ON.has(pathname) || pathname.startsWith("/admin")) return null;
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-cream/95 p-3 backdrop-blur-md md:hidden">
