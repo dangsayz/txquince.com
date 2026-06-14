@@ -10,11 +10,11 @@ const post: BlogPost = {
     "Una guía cálida y precisa sobre la misa de quince años en Dallas–Fort Worth: qué es, los requisitos más comunes en las parroquias, el orden de la misa, qué se usa, cuánto dura y cómo el fotógrafo se coordina con la iglesia.",
   category: "Traditions",
   excerpt:
-    "La misa es una misa de acción de gracias y una bendición, no un sacramento. Aquí le contamos qué sucede, qué piden la mayoría de las parroquias de DFW y cómo preparar a su familia y a su fotógrafo.",
+    "La misa es una misa de acción de gracias y una bendición, no un sacramento. Esta guía repasa qué sucede, qué piden la mayoría de las parroquias de DFW y cómo preparar a su familia y a su fotógrafo.",
   publishedAt: "2026-06-09",
   readMinutes: 8,
   lang: "es",
-  lead: "Antes del salón, antes del vals, está la iglesia. Para casi todas las familias católicas de Dallas–Fort Worth, la quinceañera empieza con una misa: un momento de gratitud que le da sentido a todo el día. Si nunca ha organizado una, los requisitos y el orden de la celebración pueden parecer un misterio. Aquí tiene un recorrido honesto y respetuoso de lo que puede esperar, escrito para que prepare con confianza a su hija, a los padrinos y a su fotógrafo.",
+  lead: "Antes del salón, antes del vals, está la iglesia. Para casi todas las familias católicas de Dallas–Fort Worth, la quinceañera empieza con una misa: un momento de gratitud que le da sentido a todo el día. Si nunca ha organizado una, los requisitos y el orden de la celebración pueden parecer un misterio. Le explicamos con cuidado y respeto lo que puede esperar, para que prepare con confianza a su hija, a los padrinos y a su fotógrafo.",
   content: [
     { type: "h2", text: "¿La misa de quince años es un sacramento?" },
     {

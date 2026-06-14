@@ -7,14 +7,14 @@ const post: BlogPost = {
   metaTitle:
     "¿Cuánto cuesta una quinceañera en Texas? Presupuesto desglosado 2026",
   description:
-    "Cuánto cuesta de verdad una quinceañera en Texas en 2026: el rango total honesto, un desglose por rubros, dónde se gasta de más, cómo armar un presupuesto realista y cómo reparten los padrinos.",
+    "Cuánto cuesta de verdad una quinceañera en Texas en 2026: el rango total real, un desglose por rubros, dónde se gasta de más, cómo armar un presupuesto realista y cómo reparten los padrinos.",
   category: "Cost & Budget",
   excerpt:
     "El rango total real en Texas, un desglose por rubros y por qué la foto y el video son lo único que queda después del día — sin estadísticas inventadas.",
   publishedAt: "2026-06-09",
   readMinutes: 8,
   lang: "es",
-  lead: "Antes de apartar al primer proveedor, necesita un solo número honesto: cuánto cuesta de verdad una quinceañera en Texas. No la versión de revista ni la cifra baja que le suelta un vendedor, sino el rango real, rubro por rubro, para que pueda planear con calma en lugar de ir reaccionando sobre la marcha.",
+  lead: "¿Cuánto cuesta de verdad una quinceañera en Texas? Ni la versión de revista ni la cifra baja que le suelta un vendedor — el rango real, rubro por rubro. Tener esa cifra clara antes de apartar al primer proveedor le permite planear con calma en lugar de ir reaccionando sobre la marcha.",
   content: [
     { type: "h2", text: "El rango real en Texas" },
     {
@@ -28,7 +28,7 @@ const post: BlogPost = {
     { type: "h2", text: "A dónde se va el dinero en realidad" },
     {
       type: "p",
-      text: "Aquí tiene un desglose típico como porcentaje del total. Su fiesta no va a coincidir al centavo —la de nadie lo hace—, pero los porcentajes le muestran dónde está el peso, para que sepa qué decisiones mueven la aguja y cuáles casi ni se notan.",
+      text: "Este es un desglose típico como porcentaje del total. Su fiesta no va a coincidir al centavo —la de nadie lo hace—, pero los porcentajes le muestran dónde está el peso, para que sepa qué decisiones cambian de verdad la cuenta y cuáles casi ni se notan.",
     },
     {
       type: "ul",
@@ -54,7 +54,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Aquí es donde más se confunden las familias, así que vamos a dejarlo claro. Por DFW verá paquetes de salón todo incluido anunciados entre $2,000 y $4,000. Esos le compran el lugar —y normalmente mesas, sillas, manteles básicos, a veces banquete y DJ ya incluidos—. Son un rubro de salón, no un rubro de fotografía.",
+      text: "Por DFW verá paquetes de salón todo incluido anunciados entre $2,000 y $4,000, y es justo donde muchas familias se confunden. Esos le compran el lugar —y normalmente mesas, sillas, manteles básicos, a veces banquete y DJ ya incluidos—. Son un rubro de salón, no un rubro de fotografía.",
     },
     {
       type: "p",
@@ -71,7 +71,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Por eso vale la pena proteger ese 10 a 15 % aunque el presupuesto se apriete. Y por eso, si tiene que elegir, las familias lamentan mucho más haber recortado la cobertura que haber pedido un pastel más chico. Puede ver cómo se ve una cobertura completa en nuestro [portafolio](/portfolio), y si está decidiendo entre uno y otro, [foto o video](/es/blog/foto-o-video-quinceanera) repasa la decisión con honestidad.",
+      text: "Por eso vale la pena proteger ese 10 a 15 % aunque el presupuesto se apriete. Y por eso, si tiene que elegir, las familias lamentan mucho más haber recortado la cobertura que haber pedido un pastel más chico. Puede ver cómo se ve una cobertura completa en nuestro [portafolio](/portfolio), y si está decidiendo entre uno y otro, [foto o video](/es/blog/foto-o-video-quinceanera) sopesa qué guarda cada uno y qué le cuesta.",
     },
     {
       type: "cta",

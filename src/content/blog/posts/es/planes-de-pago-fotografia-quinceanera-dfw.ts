@@ -7,11 +7,11 @@ const post: BlogPost = {
     "Cómo apartar a su fotógrafo de quinceañera en Dallas–Fort Worth sin pagar todo de golpe: el depósito que aparta la fecha, los pagos mensuales sin intereses, qué pasa con el reembolso si nosotros cancelamos y una opción de menor entrada cuando el presupuesto está ajustado.",
   category: "Cost & Budget",
   excerpt:
-    "Un depósito aparta la fecha y el resto se divide en pagos mensuales sin intereses antes del evento. Aquí le explicamos, con claridad, cómo funcionan los planes de pago en TX Quince y qué hacer si el presupuesto está apretado.",
+    "Un depósito aparta la fecha y el resto se divide en pagos mensuales sin intereses antes del evento. Así funcionan los planes de pago en TX Quince, y qué hacer si el presupuesto está apretado.",
   publishedAt: "2026-06-09",
   readMinutes: 7,
   lang: "es",
-  lead: "Cuando ve el precio de la fotografía de quinceañera en un solo número, parece un muro. No lo es. Casi ninguna familia paga el total de una sola vez: usted aparta la fecha con un depósito y reparte el resto entre los meses que ya tiene antes de la celebración. Aquí le explicamos, en palabras sencillas, cómo funciona en TX Quince para que pueda reservar hoy y pagar con calma.",
+  lead: "Cuando ve el precio de la fotografía de quinceañera en un solo número, parece un muro. No lo es. Casi ninguna familia paga el total de una sola vez: usted aparta la fecha con un depósito y reparte el resto entre los meses que ya tiene antes de la celebración. En TX Quince ese reparto funciona en pasos sencillos, pensados para que pueda reservar hoy y pagar con calma.",
   content: [
     { type: "h2", text: "¿Ofrecen planes de pago? Sí, y la mayoría de las familias los usa" },
     {
@@ -37,12 +37,12 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "El depósito no es un cargo adicional. Se descuenta del total de su colección, así que simplemente se convierte en su primer pago. ¿Quiere ver con detalle qué incluye cada colección antes de decidir? Revise la [página de colecciones y precios](/investment) o lea nuestra [guía completa de cuánto cuesta un fotógrafo de quinceañera](/es/blog/cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth).",
+      text: "El depósito no es un cargo adicional. Se descuenta del total de su colección, así que se convierte en su primer pago. ¿Quiere ver con detalle qué incluye cada colección antes de decidir? Revise la [página de colecciones y precios](/investment) o lea nuestra [guía completa de cuánto cuesta un fotógrafo de quinceañera](/es/blog/cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth).",
     },
     { type: "h2", text: "Cómo funciona el plan mensual sin intereses" },
     {
       type: "p",
-      text: "Una vez que recibimos su depósito, el ritmo es este, y lo hicimos a propósito muy sencillo, porque lo último que necesita un año de organizar una quinceañera es una cuenta más que confunda.",
+      text: "Una vez que recibimos su depósito, el ritmo es este, y lo hicimos a propósito sencillo, porque lo último que necesita un año de organizar una quinceañera es una cuenta más que confunda.",
     },
     {
       type: "ol",
@@ -64,7 +64,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "¿El depósito es reembolsable? La respuesta honesta, esa que muchos estudios no ponen por escrito: el depósito aparta su fecha y se aplica a su saldo, así que no está pensado para devolverse si los planes cambian de su lado. Pero si TX Quince alguna vez tuviera que cancelar, su depósito se le devuelve por completo. Usted nunca pierde dinero por algo que dependa de nosotros.",
+      text: "¿El depósito es reembolsable? Le decimos lo que muchos estudios no ponen por escrito: el depósito aparta su fecha y se aplica a su saldo, así que no está pensado para devolverse si los planes cambian de su lado. Pero si TX Quince alguna vez tuviera que cancelar, su depósito se le devuelve por completo. Usted nunca pierde dinero por algo que dependa de nosotros.",
     },
     {
       type: "quote",

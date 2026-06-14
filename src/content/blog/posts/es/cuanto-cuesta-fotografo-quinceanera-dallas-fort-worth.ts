@@ -13,7 +13,7 @@ const post: BlogPost = {
   publishedAt: "2026-06-09",
   readMinutes: 7,
   lang: "es",
-  lead: "Si ya empezó a llamar estudios, seguro notó el problema: la mitad no le dice un precio hasta que llene un formulario. Aquí está la versión honesta — números reales, qué incluyen y qué cambia el costo de verdad — para que pueda presupuestar la quinceañera de su hija con tranquilidad y sin sorpresas.",
+  lead: "Si ya empezó a llamar estudios, seguro notó el problema: la mitad no le dice un precio hasta que llene un formulario. Esta guía pone los números sobre la mesa — cuánto cuesta de verdad, qué incluye cada plan y qué cambia el total — para que pueda presupuestar la quinceañera de su hija con tranquilidad y sin sorpresas.",
   content: [
     { type: "h2", text: "La respuesta corta" },
     {

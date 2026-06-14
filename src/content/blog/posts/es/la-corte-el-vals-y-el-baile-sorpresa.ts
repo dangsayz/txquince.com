@@ -14,7 +14,7 @@ const post: BlogPost = {
   publishedAt: "2026-06-09",
   readMinutes: 8,
   lang: "es",
-  lead: "Los bailes son el corazón de una quinceañera, y también la parte donde más dudas tienen las familias. ¿De qué tamaño debe ser la corte? ¿Quién baila con quién? ¿En qué se diferencian el vals y el baile con el papá? ¿Y qué es exactamente ese baile sorpresa del que todo el mundo habla? Aquí va la versión honesta y práctica, para que planee la noche con confianza.",
+  lead: "Los bailes son el corazón de una quinceañera, y también la parte donde más dudas tienen las familias. ¿De qué tamaño debe ser la corte? ¿Quién baila con quién? ¿En qué se diferencian el vals y el baile con el papá? ¿Y qué es exactamente ese baile sorpresa del que todo el mundo habla? Vamos por partes, para que planee la noche con confianza.",
   content: [
     { type: "h2", text: "La corte: las damas y los chambelanes" },
     {
@@ -44,7 +44,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Y aquí está el momento que toma por sorpresa a las familias la primera vez que lo ven: a media pieza, llega el cambio de pareja con el papá. Su hija empieza el vals con su chambelán de honor y, a mitad del baile, su papá entra a cambiar; el chambelán se hace para atrás y el papá la toma de las manos para terminar el vals con ella. Es de los momentos más emotivos de toda la noche, y pasa rápido. Justo por eso vale la pena capturarlo bien.",
+      text: "A media pieza llega el momento que toma por sorpresa a las familias la primera vez que lo ven: el cambio de pareja con el papá. Su hija empieza el vals con su chambelán de honor y, a mitad del baile, su papá entra a cambiar; el chambelán se hace para atrás y el papá la toma de las manos para terminar el vals con ella. Es de los momentos más emotivos de toda la noche, y pasa rápido. Justo por eso vale la pena capturarlo bien.",
     },
     {
       type: "p",
@@ -94,7 +94,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Aquí va la verdad honesta que le decimos a cada familia: las fotos son perfectas para los retratos, el vestido, los detalles y las caras alrededor del salón. Pero los bailes son movimiento: el giro del vals, las manos de su papá tomando las de su hija, el momento en que cae el beat del baile sorpresa, el desorden alegre de la hora loca. Eso no vive en una imagen fija. Vive en sonido y movimiento, y eso es el video.",
+      text: "A cada familia le decimos lo mismo: las fotos son perfectas para los retratos, el vestido, los detalles y las caras alrededor del salón. Pero los bailes son movimiento: el giro del vals, las manos de su papá tomando las de su hija, el momento en que cae el beat del baile sorpresa, el desorden alegre de la hora loca. Eso no vive en una imagen fija. Vive en sonido y movimiento, y eso es el video.",
     },
     {
       type: "p",

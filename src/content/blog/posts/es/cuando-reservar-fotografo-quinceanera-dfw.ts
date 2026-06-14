@@ -5,19 +5,19 @@ const post: BlogPost = {
   title: "¿Cuándo reservar a su fotógrafo de quinceañera en DFW?",
   metaTitle: "¿Cuándo reservar al fotógrafo de quinceañera en DFW?",
   description:
-    "Reserve a su fotógrafo de quinceañera de 9 a 14 meses antes, al mismo tiempo que aparta el salón. Aquí le explicamos por qué reservar temprano le conviene y qué pasa si espera.",
+    "Reserve a su fotógrafo de quinceañera de 9 a 14 meses antes, al mismo tiempo que aparta el salón. Por qué reservar temprano le conviene y qué pasa si espera.",
   category: "Planning",
   excerpt:
     "La respuesta corta: reserve de 9 a 14 meses antes, junto con la fecha y el salón. Esperar no le da descuento, pero sí le puede costar su sábado.",
   publishedAt: "2026-06-09",
   readMinutes: 7,
   lang: "es",
-  lead: "Cuando ya tiene la fecha y empieza a cerrar a sus proveedores, la fotografía es de las primeras cosas que conviene resolver, no la última. Los mejores fotógrafos de Dallas–Fort Worth atienden una sola quinceañera por día, y los sábados de primavera y otoño se van primero. Aquí le decimos con claridad cuándo escribirnos, para que la fecha que usted quiere siga libre cuando lo haga.",
+  lead: "Cuando ya tiene la fecha y empieza a cerrar a sus proveedores, la fotografía es de las primeras cosas que conviene resolver, no la última. Los mejores fotógrafos de Dallas–Fort Worth atienden una sola quinceañera por día, y los sábados de primavera y otoño se van primero. El momento de escribirnos importa, y por eso conviene saber cuándo hacerlo: para que la fecha que usted quiere siga libre el día que decida apartarla.",
   content: [
     { type: "h2", text: "La respuesta en una línea" },
     {
       type: "p",
-      text: "Reserve a su fotógrafo de quinceañera de 9 a 14 meses antes del evento, al mismo tiempo que aparta el salón. En Dallas–Fort Worth, esa es la ventana en la que tanto su fecha preferida como el fotógrafo que de verdad le gusta siguen disponibles. Si espera más, terminará eligiendo entre lo que quede.",
+      text: "Reserve a su fotógrafo de quinceañera de 9 a 14 meses antes del evento, al mismo tiempo que aparta el salón. En Dallas–Fort Worth, esa es la ventana en la que tanto su fecha preferida como el fotógrafo que más le gusta siguen disponibles. Si espera más, terminará eligiendo entre lo que quede.",
     },
     {
       type: "callout",
@@ -25,12 +25,12 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Antes de cerrar cualquier proveedor, puede [ver si su fecha está libre](/check-your-date) en unos segundos. El calendario está en vivo, así que sabrá de inmediato si su sábado sigue disponible y cuánto tiempo tiene realmente para organizarse.",
+      text: "Antes de cerrar cualquier proveedor, puede [ver si su fecha está libre](/check-your-date) en unos segundos. El calendario está en vivo, así que sabrá de inmediato si su sábado sigue disponible y cuánto tiempo tiene para organizarse.",
     },
     { type: "h2", text: "Por qué reservar temprano le conviene" },
     {
       type: "p",
-      text: "Reservar temprano no se trata de presionarla; se trata de darle opciones. Entre más anticipación tenga, más fechas libres existen y más libertad tiene para elegir al fotógrafo cuyo trabajo de verdad le encanta, en lugar de al que simplemente quedó disponible.",
+      text: "Reservar temprano le da opciones, no presión. Entre más anticipación tenga, más fechas libres existen y más libertad tiene para elegir al fotógrafo cuyo trabajo le encanta, en lugar del que quedó disponible.",
     },
     {
       type: "ul",

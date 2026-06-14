@@ -11,7 +11,7 @@ const post: BlogPost = {
     "Cómo elegir al fotógrafo indicado para los quince de su hija: los estilos explicados, lo que muestra un portafolio de verdad y lo que debe verificar para proteger su dinero y su fecha.",
   publishedAt: "2026-06-09",
   readMinutes: 9,
-  lead: "Los quince años de su hija pasan una sola vez. Las fotos y el video son lo que queda cuando se marchitan las flores y el vestido vuelve al clóset; por eso elegir al fotógrafo correcto pesa más que casi cualquier otra decisión de proveedor. Esta es la guía honesta, pensada para Dallas–Fort Worth: cómo leer un portafolio, qué significan de verdad los estilos y exactamente qué debe verificar antes de entregar un anticipo.",
+  lead: "Los quince años de su hija pasan una sola vez. Las fotos y el video son lo que queda cuando se marchitan las flores y el vestido vuelve al clóset; por eso elegir al fotógrafo correcto pesa más que casi cualquier otra decisión de proveedor. Esta guía, pensada para Dallas–Fort Worth, le muestra cómo leer un portafolio, qué significan de verdad los estilos y exactamente qué debe verificar antes de entregar un anticipo.",
   content: [
     { type: "h2", text: "Empiece por el estilo que de verdad quiere" },
     {
@@ -119,7 +119,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Si ya tiene una fecha en mente, puede [verificar si está disponible](/check-your-date) en unos segundos, leer [cuándo reservar a su fotógrafo](/es/blog/cuando-reservar-fotografo-quinceanera-dfw) para no perder su sábado, o ir directo a [reservar su fecha](/reserve) cuando esté lista. Y si el costo es su siguiente pregunta, aquí está [cuánto cuesta de verdad un fotógrafo de quinceañera en DFW](/es/blog/cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth). Si busca a alguien por zona, también tenemos [fotógrafo de quinceañeras en Dallas](/es/fotografo-de-quinceaneras/dallas) y en [Fort Worth](/es/fotografo-de-quinceaneras/fort-worth).",
+      text: "Si ya tiene una fecha en mente, puede [verificar si está disponible](/check-your-date) en unos segundos, leer [cuándo reservar a su fotógrafo](/es/blog/cuando-reservar-fotografo-quinceanera-dfw) para no perder su sábado, o ir directo a [reservar su fecha](/reserve) cuando esté lista. Y si el costo es su siguiente pregunta, vea [cuánto cuesta de verdad un fotógrafo de quinceañera en DFW](/es/blog/cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth). Si busca a alguien por zona, también tenemos [fotógrafo de quinceañeras en Dallas](/es/fotografo-de-quinceaneras/dallas) y en [Fort Worth](/es/fotografo-de-quinceaneras/fort-worth).",
     },
   ],
   faqs: [

@@ -4,16 +4,16 @@ const post: BlogPost = {
   slug: "foto-o-video-quinceanera",
   title: "¿Foto o video para su quinceañera? ¿Necesita los dos?",
   metaTitle:
-    "¿Foto o video para la quinceañera? ¿Necesita los dos? Guía honesta DFW",
+    "¿Foto o video para la quinceañera? ¿Necesita los dos? Guía DFW",
   description:
-    "Qué guarda la foto y qué solo guarda el video — el vals, el baile sorpresa, los discursos, las caras de los papás. Cómo decidir sin presión y el panorama real de costo en Dallas–Fort Worth.",
+    "Qué guarda la foto y qué solo guarda el video — el vals, el baile sorpresa, los discursos, las caras de los papás. Cómo decidir sin presión, con el panorama real de costo en Dallas–Fort Worth.",
   category: "Photography & Film",
   excerpt:
-    "La foto detiene el instante perfecto. El video guarda el sonido y el movimiento — el vals, el baile sorpresa, el brindis. Aquí le decimos cómo decidir, con honestidad y sin presión.",
+    "La foto detiene el instante perfecto. El video guarda el sonido y el movimiento — el vals, el baile sorpresa, el brindis. Cómo decidir entre los dos, sin presión.",
   publishedAt: "2026-06-09",
   readMinutes: 8,
   lang: "es",
-  lead: "Casi todas las mamás que planean unos quince llegan a la misma pregunta: ¿de verdad hace falta el video, o con un fotógrafo basta? Es una duda válida — y la respuesta honesta depende de qué momentos no se imagina perdiendo. Aquí le explicamos qué guarda la foto, qué solo guarda el video, qué incluye de verdad un video de quinceañera y el panorama real de costo en Dallas–Fort Worth, para que decida sin adivinar.",
+  lead: "Casi todas las mamás que planean unos quince llegan a la misma pregunta: ¿de verdad hace falta el video, o con un fotógrafo basta? Es una duda válida, y la respuesta depende de qué momentos no se imagina perdiendo. En esta guía verá qué guarda la foto, qué solo guarda el video, qué incluye de verdad un video de quinceañera y el panorama real de costo en Dallas–Fort Worth, para que decida sin adivinar.",
   content: [
     { type: "h2", text: "La respuesta corta" },
     {
@@ -47,19 +47,19 @@ const post: BlogPost = {
       type: "p",
       text: "Dos de esos momentos — el vals y el baile sorpresa — son lo que las familias más desean haber tenido en video después de la fiesta. Vea cómo se sienten en pantalla en nuestros [cortos cinematográficos del portafolio](/portfolio).",
     },
-    { type: "h2", text: "El caso emocional, con honestidad" },
+    { type: "h2", text: "El caso emocional del video" },
     {
       type: "p",
       text: "No vamos a meterle miedo para venderle un plan más grande. Pero sí le decimos lo que vemos: las familias que se saltan el video casi siempre se arrepienten un año después. De la foto casi nadie se arrepiente — la tiene, es hermosa, listo. El video es lo que la gente desea tener cuando ya pasó, porque para entonces el día se fue y no hay segunda oportunidad de grabar una voz o un baile.",
     },
     {
       type: "callout",
-      text: "Nunca nadie nos ha dicho que se arrepiente de tener el video de los quince de su hija. El arrepentimiento siempre corre para el otro lado. Ese es todo el argumento — no es presión, es lo que hemos visto pasar.",
+      text: "Nunca nadie nos ha dicho que se arrepiente de tener el video de los quince de su hija. El arrepentimiento siempre corre para el otro lado. Lo hemos visto pasar muchas veces.",
     },
     { type: "h2", text: "Qué incluye de verdad un video de quinceañera" },
     {
       type: "p",
-      text: "“Video” suena vago, así que aquí está qué es un buen video de quinceañera — y qué no es. No es una grabación cruda de una hora que nadie ve. Un video bien hecho es una historia editada, casi siempre entregada en dos formas:",
+      text: "“Video” suena vago, así que vale la pena precisar qué es un buen video de quinceañera. Un video bien hecho es una historia editada —no una hora de grabación cruda que nadie ve—, casi siempre entregada en dos formas:",
     },
     {
       type: "ul",
@@ -82,7 +82,7 @@ const post: BlogPost = {
     { type: "h2", text: "Un equipo para los dos, o dos proveedores aparte" },
     {
       type: "p",
-      text: "Si se decide por ambos, la siguiente pregunta es si contratar a un equipo que haga foto y video, o reservar a un fotógrafo por un lado y a un videógrafo por otro. Tenemos nuestra opinión, pero aquí está el caso práctico a favor de un solo equipo.",
+      text: "Si se decide por ambos, la siguiente pregunta es si contratar a un equipo que haga foto y video, o reservar a un fotógrafo por un lado y a un videógrafo por otro. Tenemos nuestra opinión, y el caso práctico a favor de un solo equipo se sostiene por cuatro razones.",
     },
     {
       type: "ul",
@@ -111,7 +111,7 @@ const post: BlogPost = {
       type: "ol",
       items: [
         "Si quiere algo para sostener, imprimir y exhibir — elija foto. Es el recuerdo que dura, y es la base con la que empezaríamos a cualquiera.",
-        "Si los momentos que más le importan tienen movimiento y sonido — el vals, el baile sorpresa, los brindis — inclínese por el video, porque esos simplemente no sobreviven como fotos fijas.",
+        "Si los momentos que más le importan tienen movimiento y sonido — el vals, el baile sorpresa, los brindis — inclínese por el video, porque esos no sobreviven como fotos fijas.",
         "Si puede estirar un poco el presupuesto, elija la colección que incluye ambos en vez de sumar un segundo proveedor — es mejor valor y un día más tranquilo.",
       ],
     },
@@ -131,7 +131,7 @@ const post: BlogPost = {
     },
     {
       q: "¿Qué incluye el video de quinceañera?",
-      a: "Un buen video no es una grabación cruda — es una historia editada, casi siempre entregada en dos piezas: una edición documental que recorre el día completo en orden, y un cinematográfico de 3 a 5 minutos editado con música. En las colecciones Signature y Legacy de TX Quince también incluye el audio de los momentos clave y un adelanto la misma semana, para que tenga algo que compartir mientras el día sigue fresco.",
+      a: "Un buen video es una historia editada, no una grabación cruda, casi siempre entregada en dos piezas: una edición documental que recorre el día completo en orden, y un cinematográfico de 3 a 5 minutos editado con música. En las colecciones Signature y Legacy de TX Quince también incluye el audio de los momentos clave y un adelanto la misma semana, para que tenga algo que compartir mientras el día sigue fresco.",
     },
     {
       q: "¿Sale más barato contratar foto y video juntos?",

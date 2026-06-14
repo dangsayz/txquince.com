@@ -13,7 +13,7 @@ const post: BlogPost = {
   publishedAt: "2026-06-09",
   readMinutes: 8,
   lang: "es",
-  lead: "Antes de enamorarse de un candil o de una pista de mármol, empiece por un solo número: cuánta gente va a venir. Primero la capacidad, lo demás después. Aquí tiene salones reales para quinceañera en todo Dallas–Fort Worth, agrupados por ciudad y por número de invitados, además de las preguntas que protegen su celebración y la forma en que se va a fotografiar.",
+  lead: "Empiece por la capacidad: cuánta gente va a venir. Esa cifra descarta la mayoría de los salones antes de que pise el primero, mucho antes de pensar en candiles o pistas de mármol. Esta guía reúne salones reales para quinceañera en todo Dallas–Fort Worth, agrupados por ciudad y por número de invitados, con las preguntas que protegen su celebración y la forma en que se va a fotografiar.",
   content: [
     { type: "h2", text: "Primero el número de invitados, no las fotos bonitas" },
     {
@@ -86,7 +86,7 @@ const post: BlogPost = {
     },
     {
       type: "callout",
-      text: "Ojo con los proveedores internos obligatorios. Algunos salones todo incluido solo permiten su propio banquete, DJ o fotógrafo, lo que puede dejarla sin el artista que en realidad quiere. Pregunte siempre antes de firmar.",
+      text: "Ojo con los proveedores internos obligatorios. Algunos salones todo incluido solo permiten su propio banquete, DJ o fotógrafo, lo que puede dejarla sin el artista que quiere. Pregunte siempre antes de firmar.",
     },
     { type: "h2", text: "Preguntas para hacerle al salón antes de firmar" },
     {

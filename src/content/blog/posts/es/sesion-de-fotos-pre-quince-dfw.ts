@@ -14,12 +14,12 @@ const post: BlogPost = {
   publishedAt: "2026-06-09",
   readMinutes: 8,
   lang: "es",
-  lead: "Antes del gran día, antes de la misa y del vals, muchas familias de Dallas–Fort Worth reservan algo que no esperaban disfrutar tanto: la sesión de fotos pre-quince. Es la sesión tranquila — sin doscientos invitados, sin reloj corriendo, solo su hija, su vestido y buena luz. Aquí le contamos qué es, dónde hacerla y qué llevar para que nada la detenga.",
+  lead: "Muchas familias de Dallas–Fort Worth reservan la sesión de fotos pre-quince pensando en las invitaciones, y terminan disfrutándola más de lo que esperaban. De todo lo que rodea a unos quince, es la sesión tranquila — sin doscientos invitados, sin reloj corriendo, solo su hija, su vestido y buena luz. Veamos qué es, dónde hacerla y qué llevar para que nada la detenga.",
   content: [
     { type: "h2", text: "Qué es una sesión pre-quince" },
     {
       type: "p",
-      text: "La sesión pre-quince — también conocida como sesión de save-the-date o sesión de presentación — es una sesión de fotos aparte, antes de la fiesta. No es la cobertura del día del evento. Es una sesión propia, por lo general de unas semanas a unos meses antes, donde toda la atención es para su hija y su vestido, sin nada más compitiendo frente a la cámara.",
+      text: "La sesión pre-quince — también conocida como sesión de save-the-date o sesión de presentación — es una sesión de fotos aparte, antes de la fiesta. Va por su cuenta, separada de la cobertura del día del evento, por lo general de unas semanas a unos meses antes, con toda la atención puesta en su hija y su vestido, sin nada más compitiendo frente a la cámara.",
     },
     {
       type: "p",
