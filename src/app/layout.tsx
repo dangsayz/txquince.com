@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Inter, Pinyon_Script } from "next/font/google";
+import { Cormorant_Garamond, Inter, Pinyon_Script, Bodoni_Moda } from "next/font/google";
 import "./globals.css";
 import { site } from "@/content/site";
 import { Nav } from "@/components/Nav";
@@ -27,6 +27,13 @@ const pinyon = Pinyon_Script({
   subsets: ["latin"],
   weight: "400",
   variable: "--font-script",
+  display: "swap",
+});
+// High-contrast Didone — the logotype only (the "Vogue" fashion-masthead serif).
+const bodoni = Bodoni_Moda({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-logo",
   display: "swap",
 });
 
@@ -70,7 +77,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${cormorant.variable} ${inter.variable} ${pinyon.variable} h-full`}
+      className={`${cormorant.variable} ${inter.variable} ${pinyon.variable} ${bodoni.variable} h-full`}
     >
       <body className="flex min-h-screen flex-col bg-cream">
         <Nav />
