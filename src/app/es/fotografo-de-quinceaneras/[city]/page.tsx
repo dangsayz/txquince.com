@@ -203,7 +203,7 @@ export default async function CityPageEs({
               <Reveal
                 key={p.id}
                 delay={i * 80}
-                className={`flex h-full flex-col border p-6 ${
+                className={`flex h-full flex-col rounded-lg border p-6 ${
                   p.highlight ? "border-wine bg-ink text-cream" : "border-line bg-ivory"
                 }`}
               >
@@ -315,7 +315,7 @@ export default async function CityPageEs({
               <Link
                 key={g.slug}
                 href={`/es/blog/${g.slug}`}
-                className="group rounded-2xl border border-line bg-white p-5 transition-colors hover:border-wine"
+                className="group rounded-lg border border-line bg-white p-5 transition-colors hover:border-wine"
               >
                 <h3 className="font-display text-lg leading-tight text-ink group-hover:text-wine">
                   {g.title}

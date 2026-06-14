@@ -36,7 +36,7 @@ export function HomePricing() {
               role="tab"
               aria-selected={active}
               onClick={() => setSel(x.id)}
-              className={`relative border px-4 py-3.5 text-left transition-all duration-300 ${
+              className={`relative rounded-lg border px-4 py-3.5 text-left transition-all duration-300 ${
                 active
                   ? "border-ink bg-ink text-cream shadow-lg shadow-ink/15"
                   : "border-line bg-ivory text-ink hover:-translate-y-0.5 hover:border-ink/40"
@@ -75,7 +75,7 @@ export function HomePricing() {
       </div>
 
       {/* Featured panel — re-animates on change via the keyed fade */}
-      <div key={sel} className="fade-only mt-8 border border-ink/15 bg-white p-7 md:p-9">
+      <div key={sel} className="fade-only mt-8 rounded-lg border border-ink/15 bg-white p-7 md:p-9">
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">

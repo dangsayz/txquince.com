@@ -333,7 +333,7 @@ export default async function HomePage() {
         <div className="mx-auto mt-14 max-w-[90rem] px-5 md:mt-20 md:px-10 lg:px-16">
           <Reveal className="md:mr-[18%]">
             <Link href="/portfolio" className="group block">
-              <div className="relative aspect-[4/5] overflow-hidden sm:aspect-[16/11]">
+              <div className="relative aspect-[4/5] overflow-hidden rounded-lg sm:aspect-[16/11]">
                 <ArtFrame frame={seqA} label="La misa" index="I" tone="sand" defY={28} sizes="(max-width: 768px) 100vw, 74vw" imgClass="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02]" />
                 {editable(seqA)}
               </div>
@@ -346,7 +346,7 @@ export default async function HomePage() {
         <div className="mx-auto mt-16 grid max-w-[90rem] grid-cols-12 gap-y-16 px-5 md:mt-24 md:px-10 lg:px-16">
           <Reveal className="col-span-7 col-start-6 md:col-span-3 md:col-start-9">
             <Link href="/portfolio" className="group block">
-              <div className="relative aspect-[3/4.6] overflow-hidden">
+              <div className="relative aspect-[3/4.6] overflow-hidden rounded-lg">
                 <ArtFrame frame={seqB} label="El vals" index="II" tone="ink" defY={35} sizes="(max-width: 768px) 58vw, 24vw" imgClass="object-cover transition-transform duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]" />
                 {editable(seqB)}
               </div>
@@ -356,7 +356,7 @@ export default async function HomePage() {
 
           <Reveal delay={80} className="col-span-6 md:col-span-3 md:col-start-2 md:-mt-32">
             <Link href="/portfolio" className="group block">
-              <div className="relative aspect-square overflow-hidden">
+              <div className="relative aspect-square overflow-hidden rounded-lg">
                 <ArtFrame frame={seqC} label="El brindis" index="III" tone="wine" defY={22} sizes="(max-width: 768px) 50vw, 24vw" imgClass="object-cover transition-transform duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]" />
                 {editable(seqC)}
               </div>
@@ -369,7 +369,7 @@ export default async function HomePage() {
         <div className="mx-auto mt-20 max-w-[90rem] px-5 md:mt-28 md:px-10 lg:px-16">
           <Reveal className="md:ml-[14%]">
             <Link href="/portfolio" className="group block">
-              <div className="relative aspect-[4/5] overflow-hidden sm:aspect-[16/8]">
+              <div className="relative aspect-[4/5] overflow-hidden rounded-lg sm:aspect-[16/8]">
                 <ArtFrame frame={seqD} label="El último baile" index="IV" tone="ink" defY={30} sizes="(max-width: 768px) 100vw, 74vw" imgClass="object-cover transition-transform duration-[1400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.015]" />
                 {editable(seqD)}
               </div>

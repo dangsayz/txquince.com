@@ -62,7 +62,7 @@ export function PortfolioGallery({ images }: { images: GalleryItem[] }) {
                 type="button"
                 onClick={() => openShare(img)}
                 onContextMenu={(e) => e.preventDefault()}
-                className="group relative block w-full select-none overflow-hidden bg-greige ring-1 ring-line/70 transition-shadow duration-500 hover:shadow-[0_18px_50px_-20px_rgba(44,29,18,0.45)]"
+                className="group relative block w-full select-none overflow-hidden rounded-lg bg-greige ring-1 ring-line/70 transition-shadow duration-500 hover:shadow-[0_18px_50px_-20px_rgba(44,29,18,0.45)]"
                 aria-label={`Share: ${img.alt}`}
               >
                 <div className="transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]">
@@ -98,7 +98,7 @@ export function PortfolioGallery({ images }: { images: GalleryItem[] }) {
                 />
               </button>
             ) : (
-              <div className="overflow-hidden ring-1 ring-line/70">
+              <div className="overflow-hidden rounded-lg ring-1 ring-line/70">
                 <Figure src={img.url} alt={img.alt} ratio={img.ratio ?? "portrait"} sizes={sizes} />
               </div>
             )}
