@@ -12,6 +12,7 @@ import { BOOKING_STEPS } from "@/components/HowBookingWorks";
 import { VideoGallery } from "@/components/VideoGallery";
 import { Reveal } from "@/components/Reveal";
 import { EditOverlay } from "@/components/EditMode";
+import { FaqJsonLd } from "@/components/FaqJsonLd";
 
 export const revalidate = 60;
 
@@ -417,6 +418,8 @@ export default async function HomePage() {
 
       {/* ================= GOOD TO KNOW — narrow editorial Q&A ================= */}
       <section className="pt-24 md:pt-36">
+        {/* FAQPage structured data — mirrors the visible Q&A below for rich results. */}
+        <FaqJsonLd />
         <div className="mx-auto max-w-[90rem] px-5 md:px-10 lg:px-16">
           <div className="grid md:grid-cols-12">
             <Reveal className="md:col-span-3">
