@@ -312,7 +312,7 @@ export default async function CityPage({
                 <div className="flex items-center justify-between">
                   <h3 className="font-display text-2xl text-ink">{p.name}</h3>
                   {p.badge ? (
-                    <span className="bg-wine px-2.5 py-1 text-[0.6rem] uppercase tracking-[0.16em] text-cream">
+                    <span className="text-[0.6rem] uppercase tracking-[0.18em] text-wine-deep">
                       {p.badge}
                     </span>
                   ) : null}

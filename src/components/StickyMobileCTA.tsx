@@ -22,10 +22,8 @@ export function StickyMobileCTA() {
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-cream/95 p-3 backdrop-blur-md md:hidden">
-      <Link
-        href={site.cta.href}
-        className="flex w-full items-center justify-center rounded-full bg-wine px-6 py-3.5 text-[0.7rem] uppercase tracking-[0.2em] text-cream transition-colors hover:bg-wine-deep"
-      >
+      {/* Uses the site-wide primary pill so the main CTA looks identical everywhere. */}
+      <Link href={site.cta.href} className="btn-espresso w-full">
         {site.cta.label}
       </Link>
     </div>

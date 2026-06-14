@@ -11,15 +11,15 @@
   /* ---- Color: "Claura" warm system — cream page, espresso ink, warm accent ----
      Warm ivory page floating on a sand frame; espresso-brown text + dark pill
      buttons; one warm terracotta accent. Coral→blue gradients carry the imagery. */
-  --color-sand: #e4d3bc; /* outer page frame (the warm tan behind the card) */
-  --color-cream: #f4eae0; /* base background — Claura warm pink-cream */
-  --color-ivory: #fcf7ef; /* lighter cards / inset (warm near-white) */
-  --color-greige: #faf3e9; /* alternating section band (a touch lighter) */
-  --color-white: #ffffff; /* true white — Apple-clean section bands + cards */
+  --color-sand: #ece4d8; /* outer page frame — lightened toward white */
+  --color-cream: #f8f5f0; /* base background — near-white warm (Vogue: more white) */
+  --color-ivory: #ffffff; /* cards / inset — true white for crisp contrast */
+  --color-greige: #fdfbf7; /* alternating section band — whisper-warm near-white */
+  --color-white: #ffffff; /* true white — clean section bands + cards */
   --color-ink: #2c1d12; /* primary text / dark pill buttons — espresso */
-  --color-ink-soft: #6f6253; /* secondary text (warm taupe) — WCAG AA 4.99:1 on cream */
-  --color-ink-faint: #726753; /* labels / meta — WCAG AA 4.68:1 on cream */
-  --color-line: #e8ddcb; /* hairline borders on cream */
+  --color-ink-soft: #6f6253; /* secondary text — contrast only improves on the lighter page */
+  --color-ink-faint: #726753; /* labels / meta — contrast only improves on the lighter page */
+  --color-line: #eae3d6; /* hairline borders on near-white */
   --color-wine: #c0512f; /* warm accent (links / small touches) */
   --color-wine-deep: #9f3f21; /* accent hover */
   --color-wine-tint: #f4e7dd; /* faint accent wash for bands */
@@ -219,7 +219,9 @@ body {
   border-radius: 9999px;
   background: var(--color-ink);
   color: var(--color-cream);
-  padding: 0.85rem 1.7rem;
+  /* ≥44px tap target (mobile-friendly) */
+  min-height: 2.9rem;
+  padding: 0.95rem 1.9rem;
   font-size: 0.95rem;
   font-weight: 500;
   line-height: 1;
@@ -238,7 +240,9 @@ body {
   border-radius: 9999px;
   background: var(--color-ivory);
   color: var(--color-ink);
-  padding: 0.85rem 1.7rem;
+  /* ≥44px tap target (mobile-friendly) */
+  min-height: 2.9rem;
+  padding: 0.95rem 1.9rem;
   font-size: 0.95rem;
   font-weight: 500;
   line-height: 1;
