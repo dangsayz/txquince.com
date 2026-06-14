@@ -109,7 +109,7 @@ export default function InvestmentPage() {
               <Reveal
                 key={p.id}
                 delay={i * 60}
-                className={`relative grid gap-y-8 rounded-[1.75rem] border p-7 md:grid-cols-12 md:gap-x-8 md:p-12 ${
+                className={`relative grid gap-y-8 border p-7 md:grid-cols-12 md:gap-x-8 md:p-12 ${
                   dark
                     ? "border-wine bg-ink text-cream shadow-2xl shadow-ink/20"
                     : "border-ink/15 bg-white text-ink"
