@@ -6,7 +6,7 @@ import { site } from "@/content/site";
 import { packages } from "@/content/packages";
 import { locations, getLocation, nearbyLocations, cityGeo } from "@/content/locations";
 import { getPost } from "@/content/blog";
-import { getFeaturedImages } from "@/lib/content-db";
+import { getFeaturedImages, getImagesByCity } from "@/lib/content-db";
 import { Reveal } from "@/components/Reveal";
 
 /** Curated guides surfaced on each city page (closes the city↔blog loop). */
@@ -55,6 +55,9 @@ const DAY_TIMELINE: { when: string; title: string; body: string }[] = [
     body: "Dinner, la última muñeca, the dollar dance, and open dancing until the night winds down — covered start to finish, never cut short.",
   },
 ];
+
+// ISR: regenerate hourly so newly city-tagged photos surface without a redeploy.
+export const revalidate = 3600;
 
 export function generateStaticParams() {
   return locations.map((l) => ({ city: l.slug }));
@@ -130,7 +133,10 @@ export default async function CityPage({
   const guides = CITY_GUIDES.map(getPost).filter((p) => p !== undefined);
   const url = `${site.url}/quinceanera-photographer/${loc.slug}`;
   const prices = packages.map((p) => p.price);
-  const featured = await getFeaturedImages(3);
+  // This city's OWN tagged work first; fall back to featured until it's tagged.
+  const cityShots = await getImagesByCity(loc.slug, 3);
+  const featured = cityShots.length ? cityShots : await getFeaturedImages(3);
+  const isCityWork = cityShots.length > 0;
 
   // Per-city structured data: a ProfessionalService scoped to this city + the
   // FAQPage. Mirrors the global JsonLd but with areaServed = this city.
@@ -394,7 +400,9 @@ export default async function CityPage({
       {featured.length ? (
         <section className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
           <Reveal>
-            <p className="eyebrow mb-5">Recent {loc.city} work</p>
+            <p className="eyebrow mb-5">
+              {isCityWork ? `Recent ${loc.city} work` : "Selected work"}
+            </p>
           </Reveal>
           <div className="grid gap-4 sm:grid-cols-2">
             {featured.map((img, i) => (
@@ -423,7 +431,7 @@ export default async function CityPage({
             ))}
           </div>
           <p className="mt-4 text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">
-            {loc.city}, TX
+            {isCityWork ? `${loc.city}, TX` : "Dallas–Fort Worth, TX"}
           </p>
         </section>
       ) : null}

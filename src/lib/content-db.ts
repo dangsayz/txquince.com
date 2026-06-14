@@ -124,6 +124,21 @@ export async function getFeaturedImages(limit = 9): Promise<PortfolioImage[]> {
   return (featured.length ? featured : all).slice(0, limit);
 }
 
+/**
+ * Photos tagged with a given city (slug, e.g. "dallas") — powers the per-city
+ * gallery so each /quinceanera-photographer/<city> page shows its OWN real work
+ * instead of the same featured set everywhere. Empty until the operator tags
+ * images by city in /admin/portfolio (callers fall back to featured).
+ */
+export async function getImagesByCity(citySlug: string, limit = 6): Promise<PortfolioImage[]> {
+  const target = citySlug.trim().toLowerCase();
+  if (!target) return [];
+  const all = await getPortfolioImages();
+  return all
+    .filter((i) => (i.city ?? "").trim().toLowerCase() === target)
+    .slice(0, limit);
+}
+
 /** Raw hero image source — server-only, consumed by /api/img/hero. */
 export async function getHeroRawImageUrl(): Promise<string | null> {
   if (!isSupabaseConfigured()) return null;

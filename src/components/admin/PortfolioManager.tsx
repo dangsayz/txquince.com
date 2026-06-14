@@ -192,7 +192,13 @@ function LocationCombobox({
   );
 }
 
-export function PortfolioManager({ initial }: { initial: PortfolioImage[] }) {
+export function PortfolioManager({
+  initial,
+  cities,
+}: {
+  initial: PortfolioImage[];
+  cities: { slug: string; label: string }[];
+}) {
   const [images, setImages] = useState<PortfolioImage[]>(initial);
   const [section, setSection] = useState<string>("celebration");
   const [uploadLocation, setUploadLocation] = useState<string>("");
@@ -575,6 +581,20 @@ export function PortfolioManager({ initial }: { initial: PortfolioImage[] }) {
                       suggestions={locationSuggestions}
                       onCommit={(location) => patch(img.id, { location })}
                     />
+                    {/* City tag — shows this photo on that city's landing page. */}
+                    <select
+                      value={img.city ?? ""}
+                      onChange={(e) => patch(img.id, { city: e.target.value || null })}
+                      title="Tag the city so this photo shows on that city's page"
+                      className="w-full border-b border-line bg-transparent pb-1 text-xs text-ink-soft focus:border-wine focus:outline-none"
+                    >
+                      <option value="">— City (for its page) —</option>
+                      {cities.map((c) => (
+                        <option key={c.slug} value={c.slug}>
+                          {c.label}
+                        </option>
+                      ))}
+                    </select>
                     <div className="flex items-center justify-between text-xs">
                       <label className="flex items-center gap-1.5 text-ink-soft">
                         <input

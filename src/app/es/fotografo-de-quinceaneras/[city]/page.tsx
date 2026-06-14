@@ -6,7 +6,7 @@ import { site } from "@/content/site";
 import { packages } from "@/content/packages";
 import { locations, getLocation, nearbyLocations, cityGeo } from "@/content/locations";
 import { getEsPost } from "@/content/blog";
-import { getFeaturedImages } from "@/lib/content-db";
+import { getFeaturedImages, getImagesByCity } from "@/lib/content-db";
 import { Reveal } from "@/components/Reveal";
 import { CTAButton } from "@/components/CTAButton";
 
@@ -17,6 +17,9 @@ const ES_CITY_GUIDES = [
   "cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth",
   "cuando-reservar-fotografo-quinceanera-dfw",
 ];
+
+// ISR: regenerate hourly so newly city-tagged photos surface without a redeploy.
+export const revalidate = 3600;
 
 export function generateStaticParams() {
   return locations.map((l) => ({ city: l.slug }));
@@ -123,7 +126,10 @@ export default async function CityPageEs({
   const guides = ES_CITY_GUIDES.map(getEsPost).filter((p) => p !== undefined);
   const esUrl = `${site.url}/es/fotografo-de-quinceaneras/${loc.slug}`;
   const prices = packages.map((p) => p.price);
-  const featured = await getFeaturedImages(3);
+  // Las fotos propias de esta ciudad primero; si no hay, se usan las destacadas.
+  const cityShots = await getImagesByCity(loc.slug, 3);
+  const featured = cityShots.length ? cityShots : await getFeaturedImages(3);
+  const isCityWork = cityShots.length > 0;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -377,7 +383,9 @@ export default async function CityPageEs({
       {featured.length ? (
         <section className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
           <Reveal>
-            <p className="eyebrow mb-5">Trabajo reciente en {loc.city}</p>
+            <p className="eyebrow mb-5">
+              {isCityWork ? `Trabajo reciente en ${loc.city}` : "Trabajo seleccionado"}
+            </p>
           </Reveal>
           <div className="grid gap-4 sm:grid-cols-2">
             {featured.map((img, i) => (
@@ -406,7 +414,9 @@ export default async function CityPageEs({
             ))}
           </div>
           <p className="mt-4 text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">
-            Fotografía de quinceañera en {loc.city}
+            {isCityWork
+              ? `Fotografía de quinceañera en ${loc.city}`
+              : "Fotografía de quinceañera en Dallas–Fort Worth"}
           </p>
         </section>
       ) : null}
