@@ -78,7 +78,7 @@ function VideoCard({ video, large = false }: { video: DisplayVideo; large?: bool
             ) : (
               <div
                 className="absolute inset-0"
-                style={{ background: "radial-gradient(120% 100% at 50% 40%,#3a2128,#1e1417)" }}
+                style={{ background: "radial-gradient(120% 100% at 50% 40%,#2a2420,#161412)" }}
               />
             )}
             <div className="absolute inset-0 bg-ink/25" />

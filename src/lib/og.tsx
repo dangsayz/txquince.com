@@ -30,7 +30,7 @@ export function renderOg(opts: {
           flexDirection: "column",
           justifyContent: "space-between",
           background:
-            "radial-gradient(120% 120% at 50% 0%, #6b2230 0%, #4f1822 55%, #3a1119 100%)",
+            "radial-gradient(120% 120% at 50% 0%, #2a2622 0%, #1c1a17 55%, #121110 100%)",
           padding: 64,
         }}
       >
@@ -68,7 +68,7 @@ export function renderOg(opts: {
               fontSize: 18,
               letterSpacing: "0.28em",
               textTransform: "uppercase",
-              color: "rgba(250,247,242,0.75)",
+              color: "#cda971",
             }}
           >
             {eyebrow}

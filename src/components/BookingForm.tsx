@@ -354,7 +354,7 @@ export function BookingForm({
       <button
         type="submit"
         disabled={busy}
-        className="inline-flex items-center justify-center gap-3 self-start rounded-full bg-ink px-8 py-4 text-[0.95rem] font-medium text-cream transition-all duration-300 hover:bg-[#3c2a1b] disabled:cursor-not-allowed disabled:opacity-70"
+        className="inline-flex items-center justify-center gap-3 self-start rounded-full bg-ink px-8 py-4 text-[0.95rem] font-medium text-cream transition-all duration-300 hover:bg-[#34302a] disabled:cursor-not-allowed disabled:opacity-70"
       >
         {busy ? (
           <>

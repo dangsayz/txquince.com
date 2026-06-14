@@ -14,8 +14,8 @@ export default function AppleIcon() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "#6b2230",
-          color: "#faf7f2",
+          background: "#1c1a17",
+          color: "#cda971",
         }}
       >
         <div style={{ fontSize: 78, fontWeight: 600, letterSpacing: "0.02em" }}>

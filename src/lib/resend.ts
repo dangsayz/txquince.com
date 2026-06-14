@@ -38,7 +38,7 @@ export function isResendConfigured(): boolean {
 }
 
 const FROM = process.env.RESEND_FROM ?? `${site.brand} <hello@${site.domain}>`;
-const WINE = "#6b2230";
+const WINE = "#8a6f43";
 const CREAM = "#faf7f2";
 const INK = "#1a1a1a";
 

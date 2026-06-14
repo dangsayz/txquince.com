@@ -8,22 +8,23 @@
 */
 
 @theme {
-  /* ---- Color: "Claura" warm system — cream page, espresso ink, warm accent ----
-     Warm ivory page floating on a sand frame; espresso-brown text + dark pill
-     buttons; one warm terracotta accent. Coral→blue gradients carry the imagery. */
+  /* ---- Color: editorial warm system — cream page, warm near-black ink, champagne-gold accent ----
+     Warm ivory page floating on a sand frame; warm near-black text + dark pill
+     buttons (Apple-clean); ONE champagne-gold accent (Vogue gold-foil) for the
+     wordmark, links, and meta. No maroon — the photographs carry the color. */
   --color-sand: #ece4d8; /* outer page frame — lightened toward white */
   --color-cream: #f8f5f0; /* base background — near-white warm (Vogue: more white) */
   --color-ivory: #ffffff; /* cards / inset — true white for crisp contrast */
   --color-greige: #fdfbf7; /* alternating section band — whisper-warm near-white */
   --color-white: #ffffff; /* true white — clean section bands + cards */
-  --color-ink: #2c1d12; /* primary text / dark pill buttons — espresso */
-  --color-dark: #1a1209; /* deep espresso — full-bleed DARK spreads (the contrast engine) */
-  --color-ink-soft: #6f6253; /* secondary text — contrast only improves on the lighter page */
-  --color-ink-faint: #726753; /* labels / meta — contrast only improves on the lighter page */
+  --color-ink: #1c1a17; /* primary text / dark pill buttons — warm near-black */
+  --color-dark: #121110; /* deepest near-black — full-bleed DARK spreads (the contrast engine) */
+  --color-ink-soft: #6a635b; /* secondary text — warm neutral gray */
+  --color-ink-faint: #8a847b; /* labels / meta — soft warm gray */
   --color-line: #eae3d6; /* hairline borders on near-white */
-  --color-wine: #c0512f; /* warm accent (links / small touches) */
-  --color-wine-deep: #9f3f21; /* accent hover */
-  --color-wine-tint: #f4e7dd; /* faint accent wash for bands */
+  --color-wine: #8a6f43; /* champagne-gold accent (links / wordmark / small touches) */
+  --color-wine-deep: #6f5832; /* gold accent hover — deeper */
+  --color-wine-tint: #f0e9da; /* faint champagne wash for bands */
 
   /* ---- Type ---- */
   --font-display: var(--font-cormorant), Georgia, "Times New Roman", serif;
@@ -93,8 +94,8 @@ body {
   background: var(--color-white);
   border-radius: 1.5rem;
   box-shadow:
-    0 1px 2px rgba(60, 40, 20, 0.04),
-    0 14px 38px -18px rgba(60, 40, 20, 0.22);
+    0 1px 2px rgba(28, 26, 23, 0.04),
+    0 14px 38px -18px rgba(28, 26, 23, 0.20);
 }
 
 /* Couture script accent — used sparingly for emotional/section flourishes. */
@@ -225,12 +226,25 @@ body {
   padding: 0.95rem 1.9rem;
   font-size: 0.95rem;
   font-weight: 500;
+  letter-spacing: 0.01em;
   line-height: 1;
+  box-shadow:
+    0 1px 2px rgba(28, 26, 23, 0.12),
+    0 10px 28px -14px rgba(28, 26, 23, 0.5);
   transition: all 0.3s var(--ease-out-soft);
 }
 .btn-espresso:hover {
-  background: #3c2a1b;
+  background: #34302a; /* warm near-black, a hair lifted */
   transform: translateY(-1px);
+  box-shadow:
+    0 2px 4px rgba(28, 26, 23, 0.14),
+    0 16px 36px -14px rgba(28, 26, 23, 0.55);
+}
+.btn-espresso:active {
+  transform: translateY(0);
+  box-shadow:
+    0 1px 2px rgba(28, 26, 23, 0.12),
+    0 6px 16px -10px rgba(28, 26, 23, 0.45);
 }
 
 .btn-soft {

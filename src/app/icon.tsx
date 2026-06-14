@@ -3,7 +3,7 @@ import { ImageResponse } from "next/og";
 export const size = { width: 64, height: 64 };
 export const contentType = "image/png";
 
-// Branded monogram favicon — cream "TX" on deep wine.
+// Branded monogram favicon — champagne-gold "TX" on warm near-black.
 export default function Icon() {
   return new ImageResponse(
     (
@@ -14,8 +14,8 @@ export default function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#6b2230",
-          color: "#faf7f2",
+          background: "#1c1a17",
+          color: "#cda971",
           fontSize: 30,
           fontWeight: 600,
           letterSpacing: "0.02em",

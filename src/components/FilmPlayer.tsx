@@ -48,7 +48,7 @@ export function FilmPlayer({
               className="absolute inset-0"
               style={{
                 background:
-                  "radial-gradient(120% 100% at 50% 40%, #3a2128 0%, #1e1417 70%)",
+                  "radial-gradient(120% 100% at 50% 40%, #2a2420 0%, #161412 70%)",
               }}
               aria-hidden
             />

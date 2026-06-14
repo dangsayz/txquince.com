@@ -14,15 +14,15 @@ const RATIO: Record<Ratio, string> = {
  * media is on R2, these read as intentional editorial color fields (not broken
  * gray boxes). Deterministic per-alt so SSR and client match (no hydration shift).
  */
-// Light, airy duotones to match the editorial aesthetic — with one deep-wine
+// Light, airy duotones to match the editorial aesthetic — with one champagne-gold
 // accent for rhythm. Real release-cleared photos replace these instantly.
 const FIELDS: { bg: string; fg: string }[] = [
-  { bg: "linear-gradient(150deg,#f1e5d8 0%,#ddc6b2 100%)", fg: "#6b2230" }, // sand
-  { bg: "linear-gradient(150deg,#f2e1d9 0%,#d9b7a9 100%)", fg: "#6b2230" }, // blush
-  { bg: "linear-gradient(150deg,#e8dac9 0%,#c4a791 100%)", fg: "#5b2a30" }, // taupe
-  { bg: "linear-gradient(150deg,#ecdcd3 0%,#bd968c 100%)", fg: "#5b2a30" }, // rose-taupe
-  { bg: "linear-gradient(150deg,#e0d3c5 0%,#b39c88 100%)", fg: "#4a352f" }, // greige
-  { bg: "linear-gradient(150deg,#6b2230 0%,#3a1b22 100%)", fg: "#f3e3d8" }, // deep wine accent
+  { bg: "linear-gradient(150deg,#f1e5d8 0%,#ddc6b2 100%)", fg: "#5b4a2c" }, // sand
+  { bg: "linear-gradient(150deg,#f2e1d9 0%,#d9b7a9 100%)", fg: "#5b4a2c" }, // blush
+  { bg: "linear-gradient(150deg,#e8dac9 0%,#c4a791 100%)", fg: "#4a3f2e" }, // taupe
+  { bg: "linear-gradient(150deg,#ecdcd3 0%,#bd968c 100%)", fg: "#4a3f2e" }, // rose-taupe
+  { bg: "linear-gradient(150deg,#e0d3c5 0%,#b39c88 100%)", fg: "#3f352a" }, // greige
+  { bg: "linear-gradient(150deg,#8a6f43 0%,#5b4a2c 100%)", fg: "#f3ecde" }, // champagne-gold accent
 ];
 
 function fieldFor(seed: string): { bg: string; fg: string } {

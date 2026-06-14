@@ -59,7 +59,7 @@ export default function LinksPage() {
           {/* Primary — espresso solid */}
           <Link
             href={links[0].href}
-            className="group flex min-h-[56px] w-full items-center justify-center rounded-2xl bg-ink px-6 text-base font-medium text-cream transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#3c2a1b]"
+            className="group flex min-h-[56px] w-full items-center justify-center rounded-2xl bg-ink px-6 text-base font-medium text-cream transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#34302a]"
           >
             <span>{links[0].label}</span>
             {arrow}
