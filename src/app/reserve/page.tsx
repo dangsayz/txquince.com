@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { site } from "@/content/site";
-import { packages, isCollectionId } from "@/content/packages";
+import { getCollections } from "@/content/collections-db";
 import { BookingForm } from "@/components/BookingForm";
 import { SocialProofStrip } from "@/components/SocialProofStrip";
 import { HowBookingWorks } from "@/components/HowBookingWorks";
@@ -27,10 +27,13 @@ export default async function ReservePage({
   searchParams: Promise<{ canceled?: string; collection?: string; date?: string }>;
 }) {
   const { canceled, collection, date } = await searchParams;
-  const defaultCollection = isCollectionId(collection) ? collection : undefined;
+  const collections = await getCollections();
+  const defaultCollection =
+    collection && collections.some((c) => c.id === collection) ? collection : undefined;
   const defaultDate = date && /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : undefined;
-  const signature = packages.find((p) => p.id === "signature") ?? packages[1];
-  const floor = packages[0];
+  const signature =
+    collections.find((p) => p.highlight) ?? collections[1] ?? collections[0];
+  const floor = collections[0];
 
   return (
     <>
@@ -115,7 +118,7 @@ export default async function ReservePage({
               date isn&apos;t reserved yet. Finish below whenever you&apos;re ready.
             </p>
           ) : null}
-          <BookingForm defaultCollection={defaultCollection} defaultDate={defaultDate} />
+          <BookingForm collections={collections} defaultCollection={defaultCollection} defaultDate={defaultDate} />
         </div>
       </div>
 

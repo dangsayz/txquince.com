@@ -17,11 +17,16 @@
 export type CollectionId = "moments" | "essential" | "signature" | "legacy";
 
 export type Package = {
-  id: CollectionId;
+  /** Slug. Admin-editable collections can introduce new ids, so this is a
+   *  string; CollectionId remains the union of the built-in seed slugs. */
+  id: string;
   name: string;
   price: number; // USD, whole dollars
   priceLabel: string; // pre-formatted for display
   hours: number; // hours of coverage — surfaced everywhere so it's clear at booking
+  /** Photo OR film (one craft) vs. photo + film. Drives the reserve sub-question
+   *  and the stored service — PAYMENT-relevant, so it travels with the record. */
+  singleCraft?: boolean;
   tagline: string;
   /** Internal note (not rendered) — keeps the strategy legible to the operator. */
   role: string;
@@ -46,6 +51,7 @@ export const packages: Package[] = [
     price: 1800,
     priceLabel: "$1,800",
     hours: 5,
+    singleCraft: true,
     tagline: "The day's key moments, one artist, five focused hours.",
     role: "NEW FLOOR + FILTER. Lowest number on the page — budget shoppers self-select. A genuine 5-hour option; hours stated plainly so expectations are set.",
     depositCents: 30_000, // $300
@@ -64,6 +70,7 @@ export const packages: Package[] = [
     price: 2500,
     priceLabel: "$2,500",
     hours: 6,
+    singleCraft: true,
     tagline: "One artist, one craft, a little more of the night.",
     role: "FILTER + floor companion. One craft, 6 hours. Not meant to be the steer.",
     depositCents: 50_000, // $500

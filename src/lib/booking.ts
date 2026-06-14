@@ -25,21 +25,21 @@ const packageValues = PACKAGE_OPTIONS.map((p) => p.value) as [
   "both",
 ];
 
-const collectionValues = ["moments", "essential", "signature", "legacy"] as const;
-
-/** Single-craft tiers (photo OR film). The richer tiers are always photo + film. */
+/** Single-craft tiers (photo OR film) — static fallback when no record is passed. */
 const ONE_CRAFT_COLLECTIONS = new Set(["moments", "essential"]);
 
 /**
- * Normalize the service from the chosen collection. Signature + Legacy are
- * always photo + film by definition; Moments and Essential are one-craft choices.
- * Used server-side so the stored `package` is always consistent with the tier.
+ * Normalize the service from the chosen collection. One-craft tiers store the
+ * picked photo/film; richer tiers are always "both". `singleCraft` comes from
+ * the live collection record (DB-aware) when known, else the static fallback set.
  */
 export function serviceForCollection(
   collection: string,
   pickedPackage: string,
+  singleCraft?: boolean,
 ): "photo" | "video" | "both" {
-  if (!ONE_CRAFT_COLLECTIONS.has(collection)) return "both";
+  const oneCraft = singleCraft ?? ONE_CRAFT_COLLECTIONS.has(collection);
+  if (!oneCraft) return "both";
   return pickedPackage === "video" ? "video" : "photo";
 }
 
@@ -76,9 +76,9 @@ export const bookingSchema = z.object({
     .refine((v) => isFutureWithinRange(v), {
       message: "Choose a future date within the next three years.",
     }),
-  collection: z.enum(collectionValues, {
-    message: "Please choose a collection.",
-  }),
+  // Collections are admin-editable, so accept any slug here and verify it
+  // against the live collection set server-side (in the booking routes).
+  collection: z.string().trim().min(1, "Please choose a collection."),
   package: z.enum(packageValues, {
     message: "Please choose photo, film, or both.",
   }),

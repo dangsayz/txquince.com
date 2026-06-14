@@ -18,7 +18,7 @@ import {
   serviceForCollection,
   type BookingRecord,
 } from "@/lib/booking";
-import { depositForCollection } from "@/content/packages";
+import { getCollection } from "@/content/collections-db";
 import { sanitizeAttribution } from "@/lib/attribution";
 import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
 import { verifyTurnstile } from "@/lib/turnstile";
@@ -104,8 +104,15 @@ export async function POST(req: NextRequest) {
   }
 
   const supabase = getServiceSupabase();
-  const depositCents = depositForCollection(data.collection);
-  const service = serviceForCollection(data.collection, data.package);
+  const col = await getCollection(data.collection);
+  if (!col) {
+    return NextResponse.json(
+      { ok: false, error: "That collection is no longer available. Please pick another." },
+      { status: 422 },
+    );
+  }
+  const depositCents = col.depositCents;
+  const service = serviceForCollection(data.collection, data.package, col.singleCraft);
   // Backstop: hold the date 21 days while we confirm + collect the deposit. If
   // the family never confirms, the every-15-min cron frees the date (see
   // release_expired_booking_holds / migration 0009). The operator can release

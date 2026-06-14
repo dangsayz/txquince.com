@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { bookingSchema, HONEYPOT_FIELD } from "@/lib/booking";
-import { packages, type CollectionId } from "@/content/packages";
+import { type Package } from "@/content/packages";
 import { trackBookingStarted } from "@/lib/analytics";
 import { trackEvent, getFirstTouch } from "@/components/Tracker";
 import { Select } from "@/components/Select";
@@ -28,19 +28,25 @@ type Draft = {
   email: string;
   phone: string;
   eventDate: string;
-  collection: CollectionId;
+  collection: string;
   essentialService: "photo" | "video";
   notes: string;
 };
 
 export function BookingForm({
+  collections,
   defaultCollection,
   defaultDate,
 }: {
-  defaultCollection?: CollectionId;
+  /** Live collections (DB-backed). The reserve page passes these in. */
+  collections: Package[];
+  defaultCollection?: string;
   /** Prefill from ?date= (e.g. the homepage date-checker). Wins over a saved draft. */
   defaultDate?: string;
-} = {}) {
+}) {
+  // Steer to the highlighted tier, else the first collection.
+  const fallbackId =
+    (collections.find((c) => c.highlight) ?? collections[0])?.id ?? "signature";
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState<string | null>(null);
@@ -51,8 +57,8 @@ export function BookingForm({
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [eventDate, setEventDate] = useState("");
-  const [collection, setCollection] = useState<CollectionId>(
-    defaultCollection ?? "signature",
+  const [collection, setCollection] = useState<string>(
+    defaultCollection ?? fallbackId,
   );
   const [essentialService, setEssentialService] = useState<"photo" | "video">(
     "photo",
@@ -120,9 +126,9 @@ export function BookingForm({
   const dateOpen = Boolean(eventDate && takenDates && !takenDates.has(eventDate));
 
   const selectedCollection =
-    packages.find((p) => p.id === collection) ?? packages[1];
-  // Moments + Essential are single-craft (photo OR film); richer tiers are both.
-  const isOneCraft = collection === "essential" || collection === "moments";
+    collections.find((p) => p.id === collection) ?? collections[0];
+  // One-craft tiers (photo OR film) carry the flag; richer tiers are both.
+  const isOneCraft = Boolean(selectedCollection?.singleCraft);
   const packageValue: "photo" | "video" | "both" =
     isOneCraft ? essentialService : "both";
 
@@ -296,8 +302,8 @@ export function BookingForm({
         >
           <Select
             value={collection}
-            onChange={(v) => setCollection(v as CollectionId)}
-            options={packages.map((p) => ({
+            onChange={(v) => setCollection(v)}
+            options={collections.map((p) => ({
               value: p.id,
               label: `${p.name} · ${p.priceLabel} · ${p.hours} hrs${p.highlight ? " — most popular" : ""}`,
             }))}

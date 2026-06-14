@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { site } from "@/content/site";
-import { packages } from "@/content/packages";
+import { getCollections } from "@/content/collections-db";
 import { locations, getLocation, nearbyLocations } from "@/content/locations";
 import { getEsPost } from "@/content/blog";
 import { Reveal } from "@/components/Reveal";
@@ -94,7 +94,8 @@ export default async function CityPageEs({
   const nearby = nearbyLocations(loc.slug);
   const guides = ES_CITY_GUIDES.map(getEsPost).filter((p) => p !== undefined);
   const esUrl = `${site.url}/es/fotografo-de-quinceaneras/${loc.slug}`;
-  const prices = packages.map((p) => p.price);
+  const collections = await getCollections();
+  const prices = collections.map((p) => p.price);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -189,7 +190,7 @@ export default async function CityPageEs({
         <div className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
           <Reveal>
             <h2 className="display-2 text-ink text-center text-balance">
-              Colecciones a precio fijo desde {packages[0].priceLabel}
+              Colecciones a precio fijo desde {collections[0].priceLabel}
             </h2>
             <p className="mx-auto mt-5 max-w-xl text-center text-sm leading-relaxed text-ink-soft">
               Cada quinceañera en {loc.city} se cubre de la iglesia a la recepción.
@@ -199,7 +200,7 @@ export default async function CityPageEs({
           </Reveal>
 
           <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {packages.map((p, i) => (
+            {collections.map((p, i) => (
               <Reveal
                 key={p.id}
                 delay={i * 80}
@@ -217,10 +218,10 @@ export default async function CityPageEs({
                 </div>
                 <p className="mt-5 font-display text-4xl">{p.priceLabel}</p>
                 <p className={`mt-1 text-[0.7rem] uppercase tracking-[0.16em] ${p.highlight ? "text-cream/60" : "text-ink-faint"}`}>
-                  {HOURS_ES[p.id]}
+                  {HOURS_ES[p.id] ?? `${p.hours} horas de cobertura`}
                 </p>
                 <p className={`mt-4 flex-1 text-sm leading-relaxed ${p.highlight ? "text-cream/80" : "text-ink-soft"}`}>
-                  {TIER_ES[p.id]}
+                  {TIER_ES[p.id] ?? p.teaser}
                 </p>
                 <CTAButton
                   href={`/reserve?collection=${p.id}`}

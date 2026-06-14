@@ -3,7 +3,7 @@ import Image from "next/image";
 import { site } from "@/content/site";
 import { home } from "@/content/home";
 import { homeTeaser } from "@/content/gallery";
-import { packageCountWordCap, hoursRangeLabel } from "@/content/packages";
+import { getCollections } from "@/content/collections-db";
 import { HomePricing } from "@/components/HomePricing";
 import { releasedTestimonials } from "@/content/testimonials";
 import { getFeaturedImages, getVideos, getHeroMedia } from "@/lib/content-db";
@@ -149,11 +149,18 @@ function Marquee({ items, dark = false }: { items: string[]; dark?: boolean }) {
 
 export default async function HomePage() {
   const testimonials = releasedTestimonials();
-  const [featured, videos, heroMedia] = await Promise.all([
+  const [featured, videos, heroMedia, collections] = await Promise.all([
     getFeaturedImages(9),
     getVideos(),
     getHeroMedia(),
+    getCollections(),
   ]);
+
+  const COUNT_WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+  const countWord = COUNT_WORDS[collections.length] ?? String(collections.length);
+  const countWordCap = countWord.charAt(0).toUpperCase() + countWord.slice(1);
+  const allHours = collections.map((c) => c.hours);
+  const hoursRangeLabel = `${Math.min(...allHours)} to ${Math.max(...allHours)}`;
 
   const frames: Frame[] = featured.length
     ? featured.map((i) => ({
@@ -404,7 +411,7 @@ export default async function HomePage() {
                 className="mt-4 max-w-[12ch] font-display text-ink"
                 style={{ fontSize: "clamp(2.4rem,4.6vw,4rem)", lineHeight: 1, letterSpacing: "-0.02em" }}
               >
-                {packageCountWordCap} collections.
+                {countWordCap} collections.
               </h2>
               <p className="mt-6 max-w-xs text-sm leading-relaxed text-ink-soft">
                 Fixed pricing, stated plainly — {hoursRangeLabel} hours of coverage by
@@ -414,7 +421,7 @@ export default async function HomePage() {
             </Reveal>
 
             <Reveal className="mt-12 md:col-span-7 md:col-start-6 md:mt-0">
-              <HomePricing />
+              <HomePricing collections={collections} />
               <p className="mt-6 text-xs text-ink-faint">
                 Every collection includes a complimentary save-the-date session ·{" "}
                 <Link href="/investment" className="text-wine-deep underline underline-offset-4 hover:text-wine">

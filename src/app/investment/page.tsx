@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
-import { packages, investmentIntro, investmentFaqs } from "@/content/packages";
+import { investmentIntro, investmentFaqs } from "@/content/packages";
+import { getCollections } from "@/content/collections-db";
+import { CollectionsEditor } from "@/components/CollectionsEditor";
 import { site } from "@/content/site";
 import { Reveal } from "@/components/Reveal";
 import { CTAButton } from "@/components/CTAButton";
@@ -20,7 +22,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function InvestmentPage() {
+export default async function InvestmentPage() {
+  const collections = await getCollections();
   // Machine-readable pricing (Service + Offer per collection) so the fixed
   // prices win cost-query SERPs + AI overviews where rivals show "inquire for
   // pricing". Plus FAQPage + breadcrumb. No Review/AggregateRating (no consented
@@ -36,7 +39,7 @@ export default function InvestmentPage() {
         provider: { "@type": "Organization", name: site.brand, "@id": `${site.url}/#business` },
         areaServed: { "@type": "City", name: "Dallas–Fort Worth, TX" },
         url: `${site.url}/investment`,
-        offers: packages.map((p) => ({
+        offers: collections.map((p) => ({
           "@type": "Offer",
           price: String(p.price),
           priceCurrency: "USD",
@@ -102,8 +105,9 @@ export default function InvestmentPage() {
           inverted to ink so it reads as the obvious choice, and every card wears
           its hours of coverage as a chip. */}
       <section className="mx-auto mt-16 max-w-[90rem] px-5 md:mt-24 md:px-10 lg:px-16">
+        <CollectionsEditor initial={collections} />
         <div className="flex flex-col gap-6">
-          {packages.map((p, i) => {
+          {collections.map((p, i) => {
             const dark = Boolean(p.highlight);
             return (
               <Reveal

@@ -11,23 +11,22 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { packages, type CollectionId } from "@/content/packages";
+import { type Package } from "@/content/packages";
 
-const HOURS = packages.map((p) => p.hours);
-const MIN_H = Math.min(...HOURS);
-const MAX_H = Math.max(...HOURS);
-
-export function HomePricing() {
-  const defaultId = (packages.find((p) => p.highlight) ?? packages[0]).id;
-  const [sel, setSel] = useState<CollectionId>(defaultId);
-  const p = packages.find((x) => x.id === sel) ?? packages[0];
+export function HomePricing({ collections }: { collections: Package[] }) {
+  const hours = collections.map((c) => c.hours);
+  const MIN_H = Math.min(...hours);
+  const MAX_H = Math.max(...hours);
+  const defaultId = (collections.find((c) => c.highlight) ?? collections[0])?.id ?? "";
+  const [sel, setSel] = useState<string>(defaultId);
+  const p = collections.find((x) => x.id === sel) ?? collections[0];
   const pct = MAX_H === MIN_H ? 100 : ((p.hours - MIN_H) / (MAX_H - MIN_H)) * 100;
 
   return (
     <div>
       {/* Selector — the four collections as a segmented control */}
       <div role="tablist" aria-label="Collections" className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-        {packages.map((x) => {
+        {collections.map((x) => {
           const active = x.id === sel;
           return (
             <button

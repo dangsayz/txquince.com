@@ -26,7 +26,7 @@ import {
   packageLabel,
   serviceForCollection,
 } from "@/lib/booking";
-import { depositForCollection, collectionLabel } from "@/content/packages";
+import { getCollection } from "@/content/collections-db";
 import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
 import { verifyTurnstile } from "@/lib/turnstile";
 import {
@@ -142,8 +142,16 @@ export async function POST(req: NextRequest) {
   // Deposit + service are ALWAYS derived server-side from the collection — never
   // trusted from the client (a tampered body can't lower the deposit or mismatch
   // the tier). Signature/Legacy normalize to "both"; Essential keeps its craft.
-  const depositCents = depositForCollection(data.collection);
-  const service = serviceForCollection(data.collection, data.package);
+  const col = await getCollection(data.collection);
+  if (!col) {
+    return NextResponse.json(
+      { error: "That collection is no longer available. Please choose another." },
+      { status: 422 },
+    );
+  }
+  const depositCents = col.depositCents;
+  const service = serviceForCollection(data.collection, data.package, col.singleCraft);
+  const collectionName = col.name;
 
   // 6) Atomic date-hold. Raises 'date_unavailable' if the date is taken.
   let hold: BookingHold;
@@ -200,8 +208,8 @@ export async function POST(req: NextRequest) {
       session = await createStripeCheckoutSession({
         amountCents: hold.deposit_amount_cents,
         currency: hold.currency,
-        productName: `${site.brand} — ${collectionLabel(data.collection)} Deposit`,
-        productDescription: `Deposit to reserve ${prettyDate} · ${collectionLabel(data.collection)} (${packageLabel(service)})`,
+        productName: `${site.brand} — ${collectionName} Deposit`,
+        productDescription: `Deposit to reserve ${prettyDate} · ${collectionName} (${packageLabel(service)})`,
         clientReferenceId: hold.booking_id,
         customerEmail: data.email,
         successUrl: `${siteUrl}/reserve/success?session_id={CHECKOUT_SESSION_ID}`,

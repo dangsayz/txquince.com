@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { site } from "@/content/site";
-import { packages } from "@/content/packages";
+import { getCollections } from "@/content/collections-db";
 import { locations, getLocation, nearbyLocations } from "@/content/locations";
 import { getPost } from "@/content/blog";
 import { Reveal } from "@/components/Reveal";
@@ -80,7 +80,8 @@ export default async function CityPage({
   const nearby = nearbyLocations(loc.slug);
   const guides = CITY_GUIDES.map(getPost).filter((p) => p !== undefined);
   const url = `${site.url}/quinceanera-photographer/${loc.slug}`;
-  const prices = packages.map((p) => p.price);
+  const collections = await getCollections();
+  const prices = collections.map((p) => p.price);
 
   // Per-city structured data: a ProfessionalService scoped to this city + the
   // FAQPage. Mirrors the global JsonLd but with areaServed = this city.
@@ -191,7 +192,7 @@ export default async function CityPage({
         <div className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
           <Reveal>
             <h2 className="display-2 text-ink text-center text-balance">
-              Fixed-price collections from {packages[0].priceLabel}
+              Fixed-price collections from {collections[0].priceLabel}
             </h2>
             <p className="mx-auto mt-5 max-w-xl text-center text-sm leading-relaxed text-ink-soft">
               Every {loc.city} quinceañera is covered church-to-reception. Most
@@ -201,7 +202,7 @@ export default async function CityPage({
           </Reveal>
 
           <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {packages.map((p, i) => (
+            {collections.map((p, i) => (
               <Reveal
                 key={p.id}
                 delay={i * 80}

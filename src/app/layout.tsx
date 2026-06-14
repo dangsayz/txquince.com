@@ -13,7 +13,7 @@ import { Suspense } from "react";
 // Display serif (refined, couture) + clean sans body.
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["300", "400", "500", "600"],
   variable: "--font-cormorant",
   display: "swap",
 });
