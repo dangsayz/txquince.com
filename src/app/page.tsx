@@ -52,6 +52,100 @@ function quietLink(extra = "") {
   return `group inline-flex items-baseline gap-2 text-[0.72rem] uppercase tracking-[0.2em] underline-offset-[6px] transition-colors ${extra}`;
 }
 
+const FRAME_TONES = {
+  ink: { grad: "from-[#3a2718] via-[#2c1d12] to-[#160e07]", text: "text-cream", soft: "text-cream/55", line: "border-cream/15" },
+  wine: { grad: "from-[#b6491f] via-[#86331a] to-[#2c1d12]", text: "text-cream", soft: "text-cream/60", line: "border-cream/20" },
+  sand: { grad: "from-[#f1e4d1] via-[#e2cdae] to-[#cbb491]", text: "text-ink", soft: "text-ink/45", line: "border-ink/10" },
+} as const;
+
+/**
+ * ArtFrame — renders the real photo when one exists; otherwise an editorial
+ * "plate": a toned gradient, a hairline frame, a serif caption and a corner
+ * index. Until the gallery is populated, the page reads as composed art
+ * direction instead of flat grey blocks.
+ */
+function ArtFrame({
+  frame,
+  label,
+  index,
+  tone = "ink",
+  sizes,
+  defX = 50,
+  defY = 30,
+  imgClass = "object-cover",
+  priority,
+}: {
+  frame: Frame | null | undefined;
+  label: string;
+  index?: string;
+  tone?: keyof typeof FRAME_TONES;
+  sizes: string;
+  defX?: number;
+  defY?: number;
+  imgClass?: string;
+  priority?: boolean;
+}) {
+  if (frame?.url) {
+    return (
+      <Image
+        src={frame.url}
+        alt={frame.alt || label}
+        fill
+        priority={priority}
+        sizes={sizes}
+        className={imgClass}
+        style={{ objectPosition: focal(frame, defX, defY) }}
+      />
+    );
+  }
+  const t = FRAME_TONES[tone];
+  return (
+    <div className={`absolute inset-0 bg-gradient-to-br ${t.grad}`}>
+      <div className={`absolute inset-3 border ${t.line} md:inset-4`} aria-hidden />
+      <div
+        aria-hidden
+        className="absolute inset-0 opacity-60"
+        style={{ background: "radial-gradient(115% 80% at 50% 0%, transparent 40%, rgba(0,0,0,0.4) 100%)" }}
+      />
+      <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
+        {index ? (
+          <span className={`mb-4 text-[0.58rem] uppercase tracking-[0.34em] ${t.soft}`}>{index}</span>
+        ) : null}
+        <span
+          className={`font-display italic ${t.text}`}
+          style={{ fontSize: "clamp(1.5rem,3.2vw,2.8rem)", lineHeight: 1.08 }}
+        >
+          {label}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/** A slow editorial marquee ribbon (uses the .marquee-track keyframe). */
+function Marquee({ items, dark = false }: { items: string[]; dark?: boolean }) {
+  const row = [...items, ...items];
+  return (
+    <div className="relative flex overflow-hidden">
+      <div className="marquee-track flex shrink-0 items-center whitespace-nowrap">
+        {row.map((w, i) => (
+          <span key={i} className="flex items-center">
+            <span
+              className={`font-display italic ${dark ? "text-cream" : "text-ink"}`}
+              style={{ fontSize: "clamp(1.6rem,3.6vw,3.2rem)", lineHeight: 1 }}
+            >
+              {w}
+            </span>
+            <span aria-hidden className={`mx-7 text-base ${dark ? "text-wine" : "text-wine"} md:mx-10`}>
+              ✦
+            </span>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default async function HomePage() {
   const testimonials = releasedTestimonials();
   const [featured, videos, heroMedia] = await Promise.all([
@@ -78,9 +172,6 @@ export default async function HomePage() {
       : heroMedia?.kind === "video" && heroMedia.posterUrl
         ? { url: heroMedia.posterUrl, alt: "Quinceañera film still" }
         : frames[0] ?? null;
-  // If the hero is the top featured photo, its admin-set anchor applies too.
-  const coverFocal = focal(cover?.fx != null ? cover : null, 50, 30);
-
   // The sequence avoids repeating the hero frame when possible.
   const seq = frames.filter((f) => f.url !== cover?.url);
   const seqA = seq[0] ?? frames[0]; // oversized
@@ -96,19 +187,15 @@ export default async function HomePage() {
         <div className="grid md:grid-cols-12">
           {/* Image: flush to the top + right edge of the viewport. */}
           <div className="relative order-1 h-[62svh] md:order-2 md:col-span-7 md:h-[88svh]">
-            {cover?.url ? (
-              <Image
-                src={cover.url}
-                alt={cover.alt || "Quinceañera portrait"}
-                fill
-                priority
-                sizes="(max-width: 768px) 100vw, 58vw"
-                className="object-cover"
-                style={{ objectPosition: coverFocal }}
-              />
-            ) : (
-              <div className="absolute inset-0 bg-greige" />
-            )}
+            <ArtFrame
+              frame={cover}
+              label="TX Quince"
+              index="Quinceañera Photography & Film"
+              tone="wine"
+              priority
+              sizes="(max-width: 768px) 100vw, 58vw"
+              defY={30}
+            />
             {editable(cover)}
           </div>
 
@@ -165,6 +252,40 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* ================= MARQUEE — kinetic editorial ribbon ================= */}
+      <section className="border-y border-ink/10 bg-ivory py-5 md:py-6">
+        <Marquee
+          items={["La misa", "El vals", "El brindis", "La corte", "El último baile", "El recuerdo"]}
+        />
+      </section>
+
+      {/* ================= MANIFESTO — full-bleed dark statement, the contrast moment ================= */}
+      <section className="relative overflow-hidden bg-ink">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-24 -top-24 h-[34rem] w-[34rem] rounded-full opacity-60 blur-3xl"
+          style={{ background: "radial-gradient(circle, rgba(192,81,47,0.5), transparent 65%)" }}
+        />
+        <div className="relative mx-auto max-w-[90rem] px-5 py-28 md:px-10 lg:px-16 md:py-40">
+          <Reveal>
+            <p className="text-[0.64rem] uppercase tracking-[0.34em] text-cream/45">The promise</p>
+            <h2
+              className="mt-8 max-w-5xl font-display text-cream"
+              style={{ fontSize: "clamp(2.4rem,6.2vw,5.6rem)", lineHeight: 1.02, letterSpacing: "-0.022em" }}
+            >
+              One celebration a day.{" "}
+              <span className="italic text-cream/55">Never two.</span> So the day she
+              waited fifteen years for is the only one on my calendar.
+            </h2>
+            <div className="mt-12 h-px w-24 bg-wine" />
+            <p className="mt-8 max-w-md text-[0.95rem] leading-relaxed text-cream/65">
+              No second event to rush to, no second shooter splitting focus — la misa,
+              el vals, and the last song, all of it, kept exactly as it felt.
+            </p>
+          </Reveal>
+        </div>
+      </section>
+
       {/* ================= CREDIBILITY — editorial stat line, not stars ================= */}
       <section className="border-y border-ink/10">
         <div className="mx-auto grid max-w-[90rem] grid-cols-2 gap-y-8 px-5 py-12 md:grid-cols-4 md:px-10 lg:px-16 md:py-14">
@@ -212,11 +333,7 @@ export default async function HomePage() {
           <Reveal className="md:mr-[18%]">
             <Link href="/portfolio" className="group block">
               <div className="relative aspect-[4/5] overflow-hidden sm:aspect-[16/11]">
-                {seqA?.url ? (
-                  <Image src={seqA.url} alt={seqA.alt} fill sizes="(max-width: 768px) 100vw, 74vw" className="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02]" style={{ objectPosition: focal(seqA, 50, 28) }} />
-                ) : (
-                  <div className="absolute inset-0 bg-greige" />
-                )}
+                <ArtFrame frame={seqA} label="La misa" index="I" tone="sand" defY={28} sizes="(max-width: 768px) 100vw, 74vw" imgClass="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02]" />
                 {editable(seqA)}
               </div>
               <p className="mt-3 text-[0.6rem] uppercase tracking-[0.24em] text-ink-faint">{seqA?.alt}</p>
@@ -229,11 +346,7 @@ export default async function HomePage() {
           <Reveal className="col-span-7 col-start-6 md:col-span-3 md:col-start-9">
             <Link href="/portfolio" className="group block">
               <div className="relative aspect-[3/4.6] overflow-hidden">
-                {seqB?.url ? (
-                  <Image src={seqB.url} alt={seqB.alt} fill sizes="(max-width: 768px) 58vw, 24vw" className="object-cover transition-transform duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]" style={{ objectPosition: focal(seqB, 50, 35) }} />
-                ) : (
-                  <div className="absolute inset-0 bg-greige" />
-                )}
+                <ArtFrame frame={seqB} label="El vals" index="II" tone="ink" defY={35} sizes="(max-width: 768px) 58vw, 24vw" imgClass="object-cover transition-transform duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]" />
                 {editable(seqB)}
               </div>
               <p className="mt-3 text-[0.6rem] uppercase tracking-[0.24em] text-ink-faint">{seqB?.alt}</p>
@@ -243,11 +356,7 @@ export default async function HomePage() {
           <Reveal delay={80} className="col-span-6 md:col-span-3 md:col-start-2 md:-mt-32">
             <Link href="/portfolio" className="group block">
               <div className="relative aspect-square overflow-hidden">
-                {seqC?.url ? (
-                  <Image src={seqC.url} alt={seqC.alt} fill sizes="(max-width: 768px) 50vw, 24vw" className="object-cover transition-transform duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]" style={{ objectPosition: focal(seqC, 50, 22) }} />
-                ) : (
-                  <div className="absolute inset-0 bg-greige" />
-                )}
+                <ArtFrame frame={seqC} label="El brindis" index="III" tone="wine" defY={22} sizes="(max-width: 768px) 50vw, 24vw" imgClass="object-cover transition-transform duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]" />
                 {editable(seqC)}
               </div>
               <p className="mt-3 text-[0.6rem] uppercase tracking-[0.24em] text-ink-faint">{seqC?.alt}</p>
@@ -260,11 +369,7 @@ export default async function HomePage() {
           <Reveal className="md:ml-[14%]">
             <Link href="/portfolio" className="group block">
               <div className="relative aspect-[4/5] overflow-hidden sm:aspect-[16/8]">
-                {seqD?.url ? (
-                  <Image src={seqD.url} alt={seqD.alt} fill sizes="(max-width: 768px) 100vw, 74vw" className="object-cover transition-transform duration-[1400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.015]" style={{ objectPosition: focal(seqD, 50, 30) }} />
-                ) : (
-                  <div className="absolute inset-0 bg-greige" />
-                )}
+                <ArtFrame frame={seqD} label="El último baile" index="IV" tone="ink" defY={30} sizes="(max-width: 768px) 100vw, 74vw" imgClass="object-cover transition-transform duration-[1400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.015]" />
                 {editable(seqD)}
               </div>
             </Link>
@@ -449,18 +554,7 @@ export default async function HomePage() {
       {/* ================= CLOSE — campaign spread: full-bleed image, type low-left ================= */}
       <section className="relative mt-24 md:mt-36">
         <div className="relative h-[78svh] w-full overflow-hidden">
-          {closing?.url ? (
-            <Image
-              src={closing.url}
-              alt={closing.alt || "Quinceañera"}
-              fill
-              sizes="100vw"
-              className="object-cover"
-              style={{ objectPosition: focal(closing, 50, 25) }}
-            />
-          ) : (
-            <div className="absolute inset-0 bg-ink" />
-          )}
+          <ArtFrame frame={closing} label="" tone="wine" defY={25} sizes="100vw" imgClass="object-cover" />
           {editable(closing)}
           <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-ink/75 via-ink/15 to-transparent" />
           <div className="absolute inset-x-0 bottom-0">
