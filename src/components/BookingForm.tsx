@@ -125,7 +125,7 @@ export function BookingForm({
   const selectedCollection =
     packages.find((p) => p.id === collection) ?? packages[1];
   const packageValue: "photo" | "video" | "both" =
-    collection === "essential" ? essentialService : "both";
+    selectedCollection.singleCraft ? essentialService : "both";
 
   const { todayStr, maxStr } = useMemo(() => {
     const now = new Date();
@@ -293,7 +293,7 @@ export function BookingForm({
           required
           error={errors.collection}
           hint="Applies to your final balance"
-          className={collection === "essential" ? "" : "sm:col-span-2"}
+          className={selectedCollection.singleCraft ? "" : "sm:col-span-2"}
         >
           <Select
             value={collection}
@@ -305,7 +305,7 @@ export function BookingForm({
           />
         </Field>
 
-        {collection === "essential" && (
+        {selectedCollection.singleCraft && (
           <Field label="Photo or film?" required>
             <Select
               value={essentialService}

@@ -407,7 +407,7 @@ export async function sendFollowupEmail(
       "",
       `If it helps, here are full galleries and films from real DFW celebrations (not just highlights): ${galleryUrl}`,
       "",
-      `Pricing is fixed and on the site — collections from $2,500, and most families choose Signature at $3,900: ${investmentUrl}`,
+      `Pricing is fixed and on the site — collections from $1,800, and most families choose Signature at $3,900: ${investmentUrl}`,
       "",
       "Whenever you're ready, just reply here and I'll confirm whether your date is open.",
       "",
@@ -415,7 +415,7 @@ export async function sendFollowupEmail(
     ].join("\n");
     bodyHtml = `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">Just circling back on your daughter&apos;s quinceañera — no pressure at all, I know there&apos;s a lot to plan.</p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">If it helps, here are <a href="${galleryUrl}" style="color:${WINE}">full galleries and films</a> from real DFW celebrations — not just highlights, so you see exactly what you&apos;d be getting. Pricing is <a href="${investmentUrl}" style="color:${WINE}">fixed and right on the site</a>: collections from $2,500, and most families choose Signature at $3,900.</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">If it helps, here are <a href="${galleryUrl}" style="color:${WINE}">full galleries and films</a> from real DFW celebrations — not just highlights, so you see exactly what you&apos;d be getting. Pricing is <a href="${investmentUrl}" style="color:${WINE}">fixed and right on the site</a>: collections from $1,800, and most families choose Signature at $3,900.</p>
       <p style="margin:0;font-size:15px;line-height:1.7;color:#56504a">Whenever you&apos;re ready, just reply and I&apos;ll confirm whether your date is open.</p>`;
   } else if (step === 2) {
     subject = "The part most families ask about: paying for it";

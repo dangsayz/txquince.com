@@ -41,7 +41,7 @@ export async function generateMetadata({
   if (!img || img.section !== category) return {};
 
   const title = img.title || img.alt || "Quinceañera photograph";
-  const description = `${img.caption || img.alt} — quinceañera photography by ${site.brand}, Dallas–Fort Worth. Collections from $2,500; reserve your date.`;
+  const description = `${img.caption || img.alt} — quinceañera photography by ${site.brand}, Dallas–Fort Worth. Collections from $1,800; reserve your date.`;
   const pagePath = imagePagePath(img.section, slug);
   const imgUrl = `${site.url}/api/img/${slug}`;
 

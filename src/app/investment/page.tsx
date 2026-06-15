@@ -13,12 +13,12 @@ export const metadata: Metadata = {
   // brand word "Investment" nobody searches. Renders "… · TX Quince" (~53 chars).
   title: "Quinceañera Photography Prices & Packages",
   description:
-    "Quinceañera photography prices in Dallas–Fort Worth — fixed collections from $2,500, with Signature at $3,900. Every price stated plainly, no hidden costs.",
+    "Quinceañera photography prices in Dallas–Fort Worth — fixed collections from $1,800, with Signature at $3,900. Every price stated plainly, no hidden costs.",
   alternates: { canonical: "/investment" },
   openGraph: {
     title: "Quinceañera Photography Prices & Packages — Dallas–Fort Worth",
     description:
-      "Fixed-price quinceañera collections from $2,500. Most families choose Signature at $3,900 — prices stated plainly.",
+      "Fixed-price quinceañera collections from $1,800. Most families choose Signature at $3,900 — prices stated plainly.",
     url: `${site.url}/investment`,
   },
 };

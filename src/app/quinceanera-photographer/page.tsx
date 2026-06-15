@@ -10,12 +10,12 @@ import { SocialProofStrip } from "@/components/SocialProofStrip";
 export const metadata: Metadata = {
   title: "Quinceañera Photographer — Dallas–Fort Worth",
   description:
-    "Cinematic quinceañera photography & film across Dallas–Fort Worth — Grand Prairie, Irving, Garland, Dallas, Fort Worth, Arlington, Mansfield, and Farmers Branch. Fixed-price collections from $2,500.",
+    "Cinematic quinceañera photography & film across Dallas–Fort Worth — Grand Prairie, Irving, Garland, Dallas, Fort Worth, Arlington, Mansfield, and Farmers Branch. Fixed-price collections from $1,800.",
   alternates: { canonical: "/quinceanera-photographer" },
   openGraph: {
     title: `Quinceañera Photographer — Dallas–Fort Worth · ${site.brand}`,
     description:
-      "Quinceañera photography & film across the DFW metroplex. Fixed-price collections from $2,500.",
+      "Quinceañera photography & film across the DFW metroplex. Fixed-price collections from $1,800.",
     url: `${site.url}/quinceanera-photographer`,
   },
 };

@@ -50,8 +50,8 @@ export const home = {
 
   packages: {
     eyebrow: "Investment",
-    heading: "Collections starting at $2,500.",
-    body: "Fixed pricing, no surprises — reserve with a $500 deposit and split the rest into interest-free payments. Most families choose Signature.",
+    heading: "Collections starting at $1,800.",
+    body: "Fixed pricing, no surprises — reserve from a $300 deposit and split the rest into interest-free payments. Most families choose Signature.",
     cta: "See all collections",
   },
 

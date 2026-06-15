@@ -18,7 +18,7 @@ export function renderOg(opts: {
   footer?: string;
 }) {
   const { eyebrow = site.serviceArea, title, footer } = opts;
-  const foot = footer ?? `${site.domain} · Collections from $2,500`;
+  const foot = footer ?? `${site.domain} · Collections from $1,800`;
 
   return new ImageResponse(
     (

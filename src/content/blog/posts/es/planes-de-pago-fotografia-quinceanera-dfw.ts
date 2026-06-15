@@ -30,6 +30,7 @@ const post: BlogPost = {
     {
       type: "ul",
       items: [
+        "Moments (1,800 dólares): depósito de 300 dólares para apartar su fecha.",
         "Essential (2,500 dólares): depósito de 500 dólares para apartar su fecha.",
         "Signature (3,900 dólares): depósito de 750 dólares para apartar su fecha.",
         "Legacy (5,500 dólares): depósito de 1,000 dólares para apartar su fecha.",
@@ -110,7 +111,7 @@ const post: BlogPost = {
     },
     {
       q: "¿De cuánto es el depósito para apartar la fecha?",
-      a: "En DFW el depósito suele ir de unos 200 a 800 dólares, o alrededor de un tercio del total. En TX Quince depende de su colección: 500 dólares para Essential (2,500), 750 dólares para Signature (3,900) y 1,000 dólares para Legacy (5,500). El depósito se aplica a su total, así que se convierte en su primer pago.",
+      a: "En DFW el depósito suele ir de unos 200 a 800 dólares, o alrededor de un tercio del total. En TX Quince depende de su colección: 300 dólares para Moments (1,800), 500 dólares para Essential (2,500), 750 dólares para Signature (3,900) y 1,000 dólares para Legacy (5,500). El depósito se aplica a su total, así que se convierte en su primer pago.",
     },
     {
       q: "¿El depósito es reembolsable?",

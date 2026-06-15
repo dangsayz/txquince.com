@@ -11,6 +11,7 @@
  */
 import { z } from "zod";
 import { site } from "@/content/site";
+import { collectionById } from "@/content/packages";
 
 /** What they're reserving. Mirrors the `package` column + the inquiry services. */
 export const PACKAGE_OPTIONS = [
@@ -25,18 +26,20 @@ const packageValues = PACKAGE_OPTIONS.map((p) => p.value) as [
   "both",
 ];
 
-const collectionValues = ["essential", "signature", "legacy"] as const;
+const collectionValues = ["moments", "essential", "signature", "legacy"] as const;
 
 /**
- * Normalize the service from the chosen collection. Signature + Legacy are
- * always photo + film by definition; only Essential is a one-craft choice.
+ * Normalize the service from the chosen collection. Multi-craft tiers (Signature,
+ * Legacy) are always photo + film by definition; single-craft tiers (Moments,
+ * Essential) carry a photo-or-film choice. Driven by the `singleCraft` flag on
+ * the collection so adding a tier never needs a code change here.
  * Used server-side so the stored `package` is always consistent with the tier.
  */
 export function serviceForCollection(
   collection: string,
   pickedPackage: string,
 ): "photo" | "video" | "both" {
-  if (collection !== "essential") return "both";
+  if (!collectionById(collection)?.singleCraft) return "both";
   return pickedPackage === "video" ? "video" : "photo";
 }
 

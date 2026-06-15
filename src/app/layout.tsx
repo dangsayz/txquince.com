@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     template: `%s · ${site.brand}`,
   },
   description:
-    "Cinematic quinceañera photography and film across Dallas–Fort Worth. Two storytellers, one unrepeatable day — collections from $2,500.",
+    "Cinematic quinceañera photography and film across Dallas–Fort Worth. Two storytellers, one unrepeatable day — collections from $1,800.",
   applicationName: site.brand,
   alternates: { canonical: "/" },
   openGraph: {
@@ -54,13 +54,13 @@ export const metadata: Metadata = {
     url: site.url,
     title: `${site.brand} — Quinceañera Photography & Film`,
     description:
-      "Cinematic quinceañera photography and film across Dallas–Fort Worth. Collections from $2,500.",
+      "Cinematic quinceañera photography and film across Dallas–Fort Worth. Collections from $1,800.",
   },
   twitter: {
     card: "summary_large_image",
     title: `${site.brand} — Quinceañera Photography & Film`,
     description:
-      "Cinematic quinceañera photography and film across Dallas–Fort Worth. Collections from $2,500.",
+      "Cinematic quinceañera photography and film across Dallas–Fort Worth. Collections from $1,800.",
   },
   robots: { index: true, follow: true },
 };

@@ -15,7 +15,7 @@ const post: BlogPost = {
     { type: "h2", text: "The short answer" },
     {
       type: "p",
-      text: "In Dallas–Fort Worth, professional quinceañera photography typically runs from about $1,500 for photo-only coverage with a single artist up to $5,000+ for a two-person photo-and-film team covering the whole day. At [TX Quince](/investment), collections are fixed at $2,500, $3,900, and $5,500 — published on the site, no quote form required.",
+      text: "In Dallas–Fort Worth, professional quinceañera photography typically runs from about $1,500 for photo-only coverage with a single artist up to $5,000+ for a two-person photo-and-film team covering the whole day. At [TX Quince](/investment), collections are fixed at $1,800, $2,500, $3,900, and $5,500 — published on the site, no quote form required.",
     },
     {
       type: "p",
@@ -83,7 +83,7 @@ const post: BlogPost = {
   faqs: [
     {
       q: "How much should I budget for quinceañera photography in DFW?",
-      a: "Plan for roughly $2,500–$5,500 for professional coverage. Photo-only with one artist sits at the lower end; a two-person photo-and-film team covering the full day sits at the top. TX Quince publishes fixed collections at $2,500, $3,900, and $5,500.",
+      a: "Plan for roughly $1,800–$5,500 for professional coverage. Photo-only with one artist sits at the lower end; a two-person photo-and-film team covering the full day sits at the top. TX Quince publishes fixed collections at $1,800, $2,500, $3,900, and $5,500.",
     },
     {
       q: "Do I need both a photographer and a videographer?",

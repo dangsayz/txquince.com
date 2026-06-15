@@ -1,16 +1,17 @@
 /**
  * packages.ts — INVESTMENT TIERS (CONVERSION-CRITICAL anchoring)
  *
- * Good / better / best. Prices ALWAYS visible (visible pricing = the filter).
- *  - ESSENTIAL ($2,500) is the FLOOR + FILTER — cheapest number on the page so
- *    budget shoppers self-select away. Not meant to be sold.
+ * Entry / good / better / best. Prices ALWAYS visible (visible pricing = the filter).
+ *  - MOMENTS ($1,800) is the FLOOR + FILTER — lowest number on the page so
+ *    budget shoppers self-select. A genuine 5-hour, one-craft option, not a trap.
+ *  - ESSENTIAL ($2,500) is the entry full-coverage tier — one craft, fuller day.
  *  - SIGNATURE ($3,900) is THE TARGET SALE — steer everyone here.
  *  - LEGACY ($5,500) is the ANCHOR at the market ceiling so $3,900 reads sensible.
  *
- * The budget-range dropdown on the form mirrors these (lowest = $2,500).
+ * The budget-range dropdown on the form mirrors these (lowest = $1,800).
  */
 
-export type CollectionId = "essential" | "signature" | "legacy";
+export type CollectionId = "moments" | "essential" | "signature" | "legacy";
 
 export type Package = {
   id: CollectionId;
@@ -22,6 +23,8 @@ export type Package = {
   role: string;
   highlight?: boolean; // middle tier = "Most Popular"
   badge?: string;
+  /** Photo OR film (one craft) — drives the form's "photo or film?" sub-question. */
+  singleCraft?: boolean;
   includes: string[];
   // One-line teaser used on the Home packages strip.
   teaser: string;
@@ -36,12 +39,31 @@ export type Package = {
 
 export const packages: Package[] = [
   {
+    id: "moments",
+    name: "Moments",
+    price: 1800,
+    priceLabel: "$1,800",
+    tagline: "The day's key moments, one artist, five focused hours.",
+    role: "NEW FLOOR + FILTER. Lowest number on the page — budget shoppers self-select. A genuine 5-hour option; hours stated plainly so expectations are set.",
+    singleCraft: true,
+    depositCents: 30_000, // $300
+    depositLabel: "$300",
+    teaser: "Photo or film, one artist, 5 focused hours — la misa through the early reception.",
+    includes: [
+      "Photo OR film — one service, one artist",
+      "5 hours of coverage — la misa through the early reception",
+      "Edited gallery OR a highlight film",
+      "Complimentary save-the-date session",
+    ],
+  },
+  {
     id: "essential",
     name: "Essential",
     price: 2500,
     priceLabel: "$2,500",
     tagline: "One artist, one craft, beautifully done.",
-    role: "FILTER + floor. The cheapest number on the page. Not meant to be sold.",
+    role: "Entry full-coverage tier — one craft, fuller day. Bridges Moments and Signature.",
+    singleCraft: true,
     depositCents: 50_000, // $500
     depositLabel: "$500",
     teaser: "Photo or film, one artist, the full day's milestones.",
@@ -101,7 +123,10 @@ export function collectionById(id: string): Package | undefined {
 /** Is this a valid collection id? (narrows unknown query/body values.) */
 export function isCollectionId(value: unknown): value is CollectionId {
   return (
-    value === "essential" || value === "signature" || value === "legacy"
+    value === "moments" ||
+    value === "essential" ||
+    value === "signature" ||
+    value === "legacy"
   );
 }
 
@@ -140,7 +165,7 @@ export type Faq = { q: string; a: string };
 export const investmentFaqs: Faq[] = [
   {
     q: "How much does a quinceañera photographer cost in Dallas–Fort Worth?",
-    a: "Our collections are fixed-price and start at $2,500. Most families choose Signature at $3,900 — two of us covering the full day with both film and a complete gallery — and Legacy is $5,500. Every price is listed right here, never “inquire for pricing,” and all three include a complimentary save-the-date session plus interest-free payment plans.",
+    a: "Our collections are fixed-price and start at $1,800 — that's Moments, five focused hours with one artist. Most families choose Signature at $3,900 — two of us covering the full day with both film and a complete gallery — with Essential at $2,500 and Legacy at $5,500. Every price is listed right here, never “inquire for pricing,” and every collection includes a complimentary save-the-date session plus interest-free payment plans.",
   },
   {
     q: "How far in advance should we book?",
@@ -148,7 +173,7 @@ export const investmentFaqs: Faq[] = [
   },
   {
     q: "Do you cover both the church and the reception?",
-    a: "Yes. Every collection is built around the full day — la misa, portraits, el vals, and the celebration. Essential covers up to 6 hours; Signature and Legacy cover the full day so nothing important happens off-camera.",
+    a: "Yes. Every collection is built around the day — la misa, portraits, el vals, and the celebration. Moments covers five focused hours and Essential up to six; Signature and Legacy cover the full day so nothing important happens off-camera.",
   },
   {
     q: "What if our date is already taken?",

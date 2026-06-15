@@ -1,6 +1,6 @@
 import { renderOg, ogSize, ogContentType } from "@/lib/og";
 
-export const alt = "TX Quince — Quinceañera collections from $2,500";
+export const alt = "TX Quince — Quinceañera collections from $1,800";
 export const size = ogSize;
 export const contentType = ogContentType;
 

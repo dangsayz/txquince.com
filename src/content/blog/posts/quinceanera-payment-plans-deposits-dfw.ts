@@ -30,6 +30,7 @@ const post: BlogPost = {
     {
       type: "ul",
       items: [
+        "Moments ($1,800) — $300 deposit to reserve your date.",
         "Essential ($2,500) — $500 deposit to reserve your date.",
         "Signature ($3,900) — $750 deposit to reserve your date.",
         "Legacy ($5,500) — $1,000 deposit to reserve your date.",
@@ -110,7 +111,7 @@ const post: BlogPost = {
     },
     {
       q: "How much is the deposit to book?",
-      a: "Across DFW, deposits typically run about $200–$800, or roughly one-third of the total. At TX Quince the deposit depends on your collection: $500 for Essential ($2,500), $750 for Signature ($3,900), and $1,000 for Legacy ($5,500). The deposit applies to your total, so it becomes your first payment.",
+      a: "Across DFW, deposits typically run about $200–$800, or roughly one-third of the total. At TX Quince the deposit depends on your collection: $300 for Moments ($1,800), $500 for Essential ($2,500), $750 for Signature ($3,900), and $1,000 for Legacy ($5,500). The deposit applies to your total, so it becomes your first payment.",
     },
     {
       q: "Is the deposit refundable?",

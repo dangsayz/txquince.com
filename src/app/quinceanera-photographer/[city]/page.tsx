@@ -73,7 +73,7 @@ export async function generateMetadata({
   if (!loc) return {};
 
   const title = `${loc.city} Quinceañera Photographer, TX`;
-  const description = `Quinceañera photographer & videographer in ${loc.city}. Fixed-price collections from $2,500, complimentary Save-the-Date — la misa to the reception.`;
+  const description = `Quinceañera photographer & videographer in ${loc.city}. Fixed-price collections from $1,800, complimentary Save-the-Date — la misa to the reception.`;
   const url = `${site.url}/quinceanera-photographer/${loc.slug}`;
   const esUrl = `${site.url}/es/fotografo-de-quinceaneras/${loc.slug}`;
 
@@ -102,7 +102,7 @@ function sharedFaqs(city: string) {
   return [
     {
       q: `How much does a quinceañera photographer cost in ${city}?`,
-      a: `My collections are fixed-price — $2,500 to $5,500 in ${city} — with the number shown up front, no inquiry call to get a quote. Every collection includes a complimentary Save-the-Date session, and you can pay in full or split the balance into interest-free installments.`,
+      a: `My collections are fixed-price — $1,800 to $5,500 in ${city} — with the number shown up front, no inquiry call to get a quote. Every collection includes a complimentary Save-the-Date session, and you can pay in full or split the balance into interest-free installments.`,
     },
     {
       q: "Do you offer video too, or only photography?",

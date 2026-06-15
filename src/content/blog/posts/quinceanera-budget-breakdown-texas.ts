@@ -51,7 +51,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "A photo and film collection is a separate vendor and a separate craft: the artists who follow your daughter through the whole day and hand you back the story of it. At [TX Quince](/investment) those collections are fixed at $2,500, $3,900, and $5,500. A $3,000 venue package and a $3,900 film collection are two different purchases that happen to look like similar numbers — don't let a sales sheet blur them together.",
+      text: "A photo and film collection is a separate vendor and a separate craft: the artists who follow your daughter through the whole day and hand you back the story of it. At [TX Quince](/investment) those collections are fixed at $1,800, $2,500, $3,900, and $5,500. A $3,000 venue package and a $3,900 film collection are two different purchases that happen to look like similar numbers — don't let a sales sheet blur them together.",
     },
     { type: "h2", text: "Why photo and film deserve their slice" },
     {
@@ -147,7 +147,7 @@ const post: BlogPost = {
     },
     {
       q: "Are venue packages the same as photography packages?",
-      a: "No. All-inclusive venue packages (often $2,000–$4,000 in DFW) buy you the room, tables, and sometimes catering or a DJ. A photography and film collection is a separate vendor and craft — at TX Quince those are fixed at $2,500, $3,900, and $5,500. Similar-looking prices, completely different purchases.",
+      a: "No. All-inclusive venue packages (often $2,000–$4,000 in DFW) buy you the room, tables, and sometimes catering or a DJ. A photography and film collection is a separate vendor and craft — at TX Quince those are fixed at $1,800, $2,500, $3,900, and $5,500. Similar-looking prices, completely different purchases.",
     },
   ],
   related: [
