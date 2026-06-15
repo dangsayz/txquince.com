@@ -20,9 +20,9 @@
   --color-ink: #1c1a17; /* primary text / dark pill buttons — warm near-black */
   --color-dark: #121110; /* deepest near-black — full-bleed DARK spreads (the contrast engine) */
   --color-ink-soft: #6a635b; /* secondary text — warm neutral gray */
-  --color-ink-faint: #8a847b; /* labels / meta — soft warm gray */
+  --color-ink-faint: #746e65; /* labels / meta — soft warm gray (darkened to clear WCAG AA 4.5:1 on cream) */
   --color-line: #eae3d6; /* hairline borders on near-white */
-  --color-wine: #8a6f43; /* champagne-gold accent (links / wordmark / small touches) */
+  --color-wine: #85683e; /* champagne-gold accent (links / wordmark / small touches) — darkened to clear WCAG AA 4.5:1 for small text on cream */
   --color-wine-deep: #6f5832; /* gold accent hover — deeper */
   --color-wine-tint: #f0e9da; /* faint champagne wash for bands */
 
