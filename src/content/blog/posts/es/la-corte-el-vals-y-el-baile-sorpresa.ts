@@ -139,7 +139,7 @@ const post: BlogPost = {
     },
   ],
   related: [
-    "que-pasa-en-una-quinceanera-orden",
+    "ideas-de-fotos-de-quinceanera-dfw",
     "el-cambio-de-zapatillas-quinceanera",
     "foto-o-video-quinceanera",
   ],

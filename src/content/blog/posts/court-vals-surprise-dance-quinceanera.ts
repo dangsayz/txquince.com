@@ -130,7 +130,7 @@ const post: BlogPost = {
     },
   ],
   related: [
-    "what-happens-at-a-quinceanera-order-of-events",
+    "quinceanera-photo-ideas-shot-list-dfw",
     "changing-of-the-shoes-quinceanera",
     "quinceanera-photo-vs-video",
   ],

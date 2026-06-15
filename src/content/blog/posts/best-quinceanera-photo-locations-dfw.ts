@@ -183,7 +183,7 @@ const post: BlogPost = {
     },
   ],
   related: [
-    "quinceanera-reception-venues-dfw",
+    "quinceanera-photo-ideas-shot-list-dfw",
     "pre-quince-photo-session-dfw",
     "quinceanera-mass-dallas-fort-worth",
   ],

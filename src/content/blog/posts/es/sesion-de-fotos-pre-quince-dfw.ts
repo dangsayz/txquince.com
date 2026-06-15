@@ -145,9 +145,9 @@ const post: BlogPost = {
     },
   ],
   related: [
+    "ideas-de-fotos-de-quinceanera-dfw",
     "mejores-lugares-para-fotos-de-quinceanera-dfw",
     "como-elegir-fotografo-de-quinceanera-dfw",
-    "como-planear-una-quinceanera-cronograma",
   ],
 };
 

@@ -76,6 +76,7 @@ import photoVsVideo from "./blog/posts/quinceanera-photo-vs-video";
 import preQuince from "./blog/posts/pre-quince-photo-session-dfw";
 import photoLocations from "./blog/posts/best-quinceanera-photo-locations-dfw";
 import receptionVenues from "./blog/posts/quinceanera-reception-venues-dfw";
+import photoIdeasShotList from "./blog/posts/quinceanera-photo-ideas-shot-list-dfw";
 
 export const posts: BlogPost[] = [
   costDfw,
@@ -93,6 +94,7 @@ export const posts: BlogPost[] = [
   preQuince,
   photoLocations,
   receptionVenues,
+  photoIdeasShotList,
 ];
 
 export function getAllPosts(): BlogPost[] {
@@ -148,6 +150,7 @@ import esMisa from "./blog/posts/es/la-misa-de-quince-anos-dfw";
 import esPreQuince from "./blog/posts/es/sesion-de-fotos-pre-quince-dfw";
 import esLugares from "./blog/posts/es/mejores-lugares-para-fotos-de-quinceanera-dfw";
 import esPresupuesto from "./blog/posts/es/cuanto-cuesta-una-quinceanera-presupuesto-texas";
+import esIdeasFotos from "./blog/posts/es/ideas-de-fotos-de-quinceanera-dfw";
 
 export const esPosts: BlogPost[] = [
   esCosto,
@@ -165,6 +168,7 @@ export const esPosts: BlogPost[] = [
   esPreQuince,
   esLugares,
   esSalones,
+  esIdeasFotos,
 ];
 
 export function getAllEsPosts(): BlogPost[] {
@@ -196,6 +200,7 @@ const EN_ES_PAIRS: { en: string; es: string }[] = [
   { en: "pre-quince-photo-session-dfw", es: "sesion-de-fotos-pre-quince-dfw" },
   { en: "best-quinceanera-photo-locations-dfw", es: "mejores-lugares-para-fotos-de-quinceanera-dfw" },
   { en: "quinceanera-budget-breakdown-texas", es: "cuanto-cuesta-una-quinceanera-presupuesto-texas" },
+  { en: "quinceanera-photo-ideas-shot-list-dfw", es: "ideas-de-fotos-de-quinceanera-dfw" },
 ];
 
 export function esSlugForEn(en: string): string | undefined {
