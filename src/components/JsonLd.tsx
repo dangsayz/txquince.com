@@ -53,7 +53,7 @@ export function JsonLd() {
       ...(p.badge ? { category: p.badge } : {}),
     })),
     knowsLanguage: ["en", "es"],
-    sameAs: [site.social.instagram, site.social.facebook].filter(Boolean),
+    sameAs: [site.social.instagram, site.social.youtube, site.social.facebook].filter(Boolean),
   };
 
   return (

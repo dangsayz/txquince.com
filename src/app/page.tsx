@@ -86,6 +86,8 @@ export default async function HomePage() {
   // The closing campaign frame avoids repeating the hero when possible.
   const seq = frames.filter((f) => f.url !== cover?.url);
   const closing = seq[4] ?? frames[4] ?? frames[0]; // campaign close
+  // A single full-bleed frame breaks the long text stretch in the lower page.
+  const band = featured.find((i) => (i.width ?? 0) > (i.height ?? 0) && i.url !== cover?.url) ?? null;
 
   // Selected-work teaser — a clean, uniform grid (no asymmetric offsets).
   // Portrait-only so every tile crops identically; most featured photos are
@@ -394,6 +396,37 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ================= BREATHER — full-bleed cinematic frame between the text sections ================= */}
+      {band?.url ? (
+        <section className="pt-24 md:pt-36">
+          <div className="relative overflow-hidden bg-ink">
+            <div className="relative aspect-[4/5] sm:aspect-[16/9] lg:aspect-[21/8]">
+              <Image
+                src={band.url}
+                alt={band.alt || "Quinceañera celebration in Dallas–Fort Worth"}
+                fill
+                sizes="100vw"
+                className="object-cover"
+                style={{
+                  objectPosition: `${band.focus_x != null ? Math.round(band.focus_x * 100) : 50}% ${band.focus_y != null ? Math.round(band.focus_y * 100) : 35}%`,
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-ink/65 via-ink/10 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0">
+                <div className="mx-auto max-w-[90rem] px-5 pb-8 md:px-10 lg:px-16 md:pb-12">
+                  <p
+                    className="font-display italic text-cream"
+                    style={{ fontSize: "clamp(1.5rem,3.4vw,2.8rem)", lineHeight: 1.08, letterSpacing: "-0.01em" }}
+                  >
+                    One celebration a day. Never two.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       {/* ================= GOOD TO KNOW — narrow editorial Q&A ================= */}
       <section className="pt-24 md:pt-36">

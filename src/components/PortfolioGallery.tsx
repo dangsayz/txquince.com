@@ -60,16 +60,16 @@ export function PortfolioGallery({ images }: { images: GalleryItem[] }) {
     setShareOpen(true);
   }
 
-  const sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw";
+  const sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw";
 
   return (
     <>
-      <div className="columns-2 gap-5 sm:gap-8 lg:columns-3 lg:gap-12">
+      <div className="columns-2 gap-3 sm:columns-3 sm:gap-4 lg:columns-4 lg:gap-5 xl:columns-5 xl:gap-6">
         {images.map((img, i) => (
           <Reveal
             key={i}
             delay={(i % 4) * 80}
-            className="mb-5 break-inside-avoid sm:mb-8 lg:mb-12"
+            className="mb-3 break-inside-avoid sm:mb-4 lg:mb-5 xl:mb-6"
           >
             {img.url ? (
               <button

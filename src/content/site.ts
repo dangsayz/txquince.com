@@ -32,6 +32,7 @@ export const site = {
   social: {
     instagram: "https://www.instagram.com/txquince/",
     facebook: "", // no public page yet (groups-only) — icon hidden until set
+    youtube: "https://www.youtube.com/@txquince",
   },
 
   /**

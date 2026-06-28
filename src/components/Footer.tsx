@@ -26,6 +26,7 @@ const COLUMNS = [
     title: "Connect",
     links: [
       { label: "Instagram", href: site.social.instagram, external: true },
+      { label: "YouTube", href: site.social.youtube, external: true },
       { label: "Facebook", href: site.social.facebook, external: true },
       { label: site.contact.email, href: `mailto:${site.contact.email}` },
     ],
@@ -82,6 +83,17 @@ export function Footer() {
               >
                 <IgIcon />
               </a>
+              {site.social.youtube ? (
+                <a
+                  href={site.social.youtube}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="YouTube"
+                  className={socialPill}
+                >
+                  <YtIcon />
+                </a>
+              ) : null}
               {site.social.facebook ? (
                 <a
                   href={site.social.facebook}
@@ -180,6 +192,15 @@ function FbIcon() {
         strokeWidth="1.4"
         strokeLinejoin="round"
       />
+    </svg>
+  );
+}
+
+function YtIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="2.5" y="5.5" width="19" height="13" rx="3.5" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M10.2 9.2v5.6l4.8-2.8-4.8-2.8Z" fill="currentColor" />
     </svg>
   );
 }
