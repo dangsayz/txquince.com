@@ -245,12 +245,23 @@ export default async function QuinceaneraGuidePage() {
     if (m) used.add(m.id);
     return m ?? null;
   }
-  const hero = pickHero(["save-the-date", "portraits", "celebration", "church"]);
+  // Theme-specific FIRST (the ideal granular category), then graceful fallbacks
+  // to whatever's populated today — so each image auto-sharpens as more photos
+  // are tagged into the exact categories in /admin/portfolio.
+  const hero = pickHero([
+    "grand-entrance", "el-vals", "celebration", "portraits", "save-the-date", "church",
+  ]);
   const bucketImg: Record<string, PortfolioImage | null> = {
-    planning: pick(["save-the-date", "getting-ready", "the-details", "church"]),
-    cost: pick(["celebration", "portraits"]),
-    "photo-film": pick(["portraits", "save-the-date"]),
-    celebration: pick(["celebration", "el-vals", "father-daughter", "church"]),
+    // Before the day → getting ready / first look / details, then save-the-date.
+    planning: pick(["getting-ready", "first-look", "the-details", "save-the-date", "portraits"]),
+    // The investment / what you keep → the details, the crowning, then portraits.
+    cost: pick(["the-details", "crowning", "venue-decor", "portraits", "celebration"]),
+    // The work itself → portraits of her and the court.
+    "photo-film": pick(["portraits", "family-portraits", "with-escort", "save-the-date"]),
+    // The traditions → el vals, the dances, the changing of the shoes, the party.
+    celebration: pick([
+      "el-vals", "father-daughter", "surprise-dance", "grand-entrance", "changing-of-shoes", "celebration", "church",
+    ]),
   };
 
   const jsonLd = {
