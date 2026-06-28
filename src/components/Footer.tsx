@@ -11,6 +11,7 @@ const COLUMNS = [
       { label: "Portfolio", href: "/portfolio" },
       { label: "Venues", href: "/venues" },
       { label: "Vendors", href: "/vendors" },
+      { label: "Guide", href: "/quinceanera-guide" },
       { label: "Investment", href: "/investment" },
       { label: "About", href: "/about" },
     ],

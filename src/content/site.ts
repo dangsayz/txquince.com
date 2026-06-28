@@ -66,7 +66,7 @@ export const site = {
     { href: "/portfolio", label: "Portfolio" },
     { href: "/investment", label: "Investment" },
     { href: "/quinceanera-photographer", label: "Areas Served" },
-    { href: "/blog", label: "Guide" },
+    { href: "/quinceanera-guide", label: "Guide" },
     { href: "/about", label: "About" },
   ],
 

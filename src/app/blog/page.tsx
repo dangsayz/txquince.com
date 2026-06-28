@@ -80,6 +80,13 @@ export default async function BlogIndexPage() {
                   written for Dallas–Fort Worth families, so you know exactly what to
                   expect before you spend a dollar.
                 </p>
+                <Link
+                  href="/quinceanera-guide"
+                  className="group mt-6 inline-flex min-h-[44px] items-center gap-2 text-[0.72rem] uppercase tracking-[0.2em] text-cream underline decoration-cream/40 underline-offset-[6px] transition-colors hover:decoration-cream"
+                >
+                  New here? Start with the Quinceañera Guide
+                  <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
+                </Link>
               </Reveal>
             </div>
           </div>
