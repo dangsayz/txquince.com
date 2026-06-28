@@ -13,8 +13,10 @@
  */
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { site } from "@/content/site";
 import { packages } from "@/content/packages";
+import { getPortfolioImages, type PortfolioImage } from "@/lib/content-db";
 import { Reveal } from "@/components/Reveal";
 import { CTAButton } from "@/components/CTAButton";
 import { FinalCTA } from "@/components/FinalCTA";
@@ -199,9 +201,57 @@ const BUCKETS: Bucket[] = [
   },
 ];
 
-export default function QuinceaneraGuidePage() {
+export default async function QuinceaneraGuidePage() {
   const url = `${site.url}/quinceanera-guide`;
   const allQas = BUCKETS.flatMap((b) => b.qas);
+
+  // Break up the text with REAL work — the same portfolio photos the blog uses.
+  // Pick one image per section by theme, no repeats; gracefully render text-only
+  // if the gallery is empty.
+  // Only images with stored dimensions (zero layout shift).
+  const pool = (await getPortfolioImages()).filter((i) => i.slug && i.width && i.height);
+  const featured = pool.filter((i) => i.is_feature);
+  const used = new Set<string>();
+
+  const byTheme = (src: PortfolioImage[], prefs: string[]): PortfolioImage | undefined => {
+    for (const sec of prefs) {
+      const m = src.find((i) => i.section === sec && !used.has(i.id));
+      if (m) return m;
+    }
+    return undefined;
+  };
+  // Section images (rendered at natural height) — prefer featured, by theme.
+  function pick(prefs: string[]): PortfolioImage | null {
+    const m =
+      byTheme(featured, prefs) ||
+      byTheme(pool, prefs) ||
+      featured.find((i) => !used.has(i.id)) ||
+      pool.find((i) => !used.has(i.id));
+    if (m) used.add(m.id);
+    return m ?? null;
+  }
+  // Hero is a WIDE crop, so it must be a landscape frame or it reads empty.
+  // If the gallery has no good landscape, skip the hero — the section images
+  // already carry the visuals.
+  const isLandscape = (i: PortfolioImage) => (i.width ?? 0) >= (i.height ?? 0) * 1.1;
+  const landFeatured = featured.filter(isLandscape);
+  const landPool = pool.filter(isLandscape);
+  function pickHero(prefs: string[]): PortfolioImage | null {
+    const m =
+      byTheme(landFeatured, prefs) ||
+      byTheme(landPool, prefs) ||
+      landFeatured.find((i) => !used.has(i.id)) ||
+      landPool.find((i) => !used.has(i.id));
+    if (m) used.add(m.id);
+    return m ?? null;
+  }
+  const hero = pickHero(["save-the-date", "portraits", "celebration", "church"]);
+  const bucketImg: Record<string, PortfolioImage | null> = {
+    planning: pick(["save-the-date", "getting-ready", "the-details", "church"]),
+    cost: pick(["celebration", "portraits"]),
+    "photo-film": pick(["portraits", "save-the-date"]),
+    celebration: pick(["celebration", "el-vals", "father-daughter", "church"]),
+  };
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -265,6 +315,22 @@ export default function QuinceaneraGuidePage() {
           </p>
         </Reveal>
 
+        {hero ? (
+          <Reveal className="mt-10">
+            <div className="relative aspect-[16/10] w-full overflow-hidden bg-greige md:aspect-[2/1]">
+              <Image
+                src={hero.url}
+                alt={hero.alt || "Quinceañera photographed across Dallas–Fort Worth"}
+                fill
+                sizes="(max-width: 1440px) 100vw, 1440px"
+                className="object-cover"
+                style={{ objectPosition: `${(hero.focus_x ?? 0.5) * 100}% ${(hero.focus_y ?? 0.35) * 100}%` }}
+                priority
+              />
+            </div>
+          </Reveal>
+        ) : null}
+
         {/* Jump nav */}
         <Reveal className="mt-8 flex flex-wrap gap-2">
           {BUCKETS.map((b) => (
@@ -299,6 +365,24 @@ export default function QuinceaneraGuidePage() {
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-ink-soft">{bucket.intro}</p>
             </Reveal>
+
+            {bucketImg[bucket.id] ? (
+              <Reveal className="mt-8">
+                <figure className="overflow-hidden bg-greige">
+                  <Image
+                    src={(bucketImg[bucket.id] as PortfolioImage).url}
+                    alt={
+                      (bucketImg[bucket.id] as PortfolioImage).alt ||
+                      "Quinceañera in Dallas–Fort Worth"
+                    }
+                    width={(bucketImg[bucket.id] as PortfolioImage).width ?? 1600}
+                    height={(bucketImg[bucket.id] as PortfolioImage).height ?? 1067}
+                    sizes="(max-width: 768px) 100vw, 720px"
+                    className="block h-auto w-full"
+                  />
+                </figure>
+              </Reveal>
+            ) : null}
 
             <dl className="mt-10 divide-y divide-ink/10 border-t border-ink/10">
               {bucket.qas.map((qa) => (
