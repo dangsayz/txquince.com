@@ -17,6 +17,7 @@ import { ProtectedImg } from "@/components/ProtectedImg";
 import { EditOverlay } from "@/components/EditMode";
 import { categoryLabel, vendorCreditLabel } from "@/content/portfolio-taxonomy";
 import { igUrl, websiteUrl } from "@/lib/vendor-links";
+import { venueForLocation } from "@/content/venues";
 
 /** Branded serve URL at an explicit derivative width. */
 function at(url: string, w: number): string {
@@ -169,6 +170,24 @@ export default async function PhotoPage({
                   <dt className="text-ink-faint">Photographer</dt>
                   <dd className="text-ink">{site.brand}</dd>
                 </div>
+                {/* Venue — links to its landing page when this photo was shot at
+                    a known venue (internal link into the venue cluster). */}
+                {(() => {
+                  const v = venueForLocation(img.location);
+                  return v ? (
+                    <div className="flex justify-between gap-6">
+                      <dt className="text-ink-faint">Venue</dt>
+                      <dd className="text-right text-ink">
+                        <Link
+                          href={`/venues/${v.slug}`}
+                          className="underline decoration-ink/20 underline-offset-2 transition-colors hover:text-wine hover:decoration-wine"
+                        >
+                          {v.venue}
+                        </Link>
+                      </dd>
+                    </div>
+                  ) : null;
+                })()}
                 <div className="flex justify-between gap-6">
                   <dt className="text-ink-faint">Location</dt>
                   <dd className="text-ink">{img.city ? `${img.city}, TX` : "Dallas–Fort Worth, TX"}</dd>

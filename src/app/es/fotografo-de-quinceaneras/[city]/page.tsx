@@ -8,6 +8,7 @@ import { locations, getLocation, nearbyLocations, cityGeo } from "@/content/loca
 import { getCityContent } from "@/content/city-content";
 import { getEsPost } from "@/content/blog";
 import { getFeaturedImages, getImagesByCity } from "@/lib/content-db";
+import { venuesByCity } from "@/content/venues";
 import { Reveal } from "@/components/Reveal";
 import { CTAButton } from "@/components/CTAButton";
 
@@ -130,6 +131,7 @@ export default async function CityPageEs({
   const content = getCityContent(loc.slug);
   const faqs = content?.faqsEs ?? [...loc.faqsEs, ...sharedFaqsEs(loc.city)];
   const nearby = nearbyLocations(loc.slug);
+  const cityVenues = venuesByCity(loc.slug);
   const guides = ES_CITY_GUIDES.map(getEsPost).filter((p) => p !== undefined);
   const esUrl = `${site.url}/es/fotografo-de-quinceaneras/${loc.slug}`;
   const prices = packages.map((p) => p.price);
@@ -544,6 +546,30 @@ export default async function CityPageEs({
               Ver toda la guía de quinceañera →
             </Link>
           </p>
+        </section>
+      ) : null}
+
+      {/* Sedes que fotografiamos en esta ciudad — enlaces al clúster de sedes */}
+      {cityVenues.length ? (
+        <section className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
+          <p className="eyebrow mb-5">Sedes de quinceañera en {loc.city}</p>
+          <div className="flex flex-wrap gap-3">
+            {cityVenues.map((v) => (
+              <Link
+                key={v.slug}
+                href={`/venues/${v.slug}`}
+                className="border border-line bg-white px-4 py-2 text-sm text-ink transition-colors hover:border-wine hover:text-wine"
+              >
+                {v.venue}
+              </Link>
+            ))}
+            <Link
+              href="/venues"
+              className="border border-wine/40 px-4 py-2 text-sm text-wine transition-colors hover:bg-wine hover:text-cream"
+            >
+              Todas las sedes →
+            </Link>
+          </div>
         </section>
       ) : null}
 

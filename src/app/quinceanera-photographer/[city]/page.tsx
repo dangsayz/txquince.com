@@ -8,6 +8,7 @@ import { locations, getLocation, nearbyLocations, cityGeo } from "@/content/loca
 import { getCityContent } from "@/content/city-content";
 import { getPost } from "@/content/blog";
 import { getFeaturedImages, getImagesByCity } from "@/lib/content-db";
+import { venuesByCity } from "@/content/venues";
 import { Reveal } from "@/components/Reveal";
 
 /** Curated guides surfaced on each city page (closes the city↔blog loop). */
@@ -132,6 +133,7 @@ export default async function CityPage({
   // Prefer the unique, researched per-city FAQs; fall back to the legacy set.
   const faqs = content?.faqs ?? [...loc.faqs, ...sharedFaqs(loc.city)];
   const nearby = nearbyLocations(loc.slug);
+  const cityVenues = venuesByCity(loc.slug);
   const guides = CITY_GUIDES.map(getPost).filter((p) => p !== undefined);
   const url = `${site.url}/quinceanera-photographer/${loc.slug}`;
   const prices = packages.map((p) => p.price);
@@ -558,6 +560,30 @@ export default async function CityPage({
               See the full quinceañera guide →
             </Link>
           </p>
+        </section>
+      ) : null}
+
+      {/* Venues we shoot in this city — internal links into the venue cluster */}
+      {cityVenues.length ? (
+        <section className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
+          <p className="eyebrow mb-5">Quinceañera venues we shoot in {loc.city}</p>
+          <div className="flex flex-wrap gap-3">
+            {cityVenues.map((v) => (
+              <Link
+                key={v.slug}
+                href={`/venues/${v.slug}`}
+                className="border border-line bg-white px-4 py-2 text-sm text-ink transition-colors hover:border-wine hover:text-wine"
+              >
+                {v.venue}
+              </Link>
+            ))}
+            <Link
+              href="/venues"
+              className="border border-wine/40 px-4 py-2 text-sm text-wine transition-colors hover:bg-wine hover:text-cream"
+            >
+              All venues →
+            </Link>
+          </div>
         </section>
       ) : null}
 
