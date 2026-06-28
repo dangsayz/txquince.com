@@ -194,6 +194,7 @@ const post: BlogPost = {
     },
   ],
   related: [
+    "colores-de-vestido-de-quinceanera-que-fotografian-mejor",
     "mejores-lugares-para-fotos-de-quinceanera-dfw",
     "la-corte-el-vals-y-el-baile-sorpresa",
     "sesion-de-fotos-pre-quince-dfw",

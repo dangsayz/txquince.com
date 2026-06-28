@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { site } from "@/content/site";
 import { locations } from "@/content/locations";
 import { getAllPosts, getAllEsPosts } from "@/content/blog";
-import { getPortfolioImages } from "@/lib/content-db";
+import { getPortfolioImages, getVendors } from "@/lib/content-db";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
@@ -17,6 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/quinceanera-save-the-date", priority: 0.7 },
     { path: "/es/save-the-date-quinceanera", priority: 0.7 },
     { path: "/privacy", priority: 0.2 },
+    { path: "/vendors", priority: 0.6 },
     { path: "/blog", priority: 0.7 },
     // Blog posts (the planning guide), EN + ES.
     ...getAllPosts().map((p) => ({ path: `/blog/${p.slug}`, priority: 0.6 })),
@@ -44,6 +45,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       images: [`${site.url}/api/img/${i.slug}`],
     }));
 
+  // One indexable credit page per vendor.
+  const vendorEntries: MetadataRoute.Sitemap = (await getVendors()).map((v) => ({
+    url: `${site.url}/vendors/${v.slug}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.4,
+  }));
+
   return [
     ...routes.map((r) => ({
       url: `${site.url}${r.path}`,
@@ -51,6 +60,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly" as const,
       priority: r.priority,
     })),
+    ...vendorEntries,
     ...photoEntries,
   ];
 }

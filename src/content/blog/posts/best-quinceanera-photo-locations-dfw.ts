@@ -166,6 +166,10 @@ const post: BlogPost = {
       a: "There's no single best spot — it depends on the look you want. For romance, the Mandalay Canal Walk in Las Colinas and the Dallas Arboretum are hard to beat. For Texas character, the Fort Worth Stockyards. For color and energy, the Bishop Arts murals. For a city look, the downtown Dallas skyline. We help families match the location to their daughter's style.",
     },
     {
+      q: "Where are the best places to take quince pictures in DFW?",
+      a: "Popular quince photoshoot locations across Dallas–Fort Worth include the Dallas Arboretum and Fort Worth Botanic Garden for gardens, the Mandalay Canal in Las Colinas for a romantic water look, the Fort Worth Stockyards for Texas character, the Bishop Arts murals for color, and the downtown Dallas skyline for a city feel. Several need a paid permit, and the spot you pick should match her dress and the time of day.",
+    },
+    {
       q: "Do I need a permit for a quinceañera photoshoot?",
       a: "Some locations require a paid photography permit and a booked time window — the Dallas Arboretum, Fort Worth Botanic Garden, and parts of the Fort Worth Water Gardens are common examples. Most public parks and districts are free. When you book with us, we secure any required permits and reserve the time so you don't have to.",
     },

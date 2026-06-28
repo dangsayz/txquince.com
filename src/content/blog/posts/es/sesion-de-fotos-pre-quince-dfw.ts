@@ -115,7 +115,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Cuando esté lista, vea si la sesión va incluida en su colección o es un servicio aparte en la [página de inversión](/investment), recorra el [portafolio](/portfolio) para tomar ideas y [reserve su fecha](/reserve). Si todavía está eligiendo fotógrafo, empiece por [cómo elegir un fotógrafo de quinceañera en DFW](/es/blog/como-elegir-fotografo-de-quinceanera-dfw) — y si está reservando toda la celebración, nuestras páginas de [fotógrafo de quinceañeras en Dallas](/es/fotografo-de-quinceaneras/dallas) y [Fort Worth](/es/fotografo-de-quinceaneras/fort-worth) cubren la cobertura completa del evento.",
+      text: "Cuando esté lista, resérvela por separado como una [sesión de save-the-date para quinceañera](/es/save-the-date-quinceanera), o vea si ya va incluida en su colección o es un servicio aparte en la [página de inversión](/investment), recorra el [portafolio](/portfolio) para tomar ideas y [reserve su fecha](/reserve). Si todavía está eligiendo fotógrafo, empiece por [cómo elegir un fotógrafo de quinceañera en DFW](/es/blog/como-elegir-fotografo-de-quinceanera-dfw) — y si está reservando toda la celebración, nuestras páginas de [fotógrafo de quinceañeras en Dallas](/es/fotografo-de-quinceaneras/dallas) y [Fort Worth](/es/fotografo-de-quinceaneras/fort-worth) cubren la cobertura completa del evento.",
     },
   ],
   faqs: [

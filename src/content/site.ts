@@ -18,8 +18,10 @@ export const site = {
   serviceArea: "Dallas–Fort Worth, Texas",
 
   contact: {
-    // The operator's owned channels (LAW 4). Email is the reply-from identity too.
-    email: "hello@txquince.com",
+    // Public-facing contact address (shown in the footer, mailto links, and
+    // schema). NOTE: transactional send-from is a separate identity — see
+    // RESEND_FROM / FROM in src/lib/resend.ts — so this can be a Gmail address.
+    email: "quincebookings@gmail.com",
     // Optional public phone — leave "" to hide it. Booking is a phone relationship,
     // but inquiries flow through the form first to stay qualified.
     phone: "",

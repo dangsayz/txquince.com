@@ -77,7 +77,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "When you're ready, you can [check if your date is open](/check-your-date) in a few seconds, or read [when to book your photographer](/blog/when-to-book-quinceanera-photographer-dfw) so you don't lose your Saturday. For local coverage, see our [quinceañera photographer in Dallas](/quinceanera-photographer/dallas) or [Fort Worth](/quinceanera-photographer/fort-worth).",
+      text: "When you're ready, you can [check if your date is open](/check-your-date) in a few seconds, or read [when to book your photographer](/blog/when-to-book-quinceanera-photographer-dfw) so you don't lose your Saturday. If the number feels like a lot up front, see how [interest-free payment plans and deposits](/blog/quinceanera-payment-plans-deposits-dfw) make a collection comfortable to book. For local coverage, see our [quinceañera photographer in Dallas](/quinceanera-photographer/dallas) or [Fort Worth](/quinceanera-photographer/fort-worth).",
     },
   ],
   faqs: [
@@ -102,6 +102,7 @@ const post: BlogPost = {
     "when-to-book-quinceanera-photographer-dfw",
     "quinceanera-photo-vs-video",
     "quinceanera-budget-breakdown-texas",
+    "quinceanera-payment-plans-deposits-dfw",
   ],
 };
 

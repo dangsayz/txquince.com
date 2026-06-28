@@ -6,7 +6,14 @@
  * (small) and the footer/hero (large) via the `size` prop. This is also the
  * social-avatar / favicon lockup — one mark everywhere.
  */
-export function Wordmark({ size = "nav" }: { size?: "nav" | "masthead" }) {
+export function Wordmark({
+  size = "nav",
+  tone = "light",
+}: {
+  size?: "nav" | "masthead";
+  /** "dark" renders the monogram in cream for placement on a dark surface. */
+  tone?: "light" | "dark";
+}) {
   const tx =
     size === "masthead"
       ? "text-5xl md:text-6xl"
@@ -18,7 +25,7 @@ export function Wordmark({ size = "nav" }: { size?: "nav" | "masthead" }) {
 
   return (
     <span className="inline-flex flex-col items-center leading-[0.84]">
-      <span className={`font-didone font-normal text-ink ${tx}`}>TX</span>
+      <span className={`font-didone font-normal ${tone === "dark" ? "text-cream" : "text-ink"} ${tx}`}>TX</span>
       <span className={`font-body font-medium uppercase text-wine ${label}`}>
         Quince · DFW
       </span>

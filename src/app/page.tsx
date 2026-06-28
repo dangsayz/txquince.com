@@ -57,7 +57,7 @@ function quietLink(extra = "") {
 export default async function HomePage() {
   const testimonials = releasedTestimonials();
   const [featured, videos, heroMedia] = await Promise.all([
-    getFeaturedImages(9),
+    getFeaturedImages(24),
     getVideos(),
     getHeroMedia(),
   ]);
@@ -83,13 +83,26 @@ export default async function HomePage() {
   // If the hero is the top featured photo, its admin-set anchor applies too.
   const coverFocal = focal(cover?.fx != null ? cover : null, 50, 30);
 
-  // The sequence avoids repeating the hero frame when possible.
+  // The closing campaign frame avoids repeating the hero when possible.
   const seq = frames.filter((f) => f.url !== cover?.url);
-  const seqA = seq[0] ?? frames[0]; // oversized
-  const seqB = seq[1] ?? frames[1]; // narrow vertical
-  const seqC = seq[2] ?? frames[2]; // detail crop
-  const seqD = seq[3] ?? frames[3]; // full-bleed cinematic
-  const closing = seq[4] ?? frames[4] ?? seqA; // campaign close
+  const closing = seq[4] ?? frames[4] ?? frames[0]; // campaign close
+
+  // Selected-work teaser — a clean, uniform grid (no asymmetric offsets).
+  // Portrait-only so every tile crops identically; most featured photos are
+  // 2:3, so this removes the orientation jitter that read as "random." Faces
+  // survive the 4:5 crop via a top-biased default when no focal anchor is set.
+  const portraitFeatured = featured.filter((i) => (i.height ?? 0) > (i.width ?? 0));
+  const gallerySource = portraitFeatured.length >= 6 ? portraitFeatured : featured;
+  const gallery: Frame[] = gallerySource.length
+    ? gallerySource.slice(0, 6).map((i) => ({
+        url: i.url,
+        alt: i.alt,
+        fx: i.focus_x,
+        fy: i.focus_y,
+        id: i.id,
+        slug: i.slug,
+      }))
+    : frames.slice(0, 6);
 
   return (
     <>
@@ -153,9 +166,10 @@ export default async function HomePage() {
             {/* Supporting keyword cluster — long-tail moments + suburb geo,
                 woven as a natural sentence (reinforces the H1, no stuffing). */}
             <p className="hero-enter hero-delay-4 mt-4 max-w-md text-[0.8rem] leading-relaxed text-ink-faint">
-              Full-day quinceañera coverage — the save-the-date session, la misa,
-              portraits, el vals, and the reception — serving Dallas, Fort Worth,
-              Arlington, Irving, Garland, Grand Prairie, and Mansfield.
+              Full-day quince photography and video — the save-the-date session,
+              la misa, portraits, el vals, and the reception — quinceañera coverage
+              serving Dallas, Fort Worth, Arlington, Irving, Garland, Grand Prairie,
+              and Mansfield.
             </p>
 
             <div className="hero-enter hero-delay-5 mt-9 flex flex-wrap items-baseline gap-x-8 gap-y-3">
@@ -224,77 +238,58 @@ export default async function HomePage() {
           </p>
         </div>
 
-        {/* (a) Oversized — takes most of the width, deliberately off-center. */}
-        <div className="mx-auto mt-14 max-w-[90rem] px-5 md:mt-20 md:px-10 lg:px-16">
-          <Reveal className="md:mr-[18%]">
-            <Link href="/portfolio" className="group block">
-              <div className="relative aspect-[4/5] overflow-hidden sm:aspect-[16/11]">
-                {seqA?.url ? (
-                  <Image src={seqA.url} alt={seqA.alt} fill sizes="(max-width: 768px) 100vw, 74vw" className="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02]" style={{ objectPosition: focal(seqA, 50, 28) }} />
-                ) : (
-                  <div className="absolute inset-0 bg-greige" />
-                )}
-                {editable(seqA)}
-              </div>
-              <p className="mt-3 text-[0.6rem] uppercase tracking-[0.24em] text-ink-faint">{seqA?.alt}</p>
-            </Link>
-          </Reveal>
-        </div>
-
-        {/* (b) + (c) Narrow vertical right · detail crop left, staggered. */}
-        <div className="mx-auto mt-16 grid max-w-[90rem] grid-cols-12 gap-y-16 px-5 md:mt-24 md:px-10 lg:px-16">
-          <Reveal className="col-span-7 col-start-6 md:col-span-3 md:col-start-9">
-            <Link href="/portfolio" className="group block">
-              <div className="relative aspect-[3/4.6] overflow-hidden">
-                {seqB?.url ? (
-                  <Image src={seqB.url} alt={seqB.alt} fill sizes="(max-width: 768px) 58vw, 24vw" className="object-cover transition-transform duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]" style={{ objectPosition: focal(seqB, 50, 35) }} />
-                ) : (
-                  <div className="absolute inset-0 bg-greige" />
-                )}
-                {editable(seqB)}
-              </div>
-              <p className="mt-3 text-[0.6rem] uppercase tracking-[0.24em] text-ink-faint">{seqB?.alt}</p>
-            </Link>
-          </Reveal>
-
-          <Reveal delay={80} className="col-span-6 md:col-span-3 md:col-start-2 md:-mt-32">
-            <Link href="/portfolio" className="group block">
-              <div className="relative aspect-square overflow-hidden">
-                {seqC?.url ? (
-                  <Image src={seqC.url} alt={seqC.alt} fill sizes="(max-width: 768px) 50vw, 24vw" className="object-cover transition-transform duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]" style={{ objectPosition: focal(seqC, 50, 22) }} />
-                ) : (
-                  <div className="absolute inset-0 bg-greige" />
-                )}
-                {editable(seqC)}
-              </div>
-              <p className="mt-3 text-[0.6rem] uppercase tracking-[0.24em] text-ink-faint">{seqC?.alt}</p>
-            </Link>
-          </Reveal>
-        </div>
-
-        {/* (d) Cinematic wide — contained with offset air, not a viewport-swallowing bleed. */}
-        <div className="mx-auto mt-20 max-w-[90rem] px-5 md:mt-28 md:px-10 lg:px-16">
-          <Reveal className="md:ml-[14%]">
-            <Link href="/portfolio" className="group block">
-              <div className="relative aspect-[4/5] overflow-hidden sm:aspect-[16/8]">
-                {seqD?.url ? (
-                  <Image src={seqD.url} alt={seqD.alt} fill sizes="(max-width: 768px) 100vw, 74vw" className="object-cover transition-transform duration-[1400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.015]" style={{ objectPosition: focal(seqD, 50, 30) }} />
-                ) : (
-                  <div className="absolute inset-0 bg-greige" />
-                )}
-                {editable(seqD)}
-              </div>
-            </Link>
-            <div className="flex items-baseline justify-between pt-3">
-              <p className="text-[0.6rem] uppercase tracking-[0.24em] text-ink-faint">{seqD?.alt}</p>
-              <Link href="/portfolio" className={quietLink("text-ink underline decoration-ink/30 hover:text-wine hover:decoration-wine")}>
-                {home.work.cta}
-                <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
+        {/* A clean, even teaser grid — uniform 4:5 portrait tiles, faces kept
+            by a top-biased crop. Orderly on purpose; the full set is /portfolio. */}
+        <div className="mx-auto mt-14 grid max-w-[90rem] grid-cols-2 gap-3 px-5 sm:gap-4 md:mt-20 md:grid-cols-3 md:gap-5 md:px-10 lg:px-16">
+          {gallery.map((f, i) => (
+            <Reveal key={f.id ?? i} delay={(i % 3) * 80}>
+              <Link href="/portfolio" className="group block">
+                <div className="relative aspect-[4/5] overflow-hidden">
+                  {f.url ? (
+                    <Image
+                      src={f.url}
+                      alt={f.alt}
+                      fill
+                      sizes="(max-width: 768px) 50vw, 30vw"
+                      className="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
+                      style={{ objectPosition: focal(f, 50, 28) }}
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-greige" />
+                  )}
+                  {editable(f)}
+                </div>
               </Link>
-            </div>
-          </Reveal>
+            </Reveal>
+          ))}
+        </div>
+
+        <div className="mx-auto mt-10 flex max-w-[90rem] justify-end px-5 md:mt-14 md:px-10 lg:px-16">
+          <Link href="/portfolio" className={quietLink("text-ink underline decoration-ink/30 hover:text-wine hover:decoration-wine")}>
+            {home.work.cta}
+            <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
+          </Link>
         </div>
       </section>
+
+      {/* ================= FILM — the work in motion, straight after the stills ================= */}
+      {videos.length > 0 ? (
+        <section className="pt-24 md:pt-36">
+          <div className="mx-auto max-w-[90rem] px-5 md:px-10 lg:px-16">
+            <Reveal className="mb-10 max-w-xl md:mb-14">
+              <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">{home.film.eyebrow}</p>
+              <h2
+                className="mt-4 font-display text-ink"
+                style={{ fontSize: "clamp(2.2rem,4vw,3.4rem)", lineHeight: 1.04, letterSpacing: "-0.02em" }}
+              >
+                {home.film.heading}
+              </h2>
+              <p className="mt-5 max-w-md text-sm leading-relaxed text-ink-soft">{home.film.body}</p>
+            </Reveal>
+            <VideoGallery videos={videos} />
+          </div>
+        </section>
+      ) : null}
 
       {/* ================= AVAILABILITY — the one centered moment ================= */}
       <section className="mt-24 border-y border-ink/10 md:mt-36">
@@ -305,8 +300,10 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ================= INVESTMENT — a lookbook list, not pricing cards ================= */}
-      <section className="pt-24 md:pt-36">
+      {/* ================= INVESTMENT — a lookbook list, not pricing cards =================
+          Lifted onto a faint champagne band bounded by hairlines so the pricing
+          reads as its own distinct block, not another stretch of cream. */}
+      <section className="border-y border-line bg-wine-tint/50 py-24 md:py-36">
         <div className="mx-auto max-w-[90rem] px-5 md:px-10 lg:px-16">
           <div className="grid md:grid-cols-12">
             <Reveal className="md:col-span-4">
@@ -398,24 +395,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ================= FILM — only when a real film exists ================= */}
-      {videos.length > 0 ? (
-        <section className="pt-24 md:pt-36">
-          <div className="mx-auto max-w-[90rem] px-5 md:px-10 lg:px-16">
-            <Reveal className="mb-10 max-w-xl">
-              <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">{home.film.eyebrow}</p>
-              <h2
-                className="mt-4 font-display text-ink"
-                style={{ fontSize: "clamp(2.2rem,4vw,3.4rem)", lineHeight: 1.04, letterSpacing: "-0.02em" }}
-              >
-                {home.film.heading}
-              </h2>
-            </Reveal>
-            <VideoGallery videos={videos.slice(0, 1)} />
-          </div>
-        </section>
-      ) : null}
-
       {/* ================= GOOD TO KNOW — narrow editorial Q&A ================= */}
       <section className="pt-24 md:pt-36">
         {/* FAQPage structured data — mirrors the visible Q&A below for rich results. */}
@@ -433,6 +412,46 @@ export default async function HomePage() {
                 </Reveal>
               ))}
             </dl>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= EXPLORE — what DFW families search; routes homepage authority into the cluster.
+          Real, descriptive links (no keyword dump). Anchors carry the quince/quinceañera
+          spelling split + the "photography and video / packages / locations" long-tails. ================= */}
+      <section className="pt-24 md:pt-36">
+        <div className="mx-auto max-w-[90rem] px-5 md:px-10 lg:px-16">
+          <Reveal className="mb-8 max-w-xl md:mb-10">
+            <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">Popular with DFW families</p>
+            <h2
+              className="mt-4 font-display text-ink"
+              style={{ fontSize: "clamp(2rem,4vw,3.2rem)", lineHeight: 1.04, letterSpacing: "-0.02em" }}
+            >
+              Start where you&rsquo;re searching.
+            </h2>
+          </Reveal>
+          <div className="grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              { label: "Quince photography packages & prices", blurb: "Four fixed collections from $1,800 — every price listed, no “inquire for pricing” games.", href: "/investment", tag: "Investment" },
+              { label: "Quince photo & video — which to book", blurb: "What each one captures, and when a combined photo + film team is worth it.", href: "/blog/quinceanera-photo-vs-video", tag: "Guide" },
+              { label: "Best quince photoshoot locations in DFW", blurb: "Real spots families return to — the Stockyards, gardens, downtown, and more.", href: "/blog/best-quinceanera-photo-locations-dfw", tag: "Locations" },
+              { label: "Quinceañera save-the-date session", blurb: "The relaxed pre-quince shoot for invitations, décor, and the guest book.", href: "/quinceanera-save-the-date", tag: "Sessions" },
+              { label: "What a quince photographer costs in DFW", blurb: "Real numbers, what moves the price, and how to budget honestly.", href: "/blog/quinceanera-photographer-cost-dallas-fort-worth", tag: "Cost" },
+              { label: "The full quinceañera planning guide", blurb: "Timelines, traditions, and every guide for DFW families in one place.", href: "/blog", tag: "Journal" },
+            ].map((e, i) => (
+              <Reveal key={e.href} delay={(i % 3) * 60}>
+                <Link href={e.href} className="group flex h-full flex-col border-t border-ink/10 py-7 md:py-8">
+                  <h3 className="font-display text-lg text-ink transition-colors group-hover:text-wine md:text-xl">
+                    {e.label}
+                  </h3>
+                  <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-soft">{e.blurb}</p>
+                  <span className="mt-4 text-[0.6rem] uppercase tracking-[0.22em] text-ink-faint">
+                    {e.tag}
+                    <span aria-hidden className="ml-2 text-wine transition-transform duration-300 group-hover:translate-x-0.5">→</span>
+                  </span>
+                </Link>
+              </Reveal>
+            ))}
           </div>
         </div>
       </section>

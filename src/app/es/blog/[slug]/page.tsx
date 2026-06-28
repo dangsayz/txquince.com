@@ -154,18 +154,24 @@ export default async function EsBlogPostPage({
         </Reveal>
 
         {toc.length >= 4 ? (
-          <div className="mt-10 border border-line bg-greige p-5">
-            <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">En esta guía</p>
-            <ul className="mt-3 flex flex-col gap-1.5">
-              {toc.map((h) => (
+          <nav aria-label="En esta guía" className="mt-10 border-y border-ink/10 py-6">
+            <p className="text-[0.6rem] uppercase tracking-[0.24em] text-ink-faint">En esta guía</p>
+            <ul className="mt-4 flex flex-col gap-2.5">
+              {toc.map((h, idx) => (
                 <li key={h.text}>
-                  <a href={`#${slugifyHeading(h.text)}`} className="text-sm text-ink-soft hover:text-wine">
-                    {h.text}
+                  <a
+                    href={`#${slugifyHeading(h.text)}`}
+                    className="group inline-flex items-baseline gap-3 text-[0.95rem] text-ink-soft transition-colors hover:text-wine"
+                  >
+                    <span className="font-display text-xs tabular-nums text-ink-faint">
+                      {String(idx + 1).padStart(2, "0")}
+                    </span>
+                    <span className="underline-offset-4 group-hover:underline">{h.text}</span>
                   </a>
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
         ) : null}
 
         <div className="mt-10">
@@ -187,17 +193,19 @@ export default async function EsBlogPostPage({
         ) : null}
 
         {related.length ? (
-          <section className="mt-14">
-            <p className="eyebrow mb-5">Sigue leyendo</p>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {related.map((r) => (
+          <section className="mt-16 border-t border-ink/10 pt-10">
+            <p className="eyebrow mb-2">Sigue leyendo</p>
+            <div>
+              {related.map((r, idx) => (
                 <Link
                   key={r.slug}
                   href={`/es/blog/${r.slug}`}
-                  className="group border border-line bg-white p-5 transition-colors hover:border-wine"
+                  className={`group block py-5 ${idx > 0 ? "border-t border-ink/10" : ""}`}
                 >
-                  <p className="text-[0.62rem] uppercase tracking-[0.16em] text-ink-faint">{CATEGORY_ES[r.category]}</p>
-                  <h3 className="mt-2 font-display text-lg leading-tight text-ink group-hover:text-wine">{r.title}</h3>
+                  <p className="text-[0.6rem] uppercase tracking-[0.2em] text-ink-faint">{CATEGORY_ES[r.category]}</p>
+                  <h3 className="mt-1.5 font-display text-lg leading-tight text-ink transition-colors group-hover:text-wine md:text-xl">
+                    {r.title}
+                  </h3>
                 </Link>
               ))}
             </div>

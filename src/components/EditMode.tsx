@@ -46,6 +46,24 @@ function checkAdmin(): Promise<boolean> {
   return adminPromise;
 }
 
+/**
+ * Subscribe to admin status on the PUBLIC site. Returns false for visitors;
+ * true once the /api/admin/me probe confirms a signed-in operator. Shares the
+ * same module-level cache + localStorage hint as the image editor, so it costs
+ * a visitor nothing.
+ */
+export function useIsAdmin(): boolean {
+  const [admin, setAdmin] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    checkAdmin().then((ok) => alive && setAdmin(ok));
+    return () => {
+      alive = false;
+    };
+  }, []);
+  return admin;
+}
+
 /** Mounted on /admin — marks this browser so the public site offers editing. */
 export function AdminHint() {
   useEffect(() => {

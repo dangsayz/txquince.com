@@ -66,6 +66,7 @@ import budgetBreakdown from "./blog/posts/quinceanera-budget-breakdown-texas";
 import paymentPlans from "./blog/posts/quinceanera-payment-plans-deposits-dfw";
 import planningTimeline from "./blog/posts/quinceanera-planning-timeline-checklist";
 import whenToBook from "./blog/posts/when-to-book-quinceanera-photographer-dfw";
+import whatIsQuince from "./blog/posts/what-is-a-quinceanera";
 import orderOfEvents from "./blog/posts/what-happens-at-a-quinceanera-order-of-events";
 import changingShoes from "./blog/posts/changing-of-the-shoes-quinceanera";
 import courtVals from "./blog/posts/court-vals-surprise-dance-quinceanera";
@@ -77,6 +78,9 @@ import preQuince from "./blog/posts/pre-quince-photo-session-dfw";
 import photoLocations from "./blog/posts/best-quinceanera-photo-locations-dfw";
 import receptionVenues from "./blog/posts/quinceanera-reception-venues-dfw";
 import photoIdeasShotList from "./blog/posts/quinceanera-photo-ideas-shot-list-dfw";
+import songs from "./blog/posts/quinceanera-songs-for-every-moment";
+import dressColors from "./blog/posts/quinceanera-dress-colors-that-photograph-best";
+import themes from "./blog/posts/quinceanera-themes-and-colors";
 
 export const posts: BlogPost[] = [
   costDfw,
@@ -87,6 +91,7 @@ export const posts: BlogPost[] = [
   budgetBreakdown,
   paymentPlans,
   planningTimeline,
+  whatIsQuince,
   orderOfEvents,
   changingShoes,
   courtVals,
@@ -95,6 +100,9 @@ export const posts: BlogPost[] = [
   photoLocations,
   receptionVenues,
   photoIdeasShotList,
+  dressColors,
+  songs,
+  themes,
 ];
 
 export function getAllPosts(): BlogPost[] {
@@ -151,6 +159,9 @@ import esPreQuince from "./blog/posts/es/sesion-de-fotos-pre-quince-dfw";
 import esLugares from "./blog/posts/es/mejores-lugares-para-fotos-de-quinceanera-dfw";
 import esPresupuesto from "./blog/posts/es/cuanto-cuesta-una-quinceanera-presupuesto-texas";
 import esIdeasFotos from "./blog/posts/es/ideas-de-fotos-de-quinceanera-dfw";
+import esCanciones from "./blog/posts/es/canciones-para-quinceanera";
+import esColoresVestido from "./blog/posts/es/colores-de-vestido-de-quinceanera-que-fotografian-mejor";
+import esThemes from "./blog/posts/es/temas-y-colores-para-quinceanera";
 
 export const esPosts: BlogPost[] = [
   esCosto,
@@ -169,6 +180,9 @@ export const esPosts: BlogPost[] = [
   esLugares,
   esSalones,
   esIdeasFotos,
+  esColoresVestido,
+  esCanciones,
+  esThemes,
 ];
 
 export function getAllEsPosts(): BlogPost[] {
@@ -186,6 +200,7 @@ export function relatedEsPosts(post: BlogPost, n = 3): BlogPost[] {
 /** EN ↔ ES slug pairs, for hreflang alternates linking each translation. */
 const EN_ES_PAIRS: { en: string; es: string }[] = [
   { en: "quinceanera-photographer-cost-dallas-fort-worth", es: "cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth" },
+  { en: "quinceanera-songs-for-every-moment", es: "canciones-para-quinceanera" },
   { en: "quinceanera-payment-plans-deposits-dfw", es: "planes-de-pago-fotografia-quinceanera-dfw" },
   { en: "when-to-book-quinceanera-photographer-dfw", es: "cuando-reservar-fotografo-quinceanera-dfw" },
   { en: "questions-to-ask-quinceanera-photographer", es: "preguntas-para-tu-fotografo-de-quinceanera" },
@@ -201,6 +216,8 @@ const EN_ES_PAIRS: { en: string; es: string }[] = [
   { en: "best-quinceanera-photo-locations-dfw", es: "mejores-lugares-para-fotos-de-quinceanera-dfw" },
   { en: "quinceanera-budget-breakdown-texas", es: "cuanto-cuesta-una-quinceanera-presupuesto-texas" },
   { en: "quinceanera-photo-ideas-shot-list-dfw", es: "ideas-de-fotos-de-quinceanera-dfw" },
+  { en: "quinceanera-dress-colors-that-photograph-best", es: "colores-de-vestido-de-quinceanera-que-fotografian-mejor" },
+  { en: "quinceanera-themes-and-colors", es: "temas-y-colores-para-quinceanera" },
 ];
 
 export function esSlugForEn(en: string): string | undefined {

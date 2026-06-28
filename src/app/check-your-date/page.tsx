@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { site } from "@/content/site";
 import { InquiryForm } from "@/components/InquiryForm";
-import { SocialProofStrip } from "@/components/SocialProofStrip";
 import { Testimonials } from "@/components/Testimonials";
 import { CTAButton } from "@/components/CTAButton";
 import { Reveal } from "@/components/Reveal";
@@ -40,7 +39,6 @@ export default function CheckYourDatePage() {
       {/* Trust bar — proof before the ask. */}
       <div className="border-b border-ink/10 bg-white">
         <div className="mx-auto max-w-[90rem] px-5 py-5 md:px-10 lg:px-16">
-          <SocialProofStrip />
         </div>
       </div>
 

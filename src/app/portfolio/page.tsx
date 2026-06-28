@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { gallerySections } from "@/content/gallery";
 import { site } from "@/content/site";
 import { getPortfolioImages, getVideos } from "@/lib/content-db";
-import { PortfolioGallery, type GalleryItem } from "@/components/PortfolioGallery";
-import { VideoGallery } from "@/components/VideoGallery";
+import { type GalleryItem } from "@/components/PortfolioGallery";
+import { PortfolioTabs, type TabGroup } from "@/components/PortfolioTabs";
 import { Reveal } from "@/components/Reveal";
 import { FinalCTA } from "@/components/FinalCTA";
+import { GROUPS, altPhraseFor, groupForCategory } from "@/content/portfolio-taxonomy";
 
 // Render fresh each request — the ISR cache on Cloudflare was serving a stale
 // prerender (old design + before new uploads). Dynamic guarantees the live code
@@ -15,41 +15,69 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Portfolio",
   description:
-    "Quinceañera galleries across Dallas–Fort Worth — save-the-date, la misa, portraits, the celebration, and films.",
+    "Quinceañera galleries across Dallas–Fort Worth — every part of the day: save-the-date, la misa, portraits, the celebration, details, films, and the vendors behind it.",
   alternates: { canonical: "/portfolio" },
   openGraph: {
     title: "Portfolio · TX Quince",
     description:
-      "Quinceañera galleries across Dallas–Fort Worth — church, portraits, the celebration, and films.",
+      "Quinceañera galleries across Dallas–Fort Worth — church, portraits, the celebration, films, and our favorite vendors.",
     url: `${site.url}/portfolio`,
   },
 };
 
 /** Clean, viewer-facing alt — never the raw upload filename (e.g. "12img save
- *  the date 6 13 26 ... jpg"). Junky alts fall back to a section-based phrase
+ *  the date 6 13 26 ... jpg"). Junky alts fall back to a category-based phrase
  *  that's meaningful to people AND keyword-relevant for SEO. */
-const SECTION_PHRASE: Record<string, string> = {
-  "save-the-date": "Quinceañera save-the-date portrait",
-  church: "Quinceañera church ceremony",
-  portraits: "Quinceañera portrait",
-  celebration: "Quinceañera celebration",
-  films: "Quinceañera film still",
-};
-function cleanAlt(raw: string | null | undefined, sectionId: string, fallback: string): string {
+function cleanAlt(raw: string | null | undefined, sectionId: string): string {
   const a = (raw || "").trim();
   const looksLikeFilename =
     !a ||
     /\b(jpe?g|png|webp|heic|avif)\b/i.test(a) ||
     /\b12img\b/i.test(a) ||
     /\d{1,2}[\s\-_]\d{1,2}[\s\-_]\d{2,4}/.test(a);
-  return looksLikeFilename ? SECTION_PHRASE[sectionId] ?? fallback : a;
+  return looksLikeFilename ? altPhraseFor(sectionId) : a;
 }
 
 export default async function PortfolioPage() {
   const [dbImages, videos] = await Promise.all([getPortfolioImages(), getVideos()]);
-  // Once any real photos exist, stop padding empty sections with placeholder
-  // blocks — a half-built portfolio shows only the sections that have real work.
-  const hasRealImages = dbImages.length > 0;
+
+  // GalleryItem from a DB row, carrying its vendor credits (public-safe).
+  const toItem = (i: (typeof dbImages)[number]): GalleryItem => ({
+    url: i.url,
+    alt: cleanAlt(i.alt, i.section),
+    ratio: i.is_feature ? "landscape" : "portrait",
+    feature: i.is_feature,
+    width: i.width,
+    height: i.height,
+    slug: i.slug,
+    section: i.section,
+    id: i.id,
+    fx: i.focus_x,
+    fy: i.focus_y,
+    vendors: (i.vendors ?? []).map((v) => ({
+      name: v.name,
+      business: v.business,
+      slug: v.slug,
+      category: v.category,
+      ig_handle: v.ig_handle,
+      website: v.website,
+      role: v.role,
+    })),
+  });
+
+  // One tab per public group (films handled separately as videos). Only groups
+  // with real photos are shown.
+  const groups: TabGroup[] = GROUPS.filter((g) => g.id !== "films")
+    .map((g) => ({
+      id: g.id,
+      label: g.label,
+      eyebrow: g.eyebrow,
+      title: g.title,
+      hook: g.hook,
+      intro: g.intro,
+      items: dbImages.filter((i) => groupForCategory(i.section) === g.id).map(toItem),
+    }))
+    .filter((g) => g.items.length > 0);
 
   // VideoObject markup for the films (eligible for video rich results).
   const videoJsonLd =
@@ -80,6 +108,40 @@ export default async function PortfolioPage() {
         }
       : null;
 
+  // ImageGallery markup for the grid — one ImageObject per photograph (the same
+  // convention the per-image detail pages carry), so the listing itself is
+  // eligible for image rich results. Capped at the first 60 to keep the payload
+  // sane. Absolute contentUrl, with any `?v=` cache-busting query stripped.
+  const imageGalleryJsonLd =
+    dbImages.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "ImageGallery",
+          name: `Portfolio · ${site.brand}`,
+          url: `${site.url}/portfolio`,
+          associatedMedia: dbImages.slice(0, 60).map((i) => {
+            const path = i.url.split("?")[0];
+            const contentUrl = path.startsWith("http") ? path : `${site.url}${path}`;
+            return {
+              "@type": ["ImageObject", "Photograph"],
+              contentUrl,
+              name: i.title || i.alt,
+              description: i.caption || i.alt,
+              ...(i.width && i.height ? { width: i.width, height: i.height } : {}),
+              creator: { "@type": "Organization", name: site.brand, url: site.url },
+              copyrightHolder: { "@type": "Organization", name: site.brand },
+              copyrightNotice: `© ${site.brand}`,
+              creditText: site.brand,
+              license: `${site.url}/privacy`,
+              acquireLicensePage: `${site.url}/investment`,
+              ...(i.city
+                ? { contentLocation: { "@type": "City", name: `${i.city}, TX` } }
+                : { contentLocation: { "@type": "Place", name: "Dallas–Fort Worth, TX" } }),
+            };
+          }),
+        }
+      : null;
+
   return (
     <>
       {videoJsonLd ? (
@@ -88,8 +150,14 @@ export default async function PortfolioPage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(videoJsonLd) }}
         />
       ) : null}
+      {imageGalleryJsonLd ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(imageGalleryJsonLd) }}
+        />
+      ) : null}
       {/* Cover — editorial: overline, oversized statement, narrow standfirst. */}
-      <section className="mx-auto max-w-[90rem] px-5 pt-20 md:px-10 lg:px-16 md:pt-32">
+      <section className="mx-auto max-w-[90rem] px-5 pb-10 pt-20 md:px-10 lg:px-16 md:pb-14 md:pt-32">
         <Reveal>
           <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">Portfolio</p>
           <h1
@@ -100,84 +168,19 @@ export default async function PortfolioPage() {
           </h1>
           <p className="mt-7 max-w-md text-[0.95rem] leading-relaxed text-ink-soft">
             A selection from quinceañeras across Dallas–Fort Worth — from the quiet
-            of la misa to the last dance of the night.
+            of la misa to the last dance of the night. Browse by moment, or meet the
+            vendors who make the day.
           </p>
         </Reveal>
       </section>
 
-      {gallerySections.map((section, idx) => {
-        const num = String(idx + 1).padStart(2, "0");
-        const isFilms = section.id === "films";
-
-        const dbForSection = dbImages.filter((i) => i.section === section.id);
-        const items: GalleryItem[] = dbForSection.length
-          ? dbForSection.map((i) => ({
-              url: i.url,
-              alt: cleanAlt(i.alt, section.id, section.title),
-              ratio: i.is_feature ? "landscape" : "portrait",
-              feature: i.is_feature,
-              width: i.width,
-              height: i.height,
-              slug: i.slug,
-              section: i.section,
-              id: i.id,
-              fx: i.focus_x,
-              fy: i.focus_y,
-            }))
-          : hasRealImages
-            ? [] // real work exists elsewhere — don't pad this section with placeholders
-            : section.images.map((i) => ({
-                url: null,
-                alt: i.alt,
-                ratio: i.ratio,
-                feature: i.feature,
-              }));
-
-        // Hide an empty non-film section once the site has real photos.
-        if (!isFilms && items.length === 0) return null;
-
-        return (
-          // White band per section — the photographs sit on gallery-white,
-          // separated by hairlines and generous air.
-          <section key={section.id} id={section.id} className="scroll-mt-24 mt-20 border-t border-ink/10 bg-white md:mt-28">
-            <div className="mx-auto max-w-[90rem] px-5 py-16 md:px-10 lg:px-16 md:py-24">
-              <Reveal className="mb-12 grid items-end md:mb-16 md:grid-cols-12">
-                <div className="md:col-span-7">
-                  <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">
-                    {section.eyebrow}
-                  </p>
-                  <h2
-                    className="mt-4 font-display text-ink"
-                    style={{ fontSize: "clamp(2.1rem,4.4vw,3.8rem)", lineHeight: 1, letterSpacing: "-0.02em" }}
-                  >
-                    {section.title}
-                  </h2>
-                  <p className="mt-5 max-w-md text-sm leading-relaxed text-ink-soft">
-                    {section.intro}
-                  </p>
-                </div>
-                <p
-                  aria-hidden
-                  className="hidden text-right font-display text-ink/10 md:col-span-5 md:block"
-                  style={{ fontSize: "5rem", lineHeight: 1 }}
-                >
-                  {num}
-                </p>
-              </Reveal>
-
-              {isFilms ? (
-                videos.length ? (
-                  <VideoGallery videos={videos} />
-                ) : (
-                  <p className="accent text-xl text-ink-faint">Films coming soon.</p>
-                )
-              ) : (
-                <PortfolioGallery images={items} />
-              )}
-            </div>
-          </section>
-        );
-      })}
+      {groups.length === 0 && videos.length === 0 ? (
+        <section className="mx-auto max-w-[90rem] px-5 pb-24 md:px-10 lg:px-16">
+          <p className="accent text-xl text-ink-faint">New work coming soon.</p>
+        </section>
+      ) : (
+        <PortfolioTabs groups={groups} videos={videos} />
+      )}
 
       <FinalCTA />
     </>

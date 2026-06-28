@@ -53,7 +53,6 @@ export const packages: Package[] = [
       "Photo OR film — one service, one artist",
       "5 hours of coverage — la misa through the early reception",
       "Edited gallery OR a highlight film",
-      "Complimentary save-the-date session",
     ],
   },
   {
@@ -88,7 +87,7 @@ export const packages: Package[] = [
     teaser: "Photo + film, two storytellers, your full day with a same-week sneak peek.",
     includes: [
       "Photo + film — two storytellers, all day",
-      "Up to 8 hours of full-day coverage",
+      "Up to 7 hours of full-day coverage",
       "Highlight film + complete edited gallery",
       "Same-week sneak peek",
       "Complimentary save-the-date session",
@@ -108,7 +107,7 @@ export const packages: Package[] = [
       "Everything in Signature",
       "Cinematic long-form film (1–3 hours)",
       "Drone / aerial coverage",
-      "Extra hours + a second portrait session",
+      "Up to 8 hours of coverage + a second portrait session",
       "Premium album & print credit",
       "Priority calendar placement",
     ],
@@ -154,8 +153,9 @@ export const investmentIntro = {
   // overline, emotion in the headline. Targets "quinceañera photography prices".
   eyebrow: "Quinceañera Photography & Film · Dallas–Fort Worth",
   heading: "Prices, stated plainly.",
-  // The complimentary save-the-date is the hook that runs through every tier.
-  hook: "Every collection includes a complimentary save-the-date session.",
+  // The complimentary save-the-date is the hook from Essential up — Moments is
+  // the bare floor, so its session is a $500 add-on, not included.
+  hook: "A complimentary save-the-date session, included from the Essential collection up.",
   subhead:
     "Fixed pricing, no surprises. Most families choose Signature — two of us, the full day, your film and gallery both. Collections built around one day you cannot repeat.",
 };
@@ -165,7 +165,7 @@ export type Faq = { q: string; a: string };
 export const investmentFaqs: Faq[] = [
   {
     q: "How much does a quinceañera photographer cost in Dallas–Fort Worth?",
-    a: "Our collections are fixed-price and start at $1,800 — that's Moments, five focused hours with one artist. Most families choose Signature at $3,900 — two of us covering the full day with both film and a complete gallery — with Essential at $2,500 and Legacy at $5,500. Every price is listed right here, never “inquire for pricing,” and every collection includes a complimentary save-the-date session plus interest-free payment plans.",
+    a: "Our collections are fixed-price and start at $1,800 — that's Moments, five focused hours with one artist. Most families choose Signature at $3,900 — two of us covering the full day with both film and a complete gallery — with Essential at $2,500 and Legacy at $5,500. Every price is listed right here, never “inquire for pricing,” and from Essential up every collection includes a complimentary save-the-date session — with interest-free payment plans on all of them. The standalone save-the-date session is $500, and additional coverage hours are $350 each.",
   },
   {
     q: "How far in advance should we book?",
@@ -173,7 +173,7 @@ export const investmentFaqs: Faq[] = [
   },
   {
     q: "Do you cover both the church and the reception?",
-    a: "Yes. Every collection is built around the day — la misa, portraits, el vals, and the celebration. Moments covers five focused hours and Essential up to six; Signature and Legacy cover the full day so nothing important happens off-camera.",
+    a: "Yes. Every collection is built around the day — la misa, portraits, el vals, and the celebration. Moments covers five focused hours, Essential up to six, Signature up to seven, and Legacy up to eight — the full day, so nothing important happens off-camera.",
   },
   {
     q: "What if our date is already taken?",

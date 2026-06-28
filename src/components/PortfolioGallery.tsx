@@ -6,6 +6,18 @@ import { Figure } from "@/components/Figure";
 import { Reveal } from "@/components/Reveal";
 import { ShareModal } from "@/components/ShareModal";
 import { EditOverlay } from "@/components/EditMode";
+import { vendorCreditLabel } from "@/content/portfolio-taxonomy";
+
+/** A vendor credit on a tile (public-safe). */
+export type GalleryCredit = {
+  name: string;
+  business: string | null;
+  slug: string;
+  category: string | null;
+  ig_handle: string | null;
+  website: string | null;
+  role: string | null;
+};
 
 export type GalleryItem = {
   url: string | null;
@@ -21,6 +33,8 @@ export type GalleryItem = {
   id?: string | null;
   fx?: number | null;
   fy?: number | null;
+  /** Vendors credited on this photo — rendered as a small line under the tile. */
+  vendors?: GalleryCredit[];
 };
 
 const SITE_TITLE = "TX Quince — Quinceañera Photography & Film";
@@ -102,6 +116,24 @@ export function PortfolioGallery({ images }: { images: GalleryItem[] }) {
                 <Figure src={img.url} alt={img.alt} ratio={img.ratio ?? "portrait"} sizes={sizes} />
               </div>
             )}
+            {/* Vendor credits — links sit BELOW the share button (not inside it,
+                which would be invalid nested interactives). */}
+            {img.vendors && img.vendors.length ? (
+              <p className="mt-2 text-[0.66rem] leading-relaxed text-ink-faint">
+                {img.vendors.map((v, vi) => (
+                  <span key={v.slug + vi}>
+                    {vi > 0 ? <span aria-hidden> · </span> : null}
+                    <span>{v.role || vendorCreditLabel(v.category)}: </span>
+                    <a
+                      href={`/vendors/${v.slug}`}
+                      className="text-ink-soft underline decoration-ink/20 underline-offset-2 transition-colors hover:text-wine hover:decoration-wine"
+                    >
+                      {v.business || v.name}
+                    </a>
+                  </span>
+                ))}
+              </p>
+            ) : null}
           </Reveal>
         ))}
       </div>

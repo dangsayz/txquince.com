@@ -185,8 +185,8 @@ const post: BlogPost = {
     },
   ],
   related: [
+    "what-is-a-quinceanera",
     "changing-of-the-shoes-quinceanera",
-    "court-vals-surprise-dance-quinceanera",
     "quinceanera-mass-dallas-fort-worth",
   ],
 };

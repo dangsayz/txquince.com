@@ -112,7 +112,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "When you're ready, see whether the session is included in your collection or an add-on on the [investment page](/investment), browse [session galleries](/portfolio) for ideas, and [reserve your date](/reserve). If you're still choosing a photographer, start with [how to choose a quinceañera photographer in DFW](/blog/how-to-choose-quinceanera-photographer-dfw) — and if you're booking the whole celebration, our [quinceañera photographer in Dallas](/quinceanera-photographer/dallas) and [Fort Worth](/quinceanera-photographer/fort-worth) pages cover full event coverage.",
+      text: "When you're ready, book it on its own as a [quinceañera save-the-date session](/quinceanera-save-the-date), or see whether it's already included in your collection or an add-on on the [investment page](/investment), browse [session galleries](/portfolio) for ideas, and [reserve your date](/reserve). If you're still choosing a photographer, start with [how to choose a quinceañera photographer in DFW](/blog/how-to-choose-quinceanera-photographer-dfw) — and if you're booking the whole celebration, our [quinceañera photographer in Dallas](/quinceanera-photographer/dallas) and [Fort Worth](/quinceanera-photographer/fort-worth) pages cover full event coverage.",
     },
   ],
   faqs: [

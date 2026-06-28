@@ -115,7 +115,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Still weighing it? Read [how to choose a quinceañera photographer in DFW](/blog/how-to-choose-quinceanera-photographer-dfw) so you know what to look for in either one. When you're ready, you can [check if your date is open](/check-your-date) in a few seconds, or [reserve your date](/reserve) to lock today's price.",
+      text: "Still weighing it? Read [how to choose a quinceañera photographer in DFW](/blog/how-to-choose-quinceanera-photographer-dfw) so you know what to look for in either one, then run through [the questions to ask before you book](/blog/questions-to-ask-quinceanera-photographer). When you're ready, you can [check if your date is open](/check-your-date) in a few seconds, or [reserve your date](/reserve) to lock today's price.",
     },
   ],
   faqs: [
@@ -148,6 +148,7 @@ const post: BlogPost = {
     "how-to-choose-quinceanera-photographer-dfw",
     "court-vals-surprise-dance-quinceanera",
     "quinceanera-photographer-cost-dallas-fort-worth",
+    "questions-to-ask-quinceanera-photographer",
   ],
 };
 

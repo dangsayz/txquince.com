@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { site } from "@/content/site";
 import { packages } from "@/content/packages";
 import { locations, getLocation, nearbyLocations, cityGeo } from "@/content/locations";
+import { getCityContent } from "@/content/city-content";
 import { getEsPost } from "@/content/blog";
 import { getFeaturedImages, getImagesByCity } from "@/lib/content-db";
 import { Reveal } from "@/components/Reveal";
@@ -71,6 +72,11 @@ const TIER_ES: Record<string, string> = {
 
 /** Spanish top-4 inclusions per tier (packages.includes is English-only; hand-authored, not auto-translated). */
 const INCLUDES_ES: Record<string, string[]> = {
+  moments: [
+    "Foto O video — un servicio, un artista",
+    "5 horas de cobertura — de la misa a la recepción temprana",
+    "Galería editada O un video de momentos",
+  ],
   essential: [
     "Foto O video — un servicio, un artista",
     "Hasta 6 horas de cobertura (iglesia + recepción)",
@@ -121,15 +127,19 @@ export default async function CityPageEs({
   const loc = getLocation(city);
   if (!loc) notFound();
 
-  const faqs = [...loc.faqsEs, ...sharedFaqsEs(loc.city)];
+  const content = getCityContent(loc.slug);
+  const faqs = content?.faqsEs ?? [...loc.faqsEs, ...sharedFaqsEs(loc.city)];
   const nearby = nearbyLocations(loc.slug);
   const guides = ES_CITY_GUIDES.map(getEsPost).filter((p) => p !== undefined);
   const esUrl = `${site.url}/es/fotografo-de-quinceaneras/${loc.slug}`;
   const prices = packages.map((p) => p.price);
   // Las fotos propias de esta ciudad primero; si no hay, se usan las destacadas.
-  const cityShots = await getImagesByCity(loc.slug, 3);
-  const featured = cityShots.length ? cityShots : await getFeaturedImages(3);
+  const cityShots = await getImagesByCity(loc.slug, 6);
+  const featured = cityShots.length ? cityShots : await getFeaturedImages(6);
   const isCityWork = cityShots.length > 0;
+  // El opener recibe su propio cuadro cinematográfico; el resto llena la cuadrícula.
+  const hero = featured[0] ?? null;
+  const recentWork = featured.slice(1);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -234,40 +244,69 @@ export default async function CityPageEs({
         <span className="text-ink-soft">{loc.city}, TX</span>
       </nav>
 
-      {/* Hero — alineado a la izquierda, editorial */}
-      <section className="mx-auto max-w-5xl px-5 pt-8 md:px-10 lg:px-16 md:pt-12">
-        <Reveal>
-          <p className="eyebrow mb-5">Fotografía y Video de Quinceañeras · {loc.city}, TX</p>
-          <h1 className="max-w-3xl display-2 text-ink text-balance">
-            Fotógrafo de Quinceañeras en {loc.city}
-          </h1>
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-soft">
-            {loc.leadEs}
-          </p>
-          <p className="mt-4 text-sm">
-            <Link
-              href={`/quinceanera-photographer/${loc.slug}`}
-              className="text-wine underline underline-offset-2 hover:text-wine-deep"
-              hrefLang="en"
-            >
-              View this page in English →
-            </Link>
-          </p>
-          <div className="mt-9 flex flex-wrap items-center gap-4">
-            <CTAButton href={site.cta.href} variant="primary">
-              Reserva tu fecha
-            </CTAButton>
-            <CTAButton href={site.secondaryCta.href} variant="text">
-              ¿Preguntas primero? Escríbeme
-            </CTAButton>
+      {/* Hero — imagen cinematográfica, texto abajo-izquierda (el trabajo propio de la ciudad cuando está etiquetado) */}
+      <section className="relative mt-6 overflow-hidden bg-ink md:mt-8">
+        <div className="relative h-[66svh] min-h-[440px] w-full md:h-[76svh]">
+          {hero?.url ? (
+            <Image
+              src={hero.url}
+              alt={hero.alt || `Fotografía de quinceañera en ${loc.city}, TX`}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+              style={{
+                objectPosition: `${hero.focus_x != null ? Math.round(hero.focus_x * 100) : 50}% ${hero.focus_y != null ? Math.round(hero.focus_y * 100) : 32}%`,
+              }}
+            />
+          ) : null}
+          <div className="absolute inset-0 bg-gradient-to-t from-ink/92 via-ink/45 to-ink/10" />
+          <div className="absolute inset-x-0 bottom-0">
+            <div className="mx-auto max-w-[90rem] px-5 pb-12 md:px-10 lg:px-16 md:pb-16">
+              <Reveal>
+                <p className="text-[0.62rem] uppercase tracking-[0.3em] text-cream/85">
+                  Fotografía y Video de Quinceañeras · {loc.city}, TX
+                </p>
+                <h1
+                  className="mt-4 max-w-3xl font-display text-cream text-balance"
+                  style={{ fontSize: "clamp(2.3rem,5.6vw,4.8rem)", lineHeight: 1.0, letterSpacing: "-0.025em" }}
+                >
+                  Fotógrafo de Quinceañeras en {loc.city}
+                </h1>
+                <p className="mt-5 max-w-xl text-sm leading-relaxed text-cream/80 md:text-base">
+                  {loc.leadEs}
+                </p>
+                <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+                  <Link
+                    href={site.cta.href}
+                    className="inline-flex whitespace-nowrap rounded-full bg-cream px-7 py-3 text-[0.7rem] font-medium uppercase tracking-[0.16em] text-ink transition-colors hover:bg-white"
+                  >
+                    Reserva tu fecha
+                  </Link>
+                  <Link
+                    href={site.secondaryCta.href}
+                    className="text-[0.7rem] uppercase tracking-[0.18em] text-cream/85 underline decoration-cream/30 underline-offset-[6px] transition-colors hover:text-cream"
+                  >
+                    ¿Preguntas primero? Escríbeme
+                  </Link>
+                  <Link
+                    href={`/quinceanera-photographer/${loc.slug}`}
+                    hrefLang="en"
+                    className="whitespace-nowrap text-[0.7rem] uppercase tracking-[0.18em] text-cream/65 underline decoration-cream/20 underline-offset-[6px] transition-colors hover:text-cream"
+                  >
+                    View this page in English →
+                  </Link>
+                </div>
+              </Reveal>
+            </div>
           </div>
-        </Reveal>
+        </div>
       </section>
 
       {/* Intro local */}
       <section className="mx-auto max-w-3xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
         <Reveal className="flex flex-col gap-6">
-          {loc.introEs.map((para) => (
+          {(content?.introEs ?? loc.introEs).map((para) => (
             <p key={para.slice(0, 24)} className="text-base leading-relaxed text-ink-soft">
               {para}
             </p>
@@ -279,6 +318,32 @@ export default async function CityPageEs({
           </p>
         </Reveal>
       </section>
+
+      {/* Dónde tomar las fotos — lugares reales (único por ciudad) */}
+      {content?.photoSpots?.length ? (
+        <section className="mx-auto max-w-5xl px-5 pb-section md:px-10 lg:px-16 md:pb-section-lg">
+          <Reveal className="mb-8 max-w-xl md:mb-10">
+            <p className="eyebrow">Dónde tomar las fotos en {loc.city}</p>
+            <h2
+              className="mt-4 font-display text-ink"
+              style={{ fontSize: "clamp(1.9rem,3.6vw,2.8rem)", lineHeight: 1.06, letterSpacing: "-0.02em" }}
+            >
+              Los lugares de {loc.city} que se ven increíbles en cámara.
+            </h2>
+          </Reveal>
+          <div className="border-t border-ink/10">
+            {content.photoSpots.map((s) => (
+              <Reveal
+                key={s.name}
+                className="grid gap-1.5 border-b border-ink/10 py-6 md:grid-cols-12 md:gap-x-8"
+              >
+                <h3 className="font-display text-xl text-ink md:col-span-4">{s.name}</h3>
+                <p className="text-sm leading-relaxed text-ink-soft md:col-span-8">{s.whyEs}</p>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       {/* Colecciones */}
       <section className="bg-greige">
@@ -315,7 +380,7 @@ export default async function CityPageEs({
                 </div>
                 <div className="md:col-span-7 md:col-start-6">
                   <ul className="grid gap-x-8 gap-y-2 text-sm leading-relaxed text-ink-soft sm:grid-cols-2">
-                    {INCLUDES_ES[p.id].map((item) => (
+                    {(INCLUDES_ES[p.id] ?? p.includes).map((item) => (
                       <li key={item} className="border-b border-line/70 pb-2">
                         {item}
                       </li>
@@ -382,7 +447,7 @@ export default async function CityPageEs({
       </section>
 
       {/* Trabajo reciente — fotos destacadas reales (no renderiza nada si no hay) */}
-      {featured.length ? (
+      {recentWork.length ? (
         <section className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
           <Reveal>
             <p className="eyebrow mb-5">
@@ -390,7 +455,7 @@ export default async function CityPageEs({
             </p>
           </Reveal>
           <div className="grid gap-4 sm:grid-cols-2">
-            {featured.map((img, i) => (
+            {recentWork.map((img, i) => (
               <Reveal
                 key={img.slug ?? i}
                 delay={i * 70}

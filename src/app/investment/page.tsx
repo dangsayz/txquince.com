@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { packages, investmentIntro, investmentFaqs } from "@/content/packages";
 import { site } from "@/content/site";
+import { getFeaturedImages } from "@/lib/content-db";
 import { Reveal } from "@/components/Reveal";
 import { CTAButton } from "@/components/CTAButton";
 import { FinalCTA } from "@/components/FinalCTA";
-import { SocialProofStrip } from "@/components/SocialProofStrip";
 import { Testimonials } from "@/components/Testimonials";
+
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   // Title leads with the harvested search phrase (prices/packages), not the
@@ -23,7 +26,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function InvestmentPage() {
+function focal(fx?: number | null, fy?: number | null): string {
+  return `${Math.round((fx ?? 0.5) * 100)}% ${Math.round((fy ?? 0.32) * 100)}%`;
+}
+
+export default async function InvestmentPage() {
+  // A landscape frame crops cleanest for the wide cinematic hero.
+  const imgs = await getFeaturedImages(12);
+  const hero = imgs.find((i) => (i.width ?? 0) >= (i.height ?? 0)) ?? imgs[0] ?? null;
+
   // Machine-readable pricing (Service + Offer per collection) so the fixed
   // prices win cost-query SERPs + AI overviews where rivals show "inquire for
   // pricing". Plus FAQPage + breadcrumb. No Review/AggregateRating (no consented
@@ -78,96 +89,161 @@ export default function InvestmentPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      {/* Cover — editorial: overline, oversized statement, narrow standfirst. */}
-      <section className="mx-auto max-w-[90rem] px-5 pt-20 md:px-10 lg:px-16 md:pt-32">
-        <Reveal>
-          <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">
-            {investmentIntro.eyebrow}
-          </p>
-          <h1
-            className="mt-5 max-w-5xl font-display text-ink"
-            style={{ fontSize: "clamp(2.6rem,6.4vw,5.6rem)", lineHeight: 0.98, letterSpacing: "-0.026em" }}
-          >
-            {investmentIntro.heading}
-          </h1>
-          <p className="mt-7 max-w-md text-[0.95rem] leading-relaxed text-ink-soft">
-            {investmentIntro.subhead}
-          </p>
-          <p className="mt-6 text-[0.7rem] uppercase tracking-[0.22em] text-wine-deep">
-            {investmentIntro.hook}
-          </p>
-          <SocialProofStrip className="mt-12" />
-        </Reveal>
+      {/* Cover — cinematic image hero, type low-left in cream (was text-on-cream). */}
+      <section className="relative overflow-hidden bg-ink">
+        <div className="relative h-[66svh] min-h-[440px] w-full md:h-[76svh]">
+          {hero?.url ? (
+            <Image
+              src={hero.url}
+              alt={hero.alt || "Quinceañera photography in Dallas–Fort Worth"}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+              style={{ objectPosition: focal(hero.focus_x, hero.focus_y) }}
+            />
+          ) : null}
+          <div className="absolute inset-0 bg-gradient-to-t from-ink/92 via-ink/45 to-ink/10" />
+          <div className="absolute inset-x-0 bottom-0">
+            <div className="mx-auto max-w-[90rem] px-5 pb-12 md:px-10 lg:px-16 md:pb-16">
+              <Reveal>
+                <p className="text-[0.62rem] uppercase tracking-[0.32em] text-cream/85">
+                  {investmentIntro.eyebrow}
+                </p>
+                <h1
+                  className="mt-4 max-w-3xl font-display text-cream text-balance"
+                  style={{ fontSize: "clamp(2.4rem,5.8vw,5rem)", lineHeight: 1.0, letterSpacing: "-0.026em" }}
+                >
+                  {investmentIntro.heading}
+                </h1>
+                <p className="mt-5 max-w-xl text-sm leading-relaxed text-cream/80 md:text-base">
+                  {investmentIntro.subhead}
+                </p>
+                <p className="mt-6 text-[0.7rem] uppercase tracking-[0.22em] text-wine-tint">
+                  {investmentIntro.hook}
+                </p>
+              </Reveal>
+            </div>
+          </div>
+        </div>
       </section>
 
-      {/* Collections — a lookbook ledger: hairline rows, includes set like an
-          index, emphasis through scale (no cards, no dark blocks, no badges). */}
-      <section className="mt-20 border-y border-ink/10 bg-white md:mt-28">
-        <div className="mx-auto max-w-[90rem] px-5 py-8 md:px-10 lg:px-16 md:py-12">
-          {packages.map((p, i) => (
-            <Reveal
-              key={p.id}
-              delay={i * 60}
-              className={`grid gap-y-8 py-12 md:grid-cols-12 md:gap-x-8 md:py-16 ${
-                i > 0 ? "border-t border-ink/10" : ""
-              }`}
-            >
-              {/* Name · tagline · price */}
-              <div className="md:col-span-4">
-                <h2
-                  className="font-display text-ink"
-                  style={{
-                    fontSize: p.highlight ? "clamp(2.2rem,4vw,3.4rem)" : "clamp(1.9rem,3.2vw,2.7rem)",
-                    lineHeight: 1,
-                    letterSpacing: "-0.02em",
-                  }}
-                >
-                  {p.name}
-                </h2>
-                {p.highlight ? (
-                  <p className="mt-3 text-[0.6rem] uppercase tracking-[0.26em] text-wine-deep">
-                    Most reserved
-                  </p>
-                ) : null}
-                <p className="mt-4 max-w-xs text-sm leading-relaxed text-ink-soft">{p.tagline}</p>
-                <p
-                  className="mt-7 font-display text-ink"
-                  style={{ fontSize: "clamp(2.4rem,4.4vw,3.6rem)", lineHeight: 1 }}
-                >
-                  {p.priceLabel}
-                </p>
-              </div>
+      {/* Collections — tiered cards. The target tier (Signature) carries the
+          dark "contrast engine" so it dominates; the rest are light ivory cards
+          on a warm cream band. Structure + supporting color, not a flat ledger. */}
+      <section className="border-y border-ink/10 bg-cream">
+        <div className="mx-auto max-w-[90rem] px-5 py-16 md:px-10 lg:px-16 md:py-24">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:items-stretch">
+            {packages.map((p, i) => {
+              const featured = Boolean(p.highlight);
+              return (
+                <Reveal key={p.id} delay={i * 60} className="h-full">
+                  <div
+                    className={`flex h-full flex-col rounded-[1.5rem] p-7 md:p-8 ${
+                      featured
+                        ? "bg-ink text-cream shadow-[0_36px_80px_-30px_rgba(28,26,23,0.45)]"
+                        : "border border-line bg-ivory shadow-[0_24px_60px_-32px_rgba(28,26,23,0.16)]"
+                    }`}
+                  >
+                    {featured ? (
+                      <span className="mb-5 inline-flex w-fit rounded-full bg-wine px-3 py-1 text-[0.58rem] font-medium uppercase tracking-[0.22em] text-cream">
+                        {p.badge ?? "Most reserved"}
+                      </span>
+                    ) : null}
+                    <h2
+                      className={`font-display ${featured ? "text-cream" : "text-ink"}`}
+                      style={{ fontSize: "clamp(1.8rem,2.6vw,2.4rem)", lineHeight: 1, letterSpacing: "-0.02em" }}
+                    >
+                      {p.name}
+                    </h2>
+                    <p className={`mt-3 text-sm leading-relaxed ${featured ? "text-cream/75" : "text-ink-soft"}`}>
+                      {p.tagline}
+                    </p>
+                    <p
+                      className={`mt-6 font-display ${featured ? "text-cream" : "text-ink"}`}
+                      style={{ fontSize: "clamp(2.2rem,3.4vw,3rem)", lineHeight: 1 }}
+                    >
+                      {p.priceLabel}
+                    </p>
+                    <p className={`mt-1.5 text-xs ${featured ? "text-cream/60" : "text-ink-faint"}`}>
+                      {p.depositLabel} reserves your date
+                    </p>
 
-              {/* Includes — two quiet columns */}
-              <div className="md:col-span-6 md:col-start-6">
-                <p className="text-[0.62rem] uppercase tracking-[0.24em] text-ink-faint">Included</p>
-                <ul className="mt-5 grid gap-x-10 gap-y-3 sm:grid-cols-2">
-                  {p.includes.map((item) => (
-                    <li key={item} className="border-b border-ink/[0.06] pb-3 text-sm leading-relaxed text-ink-soft">
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-                <p className="mt-7">
-                  <CTAButton href={`/reserve?collection=${p.id}`} variant="text">
-                    Reserve {p.name}
-                  </CTAButton>
-                </p>
-              </div>
-            </Reveal>
-          ))}
+                    <p
+                      className={`mt-7 text-[0.62rem] uppercase tracking-[0.24em] ${
+                        featured ? "text-wine-tint" : "text-ink-faint"
+                      }`}
+                    >
+                      Included
+                    </p>
+                    <ul className="mt-4 space-y-2.5">
+                      {p.includes.map((item) => (
+                        <li
+                          key={item}
+                          className={`flex gap-2.5 text-sm leading-relaxed ${
+                            featured ? "text-cream/85" : "text-ink-soft"
+                          }`}
+                        >
+                          <span aria-hidden className={featured ? "text-wine-tint" : "text-wine-deep"}>
+                            &middot;
+                          </span>
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
 
-          <p className="border-t border-ink/10 pt-8 text-xs text-ink-faint">
-            Payment plans available — reserve with a deposit and split the balance into
-            interest-free installments before your date. Serving{" "}
-            <Link
-              href="/quinceanera-photographer"
-              className="text-wine-deep underline underline-offset-4 hover:text-wine"
-            >
-              quinceañera photography across Dallas–Fort Worth
-            </Link>
-            .
-          </p>
+                    <div className="mt-auto pt-8">
+                      <CTAButton
+                        href={`/reserve?collection=${p.id}`}
+                        variant={featured ? "onDark" : "text"}
+                      >
+                        Reserve {p.name}
+                      </CTAButton>
+                    </div>
+                  </div>
+                </Reveal>
+              );
+            })}
+          </div>
+
+          <div className="mt-14 grid gap-x-12 gap-y-8 border-t border-ink/10 pt-10 md:grid-cols-2">
+            <div>
+              <p className="text-[0.62rem] uppercase tracking-[0.24em] text-ink-faint">Add-ons</p>
+              <ul className="mt-4 space-y-3 text-sm leading-relaxed text-ink-soft">
+                <li>
+                  <span className="text-ink">Save-the-date / dress session — $500.</span>{" "}
+                  Complimentary from the Essential collection up; a standalone add-on with
+                  Moments.{" "}
+                  <Link
+                    href="/blog/best-quinceanera-photo-locations-dfw"
+                    className="text-wine-deep underline underline-offset-4 hover:text-wine"
+                  >
+                    See our DFW locations
+                  </Link>
+                  .
+                </li>
+                <li>
+                  <span className="text-ink">Additional coverage hours — $350 each.</span>{" "}
+                  Arrange them at least a week before your date so we can plan the day around
+                  them.
+                </li>
+              </ul>
+            </div>
+            <div>
+              <p className="text-[0.62rem] uppercase tracking-[0.24em] text-ink-faint">Payment</p>
+              <p className="mt-4 text-sm leading-relaxed text-ink-soft">
+                Reserve with a deposit and split the balance into interest-free installments
+                before your date. Serving{" "}
+                <Link
+                  href="/quinceanera-photographer"
+                  className="text-wine-deep underline underline-offset-4 hover:text-wine"
+                >
+                  quinceañera photography across Dallas–Fort Worth
+                </Link>
+                .
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 

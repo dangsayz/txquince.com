@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { site } from "@/content/site";
 import { packages } from "@/content/packages";
+import { getFeaturedImages } from "@/lib/content-db";
 import { Reveal } from "@/components/Reveal";
 import { CTAButton } from "@/components/CTAButton";
 import { FinalCTA } from "@/components/FinalCTA";
-import { SocialProofStrip } from "@/components/SocialProofStrip";
+
+export const revalidate = 3600;
 
 /**
  * SAVE-THE-DATE landing page — a competitive wedge, not filler.
@@ -64,8 +67,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default function SaveTheDatePage() {
+function focal(fx?: number | null, fy?: number | null): string {
+  return `${Math.round((fx ?? 0.5) * 100)}% ${Math.round((fy ?? 0.32) * 100)}%`;
+}
+
+export default async function SaveTheDatePage() {
   const url = `${site.url}/quinceanera-save-the-date`;
+
+  // Cinematic opener — a landscape frame crops cleanest for the wide hero.
+  const imgs = await getFeaturedImages(12);
+  const hero = imgs.find((i) => (i.width ?? 0) >= (i.height ?? 0)) ?? imgs[0] ?? null;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -113,38 +124,64 @@ export default function SaveTheDatePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* Hero */}
-      <section className="mx-auto max-w-4xl px-5 pt-section text-center md:px-10 lg:px-16 md:pt-section-lg">
-        <Reveal>
-          <p className="eyebrow mb-5">Save-the-Date · Dallas–Fort Worth</p>
-          <h1 className="mx-auto max-w-3xl display-2 text-ink text-balance">
-            Her Save-the-Date session, included.
-          </h1>
-          <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-ink-soft">
-            A relaxed portrait session before the big day — for the invitations,
-            the guest board, and meeting your photographer first. Most Dallas–Fort
-            Worth studios charge {/* market range from live competitor pricing */}
-            $150–$475 for it. Here it&apos;s in every collection, free.
-          </p>
-          <p className="mt-4 text-sm">
-            <Link
-              href="/es/save-the-date-quinceanera"
-              className="text-wine underline underline-offset-2 hover:text-wine-deep"
-              hrefLang="es"
-            >
-              Ver esta página en español →
-            </Link>
-          </p>
-          <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
-            <CTAButton href={site.cta.href} variant="primary">
-              {site.cta.label}
-            </CTAButton>
-            <CTAButton href={site.secondaryCta.href} variant="text">
-              {site.secondaryCta.label}
-            </CTAButton>
+      {/* ===== Cinematic hero — image with type low-left ===== */}
+      <section className="relative overflow-hidden bg-ink">
+        <div className="relative h-[66svh] min-h-[440px] w-full md:h-[76svh]">
+          {hero?.url ? (
+            <Image
+              src={hero.url}
+              alt={hero.alt || "Quinceañera Save-the-Date portrait session in Dallas–Fort Worth"}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+              style={{ objectPosition: focal(hero.focus_x, hero.focus_y) }}
+            />
+          ) : null}
+          <div className="absolute inset-0 bg-gradient-to-t from-ink/92 via-ink/45 to-ink/10" />
+          <div className="absolute inset-x-0 bottom-0">
+            <div className="mx-auto max-w-[90rem] px-5 pb-12 md:px-10 lg:px-16 md:pb-16">
+              <Reveal>
+                <p className="text-[0.62rem] uppercase tracking-[0.32em] text-cream/85">
+                  Save-the-Date · Dallas–Fort Worth
+                </p>
+                <h1
+                  className="mt-4 max-w-3xl font-display text-cream text-balance"
+                  style={{ fontSize: "clamp(2.3rem,5.6vw,4.8rem)", lineHeight: 1.0, letterSpacing: "-0.025em" }}
+                >
+                  Her Save-the-Date session, included.
+                </h1>
+                <p className="mt-5 max-w-xl text-sm leading-relaxed text-cream/80 md:text-base">
+                  A relaxed portrait session before the big day — for the invitations,
+                  the guest board, and meeting your photographer first. Most Dallas–Fort
+                  Worth studios charge {/* market range from live competitor pricing */}
+                  $150–$475 for it. Here it&apos;s in every collection, free.
+                </p>
+                <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+                  <Link
+                    href={site.cta.href}
+                    className="inline-flex whitespace-nowrap rounded-full bg-cream px-7 py-3 text-[0.7rem] font-medium uppercase tracking-[0.16em] text-ink transition-colors hover:bg-white"
+                  >
+                    {site.cta.label}
+                  </Link>
+                  <Link
+                    href={site.secondaryCta.href}
+                    className="whitespace-nowrap text-[0.7rem] uppercase tracking-[0.18em] text-cream/85 underline decoration-cream/30 underline-offset-[6px] transition-colors hover:text-cream"
+                  >
+                    {site.secondaryCta.label}
+                  </Link>
+                  <Link
+                    href="/es/save-the-date-quinceanera"
+                    hrefLang="es"
+                    className="whitespace-nowrap text-[0.7rem] uppercase tracking-[0.18em] text-cream/65 underline decoration-cream/20 underline-offset-[6px] transition-colors hover:text-cream"
+                  >
+                    Ver esta página en español →
+                  </Link>
+                </div>
+              </Reveal>
+            </div>
           </div>
-          <SocialProofStrip className="mt-10" />
-        </Reveal>
+        </div>
       </section>
 
       {/* What it is */}
@@ -168,15 +205,17 @@ export default function SaveTheDatePage() {
         </Reveal>
       </section>
 
-      {/* Her own dress — the honest answer to "dress included" */}
-      <section className="bg-greige">
+      {/* Her own dress — DARK contrast band (the honest answer to "dress included") */}
+      <section className="bg-ink text-cream">
         <div className="mx-auto max-w-3xl px-5 py-section text-center md:px-10 lg:px-16 md:py-section-lg">
           <Reveal>
-            <p className="eyebrow mb-5">Her dress, her session</p>
-            <h2 className="display-2 text-ink text-balance">
+            <p className="mb-5 text-[0.66rem] uppercase tracking-[0.24em] text-wine-tint">
+              Her dress, her session
+            </p>
+            <h2 className="display-2 text-cream text-balance">
               No rental. No restrictions.
             </h2>
-            <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-ink-soft">
+            <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-cream/75">
               Some studios cap the Save-the-Date with a borrowed gown or limit which
               dress she can wear. Here she wears her own — the real quince dress, a
               casual look, or both in one session. It&apos;s her milestone; nothing

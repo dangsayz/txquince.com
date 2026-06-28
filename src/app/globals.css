@@ -27,7 +27,8 @@
   --color-wine-tint: #f0e9da; /* faint champagne wash for bands */
 
   /* ---- Type ---- */
-  --font-display: var(--font-cormorant), Georgia, "Times New Roman", serif;
+  --font-display: var(--font-jost), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-cormorant), Georgia, "Times New Roman", serif;
   --font-didone: var(--font-bodoni), Didot, "Bodoni MT", "Times New Roman", serif;
   --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
@@ -52,6 +53,8 @@ body {
   background: var(--color-cream);
   color: var(--color-ink);
   font-family: var(--font-body);
+  font-size: 1rem; /* 16px floor — web-design LAW; under 16 triggers iOS input zoom */
+  line-height: 1.6;
   font-feature-settings: "kern", "liga", "calt";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -61,7 +64,7 @@ body {
 /* Display serif: tight tracking, refined leading — used for oversized headings */
 .font-display {
   font-family: var(--font-display);
-  letter-spacing: -0.015em;
+  letter-spacing: -0.005em;
   font-weight: 500;
 }
 
@@ -70,23 +73,23 @@ body {
 .display-1 {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(2.9rem, 8.5vw, 7.5rem);
-  line-height: 0.96;
-  letter-spacing: -0.025em;
+  font-size: clamp(2rem, 4.2vw, 2.625rem); /* 32→42px — editorial restraint (Jost) */
+  line-height: 1.08;
+  letter-spacing: -0.01em;
 }
 .display-2 {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(2.1rem, 5.2vw, 4.5rem);
-  line-height: 1.0;
-  letter-spacing: -0.02em;
+  font-size: clamp(1.6rem, 3vw, 1.95rem); /* 26→31px */
+  line-height: 1.14;
+  letter-spacing: -0.005em;
 }
 .display-3 {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(1.6rem, 3vw, 2.4rem);
-  line-height: 1.08;
-  letter-spacing: -0.015em;
+  font-size: clamp(1.3rem, 2.2vw, 1.5rem); /* 21→24px */
+  line-height: 1.2;
+  letter-spacing: 0;
 }
 
 /* Apple-clean white card — crisp white, generous radius, layered soft shadow.
@@ -109,7 +112,7 @@ body {
 
 /* Refined serif italic — editorial sub-labels and pull quotes. */
 .accent {
-  font-family: var(--font-display);
+  font-family: var(--font-serif);
   font-style: italic;
   font-weight: 400;
   letter-spacing: 0;
@@ -158,12 +161,12 @@ body {
   border-radius: 9999px;
   background: var(--color-ivory);
   box-shadow: inset 0 0 0 1px var(--color-line);
-  padding: 0.4rem 0.9rem;
+  padding: 0.45rem 1rem;
   font-family: var(--font-body);
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   font-weight: 500;
-  letter-spacing: normal;
-  text-transform: none;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
   color: var(--color-ink-soft);
 }
 

@@ -57,7 +57,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "If you want the full picture of how the night flows around this moment, we walk through it in [what happens at a quinceañera and the order of events](/blog/what-happens-at-a-quinceanera-order-of-events).",
+      text: "If you want the full picture of how the night flows around this moment, we walk through it in [what happens at a quinceañera and the order of events](/blog/what-happens-at-a-quinceanera-order-of-events), and [what a quinceañera is and the traditions behind it](/blog/what-is-a-quinceanera) explains why the ceremony carries so much weight.",
     },
     {
       type: "h3",

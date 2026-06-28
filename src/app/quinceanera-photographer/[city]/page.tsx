@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { site } from "@/content/site";
 import { packages } from "@/content/packages";
 import { locations, getLocation, nearbyLocations, cityGeo } from "@/content/locations";
+import { getCityContent } from "@/content/city-content";
 import { getPost } from "@/content/blog";
 import { getFeaturedImages, getImagesByCity } from "@/lib/content-db";
 import { Reveal } from "@/components/Reveal";
@@ -18,7 +19,6 @@ const CITY_GUIDES = [
 ];
 import { CTAButton } from "@/components/CTAButton";
 import { FinalCTA } from "@/components/FinalCTA";
-import { SocialProofStrip } from "@/components/SocialProofStrip";
 import { HowBookingWorks } from "@/components/HowBookingWorks";
 import { Testimonials } from "@/components/Testimonials";
 
@@ -128,15 +128,20 @@ export default async function CityPage({
   const loc = getLocation(city);
   if (!loc) notFound();
 
-  const faqs = [...loc.faqs, ...sharedFaqs(loc.city)];
+  const content = getCityContent(loc.slug);
+  // Prefer the unique, researched per-city FAQs; fall back to the legacy set.
+  const faqs = content?.faqs ?? [...loc.faqs, ...sharedFaqs(loc.city)];
   const nearby = nearbyLocations(loc.slug);
   const guides = CITY_GUIDES.map(getPost).filter((p) => p !== undefined);
   const url = `${site.url}/quinceanera-photographer/${loc.slug}`;
   const prices = packages.map((p) => p.price);
   // This city's OWN tagged work first; fall back to featured until it's tagged.
-  const cityShots = await getImagesByCity(loc.slug, 3);
-  const featured = cityShots.length ? cityShots : await getFeaturedImages(3);
+  const cityShots = await getImagesByCity(loc.slug, 6);
+  const featured = cityShots.length ? cityShots : await getFeaturedImages(6);
   const isCityWork = cityShots.length > 0;
+  // The opener gets its own cinematic frame; the rest fill the work grid below.
+  const hero = featured[0] ?? null;
+  const recentWork = featured.slice(1);
 
   // Per-city structured data: a ProfessionalService scoped to this city + the
   // FAQPage. Mirrors the global JsonLd but with areaServed = this city.
@@ -154,6 +159,7 @@ export default async function CityPage({
         ...(site.contact.phoneE164 ? { telephone: site.contact.phoneE164 } : {}),
         areaServed: [
           { "@type": "City", name: `${loc.city}, TX` },
+          ...nearby.map((n) => ({ "@type": "City", name: `${n.city}, TX` })),
           { "@type": "AdministrativeArea", name: "Dallas–Fort Worth, TX" },
         ],
         ...(cityGeo[loc.slug]
@@ -242,41 +248,69 @@ export default async function CityPage({
         <span className="text-ink-soft">{loc.city}, TX</span>
       </nav>
 
-      {/* Hero — left-aligned editorial */}
-      <section className="mx-auto max-w-5xl px-5 pt-8 md:px-10 lg:px-16 md:pt-12">
-        <Reveal>
-          <p className="eyebrow mb-5">Quinceañera Photography &amp; Film · {loc.city}, TX</p>
-          <h1 className="max-w-3xl display-2 text-ink text-balance">
-            {loc.city} Quinceañera Photographer
-          </h1>
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-soft">
-            {loc.lead}
-          </p>
-          <p className="mt-4 text-sm">
-            <Link
-              href={`/es/fotografo-de-quinceaneras/${loc.slug}`}
-              className="text-wine underline underline-offset-2 hover:text-wine-deep"
-              hrefLang="es"
-            >
-              Ver esta página en español →
-            </Link>
-          </p>
-          <div className="mt-9 flex flex-wrap items-center gap-4">
-            <CTAButton href={site.cta.href} variant="primary">
-              {site.cta.label}
-            </CTAButton>
-            <CTAButton href={site.secondaryCta.href} variant="text">
-              {site.secondaryCta.label}
-            </CTAButton>
+      {/* Hero — cinematic image, type low-left (the city's own work when tagged) */}
+      <section className="relative mt-6 overflow-hidden bg-ink md:mt-8">
+        <div className="relative h-[66svh] min-h-[440px] w-full md:h-[76svh]">
+          {hero?.url ? (
+            <Image
+              src={hero.url}
+              alt={hero.alt || `Quinceañera photography in ${loc.city}, TX`}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+              style={{
+                objectPosition: `${hero.focus_x != null ? Math.round(hero.focus_x * 100) : 50}% ${hero.focus_y != null ? Math.round(hero.focus_y * 100) : 32}%`,
+              }}
+            />
+          ) : null}
+          <div className="absolute inset-0 bg-gradient-to-t from-ink/92 via-ink/45 to-ink/10" />
+          <div className="absolute inset-x-0 bottom-0">
+            <div className="mx-auto max-w-[90rem] px-5 pb-12 md:px-10 lg:px-16 md:pb-16">
+              <Reveal>
+                <p className="text-[0.62rem] uppercase tracking-[0.3em] text-cream/85">
+                  Quinceañera Photography &amp; Film · {loc.city}, TX
+                </p>
+                <h1
+                  className="mt-4 max-w-3xl font-display text-cream text-balance"
+                  style={{ fontSize: "clamp(2.3rem,5.6vw,4.8rem)", lineHeight: 1.0, letterSpacing: "-0.025em" }}
+                >
+                  {loc.city} Quinceañera Photographer
+                </h1>
+                <p className="mt-5 max-w-xl text-sm leading-relaxed text-cream/80 md:text-base">
+                  {loc.lead}
+                </p>
+                <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+                  <Link
+                    href={site.cta.href}
+                    className="inline-flex rounded-full bg-cream px-7 py-3 text-[0.7rem] font-medium uppercase tracking-[0.16em] text-ink transition-colors hover:bg-white"
+                  >
+                    {site.cta.label}
+                  </Link>
+                  <Link
+                    href={site.secondaryCta.href}
+                    className="text-[0.7rem] uppercase tracking-[0.18em] text-cream/85 underline decoration-cream/30 underline-offset-[6px] transition-colors hover:text-cream"
+                  >
+                    {site.secondaryCta.label}
+                  </Link>
+                  <Link
+                    href={`/es/fotografo-de-quinceaneras/${loc.slug}`}
+                    hrefLang="es"
+                    className="text-[0.7rem] uppercase tracking-[0.18em] text-cream/65 underline decoration-cream/20 underline-offset-[6px] transition-colors hover:text-cream"
+                  >
+                    Español →
+                  </Link>
+                </div>
+              </Reveal>
+            </div>
           </div>
-          <SocialProofStrip className="mt-10 !justify-start" />
-        </Reveal>
+        </div>
       </section>
 
       {/* Local intro */}
       <section className="mx-auto max-w-3xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
         <Reveal className="flex flex-col gap-6">
-          {loc.intro.map((para) => (
+          {(content?.intro ?? loc.intro).map((para) => (
             <p key={para.slice(0, 24)} className="text-base leading-relaxed text-ink-soft">
               {para}
             </p>
@@ -284,10 +318,39 @@ export default async function CityPage({
           <p className="text-sm text-ink-faint">
             Serving {loc.areas.slice(0, -1).join(", ")}
             {loc.areas.length > 1 ? `, and ${loc.areas[loc.areas.length - 1]}` : loc.areas[0]}
-            .
+            {nearby.length
+              ? ` — plus nearby DFW cities like ${nearby.slice(0, 3).map((n) => n.city).join(", ")}.`
+              : "."}
           </p>
         </Reveal>
       </section>
+
+      {/* Where to shoot — real local photo spots (unique per city; answers
+          "best places to take quince pictures in {city}") */}
+      {content?.photoSpots?.length ? (
+        <section className="mx-auto max-w-5xl px-5 pb-section md:px-10 lg:px-16 md:pb-section-lg">
+          <Reveal className="mb-8 max-w-xl md:mb-10">
+            <p className="eyebrow">Where to shoot in {loc.city}</p>
+            <h2
+              className="mt-4 font-display text-ink"
+              style={{ fontSize: "clamp(1.9rem,3.6vw,2.8rem)", lineHeight: 1.06, letterSpacing: "-0.02em" }}
+            >
+              The {loc.city} spots that photograph beautifully.
+            </h2>
+          </Reveal>
+          <div className="border-t border-ink/10">
+            {content.photoSpots.map((s) => (
+              <Reveal
+                key={s.name}
+                className="grid gap-1.5 border-b border-ink/10 py-6 md:grid-cols-12 md:gap-x-8"
+              >
+                <h3 className="font-display text-xl text-ink md:col-span-4">{s.name}</h3>
+                <p className="text-sm leading-relaxed text-ink-soft md:col-span-8">{s.why}</p>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       {/* Compact collections — full detail lives on /investment */}
       <section className="bg-greige">
@@ -374,8 +437,8 @@ export default async function CityPage({
             </h2>
             <p className="mt-5 max-w-xl text-base leading-relaxed text-cream/70">
               Every collection is built around the full celebration — not a two-hour
-              window. Here&apos;s how the day unfolds for most {loc.city} families, and
-              how I cover each part of it.
+              window. Whether you call it a quinceañera or just her quince, here&apos;s
+              how the day unfolds for most {loc.city} families, and how I cover each part of it.
             </p>
           </Reveal>
           <ol className="mt-10 divide-y divide-cream/15 border-y border-cream/15">
@@ -400,7 +463,7 @@ export default async function CityPage({
       </section>
 
       {/* Recent work — real featured photos (renders nothing if none exist) */}
-      {featured.length ? (
+      {recentWork.length ? (
         <section className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
           <Reveal>
             <p className="eyebrow mb-5">
@@ -408,7 +471,7 @@ export default async function CityPage({
             </p>
           </Reveal>
           <div className="grid gap-4 sm:grid-cols-2">
-            {featured.map((img, i) => (
+            {recentWork.map((img, i) => (
               <Reveal
                 key={img.slug ?? i}
                 delay={i * 70}

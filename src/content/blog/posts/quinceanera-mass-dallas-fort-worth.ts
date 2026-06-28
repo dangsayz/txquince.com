@@ -191,8 +191,8 @@ const post: BlogPost = {
     },
   ],
   related: [
+    "what-is-a-quinceanera",
     "what-happens-at-a-quinceanera-order-of-events",
-    "quinceanera-planning-timeline-checklist",
     "best-quinceanera-photo-locations-dfw",
   ],
 };

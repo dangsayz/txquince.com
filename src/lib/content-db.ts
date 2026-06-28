@@ -37,6 +37,19 @@ export function imagePagePath(section: string, slug: string): string {
   return `/photos/${section}/${slug}`;
 }
 
+/** A vendor credited on a photo — the PUBLIC-safe shape (no email/phone). */
+export type ImageVendorCredit = {
+  vendor_id: string;
+  name: string;
+  business: string | null;
+  slug: string;
+  category: string | null;
+  ig_handle: string | null;
+  website: string | null;
+  /** Credit label override; falls back to the category's credit word. */
+  role: string | null;
+};
+
 export type PortfolioImage = {
   id: string;
   storage_path: string;
@@ -55,8 +68,28 @@ export type PortfolioImage = {
   title?: string | null;
   caption?: string | null;
   city?: string | null;
+  /** Short punchy line shown under the title. */
+  hook?: string | null;
+  /** Free-form comma-separated keywords (meta) for search/SEO. */
+  tags?: string | null;
+  /** Vendors credited on this photo (public-safe). */
+  vendors?: ImageVendorCredit[];
   /** Branded serve URL (/api/img/{slug}) — never the raw bucket URL. */
   url: string;
+};
+
+/** A vendor directory record — FULL shape (admin only; email/phone private). */
+export type Vendor = {
+  id: string;
+  name: string;
+  business: string | null;
+  category: string | null;
+  ig_handle: string | null;
+  email: string | null;
+  phone: string | null;
+  website: string | null;
+  notes: string | null;
+  slug: string;
 };
 
 export type VideoRow = {
@@ -70,7 +103,53 @@ export type VideoRow = {
   sort_order: number;
 };
 
-/** All portfolio images, ordered. Empty array if storage/DB not configured. */
+/**
+ * Vendor credits keyed by image id. Small tables, so we load both in full and
+ * stitch in memory (one map reused across every image this request). Guarded:
+ * if the vendor tables don't exist yet (migration not applied) it returns an
+ * empty map and the gallery renders exactly as before.
+ */
+const loadVendorCredits = cache(
+  async (): Promise<Map<string, ImageVendorCredit[]>> => {
+    const map = new Map<string, ImageVendorCredit[]>();
+    if (!isSupabaseConfigured()) return map;
+    try {
+      const supabase = getServiceSupabase();
+      const [linksRes, vendorsRes] = await Promise.all([
+        supabase.from("portfolio_image_vendors").select("image_id, vendor_id, role"),
+        supabase
+          .from("vendors")
+          .select("id, name, business, slug, category, ig_handle, website"),
+      ]);
+      const links = linksRes.data;
+      const vendors = vendorsRes.data;
+      if (!links || !vendors) return map;
+      const vById = new Map(vendors.map((v) => [v.id as string, v]));
+      for (const l of links) {
+        const v = vById.get(l.vendor_id as string);
+        if (!v) continue;
+        const list = map.get(l.image_id as string) ?? [];
+        list.push({
+          vendor_id: v.id as string,
+          name: v.name as string,
+          business: (v.business as string) ?? null,
+          slug: v.slug as string,
+          category: (v.category as string) ?? null,
+          ig_handle: (v.ig_handle as string) ?? null,
+          website: (v.website as string) ?? null,
+          role: (l.role as string) ?? null,
+        });
+        map.set(l.image_id as string, list);
+      }
+    } catch {
+      /* vendor tables not present yet — credits stay empty */
+    }
+    return map;
+  },
+);
+
+/** All portfolio images, ordered, with vendor credits attached. Empty array if
+ *  storage/DB not configured. */
 export const getPortfolioImages = cache(async (): Promise<PortfolioImage[]> => {
   if (!isSupabaseConfigured()) return [];
   try {
@@ -78,17 +157,21 @@ export const getPortfolioImages = cache(async (): Promise<PortfolioImage[]> => {
     // select("*") so newly-added columns (e.g. focal anchors) flow through
     // without a brittle hand-kept list — and a lagging migration can never
     // blank the gallery.
-    const { data, error } = await supabase
-      .from("portfolio_images")
-      .select("*")
-      .order("section", { ascending: true })
-      .order("sort_order", { ascending: true });
+    const [{ data, error }, credits] = await Promise.all([
+      supabase
+        .from("portfolio_images")
+        .select("*")
+        .order("section", { ascending: true })
+        .order("sort_order", { ascending: true }),
+      loadVendorCredits(),
+    ]);
     if (error || !data) return [];
     // Branded serve route when a slug exists (always, post-0017); raw URL is
     // the last-resort fallback so a missing slug shows the photo rather than 404.
     return data.map((r) => ({
       ...r,
       url: r.slug ? imageServeUrl(r.slug, r.storage_path) : storageUrl(r.storage_path),
+      vendors: credits.get(r.id as string) ?? [],
     }));
   } catch {
     return [];
@@ -101,18 +184,55 @@ export const getImageBySlug = cache(
     if (!isSupabaseConfigured()) return null;
     try {
       const supabase = getServiceSupabase();
-      const { data, error } = await supabase
-        .from("portfolio_images")
-        .select("*")
-        .eq("slug", slug)
-        .maybeSingle();
+      const [{ data, error }, credits] = await Promise.all([
+        supabase.from("portfolio_images").select("*").eq("slug", slug).maybeSingle(),
+        loadVendorCredits(),
+      ]);
       if (error || !data) return null;
-      return { ...data, url: imageServeUrl(data.slug as string, data.storage_path) };
+      return {
+        ...data,
+        url: imageServeUrl(data.slug as string, data.storage_path),
+        vendors: credits.get(data.id as string) ?? [],
+      };
     } catch {
       return null;
     }
   },
 );
+
+/** Every vendor in the directory, ordered by name. Empty if not configured /
+ *  tables absent. FULL records (admin use); strip email/phone before rendering
+ *  publicly. */
+export const getVendors = cache(async (): Promise<Vendor[]> => {
+  if (!isSupabaseConfigured()) return [];
+  try {
+    const supabase = getServiceSupabase();
+    const { data, error } = await supabase
+      .from("vendors")
+      .select("id, name, business, category, ig_handle, email, phone, website, notes, slug")
+      .order("name", { ascending: true });
+    if (error || !data) return [];
+    return data as Vendor[];
+  } catch {
+    return [];
+  }
+});
+
+/** One vendor by public slug. */
+export const getVendorBySlug = cache(
+  async (slug: string): Promise<Vendor | null> => {
+    const all = await getVendors();
+    return all.find((v) => v.slug === slug) ?? null;
+  },
+);
+
+/** Every photo that credits a given vendor (by slug), in gallery order. */
+export async function getImagesByVendor(slug: string): Promise<PortfolioImage[]> {
+  const target = slug.trim().toLowerCase();
+  if (!target) return [];
+  const all = await getPortfolioImages();
+  return all.filter((i) => i.vendors?.some((v) => v.slug.toLowerCase() === target));
+}
 
 export async function getImagesBySection(section: string): Promise<PortfolioImage[]> {
   return (await getPortfolioImages()).filter((i) => i.section === section);

@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { about } from "@/content/about";
 import { site } from "@/content/site";
+import { getImageBySlug, getImagesBySection, getFeaturedImages } from "@/lib/content-db";
 import { Figure } from "@/components/Figure";
 import { Reveal } from "@/components/Reveal";
+import { EditOverlay } from "@/components/EditMode";
 import { FinalCTA } from "@/components/FinalCTA";
+
+// ISR: regenerate hourly so newly featured/about photos surface without a redeploy.
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "About",
@@ -19,41 +25,108 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AboutPage() {
+/** objectPosition from a photo's focal anchor; defaults top-biased so faces survive a wide crop. */
+function focal(fx?: number | null, fy?: number | null): string {
+  return `${Math.round((fx ?? 0.5) * 100)}% ${Math.round((fy ?? 0.32) * 100)}%`;
+}
+
+export default async function AboutPage() {
+  // The operator's portrait is sourced from the DB (so it's hover-editable in
+  // place, like every gallery photo). Prefer the dedicated "about" section, then
+  // a permanent "about-portrait" slug; null until the operator sets one.
+  const aboutImg =
+    (await getImagesBySection("about"))[0] ??
+    (await getImageBySlug("about-portrait")) ??
+    null;
+
+  // Branded serve route (/api/img/{slug}) sized inline — the same plain-<img>
+  // pattern the reserve + photo pages use. next/image is intentionally avoided:
+  // its custom loader rewrites to /img/{slug}, which 404s.
+  const sized = (w: number) =>
+    aboutImg ? `${aboutImg.url}${aboutImg.url.includes("?") ? "&" : "?"}w=${w}` : "";
+  const portraitFocal = `${(aboutImg?.focus_x ?? 0.5) * 100}% ${(aboutImg?.focus_y ?? 0.4) * 100}%`;
+
+  // Real DFW work for the cinematic opener — a landscape frame crops cleanest in
+  // the wide hero. next/image works here via the branded custom loader (it routes
+  // /api/img/{slug}?w=… through the protected serve route, never the 404-prone
+  // optimizer). The operator portrait below stays a plain <img> so it remains
+  // hover-editable in place.
+  const featured = await getFeaturedImages(12);
+  const hero =
+    featured.find((i) => (i.width ?? 0) >= (i.height ?? 0)) ?? featured[0] ?? null;
+
   return (
     <>
-      {/* Spread — portrait right, statement pinned low-left, museum air above. */}
-      <section className="mx-auto grid max-w-[90rem] gap-10 px-5 pt-16 md:grid-cols-12 md:gap-8 md:px-10 lg:px-16 md:pt-24">
-        <Reveal className="md:order-2 md:col-span-6 md:col-start-7">
-          <Figure
-            imageKey={about.portraitKey}
-            alt={about.portraitAlt}
-            ratio="portrait"
-            sizes="(max-width: 768px) 100vw, 46vw"
-          />
-        </Reveal>
-        <div className="flex flex-col justify-end pb-2 md:order-1 md:col-span-5 md:pb-10">
-          <Reveal>
-            <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">
-              {about.eyebrow}
-            </p>
-            <h1
-              className="mt-5 font-display text-ink"
-              style={{ fontSize: "clamp(2.4rem,5vw,4.4rem)", lineHeight: 1, letterSpacing: "-0.024em" }}
-            >
-              {about.heading}
-            </h1>
-          </Reveal>
+      {/* ===== Cinematic hero — real DFW work, statement low-left in cream ===== */}
+      <section className="relative overflow-hidden bg-ink">
+        <div className="relative h-[66svh] min-h-[440px] w-full md:h-[76svh]">
+          {hero?.url ? (
+            <Image
+              src={hero.url}
+              alt={hero.alt || "Quinceañera in Dallas–Fort Worth"}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+              style={{ objectPosition: focal(hero.focus_x, hero.focus_y) }}
+            />
+          ) : null}
+          <div className="absolute inset-0 bg-gradient-to-t from-ink/92 via-ink/45 to-ink/10" />
+          <div className="absolute inset-x-0 bottom-0">
+            <div className="mx-auto max-w-[90rem] px-5 pb-12 md:px-10 lg:px-16 md:pb-16">
+              <Reveal>
+                <p className="text-[0.62rem] uppercase tracking-[0.32em] text-cream/85">
+                  {about.eyebrow}
+                </p>
+                <h1
+                  className="mt-4 max-w-3xl font-display text-cream text-balance"
+                  style={{ fontSize: "clamp(2.4rem,5.4vw,4.4rem)", lineHeight: 1.02, letterSpacing: "-0.024em" }}
+                >
+                  {about.heading}
+                </h1>
+              </Reveal>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Story — narrow measure, offset right like a magazine column. */}
-      <section className="mx-auto max-w-[90rem] px-5 py-24 md:px-10 lg:px-16 md:py-36">
-        <div className="grid md:grid-cols-12">
-          <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint md:col-span-3">
+      {/* Story — magazine split: the operator portrait beside the story column. */}
+      <section className="mx-auto grid max-w-[90rem] items-start gap-10 px-5 py-24 md:grid-cols-12 md:gap-8 md:px-10 lg:px-16 md:py-36">
+        <Reveal className="md:col-span-5">
+          {aboutImg ? (
+            <div className="relative overflow-hidden bg-greige" style={{ aspectRatio: "3 / 4" }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={sized(900)}
+                srcSet={`${sized(640)} 640w, ${sized(900)} 900w, ${sized(1200)} 1200w`}
+                sizes="(max-width: 768px) 100vw, 42vw"
+                alt={aboutImg.alt || about.portraitAlt}
+                loading="lazy"
+                decoding="async"
+                className="absolute inset-0 h-full w-full object-cover"
+                style={{ objectPosition: portraitFocal }}
+              />
+              <EditOverlay
+                image={{ id: aboutImg.id, slug: aboutImg.slug, alt: aboutImg.alt, fx: aboutImg.focus_x, fy: aboutImg.focus_y }}
+              />
+            </div>
+          ) : (
+            <div className="relative">
+              <Figure
+                imageKey={about.portraitKey}
+                alt={about.portraitAlt}
+                ratio="portrait"
+                sizes="(max-width: 768px) 100vw, 42vw"
+              />
+              <EditOverlay image={{}} />
+            </div>
+          )}
+        </Reveal>
+        <div className="md:col-span-6 md:col-start-7">
+          <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">
             The story
           </p>
-          <div className="mt-8 flex max-w-prose flex-col gap-6 text-[1.02rem] leading-relaxed text-ink-soft md:col-span-7 md:col-start-5 md:mt-0">
+          <div className="mt-8 flex max-w-prose flex-col gap-6 text-[1.02rem] leading-relaxed text-ink-soft">
             {about.story.map((p, i) => (
               <Reveal key={i} delay={i * 60} as="p">
                 {p}
@@ -63,24 +136,24 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Culture + approach — white band, hairline-separated columns. */}
-      <section className="border-y border-ink/10 bg-white">
+      {/* Culture + approach — DARK contrast band, hairline-separated columns. */}
+      <section className="bg-ink text-cream">
         <div className="mx-auto grid max-w-[90rem] gap-14 px-5 py-20 md:grid-cols-2 md:gap-20 md:px-10 lg:px-16 md:py-28">
           <Reveal>
-            <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">La cultura</p>
-            <h2 className="mt-4 font-display text-3xl text-ink md:text-4xl">
+            <p className="text-[0.64rem] uppercase tracking-[0.32em] text-wine">La cultura</p>
+            <h2 className="mt-4 font-display text-3xl text-cream md:text-4xl">
               {about.culture.heading}
             </h2>
-            <p className="mt-5 max-w-prose text-[0.98rem] leading-relaxed text-ink-soft">
+            <p className="mt-5 max-w-prose text-[0.98rem] leading-relaxed text-cream/75">
               {about.culture.body}
             </p>
           </Reveal>
           <Reveal delay={90}>
-            <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">The approach</p>
-            <h2 className="mt-4 font-display text-3xl text-ink md:text-4xl">
+            <p className="text-[0.64rem] uppercase tracking-[0.32em] text-wine">The approach</p>
+            <h2 className="mt-4 font-display text-3xl text-cream md:text-4xl">
               {about.approach.heading}
             </h2>
-            <p className="mt-5 max-w-prose text-[0.98rem] leading-relaxed text-ink-soft">
+            <p className="mt-5 max-w-prose text-[0.98rem] leading-relaxed text-cream/75">
               {about.approach.body}
             </p>
           </Reveal>

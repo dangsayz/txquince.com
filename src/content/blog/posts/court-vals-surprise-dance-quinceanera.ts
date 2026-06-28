@@ -100,7 +100,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "If your court is set and you know your date, you can [check if your date is open](/check-your-date) in seconds, compare what each [collection includes](/investment) for photo and film, or go ahead and [reserve your date](/reserve). And if you're still building the night's timeline, the [changing of the shoes](/blog/changing-of-the-shoes-quinceanera) is another ceremony moment worth understanding before you finalize the schedule.",
+      text: "If your court is set and you know your date, you can [check if your date is open](/check-your-date) in seconds, compare what each [collection includes](/investment) for photo and film, or go ahead and [reserve your date](/reserve). And if you're still building the night's timeline, the [changing of the shoes](/blog/changing-of-the-shoes-quinceanera) is another ceremony moment worth understanding before you finalize the schedule — and [what a quinceañera is and the traditions behind it](/blog/what-is-a-quinceanera) ties the whole celebration together.",
     },
   ],
   faqs: [
@@ -130,6 +130,7 @@ const post: BlogPost = {
     },
   ],
   related: [
+    "quinceanera-songs-for-every-moment",
     "quinceanera-photo-ideas-shot-list-dfw",
     "changing-of-the-shoes-quinceanera",
     "quinceanera-photo-vs-video",

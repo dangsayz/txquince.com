@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Bodoni_Moda, Cormorant_Garamond, Inter, Pinyon_Script } from "next/font/google";
+import { Bodoni_Moda, Cormorant_Garamond, Inter, Jost, Pinyon_Script } from "next/font/google";
 import "./globals.css";
 import { site } from "@/content/site";
 import { Nav } from "@/components/Nav";
@@ -27,6 +27,13 @@ const bodoni = Bodoni_Moda({
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
+});
+// Jost — geometric sans display face (modern editorial heading system).
+const jost = Jost({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-jost",
   display: "swap",
 });
 // Delicate copperplate script — used sparingly for couture accents.
@@ -77,7 +84,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${cormorant.variable} ${bodoni.variable} ${inter.variable} ${pinyon.variable} h-full`}
+      className={`${jost.variable} ${cormorant.variable} ${bodoni.variable} ${inter.variable} ${pinyon.variable} h-full`}
     >
       <body className="flex min-h-screen flex-col bg-cream">
         <Nav />

@@ -36,51 +36,73 @@ const COLUMNS = [
   },
 ];
 
+const socialPill =
+  "flex h-11 w-11 items-center justify-center rounded-full bg-cream/[0.06] text-cream/70 ring-1 ring-cream/15 transition-colors hover:bg-cream/10 hover:text-cream";
+
 export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative bg-cream pt-section">
-      <div className="mx-auto max-w-5xl px-5 text-center md:px-10 lg:px-16">
-        {/* Wordmark — masthead lockup, scaled up for the close */}
-        <div className="flex justify-center">
-          <Wordmark size="masthead" />
-        </div>
-        <p className="mt-5 text-sm leading-relaxed text-ink-soft">{site.tagline}</p>
+    <footer className="relative overflow-hidden bg-ink text-cream">
+      {/* Champagne seam — a hairline + faint glow marks the page's close. */}
+      <div
+        aria-hidden
+        className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-wine to-transparent opacity-70"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-28 left-1/2 h-56 w-[130%] -translate-x-1/2 opacity-[0.07]"
+        style={{ background: "radial-gradient(60% 100% at 50% 0%, var(--color-wine), transparent)" }}
+      />
 
-        {/* Social pills */}
-        <div className="mt-6 flex items-center justify-center gap-3">
-          <a
-            href={site.social.instagram}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Instagram"
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-ivory text-ink-soft shadow-[inset_0_0_0_1px_var(--color-line)] transition-colors hover:text-wine"
-          >
-            <IgIcon />
-          </a>
-          {site.social.facebook ? (
-            <a
-              href={site.social.facebook}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Facebook"
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-ivory text-ink-soft shadow-[inset_0_0_0_1px_var(--color-line)] transition-colors hover:text-wine"
+      <div className="relative mx-auto max-w-[90rem] px-5 md:px-10 lg:px-16">
+        {/* Masthead — brand left, the closing CTA + socials right. */}
+        <div className="flex flex-col gap-10 pt-16 md:flex-row md:items-end md:justify-between md:pt-24">
+          <div>
+            <Wordmark size="masthead" tone="dark" />
+            <p className="mt-6 max-w-xs text-sm leading-relaxed text-cream/55">{site.tagline}</p>
+          </div>
+
+          <div className="flex flex-col gap-6 md:items-end">
+            <Link
+              href={site.cta.href}
+              className="group inline-flex items-baseline gap-2 font-display text-cream transition-colors hover:text-wine"
+              style={{ fontSize: "clamp(1.7rem,3.2vw,2.6rem)", letterSpacing: "-0.02em", lineHeight: 1 }}
             >
-              <FbIcon />
-            </a>
-          ) : null}
+              Reserve her date
+              <span aria-hidden className="text-wine transition-transform duration-300 group-hover:translate-x-1">→</span>
+            </Link>
+            <div className="flex items-center gap-3">
+              <a
+                href={site.social.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className={socialPill}
+              >
+                <IgIcon />
+              </a>
+              {site.social.facebook ? (
+                <a
+                  href={site.social.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className={socialPill}
+                >
+                  <FbIcon />
+                </a>
+              ) : null}
+            </div>
+          </div>
         </div>
 
-      </div>
-
-      {/* Link columns */}
-      <div className="mx-auto max-w-5xl px-5 md:px-10 lg:px-16">
-        <div className="mt-12 grid grid-cols-2 gap-8 border-t border-line pt-10 sm:grid-cols-4">
+        {/* Link columns — gold eyebrow heads, quiet cream links. */}
+        <div className="mt-16 grid grid-cols-2 gap-x-8 gap-y-10 border-t border-cream/10 pt-12 sm:grid-cols-4 md:mt-20">
           {COLUMNS.map((col) => (
             <div key={col.title}>
-              <p className="text-sm font-semibold text-ink">{col.title}</p>
-              <ul className="mt-3 space-y-2.5">
+              <p className="text-[0.62rem] uppercase tracking-[0.28em] text-wine">{col.title}</p>
+              <ul className="mt-4 space-y-3">
                 {col.links.filter((l) => l.href).map((l) => (
                   <li key={l.label}>
                     {"external" in l && l.external ? (
@@ -88,14 +110,14 @@ export function Footer() {
                         href={l.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-ink-soft transition-colors hover:text-ink"
+                        className="text-sm text-cream/65 transition-colors hover:text-cream"
                       >
                         {l.label}
                       </a>
                     ) : (
                       <Link
                         href={l.href}
-                        className="text-sm text-ink-soft transition-colors hover:text-ink"
+                        className="text-sm text-cream/65 transition-colors hover:text-cream"
                       >
                         {l.label}
                       </Link>
@@ -108,16 +130,16 @@ export function Footer() {
         </div>
 
         {/* Areas served — internal links to the local landing pages (SEO). */}
-        <div className="mt-10 border-t border-line pt-6">
-          <p className="text-[0.7rem] uppercase tracking-[0.18em] text-ink-faint">
+        <div className="mt-14 border-t border-cream/10 pt-7">
+          <p className="text-[0.62rem] uppercase tracking-[0.28em] text-cream/40">
             Quinceañera photographer serving
           </p>
-          <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-ink-soft">
+          <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-cream/65">
             {locations.map((l) => (
               <Link
                 key={l.slug}
                 href={`/quinceanera-photographer/${l.slug}`}
-                className="transition-colors hover:text-ink"
+                className="transition-colors hover:text-cream"
               >
                 {l.city}
               </Link>
@@ -125,12 +147,15 @@ export function Footer() {
           </div>
         </div>
 
-        <p className="mt-8 pb-14 text-center text-xs text-ink-faint">
-          © {year} {site.brand} · {site.serviceArea} ·{" "}
-          <Link href="/admin/login" className="transition-colors hover:text-ink">
+        {/* Bottom bar */}
+        <div className="mt-12 flex flex-col gap-3 border-t border-cream/10 py-8 text-xs text-cream/40 sm:flex-row sm:items-center sm:justify-between">
+          <p>
+            © {year} {site.brand} · {site.serviceArea}
+          </p>
+          <Link href="/admin/login" className="transition-colors hover:text-cream/70">
             Studio
           </Link>
-        </p>
+        </div>
       </div>
     </footer>
   );

@@ -139,6 +139,7 @@ const post: BlogPost = {
     },
   ],
   related: [
+    "canciones-para-quinceanera",
     "ideas-de-fotos-de-quinceanera-dfw",
     "el-cambio-de-zapatillas-quinceanera",
     "foto-o-video-quinceanera",

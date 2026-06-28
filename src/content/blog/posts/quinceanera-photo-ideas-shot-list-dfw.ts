@@ -193,6 +193,7 @@ const post: BlogPost = {
     },
   ],
   related: [
+    "quinceanera-dress-colors-that-photograph-best",
     "best-quinceanera-photo-locations-dfw",
     "court-vals-surprise-dance-quinceanera",
     "pre-quince-photo-session-dfw",

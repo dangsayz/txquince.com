@@ -44,7 +44,7 @@ export default function EsBlogIndexPage() {
 
   return (
     <>
-      <section className="mx-auto max-w-7xl px-5 pt-section md:px-10 lg:px-16 md:pt-section-lg">
+      <section className="mx-auto max-w-5xl px-5 pt-section md:px-10 lg:px-16 md:pt-section-lg">
         <div className="flex justify-end">
           <Link href="/blog" hrefLang="en" className="text-xs text-wine underline underline-offset-2 hover:text-wine-deep">
             Read in English
@@ -61,48 +61,63 @@ export default function EsBlogIndexPage() {
       </section>
 
       {featured ? (
-        <section className="mx-auto max-w-7xl px-5 py-section md:px-10 lg:px-16">
+        <section className="mx-auto mt-14 max-w-5xl border-t border-ink/10 px-5 pt-12 md:mt-20 md:px-10 lg:px-16">
           <Reveal>
-            <Link
-              href={`/es/blog/${featured.slug}`}
-              className="group block rounded-[1.75rem] border border-line bg-white p-8 transition-colors hover:border-wine md:p-12"
-            >
-              <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">
+            <Link href={`/es/blog/${featured.slug}`} className="group block">
+              <p className="text-[0.62rem] uppercase tracking-[0.28em] text-wine-deep">
                 {CATEGORY_ES[featured.category]} · Destacado
               </p>
-              <h2 className="mt-4 max-w-3xl font-display text-3xl leading-tight text-ink group-hover:text-wine md:text-4xl">
+              <h2
+                className="mt-5 max-w-3xl font-display text-ink transition-colors group-hover:text-wine"
+                style={{ fontSize: "clamp(2rem,4.6vw,3.4rem)", lineHeight: 1.04, letterSpacing: "-0.02em" }}
+              >
                 {featured.title}
               </h2>
-              <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-soft">{featured.excerpt}</p>
-              <p className="mt-5 text-xs text-ink-faint">{featured.readMinutes} min de lectura</p>
+              <p className="mt-5 max-w-2xl text-base leading-relaxed text-ink-soft">{featured.excerpt}</p>
+              <p className="mt-6 inline-flex items-baseline gap-2 text-[0.66rem] uppercase tracking-[0.2em] text-ink-faint">
+                {featured.readMinutes} min de lectura
+                <span
+                  aria-hidden
+                  className="text-wine transition-transform duration-300 group-hover:translate-x-0.5"
+                >
+                  →
+                </span>
+              </p>
             </Link>
           </Reveal>
         </section>
       ) : null}
 
-      <section className="mx-auto max-w-7xl px-5 pb-section md:px-10 lg:px-16 md:pb-section-lg">
+      <section className="mx-auto mt-16 max-w-5xl px-5 pb-section md:mt-24 md:px-10 lg:px-16 md:pb-section-lg">
         {CATEGORY_ORDER.map((cat) => {
           const inCat = rest.filter((p) => p.category === cat);
           if (inCat.length === 0) return null;
           return (
-            <div key={cat} className="mt-14 first:mt-0">
-              <h2 className="border-b border-line pb-3 font-display text-2xl text-ink">{CATEGORY_ES[cat]}</h2>
-              <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {inCat.map((p, i) => (
-                  <Reveal key={p.slug} delay={(i % 3) * 70}>
-                    <Link
-                      href={`/es/blog/${p.slug}`}
-                      className="group flex h-full flex-col border border-line bg-white p-6 transition-colors hover:border-wine"
-                    >
-                      <h3 className="font-display text-xl leading-tight text-ink group-hover:text-wine">{p.title}</h3>
-                      <p className="mt-3 flex-1 text-sm leading-relaxed text-ink-soft">{p.excerpt}</p>
-                      <p className="mt-4 text-[0.66rem] uppercase tracking-[0.14em] text-ink-faint">
-                        {p.readMinutes} min de lectura
-                      </p>
-                    </Link>
-                  </Reveal>
-                ))}
+            <div key={cat} className="mt-16 first:mt-0">
+              <div className="flex items-baseline justify-between border-b border-ink/10 pb-3">
+                <h2 className="font-display text-2xl text-ink md:text-[1.7rem]">{CATEGORY_ES[cat]}</h2>
+                <span className="text-[0.6rem] uppercase tracking-[0.22em] text-ink-faint">
+                  {inCat.length} {inCat.length === 1 ? "guía" : "guías"}
+                </span>
               </div>
+              {inCat.map((p, i) => (
+                <Reveal key={p.slug} delay={(i % 4) * 60}>
+                  <Link
+                    href={`/es/blog/${p.slug}`}
+                    className={`group block py-7 md:py-8 ${i > 0 ? "border-t border-ink/10" : ""}`}
+                  >
+                    <div className="flex items-baseline justify-between gap-6">
+                      <h3 className="font-display text-xl text-ink transition-colors group-hover:text-wine md:text-2xl">
+                        {p.title}
+                      </h3>
+                      <span className="shrink-0 whitespace-nowrap text-[0.6rem] uppercase tracking-[0.18em] text-ink-faint">
+                        {p.readMinutes} min
+                      </span>
+                    </div>
+                    <p className="mt-2.5 max-w-2xl text-sm leading-relaxed text-ink-soft">{p.excerpt}</p>
+                  </Link>
+                </Reveal>
+              ))}
             </div>
           );
         })}

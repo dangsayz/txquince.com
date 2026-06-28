@@ -159,16 +159,21 @@ export default async function AdminDashboard({
         </Link>
       ) : null}
 
-      {/* THE BOTTLENECK — the one thing to fix, named automatically. */}
+      {/* THE BOTTLENECK — the one thing to fix, named automatically. A calm
+          champagne-tinted card (not a loud 2px gold frame) keeps it the
+          priority without shouting over the rest of the dashboard. */}
       {s.bottleneck ? (
-        <section className="mt-6 rounded-2xl border-2 border-wine bg-white p-5">
-          <p className="text-[0.66rem] uppercase tracking-[0.18em] text-wine-deep">
-            Fix this first — your weakest funnel edge
-          </p>
-          <p className="mt-2 font-display text-xl text-ink">
+        <section className="mt-6 rounded-2xl border border-line bg-wine-tint/40 p-5">
+          <div className="flex items-center gap-2">
+            <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-wine" />
+            <p className="text-[0.62rem] uppercase tracking-[0.2em] text-ink-faint">
+              Fix this first — your weakest funnel edge
+            </p>
+          </div>
+          <p className="mt-3 font-display text-xl text-ink">
             {s.bottleneck.edge}:{" "}
             <span className="text-wine-deep">{s.bottleneck.rate}%</span>
-            <span className="text-sm text-ink-faint"> (healthy ≈ {s.bottleneck.baseline}%)</span>
+            <span className="ml-1.5 text-sm text-ink-faint">healthy ≈ {s.bottleneck.baseline}%</span>
           </p>
           <p className="mt-2 text-sm leading-relaxed text-ink-soft">{s.bottleneck.action}</p>
         </section>

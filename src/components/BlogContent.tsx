@@ -4,11 +4,14 @@ import type { BlogBlock } from "@/content/blog";
 import { slugifyHeading } from "@/content/blog";
 
 /**
- * Renders structured blog blocks. Inline `[label](/href)` in prose becomes a
- * link — internal hrefs use next/link (contextual internal linking, LAW 5),
- * external hrefs open safely in a new tab.
+ * Renders structured blog blocks in the site's editorial voice — generous
+ * reading type, hairline ornament only, no cards. Inline `[label](/href)` in
+ * prose becomes a link: internal hrefs use next/link (contextual internal
+ * linking, LAW 5), external hrefs open safely in a new tab.
  */
 const LINK_RE = /\[([^\]]+)\]\(([^)]+)\)/g;
+const linkClass =
+  "text-wine underline decoration-wine/40 underline-offset-[3px] transition-colors hover:text-wine-deep hover:decoration-wine-deep";
 
 function renderInline(text: string): ReactNode[] {
   const nodes: ReactNode[] = [];
@@ -21,13 +24,13 @@ function renderInline(text: string): ReactNode[] {
     const [, label, href] = m;
     if (href.startsWith("/")) {
       nodes.push(
-        <Link key={i++} href={href} className="text-wine underline underline-offset-2 hover:text-wine-deep">
+        <Link key={i++} href={href} className={linkClass}>
           {label}
         </Link>,
       );
     } else {
       nodes.push(
-        <a key={i++} href={href} target="_blank" rel="noopener noreferrer" className="text-wine underline underline-offset-2 hover:text-wine-deep">
+        <a key={i++} href={href} target="_blank" rel="noopener noreferrer" className={linkClass}>
           {label}
         </a>,
       );
@@ -38,9 +41,11 @@ function renderInline(text: string): ReactNode[] {
   return nodes;
 }
 
+const proseText = "text-[1.0625rem] leading-[1.85] text-ink-soft";
+
 export function BlogContent({ blocks }: { blocks: BlogBlock[] }) {
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-7">
       {blocks.map((b, i) => {
         switch (b.type) {
           case "h2":
@@ -48,29 +53,30 @@ export function BlogContent({ blocks }: { blocks: BlogBlock[] }) {
               <h2
                 key={i}
                 id={slugifyHeading(b.text)}
-                className="mt-6 scroll-mt-28 font-display text-3xl text-ink"
+                className="mt-8 scroll-mt-28 font-display text-ink"
+                style={{ fontSize: "clamp(1.9rem,3.4vw,2.5rem)", lineHeight: 1.08, letterSpacing: "-0.015em" }}
               >
                 {b.text}
               </h2>
             );
           case "h3":
             return (
-              <h3 key={i} className="mt-2 font-display text-2xl text-ink">
+              <h3 key={i} className="mt-3 font-display text-2xl leading-snug text-ink">
                 {b.text}
               </h3>
             );
           case "p":
             return (
-              <p key={i} className="text-base leading-relaxed text-ink-soft">
+              <p key={i} className={proseText}>
                 {renderInline(b.text)}
               </p>
             );
           case "ul":
             return (
-              <ul key={i} className="flex flex-col gap-2.5 pl-1">
+              <ul key={i} className="flex flex-col gap-3">
                 {b.items.map((it, j) => (
-                  <li key={j} className="flex gap-3 text-base leading-relaxed text-ink-soft">
-                    <span aria-hidden className="mt-2.5 h-1 w-1 shrink-0 rounded-full bg-wine" />
+                  <li key={j} className={`flex gap-3.5 ${proseText}`}>
+                    <span aria-hidden className="mt-[0.7em] h-1 w-1 shrink-0 rounded-full bg-wine" />
                     <span>{renderInline(it)}</span>
                   </li>
                 ))}
@@ -78,10 +84,12 @@ export function BlogContent({ blocks }: { blocks: BlogBlock[] }) {
             );
           case "ol":
             return (
-              <ol key={i} className="flex flex-col gap-2.5">
+              <ol key={i} className="flex flex-col gap-3">
                 {b.items.map((it, j) => (
-                  <li key={j} className="flex gap-3 text-base leading-relaxed text-ink-soft">
-                    <span className="font-display text-lg leading-none text-wine">{j + 1}.</span>
+                  <li key={j} className={`flex gap-3.5 ${proseText}`}>
+                    <span className="shrink-0 font-display text-lg leading-[1.4] text-wine tabular-nums">
+                      {j + 1}.
+                    </span>
                     <span>{renderInline(it)}</span>
                   </li>
                 ))}
@@ -89,22 +97,36 @@ export function BlogContent({ blocks }: { blocks: BlogBlock[] }) {
             );
           case "quote":
             return (
-              <blockquote key={i} className="border-l-2 border-wine pl-5 font-display text-2xl italic leading-snug text-ink">
+              <blockquote
+                key={i}
+                className="my-2 border-l-2 border-wine pl-6 font-display italic leading-snug text-ink"
+                style={{ fontSize: "clamp(1.4rem,2.6vw,1.9rem)", letterSpacing: "-0.01em" }}
+              >
                 {renderInline(b.text)}
               </blockquote>
             );
           case "callout":
             return (
-              <div key={i} className="border border-line bg-greige p-5 text-sm leading-relaxed text-ink">
+              <aside
+                key={i}
+                className="my-2 border-l-2 border-wine/40 py-1 pl-6 text-[1.0625rem] leading-[1.75] text-ink"
+              >
                 {renderInline(b.text)}
-              </div>
+              </aside>
             );
           case "cta":
             return (
-              <div key={i} className="card-apple my-2 p-6 text-center md:p-8">
-                <p className="font-display text-2xl text-ink text-balance">{b.heading}</p>
-                {b.body ? <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-ink-soft">{b.body}</p> : null}
-                <Link href={b.href} className="btn-espresso mt-5 inline-flex">
+              <div
+                key={i}
+                className="my-6 border-y border-ink/10 py-10 text-center md:py-12"
+              >
+                <p className="mx-auto max-w-lg font-display text-2xl text-ink text-balance md:text-[1.8rem]">
+                  {b.heading}
+                </p>
+                {b.body ? (
+                  <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-ink-soft">{b.body}</p>
+                ) : null}
+                <Link href={b.href} className="btn-espresso mt-6 inline-flex">
                   {b.label}
                 </Link>
               </div>
