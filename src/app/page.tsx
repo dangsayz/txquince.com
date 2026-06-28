@@ -6,7 +6,7 @@ import { homeTeaser } from "@/content/gallery";
 import { packages, depositFloorLabel } from "@/content/packages";
 import { locations } from "@/content/locations";
 import { releasedTestimonials } from "@/content/testimonials";
-import { getFeaturedImages, getVideos, getHeroMedia } from "@/lib/content-db";
+import { getFeaturedImages, getImagesBySection, getVideos, getHeroMedia } from "@/lib/content-db";
 import { DateChecker } from "@/components/DateChecker";
 import { BOOKING_STEPS } from "@/components/HowBookingWorks";
 import { VideoGallery } from "@/components/VideoGallery";
@@ -35,6 +35,9 @@ type Frame = {
   /** DB identity — lets the admin overlay anchor/replace this image in place. */
   id?: string | null;
   slug?: string | null;
+  /** Natural dimensions — for the editorial masonry (natural ratio, zero CLS). */
+  w?: number | null;
+  h?: number | null;
 };
 
 /** Admin-only edit chip for a frame (renders nothing for visitors). */
@@ -56,8 +59,9 @@ function quietLink(extra = "") {
 
 export default async function HomePage() {
   const testimonials = releasedTestimonials();
-  const [featured, videos, heroMedia] = await Promise.all([
+  const [featured, portraitImgs, videos, heroMedia] = await Promise.all([
     getFeaturedImages(24),
+    getImagesBySection("portraits"),
     getVideos(),
     getHeroMedia(),
   ]);
@@ -89,20 +93,20 @@ export default async function HomePage() {
   // A single full-bleed frame breaks the long text stretch in the lower page.
   const band = featured.find((i) => (i.width ?? 0) > (i.height ?? 0) && i.url !== cover?.url) ?? null;
 
-  // Selected-work teaser — a clean, uniform grid (no asymmetric offsets).
-  // Portrait-only so every tile crops identically; most featured photos are
-  // 2:3, so this removes the orientation jitter that read as "random." Faces
-  // survive the 4:5 crop via a top-biased default when no focal anchor is set.
-  const portraitFeatured = featured.filter((i) => (i.height ?? 0) > (i.width ?? 0));
-  const gallerySource = portraitFeatured.length >= 6 ? portraitFeatured : featured;
-  const gallery: Frame[] = gallerySource.length
-    ? gallerySource.slice(0, 6).map((i) => ({
+  // Portraits editorial spread — sourced from the whole PORTRAITS section (not
+  // just featured), up to ~27 frames, kept at NATURAL ratio so the masonry reads
+  // like a magazine spread on a clean white ground (not a uniform grid).
+  const gallerySource = portraitImgs.length ? portraitImgs : featured;
+  const portraits: Frame[] = gallerySource.length
+    ? gallerySource.slice(0, 27).map((i) => ({
         url: i.url,
         alt: i.alt,
         fx: i.focus_x,
         fy: i.focus_y,
         id: i.id,
         slug: i.slug,
+        w: i.width,
+        h: i.height,
       }))
     : frames.slice(0, 6);
 
@@ -222,55 +226,74 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ================= THE WORK — a curated sequence, not a grid ================= */}
-      <section className="pt-24 md:pt-36">
-        {/* Spread title — oversized, left, with the section index far right. */}
-        <div className="mx-auto flex max-w-[90rem] items-end justify-between px-5 md:px-10 lg:px-16">
-          <Reveal>
-            <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">{home.work.eyebrow}</p>
-            <h2
-              className="mt-4 font-display text-ink"
-              style={{ fontSize: "clamp(2.6rem,6vw,5.4rem)", lineHeight: 0.98, letterSpacing: "-0.025em" }}
-            >
-              Selected work
-            </h2>
-          </Reveal>
-          <p aria-hidden className="hidden font-display text-ink/15 md:block" style={{ fontSize: "5rem", lineHeight: 1 }}>
-            01
-          </p>
-        </div>
+      {/* ================= PORTRAITS — an editorial spread on a clean white ground ================= */}
+      <section className="mt-24 bg-white py-20 md:mt-36 md:py-32">
+        <div className="mx-auto max-w-[88rem] px-5 md:px-10 lg:px-16">
+          {/* Spread title — oversized, left, with the section index far right. */}
+          <div className="flex items-end justify-between">
+            <Reveal>
+              <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">{home.work.eyebrow}</p>
+              <h2
+                className="mt-4 font-display text-ink"
+                style={{ fontSize: "clamp(2.6rem,6vw,5.4rem)", lineHeight: 0.98, letterSpacing: "-0.025em" }}
+              >
+                Portraits
+              </h2>
+            </Reveal>
+            <p aria-hidden className="hidden font-display text-ink/10 md:block" style={{ fontSize: "5rem", lineHeight: 1 }}>
+              01
+            </p>
+          </div>
 
-        {/* A clean, even teaser grid — uniform 4:5 portrait tiles, faces kept
-            by a top-biased crop. Orderly on purpose; the full set is /portfolio. */}
-        <div className="mx-auto mt-14 grid max-w-[90rem] grid-cols-2 gap-3 px-5 sm:gap-4 md:mt-20 md:grid-cols-3 md:gap-5 md:px-10 lg:px-16">
-          {gallery.map((f, i) => (
-            <Reveal key={f.id ?? i} delay={(i % 3) * 80}>
-              <Link href="/portfolio" className="group block">
-                <div className="relative aspect-[4/5] overflow-hidden">
+          {/* Editorial masonry — natural ratios, generous air, faces never
+              cropped (the image keeps its full frame). Magazine spread, not a
+              grid. The full set lives at /portfolio. */}
+          <div className="mt-14 columns-2 gap-5 md:mt-20 md:columns-3 md:gap-9 lg:gap-12">
+            {portraits.map((f, i) => (
+              <Reveal
+                key={f.id ?? i}
+                delay={(i % 3) * 60}
+                className="mb-5 break-inside-avoid md:mb-9 lg:mb-12"
+              >
+                <Link href="/portfolio" className="group relative block overflow-hidden bg-greige">
                   {f.url ? (
-                    <Image
-                      src={f.url}
-                      alt={f.alt}
-                      fill
-                      sizes="(max-width: 768px) 50vw, 30vw"
-                      className="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
-                      style={{ objectPosition: focal(f, 50, 28) }}
-                    />
+                    f.w && f.h ? (
+                      <Image
+                        src={f.url}
+                        alt={f.alt}
+                        width={f.w}
+                        height={f.h}
+                        sizes="(max-width: 768px) 50vw, 30vw"
+                        className="block h-auto w-full transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+                        style={{ objectPosition: focal(f, 50, 32) }}
+                      />
+                    ) : (
+                      <div className="relative aspect-[4/5]">
+                        <Image
+                          src={f.url}
+                          alt={f.alt}
+                          fill
+                          sizes="(max-width: 768px) 50vw, 30vw"
+                          className="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+                          style={{ objectPosition: focal(f, 50, 32) }}
+                        />
+                      </div>
+                    )
                   ) : (
-                    <div className="absolute inset-0 bg-greige" />
+                    <div className="aspect-[4/5] bg-greige" />
                   )}
                   {editable(f)}
-                </div>
-              </Link>
-            </Reveal>
-          ))}
-        </div>
+                </Link>
+              </Reveal>
+            ))}
+          </div>
 
-        <div className="mx-auto mt-10 flex max-w-[90rem] justify-end px-5 md:mt-14 md:px-10 lg:px-16">
-          <Link href="/portfolio" className={quietLink("text-ink underline decoration-ink/30 hover:text-wine hover:decoration-wine")}>
-            {home.work.cta}
-            <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
-          </Link>
+          <div className="mt-12 flex justify-end md:mt-16">
+            <Link href="/portfolio" className={quietLink("text-ink underline decoration-ink/30 hover:text-wine hover:decoration-wine")}>
+              {home.work.cta}
+              <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
+            </Link>
+          </div>
         </div>
       </section>
 

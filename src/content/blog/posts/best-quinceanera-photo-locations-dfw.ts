@@ -62,6 +62,11 @@ const post: BlogPost = {
       type: "p",
       text: "Historic brick streets, wooden storefronts, and longhorn cattle make this one of the most distinctive backdrops in Texas. Time it carefully: the famous cattle drive runs around 11:30am daily, which draws big crowds — so we either shoot early morning before the foot traffic builds or work the quieter back streets and station for clean frames.",
     },
+    {
+      type: "image",
+      slug: "fort-worth-stockyards-stock-53",
+      caption: "Quinceañera portraits in the Fort Worth Stockyards.",
+    },
     { type: "h3", text: "Fort Worth Water Gardens" },
     {
       type: "p",
@@ -91,6 +96,11 @@ const post: BlogPost = {
     {
       type: "p",
       text: "Cobblestone walkways, arched bridges, and a cobbled canal that feels like a slice of Venice — anchored by the Las Colinas clock tower and the water of Lake Carolyn. It's one of the most photogenic quince spots in the entire metroplex, with reflections that make portraits glow at sunset. Public access is generally free, and we plan around the soft evening light.",
+    },
+    {
+      type: "image",
+      slug: "mandalay-canal-walk-zapata-27",
+      caption: "Quinceañera portraits along the Mandalay Canal Walk in Irving.",
     },
     { type: "h2", text: "McKinney" },
     { type: "h3", text: "Adriatica Village" },
@@ -140,6 +150,11 @@ const post: BlogPost = {
       type: "p",
       text: "Aim for the hour after sunrise or the two hours before sunset — that golden light is the single biggest upgrade to any portrait. Avoid midday in summer; the Texas sun is harsh and unflattering overhead. For season, spring (blooms) and fall (color, mild weather) are the sweet spots in DFW, though canals, skylines, and historic districts photograph year-round.",
     },
+    {
+      type: "image",
+      slug: "fort-worth-stockyards-stock-34",
+      caption: "Western-style quinceañera portraits in the Fort Worth Stockyards.",
+    },
     { type: "h2", text: "What to wear and bring" },
     {
       type: "ol",
@@ -153,6 +168,11 @@ const post: BlogPost = {
     {
       type: "p",
       text: "If you can, do a separate [pre-quince portrait session](/blog/pre-quince-photo-session-dfw) a few weeks ahead — it gives you relaxed, unhurried images at the location you love most, without the time pressure of the event day. Then, once your portraits are planned, look at the [reception venues across DFW](/blog/quinceanera-reception-venues-dfw) and how the [Mass in Dallas–Fort Worth](/blog/quinceanera-mass-dallas-fort-worth) fits into the day's timeline.",
+    },
+    {
+      type: "image",
+      slug: "mandalay-canal-walk-zapata-39",
+      caption: "Canal-side quinceañera portraits at Las Colinas in Irving.",
     },
     { type: "h2", text: "Pick the place — we'll handle the rest" },
     {

@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { site } from "@/content/site";
 import { getAllPosts, BLOG_CATEGORIES } from "@/content/blog";
-import { getFeaturedImages } from "@/lib/content-db";
+import { getFeaturedImages, getPageHero } from "@/lib/content-db";
 import { Reveal } from "@/components/Reveal";
 import { FinalCTA } from "@/components/FinalCTA";
 
@@ -22,12 +22,6 @@ export const metadata: Metadata = {
   },
 };
 
-function formatDate(iso: string): string {
-  const d = new Date(`${iso}T12:00:00`);
-  if (Number.isNaN(d.getTime())) return iso;
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-}
-
 function focal(fx?: number | null, fy?: number | null): string {
   return `${Math.round((fx ?? 0.5) * 100)}% ${Math.round((fy ?? 0.35) * 100)}%`;
 }
@@ -37,69 +31,100 @@ export default async function BlogIndexPage() {
   const featured = posts[0];
   const rest = posts.slice(1);
 
-  // Real photography carries the contrast a text-only index can't. Pull the
-  // featured set and hand each post a frame (hero gets the first).
+  // Real photography carries the contrast a text-only index can't. The hero is
+  // operator-choosable in /admin/hero (falls back to the top featured frame);
+  // the featured post + each category tile get a different frame so nothing
+  // repeats.
   const imgs = await getFeaturedImages(24);
-  const hero = imgs[0] ?? null;
+  const hero = (await getPageHero("blog")) ?? imgs[0] ?? null;
+  const pool = imgs.filter((i) => i.url !== hero?.url);
+  const featuredImg = pool[0] ?? imgs[0] ?? null;
+  const tilePool = pool.length > 1 ? pool.slice(1) : pool;
   const imgForIndex = (idx: number) =>
-    imgs.length > 1 ? imgs[(idx % (imgs.length - 1)) + 1] : (imgs[0] ?? null);
+    tilePool.length ? tilePool[idx % tilePool.length] : (imgs[0] ?? null);
   // Stable per-post image across the category loop.
   const imgBySlug = new Map(rest.map((p, idx) => [p.slug, imgForIndex(idx)]));
 
   return (
     <>
-      {/* ===== Masthead ===== */}
-      <section className="mx-auto max-w-[90rem] px-5 pt-section md:px-10 lg:px-16 md:pt-section-lg">
-        <Reveal className="max-w-3xl">
-          <p className="eyebrow mb-5">The Quince Journal</p>
-          <h1 className="display-1 text-ink text-balance">
-            Plan her quinceañera with no guesswork.
-          </h1>
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-soft">
-            Real costs, real timelines, and the traditions that make the day — written for
-            Dallas–Fort Worth families, so you know exactly what to expect before you spend a dollar.
-          </p>
-        </Reveal>
+      {/* ===== Cinematic hero — matches Investment / Areas / About: full-bleed
+          photo, page title low-left in cream. ===== */}
+      <section className="relative overflow-hidden bg-ink">
+        <div className="relative h-[66svh] min-h-[440px] w-full md:h-[76svh]">
+          {hero?.url ? (
+            <Image
+              src={hero.url}
+              alt={hero.alt || "Quinceañera in Dallas–Fort Worth"}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+              style={{ objectPosition: focal(hero.focus_x, hero.focus_y) }}
+            />
+          ) : null}
+          <div className="absolute inset-0 bg-gradient-to-t from-ink/92 via-ink/45 to-ink/10" />
+          <div className="absolute inset-x-0 bottom-0">
+            <div className="mx-auto max-w-[90rem] px-5 pb-12 md:px-10 lg:px-16 md:pb-16">
+              <Reveal>
+                <p className="text-[0.62rem] uppercase tracking-[0.32em] text-cream/85">
+                  The Quince Journal
+                </p>
+                <h1
+                  className="mt-4 max-w-3xl font-display text-cream text-balance"
+                  style={{ fontSize: "clamp(2.4rem,5.8vw,5rem)", lineHeight: 1.0, letterSpacing: "-0.026em" }}
+                >
+                  Plan her quinceañera with no guesswork.
+                </h1>
+                <p className="mt-5 max-w-xl text-sm leading-relaxed text-cream/80 md:text-base">
+                  Real costs, real timelines, and the traditions that make the day —
+                  written for Dallas–Fort Worth families, so you know exactly what to
+                  expect before you spend a dollar.
+                </p>
+              </Reveal>
+            </div>
+          </div>
+        </div>
       </section>
 
-      {/* ===== Featured — cinematic image hero ===== */}
+      {/* ===== Featured guide — wide editorial card, image + text side by side ===== */}
       {featured ? (
-        <section className="mx-auto mt-10 max-w-[90rem] px-5 md:mt-12 md:px-10 lg:px-16">
+        <section className="mx-auto mt-12 max-w-[90rem] px-5 md:mt-16 md:px-10 lg:px-16">
           <Reveal>
-            <Link href={`/blog/${featured.slug}`} className="group relative block overflow-hidden bg-ink">
-              <div className="relative aspect-[4/5] sm:aspect-[16/10] lg:aspect-[21/9]">
-                {hero?.url ? (
+            <Link
+              href={`/blog/${featured.slug}`}
+              className="group grid gap-6 md:grid-cols-[1.25fr_1fr] md:items-center md:gap-10"
+            >
+              <div className="relative aspect-[16/10] overflow-hidden bg-greige md:aspect-[4/3]">
+                {featuredImg?.url ? (
                   <Image
-                    src={hero.url}
-                    alt={hero.alt || "Quinceañera"}
+                    src={featuredImg.url}
+                    alt={featuredImg.alt || "Quinceañera"}
                     fill
-                    priority
-                    sizes="(max-width: 1440px) 100vw, 90rem"
-                    className="object-cover transition-transform duration-[1400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
-                    style={{ objectPosition: focal(hero.focus_x, hero.focus_y) }}
+                    sizes="(max-width: 768px) 100vw, 55vw"
+                    className="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
+                    style={{ objectPosition: focal(featuredImg.focus_x, featuredImg.focus_y) }}
                   />
                 ) : null}
-                <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/40 to-ink/5" />
-                <div className="absolute inset-x-0 bottom-0 p-6 md:p-10 lg:p-14">
-                  <p className="text-[0.62rem] uppercase tracking-[0.3em] text-cream/85">
-                    {featured.category} · Featured
-                  </p>
-                  <h2
-                    className="mt-3 max-w-3xl font-display text-cream"
-                    style={{ fontSize: "clamp(1.9rem,4.4vw,3.6rem)", lineHeight: 1.03, letterSpacing: "-0.02em" }}
-                  >
-                    {featured.title}
-                  </h2>
-                  <p className="mt-3 max-w-xl text-sm leading-relaxed text-cream/80 md:text-base">
-                    {featured.excerpt}
-                  </p>
-                  <span className="mt-6 inline-flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.2em] text-cream">
-                    Read the guide
-                    <span aria-hidden className="text-wine-tint transition-transform duration-300 group-hover:translate-x-1">
-                      →
-                    </span>
+              </div>
+              <div>
+                <p className="text-[0.62rem] uppercase tracking-[0.28em] text-wine-deep">
+                  {featured.category} · Featured
+                </p>
+                <h2
+                  className="mt-3 font-display text-ink"
+                  style={{ fontSize: "clamp(1.8rem,3.4vw,2.9rem)", lineHeight: 1.05, letterSpacing: "-0.02em" }}
+                >
+                  {featured.title}
+                </h2>
+                <p className="mt-4 max-w-md text-sm leading-relaxed text-ink-soft md:text-base">
+                  {featured.excerpt}
+                </p>
+                <span className="mt-6 inline-flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.2em] text-ink transition-colors group-hover:text-wine">
+                  Read the guide
+                  <span aria-hidden className="text-wine transition-transform duration-300 group-hover:translate-x-1">
+                    →
                   </span>
-                </div>
+                </span>
               </div>
             </Link>
           </Reveal>

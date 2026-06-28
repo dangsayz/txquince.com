@@ -1,0 +1,58 @@
+[
+  {
+    "folder": "Convention Plaza Ballroom in Irving at 183",
+    "citySlug": "irving",
+    "city": "Irving",
+    "venue": "Convention Plaza Ballroom",
+    "venueFull": "Convention Plaza Ballroom in Irving",
+    "section": "celebration"
+  },
+  {
+    "folder": "Las Lomas Irving Banquet Halls Event Center",
+    "citySlug": "irving",
+    "city": "Irving",
+    "venue": "Las Lomas Banquet Hall",
+    "venueFull": "Las Lomas Banquet Hall in Irving",
+    "section": "celebration"
+  },
+  {
+    "folder": "Mandalay Canal Walk at Las Colinas",
+    "citySlug": "irving",
+    "city": "Irving",
+    "venue": "Mandalay Canal Walk",
+    "venueFull": "the Mandalay Canal Walk at Las Colinas, Irving",
+    "section": "portraits"
+  },
+  {
+    "folder": "Fort Worth Stockyards Station",
+    "citySlug": "fort-worth",
+    "city": "Fort Worth",
+    "venue": "Fort Worth Stockyards",
+    "venueFull": "the Fort Worth Stockyards",
+    "section": "portraits"
+  },
+  {
+    "folder": "The Dallas Arboretum and Botanical Garden",
+    "citySlug": "dallas",
+    "city": "Dallas",
+    "venue": "Dallas Arboretum",
+    "venueFull": "the Dallas Arboretum & Botanical Garden",
+    "section": "portraits"
+  },
+  {
+    "folder": "Slate at ll Creeks Venue Center",
+    "citySlug": null,
+    "city": "Allen",
+    "venue": "Slate at Eleven Creeks",
+    "venueFull": "Slate at Eleven Creeks in Allen",
+    "section": "celebration"
+  },
+  {
+    "folder": "VM Ballroom  Event venue in Balch Springs, Texas",
+    "citySlug": null,
+    "city": "Balch Springs",
+    "venue": "VM Ballroom",
+    "venueFull": "VM Ballroom in Balch Springs",
+    "section": "celebration"
+  }
+]

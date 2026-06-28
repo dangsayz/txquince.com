@@ -1,7 +1,17 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { ReactNode } from "react";
 import type { BlogBlock } from "@/content/blog";
 import { slugifyHeading } from "@/content/blog";
+
+/** A resolved photo for an `image` block — built by the post page from the slug. */
+export type BlogImage = {
+  url: string;
+  width: number | null;
+  height: number | null;
+  alt: string;
+  caption?: string | null;
+};
 
 /**
  * Renders structured blog blocks in the site's editorial voice — generous
@@ -43,7 +53,13 @@ function renderInline(text: string): ReactNode[] {
 
 const proseText = "text-[1.0625rem] leading-[1.85] text-ink-soft";
 
-export function BlogContent({ blocks }: { blocks: BlogBlock[] }) {
+export function BlogContent({
+  blocks,
+  images,
+}: {
+  blocks: BlogBlock[];
+  images?: Record<string, BlogImage>;
+}) {
   return (
     <div className="flex flex-col gap-7">
       {blocks.map((b, i) => {
@@ -114,6 +130,30 @@ export function BlogContent({ blocks }: { blocks: BlogBlock[] }) {
                 {renderInline(b.text)}
               </aside>
             );
+          case "image": {
+            const img = images?.[b.slug];
+            if (!img?.url) return null; // missing photo → render nothing, never a placeholder
+            const caption = b.caption ?? img.caption ?? null;
+            return (
+              <figure key={i} className="my-4">
+                <div className="overflow-hidden bg-greige">
+                  <Image
+                    src={img.url}
+                    alt={b.alt || img.alt || "Quinceañera in Dallas–Fort Worth"}
+                    width={img.width ?? 1600}
+                    height={img.height ?? 1067}
+                    sizes="(max-width: 768px) 100vw, 720px"
+                    className="block h-auto w-full"
+                  />
+                </div>
+                {caption ? (
+                  <figcaption className="mt-2.5 text-[0.8rem] leading-relaxed text-ink-faint">
+                    {caption}
+                  </figcaption>
+                ) : null}
+              </figure>
+            );
+          }
           case "cta":
             return (
               <div

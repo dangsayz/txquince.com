@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { site } from "@/content/site";
 import { getAllPosts, getPost, relatedPosts, slugifyHeading, esSlugForEn } from "@/content/blog";
+import { getBlogImages } from "@/lib/content-db";
 import { BlogContent } from "@/components/BlogContent";
 import { Reveal } from "@/components/Reveal";
 import { FinalCTA } from "@/components/FinalCTA";
@@ -67,6 +68,10 @@ export default async function BlogPostPage({
   const url = `${site.url}/blog/${post.slug}`;
   const toc = post.content.filter((b) => b.type === "h2") as { type: "h2"; text: string }[];
   const related = relatedPosts(post);
+  const images = await getBlogImages(post.content);
+  const imageUrls = Object.values(images).map((im) =>
+    im.url.startsWith("http") ? im.url : `${site.url}${im.url}`,
+  );
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -83,6 +88,7 @@ export default async function BlogPostPage({
         publisher: { "@type": "Organization", name: site.brand, url: site.url },
         mainEntityOfPage: url,
         articleSection: post.category,
+        ...(imageUrls.length ? { image: imageUrls } : {}),
       },
       {
         "@type": "BreadcrumbList",
@@ -153,7 +159,7 @@ export default async function BlogPostPage({
         ) : null}
 
         <div className="mt-10">
-          <BlogContent blocks={post.content} />
+          <BlogContent blocks={post.content} images={images} />
         </div>
 
         {/* FAQ */}

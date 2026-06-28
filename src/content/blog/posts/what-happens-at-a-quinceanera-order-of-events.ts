@@ -97,10 +97,20 @@ const post: BlogPost = {
       type: "p",
       text: "The reception is the celebration everyone pictures. It opens with a grand entrance: the DJ or emcee introduces the court — each pair of chambelán and dama by name — and then presents the quinceañera herself, often to a song she's chosen and applause from the whole room. Some families do a short choreographed entrance routine right here. From this moment on, she's the center of the evening.",
     },
+    {
+      type: "image",
+      slug: "convention-plaza-ballroom-clarissa-120",
+      caption: "The grand entrance at Convention Plaza Ballroom in Irving.",
+    },
     { type: "h2", text: "The vals and the father-daughter dance" },
     {
       type: "p",
       text: "The vals (the waltz) is the formal, choreographed centerpiece — the honoree dancing with her chambelanes and court to a classical or chosen piece they've rehearsed for months. It flows into the father-daughter dance, one of the most emotional moments of the entire day, when her dad (or a father figure) takes the floor with her. Tears are normal. This is a moment families almost universally wish they had on film as well as in photos.",
+    },
+    {
+      type: "image",
+      slug: "convention-plaza-ballroom-clarissa-433",
+      caption: "The vals on the floor at Convention Plaza Ballroom in Irving.",
     },
     { type: "h2", text: "Changing of the shoes (cambio de zapatos)" },
     {
@@ -124,6 +134,11 @@ const post: BlogPost = {
       type: "p",
       text: "Around the symbolic ceremonies, the celebration settles into the meal. A padrino, parent, or the honoree gives the brindis — the toast — and dinner is served. The pastel (cake) is cut and served, and there's often a designated time for the honoree to greet tables and take photos with guests and padrinos. The order of toast, dinner, and cake shifts venue to venue — your DJ and caterer will lock the exact sequence.",
     },
+    {
+      type: "image",
+      slug: "convention-plaza-ballroom-clarissa-667",
+      caption: "The toast and cake at Convention Plaza Ballroom in Irving.",
+    },
     { type: "h2", text: "The surprise dance (vals sorpresa) and Hora Loca" },
     {
       type: "p",
@@ -133,6 +148,11 @@ const post: BlogPost = {
     {
       type: "p",
       text: "After the surprise dance, the floor opens for everyone. The band or DJ carries the night — cumbias, banda, bachata, whatever fills the family's request list — until the final song and the last dance close things out. By the end, the formal program is long over and it's pure celebration.",
+    },
+    {
+      type: "image",
+      slug: "las-lomas-banquet-hall-valarie-539",
+      caption: "Open dancing at Las Lomas Banquet Hall in Irving.",
     },
     { type: "h2", text: "How long does the whole day run?" },
     {

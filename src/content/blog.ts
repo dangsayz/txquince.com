@@ -20,7 +20,12 @@ export type BlogBlock =
   | { type: "ol"; items: string[] }
   | { type: "quote"; text: string }
   | { type: "callout"; text: string }
-  | { type: "cta"; heading: string; body?: string; href: string; label: string };
+  | { type: "cta"; heading: string; body?: string; href: string; label: string }
+  // A real portfolio photo, by permanent slug (served via /api/img/{slug}). The
+  // post page resolves the slug → dimensions (zero layout shift) + a fallback
+  // alt; `alt`/`caption` here override. A missing slug renders nothing — never a
+  // placeholder.
+  | { type: "image"; slug: string; alt?: string; caption?: string };
 
 export type BlogFaq = { q: string; a: string };
 

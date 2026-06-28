@@ -10,6 +10,8 @@ import {
   GROUPS,
   altPhraseFor,
   categoryLabel,
+  groupById,
+  groupForCategory,
   VENDOR_CATEGORIES,
   vendorCategoryLabel,
   vendorCreditLabel,
@@ -843,6 +845,8 @@ export function PortfolioManager({
     await persistOrder(list);
   }
 
+  const uploadGroup = groupById(groupForCategory(section));
+
   return (
     <div>
       {/* Upload bar */}
@@ -854,6 +858,12 @@ export function PortfolioManager({
             onChange={setSection}
             className="border-b border-line bg-transparent py-1 focus:border-wine focus:outline-none"
           />
+          {uploadGroup ? (
+            <span className="ml-2 whitespace-nowrap text-xs text-ink-faint">
+              → appears publicly under{" "}
+              <span className="text-wine">{uploadGroup.label}</span>
+            </span>
+          ) : null}
         </label>
         <label className="flex items-center gap-2 text-sm text-ink">
           at
@@ -913,6 +923,13 @@ export function PortfolioManager({
         Select as many as you like — images are automatically resized and
         optimized in your browser before upload (originals stay on your computer).
         Then curate ruthlessly: a few stunning frames beat a hundred good ones.
+      </p>
+      <p className="mt-1 text-xs text-ink-faint">
+        Folders roll up into the public tabs — e.g. Crowning, El Vals, and the
+        Cake all show under <span className="text-ink-soft">The Celebration</span>.
+        A tab only appears on the site once it has its first photo, so empty
+        sections (La Misa, Details &amp; Décor, Vendors) stay hidden until you
+        add one.
       </p>
 
       {/* Library — grouped by public tab, then by category. Empty categories

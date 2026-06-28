@@ -48,3 +48,8 @@ cloudflare-env.d.ts
 *.tsbuildinfo
 next-env.d.ts
 inspo/
+
+# venue photo inbox — full-res originals (21GB+, incl. raw video). NEVER commit
+# or deploy these; the ingest script optimizes + uploads them to Supabase.
+/public/Blog/
+/media-inbox/

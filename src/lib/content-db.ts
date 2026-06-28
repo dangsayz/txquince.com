@@ -2,6 +2,8 @@ import "server-only";
 import { cache } from "react";
 import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
 import type { VideoProvider } from "@/lib/video";
+import type { BlogBlock } from "@/content/blog";
+import { getVenue, venueSlugify } from "@/content/venues";
 
 /**
  * INTERNAL storage URL — only ever fetched server-side (by /api/img). Raw
@@ -200,6 +202,44 @@ export const getImageBySlug = cache(
   },
 );
 
+export type ResolvedBlogImage = {
+  url: string;
+  width: number | null;
+  height: number | null;
+  alt: string;
+  caption: string | null;
+};
+
+/**
+ * Resolve every `image` block in a post to a servable photo (branded URL + real
+ * dimensions for zero layout shift + a fallback alt), keyed by slug. Powers
+ * inline blog images. A slug that doesn't resolve is simply omitted — the
+ * renderer then shows nothing rather than a broken/placeholder frame.
+ */
+export async function getBlogImages(
+  blocks: BlogBlock[],
+): Promise<Record<string, ResolvedBlogImage>> {
+  const slugs = Array.from(
+    new Set(blocks.flatMap((b) => (b.type === "image" ? [b.slug] : []))),
+  );
+  const out: Record<string, ResolvedBlogImage> = {};
+  await Promise.all(
+    slugs.map(async (s) => {
+      const im = await getImageBySlug(s);
+      if (im?.slug) {
+        out[im.slug] = {
+          url: im.url,
+          width: im.width,
+          height: im.height,
+          alt: im.alt,
+          caption: im.caption ?? null,
+        };
+      }
+    }),
+  );
+  return out;
+}
+
 /** Every vendor in the directory, ordered by name. Empty if not configured /
  *  tables absent. FULL records (admin use); strip email/phone before rendering
  *  publicly. */
@@ -232,6 +272,70 @@ export async function getImagesByVendor(slug: string): Promise<PortfolioImage[]>
   if (!target) return [];
   const all = await getPortfolioImages();
   return all.filter((i) => i.vendors?.some((v) => v.slug.toLowerCase() === target));
+}
+
+/* ── Venues ──────────────────────────────────────────────────────────────
+ * Venue FACTS come from the shared registry (src/content/venues.ts); this is
+ * the editable COPY (about + FAQ) authored in /admin/venues + drafted by AI. */
+export type VenueFaq = { q: string; a: string };
+export type VenueCopy = {
+  slug: string;
+  about: string | null;
+  faq: VenueFaq[];
+  address: string | null;
+  area: string | null;
+  ig_handle: string | null;
+  website: string | null;
+};
+
+/** All venue copy rows, keyed by slug. Guarded (empty if table absent). */
+export const getAllVenueCopy = cache(async (): Promise<Record<string, VenueCopy>> => {
+  const out: Record<string, VenueCopy> = {};
+  if (!isSupabaseConfigured()) return out;
+  try {
+    const supabase = getServiceSupabase();
+    const { data, error } = await supabase
+      .from("venues")
+      .select("slug, about, faq, address, area, ig_handle, website");
+    if (error || !data) return out;
+    for (const r of data) {
+      out[r.slug as string] = {
+        slug: r.slug as string,
+        about: (r.about as string) ?? null,
+        faq: Array.isArray(r.faq) ? (r.faq as VenueFaq[]) : [],
+        address: (r.address as string) ?? null,
+        area: (r.area as string) ?? null,
+        ig_handle: (r.ig_handle as string) ?? null,
+        website: (r.website as string) ?? null,
+      };
+    }
+  } catch {
+    /* venues table not present yet */
+  }
+  return out;
+});
+
+/** Editable copy for one venue (null if none authored yet). */
+export const getVenueCopy = cache(
+  async (slug: string): Promise<VenueCopy | null> => (await getAllVenueCopy())[slug] ?? null,
+);
+
+/** Photos shot at a registry venue (matched on the `location` the ingest script
+ *  stamps), in gallery order. */
+export async function getImagesByVenue(slug: string): Promise<PortfolioImage[]> {
+  const v = getVenue(slug);
+  if (!v) return [];
+  const all = await getPortfolioImages();
+  const venueLc = v.venue.toLowerCase();
+  return all.filter((i) => {
+    const loc = (i.location ?? "").trim();
+    if (!loc) return false;
+    return (
+      loc === v.locationTag ||
+      venueSlugify(loc) === v.slug ||
+      loc.toLowerCase().includes(venueLc)
+    );
+  });
 }
 
 export async function getImagesBySection(section: string): Promise<PortfolioImage[]> {
@@ -315,6 +419,43 @@ export const getHeroMedia = cache(async (): Promise<HeroMedia | null> => {
       videoId: v.videoId ?? null,
       posterUrl: v.posterUrl ?? null,
     };
+  } catch {
+    return null;
+  }
+});
+
+/**
+ * Pages that support an operator-chosen hero (each leads with a full-bleed
+ * cinematic photo). Key → the public path to revalidate on change. The API
+ * route validates against this same map, so it's the single allowlist.
+ */
+export const HERO_PAGES: Record<string, { label: string; path: string }> = {
+  blog: { label: "Guide (Blog)", path: "/blog" },
+  investment: { label: "Investment", path: "/investment" },
+  about: { label: "About", path: "/about" },
+  areas: { label: "Areas Served", path: "/quinceanera-photographer" },
+};
+
+/**
+ * The operator-chosen hero for a marketing page, set in /admin/hero. Stored in
+ * site_settings under `page_hero:<page>` as `{ slug }` referencing a photo
+ * already in the portfolio library (so it carries its own focus anchor, alt,
+ * and dimensions). Returns null → the page falls back to its automatic
+ * top-featured pick. Cached per page key for the request.
+ */
+export const getPageHero = cache(async (page: string): Promise<PortfolioImage | null> => {
+  if (!isSupabaseConfigured()) return null;
+  try {
+    const supabase = getServiceSupabase();
+    const { data } = await supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", `page_hero:${page}`)
+      .maybeSingle();
+    const slug = (data?.value as { slug?: string } | undefined)?.slug;
+    if (!slug) return null;
+    const all = await getPortfolioImages();
+    return all.find((i) => i.slug === slug) ?? null;
   } catch {
     return null;
   }

@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { site } from "@/content/site";
 import { locations } from "@/content/locations";
-import { getFeaturedImages } from "@/lib/content-db";
+import { getFeaturedImages, getPageHero } from "@/lib/content-db";
 import { Reveal } from "@/components/Reveal";
 import { FinalCTA } from "@/components/FinalCTA";
 
@@ -28,8 +28,13 @@ function focal(fx?: number | null, fy?: number | null): string {
 
 export default async function LocationsHub() {
   const imgs = await getFeaturedImages(24);
-  // A landscape frame crops cleanest for the wide hero; portraits fill the city tiles.
-  const hero = imgs.find((i) => (i.width ?? 0) >= (i.height ?? 0)) ?? imgs[0] ?? null;
+  // A landscape frame crops cleanest for the wide hero; portraits fill the city
+  // tiles. The operator can override the hero in /admin/hero.
+  const hero =
+    (await getPageHero("areas")) ??
+    imgs.find((i) => (i.width ?? 0) >= (i.height ?? 0)) ??
+    imgs[0] ??
+    null;
   const tilePool = imgs.filter((i) => i.url !== hero?.url);
   const imgFor = (i: number) => (tilePool.length ? tilePool[i % tilePool.length] : (imgs[0] ?? null));
 

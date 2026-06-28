@@ -95,6 +95,7 @@ const MANAGE = [
   { href: "/admin/inquiries", title: "Leads" },
   { href: "/admin/hero", title: "Hero" },
   { href: "/admin/portfolio", title: "Portfolio" },
+  { href: "/admin/venues", title: "Venues" },
   { href: "/admin/videos", title: "Videos" },
 ];
 

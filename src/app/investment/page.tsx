@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { packages, investmentIntro, investmentFaqs } from "@/content/packages";
 import { site } from "@/content/site";
-import { getFeaturedImages } from "@/lib/content-db";
+import { getFeaturedImages, getPageHero } from "@/lib/content-db";
 import { Reveal } from "@/components/Reveal";
 import { CTAButton } from "@/components/CTAButton";
 import { FinalCTA } from "@/components/FinalCTA";
@@ -31,9 +31,14 @@ function focal(fx?: number | null, fy?: number | null): string {
 }
 
 export default async function InvestmentPage() {
-  // A landscape frame crops cleanest for the wide cinematic hero.
+  // A landscape frame crops cleanest for the wide cinematic hero — unless the
+  // operator picked a specific one in /admin/hero.
   const imgs = await getFeaturedImages(12);
-  const hero = imgs.find((i) => (i.width ?? 0) >= (i.height ?? 0)) ?? imgs[0] ?? null;
+  const hero =
+    (await getPageHero("investment")) ??
+    imgs.find((i) => (i.width ?? 0) >= (i.height ?? 0)) ??
+    imgs[0] ??
+    null;
 
   // Machine-readable pricing (Service + Offer per collection) so the fixed
   // prices win cost-query SERPs + AI overviews where rivals show "inquire for

@@ -87,6 +87,11 @@ const post: BlogPost = {
       text: "The dedicated portrait window is where the classic quinceañera poses live, and where the light does the most work. Build it around golden hour — the hour after sunrise or the hour before sunset — when the sun is low and the light is warm and forgiving instead of harsh and overhead. In a DFW summer that golden window falls roughly 7:30 to 8:30 in the evening; in winter it's mid-to-late afternoon. The spot matters too, so it's worth reading [the best quinceañera photo locations in DFW](/blog/best-quinceanera-photo-locations-dfw) before you choose.",
     },
     {
+      type: "image",
+      slug: "mandalay-canal-walk-zapata-27",
+      caption: "Quinceañera portrait session at the Mandalay Canal Walk in Irving.",
+    },
+    {
       type: "ul",
       items: [
         "The classic full-length: standing tall, dress flowing, train arranged in front of her.",
@@ -101,6 +106,11 @@ const post: BlogPost = {
     {
       type: "p",
       text: "Posing tip: get her chin slightly down and forward and her shoulders back. It feels unnatural and looks right — it lengthens the neck and keeps the jaw defined. Almost every awkward portrait traces back to a chin tilted up and back.",
+    },
+    {
+      type: "image",
+      slug: "fort-worth-stockyards-stock-53",
+      caption: "Quinceañera portraits in the Fort Worth Stockyards.",
     },
     {
       type: "callout",
@@ -137,10 +147,20 @@ const post: BlogPost = {
       type: "p",
       text: "Posing tip: for the formal court photo, stagger the heights and angle everyone's shoulders slightly toward her instead of squaring them at the camera. A straight police-lineup row always looks stiff; a gentle inward angle makes the group feel like it belongs to her.",
     },
+    {
+      type: "image",
+      slug: "convention-plaza-ballroom-clarissa-120",
+      caption: "The grand entrance into the reception at Convention Plaza Ballroom in Irving.",
+    },
     { type: "h2", text: "The reception is mostly candids" },
     {
       type: "p",
       text: "By the reception the posed work is mostly done, and the shot list turns to catching real moments as they happen. The keepers here are reactions, not arrangements — which is also why these are the frames film captures even better than stills.",
+    },
+    {
+      type: "image",
+      slug: "convention-plaza-ballroom-clarissa-257",
+      caption: "Cake and toasts at the reception, Convention Plaza Ballroom in Irving.",
     },
     {
       type: "ul",

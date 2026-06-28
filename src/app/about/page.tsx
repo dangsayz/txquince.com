@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { about } from "@/content/about";
 import { site } from "@/content/site";
-import { getImageBySlug, getImagesBySection, getFeaturedImages } from "@/lib/content-db";
+import { getImageBySlug, getImagesBySection, getFeaturedImages, getPageHero } from "@/lib/content-db";
 import { Figure } from "@/components/Figure";
 import { Reveal } from "@/components/Reveal";
 import { EditOverlay } from "@/components/EditMode";
@@ -53,7 +53,10 @@ export default async function AboutPage() {
   // hover-editable in place.
   const featured = await getFeaturedImages(12);
   const hero =
-    featured.find((i) => (i.width ?? 0) >= (i.height ?? 0)) ?? featured[0] ?? null;
+    (await getPageHero("about")) ??
+    featured.find((i) => (i.width ?? 0) >= (i.height ?? 0)) ??
+    featured[0] ??
+    null;
 
   return (
     <>
