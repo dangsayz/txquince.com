@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Reveal } from "@/components/Reveal";
 import { PortfolioGallery, type GalleryItem } from "@/components/PortfolioGallery";
 import { VideoGallery } from "@/components/VideoGallery";
@@ -24,6 +24,119 @@ const FILMS_GROUP: Omit<TabGroup, "items"> = {
   title: "Films",
   hook: "Her voice, the music, the room.",
   intro: "The day in motion — a film the family watches for years.",
+};
+
+/** Thin-line icon wrapper — inherits currentColor so it picks up the active
+ *  wine accent, stays warm-gray when idle. ~18px, stroke-only (the play
+ *  triangle fills). */
+function Svg({ children }: { children: ReactNode }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="h-[18px] w-[18px]"
+      aria-hidden
+    >
+      {children}
+    </svg>
+  );
+}
+
+/**
+ * Per-type presentation: a custom icon + the search phrase a family is most
+ * likely to actually type ("save the date", "el vals", "quinceañera videos").
+ * The hint doubles as a quiet keyword cue for visitors and crawlers. Keyed by
+ * choice id ("all" + every group id), so any category that gains photos later
+ * already has its icon and keyword.
+ */
+const TYPE_META: Record<string, { hint: string; icon: ReactNode }> = {
+  all: {
+    hint: "All quinceañera photos",
+    icon: (
+      <Svg>
+        <rect x="3" y="3" width="7" height="7" rx="1.5" />
+        <rect x="14" y="3" width="7" height="7" rx="1.5" />
+        <rect x="3" y="14" width="7" height="7" rx="1.5" />
+        <rect x="14" y="14" width="7" height="7" rx="1.5" />
+      </Svg>
+    ),
+  },
+  before: {
+    hint: "Save-the-date & getting ready",
+    icon: (
+      <Svg>
+        <path d="M3 19h18" />
+        <path d="M6.5 19a5.5 5.5 0 0 1 11 0" />
+        <path d="M12 3v3" />
+        <path d="M4.8 9.8 6 11" />
+        <path d="M19.2 9.8 18 11" />
+      </Svg>
+    ),
+  },
+  misa: {
+    hint: "La misa · church ceremony",
+    icon: (
+      <Svg>
+        <path d="M12 2.5v3.5" />
+        <path d="M10.3 4.2h3.4" />
+        <path d="M5 21v-9.5l7-4 7 4V21" />
+        <path d="M4 21h16" />
+        <path d="M10 21v-3.5a2 2 0 0 1 4 0V21" />
+      </Svg>
+    ),
+  },
+  portraits: {
+    hint: "Quinceañera portrait ideas",
+    icon: (
+      <Svg>
+        <circle cx="12" cy="8.5" r="3.8" />
+        <path d="M5.5 20a6.5 6.5 0 0 1 13 0" />
+      </Svg>
+    ),
+  },
+  celebration: {
+    hint: "El vals & the reception",
+    icon: (
+      <Svg>
+        <path d="M12 4.2l1.5 4.3 4.3 1.5-4.3 1.5L12 15.8l-1.5-4.3L6.2 10l4.3-1.5z" />
+        <path d="M18 14.5l.6 1.6 1.6.6-1.6.6-.6 1.6-.6-1.6-1.6-.6 1.6-.6z" />
+      </Svg>
+    ),
+  },
+  details: {
+    hint: "Dress, décor & details",
+    icon: (
+      <Svg>
+        <path d="M6 3.5h12l3 4.5-9 12.5L3 8z" />
+        <path d="M3 8h18" />
+        <path d="M9.5 3.5 7 8l5 12.5L17 8l-2.5-4.5" />
+      </Svg>
+    ),
+  },
+  vendors: {
+    hint: "Venues, glam & florals",
+    icon: (
+      <Svg>
+        <circle cx="9" cy="8" r="3.2" />
+        <path d="M3.5 19.5a5.5 5.5 0 0 1 11 0" />
+        <path d="M15.5 5.2a3.2 3.2 0 0 1 0 5.6" />
+        <path d="M16.5 14.2a5.5 5.5 0 0 1 4 5.3" />
+      </Svg>
+    ),
+  },
+  films: {
+    hint: "Quinceañera videos",
+    icon: (
+      <Svg>
+        <rect x="3" y="5.5" width="18" height="13" rx="2.5" />
+        <path d="M10.5 9.3v5.4l4.6-2.7z" fill="currentColor" stroke="none" />
+      </Svg>
+    ),
+  },
 };
 
 /** The editorial header that introduces whichever type is showing on the right. */
@@ -129,21 +242,30 @@ export function PortfolioBrowser({
             >
               {choices.map((c) => {
                 const isActive = c.id === active;
+                const meta = TYPE_META[c.id] ?? TYPE_META.all;
                 return (
                   <button
                     key={c.id}
                     type="button"
                     aria-pressed={isActive}
                     onClick={() => select(c.id)}
-                    className={`flex min-h-[44px] shrink-0 items-center gap-2 whitespace-nowrap border-b-2 px-3.5 text-sm transition-colors md:w-full md:justify-between md:border-b-0 md:border-l-2 md:py-3 md:pl-4 md:pr-2 md:text-base ${
+                    className={`flex min-h-[44px] shrink-0 items-center gap-2 whitespace-nowrap border-b-2 px-3.5 text-sm transition-colors md:w-full md:justify-between md:gap-3 md:border-b-0 md:border-l-2 md:py-2.5 md:pl-4 md:pr-3 md:text-base ${
                       isActive
                         ? "border-wine font-medium text-wine"
                         : "border-transparent text-ink-soft hover:text-ink md:hover:border-line"
                     }`}
                   >
-                    <span className="md:font-display">{c.label}</span>
+                    <span className="flex min-w-0 items-center gap-2.5 md:gap-3">
+                      <span className="shrink-0">{meta.icon}</span>
+                      <span className="flex min-w-0 flex-col items-start leading-tight">
+                        <span className="md:font-display">{c.label}</span>
+                        <span className="mt-0.5 hidden text-[0.66rem] font-normal normal-case tracking-normal text-ink-faint md:block">
+                          {meta.hint}
+                        </span>
+                      </span>
+                    </span>
                     <span
-                      className={`hidden text-xs tabular-nums md:inline ${
+                      className={`hidden shrink-0 text-xs tabular-nums md:inline ${
                         isActive ? "text-wine/70" : "text-ink-faint"
                       }`}
                     >
