@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { site } from "@/content/site";
 import { getPortfolioImages, getVideos } from "@/lib/content-db";
 import { type GalleryItem } from "@/components/PortfolioGallery";
-import { PortfolioTabs, type TabGroup } from "@/components/PortfolioTabs";
+import { PortfolioBrowser, type TabGroup } from "@/components/PortfolioBrowser";
 import { Reveal } from "@/components/Reveal";
 import { FinalCTA } from "@/components/FinalCTA";
 import { GROUPS, altPhraseFor, groupForCategory } from "@/content/portfolio-taxonomy";
@@ -179,7 +179,7 @@ export default async function PortfolioPage() {
           <p className="accent text-xl text-ink-faint">New work coming soon.</p>
         </section>
       ) : (
-        <PortfolioTabs groups={groups} videos={videos} />
+        <PortfolioBrowser groups={groups} videos={videos} />
       )}
 
       <FinalCTA />
