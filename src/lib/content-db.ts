@@ -431,6 +431,7 @@ export const getHeroMedia = cache(async (): Promise<HeroMedia | null> => {
  */
 export const HERO_PAGES: Record<string, { label: string; path: string }> = {
   blog: { label: "Guide (Blog)", path: "/blog" },
+  guide: { label: "Quinceañera Guide", path: "/quinceanera-guide" },
   investment: { label: "Investment", path: "/investment" },
   about: { label: "About", path: "/about" },
   areas: { label: "Areas Served", path: "/quinceanera-photographer" },
@@ -460,6 +461,64 @@ export const getPageHero = cache(async (page: string): Promise<PortfolioImage | 
     return null;
   }
 });
+
+/**
+ * Editable static-cover slots — the brand "plate" images (home + contact) that
+ * are NOT portfolio rows. The admin can replace each in place; the upload is
+ * stored in site_settings under `cover:<slot>` as { storage_path, width, height }
+ * and served, like the hero, through the branded /api/img/cover-<slot> route.
+ * `path` is the public route to revalidate when the slot changes. This object is
+ * also the single allowlist the admin API validates against.
+ */
+export const COVER_SLOTS: Record<string, { label: string; path: string }> = {
+  "home-brand": { label: "Home — TXQUINCE plate", path: "/" },
+  contact: { label: "Contact plate", path: "/check-your-date" },
+};
+
+type CoverValue = { storage_path: string; width: number; height: number };
+
+/** Raw storage URL for a cover slot — server-only, used by /api/img/cover-<slot>. */
+export async function getCoverRawImageUrl(slot: string): Promise<string | null> {
+  if (!isSupabaseConfigured()) return null;
+  try {
+    const supabase = getServiceSupabase();
+    const { data } = await supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", `cover:${slot}`)
+      .maybeSingle();
+    const v = data?.value as Partial<CoverValue> | undefined;
+    return v?.storage_path ? storageUrl(v.storage_path) : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Resolve a cover slot for rendering: the admin override (branded route + the
+ * uploaded image's stored dimensions, for zero CLS) or the static fallback file.
+ */
+export async function getCoverImage(
+  slot: string,
+  fallback: { src: string; width: number; height: number },
+): Promise<{ src: string; width: number; height: number }> {
+  if (!isSupabaseConfigured()) return fallback;
+  try {
+    const supabase = getServiceSupabase();
+    const { data } = await supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", `cover:${slot}`)
+      .maybeSingle();
+    const v = data?.value as Partial<CoverValue> | undefined;
+    if (v?.storage_path && v.width && v.height) {
+      return { src: `/api/img/cover-${slot}`, width: v.width, height: v.height };
+    }
+  } catch {
+    /* fall back to the static default */
+  }
+  return fallback;
+}
 
 /** All videos, ordered. */
 export const getVideos = cache(async (): Promise<VideoRow[]> => {

@@ -14,9 +14,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import { EditOverlay } from "@/components/EditMode";
 import { site } from "@/content/site";
 import { packages } from "@/content/packages";
-import { getPortfolioImages, type PortfolioImage } from "@/lib/content-db";
+import { getPageHero, getPortfolioImages, type PortfolioImage } from "@/lib/content-db";
 import { Reveal } from "@/components/Reveal";
 import { CTAButton } from "@/components/CTAButton";
 import { FinalCTA } from "@/components/FinalCTA";
@@ -248,9 +249,15 @@ export default async function QuinceaneraGuidePage() {
   // Theme-specific FIRST (the ideal granular category), then graceful fallbacks
   // to whatever's populated today — so each image auto-sharpens as more photos
   // are tagged into the exact categories in /admin/portfolio.
-  const hero = pickHero([
-    "grand-entrance", "el-vals", "celebration", "portraits", "save-the-date", "church",
-  ]);
+  // Operator-chosen hero (set in /admin/hero → Page heroes) wins; otherwise fall
+  // back to the automatic landscape pick. Mark it used so the section images
+  // below never repeat the hero frame.
+  const hero =
+    (await getPageHero("guide")) ??
+    pickHero([
+      "grand-entrance", "el-vals", "celebration", "portraits", "save-the-date", "church",
+    ]);
+  if (hero) used.add(hero.id);
   const bucketImg: Record<string, PortfolioImage | null> = {
     // Before the day → getting ready / first look / details, then save-the-date.
     planning: pick(["getting-ready", "first-look", "the-details", "save-the-date", "portraits"]),
@@ -338,6 +345,7 @@ export default async function QuinceaneraGuidePage() {
                 style={{ objectPosition: `${(hero.focus_x ?? 0.5) * 100}% ${(hero.focus_y ?? 0.35) * 100}%` }}
                 priority
               />
+              <EditOverlay image={{ id: hero.id, slug: hero.slug, alt: hero.alt, fx: hero.focus_x, fy: hero.focus_y }} />
             </div>
           </Reveal>
         ) : null}
