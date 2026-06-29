@@ -290,7 +290,12 @@ export function PortfolioBrowser({
                 <GroupHeader group={g} />
               </Reveal>
               {g.items.length ? (
-                <PortfolioGallery images={g.items} />
+                // Narrower right-hand pane → cap at 4 across (3 on standard
+                // desktop, 4 on wide), 2 on phone. Never 5.
+                <PortfolioGallery
+                  images={g.items}
+                  columns="columns-2 gap-3 sm:columns-3 sm:gap-4 lg:columns-3 lg:gap-5 xl:columns-4 xl:gap-6"
+                />
               ) : (
                 <p className="accent text-xl text-ink-faint">Coming soon.</p>
               )}

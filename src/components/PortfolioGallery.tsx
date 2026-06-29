@@ -44,7 +44,18 @@ const SITE_TITLE = "TX Quince — Quinceañera Photography & Film";
  * so portrait and landscape shots fall together seamlessly. No lightbox: a tap
  * gives a light haptic buzz and opens a clean, branded share window.
  */
-export function PortfolioGallery({ images }: { images: GalleryItem[] }) {
+/** Default masonry column scheme. Callers (e.g. the portfolio browser, whose
+ *  grid sits in a narrower right-hand pane) can override via `columns`. */
+const DEFAULT_COLUMNS =
+  "columns-2 gap-3 sm:columns-3 sm:gap-4 lg:columns-4 lg:gap-5 xl:columns-5 xl:gap-6";
+
+export function PortfolioGallery({
+  images,
+  columns = DEFAULT_COLUMNS,
+}: {
+  images: GalleryItem[];
+  columns?: string;
+}) {
   const [shareOpen, setShareOpen] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
   const [shareTitle, setShareTitle] = useState(SITE_TITLE);
@@ -64,7 +75,7 @@ export function PortfolioGallery({ images }: { images: GalleryItem[] }) {
 
   return (
     <>
-      <div className="columns-2 gap-3 sm:columns-3 sm:gap-4 lg:columns-4 lg:gap-5 xl:columns-5 xl:gap-6">
+      <div className={columns}>
         {images.map((img, i) => (
           <Reveal
             key={i}
