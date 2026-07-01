@@ -94,6 +94,8 @@ export type Vendor = {
   slug: string;
 };
 
+export type VideoOrientation = "landscape" | "vertical";
+
 export type VideoRow = {
   id: string;
   url: string;
@@ -103,6 +105,7 @@ export type VideoRow = {
   poster_url: string | null;
   is_feature: boolean;
   sort_order: number;
+  orientation: VideoOrientation;
 };
 
 /**
@@ -527,7 +530,7 @@ export const getVideos = cache(async (): Promise<VideoRow[]> => {
     const supabase = getServiceSupabase();
     const { data, error } = await supabase
       .from("videos")
-      .select("id, url, provider, video_id, title, poster_url, is_feature, sort_order")
+      .select("id, url, provider, video_id, title, poster_url, is_feature, sort_order, orientation")
       .order("sort_order", { ascending: true });
     if (error || !data) return [];
     return data as VideoRow[];

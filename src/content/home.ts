@@ -42,6 +42,12 @@ export const home = {
     body: "Her voice, the music, the room — a highlight film the whole family returns to.",
   },
 
+  shorts: {
+    eyebrow: "Shorts",
+    heading: "Quick moments, straight from the day.",
+    body: "Bite-sized clips from real quinceañeras — the entrance, the vals, the reaction shots.",
+  },
+
   // AVAILABILITY — the homepage micro-commitment (live date check).
   checkDate: {
     heading: "Is her date still open?",

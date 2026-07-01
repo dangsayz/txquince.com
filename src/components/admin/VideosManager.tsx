@@ -166,6 +166,16 @@ export function VideosManager({ initial }: { initial: VideoRow[] }) {
                   />
                   Feature
                 </label>
+                <label className="flex items-center gap-1.5 text-xs text-ink-soft">
+                  Shorts
+                  <input
+                    type="checkbox"
+                    checked={v.orientation === "vertical"}
+                    onChange={(e) =>
+                      patch(v.id, { orientation: e.target.checked ? "vertical" : "landscape" })
+                    }
+                  />
+                </label>
                 <div className="flex items-center gap-1 text-ink-soft">
                   <button onClick={() => move(i, -1)} disabled={i === 0} className="px-1.5 disabled:opacity-30" aria-label="Up">↑</button>
                   <button onClick={() => move(i, 1)} disabled={i === videos.length - 1} className="px-1.5 disabled:opacity-30" aria-label="Down">↓</button>

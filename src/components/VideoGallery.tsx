@@ -31,27 +31,43 @@ function posterFor(v: DisplayVideo): string | null {
 }
 
 /**
- * Films as a calm, even grid — each a quiet 16:9 still with a single hairline
+ * Films as a calm, even grid — each a quiet still with a single hairline
  * play affordance. No gradients, no clickbait titles burned over the frame:
  * a short editorial caption sits below, matching the photo captions on the page.
  * The whole frame is the tap target (well past the 44px floor); the play glyph
  * is decorative.
+ *
+ * `variant="vertical"` renders the same cards at 9:16 (shorts/reels) in a
+ * denser grid instead of the default 16:9 film layout.
  */
-export function VideoGallery({ videos }: { videos: DisplayVideo[] }) {
+export function VideoGallery({
+  videos,
+  variant = "landscape",
+}: {
+  videos: DisplayVideo[];
+  variant?: "landscape" | "vertical";
+}) {
   if (!videos.length) return null;
+  const gridClass =
+    variant === "vertical"
+      ? "grid grid-cols-2 gap-x-4 gap-y-9 sm:grid-cols-3 lg:grid-cols-4"
+      : "grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3";
   return (
-    <div className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+    <div className={gridClass}>
       {videos.map((v) => (
-        <VideoCard key={v.id} video={v} />
+        <VideoCard key={v.id} video={v} variant={variant} />
       ))}
     </div>
   );
 }
 
-function PlayGlyph() {
+function PlayGlyph({ compact = false }: { compact?: boolean }) {
+  const size = compact ? "h-11 w-11 md:h-12 md:w-12" : "h-12 w-12 md:h-14 md:w-14";
   return (
     <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
-      <span className="flex h-12 w-12 items-center justify-center rounded-full border border-cream/70 bg-ink/20 backdrop-blur-sm transition-all duration-300 group-hover:scale-105 group-hover:bg-ink/30 md:h-14 md:w-14">
+      <span
+        className={`flex items-center justify-center rounded-full border border-cream/70 bg-ink/20 backdrop-blur-sm transition-all duration-300 group-hover:scale-105 group-hover:bg-ink/30 ${size}`}
+      >
         <span className="ml-0.5 h-0 w-0 border-y-[7px] border-l-[11px] border-y-transparent border-l-cream" />
       </span>
     </span>
@@ -79,16 +95,23 @@ function Thumb({ poster, title }: { poster: string | null; title: string }) {
   );
 }
 
-function VideoCard({ video }: { video: DisplayVideo }) {
+function VideoCard({
+  video,
+  variant = "landscape",
+}: {
+  video: DisplayVideo;
+  variant?: "landscape" | "vertical";
+}) {
   const [playing, setPlaying] = useState(false);
   const admin = useIsAdmin();
   const poster = posterFor(video);
   const src = embedSrc(video.provider, video.video_id, video.url);
   const canEmbed = Boolean(src) && video.provider !== "link";
+  const frameClass = variant === "vertical" ? "aspect-[9/16]" : "aspect-video";
 
   return (
     <figure className="group">
-      <div className="relative aspect-video overflow-hidden bg-ink">
+      <div className={`relative overflow-hidden bg-ink ${frameClass}`}>
         {playing && canEmbed ? (
           video.provider === "file" ? (
             <video src={src!} controls autoPlay playsInline className="h-full w-full object-cover" />
@@ -109,7 +132,7 @@ function VideoCard({ video }: { video: DisplayVideo }) {
             className="absolute inset-0 block"
           >
             <Thumb poster={poster} title={video.title} />
-            <PlayGlyph />
+            <PlayGlyph compact={variant === "vertical"} />
           </button>
         ) : (
           <a
@@ -120,7 +143,7 @@ function VideoCard({ video }: { video: DisplayVideo }) {
             className="absolute inset-0 block"
           >
             <Thumb poster={poster} title={video.title} />
-            <PlayGlyph />
+            <PlayGlyph compact={variant === "vertical"} />
           </a>
         )}
       </div>

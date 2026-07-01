@@ -36,6 +36,11 @@ function vimeoId(url: string): string | null {
   return m ? m[1] : null;
 }
 
+/** True for URL shapes that are inherently vertical (e.g. a YouTube Shorts link). */
+export function isShortsUrl(raw: string): boolean {
+  return /youtube\.com\/shorts\//i.test(raw) || /tiktok\.com\//i.test(raw);
+}
+
 export function parseVideoUrl(raw: string): ParsedVideo {
   const url = raw.trim();
 

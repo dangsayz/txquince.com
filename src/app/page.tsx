@@ -92,6 +92,10 @@ export default async function HomePage() {
   const closing = seq[4] ?? frames[4] ?? frames[0]; // campaign close
   // A single full-bleed frame breaks the long text stretch in the lower page.
   const band = featured.find((i) => (i.width ?? 0) > (i.height ?? 0) && i.url !== cover?.url) ?? null;
+  // Landscape films keep the existing grid; vertical shorts get their own
+  // section near the top of the page — same source list, split by orientation.
+  const gridVideos = videos.filter((v) => v.orientation !== "vertical");
+  const shortsVideos = videos.filter((v) => v.orientation === "vertical");
 
   // Portraits editorial spread — sourced from the whole PORTRAITS section (not
   // just featured), up to ~27 frames, kept at NATURAL ratio so the masonry reads
@@ -226,6 +230,25 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* ================= SHORTS — vertical clips, up top right after the credibility band ================= */}
+      {shortsVideos.length > 0 ? (
+        <section className="pt-24 md:pt-36">
+          <div className="mx-auto max-w-[90rem] px-5 md:px-10 lg:px-16">
+            <Reveal className="mb-10 max-w-xl md:mb-14">
+              <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">{home.shorts.eyebrow}</p>
+              <h2
+                className="mt-4 font-display text-ink"
+                style={{ fontSize: "clamp(2.2rem,4vw,3.4rem)", lineHeight: 1.04, letterSpacing: "-0.02em" }}
+              >
+                {home.shorts.heading}
+              </h2>
+              <p className="mt-5 max-w-md text-sm leading-relaxed text-ink-soft">{home.shorts.body}</p>
+            </Reveal>
+            <VideoGallery videos={shortsVideos} variant="vertical" />
+          </div>
+        </section>
+      ) : null}
+
       {/* ================= PORTRAITS — an editorial spread on a clean white ground ================= */}
       <section className="mt-24 bg-white py-20 md:mt-36 md:py-32">
         <div className="mx-auto max-w-[88rem] px-5 md:px-10 lg:px-16">
@@ -298,7 +321,7 @@ export default async function HomePage() {
       </section>
 
       {/* ================= FILM — the work in motion, straight after the stills ================= */}
-      {videos.length > 0 ? (
+      {gridVideos.length > 0 ? (
         <section className="pt-24 md:pt-36">
           <div className="mx-auto max-w-[90rem] px-5 md:px-10 lg:px-16">
             <Reveal className="mb-10 max-w-xl md:mb-14">
@@ -311,7 +334,7 @@ export default async function HomePage() {
               </h2>
               <p className="mt-5 max-w-md text-sm leading-relaxed text-ink-soft">{home.film.body}</p>
             </Reveal>
-            <VideoGallery videos={videos} />
+            {gridVideos.length > 0 ? <VideoGallery videos={gridVideos} /> : null}
           </div>
         </section>
       ) : null}
