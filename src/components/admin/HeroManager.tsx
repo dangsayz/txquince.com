@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { parseVideoUrl } from "@/lib/video";
 import type { HeroMedia } from "@/lib/content-db";
 
@@ -78,19 +77,14 @@ export function HeroManager({ initial }: { initial: HeroMedia | null }) {
     setError(null);
     setStatus("Optimizing & uploading…");
     try {
-      const supabase = createBrowserSupabaseClient();
       const { body, ext, type } = await optimize(files[0]);
-      const signRes = await fetch("/api/admin/sign-upload", {
+      const upRes = await fetch(`/api/admin/upload?ext=${ext}`, {
         method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ ext }),
+        headers: { "content-type": type },
+        body,
       });
-      if (!signRes.ok) throw new Error("Could not start upload.");
-      const { path, token } = (await signRes.json()) as { path: string; token: string };
-      const { error: upErr } = await supabase.storage
-        .from("portfolio")
-        .uploadToSignedUrl(path, token, body, { contentType: type });
-      if (upErr) throw upErr;
+      if (!upRes.ok) throw new Error("Upload failed.");
+      const { path } = (await upRes.json()) as { path: string };
 
       const url = publicUrl(path);
       const res = await fetch("/api/admin/hero", {

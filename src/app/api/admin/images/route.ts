@@ -4,6 +4,7 @@ import { z } from "zod";
 import { requireAdmin } from "@/lib/require-admin";
 import { unauthorizedAdminResponse } from "@/lib/admin-auth";
 import { getServiceSupabase } from "@/lib/supabase-server";
+import { deletePortfolioObjects } from "@/lib/r2-portfolio";
 import { CATEGORY_IDS } from "@/content/portfolio-taxonomy";
 
 export const dynamic = "force-dynamic";
@@ -72,7 +73,7 @@ export async function POST(request: Request) {
     .single();
 
   if (error) {
-    await supabase.storage.from("portfolio").remove([storage_path]);
+    await deletePortfolioObjects([storage_path]);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
   bust();
@@ -167,7 +168,7 @@ export async function PATCH(request: Request) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   if (oldPath && fields.storage_path && oldPath !== fields.storage_path) {
-    await supabase.storage.from("portfolio").remove([oldPath]);
+    await deletePortfolioObjects([oldPath]);
   }
   bust();
   return NextResponse.json({ image: data });
@@ -189,7 +190,7 @@ export async function DELETE(request: Request) {
   const { error } = await supabase.from("portfolio_images").delete().eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   if (row?.storage_path) {
-    await supabase.storage.from("portfolio").remove([row.storage_path]);
+    await deletePortfolioObjects([row.storage_path]);
   }
   bust();
   return NextResponse.json({ ok: true });

@@ -14,7 +14,8 @@
  * development still renders — protection applies on Cloudflare.
  */
 import { NextResponse } from "next/server";
-import { getImageBySlug, getHeroRawImageUrl, storageUrl } from "@/lib/content-db";
+import { getImageBySlug, getHeroRawImageUrl, getCoverRawImageUrl, storageUrl } from "@/lib/content-db";
+import { getPortfolioBucket, storageKeyFromUrl } from "@/lib/r2-portfolio";
 import { site } from "@/content/site";
 
 export const dynamic = "force-dynamic";
@@ -71,16 +72,21 @@ function hdr(s: string): string {
 }
 
 /**
- * Fetch a storage object with service-role auth — works whether the bucket is
- * public or PRIVATE (the bucket is locked; this route is the only reader).
+ * Fetch a storage object from the PRIVATE PORTFOLIO R2 bucket (this route is
+ * the only reader). Internal storage URLs are translated to object keys; plain
+ * `next dev` (no binding) falls back to fetching the URL directly.
  */
-function fetchOriginal(url: string): Promise<Response> {
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (key && url.includes("/storage/v1/object/public/")) {
-    return fetch(url.replace("/storage/v1/object/public/", "/storage/v1/object/"), {
-      headers: { authorization: `Bearer ${key}`, apikey: key },
-      cf: { cacheTtl: 86400 },
-    } as RequestInit);
+async function fetchOriginal(url: string): Promise<Response> {
+  const key = storageKeyFromUrl(url);
+  if (key) {
+    const bucket = await getPortfolioBucket();
+    if (bucket) {
+      const obj = await bucket.get(key);
+      if (!obj) return new Response(null, { status: 404 });
+      return new Response(obj.body, {
+        headers: { "content-type": obj.httpMetadata?.contentType ?? "image/webp" },
+      });
+    }
   }
   return fetch(url, { cf: { cacheTtl: 86400 } } as RequestInit);
 }
@@ -113,12 +119,17 @@ async function serve(
     return new NextResponse("Hotlinking is not permitted.", { status: 403 });
   }
   const width = pickWidth(request);
-  const cacheHeader = slug === "hero" ? HERO_CACHE : CACHE;
+  // `hero` and `cover-<slot>` are the mutable slugs (admin can swap them) — short
+  // cache, never immutable. Permanent portfolio slugs stay year-long immutable.
+  const isCover = slug.startsWith("cover-");
+  const cacheHeader = slug === "hero" || isCover ? HERO_CACHE : CACHE;
 
   // Resolve the internal source (never revealed to the client).
   let sourceUrl: string | null = null;
   if (slug === "hero") {
     sourceUrl = await getHeroRawImageUrl();
+  } else if (isCover) {
+    sourceUrl = await getCoverRawImageUrl(slug.slice("cover-".length));
   } else {
     const img = await getImageBySlug(slug);
     if (img) sourceUrl = storageUrl(img.storage_path);

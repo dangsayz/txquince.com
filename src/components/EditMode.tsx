@@ -13,8 +13,8 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
-import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
 const HINT_KEY = "txq_admin";
 
@@ -218,18 +218,13 @@ function FrameDialog({
     setError(null);
     try {
       const { body, ext, type, width, height } = await optimize(files[0]);
-      const signRes = await fetch("/api/admin/sign-upload", {
+      const upRes = await fetch(`/api/admin/upload?ext=${ext}`, {
         method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ ext }),
+        headers: { "content-type": type },
+        body,
       });
-      if (!signRes.ok) throw new Error("Could not start upload.");
-      const { path, token } = (await signRes.json()) as { path: string; token: string };
-      const supabase = createBrowserSupabaseClient();
-      const { error: upErr } = await supabase.storage
-        .from("portfolio")
-        .uploadToSignedUrl(path, token, body, { contentType: type });
-      if (upErr) throw upErr;
+      if (!upRes.ok) throw new Error("Upload failed.");
+      const { path } = (await upRes.json()) as { path: string };
 
       const res = await fetch("/api/admin/images", {
         method: "PATCH",
@@ -250,7 +245,10 @@ function FrameDialog({
     }
   }
 
-  return (
+  // Portal to <body> so `position: fixed` resolves against the viewport — not a
+  // transformed/contained ancestor (which would strand the card far down the
+  // page while the dark backdrop reads as a "gray screen").
+  return createPortal(
     <div
       className="fixed inset-0 z-[120] flex items-center justify-center bg-ink/85 p-4"
       role="dialog"
@@ -325,6 +323,7 @@ function FrameDialog({
         {busy ? <p className="mt-3 text-sm text-ink-soft">{busy}</p> : null}
         {error ? <p className="mt-3 text-sm text-wine">{error}</p> : null}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

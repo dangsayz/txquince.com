@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import type { PortfolioImage, ImageVendorCredit, Vendor } from "@/lib/content-db";
 import {
   CATEGORIES,
@@ -556,7 +555,6 @@ export function PortfolioManager({
   async function handleFiles(files: FileList | null) {
     if (!files?.length) return;
     setBusy(true);
-    const supabase = createBrowserSupabaseClient();
     const list = Array.from(files);
     const total = list.length;
     let done = 0;
@@ -571,18 +569,13 @@ export function PortfolioManager({
     async function upload(file: File) {
       try {
         const { body, ext, type, width, height } = await optimize(file);
-        const signRes = await fetch("/api/admin/sign-upload", {
+        const upRes = await fetch(`/api/admin/upload?ext=${ext}`, {
           method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({ ext }),
+          headers: { "content-type": type },
+          body,
         });
-        if (!signRes.ok) throw new Error("sign failed");
-        const { path, token } = (await signRes.json()) as { path: string; token: string };
-
-        const { error: upErr } = await supabase.storage
-          .from("portfolio")
-          .uploadToSignedUrl(path, token, body, { contentType: type });
-        if (upErr) throw upErr;
+        if (!upRes.ok) throw new Error("upload failed");
+        const { path } = (await upRes.json()) as { path: string };
 
         const recRes = await fetch("/api/admin/images", {
           method: "POST",
