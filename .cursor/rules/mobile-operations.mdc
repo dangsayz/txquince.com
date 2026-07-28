@@ -1,0 +1,11 @@
+---
+description: Safe shared workflow for desktop and mobile agents
+alwaysApply: true
+---
+
+- Treat GitHub as the shared source of truth across Codex, Claude, Cursor, and mobile work.
+- Read `AGENTS.md` and `CLAUDE.md` before editing, and follow repository-specific commands.
+- Work on a focused branch. Do not deploy, merge, mutate production data, or change credentials without explicit user authorization.
+- Never place secrets in source, logs, chat, commits, or pull requests.
+- Run applicable checks and report what actually passed.
+- Production releases use the manual `Deploy Production` GitHub Actions workflow.
