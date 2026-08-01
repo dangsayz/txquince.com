@@ -21,6 +21,19 @@ const nextConfig: NextConfig = {
   // Premium perception dies on a slow site (PERFORMANCE BUDGET LAW).
   poweredByHeader: false,
   compress: true,
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          {
+            key: "Content-Signal",
+            value: "search=yes, ai-input=yes, ai-train=no, use=reference",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
