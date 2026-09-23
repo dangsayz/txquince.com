@@ -4,6 +4,7 @@ import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server"
 import type { VideoProvider } from "@/lib/video";
 import type { BlogBlock } from "@/content/blog";
 import { getVenue, venueSlugify } from "@/content/venues";
+import { resolveHeroFocus } from "@/lib/hero-focus";
 
 /**
  * INTERNAL storage URL — only ever fetched server-side (by /api/img). Raw
@@ -391,6 +392,9 @@ export type HeroMedia = {
   provider: VideoProvider | null;
   videoId: string | null;
   posterUrl: string | null;
+  focusX: number;
+  focusY: number;
+  updatedAt: string;
 };
 
 /**
@@ -403,7 +407,7 @@ export const getHeroMedia = cache(async (): Promise<HeroMedia | null> => {
     const supabase = getServiceSupabase();
     const { data, error } = await supabase
       .from("site_settings")
-      .select("value")
+      .select("value, updated_at")
       .eq("key", "hero_media")
       .maybeSingle();
     if (error || !data?.value) return null;
@@ -421,6 +425,8 @@ export const getHeroMedia = cache(async (): Promise<HeroMedia | null> => {
       provider: (v.provider as VideoProvider) ?? null,
       videoId: v.videoId ?? null,
       posterUrl: v.posterUrl ?? null,
+      ...resolveHeroFocus(v),
+      updatedAt: data.updated_at as string,
     };
   } catch {
     return null;
