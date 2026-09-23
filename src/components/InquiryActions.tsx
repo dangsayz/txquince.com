@@ -4,14 +4,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 /**
- * Inline lead-status control for /admin/inquiries. New/Won fire an immediate
+ * Lead-status control. Open/Won fire an immediate
  * PATCH; choosing Lost reveals a reason picker (+ optional competitor) so a dead
  * deal becomes data instead of a black box. Server-only write path:
  * /api/admin/inquiries (requireAdmin + service role).
  */
 
 const STATUSES: { value: "new" | "won" | "lost"; label: string }[] = [
-  { value: "new", label: "New" },
+  { value: "new", label: "Open" },
   { value: "won", label: "Won" },
   { value: "lost", label: "Lost" },
 ];
