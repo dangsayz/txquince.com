@@ -86,6 +86,7 @@ import photoIdeasShotList from "./blog/posts/quinceanera-photo-ideas-shot-list-d
 import songs from "./blog/posts/quinceanera-songs-for-every-moment";
 import dressColors from "./blog/posts/quinceanera-dress-colors-that-photograph-best";
 import themes from "./blog/posts/quinceanera-themes-and-colors";
+import vmBallroom from "./blog/posts/quinceanera-at-vm-ballroom-balch-springs";
 
 export const posts: BlogPost[] = [
   costDfw,
@@ -108,6 +109,7 @@ export const posts: BlogPost[] = [
   dressColors,
   songs,
   themes,
+  vmBallroom,
 ];
 
 export function getAllPosts(): BlogPost[] {
@@ -167,6 +169,7 @@ import esIdeasFotos from "./blog/posts/es/ideas-de-fotos-de-quinceanera-dfw";
 import esCanciones from "./blog/posts/es/canciones-para-quinceanera";
 import esColoresVestido from "./blog/posts/es/colores-de-vestido-de-quinceanera-que-fotografian-mejor";
 import esThemes from "./blog/posts/es/temas-y-colores-para-quinceanera";
+import esVmBallroom from "./blog/posts/es/quinceanera-en-vm-ballroom-balch-springs";
 
 export const esPosts: BlogPost[] = [
   esCosto,
@@ -188,6 +191,7 @@ export const esPosts: BlogPost[] = [
   esColoresVestido,
   esCanciones,
   esThemes,
+  esVmBallroom,
 ];
 
 export function getAllEsPosts(): BlogPost[] {
@@ -204,6 +208,7 @@ export function relatedEsPosts(post: BlogPost, n = 3): BlogPost[] {
 
 /** EN ↔ ES slug pairs, for hreflang alternates linking each translation. */
 const EN_ES_PAIRS: { en: string; es: string }[] = [
+  { en: "quinceanera-at-vm-ballroom-balch-springs", es: "quinceanera-en-vm-ballroom-balch-springs" },
   { en: "quinceanera-photographer-cost-dallas-fort-worth", es: "cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth" },
   { en: "quinceanera-songs-for-every-moment", es: "canciones-para-quinceanera" },
   { en: "quinceanera-payment-plans-deposits-dfw", es: "planes-de-pago-fotografia-quinceanera-dfw" },

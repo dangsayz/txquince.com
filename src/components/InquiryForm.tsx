@@ -26,7 +26,34 @@ const inputBase =
   "min-h-12 w-full border border-[#8c8377] bg-white px-4 py-3 text-base text-ink placeholder:text-ink-soft focus:border-ink focus:outline-none focus:ring-2 focus:ring-ink/20";
 const labelBase = "block text-base font-medium text-ink";
 
-export function InquiryForm({ initialDate = "" }: { initialDate?: string }) {
+const spanish = {
+  validation: "Revisa los campos señalados.",
+  verification: "Completa la verificación.",
+  genericError: "No se pudo enviar. Inténtalo de nuevo.",
+  networkError: "Revisa tu conexión e inténtalo de nuevo.",
+  name: "Tu nombre",
+  namePlaceholder: "Nombre y apellido",
+  phone: "Teléfono",
+  optional: "Opcional",
+  date: "Fecha de la quinceañera",
+  future: "Solo fechas futuras",
+  venue: "Salón o ciudad",
+  venuePlaceholder: "Iglesia, salón o ciudad",
+  service: "¿Qué necesitas?",
+  chooseService: "Elige una opción…",
+  budget: "Presupuesto",
+  chooseBudget: "Elige un rango…",
+  referral: "¿Cómo nos encontraste?",
+  message: "¿Algo más que debamos saber?",
+  messagePlaceholder: "Cuéntanos sobre su día: el tema, el salón y lo más importante para ella.",
+  consent: "Al enviar este formulario, aceptas que te contactemos sobre tu evento. Consulta nuestra",
+  privacy: "política de privacidad",
+  sending: "Enviando…",
+  submit: "Enviar mi consulta",
+} as const;
+
+export function InquiryForm({ initialDate = "", locale = "en" }: { initialDate?: string; locale?: "en" | "es" }) {
+  const es = locale === "es";
   const router = useRouter();
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -65,14 +92,14 @@ export function InquiryForm({ initialDate = "" }: { initialDate?: string }) {
     const parsed = inquirySchema.safeParse(payload);
     if (!parsed.success) {
       setErrors(parsed.error.flatten().fieldErrors);
-      setFormError("Please check the highlighted fields.");
+      setFormError(es ? spanish.validation : "Please check the highlighted fields.");
       setStatus("error");
       return;
     }
 
     // Turnstile gate: require a token only when the widget is shown (production).
     if (SHOW_TURNSTILE && !token) {
-      setFormError("Please complete the verification below.");
+      setFormError(es ? spanish.verification : "Please complete the verification below.");
       setStatus("error");
       return;
     }
@@ -95,7 +122,7 @@ export function InquiryForm({ initialDate = "" }: { initialDate?: string }) {
           fieldErrors?: FieldErrors;
         };
         if (data.fieldErrors) setErrors(data.fieldErrors);
-        setFormError(data.error ?? "Something went wrong. Please try again.");
+        setFormError(data.error ?? (es ? spanish.genericError : "Something went wrong. Please try again."));
         setStatus("error");
         return;
       }
@@ -106,7 +133,7 @@ export function InquiryForm({ initialDate = "" }: { initialDate?: string }) {
       });
       router.push("/thank-you");
     } catch {
-      setFormError("Network error. Please check your connection and try again.");
+      setFormError(es ? spanish.networkError : "Network error. Please check your connection and try again.");
       setStatus("error");
     }
   }
@@ -139,38 +166,38 @@ export function InquiryForm({ initialDate = "" }: { initialDate?: string }) {
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2">
-        <Field label="Your name" required error={errors.name}>
-          <input name="name" type="text" autoComplete="name" className={inputBase} placeholder="First and last" />
+        <Field label={es ? spanish.name : "Your name"} required error={errors.name}>
+          <input name="name" type="text" autoComplete="name" className={inputBase} placeholder={es ? spanish.namePlaceholder : "First and last"} />
         </Field>
         <Field label="Email" required error={errors.email}>
           <input name="email" type="email" autoComplete="email" className={inputBase} placeholder="you@email.com" />
         </Field>
-        <Field label="Phone" error={errors.phone}>
-          <input name="phone" type="tel" autoComplete="tel" className={inputBase} placeholder="(optional)" />
+        <Field label={es ? spanish.phone : "Phone"} error={errors.phone}>
+          <input name="phone" type="tel" autoComplete="tel" className={inputBase} placeholder={es ? spanish.optional : "(optional)"} />
         </Field>
-        <Field label="Event date" error={errors.event_date} hint="Future dates only">
+        <Field label={es ? spanish.date : "Event date"} error={errors.event_date} hint={es ? spanish.future : "Future dates only"}>
           <input name="event_date" type="date" min={todayStr} max={maxStr} defaultValue={initialDate} className={inputBase} />
         </Field>
-        <Field label="Venue or city" error={errors.venue} className="sm:col-span-2">
-          <input name="venue" type="text" className={inputBase} placeholder="Church, hall, or city" />
+        <Field label={es ? spanish.venue : "Venue or city"} error={errors.venue} className="sm:col-span-2">
+          <input name="venue" type="text" className={inputBase} placeholder={es ? spanish.venuePlaceholder : "Church, hall, or city"} />
         </Field>
 
-        <Field label="What do you need?" required error={errors.services}>
+        <Field label={es ? spanish.service : "What do you need?"} required error={errors.services}>
           <select name="services" defaultValue="" className={`${inputBase} appearance-none`}>
             <option value="" disabled>
-              Choose one…
+              {es ? spanish.chooseService : "Choose one…"}
             </option>
             {SERVICE_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>
-                {o.label}
+                {es ? ({ photo: "Fotografía", video: "Video", both: "Foto y video" } as const)[o.value] : o.label}
               </option>
             ))}
           </select>
         </Field>
-        <Field label="Budget range" required error={errors.budget_range}>
+        <Field label={es ? spanish.budget : "Budget range"} required error={errors.budget_range}>
           <select name="budget_range" defaultValue="" className={`${inputBase} appearance-none`}>
             <option value="" disabled>
-              Choose a range…
+              {es ? spanish.chooseBudget : "Choose a range…"}
             </option>
             {BUDGET_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>
@@ -180,23 +207,23 @@ export function InquiryForm({ initialDate = "" }: { initialDate?: string }) {
           </select>
         </Field>
 
-        <Field label="How did you hear about us?" error={errors.referral} className="sm:col-span-2">
+        <Field label={es ? spanish.referral : "How did you hear about us?"} error={errors.referral} className="sm:col-span-2">
           <select name="referral" defaultValue="" className={`${inputBase} appearance-none`}>
-            <option value="">Optional</option>
+            <option value="">{es ? spanish.optional : "Optional"}</option>
             {REFERRAL_OPTIONS.map((o) => (
               <option key={o} value={o}>
-                {o}
+                {es ? ({ Facebook: "Facebook", Instagram: "Instagram", "A friend or family member": "Un amigo o familiar", "A past client": "Un cliente anterior", Google: "Google", "A venue or planner": "Un salón u organizador", Other: "Otro" } as Record<string, string>)[o] : o}
               </option>
             ))}
           </select>
         </Field>
 
-        <Field label="Anything you'd like me to know?" error={errors.message} className="sm:col-span-2">
+        <Field label={es ? spanish.message : "Anything you'd like me to know?"} error={errors.message} className="sm:col-span-2">
           <textarea
             name="message"
             rows={4}
             className={`${inputBase} resize-none`}
-            placeholder="Tell me about her day — the theme, the venue, what matters most."
+            placeholder={es ? spanish.messagePlaceholder : "Tell me about her day — the theme, the venue, what matters most."}
           />
         </Field>
       </div>
@@ -215,9 +242,9 @@ export function InquiryForm({ initialDate = "" }: { initialDate?: string }) {
       ) : null}
 
       <p className="text-sm leading-relaxed text-ink-soft">
-        By submitting, you agree to be contacted about your event. See our{" "}
+        {es ? spanish.consent : "By submitting, you agree to be contacted about your event. See our"}{" "}
         <a href="/privacy" className="underline underline-offset-2 hover:text-ink">
-          privacy policy
+          {es ? spanish.privacy : "privacy policy"}
         </a>
         .
       </p>
@@ -239,10 +266,10 @@ export function InquiryForm({ initialDate = "" }: { initialDate?: string }) {
               className="h-4 w-4 animate-spin rounded-full border-2 border-cream/40 border-t-cream"
               aria-hidden
             />
-            Sending…
+            {es ? spanish.sending : "Sending…"}
           </>
         ) : (
-          "Send my inquiry"
+          es ? spanish.submit : "Send my inquiry"
         )}
       </button>
     </form>
