@@ -62,7 +62,7 @@ function BookingCard({ b }: { b: BookingRow }) {
   const pill = statusPill(b.status);
   const collection = b.collection ? COLLECTION_LABEL[b.collection] : null;
   return (
-    <div className="border border-line bg-ivory p-5">
+    <div className="rounded-2xl border border-line bg-white p-6">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h3 className="font-display text-xl text-ink">{b.name}</h3>
@@ -141,14 +141,14 @@ export default async function AdminBookings() {
   const pending = bookings.filter((b) => b.status === "pending_payment").length;
 
   return (
-    <main className="mx-auto max-w-4xl px-5 py-12">
+    <main className="mx-auto max-w-[92rem] px-5 pb-20 pt-8 sm:px-8 lg:px-12 lg:pt-12">
       <Link
         href="/admin"
         className="text-[0.72rem] uppercase tracking-[0.18em] text-ink-faint hover:text-wine"
       >
-        ← Studio
+        ← Today
       </Link>
-      <h1 className="mt-3 font-display text-3xl text-ink">Bookings</h1>
+      <h1 className="mt-3 font-display text-4xl text-ink sm:text-5xl">Bookings</h1>
       <p className="mt-2 text-sm text-ink-soft">
         {bookings.length === 0
           ? "Reservations will appear here the moment a deposit is started."
@@ -163,7 +163,7 @@ export default async function AdminBookings() {
           </p>
         </div>
       ) : (
-        <div className="mt-8 space-y-4">
+        <div className="mt-8 grid gap-5 xl:grid-cols-2">
           {bookings.map((b) => (
             <BookingCard key={b.id} b={b} />
           ))}

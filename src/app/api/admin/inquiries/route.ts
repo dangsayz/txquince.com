@@ -60,5 +60,7 @@ export async function PATCH(request: Request) {
   }
 
   revalidatePath("/admin/inquiries");
+  revalidatePath("/admin");
+  revalidatePath(`/admin/inquiries/${id}`);
   return NextResponse.json({ inquiry: res.data });
 }

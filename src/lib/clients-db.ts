@@ -53,6 +53,27 @@ export type InquiryRow = {
   competitor_name?: string | null;
 };
 
+export type InquiryActivityRow = {
+  id: string;
+  inquiry_id: string;
+  kind: "note" | "contact" | "reminder";
+  note: string;
+  actor_email: string;
+  due_at: string | null;
+  completed_at: string | null;
+  created_at: string;
+};
+
+export const getInquiryActivity = cache(async (): Promise<InquiryActivityRow[]> => {
+  if (!isSupabaseConfigured()) throw new Error("The client database is not configured.");
+  const { data, error } = await getServiceSupabase()
+    .from("inquiry_activity")
+    .select("id, inquiry_id, kind, note, actor_email, due_at, completed_at, created_at")
+    .order("created_at", { ascending: false });
+  if (error) throw new Error("Could not load client follow-up activity.");
+  return (data ?? []) as InquiryActivityRow[];
+});
+
 /**
  * All bookings, newest first. Paid + pending holds + expired/cancelled —
  * everything, so the photographer sees the full picture and can reconcile.
