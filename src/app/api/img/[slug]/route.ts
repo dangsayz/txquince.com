@@ -40,12 +40,14 @@ interface CfImages {
 }
 
 const ALLOWED_HOSTS = [site.domain, `www.${site.domain}`, "localhost", "txquince.12img.workers.dev"];
+const PREVIEW_HOST = /^(?:[a-z0-9-]+-)?txquince\.12img\.workers\.dev$/;
 
 function hotlinked(req: Request): boolean {
   const ref = req.headers.get("referer");
   if (!ref) return false; // direct opens, iMessage/OG/Google fetchers
   try {
-    return !ALLOWED_HOSTS.includes(new URL(ref).hostname);
+    const host = new URL(ref).hostname;
+    return !ALLOWED_HOSTS.includes(host) && !PREVIEW_HOST.test(host);
   } catch {
     return false;
   }

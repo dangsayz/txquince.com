@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Reveal } from "@/components/Reveal";
 import { PortfolioGallery, type GalleryItem } from "@/components/PortfolioGallery";
 import { VideoGallery } from "@/components/VideoGallery";
@@ -26,140 +26,39 @@ const FILMS_GROUP: Omit<TabGroup, "items"> = {
   intro: "The day in motion — a film the family watches for years.",
 };
 
-/** Thin-line icon wrapper — inherits currentColor so it picks up the active
- *  wine accent, stays warm-gray when idle. ~18px, stroke-only (the play
- *  triangle fills). */
-function Svg({ children }: { children: ReactNode }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="h-[18px] w-[18px]"
-      aria-hidden
-    >
-      {children}
-    </svg>
-  );
-}
-
-/**
- * Per-type presentation: a custom icon + the search phrase a family is most
- * likely to actually type ("save the date", "el vals", "quinceañera videos").
- * The hint doubles as a quiet keyword cue for visitors and crawlers. Keyed by
- * choice id ("all" + every group id), so any category that gains photos later
- * already has its icon and keyword.
- */
-const TYPE_META: Record<string, { hint: string; icon: ReactNode }> = {
-  all: {
-    hint: "All quinceañera photos",
-    icon: (
-      <Svg>
-        <rect x="3" y="3" width="7" height="7" rx="1.5" />
-        <rect x="14" y="3" width="7" height="7" rx="1.5" />
-        <rect x="3" y="14" width="7" height="7" rx="1.5" />
-        <rect x="14" y="14" width="7" height="7" rx="1.5" />
-      </Svg>
-    ),
-  },
-  before: {
-    hint: "Save-the-date & getting ready",
-    icon: (
-      <Svg>
-        <path d="M3 19h18" />
-        <path d="M6.5 19a5.5 5.5 0 0 1 11 0" />
-        <path d="M12 3v3" />
-        <path d="M4.8 9.8 6 11" />
-        <path d="M19.2 9.8 18 11" />
-      </Svg>
-    ),
-  },
-  misa: {
-    hint: "La misa · church ceremony",
-    icon: (
-      <Svg>
-        <path d="M12 2.5v3.5" />
-        <path d="M10.3 4.2h3.4" />
-        <path d="M5 21v-9.5l7-4 7 4V21" />
-        <path d="M4 21h16" />
-        <path d="M10 21v-3.5a2 2 0 0 1 4 0V21" />
-      </Svg>
-    ),
-  },
-  portraits: {
-    hint: "Quinceañera portrait ideas",
-    icon: (
-      <Svg>
-        <circle cx="12" cy="8.5" r="3.8" />
-        <path d="M5.5 20a6.5 6.5 0 0 1 13 0" />
-      </Svg>
-    ),
-  },
-  celebration: {
-    hint: "El vals & the reception",
-    icon: (
-      <Svg>
-        <path d="M12 4.2l1.5 4.3 4.3 1.5-4.3 1.5L12 15.8l-1.5-4.3L6.2 10l4.3-1.5z" />
-        <path d="M18 14.5l.6 1.6 1.6.6-1.6.6-.6 1.6-.6-1.6-1.6-.6 1.6-.6z" />
-      </Svg>
-    ),
-  },
-  details: {
-    hint: "Dress, décor & details",
-    icon: (
-      <Svg>
-        <path d="M6 3.5h12l3 4.5-9 12.5L3 8z" />
-        <path d="M3 8h18" />
-        <path d="M9.5 3.5 7 8l5 12.5L17 8l-2.5-4.5" />
-      </Svg>
-    ),
-  },
-  vendors: {
-    hint: "Venues, glam & florals",
-    icon: (
-      <Svg>
-        <circle cx="9" cy="8" r="3.2" />
-        <path d="M3.5 19.5a5.5 5.5 0 0 1 11 0" />
-        <path d="M15.5 5.2a3.2 3.2 0 0 1 0 5.6" />
-        <path d="M16.5 14.2a5.5 5.5 0 0 1 4 5.3" />
-      </Svg>
-    ),
-  },
-  films: {
-    hint: "Quinceañera videos",
-    icon: (
-      <Svg>
-        <rect x="3" y="5.5" width="18" height="13" rx="2.5" />
-        <path d="M10.5 9.3v5.4l4.6-2.7z" fill="currentColor" stroke="none" />
-      </Svg>
-    ),
-  },
+const TYPE_HINT: Record<string, string> = {
+  all: "Every moment",
+  before: "Before the day",
+  misa: "The ceremony",
+  portraits: "Her portraits",
+  celebration: "The reception",
+  details: "The little things",
+  vendors: "The people behind it",
+  films: "The day in motion",
 };
 
 /** The editorial header that introduces whichever type is showing on the right. */
-function GroupHeader({ group }: { group: Omit<TabGroup, "items"> }) {
+function GroupHeader({ group, count }: { group: Omit<TabGroup, "items">; count: number }) {
   return (
-    <header className="mb-8 md:mb-10">
-      <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">{group.eyebrow}</p>
-      <h2
-        className="mt-3 font-display text-ink"
-        style={{ fontSize: "clamp(1.9rem,3.8vw,3rem)", lineHeight: 1.02, letterSpacing: "-0.02em" }}
-      >
+    <header className="mb-9 md:mb-12">
+      <div className="flex items-center justify-between gap-4">
+        <p className="text-xs font-medium uppercase tracking-[0.2em] text-ink-soft">{group.eyebrow}</p>
+        <p className="text-xs tabular-nums text-ink-faint">
+          {count} {group.id === "films" ? (count === 1 ? "film" : "films") : (count === 1 ? "photograph" : "photographs")}
+        </p>
+      </div>
+      <h2 className="mt-4 font-serif text-[clamp(3rem,6vw,5.75rem)] leading-[0.95] tracking-[-0.035em] text-ink">
         {group.title}
       </h2>
-      <p className="accent mt-3 text-lg text-wine-deep">{group.hook}</p>
-      <p className="mt-2 max-w-md text-sm leading-relaxed text-ink-soft">{group.intro}</p>
+      <p className="mt-4 font-serif text-2xl italic leading-tight text-wine-deep md:text-3xl">{group.hook}</p>
+      <p className="mt-4 max-w-xl font-body text-base leading-[1.7] text-ink-soft">{group.intro}</p>
     </header>
   );
 }
 
 /**
- * Two-column portfolio browser. The LEFT rail is the type selector — a sticky
- * vertical list on tablet/desktop, a sticky horizontal scroller on mobile. The
- * RIGHT pane does the heavy lifting: it shows the editorial header + masonry
+ * Two-column portfolio browser. The left rail is the type selector on desktop
+ * and a horizontal scroller on smaller screens. The right pane shows the header + masonry
  * grid for the chosen type ("All" stacks every type; "Films" swaps in the video
  * gallery). Old deep links (/portfolio#church, #el-vals) resolve to the right
  * type, and the URL hash tracks the selection so a filtered view is shareable.
@@ -218,7 +117,9 @@ export function PortfolioBrowser({
   function select(id: string) {
     setActive(id);
     if (typeof history !== "undefined") {
-      history.replaceState(null, "", id === "all" ? window.location.pathname : `#${id}`);
+      const url = new URL(window.location.href);
+      url.hash = id === "all" ? "" : id;
+      history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
     }
   }
 
@@ -226,49 +127,35 @@ export function PortfolioBrowser({
   const showFilms = hasFilms && (active === "all" || active === "films");
 
   return (
-    <section className="mx-auto max-w-[90rem] px-5 pb-20 md:px-10 lg:px-16 md:pb-28">
-      <div className="md:grid md:grid-cols-12 md:gap-10 lg:gap-14">
-        {/* ── LEFT: type selector ─────────────────────────────────────────
-            Mobile: full-bleed sticky horizontal scroller under the nav.
-            md+: sticky vertical rail with a hairline divider + per-type count. */}
-        <aside className="sticky top-[72px] z-20 self-start md:top-28 md:col-span-4 lg:col-span-3">
-          <div className="-mx-5 border-y border-line bg-cream/95 px-5 backdrop-blur supports-[backdrop-filter]:bg-cream/80 md:mx-0 md:border-0 md:border-r md:border-line md:bg-transparent md:px-0 md:pr-6 md:backdrop-blur-none lg:pr-8 md:supports-[backdrop-filter]:bg-transparent">
-            <p className="mb-5 hidden text-[0.62rem] uppercase tracking-[0.32em] text-ink-faint md:block">
-              Browse by type
+    <section className="mx-auto max-w-[90rem] px-5 pb-24 md:px-10 md:pb-32 lg:px-16">
+      <div className="lg:grid lg:grid-cols-12 lg:gap-14">
+        <aside className="sticky top-[72px] z-20 self-start lg:top-36 lg:col-span-3">
+          <div className="-mx-5 border-b border-line bg-cream/95 px-5 backdrop-blur supports-[backdrop-filter]:bg-cream/85 md:-mx-10 md:px-10 lg:mx-0 lg:border-0 lg:bg-transparent lg:px-0 lg:pr-4 lg:backdrop-blur-none lg:supports-[backdrop-filter]:bg-transparent">
+            <p className="mb-6 hidden text-xs font-medium uppercase tracking-[0.2em] text-ink-soft lg:block">
+              Explore the collection
             </p>
-            <nav
-              aria-label="Filter portfolio by type"
-              className="flex gap-2 overflow-x-auto py-2 [scrollbar-width:none] md:flex-col md:gap-0.5 md:overflow-visible md:py-0 [&::-webkit-scrollbar]:hidden"
-            >
+            <nav aria-label="Filter portfolio by type" className="flex gap-1 overflow-x-auto py-2 [scrollbar-width:none] lg:flex-col lg:gap-0 lg:overflow-visible lg:py-0 [&::-webkit-scrollbar]:hidden">
               {choices.map((c) => {
                 const isActive = c.id === active;
-                const meta = TYPE_META[c.id] ?? TYPE_META.all;
                 return (
                   <button
                     key={c.id}
                     type="button"
                     aria-pressed={isActive}
                     onClick={() => select(c.id)}
-                    className={`flex min-h-[44px] shrink-0 items-center gap-2 whitespace-nowrap border-b-2 px-3.5 text-sm transition-colors md:w-full md:justify-between md:gap-3 md:border-b-0 md:border-l-2 md:py-2.5 md:pl-4 md:pr-3 md:text-base ${
+                    className={`flex min-h-11 shrink-0 items-center gap-2 whitespace-nowrap border-b-2 px-4 font-body text-base transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine lg:w-full lg:justify-between lg:gap-3 lg:border-b lg:border-line lg:px-0 lg:py-3 ${
                       isActive
-                        ? "border-wine font-medium text-wine"
-                        : "border-transparent text-ink-soft hover:text-ink md:hover:border-line"
+                        ? "border-wine font-medium text-ink lg:border-wine"
+                        : "border-transparent text-ink-soft hover:text-ink lg:border-line"
                     }`}
                   >
-                    <span className="flex min-w-0 items-center gap-2.5 md:gap-3">
-                      <span className="shrink-0">{meta.icon}</span>
-                      <span className="flex min-w-0 flex-col items-start leading-tight">
-                        <span className="md:font-display">{c.label}</span>
-                        <span className="mt-0.5 hidden text-[0.66rem] font-normal normal-case tracking-normal text-ink-faint md:block">
-                          {meta.hint}
-                        </span>
+                    <span className="flex min-w-0 flex-col items-start leading-tight">
+                      <span>{c.label}</span>
+                      <span className="mt-1 hidden text-sm font-normal text-ink-faint lg:block">
+                        {TYPE_HINT[c.id] ?? "The collection"}
                       </span>
                     </span>
-                    <span
-                      className={`hidden shrink-0 text-xs tabular-nums md:inline ${
-                        isActive ? "text-wine/70" : "text-ink-faint"
-                      }`}
-                    >
+                    <span className="hidden shrink-0 text-sm tabular-nums text-ink-faint lg:inline">
                       {c.count}
                     </span>
                   </button>
@@ -278,23 +165,21 @@ export function PortfolioBrowser({
           </div>
         </aside>
 
-        {/* ── RIGHT: the gallery does the heavy lifting ───────────────────── */}
-        <div className="pt-8 md:col-span-8 md:pt-2 lg:col-span-9">
+        <div className="min-w-0 pt-10 lg:col-span-9 lg:pt-0">
           {shownGroups.map((g, idx) => (
             <section
               key={g.id}
               id={g.id}
-              className={`scroll-mt-28 ${idx > 0 ? "mt-16 border-t border-ink/10 pt-12 md:mt-20 md:pt-16" : ""}`}
+              className={`scroll-mt-36 ${idx > 0 ? "mt-20 border-t border-line pt-16 md:mt-28 md:pt-20" : ""}`}
             >
               <Reveal>
-                <GroupHeader group={g} />
+                <GroupHeader group={g} count={g.items.length} />
               </Reveal>
               {g.items.length ? (
-                // Narrower right-hand pane → cap at 4 across (3 on standard
-                // desktop, 4 on wide), 2 on phone. Never 5.
                 <PortfolioGallery
                   images={g.items}
-                  columns="columns-2 gap-3 sm:columns-3 sm:gap-4 lg:columns-3 lg:gap-5 xl:columns-4 xl:gap-6"
+                  columns="columns-1 md:columns-2 md:gap-6 xl:gap-8"
+                  imageSizes="(max-width: 767px) 90vw, (max-width: 1023px) 44vw, (max-width: 1440px) 31vw, 39rem"
                 />
               ) : (
                 <p className="accent text-xl text-ink-faint">Coming soon.</p>
@@ -305,12 +190,12 @@ export function PortfolioBrowser({
           {showFilms ? (
             <section
               id="films"
-              className={`scroll-mt-28 ${
-                shownGroups.length ? "mt-16 border-t border-ink/10 pt-12 md:mt-20 md:pt-16" : ""
+              className={`scroll-mt-36 ${
+                shownGroups.length ? "mt-20 border-t border-line pt-16 md:mt-28 md:pt-20" : ""
               }`}
             >
               <Reveal>
-                <GroupHeader group={FILMS_GROUP} />
+                <GroupHeader group={FILMS_GROUP} count={videos.length} />
               </Reveal>
               <VideoGallery videos={videos} />
             </section>

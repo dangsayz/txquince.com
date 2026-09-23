@@ -14,19 +14,21 @@ const HIDE_ON = new Set([
   site.secondaryCta.href, // /check-your-date
   "/reserve/success",
   "/thank-you",
+  "/es/consulta",
+  "/es/gracias",
 ]);
 
 export function StickyMobileCTA() {
   const pathname = usePathname();
+  const isSpanish = pathname === "/es" || pathname.startsWith("/es/");
   // Never show on conversion pages, or anywhere in the admin dashboard (the
   // bar would overlap admin controls at the bottom of the screen on mobile).
   if (HIDE_ON.has(pathname) || pathname.startsWith("/admin")) return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-cream/95 p-3 backdrop-blur-md md:hidden">
-      {/* Uses the site-wide primary pill so the main CTA looks identical everywhere. */}
-      <Link href={site.cta.href} className="btn-espresso w-full">
-        {site.cta.label}
+    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-white/95 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur-md md:hidden">
+      <Link href={isSpanish ? "/es/consulta" : site.secondaryCta.href} className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-ink px-5 text-base font-semibold text-white">
+        {isSpanish ? "Consulta su fecha" : "Check her date"} <span aria-hidden className="ml-2">→</span>
       </Link>
     </div>
   );

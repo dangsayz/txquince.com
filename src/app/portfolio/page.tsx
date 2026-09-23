@@ -156,21 +156,26 @@ export default async function PortfolioPage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(imageGalleryJsonLd) }}
         />
       ) : null}
-      {/* Cover — editorial: overline, oversized statement, narrow standfirst. */}
-      <section className="mx-auto max-w-[90rem] px-5 pb-10 pt-20 md:px-10 lg:px-16 md:pb-14 md:pt-32">
-        <Reveal>
-          <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">Portfolio</p>
-          <h1
-            className="mt-5 max-w-5xl font-display text-ink"
-            style={{ fontSize: "clamp(2.8rem,7vw,6.2rem)", lineHeight: 0.98, letterSpacing: "-0.028em" }}
-          >
-            The day, kept exactly as it felt.
-          </h1>
-          <p className="mt-7 max-w-md text-[0.95rem] leading-relaxed text-ink-soft">
-            A selection from quinceañeras across Dallas–Fort Worth — from the quiet
-            of la misa to the last dance of the night. Browse by moment, or meet the
-            vendors who make the day.
-          </p>
+      <section className="mx-auto max-w-[90rem] px-5 pb-12 pt-20 md:px-10 md:pb-16 md:pt-28 lg:px-16 lg:pt-36">
+        <Reveal className="border-b border-line pb-12 md:pb-16 lg:grid lg:grid-cols-12 lg:gap-12">
+          <div className="lg:col-span-2">
+            <p className="text-xs font-medium uppercase tracking-[0.22em] text-ink-soft">Portfolio / The work</p>
+          </div>
+          <div className="mt-8 lg:col-span-10 lg:mt-0">
+            <h1 className="max-w-[15ch] font-serif text-[clamp(3.5rem,9vw,8.5rem)] leading-[0.87] tracking-[-0.045em] text-ink">
+              The day, kept <em className="font-normal">exactly</em> as it felt.
+            </h1>
+            <div className="mt-10 flex flex-col gap-6 md:mt-14 md:flex-row md:items-end md:justify-between md:gap-12">
+              <p className="max-w-[38rem] font-body text-base leading-[1.75] text-ink-soft md:text-lg">
+                A selection from quinceañeras across Dallas–Fort Worth — from the quiet
+                of la misa to the last dance of the night. Browse by moment, or meet the
+                vendors who make the day.
+              </p>
+              <span className="shrink-0 text-xs font-medium uppercase tracking-[0.2em] text-ink-faint">
+                Dallas–Fort Worth, Texas
+              </span>
+            </div>
+          </div>
         </Reveal>
       </section>
 

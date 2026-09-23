@@ -64,17 +64,16 @@ export function Footer() {
         <div className="flex flex-col gap-10 pt-16 md:flex-row md:items-end md:justify-between md:pt-24">
           <div>
             <Wordmark size="masthead" tone="dark" />
-            <p className="mt-6 max-w-xs text-sm leading-relaxed text-cream/55">{site.tagline}</p>
+            <p className="mt-6 max-w-sm text-base leading-7 text-cream/75">{site.tagline}</p>
           </div>
 
           <div className="flex flex-col gap-6 md:items-end">
             <Link
-              href={site.cta.href}
-              className="group inline-flex items-baseline gap-2 font-display text-cream transition-colors hover:text-wine"
-              style={{ fontSize: "clamp(1.7rem,3.2vw,2.6rem)", letterSpacing: "-0.02em", lineHeight: 1 }}
+              href="/check-your-date"
+              className="group inline-flex min-h-12 items-center gap-3 font-serif text-[clamp(2rem,3.5vw,3rem)] leading-none text-cream transition-colors hover:text-wine-tint"
             >
-              Reserve her date
-              <span aria-hidden className="text-wine transition-transform duration-300 group-hover:translate-x-1">→</span>
+              Check her date
+              <span aria-hidden className="text-wine-tint transition-transform duration-300 group-hover:translate-x-1">→</span>
             </Link>
             <div className="flex items-center gap-3">
               <a
@@ -116,8 +115,8 @@ export function Footer() {
         <div className="mt-16 grid grid-cols-2 gap-x-8 gap-y-10 border-t border-cream/10 pt-12 sm:grid-cols-4 md:mt-20">
           {COLUMNS.map((col) => (
             <div key={col.title}>
-              <p className="text-[0.62rem] uppercase tracking-[0.28em] text-wine">{col.title}</p>
-              <ul className="mt-4 space-y-3">
+              <p className="text-sm font-semibold text-cream">{col.title}</p>
+              <ul className="mt-3">
                 {col.links.filter((l) => l.href).map((l) => (
                   <li key={l.label}>
                     {"external" in l && l.external ? (
@@ -125,14 +124,14 @@ export function Footer() {
                         href={l.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-cream/65 transition-colors hover:text-cream"
+                        className="inline-flex min-h-11 items-center text-base text-cream/75 transition-colors hover:text-cream"
                       >
                         {l.label}
                       </a>
                     ) : (
                       <Link
                         href={l.href}
-                        className="text-sm text-cream/65 transition-colors hover:text-cream"
+                        className="inline-flex min-h-11 items-center text-base text-cream/75 transition-colors hover:text-cream"
                       >
                         {l.label}
                       </Link>
@@ -146,15 +145,15 @@ export function Footer() {
 
         {/* Areas served — internal links to the local landing pages (SEO). */}
         <div className="mt-14 border-t border-cream/10 pt-7">
-          <p className="text-[0.62rem] uppercase tracking-[0.28em] text-cream/40">
+          <p className="text-sm font-semibold text-cream/80">
             Quinceañera photographer serving
           </p>
-          <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-cream/65">
+          <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-base text-cream/75">
             {locations.map((l) => (
               <Link
                 key={l.slug}
                 href={`/quinceanera-photographer/${l.slug}`}
-                className="transition-colors hover:text-cream"
+                className="inline-flex min-h-11 items-center transition-colors hover:text-cream"
               >
                 {l.city}
               </Link>
@@ -163,7 +162,7 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 flex flex-col gap-3 border-t border-cream/10 py-8 text-xs text-cream/40 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-12 flex flex-col gap-3 border-t border-cream/10 py-8 text-sm text-cream/70 sm:flex-row sm:items-center sm:justify-between">
           <p>
             © {year} {site.brand} · {site.serviceArea}
           </p>

@@ -40,7 +40,7 @@ export type GalleryItem = {
 const SITE_TITLE = "TX Quince — Quinceañera Photography & Film";
 
 /**
- * Editorial masonry gallery (4 columns). Images keep their natural aspect ratio
+ * Editorial masonry gallery. Images keep their natural aspect ratio
  * so portrait and landscape shots fall together seamlessly. No lightbox: a tap
  * gives a light haptic buzz and opens a clean, branded share window.
  */
@@ -52,9 +52,11 @@ const DEFAULT_COLUMNS =
 export function PortfolioGallery({
   images,
   columns = DEFAULT_COLUMNS,
+  imageSizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw",
 }: {
   images: GalleryItem[];
   columns?: string;
+  imageSizes?: string;
 }) {
   const [shareOpen, setShareOpen] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
@@ -71,8 +73,6 @@ export function PortfolioGallery({
     setShareOpen(true);
   }
 
-  const sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw";
-
   return (
     <>
       <div className={columns}>
@@ -80,14 +80,14 @@ export function PortfolioGallery({
           <Reveal
             key={i}
             delay={(i % 4) * 80}
-            className="mb-3 break-inside-avoid sm:mb-4 lg:mb-5 xl:mb-6"
+            className="mb-8 break-inside-avoid md:mb-10 xl:mb-12"
           >
             {img.url ? (
               <button
                 type="button"
                 onClick={() => openShare(img)}
                 onContextMenu={(e) => e.preventDefault()}
-                className="group relative block w-full select-none overflow-hidden bg-greige"
+                className="group relative block w-full select-none overflow-hidden bg-greige focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-wine"
                 aria-label={`Share: ${img.alt}`}
               >
                 <div className="transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]">
@@ -99,7 +99,7 @@ export function PortfolioGallery({
                       alt={img.alt}
                       width={img.width}
                       height={img.height}
-                      sizes={sizes}
+                      sizes={imageSizes}
                       draggable={false}
                       className="block h-auto w-full"
                     />
@@ -110,12 +110,12 @@ export function PortfolioGallery({
                   )}
                 </div>
                 {/* tap-to-share affordance */}
-                <div className="pointer-events-none absolute inset-0 flex items-end justify-end bg-gradient-to-t from-ink/35 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                  <span className="m-2.5 inline-flex items-center gap-1.5 rounded-full bg-cream/90 px-3 py-1.5 text-xs font-medium text-ink shadow-sm backdrop-blur">
+                <div className="pointer-events-none absolute inset-0 flex items-end justify-end bg-gradient-to-t from-ink/35 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-focus-visible:opacity-100">
+                  <span className="m-4 inline-flex items-center gap-1.5 rounded-full bg-cream/95 px-4 py-2 font-body text-sm font-medium text-ink shadow-sm backdrop-blur">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
                       <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z" />
                     </svg>
-                    Tap to share
+                    Share photograph
                   </span>
                 </div>
                 <EditOverlay
@@ -124,20 +124,20 @@ export function PortfolioGallery({
               </button>
             ) : (
               <div className="overflow-hidden">
-                <Figure src={img.url} alt={img.alt} ratio={img.ratio ?? "portrait"} sizes={sizes} />
+                <Figure src={img.url} alt={img.alt} ratio={img.ratio ?? "portrait"} sizes={imageSizes} />
               </div>
             )}
             {/* Vendor credits — links sit BELOW the share button (not inside it,
                 which would be invalid nested interactives). */}
             {img.vendors && img.vendors.length ? (
-              <p className="mt-2 text-[0.66rem] leading-relaxed text-ink-faint">
+              <p className="mt-3 font-body text-sm leading-[1.6] text-ink-soft">
                 {img.vendors.map((v, vi) => (
                   <span key={v.slug + vi}>
                     {vi > 0 ? <span aria-hidden> · </span> : null}
                     <span>{v.role || vendorCreditLabel(v.category)}: </span>
                     <a
                       href={`/vendors/${v.slug}`}
-                      className="text-ink-soft underline decoration-ink/20 underline-offset-2 transition-colors hover:text-wine hover:decoration-wine"
+                      className="text-ink underline decoration-ink/30 underline-offset-2 transition-colors hover:text-wine hover:decoration-wine focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine"
                     >
                       {v.business || v.name}
                     </a>

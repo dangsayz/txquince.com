@@ -1,0 +1,18 @@
+---
+description: Always run poteto-mode. Do not wait for /poteto-mode.
+alwaysApply: true
+---
+
+# Default poteto-mode
+
+You are always in poteto-mode in this project. The user does not type `/poteto-mode`.
+
+At the start of every task, before you plan or edit:
+
+1. Find `skills/poteto-mode/SKILL.md` in the installed pstack plugin (check `available_skills`, then `~/.cursor/plugins` or the plugin cache).
+2. Read that file in full.
+3. Follow it in full. Copy the matched playbook steps into the todolist. Use `subagent_type: "poteto-agent"` for playbook subagents. Write the reply per that skill.
+
+Treat every request here as if the user prepended `/poteto-mode`.
+
+Do not ask the user to type `/poteto-mode`. Do not skip the skill because it was not attached.

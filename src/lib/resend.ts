@@ -724,3 +724,44 @@ export async function sendDepositLinkEmail(
     return { ok: false, error: String(err) };
   }
 }
+
+/** Existing post-event review request; called only by the authenticated cron. */
+export async function sendReviewRequestEmail(
+  booking: BookingRecord,
+  reviewUrl: string,
+): Promise<{ ok: boolean; error?: string }> {
+  const resend = getResend();
+  if (!resend) return { ok: false, error: "resend-not-configured" };
+  const firstName = booking.name.split(" ")[0] || "there";
+  const subject = `${firstName}, thank you for trusting us with her day`;
+  const text = [
+    `Hi ${firstName},`,
+    "",
+    "Thank you for inviting us to be part of her quinceañera. We hope the photographs and film bring the day back every time you see them.",
+    "",
+    "If you have a moment, would you share your experience with other families? Your honest review helps them choose with confidence:",
+    reviewUrl,
+    "",
+    "Thank you again,",
+    site.brand,
+  ].join("\n");
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM,
+      to: booking.email,
+      replyTo: process.env.OPERATOR_NOTIFY_EMAIL || undefined,
+      subject,
+      text,
+      html: followupHtml({
+        firstName,
+        bodyHtml: `<p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">Thank you for inviting us to be part of her quinceañera. We hope the photographs and film bring the day back every time you see them.</p><p style="margin:0;font-size:15px;line-height:1.7;color:#56504a">If you have a moment, would you share your experience with other families? Your honest review helps them choose with confidence.</p>`,
+        ctaUrl: reviewUrl,
+        ctaLabel: "Share your experience",
+      }),
+    });
+    if (error) return { ok: false, error: String(error.message ?? error) };
+    return { ok: true };
+  } catch (error) {
+    return { ok: false, error: String(error) };
+  }
+}
