@@ -109,7 +109,7 @@ export type EditableImageMeta = {
  * Drop inside any `relative` image frame. Renders nothing for visitors.
  * For the admin: a "Frame" chip → anchor/replace dialog.
  */
-export function EditOverlay({ image }: { image: EditableImageMeta }) {
+export function EditOverlay({ image, editHref = "/admin", label }: { image: EditableImageMeta; editHref?: string; label?: string }) {
   const [admin, setAdmin] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -130,7 +130,7 @@ export function EditOverlay({ image }: { image: EditableImageMeta }) {
     e.preventDefault();
     e.stopPropagation();
     if (editable) setOpen(true);
-    else window.location.href = "/admin";
+    else window.location.href = editHref;
   }
 
   return (
@@ -142,10 +142,10 @@ export function EditOverlay({ image }: { image: EditableImageMeta }) {
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") activate(e);
         }}
-        title={editable ? "Set the focal anchor or replace this photo" : "Edit in admin"}
+        title={editable ? "Set the focal anchor or replace this photo" : label ?? "Edit in admin"}
         className="absolute bottom-2 left-2 z-20 inline-flex cursor-pointer items-center gap-1.5 bg-ink/80 px-2.5 py-1.5 text-[0.58rem] uppercase tracking-[0.18em] text-cream backdrop-blur-sm transition-colors hover:bg-wine"
       >
-        <span aria-hidden>⌖</span> {editable ? "Frame" : "Edit"}
+        <span aria-hidden>⌖</span> {editable ? "Frame" : label ?? "Edit"}
       </span>
       {open && editable ? (
         <FrameDialog image={image} onClose={() => setOpen(false)} />

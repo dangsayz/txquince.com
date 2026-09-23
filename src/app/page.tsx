@@ -13,6 +13,7 @@ import { VideoGallery } from "@/components/VideoGallery";
 import { Reveal } from "@/components/Reveal";
 import { EditOverlay } from "@/components/EditMode";
 import { FaqJsonLd } from "@/components/FaqJsonLd";
+import { heroObjectPosition } from "@/lib/hero-focus";
 
 export const revalidate = 60;
 
@@ -84,8 +85,10 @@ export default async function HomePage() {
       : heroMedia?.kind === "video" && heroMedia.posterUrl
         ? { url: heroMedia.posterUrl, alt: "Quinceañera film still" }
         : frames[0] ?? null;
-  // If the hero is the top featured photo, its admin-set anchor applies too.
-  const coverFocal = focal(cover?.fx != null ? cover : null, 50, 30);
+  // The uploaded hero has its own focal anchor; featured photos retain theirs.
+  const coverFocal = heroMedia?.kind === "image"
+    ? heroObjectPosition(heroMedia)
+    : focal(cover, 50, 30);
 
   // The closing campaign frame avoids repeating the hero when possible.
   const seq = frames.filter((f) => f.url !== cover?.url);
@@ -136,7 +139,9 @@ export default async function HomePage() {
             ) : (
               <div className="absolute inset-0 bg-greige" />
             )}
-            {editable(cover)}
+            {heroMedia?.kind === "image" ? (
+              <EditOverlay image={{ alt: cover?.alt }} editHref="/admin/hero#framing" label="Set focal point" />
+            ) : editable(cover)}
           </div>
 
           <div className="order-1 flex flex-col justify-center px-5 pb-12 pt-16 sm:px-10 sm:py-20 lg:col-span-6 lg:px-12 xl:px-20">
