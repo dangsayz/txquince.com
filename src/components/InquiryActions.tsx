@@ -84,11 +84,11 @@ export function InquiryActions({
 
   return (
     <div className="mt-4 border-t border-line pt-4">
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-3">
         <span className="text-[0.7rem] uppercase tracking-[0.14em] text-ink-faint">
           Status
         </span>
-        <div className="flex gap-1.5">
+        <div className="flex flex-wrap gap-2">
           {STATUSES.map((s) => {
             const active = current === s.value;
             return (
@@ -97,7 +97,7 @@ export function InquiryActions({
                 type="button"
                 disabled={pending}
                 onClick={() => choose(s.value)}
-                className={`rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wider ring-1 transition-colors disabled:opacity-50 ${
+                className={`min-h-11 rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wider ring-1 transition-colors disabled:opacity-50 ${
                   active
                     ? "bg-ink text-cream ring-ink"
                     : "bg-ivory text-ink-soft ring-line hover:text-ink"
@@ -117,7 +117,7 @@ export function InquiryActions({
             onChange={(e) => setReason(e.target.value)}
             disabled={pending}
             aria-label="Reason lost"
-            className="rounded border border-line bg-white px-2 py-1 text-sm text-ink"
+            className="min-h-11 rounded border border-line bg-white px-3 py-2 text-base text-ink"
           >
             <option value="">Why lost…</option>
             {LOST_REASONS.map((r) => (
@@ -135,7 +135,7 @@ export function InquiryActions({
               disabled={pending}
               placeholder="Competitor (optional)"
               maxLength={120}
-              className="rounded border border-line bg-white px-2 py-1 text-sm text-ink placeholder:text-ink-faint"
+              className="min-h-11 rounded border border-line bg-white px-3 py-2 text-base text-ink placeholder:text-ink-faint"
             />
           )}
 
@@ -143,7 +143,7 @@ export function InquiryActions({
             type="button"
             disabled={pending || !reason}
             onClick={saveLost}
-            className="rounded-full bg-wine px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-cream transition-colors hover:bg-wine-deep disabled:opacity-50"
+            className="min-h-11 rounded-full bg-wine px-4 py-2 text-xs font-semibold uppercase tracking-wider text-cream transition-colors hover:bg-wine-deep disabled:opacity-50"
           >
             Save
           </button>

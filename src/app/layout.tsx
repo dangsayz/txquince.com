@@ -2,8 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Bodoni_Moda, Cormorant_Garamond, Inter, Jost, Pinyon_Script } from "next/font/google";
 import "./globals.css";
 import { site } from "@/content/site";
-import { Nav } from "@/components/Nav";
-import { Footer } from "@/components/Footer";
+import { PublicSiteFrame } from "@/components/PublicSiteFrame";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { JsonLd } from "@/components/JsonLd";
 import { WebAnalytics } from "@/components/WebAnalytics";
@@ -87,9 +86,7 @@ export default function RootLayout({
       className={`${jost.variable} ${cormorant.variable} ${bodoni.variable} ${inter.variable} ${pinyon.variable} h-full`}
     >
       <body className="flex min-h-screen flex-col bg-cream">
-        <Nav />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <PublicSiteFrame>{children}</PublicSiteFrame>
         <StickyMobileCTA />
         <Suspense fallback={null}>
           <Tracker />
