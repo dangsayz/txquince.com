@@ -52,6 +52,22 @@ const spanish = {
   submit: "Enviar mi consulta",
 } as const;
 
+function spanishError(message: string): string {
+  if (/name/i.test(message)) return "Escribe tu nombre y apellido.";
+  if (/email/i.test(message)) return "Escribe un correo electrónico válido.";
+  if (/future date/i.test(message)) return "Elige una fecha futura dentro de los próximos tres años.";
+  if (/photo|film|service/i.test(message)) return "Elige fotografía, video o ambos.";
+  if (/budget/i.test(message)) return "Elige un rango de presupuesto.";
+  if (/verification/i.test(message)) return spanish.verification;
+  if (/too many requests/i.test(message)) return "Demasiados intentos. Espera un minuto e inténtalo de nuevo.";
+  if (/save your inquiry/i.test(message)) return "No pudimos guardar tu consulta. Inténtalo de nuevo en unos minutos.";
+  return spanish.genericError;
+}
+
+function localizeErrors(errors: FieldErrors): FieldErrors {
+  return Object.fromEntries(Object.entries(errors).map(([key, messages]) => [key, messages?.map(spanishError)]));
+}
+
 export function InquiryForm({ initialDate = "", locale = "en" }: { initialDate?: string; locale?: "en" | "es" }) {
   const es = locale === "es";
   const router = useRouter();
@@ -91,7 +107,8 @@ export function InquiryForm({ initialDate = "", locale = "en" }: { initialDate?:
     // Client-side validation (server re-validates regardless).
     const parsed = inquirySchema.safeParse(payload);
     if (!parsed.success) {
-      setErrors(parsed.error.flatten().fieldErrors);
+      const fieldErrors = parsed.error.flatten().fieldErrors;
+      setErrors(es ? localizeErrors(fieldErrors) : fieldErrors);
       setFormError(es ? spanish.validation : "Please check the highlighted fields.");
       setStatus("error");
       return;
@@ -121,8 +138,8 @@ export function InquiryForm({ initialDate = "", locale = "en" }: { initialDate?:
           error?: string;
           fieldErrors?: FieldErrors;
         };
-        if (data.fieldErrors) setErrors(data.fieldErrors);
-        setFormError(data.error ?? (es ? spanish.genericError : "Something went wrong. Please try again."));
+        if (data.fieldErrors) setErrors(es ? localizeErrors(data.fieldErrors) : data.fieldErrors);
+        setFormError(es ? spanishError(data.error ?? "") : (data.error ?? "Something went wrong. Please try again."));
         setStatus("error");
         return;
       }
@@ -131,7 +148,7 @@ export function InquiryForm({ initialDate = "", locale = "en" }: { initialDate?:
         budget_range: parsed.data.budget_range,
         services: parsed.data.services,
       });
-      router.push("/thank-you");
+      router.push(es ? "/es/gracias" : "/thank-you");
     } catch {
       setFormError(es ? spanish.networkError : "Network error. Please check your connection and try again.");
       setStatus("error");

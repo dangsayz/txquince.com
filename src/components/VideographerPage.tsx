@@ -38,6 +38,13 @@ const copy = {
   },
 } as const;
 
+const spanishTeasers: Record<string, string> = {
+  moments: "Video con un artista durante cinco horas esenciales.",
+  essential: "Video con un artista para los momentos principales, más una sesión previa.",
+  signature: "Foto y video con dos artistas durante el día completo.",
+  legacy: "Todo lo de Signature, más video largo, cobertura aérea y álbum premium.",
+};
+
 export async function VideographerPage({ locale }: { locale: "en" | "es" }) {
   const c = copy[locale];
   const inquiry = locale === "es" ? "/es/consulta" : "/check-your-date";
@@ -47,7 +54,7 @@ export async function VideographerPage({ locale }: { locale: "en" | "es" }) {
   return <>
     <section className="border-b border-line bg-white"><div className="mx-auto max-w-[90rem] px-5 py-20 md:px-10 md:py-28 lg:px-16"><p className="text-xs font-medium uppercase tracking-[0.2em] text-wine-deep">{c.eyebrow}</p><h1 className="mt-6 max-w-[11ch] font-serif text-[clamp(4rem,8vw,8rem)] leading-[0.9] tracking-[-0.05em] text-ink">{c.title}</h1><p className="mt-8 max-w-2xl text-lg leading-8 text-ink-soft">{c.intro}</p><Link href={inquiry} className="mt-9 inline-flex min-h-12 items-center rounded-full bg-ink px-7 text-sm font-semibold text-white hover:bg-ink/85">{c.cta} <span aria-hidden className="ml-3">→</span></Link></div></section>
     <section className="mx-auto max-w-[90rem] px-5 py-20 md:px-10 md:py-28 lg:px-16"><h2 className="font-serif text-[clamp(2.8rem,5vw,4.5rem)] leading-none text-ink">{c.films}</h2><p className="mt-4 mb-10 text-base text-ink-soft">{c.filmsIntro}</p><VideoGallery videos={films} />{shorts.length > 0 ? <div className="mt-14"><VideoGallery videos={shorts} variant="vertical" /></div> : null}</section>
-    <section className="bg-greige"><div className="mx-auto max-w-[90rem] px-5 py-20 md:px-10 md:py-28 lg:px-16"><h2 className="font-serif text-[clamp(2.8rem,5vw,4.5rem)] leading-none text-ink">{c.collections}</h2><p className="mt-5 max-w-2xl text-base leading-7 text-ink-soft">{c.one}</p><div className="mt-10 grid gap-4 md:grid-cols-2">{packages.map((p) => <article key={p.id} className="border border-line bg-white p-7 sm:p-9"><div className="flex items-baseline justify-between gap-4"><h3 className="font-serif text-3xl text-ink">{p.name}</h3><span className="text-lg font-semibold text-ink">{p.priceLabel}</span></div><p className="mt-4 text-base leading-7 text-ink-soft">{p.teaser}</p><p className="mt-5 text-sm text-ink-soft">{p.depositLabel} {locale === "es" ? "para apartar" : "deposit to reserve"}</p></article>)}</div></div></section>
+    <section className="bg-greige"><div className="mx-auto max-w-[90rem] px-5 py-20 md:px-10 md:py-28 lg:px-16"><h2 className="font-serif text-[clamp(2.8rem,5vw,4.5rem)] leading-none text-ink">{c.collections}</h2><p className="mt-5 max-w-2xl text-base leading-7 text-ink-soft">{c.one}</p><div className="mt-10 grid gap-4 md:grid-cols-2">{packages.map((p) => <article key={p.id} className="border border-line bg-white p-7 sm:p-9"><div className="flex items-baseline justify-between gap-4"><h3 className="font-serif text-3xl text-ink">{p.name}</h3><span className="text-lg font-semibold text-ink">{p.priceLabel}</span></div><p className="mt-4 text-base leading-7 text-ink-soft">{locale === "es" ? spanishTeasers[p.id] : p.teaser}</p><p className="mt-5 text-sm text-ink-soft">{p.depositLabel} {locale === "es" ? "para apartar" : "deposit to reserve"}</p></article>)}</div></div></section>
     <section className="mx-auto max-w-[90rem] px-5 py-20 md:px-10 md:py-28 lg:px-16"><h2 className="font-serif text-[clamp(2.8rem,5vw,4.5rem)] leading-none text-ink">{c.faq}</h2><div className="mt-8 max-w-3xl border-t border-line">{c.questions.map(([q,a]) => <details key={q} className="border-b border-line py-6"><summary className="cursor-pointer list-none font-medium text-ink">{q} <span aria-hidden className="float-right">+</span></summary><p className="mt-4 leading-7 text-ink-soft">{a}</p></details>)}</div><Link href={inquiry} className="mt-10 inline-flex min-h-12 items-center rounded-full bg-ink px-7 text-sm font-semibold text-white hover:bg-ink/85">{c.cta} <span aria-hidden className="ml-3">→</span></Link></section>
   </>;
 }

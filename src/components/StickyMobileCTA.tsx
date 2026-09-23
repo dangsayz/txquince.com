@@ -15,6 +15,7 @@ const HIDE_ON = new Set([
   "/reserve/success",
   "/thank-you",
   "/es/consulta",
+  "/es/gracias",
 ]);
 
 export function StickyMobileCTA() {
