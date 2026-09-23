@@ -5,7 +5,6 @@ import { packages, investmentIntro, investmentFaqs } from "@/content/packages";
 import { site } from "@/content/site";
 import { getFeaturedImages, getPageHero } from "@/lib/content-db";
 import { Reveal } from "@/components/Reveal";
-import { CTAButton } from "@/components/CTAButton";
 import { FinalCTA } from "@/components/FinalCTA";
 import { Testimonials } from "@/components/Testimonials";
 
@@ -94,89 +93,90 @@ export default async function InvestmentPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      {/* Cover — cinematic image hero, type low-left in cream (was text-on-cream). */}
-      <section className="relative overflow-hidden bg-ink">
-        <div className="relative h-[66svh] min-h-[440px] w-full md:h-[76svh]">
-          {hero?.url ? (
-            <Image
-              src={hero.url}
-              alt={hero.alt || "Quinceañera photography in Dallas–Fort Worth"}
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover"
-              style={{ objectPosition: focal(hero.focus_x, hero.focus_y) }}
-            />
-          ) : null}
-          <div className="absolute inset-0 bg-gradient-to-t from-ink/92 via-ink/45 to-ink/10" />
-          <div className="absolute inset-x-0 bottom-0">
-            <div className="mx-auto max-w-[90rem] px-5 pb-12 md:px-10 lg:px-16 md:pb-16">
-              <Reveal>
-                <p className="text-[0.62rem] uppercase tracking-[0.32em] text-cream/85">
-                  {investmentIntro.eyebrow}
-                </p>
-                <h1
-                  className="mt-4 max-w-3xl font-display text-cream text-balance"
-                  style={{ fontSize: "clamp(2.4rem,5.8vw,5rem)", lineHeight: 1.0, letterSpacing: "-0.026em" }}
-                >
-                  {investmentIntro.heading}
-                </h1>
-                <p className="mt-5 max-w-xl text-sm leading-relaxed text-cream/80 md:text-base">
-                  {investmentIntro.subhead}
-                </p>
-                <p className="mt-6 text-[0.7rem] uppercase tracking-[0.22em] text-wine-tint">
-                  {investmentIntro.hook}
-                </p>
-              </Reveal>
+      <section className="border-b border-line bg-white">
+        <div className="mx-auto grid max-w-[90rem] lg:grid-cols-12">
+          <div className="flex flex-col justify-center px-5 py-16 md:px-10 md:py-24 lg:col-span-7 lg:px-16 lg:py-28">
+            <p className="text-xs font-medium uppercase tracking-[0.2em] text-wine-deep">
+              Quinceañera photography &amp; film · Dallas–Fort Worth
+            </p>
+            <h1 className="mt-6 max-w-[11ch] font-serif text-[clamp(3.8rem,7vw,6.8rem)] leading-[0.92] tracking-[-0.04em] text-ink">
+              Prices, stated plainly.
+            </h1>
+            <p className="mt-7 max-w-[52ch] text-lg leading-8 text-ink-soft">
+              {investmentIntro.subhead}
+            </p>
+            <p className="mt-5 max-w-[52ch] text-base leading-7 text-ink-soft">
+              {investmentIntro.hook}
+            </p>
+            <div className="mt-9 flex flex-wrap items-center gap-4">
+              <Link href="/check-your-date" className="inline-flex min-h-12 items-center justify-center whitespace-nowrap rounded-full bg-ink px-6 text-base font-semibold text-white hover:bg-ink/85">
+                Check her date <span aria-hidden className="ml-2">→</span>
+              </Link>
+              <span className="text-sm text-ink-soft">No payment to ask · from $1,800</span>
             </div>
+          </div>
+          <div className="relative min-h-[340px] sm:min-h-[520px] lg:col-span-5 lg:min-h-[640px]">
+            {hero?.url ? (
+              <Image
+                src={hero.url}
+                alt={hero.alt || "Quinceañera photography in Dallas–Fort Worth"}
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 42vw"
+                className="object-cover"
+                style={{ objectPosition: focal(hero.focus_x, hero.focus_y) }}
+              />
+            ) : <div className="absolute inset-0 bg-greige" />}
           </div>
         </div>
       </section>
 
-      {/* Collections — tiered cards. The target tier (Signature) carries the
-          dark "contrast engine" so it dominates; the rest are light ivory cards
-          on a warm cream band. Structure + supporting color, not a flat ledger. */}
-      <section className="border-y border-ink/10 bg-cream">
-        <div className="mx-auto max-w-[90rem] px-5 py-16 md:px-10 lg:px-16 md:py-24">
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:items-stretch">
+      <section className="bg-greige">
+        <div className="mx-auto max-w-[90rem] px-5 py-20 md:px-10 md:py-28 lg:px-16">
+          <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-[0.2em] text-wine-deep">The collections</p>
+              <h2 className="mt-3 font-serif text-[clamp(2.8rem,5vw,4.5rem)] leading-none text-ink">Choose how to remember it.</h2>
+            </div>
+            <p className="max-w-sm text-base leading-7 text-ink-soft">Every price and inclusion is here. Ask about a date before you decide.</p>
+          </div>
+          <div className="grid gap-5 md:grid-cols-2 lg:gap-7">
             {packages.map((p, i) => {
               const featured = Boolean(p.highlight);
               return (
                 <Reveal key={p.id} delay={i * 60} className="h-full">
                   <div
-                    className={`flex h-full flex-col rounded-[1.5rem] p-7 md:p-8 ${
+                    className={`flex h-full flex-col border p-7 sm:p-9 lg:p-11 ${
                       featured
-                        ? "bg-ink text-cream shadow-[0_36px_80px_-30px_rgba(28,26,23,0.45)]"
-                        : "border border-line bg-ivory shadow-[0_24px_60px_-32px_rgba(28,26,23,0.16)]"
+                        ? "border-ink bg-ink text-white"
+                        : "border-line bg-white"
                     }`}
                   >
                     {featured ? (
-                      <span className="mb-5 inline-flex w-fit rounded-full bg-wine px-3 py-1 text-[0.58rem] font-medium uppercase tracking-[0.22em] text-cream">
+                      <span className="mb-5 inline-flex w-fit border border-white/40 px-3 py-1.5 text-xs font-medium text-white">
                         {p.badge ?? "Most reserved"}
                       </span>
                     ) : null}
-                    <h2
-                      className={`font-display ${featured ? "text-cream" : "text-ink"}`}
-                      style={{ fontSize: "clamp(1.8rem,2.6vw,2.4rem)", lineHeight: 1, letterSpacing: "-0.02em" }}
+                    <h3
+                      className={`font-serif text-[clamp(2.4rem,4vw,3.5rem)] leading-none ${featured ? "text-white" : "text-ink"}`}
                     >
                       {p.name}
-                    </h2>
-                    <p className={`mt-3 text-sm leading-relaxed ${featured ? "text-cream/75" : "text-ink-soft"}`}>
+                    </h3>
+                    <p className={`mt-4 text-base leading-7 ${featured ? "text-white/80" : "text-ink-soft"}`}>
                       {p.tagline}
                     </p>
                     <p
-                      className={`mt-6 font-display ${featured ? "text-cream" : "text-ink"}`}
-                      style={{ fontSize: "clamp(2.2rem,3.4vw,3rem)", lineHeight: 1 }}
+                      className={`mt-7 font-serif text-[clamp(3rem,5vw,4rem)] leading-none ${featured ? "text-white" : "text-ink"}`}
                     >
                       {p.priceLabel}
                     </p>
-                    <p className={`mt-1.5 text-xs ${featured ? "text-cream/60" : "text-ink-faint"}`}>
+                    <p className={`mt-2 text-sm ${featured ? "text-white/80" : "text-ink-soft"}`}>
                       {p.depositLabel} reserves your date
                     </p>
 
                     <p
-                      className={`mt-7 text-[0.62rem] uppercase tracking-[0.24em] ${
-                        featured ? "text-wine-tint" : "text-ink-faint"
+                      className={`mt-8 border-t pt-6 text-sm font-semibold ${
+                        featured ? "border-white/25 text-white" : "border-line text-ink"
                       }`}
                     >
                       Included
@@ -185,8 +185,8 @@ export default async function InvestmentPage() {
                       {p.includes.map((item) => (
                         <li
                           key={item}
-                          className={`flex gap-2.5 text-sm leading-relaxed ${
-                            featured ? "text-cream/85" : "text-ink-soft"
+                          className={`flex gap-2.5 text-base leading-7 ${
+                            featured ? "text-white/85" : "text-ink-soft"
                           }`}
                         >
                           <span aria-hidden className={featured ? "text-wine-tint" : "text-wine-deep"}>
@@ -197,13 +197,10 @@ export default async function InvestmentPage() {
                       ))}
                     </ul>
 
-                    <div className="mt-auto pt-8">
-                      <CTAButton
-                        href={`/reserve?collection=${p.id}`}
-                        variant={featured ? "onDark" : "text"}
-                      >
-                        Reserve {p.name}
-                      </CTAButton>
+                    <div className="mt-auto pt-9">
+                      <Link href={`/reserve?collection=${p.id}`} className={`inline-flex min-h-12 items-center justify-center px-6 text-base font-semibold ${featured ? "bg-white text-ink hover:bg-cream" : "bg-ink text-white hover:bg-ink/85"}`}>
+                        Request {p.name} <span aria-hidden className="ml-2">→</span>
+                      </Link>
                     </div>
                   </div>
                 </Reveal>

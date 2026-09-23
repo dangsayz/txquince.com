@@ -116,20 +116,20 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* ================= HERO — type bottom-left, image bleeding off the right edge ================= */}
-      <section className="relative">
-        <div className="grid md:grid-cols-12">
+      {/* The first decision: see the work or ask about a date. */}
+      <section className="bg-white">
+        <div className="mx-auto grid max-w-[90rem] lg:min-h-[min(760px,82svh)] lg:grid-cols-12">
           {/* Image: flush to the top + right edge of the viewport. On desktop it
               stretches to the full grid-row height (matching the type column) with
               an 88svh floor, so its bottom always meets the end of the div. */}
-          <div className="relative order-1 h-[62svh] md:order-2 md:col-span-7 md:h-auto md:min-h-[88svh]">
+          <div className="relative order-2 h-[48svh] min-h-[340px] sm:h-[60svh] lg:col-span-6 lg:h-auto lg:min-h-[620px]">
             {cover?.url ? (
               <Image
                 src={cover.url}
                 alt={cover.alt || "Quinceañera portrait"}
                 fill
                 priority
-                sizes="(max-width: 768px) 100vw, 58vw"
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"
                 style={{ objectPosition: coverFocal }}
               />
@@ -139,94 +139,63 @@ export default async function HomePage() {
             {editable(cover)}
           </div>
 
-          {/* Type: pinned to the bottom of the cream field — museum air above. */}
-          <div className="order-2 flex flex-col justify-end px-5 pb-12 pt-14 md:order-1 md:col-span-5 md:pb-20 md:pl-10 md:pr-12 md:pt-24 lg:pl-16">
-            <h1 className="hero-enter hero-delay-2 mt-8">
-              {/* Target keyword leads the H1 (broad metro term — city pages own
-                  the city-specific phrases), then the emotional hook. */}
-              <span className="mb-6 block text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">
-                Dallas–Fort Worth Quinceañera Photographer &amp; Film
-              </span>
-              <span
-                className="block font-display text-ink"
-                style={{
-                  fontSize: "clamp(3.2rem,8.6vw,7.6rem)",
-                  lineHeight: 0.96,
-                  letterSpacing: "-0.03em",
-                }}
-              >
-                Once in
-              </span>
-              <span
-                className="block font-display italic text-ink"
-                style={{
-                  fontSize: "clamp(3.2rem,8.6vw,7.6rem)",
-                  lineHeight: 1.02,
-                  letterSpacing: "-0.03em",
-                }}
-              >
-                her lifetime.
-              </span>
+          <div className="order-1 flex flex-col justify-center px-5 pb-12 pt-16 sm:px-10 sm:py-20 lg:col-span-6 lg:px-12 xl:px-20">
+            <p className="hero-enter hero-delay-1 text-xs font-medium uppercase tracking-[0.2em] text-wine-deep">
+              Dallas–Fort Worth · Photography &amp; film
+            </p>
+            <h1 className="hero-enter hero-delay-2 mt-6 max-w-[10ch] font-serif text-[clamp(3.8rem,7vw,6.6rem)] leading-[0.9] tracking-[-0.04em] text-ink">
+              Her day, beautifully remembered.
             </h1>
-
-            <p className="hero-enter hero-delay-3 mt-7 max-w-sm text-[0.95rem] leading-relaxed text-ink-soft">
-              {site.tagline}. One celebration per day — never two.
+            <p className="hero-enter hero-delay-3 mt-7 max-w-[46ch] text-base leading-7 text-ink-soft md:text-lg">
+              Quinceañera photography and film with a dedicated team for her one unrepeatable day.
             </p>
-
-            {/* Supporting keyword cluster — long-tail moments + suburb geo,
-                woven as a natural sentence (reinforces the H1, no stuffing). */}
-            <p className="hero-enter hero-delay-4 mt-4 max-w-md text-[0.8rem] leading-relaxed text-ink-faint">
-              Full-day quince photography and video — the save-the-date session,
-              la misa, portraits, el vals, and the reception — quinceañera coverage
-              serving Dallas, Fort Worth, Arlington, Irving, Garland, Grand Prairie,
-              and Mansfield.
+            <p className="hero-enter hero-delay-4 mt-4 max-w-[48ch] text-sm leading-6 text-ink-faint">
+              From la misa and portraits to el vals and the last dance, across Dallas–Fort Worth.
             </p>
-
-            <div className="hero-enter hero-delay-5 mt-9 flex flex-wrap items-baseline gap-x-8 gap-y-3">
+            <div className="hero-enter hero-delay-5 mt-9 flex flex-wrap items-center gap-3">
               <Link
-                href={site.cta.href}
-                className={quietLink("text-ink underline decoration-ink/30 hover:decoration-wine hover:text-wine")}
+                href="/check-your-date"
+                className="inline-flex min-h-12 items-center justify-center whitespace-nowrap rounded-full bg-ink px-6 text-base font-semibold text-white transition-colors hover:bg-ink/85"
               >
-                Reserve your date
-                <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
+                Check her date <span aria-hidden className="ml-2">→</span>
               </Link>
               <Link
                 href="/portfolio"
-                className={quietLink("text-ink-soft underline decoration-ink/20 hover:text-ink")}
+                className="inline-flex min-h-12 items-center px-3 text-base font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-ink"
               >
-                The work
+                See the work
               </Link>
             </div>
+            <p className="mt-5 text-sm text-ink-soft">A personal reply within 24 hours · no payment to ask</p>
           </div>
         </div>
       </section>
 
       {/* ================= CREDIBILITY — editorial stat line, not stars ================= */}
-      <section className="border-y border-ink/10">
-        <div className="mx-auto grid max-w-[90rem] grid-cols-2 gap-y-8 px-5 py-12 md:grid-cols-4 md:px-10 lg:px-16 md:py-14">
+      <section className="border-y border-line bg-greige">
+        <div className="mx-auto grid max-w-[90rem] grid-cols-2 gap-x-6 gap-y-9 px-5 py-9 sm:px-10 md:grid-cols-4 md:py-11 lg:px-16">
           {[
             { n: "100+", l: "DFW families" },
-            { n: "01", l: "celebration per day" },
-            { n: "ES / EN", l: "se habla español" },
-            { n: "’26", l: `booked through ${site.scarcity.bookedThrough.split(" ")[0]}` },
+            { n: "01", l: "dedicated team per day" },
+            { n: "ES / EN", l: "English & Spanish" },
+            { n: "24h", l: "personal reply" },
           ].map((s) => (
             <Reveal key={s.l}>
-              <p
-                className="font-display text-ink"
-                style={{ fontSize: "clamp(1.9rem,3.4vw,3rem)", lineHeight: 1 }}
-              >
-                {s.n}
-              </p>
-              <p className="mt-2 text-[0.64rem] uppercase tracking-[0.22em] text-ink-faint">
-                {s.l}
-              </p>
+              <p className="font-serif text-[clamp(2.3rem,4vw,3.2rem)] leading-none text-ink">{s.n}</p>
+              <p className="mt-2 text-sm text-ink-soft">{s.l}</p>
             </Reveal>
           ))}
         </div>
-        <div className="mx-auto max-w-[90rem] border-t border-ink/10 px-5 py-5 text-center md:px-10 lg:px-16">
-          <p className="text-[0.64rem] uppercase tracking-[0.22em] text-ink-faint">
+        <div className="mx-auto max-w-[90rem] border-t border-line px-5 py-4 text-center md:px-10 lg:px-16">
+          <p className="text-sm text-ink-soft">
             {site.proof.insuredLine} — your church &amp; venue covered
           </p>
+        </div>
+      </section>
+
+      <section className="border-b border-line bg-white">
+        <div className="mx-auto max-w-[90rem] px-5 py-16 md:px-10 md:py-24 lg:px-16">
+          <DateChecker heading={home.checkDate.heading} body={home.checkDate.body} />
         </div>
       </section>
 
@@ -339,15 +308,6 @@ export default async function HomePage() {
         </section>
       ) : null}
 
-      {/* ================= AVAILABILITY — the one centered moment ================= */}
-      <section className="mt-24 border-y border-ink/10 md:mt-36">
-        <div className="px-5 py-20 md:py-28">
-          <Reveal>
-            <DateChecker heading={home.checkDate.heading} body={home.checkDate.body} />
-          </Reveal>
-        </div>
-      </section>
-
       {/* ================= INVESTMENT — a lookbook list, not pricing cards =================
           Lifted onto a faint champagne band bounded by hairlines so the pricing
           reads as its own distinct block, not another stretch of cream. */}
@@ -362,7 +322,7 @@ export default async function HomePage() {
               >
                 Four collections.
               </h2>
-              <p className="mt-6 max-w-xs text-sm leading-relaxed text-ink-soft">
+              <p className="mt-6 max-w-xs text-base leading-7 text-ink-soft">
                 Fixed pricing, stated plainly. From {depositFloorLabel}, a deposit
                 reserves the date; the balance splits into interest-free installments.
               </p>
@@ -377,7 +337,7 @@ export default async function HomePage() {
                   >
                     <div className="flex items-baseline justify-between gap-6">
                       <h3
-                        className="font-display text-ink transition-colors group-hover:text-wine"
+                        className="font-serif text-ink transition-colors group-hover:text-wine"
                         style={{ fontSize: p.highlight ? "clamp(2rem,3.6vw,3rem)" : "clamp(1.7rem,3vw,2.4rem)", lineHeight: 1 }}
                       >
                         {p.name}
@@ -391,9 +351,9 @@ export default async function HomePage() {
                         {p.priceLabel}
                       </p>
                     </div>
-                    <p className="mt-3 max-w-md text-sm leading-relaxed text-ink-soft">{p.teaser}</p>
-                    <p className="mt-4 text-[0.62rem] uppercase tracking-[0.22em] text-ink-faint opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                      Reserve {p.name} →
+                    <p className="mt-3 max-w-md text-base leading-7 text-ink-soft">{p.teaser}</p>
+                    <p className="mt-4 text-sm font-semibold text-ink underline underline-offset-4">
+                      Request {p.name} →
                     </p>
                   </Link>
                 </Reveal>
@@ -643,25 +603,21 @@ export default async function HomePage() {
           <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-ink/75 via-ink/15 to-transparent" />
           <div className="absolute inset-x-0 bottom-0">
             <div className="mx-auto max-w-[90rem] px-5 pb-14 md:px-10 lg:px-16 md:pb-20">
-              <p
-                className="max-w-3xl font-display italic text-cream"
-                style={{ fontSize: "clamp(2rem,5vw,4.2rem)", lineHeight: 1.05 }}
-              >
-                Only a few {site.scarcity.reservingYear} dates remain.
+              <p className="max-w-3xl font-serif text-[clamp(2.8rem,5vw,4.5rem)] leading-[0.95] text-cream">
+                Let&apos;s see if her date is still open.
               </p>
-              <div className="mt-7 flex flex-wrap items-baseline gap-x-8 gap-y-3">
+              <div className="mt-7 flex flex-wrap items-center gap-3">
                 <Link
-                  href={site.cta.href}
-                  className={quietLink("text-cream underline decoration-cream/40 hover:decoration-cream")}
+                  href="/check-your-date"
+                  className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-base font-semibold text-ink hover:bg-cream"
                 >
-                  Reserve your date
-                  <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
+                  Check her date <span aria-hidden className="ml-2">→</span>
                 </Link>
                 <Link
-                  href={site.secondaryCta.href}
-                  className={quietLink("text-cream/70 underline decoration-cream/25 hover:text-cream")}
+                  href="/investment"
+                  className="inline-flex min-h-12 items-center px-3 text-base text-white underline underline-offset-4"
                 >
-                  Questions first
+                  Collections &amp; pricing
                 </Link>
               </div>
             </div>

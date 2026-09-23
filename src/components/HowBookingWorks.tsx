@@ -1,4 +1,4 @@
-import { site } from "@/content/site";
+import { depositFloorLabel } from "@/content/packages";
 import { Reveal } from "@/components/Reveal";
 
 /**
@@ -9,20 +9,20 @@ import { Reveal } from "@/components/Reveal";
  */
 export const BOOKING_STEPS = [
   {
-    title: "Reserve your date",
-    body: `Choose your collection and date, then pay a deposit from ${site.booking.depositLabel} — your day is held instantly, and you can pay in full or in interest-free installments at checkout.`,
+    title: "Send the date",
+    body: "Tell us the date and collection you are considering. We personally confirm availability before any payment.",
   },
   {
-    title: "We plan it together",
-    body: "I reach out personally within 24 hours to confirm the details — your timeline, the church and venue, and the moments that matter most to your family.",
+    title: "Lock it in",
+    body: `If the date is open, a deposit from ${depositFloorLabel} holds it. The deposit applies to your collection balance.`,
   },
   {
     title: "Your save-the-date session",
-    body: "Every collection includes a complimentary portrait session before the big day, so we already know each other when the camera comes out.",
+    body: "Essential, Signature, and Legacy include a portrait session before the day, so we already know each other when the camera comes out.",
   },
   {
     title: "Your day, captured",
-    body: "I document la misa, el vals, and the celebration in full. Your deposit applies to the balance, and your sneak peek lands the same week.",
+    body: "We document the moments covered by your chosen collection, from la misa to the celebration. Signature includes a same-week sneak peek.",
   },
 ] as const;
 
@@ -41,7 +41,7 @@ export function HowBookingWorks({ className = "" }: { className?: string }) {
           <Reveal key={step.title} delay={i * 80} className="bg-cream p-8 md:p-9">
             <span className="font-display text-2xl text-wine">0{i + 1}</span>
             <h3 className="mt-5 font-display text-xl text-ink">{step.title}</h3>
-            <p className="mt-3 text-sm leading-relaxed text-ink-soft">{step.body}</p>
+            <p className="mt-3 text-base leading-7 text-ink-soft">{step.body}</p>
           </Reveal>
         ))}
       </ol>

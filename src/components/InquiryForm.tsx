@@ -23,10 +23,10 @@ const SHOW_TURNSTILE =
   Boolean(SITE_KEY) && process.env.NODE_ENV === "production";
 
 const inputBase =
-  "w-full border-b border-line bg-transparent px-0 py-3 text-ink placeholder:text-ink-faint transition-colors focus:border-wine focus:outline-none";
-const labelBase = "block text-sm font-medium text-ink";
+  "min-h-12 w-full border border-[#8c8377] bg-white px-4 py-3 text-base text-ink placeholder:text-ink-soft focus:border-ink focus:outline-none focus:ring-2 focus:ring-ink/20";
+const labelBase = "block text-base font-medium text-ink";
 
-export function InquiryForm() {
+export function InquiryForm({ initialDate = "" }: { initialDate?: string }) {
   const router = useRouter();
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -117,7 +117,7 @@ export function InquiryForm() {
     <form
       onSubmit={handleSubmit}
       noValidate
-      className="flex flex-col gap-8"
+      className="flex flex-col gap-7"
       onFocusCapture={(e) => {
         const f = e.currentTarget;
         if (f.dataset.started) return;
@@ -138,7 +138,7 @@ export function InquiryForm() {
         />
       </div>
 
-      <div className="grid gap-8 sm:grid-cols-2">
+      <div className="grid gap-6 sm:grid-cols-2">
         <Field label="Your name" required error={errors.name}>
           <input name="name" type="text" autoComplete="name" className={inputBase} placeholder="First and last" />
         </Field>
@@ -149,7 +149,7 @@ export function InquiryForm() {
           <input name="phone" type="tel" autoComplete="tel" className={inputBase} placeholder="(optional)" />
         </Field>
         <Field label="Event date" error={errors.event_date} hint="Future dates only">
-          <input name="event_date" type="date" min={todayStr} max={maxStr} className={inputBase} />
+          <input name="event_date" type="date" min={todayStr} max={maxStr} defaultValue={initialDate} className={inputBase} />
         </Field>
         <Field label="Venue or city" error={errors.venue} className="sm:col-span-2">
           <input name="venue" type="text" className={inputBase} placeholder="Church, hall, or city" />
@@ -214,7 +214,7 @@ export function InquiryForm() {
         </div>
       ) : null}
 
-      <p className="text-xs leading-relaxed text-ink-faint">
+      <p className="text-sm leading-relaxed text-ink-soft">
         By submitting, you agree to be contacted about your event. See our{" "}
         <a href="/privacy" className="underline underline-offset-2 hover:text-ink">
           privacy policy
@@ -223,7 +223,7 @@ export function InquiryForm() {
       </p>
 
       {formError ? (
-        <p role="alert" className="text-sm text-wine">
+        <p role="alert" className="text-sm font-medium text-[#a73333]">
           {formError}
         </p>
       ) : null}
@@ -231,7 +231,7 @@ export function InquiryForm() {
       <button
         type="submit"
         disabled={submitting}
-        className="inline-flex items-center justify-center gap-3 self-start rounded-full bg-wine px-10 py-4 text-[0.7rem] uppercase tracking-[0.2em] text-cream transition-all duration-300 hover:bg-wine-deep disabled:cursor-not-allowed disabled:opacity-70"
+        className="inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-full bg-ink px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-ink/85 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
       >
         {submitting ? (
           <>
@@ -269,10 +269,10 @@ function Field({
       <span className={labelBase}>
         {label}
         {required ? <span className="text-wine"> *</span> : null}
-        {hint ? <span className="ml-2 text-xs font-normal text-ink-faint">{hint}</span> : null}
+        {hint ? <span className="ml-2 text-sm font-normal text-ink-soft">{hint}</span> : null}
       </span>
       {children}
-      {error?.length ? <span className="text-xs text-wine">{error[0]}</span> : null}
+      {error?.length ? <span className="text-sm font-medium text-[#a73333]">{error[0]}</span> : null}
     </label>
   );
 }

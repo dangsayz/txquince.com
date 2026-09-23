@@ -1,4 +1,3 @@
-import { site } from "@/content/site";
 import { Reveal } from "@/components/Reveal";
 import { CTAButton } from "@/components/CTAButton";
 
@@ -7,9 +6,9 @@ import { CTAButton } from "@/components/CTAButton";
  * line and a single outlined pill (the ONE primary CTA). Reused across pages.
  */
 export function FinalCTA({
-  accent = "A few dates remain",
-  headline = site.scarcity.finalBand,
-  sub = "Tell me about your celebration and I'll personally reply within 24 hours.",
+  accent = "The next step",
+  headline = "Let's see if her date is still open.",
+  sub = "Share the date you're considering. We'll personally reply within 24 hours, with no payment to ask.",
 }: {
   accent?: string;
   headline?: string;
@@ -19,18 +18,18 @@ export function FinalCTA({
     <section className="bg-dark">
       <div className="mx-auto max-w-3xl px-5 py-section text-center md:px-10 lg:px-16 md:py-section-lg">
         <Reveal>
-          <span className="text-[0.66rem] uppercase tracking-[0.24em] text-wine">
+          <span className="text-sm font-medium text-wine-tint">
             {accent}
           </span>
-          <h2 className="mx-auto mt-5 max-w-2xl display-2 text-cream text-balance">
+          <h2 className="mx-auto mt-5 max-w-2xl font-serif text-[clamp(3rem,5vw,4.5rem)] leading-[0.95] text-cream text-balance">
             {headline}
           </h2>
-          <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-cream/70">
+          <p className="mx-auto mt-6 max-w-md text-base leading-7 text-cream/80">
             {sub}
           </p>
           <div className="mt-10 flex justify-center">
-            <CTAButton href={site.cta.href} variant="onDark">
-              {site.cta.label}
+            <CTAButton href="/check-your-date" variant="onDark" className="min-h-12 px-7 text-base font-semibold">
+              Check her date
             </CTAButton>
           </div>
         </Reveal>

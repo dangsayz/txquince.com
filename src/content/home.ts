@@ -51,7 +51,7 @@ export const home = {
   // AVAILABILITY — the homepage micro-commitment (live date check).
   checkDate: {
     heading: "Is her date still open?",
-    body: "One celebration per day, no exceptions. Check your date — if it's open, you can hold it in two minutes.",
+    body: "Share the date you are considering. We'll check the calendar and personally reply within 24 hours.",
   },
 
   packages: {
@@ -68,7 +68,7 @@ export const home = {
     items: [
       {
         q: "Do you offer payment plans?",
-        a: "Yes. A $500 deposit reserves your date, and the balance splits into interest-free installments before the day — pay in full or in payments, your choice at checkout.",
+        a: "Yes. Deposits start at $300 and scale with the collection. After we confirm the date, the balance can be split into interest-free installments before the celebration.",
       },
       {
         q: "¿Hablan español?",

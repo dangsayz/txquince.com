@@ -6,96 +6,74 @@ import { usePathname } from "next/navigation";
 import { site } from "@/content/site";
 import { Wordmark } from "@/components/Wordmark";
 
-/**
- * Editorial nav — serif wordmark left; tiny-caps tracked links right; the CTA
- * is a wine caps link, not a pill. Hairline below; generous height. Mobile
- * collapses to a hamburger + caps sheet (Esc closes).
- */
+const inquiry = { href: "/check-your-date", label: "Check her date" };
+
 export function Nav() {
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
+  const [openPath, setOpenPath] = useState<string | null>(null);
+  const open = openPath === pathname;
 
-  // Close the sheet on Escape (and whenever the route changes).
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpenPath(null);
+    };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [open]);
-  useEffect(() => setOpen(false), [pathname]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-ink/10 bg-cream/90 backdrop-blur-md">
-      <nav className="mx-auto flex max-w-[90rem] items-center justify-between px-5 py-5 md:px-10 lg:px-16 md:py-6">
-        {/* Wordmark — left, like a masthead */}
-        <Link href="/" aria-label={`${site.brand} — home`} className="block">
+    <header className="sticky top-0 z-40 border-b border-line bg-white/95 backdrop-blur-md">
+      <nav aria-label="Main navigation" className="mx-auto flex min-h-[76px] max-w-[90rem] items-center justify-between gap-3 px-5 md:px-10 lg:px-16">
+        <Link href="/" aria-label={`${site.brand} — home`} className="inline-flex min-h-12 shrink-0 items-center whitespace-nowrap">
           <Wordmark />
         </Link>
 
-        {/* Right — tracked caps links + wine CTA */}
-        <div className="hidden items-baseline gap-9 md:flex">
+        <div className="hidden items-center gap-1 lg:flex xl:gap-3">
           {site.nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className={`text-[0.66rem] uppercase tracking-[0.22em] transition-colors hover:text-ink ${
-                pathname === item.href
-                  ? "text-ink underline decoration-wine underline-offset-[6px]"
-                  : "text-ink-soft"
-              }`}
+              aria-current={pathname === item.href ? "page" : undefined}
+              className={`inline-flex min-h-11 items-center whitespace-nowrap px-2.5 text-sm transition-colors hover:text-ink ${pathname === item.href ? "font-semibold text-ink" : "text-ink-soft"}`}
             >
               {item.label}
             </Link>
           ))}
-          <Link
-            href={site.cta.href}
-            className="text-[0.66rem] uppercase tracking-[0.22em] text-wine-deep underline decoration-wine-deep/40 underline-offset-[6px] transition-colors hover:text-wine hover:decoration-wine"
-          >
-            {site.cta.label}
+          <Link href={inquiry.href} className="ml-2 inline-flex min-h-12 items-center justify-center whitespace-nowrap rounded-full bg-ink px-6 text-sm font-semibold text-white transition-colors hover:bg-ink/85">
+            {inquiry.label} <span aria-hidden className="ml-2">→</span>
           </Link>
         </div>
 
-        {/* Mobile hamburger — right */}
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          aria-label="Menu"
-          className="flex h-10 w-10 items-center justify-center text-ink md:hidden"
-        >
-          <span className="sr-only">Toggle menu</span>
-          <div className="flex flex-col gap-[5px]">
-            <span
-              className={`block h-px w-6 bg-ink transition-transform ${open ? "translate-y-[6px] rotate-45" : ""}`}
-            />
-            <span className={`block h-px w-6 bg-ink transition-opacity ${open ? "opacity-0" : ""}`} />
-            <span
-              className={`block h-px w-6 bg-ink transition-transform ${open ? "-translate-y-[6px] -rotate-45" : ""}`}
-            />
-          </div>
-        </button>
+        <div className="flex items-center gap-2 lg:hidden">
+          <Link href={inquiry.href} className="inline-flex min-h-11 items-center justify-center whitespace-nowrap rounded-full bg-ink px-4 text-[clamp(0.8rem,3.3vw,0.9rem)] font-semibold text-white sm:px-5">
+            Check date
+          </Link>
+          <button
+            type="button"
+            onClick={() => setOpenPath((value) => value === pathname ? null : pathname)}
+            aria-expanded={open}
+            aria-controls="mobile-navigation"
+            aria-label={open ? "Close menu" : "Open menu"}
+            className="inline-flex h-11 w-11 shrink-0 flex-col items-center justify-center gap-[5px] text-ink"
+          >
+            <span className={`block h-px w-5 bg-current transition-transform ${open ? "translate-y-[6px] rotate-45" : ""}`} />
+            <span className={`block h-px w-5 bg-current transition-opacity ${open ? "opacity-0" : ""}`} />
+            <span className={`block h-px w-5 bg-current transition-transform ${open ? "-translate-y-[6px] -rotate-45" : ""}`} />
+          </button>
+        </div>
       </nav>
 
-      {/* Mobile sheet — caps, hairlines, one wine CTA row */}
       {open ? (
-        <div className="border-t border-ink/10 bg-cream md:hidden">
-          <div className="mx-auto flex max-w-[90rem] flex-col px-5 py-3">
+        <div id="mobile-navigation" className="border-t border-line bg-white lg:hidden">
+          <div className="mx-auto flex max-w-[90rem] flex-col px-5 py-3 md:px-10">
             {site.nav.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className="border-b border-ink/[0.07] py-4 text-[0.72rem] uppercase tracking-[0.22em] text-ink-soft"
-              >
+              <Link key={item.href} href={item.href} onClick={() => setOpenPath(null)} className="inline-flex min-h-12 items-center border-b border-line text-base text-ink">
                 {item.label}
               </Link>
             ))}
-            <Link
-              href={site.cta.href}
-              onClick={() => setOpen(false)}
-              className="py-4 text-[0.72rem] uppercase tracking-[0.22em] text-wine-deep"
-            >
-              {site.cta.label} →
+            <Link href="/reserve" onClick={() => setOpenPath(null)} className="inline-flex min-h-12 items-center text-base text-ink-soft">
+              Ready to reserve? <span aria-hidden className="ml-2">→</span>
             </Link>
           </div>
         </div>

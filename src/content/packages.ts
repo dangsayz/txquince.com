@@ -137,7 +137,7 @@ export function collectionLabel(id: string | null | undefined): string {
 /**
  * Deposit (cents) to reserve a given collection. Server-side source of truth —
  * the deposit is ALWAYS derived from the collection here, never trusted from
- * the client. Falls back to the floor ($500) for any unknown id.
+ * the client. Falls back to the floor ($300) for any unknown id.
  */
 export function depositForCollection(id: string): number {
   return collectionById(id)?.depositCents ?? packages[0].depositCents;
