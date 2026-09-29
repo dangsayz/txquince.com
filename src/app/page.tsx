@@ -64,53 +64,53 @@ export default async function HomePage() {
     : `${Math.round((hero?.focusX ?? 0.5) * 100)}% ${Math.round((hero?.focusY ?? 0.35) * 100)}%`;
   const usingFallbackHero = !featured.length && hero?.url === fallbackHero?.url;
   const supportingImages = images.filter((image) => image.url !== hero?.url && (!usingFallbackHero || image.url !== portfolioFallback[0]?.url)).slice(0, 2);
-  const previewColumns = supportingImages.length === 2 ? "lg:grid-cols-3" : supportingImages.length === 1 ? "lg:grid-cols-2" : "lg:grid-cols-1";
   const coverUrls = new Set([hero?.url, ...(usingFallbackHero ? [fallbackHero?.url] : []), ...supportingImages.map((image) => image.url)]);
   const workImages = images.length >= 8 ? images.filter((image) => !coverUrls.has(image.url)) : images;
 
   return (
     <>
-      <section className="bg-white" aria-labelledby="home-title">
-        <div className={`${sectionSpace} pb-14 pt-14 sm:pb-20 sm:pt-20 lg:pt-24`}>
-          <div className="mx-auto max-w-[42rem] text-center">
-            <p className="text-xs font-medium tracking-[0.16em] text-ink-soft uppercase">Dallas–Fort Worth · Quinceañera photography &amp; film</p>
-            <h1 id="home-title" className="mx-auto mt-5 max-w-[20ch] font-display text-[clamp(2rem,3.5vw,2.875rem)] leading-[1.17] text-ink sm:mt-7">{home.hero.headline}</h1>
-            <p className="mx-auto mt-5 max-w-[34rem] text-base leading-7 text-ink-soft sm:mt-6 sm:text-lg sm:leading-8">{home.hero.subline}</p>
-            <div className="mt-7 flex flex-col items-center justify-center gap-2 sm:mt-9 sm:flex-row sm:gap-4">
-              <Link href="/check-your-date" className="inline-flex min-h-12 w-full items-center justify-center gap-4 whitespace-nowrap rounded-md bg-accent px-7 text-base font-medium text-white transition-colors hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:w-auto">Check her date <span aria-hidden="true">↗</span></Link>
-              <Link href="#work" className="inline-flex min-h-11 w-full items-center justify-center gap-3 whitespace-nowrap rounded-md px-5 text-base font-medium text-ink transition-colors hover:bg-accent-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:w-auto">Explore the photographs <span aria-hidden="true">↓</span></Link>
-            </div>
-          </div>
-          <div role="region" aria-label="Featured quinceañera photographs" tabIndex={0} className={`mt-12 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:mt-16 sm:gap-4 lg:grid lg:overflow-visible lg:pb-0 ${previewColumns}`}>
-            <figure className="w-[78vw] max-w-[24rem] shrink-0 snap-start sm:w-[43vw] lg:w-auto lg:max-w-none">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-lg bg-greige lg:aspect-[4/3]">
-                {hero ? (
-                  <Link href="/portfolio" className="block h-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent" aria-label="Browse the quinceañera portfolio">
-                    <Image src={hero.url} alt={hero.alt} fill priority fetchPriority="high" decoding="sync" unoptimized={hero.url.startsWith("/portfolio/")} sizes="(max-width: 640px) 78vw, (max-width: 1024px) 43vw, 32vw" className="object-cover" style={{ objectPosition: heroPosition }} />
-                  </Link>
-                ) : (
-                  <div className="flex h-full flex-col items-center justify-center px-8 text-center">
-                    <p className="font-display text-xl text-ink">Portfolio photos are unavailable.</p>
-                    <p className="mt-2 max-w-xs text-base leading-6 text-ink-soft">Ask us about photo and film coverage for your date.</p>
-                  </div>
-                )}
-                {heroMedia?.kind === "image"
-                  ? <EditOverlay image={{ alt: hero?.alt }} editHref="/admin/hero#framing" label="Set focal point" />
-                  : hero?.id && <EditOverlay image={{ id: hero.id, slug: hero.slug, alt: hero.alt, fx: hero.focusX, fy: hero.focusY }} />}
+      <section className="border-b border-line bg-white" aria-labelledby="home-title">
+        <div className="mx-auto grid max-w-[88rem] lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-8 lg:px-8 xl:gap-12 xl:px-12">
+          <div className="relative h-[clamp(16rem,39svh,21rem)] overflow-hidden bg-greige sm:h-[26rem] lg:h-[clamp(34rem,55vw,42rem)]">
+            {hero ? (
+              <Link href="/portfolio" className="block h-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent" aria-label="Browse the quinceañera portfolio">
+                <Image src={hero.url} alt={hero.alt} fill priority fetchPriority="high" decoding="sync" unoptimized={hero.url.startsWith("/portfolio/")} sizes="(max-width: 1023px) 100vw, (max-width: 1440px) 46vw, 36rem" className="object-cover" style={{ objectPosition: heroPosition }} />
+              </Link>
+            ) : (
+              <div className="flex h-full flex-col items-center justify-center px-8 text-center">
+                <p className="font-display text-xl text-ink">Portfolio photos are unavailable.</p>
+                <p className="mt-2 max-w-xs text-base leading-6 text-ink-soft">Ask us about photo and film coverage for your date.</p>
               </div>
-              <figcaption className="mt-3 text-xs font-medium tracking-[0.12em] text-ink-soft uppercase">Featured work</figcaption>
-            </figure>
-            {supportingImages.map((image) => (
-              <figure key={image.id ?? image.url} className="w-[78vw] max-w-[24rem] shrink-0 snap-start sm:w-[43vw] lg:w-auto lg:max-w-none">
-                <div className="relative aspect-[4/5] overflow-hidden rounded-lg bg-greige lg:aspect-[4/3]">
-                  <Link href={image.id && image.slug ? `/photos/${encodeURIComponent(image.section)}/${encodeURIComponent(image.slug)}` : "/portfolio"} className="block h-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent" aria-label={`View ${image.alt}`}>
-                    <Image src={image.url} alt={image.alt} fill sizes="(max-width: 640px) 78vw, (max-width: 1024px) 43vw, 32vw" unoptimized={image.id === null} className="object-cover" style={{ objectPosition: `${Math.round((image.focusX ?? 0.5) * 100)}% ${Math.round((image.focusY ?? 0.35) * 100)}%` }} />
-                  </Link>
-                  {image.id && <EditOverlay image={{ id: image.id, slug: image.slug, alt: image.alt, fx: image.focusX, fy: image.focusY }} />}
-                </div>
-                <figcaption className="mt-3 text-xs font-medium tracking-[0.12em] text-ink-soft uppercase">{categoryLabel(image.section)}</figcaption>
-              </figure>
-            ))}
+            )}
+            {heroMedia?.kind === "image"
+              ? <EditOverlay image={{ alt: hero?.alt }} editHref="/admin/hero#framing" label="Set focal point" />
+              : hero?.id && <EditOverlay image={{ id: hero.id, slug: hero.slug, alt: hero.alt, fx: hero.focusX, fy: hero.focusY }} />}
+          </div>
+          <div className="flex min-w-0 flex-col justify-between px-5 pb-8 pt-7 sm:px-8 sm:pb-10 sm:pt-9 lg:px-0 lg:pb-0 lg:pt-10">
+            <div>
+              <p className="text-xs font-medium tracking-[0.14em] text-ink-soft uppercase sm:text-sm">Dallas–Fort Worth · Quinceañera photography &amp; film</p>
+              <h1 id="home-title" className="mt-4 max-w-[22ch] font-display text-[clamp(1.875rem,3vw,2.5rem)] font-normal leading-[1.14] tracking-[-0.035em] text-ink sm:mt-6">{home.hero.headline}</h1>
+              <p className="mt-4 max-w-[31rem] text-base leading-7 text-ink-soft sm:mt-5">{home.hero.subline}</p>
+              <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 sm:mt-8">
+                <Link href="/check-your-date" className="inline-flex min-h-12 items-center justify-center gap-4 whitespace-nowrap rounded-md bg-ink px-6 text-base font-medium text-white transition-colors hover:bg-ink-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">Check her date <span aria-hidden="true">↗</span></Link>
+                <Link href="/portfolio" className="inline-flex min-h-11 items-center gap-2 whitespace-nowrap border-b border-ink text-base font-medium text-ink transition-colors hover:border-ink-soft hover:text-ink-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">View the portfolio <span aria-hidden="true">↗</span></Link>
+              </div>
+            </div>
+            {supportingImages.length > 0 && (
+              <div className="mt-7 grid grid-cols-2 gap-3 lg:mt-0" aria-label="More quinceañera photographs">
+                {supportingImages.map((image) => (
+                  <figure key={image.id ?? image.url} className="min-w-0">
+                    <div className="relative aspect-[4/5] overflow-hidden bg-greige sm:aspect-[8/5]">
+                      <Link href={image.id && image.slug ? `/photos/${encodeURIComponent(image.section)}/${encodeURIComponent(image.slug)}` : "/portfolio"} className="block h-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent" aria-label={`View ${image.alt}`}>
+                        <Image src={image.url} alt={image.alt} fill sizes="(max-width: 1023px) 45vw, (max-width: 1440px) 24vw, 20rem" unoptimized={image.id === null} className="object-cover" style={{ objectPosition: `${Math.round((image.focusX ?? 0.5) * 100)}% ${Math.round((image.focusY ?? 0.35) * 100)}%` }} />
+                      </Link>
+                      {image.id && <EditOverlay image={{ id: image.id, slug: image.slug, alt: image.alt, fx: image.focusX, fy: image.focusY }} />}
+                    </div>
+                    <figcaption className="mt-2 text-xs font-medium tracking-[0.12em] text-ink-soft uppercase">{categoryLabel(image.section)}</figcaption>
+                  </figure>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </section>
