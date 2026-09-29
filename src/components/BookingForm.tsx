@@ -65,7 +65,7 @@ export function BookingForm({
   const restored = useRef(false);
 
   // Restore any saved draft on mount, so pressing back / reloading never loses
-  // what they typed. defaultCollection only wins if there's no saved draft.
+  // what they typed. An explicit collection from a pricing link wins over a saved draft.
   useEffect(() => {
     let active = true;
     let draft: Partial<Draft> = {};
@@ -80,7 +80,7 @@ export function BookingForm({
       if (draft.name) setName(draft.name);
       if (draft.email) setEmail(draft.email);
       if (draft.phone) setPhone(draft.phone);
-      if (draft.collection && packages.some((item) => item.id === draft.collection)) setCollection(draft.collection);
+      if (!defaultCollection && draft.collection && packages.some((item) => item.id === draft.collection)) setCollection(draft.collection);
       if (draft.essentialService === "photo" || draft.essentialService === "video") setEssentialService(draft.essentialService);
       if (draft.notes) setNotes(draft.notes);
       // An explicit URL date takes precedence over a saved draft.
@@ -120,14 +120,6 @@ export function BookingForm({
     };
   }, []);
 
-  const dateTaken = Boolean(eventDate && takenDates?.has(eventDate));
-  const dateOpen = Boolean(eventDate && takenDates && !takenDates.has(eventDate));
-
-  const selectedCollection =
-    packages.find((p) => p.id === collection) ?? packages[1];
-  const packageValue: "photo" | "video" | "both" =
-    selectedCollection.singleCraft ? essentialService : "both";
-
   const { todayStr, maxStr } = useMemo(() => {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -135,6 +127,15 @@ export function BookingForm({
     const fmt = (d: Date) => d.toISOString().slice(0, 10);
     return { todayStr: fmt(today), maxStr: fmt(max) };
   }, []);
+
+  const dateOutOfRange = Boolean(eventDate && (eventDate < todayStr || eventDate > maxStr));
+  const dateTaken = Boolean(eventDate && !dateOutOfRange && takenDates?.has(eventDate));
+  const dateOpen = Boolean(eventDate && !dateOutOfRange && takenDates && !takenDates.has(eventDate));
+
+  const selectedCollection =
+    packages.find((p) => p.id === collection) ?? packages[1];
+  const packageValue: "photo" | "video" | "both" =
+    selectedCollection.singleCraft ? essentialService : "both";
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -274,7 +275,11 @@ export function BookingForm({
             aria-describedby="date-availability"
           />
           <span id="date-availability" aria-live="polite" className="block">
-            {dateTaken ? (
+            {dateOutOfRange ? (
+              <span className="mt-1.5 inline-flex text-xs text-red-700">
+                Choose a date within the next three years.
+              </span>
+            ) : dateTaken ? (
               <span className="mt-1.5 inline-flex items-center gap-1.5 text-xs text-red-700">
                 <span aria-hidden>●</span>
                 That date is already requested — pick another, or{" "}
