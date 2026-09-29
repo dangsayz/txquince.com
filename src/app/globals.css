@@ -2,25 +2,26 @@
 
 /*
   TX QUINCE — DESIGN SYSTEM
-  Quiet editorial system. Photography carries the color; interface accents use muted eucalyptus.
+  Warm editorial system. Photography carries the color; interface accents use muted leaf.
   Fonts are injected as CSS variables by next/font in layout.tsx.
 */
 
 @theme {
-  /* Neutral surfaces, readable ink, and one muted green accent. */
-  --color-sand: #e9e9e9;
-  --color-cream: #ffffff;
-  --color-ivory: #f5f5f5;
-  --color-greige: #eeeeee;
-  --color-white: #ffffff; /* true white — clean section bands + cards */
-  --color-ink: #191919;
-  --color-dark: #191919;
-  --color-ink-soft: #4d4d4d;
-  --color-ink-faint: #616161;
-  --color-line: #dedede;
-  --color-accent: #566e60;
-  --color-accent-strong: #405447;
-  --color-accent-soft: #f1f4f1;
+  /* Paper neutrals, readable ink, and a single leaf green action color. */
+  --color-sand: #e2ded6;
+  --color-cream: #faf8f4;
+  --color-ivory: #f3f0e9;
+  --color-greige: #eae8df;
+  --color-white: #ffffff;
+  --color-ink: #20251f;
+  --color-dark: #20251f;
+  --color-ink-soft: #4c554d;
+  --color-ink-faint: #586159;
+  --color-line: #d5d9d1;
+  --color-accent: #4e6755;
+  --color-accent-strong: #38513f;
+  --color-accent-soft: #eaf0e9;
+  --color-clay: #bd8c72;
   --color-wine: var(--color-accent);
   --color-wine-deep: var(--color-accent-strong);
   --color-wine-tint: var(--color-accent-soft);
@@ -234,7 +235,7 @@ body {
 }
 
 .media-placeholder {
-  background: linear-gradient(135deg, #e9e9e9, #f8f8f8 52%, #e6e6e6);
+  background: linear-gradient(135deg, #e2ded6, #faf8f4 52%, #eae8df);
 }
 
 /* =====================================================================
