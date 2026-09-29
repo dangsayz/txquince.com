@@ -39,17 +39,20 @@ test("preserves genuinely written titles, alt text, and captions", () => {
   );
 });
 
-test("prefers a written alt when only the title is a filename", () => {
-  assert.equal(publicPhotoCopy({ title: "kimberly-quince-482.jpg", alt: "Kimberly opening birthday gifts" }, fallback).title, "Kimberly opening birthday gifts");
+test("keeps a descriptive alt without turning it into a visible title", () => {
+  assert.deepEqual(
+    publicPhotoCopy({ title: "kimberly-quince-482.jpg", alt: "Kimberly opening birthday gifts" }, fallback),
+    { title: fallback, alt: "Kimberly opening birthday gifts", description: "Kimberly opening birthday gifts" },
+  );
 });
 
 test("hides numbered import names and opaque IDs on public photo pages", () => {
-  assert.equal(
+  assert.deepEqual(
     publicPhotoCopy({
       title: "zapata quincea era 83",
       alt: "Quinceañera in a magenta gown seated on the grass",
-    }, fallback).title,
-    "Quinceañera in a magenta gown seated on the grass",
+    }, fallback),
+    { title: fallback, alt: "Quinceañera in a magenta gown seated on the grass", description: "Quinceañera in a magenta gown seated on the grass" },
   );
   assert.deepEqual(
     publicPhotoCopy({
