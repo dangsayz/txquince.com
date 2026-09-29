@@ -30,15 +30,15 @@ function Search({ mobile = false, onSubmit }: { mobile?: boolean; onSubmit?: () 
           type="search"
           onFocus={() => setSuggesting(true)}
           placeholder="Search quince moments"
-          className="h-11 w-full rounded-lg border border-line bg-ivory pl-10 pr-4 text-sm text-ink placeholder:text-ink-faint focus:border-wine focus:bg-white focus:outline-none"
+          className="h-11 w-full rounded-lg border border-line bg-ivory pl-10 pr-4 text-sm text-ink placeholder:text-ink-faint focus:border-accent focus:bg-white focus:outline-none"
         />
       </div>
       {(mobile || suggesting) && (
         <div aria-label="Suggested portfolio searches" className={mobile ? "mt-4" : "absolute left-0 right-0 top-full z-50 mt-2 rounded-xl border border-line bg-white p-4 shadow-xl"}>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-ink-faint">Explore moments</p>
+          <p className="mb-2 text-xs font-semibold text-ink-soft">Explore moments</p>
           <div className="flex flex-wrap gap-2">
             {suggestions.map((item) => (
-              <Link key={item.label} href={`/portfolio?q=${encodeURIComponent(item.query)}`} onMouseDown={(event) => event.preventDefault()} onClick={() => { setSuggesting(false); onSubmit?.(); }} className="inline-flex min-h-11 items-center rounded-full border border-line px-3 text-xs font-medium text-ink hover:border-wine hover:text-wine focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine">{item.label}</Link>
+              <Link key={item.label} href={`/portfolio?q=${encodeURIComponent(item.query)}`} onMouseDown={(event) => event.preventDefault()} onClick={() => { setSuggesting(false); onSubmit?.(); }} className="inline-flex min-h-11 items-center rounded-md border border-line px-3 text-xs font-medium text-ink hover:border-accent hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">{item.label}</Link>
             ))}
           </div>
         </div>
@@ -91,14 +91,14 @@ export function Nav() {
               key={item.href}
               href={item.href}
               aria-current={pathname === item.href ? "page" : undefined}
-              className={`text-[13px] font-medium transition-colors hover:text-wine ${pathname === item.href ? "text-wine" : "text-ink-soft"}`}
+              className={`text-[13px] font-semibold transition-colors hover:text-accent ${pathname === item.href ? "text-accent" : "text-ink-soft"}`}
             >
               {item.label}
             </Link>
           ))}
-          <Link href="/saved" aria-current={pathname === "/saved" ? "page" : undefined} className={`text-[13px] font-medium transition-colors hover:text-wine ${pathname === "/saved" ? "text-wine" : "text-ink-soft"}`}>Saved</Link>
+          <Link href="/saved" aria-current={pathname === "/saved" ? "page" : undefined} className={`text-[13px] font-semibold transition-colors hover:text-accent ${pathname === "/saved" ? "text-accent" : "text-ink-soft"}`}>Saved</Link>
         </div>
-        <Link href={site.cta.href} className="ml-auto hidden shrink-0 items-center justify-center rounded-lg bg-wine px-4 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-wine-deep md:inline-flex lg:ml-0">
+        <Link href={site.cta.href} className="ml-auto hidden shrink-0 items-center justify-center rounded-lg bg-accent px-4 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-accent-strong md:inline-flex lg:ml-0">
           {site.cta.label}
         </Link>
         <button
@@ -134,7 +134,7 @@ export function Nav() {
               <Link href={site.secondaryCta.href} onClick={() => setOpen(false)} className="rounded-lg px-3 py-3 text-sm font-medium text-ink hover:bg-ivory">
                 {site.secondaryCta.label}
               </Link>
-              <Link href={site.cta.href} onClick={() => setOpen(false)} className="rounded-lg bg-wine px-3 py-3 text-sm font-semibold text-white hover:bg-wine-deep">
+              <Link href={site.cta.href} onClick={() => setOpen(false)} className="rounded-lg bg-accent px-3 py-3 text-sm font-semibold text-white hover:bg-accent-strong">
                 {site.cta.label}
               </Link>
             </div>

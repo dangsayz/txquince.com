@@ -55,7 +55,7 @@ function RankedList({ title, items, empty }: { title: string; items: { label: st
                 <span className="shrink-0 tabular-nums text-ink-soft">{i.count}</span>
               </div>
               <div className="mt-1 h-1 overflow-hidden rounded-full bg-greige">
-                <div className="h-full rounded-full bg-wine/60" style={{ width: `${(i.count / max) * 100}%` }} />
+                <div className="h-full rounded-full bg-accent/60" style={{ width: `${(i.count / max) * 100}%` }} />
               </div>
             </div>
           ))
@@ -116,7 +116,7 @@ export default async function AdminDashboard({
       {/* header + range */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-wine">Business overview</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">Business overview</p>
           <h1 className="mt-3 font-display text-5xl text-ink md:text-6xl">Studio</h1>
           <p className="mt-3 text-sm text-ink-soft">
             {s.configured
@@ -161,13 +161,13 @@ export default async function AdminDashboard({
 
       {/* THE BOTTLENECK — the one thing to fix, named automatically. */}
       {s.bottleneck ? (
-        <section className="mt-6 rounded-xl border-2 border-wine bg-white p-5">
-          <p className="text-[0.66rem] uppercase tracking-[0.18em] text-wine-deep">
+        <section className="mt-6 rounded-xl border-2 border-accent bg-white p-5">
+          <p className="text-[0.66rem] uppercase tracking-[0.18em] text-accent-strong">
             Fix this first — your weakest funnel edge
           </p>
           <p className="mt-2 font-display text-xl text-ink">
             {s.bottleneck.edge}:{" "}
-            <span className="text-wine-deep">{s.bottleneck.rate}%</span>
+            <span className="text-accent-strong">{s.bottleneck.rate}%</span>
             <span className="text-sm text-ink-faint"> (healthy ≈ {s.bottleneck.baseline}%)</span>
           </p>
           <p className="mt-2 text-sm leading-relaxed text-ink-soft">{s.bottleneck.action}</p>
@@ -227,7 +227,7 @@ export default async function AdminDashboard({
               return (
                 <div key={d.date} className="group flex h-full flex-1 flex-col justify-end" title={`${d.date}: ${d.count}`}>
                   <div
-                    className={`w-full rounded-t-sm ${isToday ? "bg-ink" : "bg-wine/30 group-hover:bg-wine/55"}`}
+                    className={`w-full rounded-t-sm ${isToday ? "bg-ink" : "bg-accent/30 group-hover:bg-accent/55"}`}
                     style={{ height: `${Math.max((d.count / maxDaily) * 100, d.count > 0 ? 6 : 1)}%` }}
                   />
                 </div>
@@ -286,7 +286,7 @@ export default async function AdminDashboard({
                   <td className="py-2 text-right tabular-nums text-ink-soft">
                     {p.avgSeconds ? mins(p.avgSeconds) : "—"}
                   </td>
-                  <td className={`py-2 text-right tabular-nums ${p.exitRate >= 70 ? "font-medium text-wine-deep" : "text-ink-soft"}`}>
+                  <td className={`py-2 text-right tabular-nums ${p.exitRate >= 70 ? "font-medium text-danger" : "text-ink-soft"}`}>
                     {p.exitRate}%
                   </td>
                 </tr>
@@ -311,7 +311,7 @@ export default async function AdminDashboard({
               <span
                 aria-hidden
                 className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[0.7rem] ${
-                  f.done ? "bg-emerald-600 text-white" : "border border-wine text-wine"
+                  f.done ? "bg-emerald-600 text-white" : "border border-accent text-accent"
                 }`}
               >
                 {f.done ? "✓" : "!"}
@@ -389,10 +389,10 @@ export default async function AdminDashboard({
             <Link
               key={m.href}
               href={m.href}
-              className="rounded-xl border border-line bg-white p-5 text-center transition-colors hover:border-wine"
+              className="rounded-xl border border-line bg-white p-5 text-center transition-colors hover:border-accent"
             >
               <span className="font-display text-lg text-ink">{m.title}</span>
-              <span className="mt-1 block text-[0.62rem] uppercase tracking-[0.16em] text-wine">Open →</span>
+              <span className="mt-1 block text-[0.62rem] uppercase tracking-[0.16em] text-accent">Open →</span>
             </Link>
           ))}
         </div>

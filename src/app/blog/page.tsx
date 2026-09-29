@@ -52,12 +52,12 @@ export default function BlogIndexPage() {
           <Reveal>
             <Link
               href={`/blog/${featured.slug}`}
-              className="group block rounded-2xl border border-line bg-white p-7 transition-colors hover:border-wine hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine md:p-12"
+              className="group block rounded-2xl border border-line bg-white p-7 transition-colors hover:border-accent hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:p-12"
             >
               <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">
                 {featured.category} · Featured
               </p>
-              <h2 className="mt-4 max-w-3xl font-display text-3xl leading-tight text-ink group-hover:text-wine md:text-4xl">
+              <h2 className="mt-4 max-w-3xl font-display text-3xl leading-tight text-ink group-hover:text-accent md:text-4xl">
                 {featured.title}
               </h2>
               <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-soft">{featured.excerpt}</p>
@@ -82,9 +82,9 @@ export default function BlogIndexPage() {
                   <Reveal key={p.slug} delay={(i % 3) * 70}>
                     <Link
                       href={`/blog/${p.slug}`}
-                      className="group flex h-full flex-col rounded-xl border border-line bg-white p-6 transition-colors hover:border-wine hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine"
+                      className="group flex h-full flex-col rounded-xl border border-line bg-white p-6 transition-colors hover:border-accent hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                     >
-                      <h3 className="font-display text-xl leading-tight text-ink group-hover:text-wine">
+                      <h3 className="font-display text-xl leading-tight text-ink group-hover:text-accent">
                         {p.title}
                       </h3>
                       <p className="mt-3 flex-1 text-sm leading-relaxed text-ink-soft">{p.excerpt}</p>

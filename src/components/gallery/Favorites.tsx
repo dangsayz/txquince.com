@@ -69,7 +69,7 @@ export function FavoriteButton({ section, slug, className = "", onToggle }: {
       aria-pressed={active}
       aria-label={active ? "Remove from saved photos" : "Save photo"}
       title={available ? undefined : "Saving is unavailable in this browser"}
-      className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-line bg-white px-4 text-sm font-medium text-ink transition-colors hover:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine ${className}`}
+      className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-line bg-white px-4 text-sm font-medium text-ink transition-colors hover:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${className}`}
     >
       <span aria-hidden className="text-lg leading-none">{active ? "♥" : "♡"}</span>
       {active ? "Saved" : "Save"}

@@ -1,7 +1,7 @@
 /**
  * /photos/[category]/[slug] — the shareable, indexable page for one photograph.
  * Sharing an image shares THIS page (rich branded preview), never a file.
- * Editorial-system layout; ImageObject JSON-LD; quiet CTA to book.
+ * Image canvas and project details; ImageObject JSON-LD; CTA to book.
  */
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -162,20 +162,18 @@ export default async function PhotoPage({
       />
 
       <article className="mx-auto max-w-[90rem] px-5 pb-24 pt-12 md:px-10 lg:px-16 md:pb-36 md:pt-16">
-        {/* Breadcrumb line */}
         <Reveal>
-          <p className="text-[0.62rem] uppercase tracking-[0.28em] text-ink-faint">
+          <p className="text-sm text-ink-soft">
             <Link href="/portfolio" className="transition-colors hover:text-ink">
               Portfolio
             </Link>
-            <span aria-hidden> — </span>
+            <span aria-hidden> / </span>
             <Link href={`/portfolio#${img.section}`} className="transition-colors hover:text-ink">
               {label}
             </Link>
           </p>
         </Reveal>
 
-        {/* The photograph — display derivative only; expanding never fetches more. */}
         <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(280px,360px)] lg:gap-12">
           <Reveal>
             <div className="relative overflow-hidden rounded-xl bg-greige">
@@ -193,14 +191,10 @@ export default async function PhotoPage({
             </div>
           </Reveal>
 
-          {/* Caption block — pinned low like a plate caption. */}
           <div className="flex flex-col lg:sticky lg:top-28 lg:self-start">
             <Reveal>
-              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-wine">{label}</p>
-              <h1
-                className="font-display text-ink"
-                style={{ fontSize: "clamp(1.6rem,2.6vw,2.2rem)", lineHeight: 1.15, letterSpacing: "-0.01em" }}
-              >
+              <p className="mb-3 text-xs font-semibold text-accent">{label}</p>
+              <h1 className="font-display text-[clamp(1.75rem,2.8vw,2.5rem)] leading-tight text-ink">
                 {img.title || img.alt}
               </h1>
               {img.caption ? (
@@ -226,22 +220,21 @@ export default async function PhotoPage({
               <div className="mt-8 flex flex-col gap-3">
                 <Link
                   href={`/portfolio#${img.section}`}
-                  className="text-[0.72rem] uppercase tracking-[0.2em] text-ink-soft underline decoration-ink/20 underline-offset-[6px] transition-colors hover:text-ink"
+                  className="text-sm font-semibold text-accent underline decoration-accent/30 underline-offset-4 transition-colors hover:text-accent-strong"
                 >
                   More from {label}
                 </Link>
               </div>
-              <p className="mt-10 text-[0.6rem] uppercase tracking-[0.22em] text-ink-faint">
+              <p className="mt-10 text-xs text-ink-faint">
                 © {site.brand} · {site.domain}
               </p>
             </Reveal>
           </div>
         </div>
 
-        {/* Related — same series. */}
         {related.length ? (
           <div className="mt-20 border-t border-ink/10 pt-10 md:mt-28">
-            <p className="text-[0.62rem] uppercase tracking-[0.28em] text-ink-faint">
+            <p className="text-sm font-semibold text-ink">
               Also from {label}
             </p>
             <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-6">
@@ -257,7 +250,7 @@ export default async function PhotoPage({
                       className="h-auto w-full transition-transform duration-300 group-hover:scale-[1.025]"
                     />
                   </div>
-                  <p className="mt-3 line-clamp-2 text-sm font-medium text-ink group-hover:text-wine">{r.title || r.alt}</p>
+                  <p className="mt-3 line-clamp-2 text-sm font-medium text-ink group-hover:text-accent">{r.title || r.alt}</p>
                 </Link>
               ))}
             </div>

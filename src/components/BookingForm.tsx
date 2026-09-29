@@ -30,7 +30,7 @@ const SHOW_TURNSTILE =
 const DRAFT_KEY = "txq_reserve_draft";
 
 const inputBase =
-  "min-h-12 w-full rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink placeholder:text-ink-faint focus:border-wine focus:outline-none focus:ring-2 focus:ring-wine/20";
+  "min-h-12 w-full rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20";
 const labelBase = "block text-sm font-medium text-ink";
 
 type Draft = {
@@ -274,7 +274,7 @@ export function BookingForm({
       <div className="rounded-[1.5rem] border border-line bg-ivory p-8 text-center md:p-10">
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-cream ring-1 ring-line">
           <svg width="20" height="16" viewBox="0 0 20 16" fill="none" aria-hidden="true">
-            <path d="M1 8.5L7 14.5L19 1.5" stroke="var(--color-wine)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M1 8.5L7 14.5L19 1.5" stroke="var(--color-accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
         <h3 className="mt-5 font-display text-2xl text-ink">Your date request is in.</h3>
@@ -313,7 +313,7 @@ export function BookingForm({
       <ol className="mt-3 grid grid-cols-4 gap-1.5" aria-label="Reservation progress">
         {STEPS.map((title, index) => (
           <li key={title} className="min-w-0">
-            <span className={`block h-1.5 rounded-full ${index <= step ? "bg-wine" : "bg-greige"}`} />
+            <span className={`block h-1.5 rounded-full ${index <= step ? "bg-accent" : "bg-greige"}`} />
             <span className={`mt-2 block truncate text-[0.68rem] ${index === step ? "font-semibold text-ink" : "text-ink-faint"}`} aria-current={index === step ? "step" : undefined}>{title}</span>
           </li>
         ))}
@@ -349,10 +349,10 @@ export function BookingForm({
           />
           <span id="date-availability" aria-live="polite" className="block">
             {dateTaken ? (
-              <span className="mt-1.5 inline-flex items-center gap-1.5 text-xs text-wine">
+              <span className="mt-1.5 inline-flex items-center gap-1.5 text-xs text-danger">
                 <span aria-hidden>●</span>
                 That date is already requested — pick another, or{" "}
-                <a href="/check-your-date" className="underline hover:text-wine-deep">ask about your options</a>.
+                <a href="/check-your-date" className="underline hover:text-accent-strong">ask about your options</a>.
               </span>
             ) : dateOpen ? (
               <span className="mt-1.5 inline-flex items-center gap-1.5 text-xs text-green-700">
@@ -433,7 +433,7 @@ export function BookingForm({
         <a href="/privacy" className="underline underline-offset-2 hover:text-ink">privacy policy</a>.
       </p>
 
-      {formError ? <p role="alert" className="mt-6 text-sm text-wine">{formError}</p> : null}
+      {formError ? <p role="alert" className="mt-6 text-sm text-danger">{formError}</p> : null}
       <div className="mt-8 flex items-center justify-between gap-3 border-t border-line pt-6">
         {step > 0 ? (
           <button type="button" onClick={() => { setStep((step - 1) as Step); setFormError(null); }} className="min-h-11 rounded-lg px-4 text-sm font-semibold text-ink hover:bg-greige">Back</button>
@@ -441,7 +441,7 @@ export function BookingForm({
         {step < 3 ? (
           <button type="button" onClick={nextStep} className="min-h-11 rounded-lg bg-ink px-6 text-sm font-semibold text-white hover:bg-ink-soft">Continue</button>
         ) : (
-          <button type="submit" disabled={busy} className="min-h-11 rounded-lg bg-wine px-6 text-sm font-semibold text-white hover:bg-wine-deep disabled:cursor-not-allowed disabled:opacity-60">
+          <button type="submit" disabled={busy} className="min-h-11 rounded-lg bg-accent px-6 text-sm font-semibold text-white hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-60">
             {busy ? "Sending request…" : "Request her date"}
           </button>
         )}
@@ -469,11 +469,11 @@ function Field({
     <label className={`flex flex-col gap-1.5 ${className}`}>
       <span className={labelBase}>
         {label}
-        {required ? <span className="text-wine"> *</span> : null}
+        {required ? <span className="text-danger"> *</span> : null}
         {hint ? <span className="ml-2 text-xs font-normal text-ink-faint">{hint}</span> : null}
       </span>
       {children}
-      {error?.length ? <span className="text-xs text-wine">{error[0]}</span> : null}
+      {error?.length ? <span className="text-xs text-danger">{error[0]}</span> : null}
     </label>
   );
 }

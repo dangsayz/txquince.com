@@ -39,7 +39,7 @@ export function HowBookingWorks({ className = "" }: { className?: string }) {
       <ol className="mt-12 grid gap-px overflow-hidden border border-line bg-line md:mt-14 md:grid-cols-4">
         {BOOKING_STEPS.map((step, i) => (
           <Reveal key={step.title} delay={i * 80} className="bg-cream p-8 md:p-9">
-            <span className="font-display text-2xl text-wine">0{i + 1}</span>
+            <span className="font-display text-2xl text-accent">0{i + 1}</span>
             <h3 className="mt-5 font-display text-xl text-ink">{step.title}</h3>
             <p className="mt-3 text-sm leading-relaxed text-ink-soft">{step.body}</p>
           </Reveal>

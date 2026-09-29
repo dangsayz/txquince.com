@@ -64,22 +64,22 @@ export function PortfolioGallery({
       {!savedOnly || images.length ? (
         <div className="border-b border-line pb-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-            <label className="block w-full max-w-lg text-xs font-semibold uppercase tracking-[0.16em] text-ink-soft">
+            <label className="block w-full max-w-lg text-xs font-semibold text-ink-soft">
               Search the portfolio
               <input
                 type="search"
                 value={query}
                 onChange={(event) => { setQuery(event.target.value); setActiveIndex(null); }}
                 placeholder="Try portraits, church, or Dallas"
-                className="mt-2 min-h-12 w-full rounded-xl border border-line bg-white px-4 text-sm font-normal normal-case tracking-normal text-ink placeholder:text-ink-faint focus:border-wine focus:outline-2 focus:outline-offset-2 focus:outline-wine"
+                className="mt-2 min-h-12 w-full rounded-xl border border-line bg-white px-4 text-sm font-normal normal-case tracking-normal text-ink placeholder:text-ink-faint focus:border-accent focus:outline-2 focus:outline-offset-2 focus:outline-accent"
               />
             </label>
-            <label className="block text-xs font-semibold uppercase tracking-[0.16em] text-ink-soft">
+            <label className="block text-xs font-semibold text-ink-soft">
               Sort by
               <select
                 value={sort}
                 onChange={(event) => setSort(event.target.value === "title" ? "title" : "curated")}
-                className="mt-2 min-h-12 w-full rounded-xl border border-line bg-white px-4 text-sm font-normal normal-case tracking-normal text-ink focus:outline-2 focus:outline-offset-2 focus:outline-wine lg:min-w-40"
+                className="mt-2 min-h-12 w-full rounded-xl border border-line bg-white px-4 text-sm font-normal normal-case tracking-normal text-ink focus:outline-2 focus:outline-offset-2 focus:outline-accent lg:min-w-40"
               >
                 <option value="curated">Curated order</option>
                 <option value="title">Title A–Z</option>
@@ -95,7 +95,7 @@ export function PortfolioGallery({
                   type="button"
                   aria-pressed={category === section.id}
                   onClick={() => { setCategory(section.id); setActiveIndex(null); }}
-                  className={`min-h-11 rounded-full border px-4 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine ${category === section.id ? "border-ink bg-ink text-white" : "border-line bg-white text-ink hover:border-ink"}`}
+                  className={`min-h-11 rounded-full border px-4 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${category === section.id ? "border-accent bg-accent text-white" : "border-line bg-white text-ink hover:border-accent"}`}
                 >
                   {section.title}
                 </button>
@@ -107,7 +107,7 @@ export function PortfolioGallery({
 
       <div className="flex items-center justify-between gap-4 py-5 text-sm text-ink-soft" aria-live="polite">
         <span>{filtered.length} {filtered.length === 1 ? "photograph" : "photographs"}</span>
-        {savedOnly ? <span>Saved in this browser</span> : <Link href="/saved" className="font-medium text-wine underline underline-offset-4 hover:text-ink">View saved photos</Link>}
+        {savedOnly ? <span>Saved in this browser</span> : <Link href="/saved" className="font-medium text-accent underline underline-offset-4 hover:text-ink">View saved photos</Link>}
       </div>
 
       {filtered.length ? (
@@ -118,7 +118,7 @@ export function PortfolioGallery({
                 <button
                   type="button"
                   onClick={() => { setZoomed(false); setActiveIndex(index); }}
-                  className="block w-full cursor-zoom-in focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-wine"
+                  className="block w-full cursor-zoom-in focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-accent"
                   aria-label={`View ${labelFor(item)}`}
                 >
                   {item.width && item.height ? (
@@ -132,7 +132,7 @@ export function PortfolioGallery({
               <div className="mt-3 flex items-start justify-between gap-2">
                 <div className="min-w-0">
                   {item.slug && item.section ? (
-                    <Link href={pathFor(item)} className="line-clamp-2 text-sm font-semibold leading-snug text-ink hover:text-wine">{labelFor(item)}</Link>
+                    <Link href={pathFor(item)} className="line-clamp-2 text-sm font-semibold leading-snug text-ink hover:text-accent">{labelFor(item)}</Link>
                   ) : <p className="line-clamp-2 text-sm font-semibold leading-snug text-ink">{labelFor(item)}</p>}
                   <p className="mt-1 text-xs text-ink-soft">{sections.find((section) => section.id === item.section)?.title || item.city || "TX Quince"}</p>
                 </div>
@@ -147,7 +147,7 @@ export function PortfolioGallery({
           <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-ink-soft">
             {savedOnly && !query && category === "all" ? "Save photographs you love while browsing. They’ll appear here on this device." : "Try a different search or moment to see more of the collection."}
           </p>
-          {savedOnly ? <Link href="/portfolio" className="mt-6 inline-flex min-h-11 items-center rounded-full bg-ink px-5 text-sm font-medium text-white hover:bg-wine">Explore the portfolio</Link> : query || category !== "all" ? <button type="button" onClick={() => { setQuery(""); setCategory("all"); }} className="mt-6 min-h-11 rounded-full border border-ink px-5 text-sm font-medium text-ink">Clear filters</button> : null}
+          {savedOnly ? <Link href="/portfolio" className="mt-6 inline-flex min-h-11 items-center rounded-full bg-accent px-5 text-sm font-medium text-white hover:bg-accent-strong">Explore the portfolio</Link> : query || category !== "all" ? <button type="button" onClick={() => { setQuery(""); setCategory("all"); }} className="mt-6 min-h-11 rounded-full border border-ink px-5 text-sm font-medium text-ink">Clear filters</button> : null}
         </div>
       )}
 
@@ -165,7 +165,7 @@ export function PortfolioGallery({
               <button type="button" onClick={() => { setActiveIndex(null); setZoomed(false); }} className="min-h-11 rounded-full px-4 text-sm hover:bg-greige" aria-label="Close photograph viewer">Close ×</button>
             </div>
             <div
-              className="max-h-[68dvh] overflow-auto bg-[#f4f1ee] p-3 sm:p-5"
+              className="max-h-[68dvh] overflow-auto bg-[#f5f5f5] p-3 sm:p-5"
               onTouchStart={(event) => { touchStart.current = event.touches.length === 1 ? event.touches[0].clientX : null; }}
               onTouchEnd={(event) => {
                 if (zoomed || touchStart.current === null || event.changedTouches.length !== 1 || filtered.length < 2) return;
@@ -187,7 +187,7 @@ export function PortfolioGallery({
               <button type="button" aria-pressed={zoomed} onClick={() => setZoomed((value) => !value)} className="min-h-11 rounded-full border border-line px-4 text-sm font-medium hover:border-ink">{zoomed ? "Fit image" : "Zoom in"}</button>
               {active.slug && active.section ? <FavoriteButton section={active.section} slug={active.slug} onToggle={savedOnly ? () => setActiveIndex(null) : undefined} /> : null}
               <button type="button" onClick={() => shareItem(active)} className="min-h-11 rounded-full border border-line px-4 text-sm font-medium hover:border-ink">Share</button>
-              {active.slug && active.section ? <Link href={pathFor(active)} className="inline-flex min-h-11 items-center rounded-full bg-ink px-4 text-sm font-medium text-white hover:bg-wine">View photo</Link> : null}
+              {active.slug && active.section ? <Link href={pathFor(active)} className="inline-flex min-h-11 items-center rounded-full bg-accent px-4 text-sm font-medium text-white hover:bg-accent-strong">View photo</Link> : null}
             </div>
           </div>
         ) : null}

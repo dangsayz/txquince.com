@@ -42,8 +42,8 @@ export default async function SavedPage() {
 
   return (
     <div className="mx-auto max-w-[90rem] px-5 pb-24 pt-12 md:px-10 md:pt-20 lg:px-16">
-      <Link href="/portfolio" className="text-sm font-medium text-wine hover:underline">← Back to portfolio</Link>
-      <p className="mt-12 text-xs font-semibold uppercase tracking-[0.22em] text-wine">Your collection</p>
+      <Link href="/portfolio" className="text-sm font-medium text-accent hover:underline">← Back to portfolio</Link>
+      <p className="mt-12 text-xs font-semibold uppercase tracking-[0.22em] text-accent">Your collection</p>
       <h1 className="mt-3 font-display text-5xl text-ink md:text-7xl">Saved photographs</h1>
       <p className="mt-5 mb-10 max-w-xl text-sm leading-relaxed text-ink-soft md:text-base">
         Keep inspiration close as you imagine her day. Saved photographs stay in this browser on this device.

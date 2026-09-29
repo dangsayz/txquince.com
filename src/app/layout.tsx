@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Inter } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { site } from "@/content/site";
 import { Nav } from "@/components/Nav";
@@ -10,19 +10,10 @@ import { WebAnalytics } from "@/components/WebAnalytics";
 import { Tracker } from "@/components/Tracker";
 import { Suspense } from "react";
 
-// Display serif (refined, couture) + clean sans body.
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-cormorant",
-  display: "optional",
-  preload: false,
-});
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
-  display: "optional",
-  preload: false,
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -32,7 +23,7 @@ export const metadata: Metadata = {
     template: `%s · ${site.brand}`,
   },
   description:
-    "Cinematic quinceañera photography and film across Dallas–Fort Worth. Two storytellers, one unrepeatable day — collections from $2,500.",
+    "Explore quinceañera photography and film across Dallas–Fort Worth. View the portfolio and request your date. Collections from $2,500.",
   applicationName: site.brand,
   alternates: { canonical: "/" },
   openGraph: {
@@ -42,19 +33,19 @@ export const metadata: Metadata = {
     url: site.url,
     title: `${site.brand} — Quinceañera Photography & Film`,
     description:
-      "Cinematic quinceañera photography and film across Dallas–Fort Worth. Collections from $2,500.",
+      "Explore quinceañera photography and film across Dallas–Fort Worth. View the portfolio and request your date. Collections from $2,500.",
   },
   twitter: {
     card: "summary_large_image",
     title: `${site.brand} — Quinceañera Photography & Film`,
     description:
-      "Cinematic quinceañera photography and film across Dallas–Fort Worth. Collections from $2,500.",
+      "Explore quinceañera photography and film across Dallas–Fort Worth. View the portfolio and request your date. Collections from $2,500.",
   },
   robots: { index: true, follow: true },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f4eae0",
+  themeColor: "#ffffff",
   width: "device-width",
   initialScale: 1,
 };
@@ -66,7 +57,7 @@ export default function RootLayout({
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`${cormorant.variable} ${inter.variable} h-full`}
+      className={`${inter.variable} h-full`}
     >
       <body className="flex min-h-screen flex-col bg-cream">
         <Nav />

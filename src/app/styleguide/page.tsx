@@ -5,10 +5,11 @@ import { Avatar, Badge, Button, ButtonLink, Chip, Divider, Drawer, IconButton, I
 
 const swatches = [
   { name: "Canvas", className: "bg-cream", hex: "#FFFFFF" },
-  { name: "Surface", className: "bg-ivory", hex: "#F7F6F5" },
-  { name: "Ink", className: "bg-ink", hex: "#211D1F" },
-  { name: "Accent", className: "bg-wine", hex: "#852E4A" },
-  { name: "Border", className: "bg-line", hex: "#DFDADC" },
+  { name: "Surface", className: "bg-ivory", hex: "#F5F5F5" },
+  { name: "Ink", className: "bg-ink", hex: "#191919" },
+  { name: "Action", className: "bg-accent", hex: "#0057FF" },
+  { name: "Border", className: "bg-line", hex: "#DEDEDE" },
+  { name: "Error", className: "bg-danger", hex: "#B42318" },
 ] as const;
 
 export default function StyleguidePage() {
@@ -29,7 +30,7 @@ export default function StyleguidePage() {
 
       <section className="py-12" aria-labelledby="colors-heading">
         <h2 id="colors-heading" className="text-xl font-semibold text-ink">Color</h2>
-        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
           {swatches.map((swatch) => (
             <div key={swatch.name} className="overflow-hidden rounded-xl border border-line bg-white">
               <div className={`h-24 ${swatch.className}`} aria-hidden="true" />
@@ -45,8 +46,8 @@ export default function StyleguidePage() {
       <section className="border-t border-line py-12" aria-labelledby="type-heading">
         <h2 id="type-heading" className="text-xl font-semibold text-ink">Typography</h2>
         <p className="mt-6 font-display text-5xl font-semibold text-ink md:text-6xl">A day worth remembering.</p>
-        <p className="mt-4 max-w-xl text-base leading-7 text-ink-soft">Body copy uses a calm, readable sans serif. Display moments have space to feel personal.</p>
-        <p className="mt-5 text-xs font-bold uppercase tracking-[0.12em] text-wine-deep">Eyebrow and metadata</p>
+        <p className="mt-4 max-w-xl text-base leading-7 text-ink-soft">Inter carries headlines and body copy. Strong weight and tight spacing make headings direct and easy to scan.</p>
+        <p className="mt-5 text-xs font-bold tracking-[0.02em] text-accent-strong">Section label and metadata</p>
       </section>
 
       <section className="border-t border-line py-12" aria-labelledby="controls-heading">

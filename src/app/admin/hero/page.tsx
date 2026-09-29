@@ -10,7 +10,7 @@ export default async function AdminHero() {
     <div className="mx-auto max-w-3xl px-5 py-12">
       <Link
         href="/admin"
-        className="text-[0.72rem] uppercase tracking-[0.18em] text-ink-faint hover:text-wine"
+        className="text-[0.72rem] uppercase tracking-[0.18em] text-ink-faint hover:text-accent"
       >
         ← Studio
       </Link>

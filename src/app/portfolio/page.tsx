@@ -30,11 +30,11 @@ export default function PortfolioPage({ searchParams }: {
     <>
       <header className="mx-auto max-w-[90rem] px-5 pb-12 pt-12 md:px-10 md:pb-16 md:pt-20 lg:px-16">
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-wine">The Portfolio</p>
+          <p className="text-xs font-semibold text-accent">Portfolio</p>
           <Link href={site.cta.href} className="inline-flex min-h-11 items-center rounded-full border border-ink px-5 text-sm font-medium text-ink hover:bg-ink hover:text-white">Ask about your date ↗</Link>
         </div>
-        <h1 className="mt-8 max-w-4xl font-display text-ink" style={{ fontSize: "clamp(3rem,6vw,6.5rem)", lineHeight: 0.98, letterSpacing: "-0.035em" }}>
-          Every moment has a story.
+        <h1 className="mt-8 max-w-5xl font-display text-[clamp(2.75rem,5.6vw,5.5rem)] leading-[1.04] text-ink">
+          Quinceañera photography <span className="text-accent">portfolio.</span>
         </h1>
         <p className="mt-6 max-w-2xl text-base leading-relaxed text-ink-soft md:text-lg">
           Explore quinceañera portraits, ceremonies, and celebrations photographed across Dallas–Fort Worth.
@@ -114,9 +114,9 @@ async function PortfolioContent({ searchParams }: {
       {videos.length ? (
         <section id="films" className="scroll-mt-24 border-t border-line bg-white">
           <div className="mx-auto max-w-[90rem] px-5 py-16 md:px-10 md:py-24 lg:px-16">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-wine">In motion</p>
-            <h2 className="mt-3 font-display text-4xl text-ink md:text-5xl">The films</h2>
-            <p className="mt-4 mb-10 max-w-lg text-sm leading-relaxed text-ink-soft">Her voice, the music, and the joy of the room. Watch the day come alive.</p>
+            <p className="text-xs font-semibold text-accent">Films</p>
+            <h2 className="mt-3 font-display text-3xl text-ink md:text-4xl">Quinceañera films</h2>
+            <p className="mt-4 mb-10 max-w-lg text-sm leading-relaxed text-ink-soft">Watch highlights from quinceañera celebrations.</p>
             <VideoGallery videos={videos} />
           </div>
         </section>

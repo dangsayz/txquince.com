@@ -46,7 +46,7 @@ export default function EsBlogIndexPage() {
     <>
       <section className="mx-auto max-w-[90rem] px-5 pb-10 pt-14 md:px-10 md:pb-16 md:pt-24 lg:px-16">
         <div className="flex justify-end">
-          <Link href="/blog" hrefLang="en" className="text-xs text-wine underline underline-offset-2 hover:text-wine-deep">
+          <Link href="/blog" hrefLang="en" className="text-xs text-accent underline underline-offset-2 hover:text-accent-strong">
             Read in English
           </Link>
         </div>
@@ -65,12 +65,12 @@ export default function EsBlogIndexPage() {
           <Reveal>
             <Link
               href={`/es/blog/${featured.slug}`}
-              className="group block rounded-2xl border border-line bg-white p-7 transition-colors hover:border-wine hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine md:p-12"
+              className="group block rounded-2xl border border-line bg-white p-7 transition-colors hover:border-accent hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:p-12"
             >
               <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">
                 {CATEGORY_ES[featured.category]} · Destacado
               </p>
-              <h2 className="mt-4 max-w-3xl font-display text-3xl leading-tight text-ink group-hover:text-wine md:text-4xl">
+              <h2 className="mt-4 max-w-3xl font-display text-3xl leading-tight text-ink group-hover:text-accent md:text-4xl">
                 {featured.title}
               </h2>
               <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-soft">{featured.excerpt}</p>
@@ -92,9 +92,9 @@ export default function EsBlogIndexPage() {
                   <Reveal key={p.slug} delay={(i % 3) * 70}>
                     <Link
                       href={`/es/blog/${p.slug}`}
-                      className="group flex h-full flex-col rounded-xl border border-line bg-white p-6 transition-colors hover:border-wine hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine"
+                      className="group flex h-full flex-col rounded-xl border border-line bg-white p-6 transition-colors hover:border-accent hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                     >
-                      <h3 className="font-display text-xl leading-tight text-ink group-hover:text-wine">{p.title}</h3>
+                      <h3 className="font-display text-xl leading-tight text-ink group-hover:text-accent">{p.title}</h3>
                       <p className="mt-3 flex-1 text-sm leading-relaxed text-ink-soft">{p.excerpt}</p>
                       <p className="mt-4 text-[0.66rem] uppercase tracking-[0.14em] text-ink-faint">
                         {p.readMinutes} min de lectura

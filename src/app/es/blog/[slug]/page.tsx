@@ -133,12 +133,12 @@ export default async function EsBlogPostPage({
       <article className="mx-auto max-w-4xl px-5 pt-14 md:px-10 md:pt-24 lg:px-16">
         <div className="flex items-center justify-between gap-4">
           <nav className="text-xs text-ink-faint" aria-label="Ruta">
-            <Link href="/" className="hover:text-wine">Inicio</Link>
+            <Link href="/" className="hover:text-accent">Inicio</Link>
             <span className="mx-1.5">/</span>
-            <Link href="/es/blog" className="hover:text-wine">Guía</Link>
+            <Link href="/es/blog" className="hover:text-accent">Guía</Link>
           </nav>
           {enSlug ? (
-            <Link href={`/blog/${enSlug}`} hrefLang="en" className="text-xs text-wine underline underline-offset-2 hover:text-wine-deep">
+            <Link href={`/blog/${enSlug}`} hrefLang="en" className="text-xs text-accent underline underline-offset-2 hover:text-accent-strong">
               Read in English
             </Link>
           ) : null}
@@ -159,7 +159,7 @@ export default async function EsBlogPostPage({
             <ul className="mt-3 flex flex-col gap-1.5">
               {toc.map((h) => (
                 <li key={h.text}>
-                  <a href={`#${slugifyHeading(h.text)}`} className="text-sm text-ink-soft hover:text-wine">
+                  <a href={`#${slugifyHeading(h.text)}`} className="text-sm text-ink-soft hover:text-accent">
                     {h.text}
                   </a>
                 </li>
@@ -194,10 +194,10 @@ export default async function EsBlogPostPage({
                 <Link
                   key={r.slug}
                   href={`/es/blog/${r.slug}`}
-                  className="group rounded-xl border border-line bg-white p-5 transition-colors hover:border-wine focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine"
+                  className="group rounded-xl border border-line bg-white p-5 transition-colors hover:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                 >
                   <p className="text-[0.62rem] uppercase tracking-[0.16em] text-ink-faint">{CATEGORY_ES[r.category]}</p>
-                  <h3 className="mt-2 font-display text-lg leading-tight text-ink group-hover:text-wine">{r.title}</h3>
+                  <h3 className="mt-2 font-display text-lg leading-tight text-ink group-hover:text-accent">{r.title}</h3>
                 </Link>
               ))}
             </div>

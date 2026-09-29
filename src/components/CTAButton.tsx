@@ -16,7 +16,7 @@ export function CTAButton({
   className?: string;
 }) {
   if (variant === "text") {
-    return <Link href={href} className={`inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-wine transition-colors hover:text-wine-deep ${className}`}>{children}<span aria-hidden="true">↗</span></Link>;
+    return <Link href={href} className={`inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-accent transition-colors hover:text-accent-strong ${className}`}>{children}<span aria-hidden="true">↗</span></Link>;
   }
   if (variant === "onDark") {
     return <Link href={href} className={`inline-flex min-h-11 items-center justify-center rounded-lg border border-white bg-white px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-ivory ${className}`}>{children}</Link>;

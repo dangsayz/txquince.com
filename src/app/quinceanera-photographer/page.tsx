@@ -49,7 +49,7 @@ export default function LocationsHub() {
             <Reveal key={l.slug} delay={i * 60}>
               <Link
                 href={`/quinceanera-photographer/${l.slug}`}
-                className="group block h-full rounded-xl border border-line bg-white p-7 transition-colors hover:border-wine hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine"
+                className="group block h-full rounded-xl border border-line bg-white p-7 transition-colors hover:border-accent hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
                 <div className="flex items-baseline justify-between gap-3">
                   <h2 className="font-display text-2xl text-ink">{l.city}</h2>
@@ -60,7 +60,7 @@ export default function LocationsHub() {
                 <p className="mt-3 text-sm leading-relaxed text-ink-soft">
                   {l.lead}
                 </p>
-                <span className="mt-5 inline-block text-[0.72rem] uppercase tracking-[0.18em] text-wine">
+                <span className="mt-5 inline-block text-[0.72rem] uppercase tracking-[0.18em] text-accent">
                   Quinceañera photographer in {l.city} →
                 </span>
               </Link>

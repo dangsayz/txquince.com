@@ -152,7 +152,7 @@ export default async function CityPage({
           <p className="mt-4 text-sm">
             <Link
               href={`/es/fotografo-de-quinceaneras/${loc.slug}`}
-              className="text-wine underline underline-offset-2 hover:text-wine-deep"
+              className="text-accent underline underline-offset-2 hover:text-accent-strong"
               hrefLang="es"
             >
               Ver esta página en español →
@@ -207,14 +207,14 @@ export default async function CityPage({
                 delay={i * 80}
               className={`flex h-full flex-col rounded-xl border p-7 ${
                   p.highlight
-                    ? "border-wine bg-white"
+                    ? "border-accent bg-white"
                     : "border-line bg-white"
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <h3 className="font-display text-2xl text-ink">{p.name}</h3>
                   {p.badge ? (
-                    <span className="bg-wine px-2.5 py-1 text-[0.6rem] uppercase tracking-[0.16em] text-cream">
+                    <span className="bg-accent px-2.5 py-1 text-[0.6rem] uppercase tracking-[0.16em] text-cream">
                       {p.badge}
                     </span>
                   ) : null}
@@ -238,7 +238,7 @@ export default async function CityPage({
           <p className="mt-8 text-center text-sm">
             <Link
               href="/investment"
-              className="text-wine underline underline-offset-2 hover:text-wine-deep"
+              className="text-accent underline underline-offset-2 hover:text-accent-strong"
             >
               See everything included in each collection →
             </Link>
@@ -293,9 +293,9 @@ export default async function CityPage({
               <Link
                 key={g.slug}
                 href={`/blog/${g.slug}`}
-                className="group rounded-xl border border-line bg-white p-5 transition-colors hover:border-wine focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine"
+                className="group rounded-xl border border-line bg-white p-5 transition-colors hover:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
-                <h3 className="font-display text-lg leading-tight text-ink group-hover:text-wine">
+                <h3 className="font-display text-lg leading-tight text-ink group-hover:text-accent">
                   {g.title}
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-soft">{g.excerpt}</p>
@@ -303,7 +303,7 @@ export default async function CityPage({
             ))}
           </div>
           <p className="mt-6 text-sm">
-            <Link href="/blog" className="text-wine underline underline-offset-2 hover:text-wine-deep">
+            <Link href="/blog" className="text-accent underline underline-offset-2 hover:text-accent-strong">
               See the full quinceañera guide →
             </Link>
           </p>
@@ -319,7 +319,7 @@ export default async function CityPage({
               <Link
                 key={n.slug}
                 href={`/quinceanera-photographer/${n.slug}`}
-                className="rounded-full border border-line bg-white px-4 py-2 text-sm text-ink transition-colors hover:border-wine hover:text-wine"
+                className="rounded-full border border-line bg-white px-4 py-2 text-sm text-ink transition-colors hover:border-accent hover:text-accent"
               >
                 Quinceañera photographer in {n.city}
               </Link>

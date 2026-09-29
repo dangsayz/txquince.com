@@ -25,7 +25,7 @@ export function AdminHeader() {
   return (
     <header className="sticky top-0 z-30 border-b border-line bg-white/95 backdrop-blur-xl">
       <div className="mx-auto flex min-h-16 max-w-[90rem] items-center justify-between gap-4 px-5 md:px-10 lg:px-16">
-        <Link href="/admin" className="inline-flex min-h-11 items-center gap-2 text-ink hover:text-wine">
+        <Link href="/admin" className="inline-flex min-h-11 items-center gap-2 text-ink hover:text-accent">
           <span className="font-display text-2xl">TX Quince</span>
           <span className="text-xs font-semibold uppercase tracking-[0.18em] text-ink-faint">Studio</span>
         </Link>
@@ -44,7 +44,7 @@ export function AdminHeader() {
             key={link.href}
             href={link.href}
             aria-current={pathname === link.href ? "page" : undefined}
-            className={`-mb-px inline-flex min-h-11 shrink-0 items-center border-b-2 px-3 text-sm font-medium transition-colors ${pathname === link.href ? "border-wine text-wine" : "border-transparent text-ink-soft hover:border-line hover:text-ink"}`}
+            className={`-mb-px inline-flex min-h-11 shrink-0 items-center border-b-2 px-3 text-sm font-medium transition-colors ${pathname === link.href ? "border-accent text-accent" : "border-transparent text-ink-soft hover:border-line hover:text-ink"}`}
           >
             {link.label}
           </Link>

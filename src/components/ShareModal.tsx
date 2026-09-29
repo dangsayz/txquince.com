@@ -121,7 +121,7 @@ export function ShareModal({
           <button
             type="button"
             onClick={copy}
-            className="min-h-11 shrink-0 rounded-lg bg-ink px-4 py-2 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-cream transition-colors hover:bg-wine"
+            className="min-h-11 shrink-0 rounded-lg bg-ink px-4 py-2 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-cream transition-colors hover:bg-accent"
           >
             {copiedUrl === url ? "Copied" : "Copy"}
           </button>

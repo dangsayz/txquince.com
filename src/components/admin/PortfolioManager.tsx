@@ -163,10 +163,10 @@ function LocationCombobox({
           }
         }}
         onBlur={() => commit(draft)}
-        className="w-full border-b border-line bg-transparent pb-1 text-xs focus:border-wine focus:outline-none"
+        className="w-full border-b border-line bg-transparent pb-1 text-xs focus:border-accent focus:outline-none"
       />
       {open && matches.length > 0 ? (
-        <ul className="absolute left-0 right-0 z-20 mt-1 max-h-44 overflow-auto border border-line bg-ivory shadow-[0_12px_30px_-12px_rgba(44,29,18,0.4)]">
+        <ul className="absolute left-0 right-0 z-20 mt-1 max-h-44 overflow-auto border border-line bg-ivory shadow-[0_12px_30px_-12px_rgba(0,0,0,0.2)]">
           {matches.map((s, i) => (
             <li key={s}>
               <button
@@ -425,7 +425,7 @@ export function PortfolioManager({ initial }: { initial: PortfolioImage[] }) {
           <select
             value={section}
             onChange={(e) => setSection(e.target.value)}
-            className="border-b border-line bg-transparent py-1 focus:border-wine focus:outline-none"
+            className="border-b border-line bg-transparent py-1 focus:border-accent focus:outline-none"
           >
             {SECTIONS.map((s) => (
               <option key={s.value} value={s.value}>
@@ -451,14 +451,14 @@ export function PortfolioManager({ initial }: { initial: PortfolioImage[] }) {
           multiple
           disabled={busy}
           onChange={(e) => handleFiles(e.target.files)}
-          className="text-sm text-ink-soft file:mr-3 file:rounded-full file:border file:border-wine file:bg-transparent file:px-5 file:py-2 file:text-[0.66rem] file:uppercase file:tracking-[0.16em] file:text-wine"
+          className="text-sm text-ink-soft file:mr-3 file:rounded-full file:border file:border-accent file:bg-transparent file:px-5 file:py-2 file:text-[0.66rem] file:uppercase file:tracking-[0.16em] file:text-accent"
         />
         {images.some((i) => !i.width || !i.height) ? (
           <button
             type="button"
             onClick={backfillDimensions}
             disabled={busy}
-            className="rounded-full border border-line px-4 py-2 text-[0.66rem] uppercase tracking-[0.16em] text-ink-soft transition-colors hover:border-wine hover:text-wine disabled:opacity-50"
+            className="rounded-full border border-line px-4 py-2 text-[0.66rem] uppercase tracking-[0.16em] text-ink-soft transition-colors hover:border-accent hover:text-accent disabled:opacity-50"
             title="Read sizes for older images so the public grid loads without shifting"
           >
             Fix image sizes
@@ -469,7 +469,7 @@ export function PortfolioManager({ initial }: { initial: PortfolioImage[] }) {
             type="button"
             onClick={describeBlankAlts}
             disabled={busy}
-            className="rounded-full border border-line px-4 py-2 text-[0.66rem] uppercase tracking-[0.16em] text-ink-soft transition-colors hover:border-wine hover:text-wine disabled:opacity-50"
+            className="rounded-full border border-line px-4 py-2 text-[0.66rem] uppercase tracking-[0.16em] text-ink-soft transition-colors hover:border-accent hover:text-accent disabled:opacity-50"
             title="Draft alt text with AI for every image still missing it (you can edit after)"
           >
             Write blank alt text
@@ -526,14 +526,14 @@ export function PortfolioManager({ initial }: { initial: PortfolioImage[] }) {
                     {/* current anchor marker */}
                     <span
                       aria-hidden
-                      className="absolute h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-cream bg-wine/80 shadow"
+                      className="absolute h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-cream bg-accent/80 shadow"
                       style={{
                         left: `${(img.focus_x ?? 0.5) * 100}%`,
                         top: `${(img.focus_y ?? 0.5) * 100}%`,
                       }}
                     />
                     {img.is_feature ? (
-                      <span className="absolute left-2 top-2 bg-wine px-2 py-0.5 text-[0.55rem] uppercase tracking-[0.14em] text-cream">
+                      <span className="absolute left-2 top-2 bg-accent px-2 py-0.5 text-[0.55rem] uppercase tracking-[0.14em] text-cream">
                         Featured
                       </span>
                     ) : null}
@@ -547,14 +547,14 @@ export function PortfolioManager({ initial }: { initial: PortfolioImage[] }) {
                         onBlur={(e) =>
                           e.target.value !== img.alt && patch(img.id, { alt: e.target.value })
                         }
-                        className="w-full border-b border-line bg-transparent pb-1 text-xs focus:border-wine focus:outline-none"
+                        className="w-full border-b border-line bg-transparent pb-1 text-xs focus:border-accent focus:outline-none"
                       />
                       <button
                         type="button"
                         onClick={() => describe(img)}
                         disabled={describing.has(img.id)}
                         title="Draft alt text with AI (you can edit it)"
-                        className="shrink-0 rounded-full border border-line px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.12em] text-ink-soft transition-colors hover:border-wine hover:text-wine disabled:opacity-40"
+                        className="shrink-0 rounded-full border border-line px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.12em] text-ink-soft transition-colors hover:border-accent hover:text-accent disabled:opacity-40"
                       >
                         {describing.has(img.id) ? "…" : "AI"}
                       </button>
@@ -562,7 +562,7 @@ export function PortfolioManager({ initial }: { initial: PortfolioImage[] }) {
                     <select
                       value={img.section}
                       onChange={(e) => patch(img.id, { section: e.target.value })}
-                      className="w-full border-b border-line bg-transparent pb-1 text-xs focus:border-wine focus:outline-none"
+                      className="w-full border-b border-line bg-transparent pb-1 text-xs focus:border-accent focus:outline-none"
                     >
                       {SECTIONS.map((ss) => (
                         <option key={ss.value} value={ss.value}>
@@ -603,7 +603,7 @@ export function PortfolioManager({ initial }: { initial: PortfolioImage[] }) {
                         </button>
                         <button
                           onClick={() => remove(img.id)}
-                          className="px-1.5 text-wine"
+                          className="px-1.5 text-danger"
                           aria-label="Delete"
                         >
                           ✕

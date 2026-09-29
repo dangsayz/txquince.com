@@ -142,7 +142,7 @@ export default async function CityPageEs({
           <p className="mt-4 text-sm">
             <Link
               href={`/quinceanera-photographer/${loc.slug}`}
-              className="text-wine underline underline-offset-2 hover:text-wine-deep"
+              className="text-accent underline underline-offset-2 hover:text-accent-strong"
               hrefLang="en"
             >
               View this page in English →
@@ -195,13 +195,13 @@ export default async function CityPageEs({
                 key={p.id}
                 delay={i * 80}
                 className={`flex h-full flex-col rounded-xl border p-7 ${
-                  p.highlight ? "border-wine bg-white" : "border-line bg-white"
+                  p.highlight ? "border-accent bg-white" : "border-line bg-white"
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <h3 className="font-display text-2xl text-ink">{p.name}</h3>
                   {p.highlight ? (
-                    <span className="bg-wine px-2.5 py-1 text-[0.6rem] uppercase tracking-[0.16em] text-cream">
+                    <span className="bg-accent px-2.5 py-1 text-[0.6rem] uppercase tracking-[0.16em] text-cream">
                       Más popular
                     </span>
                   ) : null}
@@ -224,7 +224,7 @@ export default async function CityPageEs({
           <p className="mt-8 text-center text-sm">
             <Link
               href="/investment"
-              className="text-wine underline underline-offset-2 hover:text-wine-deep"
+              className="text-accent underline underline-offset-2 hover:text-accent-strong"
             >
               Ver todo lo que incluye cada colección →
             </Link>
@@ -253,7 +253,7 @@ export default async function CityPageEs({
             },
           ].map((step, i) => (
             <li key={step.t} className="flex flex-col gap-3">
-              <span className="font-display text-3xl text-wine">{i + 1}</span>
+              <span className="font-display text-3xl text-accent">{i + 1}</span>
               <span className="font-display text-xl text-ink">{step.t}</span>
               <span className="text-sm leading-relaxed text-ink-soft">{step.b}</span>
             </li>
@@ -303,9 +303,9 @@ export default async function CityPageEs({
               <Link
                 key={g.slug}
                 href={`/es/blog/${g.slug}`}
-                className="group rounded-xl border border-line bg-white p-5 transition-colors hover:border-wine focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine"
+                className="group rounded-xl border border-line bg-white p-5 transition-colors hover:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
-                <h3 className="font-display text-lg leading-tight text-ink group-hover:text-wine">
+                <h3 className="font-display text-lg leading-tight text-ink group-hover:text-accent">
                   {g.title}
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-soft">{g.excerpt}</p>
@@ -313,7 +313,7 @@ export default async function CityPageEs({
             ))}
           </div>
           <p className="mt-6 text-sm">
-            <Link href="/es/blog" className="text-wine underline underline-offset-2 hover:text-wine-deep">
+            <Link href="/es/blog" className="text-accent underline underline-offset-2 hover:text-accent-strong">
               Ver toda la guía de quinceañera →
             </Link>
           </p>
@@ -329,7 +329,7 @@ export default async function CityPageEs({
               <Link
                 key={n.slug}
                 href={`/es/fotografo-de-quinceaneras/${n.slug}`}
-                className="rounded-full border border-line bg-white px-4 py-2 text-sm text-ink transition-colors hover:border-wine hover:text-wine"
+                className="rounded-full border border-line bg-white px-4 py-2 text-sm text-ink transition-colors hover:border-accent hover:text-accent"
               >
                 Fotógrafo de quinceañeras en {n.city}
               </Link>

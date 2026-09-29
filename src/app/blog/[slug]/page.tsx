@@ -116,9 +116,9 @@ export default async function BlogPostPage({
       <article className="mx-auto max-w-4xl px-5 pt-14 md:px-10 md:pt-24 lg:px-16">
         {/* breadcrumb */}
         <nav className="text-xs text-ink-faint" aria-label="Breadcrumb">
-          <Link href="/" className="hover:text-wine">Home</Link>
+          <Link href="/" className="hover:text-accent">Home</Link>
           <span className="mx-1.5">/</span>
-          <Link href="/blog" className="hover:text-wine">Blog</Link>
+          <Link href="/blog" className="hover:text-accent">Blog</Link>
         </nav>
 
         <Reveal className="mt-8 border-b border-line pb-10 md:pb-14">
@@ -137,7 +137,7 @@ export default async function BlogPostPage({
             <ul className="mt-3 flex flex-col gap-1.5">
               {toc.map((h) => (
                 <li key={h.text}>
-                  <a href={`#${slugifyHeading(h.text)}`} className="text-sm text-ink-soft hover:text-wine">
+                  <a href={`#${slugifyHeading(h.text)}`} className="text-sm text-ink-soft hover:text-accent">
                     {h.text}
                   </a>
                 </li>
@@ -174,10 +174,10 @@ export default async function BlogPostPage({
                 <Link
                   key={r.slug}
                   href={`/blog/${r.slug}`}
-                  className="group rounded-xl border border-line bg-white p-5 transition-colors hover:border-wine focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine"
+                  className="group rounded-xl border border-line bg-white p-5 transition-colors hover:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                 >
                   <p className="text-[0.62rem] uppercase tracking-[0.16em] text-ink-faint">{r.category}</p>
-                  <h3 className="mt-2 font-display text-lg leading-tight text-ink group-hover:text-wine">
+                  <h3 className="mt-2 font-display text-lg leading-tight text-ink group-hover:text-accent">
                     {r.title}
                   </h3>
                 </Link>

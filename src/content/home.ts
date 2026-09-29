@@ -7,7 +7,7 @@ export const home = {
   hero: {
     headline: "Her quinceañera, remembered exactly as it felt.",
     subline:
-      "Cinematic quinceañera photography & film across Dallas–Fort Worth.",
+      "Browse quinceañera photography and film across Dallas–Fort Worth.",
   },
 
   // THE EXPERIENCE — reliability is the anti-flaky-vendor differentiator.

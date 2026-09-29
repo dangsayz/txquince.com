@@ -115,7 +115,7 @@ export function Tabs({ items, label }: { items: TabItem[]; label: string }) {
               if (event.key === "Home") { event.preventDefault(); select(0); }
               if (event.key === "End") { event.preventDefault(); select(items.length - 1); }
             }}
-            className={`shrink-0 border-b-2 px-4 py-3 text-sm font-semibold transition-colors ${index === selectedIndex ? "border-wine text-wine-deep" : "border-transparent text-ink-soft hover:text-ink"}`}
+            className={`shrink-0 border-b-2 px-4 py-3 text-sm font-semibold transition-colors ${index === selectedIndex ? "border-accent text-accent-strong" : "border-transparent text-ink-soft hover:text-ink"}`}
           >
             {item.label}
           </button>

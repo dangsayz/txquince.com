@@ -43,7 +43,7 @@ export default function LocationsHubEs() {
           <p className="mt-4 text-sm">
             <Link
               href="/quinceanera-photographer"
-              className="text-wine underline underline-offset-2 hover:text-wine-deep"
+              className="text-accent underline underline-offset-2 hover:text-accent-strong"
               hrefLang="en"
             >
               View in English →
@@ -63,7 +63,7 @@ export default function LocationsHubEs() {
             <Reveal key={l.slug} delay={i * 60}>
               <Link
                 href={`/es/fotografo-de-quinceaneras/${l.slug}`}
-                className="group block h-full rounded-xl border border-line bg-white p-7 transition-colors hover:border-wine hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine"
+                className="group block h-full rounded-xl border border-line bg-white p-7 transition-colors hover:border-accent hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
                 <div className="flex items-baseline justify-between gap-3">
                   <h2 className="font-display text-2xl text-ink">{l.city}</h2>
@@ -74,7 +74,7 @@ export default function LocationsHubEs() {
                 <p className="mt-3 text-sm leading-relaxed text-ink-soft">
                   {l.leadEs}
                 </p>
-                <span className="mt-5 inline-block text-[0.72rem] uppercase tracking-[0.18em] text-wine">
+                <span className="mt-5 inline-block text-[0.72rem] uppercase tracking-[0.18em] text-accent">
                   Fotógrafo de quinceañeras en {l.city} →
                 </span>
               </Link>

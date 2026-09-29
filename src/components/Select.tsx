@@ -107,7 +107,7 @@ export function Select({
         aria-label={ariaLabel ?? (selected?.label ? undefined : placeholder)}
         onClick={() => (open ? setOpen(false) : openList())}
         onKeyDown={onKeyDown}
-        className="flex w-full items-center justify-between gap-3 border-b border-line bg-transparent py-3 text-left transition-colors hover:border-wine focus:border-wine focus:outline-none"
+        className="flex w-full items-center justify-between gap-3 border-b border-line bg-transparent py-3 text-left transition-colors hover:border-accent focus:border-accent focus:outline-none"
       >
         <span className={selected ? "text-ink" : "text-ink-faint"}>
           {selected?.label ?? placeholder}
@@ -135,7 +135,7 @@ export function Select({
           id={listboxId}
           role="listbox"
           aria-label={ariaLabel}
-          className="absolute left-0 right-0 z-30 mt-2 overflow-hidden rounded-xl border border-line bg-ivory p-1 shadow-[0_20px_50px_-18px_rgba(60,40,20,0.35)]"
+          className="absolute left-0 right-0 z-30 mt-2 overflow-hidden rounded-xl border border-line bg-ivory p-1 shadow-[0_20px_50px_-18px_rgba(0,0,0,0.2)]"
         >
           {options.map((o, i) => {
             const isSelected = o.value === value;
@@ -163,7 +163,7 @@ export function Select({
                         strokeWidth="1.8"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        className="text-wine"
+                        className="text-accent"
                       />
                     </svg>
                   ) : null}

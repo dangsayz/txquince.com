@@ -86,7 +86,7 @@ export function VideosManager({ initial }: { initial: VideoRow[] }) {
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             placeholder="Paste a YouTube, Vimeo, or QuinceNetwork link…"
-            className="mt-1 w-full border-b border-line bg-transparent py-1.5 text-sm focus:border-wine focus:outline-none"
+            className="mt-1 w-full border-b border-line bg-transparent py-1.5 text-sm focus:border-accent focus:outline-none"
           />
         </label>
         <label className="text-sm text-ink sm:w-56">
@@ -95,18 +95,18 @@ export function VideosManager({ initial }: { initial: VideoRow[] }) {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Sofia's Quinceañera"
-            className="mt-1 w-full border-b border-line bg-transparent py-1.5 text-sm focus:border-wine focus:outline-none"
+            className="mt-1 w-full border-b border-line bg-transparent py-1.5 text-sm focus:border-accent focus:outline-none"
           />
         </label>
         <button
           type="submit"
           disabled={busy || !url}
-          className="rounded-full bg-wine px-6 py-2.5 text-[0.66rem] uppercase tracking-[0.16em] text-cream hover:bg-wine-deep disabled:opacity-50"
+          className="rounded-full bg-accent px-6 py-2.5 text-[0.66rem] uppercase tracking-[0.16em] text-cream hover:bg-accent-strong disabled:opacity-50"
         >
           {busy ? "Adding…" : "Add"}
         </button>
       </form>
-      {error ? <p className="mt-3 text-sm text-wine">{error}</p> : null}
+      {error ? <p className="mt-3 text-sm text-danger">{error}</p> : null}
 
       <div className="mt-8 flex flex-col gap-3">
         {videos.length === 0 ? (
@@ -136,13 +136,13 @@ export function VideosManager({ initial }: { initial: VideoRow[] }) {
                     onBlur={(e) =>
                       e.target.value !== v.title && patch(v.id, { title: e.target.value })
                     }
-                    className="w-full border-b border-line bg-transparent pb-1 text-sm focus:border-wine focus:outline-none"
+                    className="w-full border-b border-line bg-transparent pb-1 text-sm focus:border-accent focus:outline-none"
                   />
                   <a
                     href={v.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-1 block truncate text-xs text-ink-faint hover:text-wine"
+                    className="mt-1 block truncate text-xs text-ink-faint hover:text-accent"
                   >
                     {v.provider} · {v.url}
                   </a>
@@ -154,7 +154,7 @@ export function VideosManager({ initial }: { initial: VideoRow[] }) {
                         e.target.value !== (v.poster_url ?? "") &&
                         patch(v.id, { poster_url: e.target.value })
                       }
-                      className="mt-1 w-full border-b border-line bg-transparent pb-1 text-xs focus:border-wine focus:outline-none"
+                      className="mt-1 w-full border-b border-line bg-transparent pb-1 text-xs focus:border-accent focus:outline-none"
                     />
                   ) : null}
                 </div>
@@ -169,7 +169,7 @@ export function VideosManager({ initial }: { initial: VideoRow[] }) {
                 <div className="flex items-center gap-1 text-ink-soft">
                   <button onClick={() => move(i, -1)} disabled={i === 0} className="px-1.5 disabled:opacity-30" aria-label="Up">↑</button>
                   <button onClick={() => move(i, 1)} disabled={i === videos.length - 1} className="px-1.5 disabled:opacity-30" aria-label="Down">↓</button>
-                  <button onClick={() => remove(v.id)} className="px-1.5 text-wine" aria-label="Delete">✕</button>
+                  <button onClick={() => remove(v.id)} className="px-1.5 text-danger" aria-label="Delete">✕</button>
                 </div>
               </div>
             );

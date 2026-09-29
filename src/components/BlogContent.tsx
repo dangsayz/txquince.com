@@ -21,13 +21,13 @@ function renderInline(text: string): ReactNode[] {
     const [, label, href] = m;
     if (href.startsWith("/")) {
       nodes.push(
-        <Link key={i++} href={href} className="text-wine underline underline-offset-2 hover:text-wine-deep">
+        <Link key={i++} href={href} className="text-accent underline underline-offset-2 hover:text-accent-strong">
           {label}
         </Link>,
       );
     } else {
       nodes.push(
-        <a key={i++} href={href} target="_blank" rel="noopener noreferrer" className="text-wine underline underline-offset-2 hover:text-wine-deep">
+        <a key={i++} href={href} target="_blank" rel="noopener noreferrer" className="text-accent underline underline-offset-2 hover:text-accent-strong">
           {label}
         </a>,
       );
@@ -70,7 +70,7 @@ export function BlogContent({ blocks }: { blocks: BlogBlock[] }) {
               <ul key={i} className="flex flex-col gap-2.5 pl-1">
                 {b.items.map((it, j) => (
                   <li key={j} className="flex gap-3 text-base leading-relaxed text-ink-soft">
-                    <span aria-hidden className="mt-2.5 h-1 w-1 shrink-0 rounded-full bg-wine" />
+                    <span aria-hidden className="mt-2.5 h-1 w-1 shrink-0 rounded-full bg-accent" />
                     <span>{renderInline(it)}</span>
                   </li>
                 ))}
@@ -81,7 +81,7 @@ export function BlogContent({ blocks }: { blocks: BlogBlock[] }) {
               <ol key={i} className="flex flex-col gap-2.5">
                 {b.items.map((it, j) => (
                   <li key={j} className="flex gap-3 text-base leading-relaxed text-ink-soft">
-                    <span className="font-display text-lg leading-none text-wine">{j + 1}.</span>
+                    <span className="font-display text-lg leading-none text-accent">{j + 1}.</span>
                     <span>{renderInline(it)}</span>
                   </li>
                 ))}
@@ -89,7 +89,7 @@ export function BlogContent({ blocks }: { blocks: BlogBlock[] }) {
             );
           case "quote":
             return (
-              <blockquote key={i} className="border-l-2 border-wine pl-5 font-display text-2xl italic leading-snug text-ink">
+              <blockquote key={i} className="border-l-2 border-accent pl-5 font-display text-2xl italic leading-snug text-ink">
                 {renderInline(b.text)}
               </blockquote>
             );
@@ -101,10 +101,10 @@ export function BlogContent({ blocks }: { blocks: BlogBlock[] }) {
             );
           case "cta":
             return (
-              <div key={i} className="card-apple my-2 p-6 text-center md:p-8">
+              <div key={i} className="card-surface my-2 p-6 text-center md:p-8">
                 <p className="font-display text-2xl text-ink text-balance">{b.heading}</p>
                 {b.body ? <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-ink-soft">{b.body}</p> : null}
-                <Link href={b.href} className="btn-espresso mt-5 inline-flex">
+                <Link href={b.href} className="btn-primary mt-5 inline-flex">
                   {b.label}
                 </Link>
               </div>

@@ -78,13 +78,13 @@ function InquiryCard({ i }: { i: InquiryRow }) {
             Contact
           </dt>
           <dd className="text-ink">
-            <a className="underline decoration-line hover:text-wine" href={`mailto:${i.email}`}>
+            <a className="underline decoration-line hover:text-accent" href={`mailto:${i.email}`}>
               {i.email}
             </a>
             {i.phone && (
               <>
                 {" · "}
-                <a className="underline decoration-line hover:text-wine" href={`tel:${i.phone}`}>
+                <a className="underline decoration-line hover:text-accent" href={`tel:${i.phone}`}>
                   {i.phone}
                 </a>
               </>
@@ -117,7 +117,7 @@ export default async function AdminInquiries() {
     <div className="mx-auto max-w-4xl px-5 py-12">
       <Link
         href="/admin"
-        className="text-[0.72rem] uppercase tracking-[0.18em] text-ink-faint hover:text-wine"
+        className="text-[0.72rem] uppercase tracking-[0.18em] text-ink-faint hover:text-accent"
       >
         ← Studio
       </Link>

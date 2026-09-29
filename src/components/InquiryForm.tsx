@@ -37,7 +37,7 @@ const SHOW_TURNSTILE =
   Boolean(SITE_KEY) && process.env.NODE_ENV === "production";
 
 const inputBase =
-  "min-h-12 w-full rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink placeholder:text-ink-faint focus:border-wine focus:outline-none focus:ring-2 focus:ring-wine/20";
+  "min-h-12 w-full rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20";
 const labelBase = "block text-sm font-medium text-ink";
 
 export function InquiryForm() {
@@ -196,7 +196,7 @@ export function InquiryForm() {
       <ol className="mt-3 grid grid-cols-4 gap-1.5" aria-label="Inquiry progress">
         {STEPS.map((name, index) => (
           <li key={name} className="min-w-0">
-            <span className={`block h-1.5 rounded-full ${index <= step ? "bg-wine" : "bg-greige"}`} />
+            <span className={`block h-1.5 rounded-full ${index <= step ? "bg-accent" : "bg-greige"}`} />
             <span className={`mt-2 block truncate text-[0.68rem] ${index === step ? "font-semibold text-ink" : "text-ink-faint"}`} aria-current={index === step ? "step" : undefined}>{name}</span>
           </li>
         ))}
@@ -275,7 +275,7 @@ export function InquiryForm() {
       </p>
 
       {formError ? (
-        <p role="alert" className="mt-6 text-sm text-wine">
+        <p role="alert" className="mt-6 text-sm text-danger">
           {formError}
         </p>
       ) : null}
@@ -287,7 +287,7 @@ export function InquiryForm() {
         {step < 3 ? (
           <button type="button" onClick={nextStep} className="min-h-11 rounded-lg bg-ink px-6 text-sm font-semibold text-white hover:bg-ink-soft">Continue</button>
         ) : (
-          <button type="submit" disabled={submitting} className="min-h-11 rounded-lg bg-wine px-6 text-sm font-semibold text-white hover:bg-wine-deep disabled:cursor-not-allowed disabled:opacity-60">
+          <button type="submit" disabled={submitting} className="min-h-11 rounded-lg bg-accent px-6 text-sm font-semibold text-white hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-60">
             {submitting ? "Sending…" : "Send my inquiry"}
           </button>
         )}
@@ -315,11 +315,11 @@ function Field({
     <label className={`flex flex-col gap-1.5 ${className}`}>
       <span className={labelBase}>
         {label}
-        {required ? <span className="text-wine"> *</span> : null}
+        {required ? <span className="text-danger"> *</span> : null}
         {hint ? <span className="ml-2 text-xs font-normal text-ink-faint">{hint}</span> : null}
       </span>
       {children}
-      {error?.length ? <span className="text-xs text-wine">{error[0]}</span> : null}
+      {error?.length ? <span className="text-xs text-danger">{error[0]}</span> : null}
     </label>
   );
 }

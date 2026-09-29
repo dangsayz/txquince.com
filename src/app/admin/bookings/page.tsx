@@ -103,13 +103,13 @@ function BookingCard({ b }: { b: BookingRow }) {
             Contact
           </dt>
           <dd className="text-ink">
-            <a className="underline decoration-line hover:text-wine" href={`mailto:${b.email}`}>
+            <a className="underline decoration-line hover:text-accent" href={`mailto:${b.email}`}>
               {b.email}
             </a>
             {b.phone && (
               <>
                 {" · "}
-                <a className="underline decoration-line hover:text-wine" href={`tel:${b.phone}`}>
+                <a className="underline decoration-line hover:text-accent" href={`tel:${b.phone}`}>
                   {b.phone}
                 </a>
               </>
@@ -144,7 +144,7 @@ export default async function AdminBookings() {
     <div className="mx-auto max-w-4xl px-5 py-12">
       <Link
         href="/admin"
-        className="text-[0.72rem] uppercase tracking-[0.18em] text-ink-faint hover:text-wine"
+        className="text-[0.72rem] uppercase tracking-[0.18em] text-ink-faint hover:text-accent"
       >
         ← Studio
       </Link>

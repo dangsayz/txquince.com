@@ -36,8 +36,8 @@ function focal(image: HomeImage): string {
 function PhotoCard({ image }: { image: HomeImage }) {
   return (
     <article className="group min-w-0">
-      <div className="relative overflow-hidden rounded-2xl bg-greige">
-        <Link href={photoPath(image)} className="block focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine" aria-label={`View ${image.title || image.alt}`}>
+      <div className="relative overflow-hidden rounded-xl bg-greige">
+        <Link href={photoPath(image)} className="block focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent" aria-label={`View ${image.title || image.alt}`}>
           <div className="relative aspect-[4/5]">
             <Image
               src={image.url}
@@ -72,9 +72,9 @@ export function HomeWorkGallery({ images }: { images: HomeImage[] }) {
   if (images.length === 0) {
     return (
       <div className="rounded-2xl border border-line bg-white px-6 py-16 text-center sm:px-12">
-        <p className="font-display text-3xl text-ink">The gallery is being curated.</p>
+        <p className="font-display text-2xl text-ink">Portfolio photos are unavailable.</p>
         <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-ink-soft">No portfolio images are available to show right now. Ask us about photo and film coverage for your date.</p>
-        <Link href="/check-your-date" className="mt-6 inline-flex rounded-full bg-ink px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-wine focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine">Ask about your date <span aria-hidden="true" className="ml-2">↗</span></Link>
+        <Link href="/check-your-date" className="mt-6 inline-flex rounded-full bg-accent px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">Ask about your date <span aria-hidden="true" className="ml-2">↗</span></Link>
       </div>
     );
   }
@@ -85,12 +85,12 @@ export function HomeWorkGallery({ images }: { images: HomeImage[] }) {
         <div className="mb-14 border-b border-line pb-14">
           <div className="mb-5 flex items-end justify-between gap-4">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-wine-deep">Featured photographs</p>
-              <h3 className="mt-2 font-display text-3xl text-ink sm:text-4xl">A closer look</h3>
+              <p className="text-xs font-semibold text-accent-strong">Featured work</p>
+              <h3 className="mt-2 font-display text-2xl text-ink sm:text-3xl">Featured photographs</h3>
             </div>
             <div className="flex gap-2">
-              <button type="button" aria-label="Scroll featured photos backward" onClick={() => rail.current?.scrollBy({ left: -rail.current.clientWidth * 0.75, behavior: "smooth" })} className="flex size-11 items-center justify-center rounded-full border border-line bg-white text-ink transition-colors hover:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine">←</button>
-              <button type="button" aria-label="Scroll featured photos forward" onClick={() => rail.current?.scrollBy({ left: rail.current.clientWidth * 0.75, behavior: "smooth" })} className="flex size-11 items-center justify-center rounded-full border border-line bg-white text-ink transition-colors hover:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine">→</button>
+              <button type="button" aria-label="Scroll featured photos backward" onClick={() => rail.current?.scrollBy({ left: -rail.current.clientWidth * 0.75, behavior: "smooth" })} className="flex size-11 items-center justify-center rounded-full border border-line bg-white text-ink transition-colors hover:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">←</button>
+              <button type="button" aria-label="Scroll featured photos forward" onClick={() => rail.current?.scrollBy({ left: rail.current.clientWidth * 0.75, behavior: "smooth" })} className="flex size-11 items-center justify-center rounded-full border border-line bg-white text-ink transition-colors hover:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">→</button>
             </div>
           </div>
           <div ref={rail} role="region" aria-label="Featured photographs" className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 [scrollbar-width:thin]">
@@ -105,12 +105,12 @@ export function HomeWorkGallery({ images }: { images: HomeImage[] }) {
 
       <div className="flex flex-col justify-between gap-5 border-b border-line pb-5 sm:flex-row sm:items-end">
         <div>
-          <h3 className="font-display text-3xl text-ink sm:text-4xl">Browse the moments</h3>
+          <h3 className="font-display text-2xl text-ink sm:text-3xl">Browse by category</h3>
           <p aria-live="polite" className="mt-1 text-sm text-ink-soft">{filtered.length} {filtered.length === 1 ? "photograph" : "photographs"} to explore</p>
         </div>
         <div role="group" aria-label="Filter photographs by moment" className="flex max-w-full gap-2 overflow-x-auto pb-1">
           {["all", ...categories].map((item) => (
-            <button key={item} type="button" onClick={() => setSection(item)} aria-pressed={section === item} className={`shrink-0 rounded-full border px-4 py-2 text-xs font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine ${section === item ? "border-ink bg-ink text-white" : "border-line bg-white text-ink hover:border-ink"}`}>
+            <button key={item} type="button" onClick={() => setSection(item)} aria-pressed={section === item} className={`shrink-0 rounded-full border px-4 py-2 text-xs font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${section === item ? "border-accent bg-accent text-white" : "border-line bg-white text-ink hover:border-accent"}`}>
               {item === "all" ? "All moments" : sectionLabel(item)}
             </button>
           ))}

@@ -67,7 +67,7 @@ export function BookingActions({
           type="button"
           disabled={busy}
           onClick={sendDepositLink}
-          className="rounded-full bg-wine px-4 py-1.5 text-[0.66rem] uppercase tracking-[0.16em] text-cream transition-colors hover:bg-wine-deep disabled:opacity-50"
+          className="rounded-full bg-accent px-4 py-1.5 text-[0.66rem] uppercase tracking-[0.16em] text-cream transition-colors hover:bg-accent-strong disabled:opacity-50"
         >
           {busy ? "Working…" : status === "pending_payment" ? "Resend deposit link" : "Send deposit link"}
         </button>
@@ -77,7 +77,7 @@ export function BookingActions({
           onClick={() =>
             patch("cancelled", "Release this date? It frees the calendar so others can book it.")
           }
-          className="rounded-full border border-line px-4 py-1.5 text-[0.66rem] uppercase tracking-[0.16em] text-ink-soft transition-colors hover:border-wine hover:text-wine disabled:opacity-50"
+          className="rounded-full border border-line px-4 py-1.5 text-[0.66rem] uppercase tracking-[0.16em] text-ink-soft transition-colors hover:border-accent hover:text-accent disabled:opacity-50"
         >
           Release date
         </button>
@@ -96,12 +96,12 @@ export function BookingActions({
       {sent ? (
         <div className="mt-3 rounded-lg bg-greige p-3 text-xs text-ink-soft">
           {sent.emailed ? "✓ Emailed the deposit link to the family." : "Link created (email not sent — check Resend config)."}
-          <a href={sent.url} target="_blank" rel="noopener noreferrer" className="mt-1 block truncate text-wine underline">
+          <a href={sent.url} target="_blank" rel="noopener noreferrer" className="mt-1 block truncate text-accent underline">
             {sent.url}
           </a>
         </div>
       ) : null}
-      {error ? <p className="mt-2 text-xs text-wine">{error}</p> : null}
+      {error ? <p className="mt-2 text-xs text-danger">{error}</p> : null}
     </div>
   );
 }

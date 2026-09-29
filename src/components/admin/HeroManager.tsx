@@ -141,7 +141,7 @@ export function HeroManager({ initial }: { initial: HeroMedia | null }) {
           <div className="text-sm text-ink-soft">
             {media?.kind === "image" && "A photo you uploaded."}
             {media?.kind === "video" && (
-              <a href={media.videoUrl ?? "#"} target="_blank" rel="noopener noreferrer" className="text-wine underline">
+              <a href={media.videoUrl ?? "#"} target="_blank" rel="noopener noreferrer" className="text-accent underline">
                 {media.videoUrl}
               </a>
             )}
@@ -149,7 +149,7 @@ export function HeroManager({ initial }: { initial: HeroMedia | null }) {
           </div>
         </div>
         {media ? (
-          <button onClick={reset} disabled={busy} className="mt-4 text-xs uppercase tracking-[0.16em] text-ink-faint hover:text-wine disabled:opacity-50">
+          <button onClick={reset} disabled={busy} className="mt-4 text-xs uppercase tracking-[0.16em] text-ink-faint hover:text-accent disabled:opacity-50">
             Reset to default →
           </button>
         ) : null}
@@ -182,7 +182,7 @@ export function HeroManager({ initial }: { initial: HeroMedia | null }) {
             accept="image/*"
             onChange={(e) => handleFile(e.target.files)}
             disabled={busy}
-            className="mt-4 block text-sm text-ink file:mr-4 file:rounded-full file:border-0 file:bg-wine file:px-5 file:py-2 file:text-[0.66rem] file:uppercase file:tracking-[0.16em] file:text-cream hover:file:bg-wine-deep"
+            className="mt-4 block text-sm text-ink file:mr-4 file:rounded-full file:border-0 file:bg-accent file:px-5 file:py-2 file:text-[0.66rem] file:uppercase file:tracking-[0.16em] file:text-cream hover:file:bg-accent-strong"
           />
         </div>
       ) : (
@@ -193,7 +193,7 @@ export function HeroManager({ initial }: { initial: HeroMedia | null }) {
               value={videoUrl}
               onChange={(e) => setVideoUrl(e.target.value)}
               placeholder="Paste a YouTube, Vimeo, or direct .mp4 link…"
-              className="mt-1 w-full border-b border-line bg-transparent py-1.5 text-sm focus:border-wine focus:outline-none"
+              className="mt-1 w-full border-b border-line bg-transparent py-1.5 text-sm focus:border-accent focus:outline-none"
             />
           </label>
           {videoUrl ? (
@@ -206,7 +206,7 @@ export function HeroManager({ initial }: { initial: HeroMedia | null }) {
           <button
             type="submit"
             disabled={busy || !preview.embedUrl}
-            className="mt-4 rounded-full bg-wine px-6 py-2.5 text-[0.66rem] uppercase tracking-[0.16em] text-cream hover:bg-wine-deep disabled:opacity-50"
+            className="mt-4 rounded-full bg-accent px-6 py-2.5 text-[0.66rem] uppercase tracking-[0.16em] text-cream hover:bg-accent-strong disabled:opacity-50"
           >
             {busy ? "Saving…" : "Use this video"}
           </button>
@@ -214,7 +214,7 @@ export function HeroManager({ initial }: { initial: HeroMedia | null }) {
       )}
 
       {status ? <p className="text-sm text-emerald-700">{status}</p> : null}
-      {error ? <p className="text-sm text-wine">{error}</p> : null}
+      {error ? <p className="text-sm text-danger">{error}</p> : null}
     </div>
   );
 }

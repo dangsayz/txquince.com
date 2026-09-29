@@ -7,6 +7,6 @@ export const contentType = ogContentType;
 export default function Image() {
   return renderOg({
     eyebrow: "Portfolio",
-    title: "The day, kept exactly as it felt.",
+    title: "Quinceañera photography portfolio.",
   });
 }

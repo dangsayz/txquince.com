@@ -1,20 +1,21 @@
 @import "tailwindcss";
 
 @theme {
-  --color-sand: #eeeceb;
+  --color-sand: #e9e9e9;
   --color-cream: #ffffff;
-  --color-ivory: #f7f6f5;
-  --color-greige: #f2f1f0;
+  --color-ivory: #f5f5f5;
+  --color-greige: #eeeeee;
   --color-white: #ffffff;
-  --color-ink: #211d1f;
-  --color-ink-soft: #5d565b;
-  --color-ink-faint: #655e62;
-  --color-line: #dfdadc;
-  --color-wine: #852e4a;
-  --color-wine-deep: #6d233c;
-  --color-wine-tint: #f7edf0;
-
-  --font-display: var(--font-cormorant), Georgia, "Times New Roman", serif;
+  --color-ink: #191919;
+  --color-ink-soft: #4d4d4d;
+  --color-ink-faint: #616161;
+  --color-line: #dedede;
+  --color-accent: #0057ff;
+  --color-accent-strong: #0046d5;
+  --color-accent-soft: #edf3ff;
+  --color-danger: #b42318;
+  --color-danger-soft: #fef3f2;
+  --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --spacing-section: 5rem;
   --spacing-section-lg: 8rem;
@@ -41,49 +42,46 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Display serif: tight tracking, refined leading — used for oversized headings */
 .font-display {
   font-family: var(--font-display);
-  letter-spacing: -0.015em;
-  font-weight: 500;
+  letter-spacing: -0.045em;
+  font-weight: 750;
 }
 
-/* Oversized editorial type — exaggerated minimalism, dramatic scale contrast.
-   clamp() carries it from phone to large desktop without breakpoints. */
 .display-1 {
   font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(2.9rem, 8.5vw, 7.5rem);
-  line-height: 0.96;
-  letter-spacing: -0.025em;
+  font-weight: 800;
+  font-size: clamp(2.9rem, 7vw, 6.75rem);
+  line-height: 1.02;
+  letter-spacing: -0.055em;
 }
 .display-2 {
   font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(2.1rem, 5.2vw, 4.5rem);
-  line-height: 1.0;
-  letter-spacing: -0.02em;
+  font-weight: 750;
+  font-size: clamp(2.1rem, 4.8vw, 4.25rem);
+  line-height: 1.06;
+  letter-spacing: -0.05em;
 }
 .display-3 {
   font-family: var(--font-display);
-  font-weight: 500;
+  font-weight: 700;
   font-size: clamp(1.6rem, 3vw, 2.4rem);
-  line-height: 1.08;
-  letter-spacing: -0.015em;
+  line-height: 1.12;
+  letter-spacing: -0.04em;
 }
 
-.card-apple {
+.card-surface {
   background: var(--color-white);
   border: 1px solid var(--color-line);
   border-radius: 0.875rem;
-  box-shadow: 0 8px 28px -24px rgba(33, 29, 31, 0.22);
+  box-shadow: 0 8px 28px -24px rgba(25, 25, 25, 0.22);
 }
 
 .accent {
   font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 400;
-  letter-spacing: 0;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: -0.035em;
 }
 
 .btn-pill {
@@ -104,17 +102,16 @@ body {
   display: inline-flex;
   align-items: center;
   border-radius: 0.375rem;
-  background: var(--color-wine-tint);
+  background: var(--color-accent-soft);
   padding: 0.35rem 0.65rem;
   font-family: var(--font-body);
   font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: var(--color-wine-deep);
+  letter-spacing: 0;
+  color: var(--color-accent-strong);
 }
 
-/* Contained editorial text column */
+/* Contained text column */
 .measure {
   max-width: 42rem; /* ~672px */
 }
@@ -137,7 +134,7 @@ body {
 
 /* Focus visibility for keyboard users */
 :focus-visible {
-  outline: 2px solid var(--color-wine);
+  outline: 2px solid var(--color-accent);
   outline-offset: 3px;
   border-radius: 2px;
 }
@@ -147,13 +144,13 @@ body {
   --yarl__color_backdrop: rgba(20, 16, 14, 0.94);
 }
 
-.btn-espresso {
+.btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   border-radius: 0.5rem;
-  background: var(--color-wine);
+  background: var(--color-accent);
   color: #fff;
   padding: 0.8rem 1.4rem;
   font-size: 0.875rem;
@@ -161,8 +158,8 @@ body {
   line-height: 1;
   transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
-.btn-espresso:hover {
-  background: var(--color-wine-deep);
+.btn-primary:hover {
+  background: var(--color-accent-strong);
 }
 
 .btn-soft {
@@ -198,7 +195,7 @@ body {
 }
 
 .media-placeholder {
-  background: linear-gradient(135deg, #e8e3e5, #f7f5f5 52%, #e5dddf);
+  background: linear-gradient(135deg, #e9e9e9, #f8f8f8 52%, #e6e6e6);
 }
 
 @media (prefers-reduced-motion: reduce) {

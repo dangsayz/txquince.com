@@ -7,7 +7,7 @@ export const contentType = ogContentType;
 export default function Image() {
   return renderOg({
     eyebrow: "Inquiries",
-    title: "Let's see if your date is open.",
+    title: "Check your quinceañera date.",
     footer: "A personal reply from the studio",
   });
 }

@@ -109,12 +109,12 @@ function LoginForm() {
   }
 
   const inputBase =
-    "mt-2 min-h-11 w-full rounded-lg border border-line bg-white px-3.5 py-2.5 text-sm text-ink outline-none transition-colors focus:border-wine focus:ring-2 focus:ring-wine/20";
+    "mt-2 min-h-11 w-full rounded-lg border border-line bg-white px-3.5 py-2.5 text-sm text-ink outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20";
 
   return (
     <div className="flex min-h-svh items-center justify-center bg-ivory px-4 py-12 sm:px-6">
-      <div className="w-full max-w-md rounded-xl border border-line bg-white p-6 shadow-[0_20px_60px_-32px_rgba(44,29,18,0.3)] sm:p-9">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-wine-deep">TX Quince · Studio</p>
+      <div className="w-full max-w-md rounded-xl border border-line bg-white p-6 shadow-[0_20px_60px_-32px_rgba(0,0,0,0.2)] sm:p-9">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent-strong">TX Quince · Studio</p>
         <h1 className="mt-3 font-display text-4xl leading-none text-ink">{mode === "signin" ? "Welcome back." : "Reset your password."}</h1>
         <p className="mt-3 text-sm leading-6 text-ink-soft">{mode === "signin" ? "Sign in to manage your studio." : "We will send a secure reset link to your email."}</p>
 
@@ -144,7 +144,7 @@ function LoginForm() {
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-1 top-1/2 flex min-h-11 -translate-y-1/2 items-center rounded-md px-3 text-xs font-semibold text-ink-soft hover:text-wine focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine"
+                  className="absolute right-1 top-1/2 flex min-h-11 -translate-y-1/2 items-center rounded-md px-3 text-xs font-semibold text-ink-soft hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                   aria-pressed={showPassword}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
@@ -159,7 +159,7 @@ function LoginForm() {
                   type="checkbox"
                   checked={remember}
                   onChange={(e) => setRemember(e.target.checked)}
-                  className="h-4 w-4 accent-[var(--color-wine)]"
+                  className="h-4 w-4 accent-[var(--color-accent)]"
                 />
                 Remember me
               </label>
@@ -170,15 +170,15 @@ function LoginForm() {
                   setError(null);
                   setNotice(null);
                 }}
-                className="min-h-11 rounded-md px-1 text-sm font-medium text-wine-deep hover:text-wine focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine"
+                className="min-h-11 rounded-md px-1 text-sm font-medium text-accent-strong hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
                 Forgot password?
               </button>
             </div>
 
-            {error ? <p role="alert" className="mt-5 rounded-lg border border-wine/30 bg-wine-tint px-4 py-3 text-sm text-wine-deep">{error}</p> : null}
+            {error ? <p role="alert" className="mt-5 rounded-lg border border-danger/30 bg-danger-soft px-4 py-3 text-sm text-danger">{error}</p> : null}
 
-            <button type="submit" disabled={busy} className="mt-8 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-wine px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-wine-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine disabled:cursor-not-allowed disabled:opacity-50">
+            <button type="submit" disabled={busy} className="mt-8 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50">
               {busy ? "Signing in…" : "Sign in"}
             </button>
           </form>
@@ -198,10 +198,10 @@ function LoginForm() {
               We&apos;ll email you a secure link to set a new password.
             </p>
 
-            {error ? <p role="alert" className="mt-5 rounded-lg border border-wine/30 bg-wine-tint px-4 py-3 text-sm text-wine-deep">{error}</p> : null}
+            {error ? <p role="alert" className="mt-5 rounded-lg border border-danger/30 bg-danger-soft px-4 py-3 text-sm text-danger">{error}</p> : null}
             {notice ? <p role="status" className="mt-5 rounded-lg border border-line bg-ivory px-4 py-3 text-sm text-ink">{notice}</p> : null}
 
-            <button type="submit" disabled={busy} className="mt-8 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-wine px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-wine-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine disabled:cursor-not-allowed disabled:opacity-50">
+            <button type="submit" disabled={busy} className="mt-8 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50">
               {busy ? "Sending…" : "Send reset link"}
             </button>
             <button
@@ -211,7 +211,7 @@ function LoginForm() {
                 setError(null);
                 setNotice(null);
               }}
-              className="mt-3 min-h-11 w-full rounded-lg text-center text-sm font-medium text-ink-soft hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine"
+              className="mt-3 min-h-11 w-full rounded-lg text-center text-sm font-medium text-ink-soft hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
               ← Back to sign in
             </button>
