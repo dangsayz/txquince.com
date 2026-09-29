@@ -34,8 +34,6 @@ export default async function HomePage() {
         alt: image.alt,
         section: image.section,
         slug: image.slug ?? null,
-        title: image.title ?? null,
-        location: image.location ?? null,
         focusX: image.focus_x ?? null,
         focusY: image.focus_y ?? null,
       }))
@@ -45,8 +43,6 @@ export default async function HomePage() {
         alt: image.alt,
         section: image.section,
         slug: image.slug,
-        title: image.title,
-        location: image.city ?? null,
         focusX: null,
         focusY: image.url === portfolioFallback[0]?.url ? 0.65 : null,
       }));
