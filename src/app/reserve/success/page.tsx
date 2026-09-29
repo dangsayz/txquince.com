@@ -7,6 +7,7 @@ import {
   isStripeConfigured,
 } from "@/lib/stripe";
 import { formatEventDate, formatMoney } from "@/lib/booking";
+import { Badge } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Your Date Is Reserved",
@@ -43,55 +44,57 @@ export default async function ReserveSuccessPage({
   }
 
   return (
-    <section className="mx-auto flex min-h-[70svh] max-w-2xl flex-col items-center justify-center px-5 py-section text-center md:px-10 lg:px-16">
-      <p className="eyebrow mb-6">{paid ? "Reserved" : "Almost there"}</p>
+    <section className="bg-ivory px-5 py-12 sm:px-6 md:py-20">
+      <div className="mx-auto max-w-2xl rounded-xl border border-line bg-white p-7 text-center sm:p-12">
+        <Badge>{paid ? "Reserved" : "Almost there"}</Badge>
 
-      <h1 className="font-display text-4xl leading-[1.08] text-ink text-balance md:text-5xl">
-        {eventDate ? (
-          <>Your date is reserved — {eventDate}.</>
-        ) : paid ? (
-          <>Your date is reserved.</>
-        ) : (
-          <>Thank you — we&apos;re confirming your deposit.</>
-        )}
-      </h1>
+        <h1 className="mt-5 font-display text-4xl leading-[1.08] text-ink text-balance md:text-5xl">
+          {eventDate ? (
+            <>Your date is reserved — {eventDate}.</>
+          ) : paid ? (
+            <>Your date is reserved.</>
+          ) : (
+            <>Thank you — we&apos;re confirming your deposit.</>
+          )}
+        </h1>
 
-      <p className="mt-6 max-w-md text-base leading-relaxed text-ink-soft">
-        {paid ? (
-          <>
-            {depositLabel ? `Your ${depositLabel} deposit is in` : "Your deposit is in"}
-            {" "}and applied to your final balance. I won&apos;t take another
-            celebration on your day. Watch your inbox — a confirmation is on its
-            way, and I&apos;ll reach out personally to start planning the details.
-          </>
-        ) : (
-          <>
-            Your payment is processing. The moment it clears, your date is locked
-            and a confirmation email goes out. This can take a minute — no need to
-            pay again.
-          </>
-        )}
-      </p>
+        <p className="mt-6 max-w-md text-base leading-relaxed text-ink-soft">
+          {paid ? (
+            <>
+              {depositLabel ? `Your ${depositLabel} deposit is in` : "Your deposit is in"}
+              {" "}and applied to your final balance. I won&apos;t take another
+              celebration on your day. Watch your inbox — a confirmation is on its
+              way, and I&apos;ll reach out personally to start planning the details.
+            </>
+          ) : (
+            <>
+              Your payment is processing. The moment it clears, your date is locked
+              and a confirmation email goes out. This can take a minute — no need to
+              pay again.
+            </>
+          )}
+        </p>
 
-      <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
-        <CTAButton href="/portfolio" variant="primary">
-          See the galleries
-        </CTAButton>
-        <Link
-          href="/"
-          className="text-sm text-ink-soft underline underline-offset-4 hover:text-ink"
-        >
-          Back home
-        </Link>
+        <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <CTAButton href="/portfolio" variant="primary">
+            See the galleries
+          </CTAButton>
+          <Link
+            href="/"
+            className="text-sm text-ink-soft underline underline-offset-4 hover:text-ink"
+          >
+            Back home
+          </Link>
+        </div>
+
+        <p className="mt-12 text-xs text-ink-faint">
+          Questions about your reservation? Write me at{" "}
+          <a href={`mailto:${site.contact.email}`} className="underline underline-offset-2">
+            {site.contact.email}
+          </a>
+          .
+        </p>
       </div>
-
-      <p className="mt-12 text-xs text-ink-faint">
-        Questions about your reservation? Write me at{" "}
-        <a href={`mailto:${site.contact.email}`} className="underline underline-offset-2">
-          {site.contact.email}
-        </a>
-        .
-      </p>
     </section>
   );
 }

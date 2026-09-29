@@ -27,7 +27,7 @@ function MetricCard({
   emphasis?: boolean;
 }) {
   return (
-    <div className={`rounded-2xl border border-line p-5 ${emphasis ? "bg-ink text-cream" : "bg-white"}`}>
+    <div className={`rounded-xl border border-line p-5 ${emphasis ? "bg-ink text-cream" : "bg-white"}`}>
       <p className={`text-[0.66rem] uppercase tracking-[0.18em] ${emphasis ? "text-cream/70" : "text-ink-faint"}`}>
         {label}
       </p>
@@ -42,7 +42,7 @@ function MetricCard({
 function RankedList({ title, items, empty }: { title: string; items: { label: string; count: number }[]; empty: string }) {
   const max = Math.max(...items.map((i) => i.count), 1);
   return (
-    <div className="rounded-2xl border border-line bg-white p-5">
+    <div className="rounded-xl border border-line bg-white p-5">
       <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">{title}</p>
       <div className="mt-4 space-y-2.5">
         {items.length === 0 ? (
@@ -72,7 +72,7 @@ function InsightPanel({ insights }: { insights: RangedStats["insights"] }) {
     info: "text-ink-soft",
   };
   return (
-    <div className="rounded-2xl border border-line bg-white p-5">
+    <div className="rounded-xl border border-line bg-white p-5">
       <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">What to do next</p>
       <ul className="mt-4 space-y-3">
         {insights.length === 0 ? (
@@ -104,35 +104,35 @@ export default async function AdminDashboard({
   searchParams: Promise<{ range?: string }>;
 }) {
   const { range: rangeParam } = await searchParams;
-  const range = RANGES.includes(Number(rangeParam) as (typeof RANGES)[number])
-    ? (Number(rangeParam) as number)
-    : 14;
+  const requestedRange = Number(rangeParam);
+  const range = RANGES.find((candidate) => candidate === requestedRange) ?? 14;
   const [s, changes] = await Promise.all([getDashboardStats(range), getConversionChanges()]);
   const maxDaily = Math.max(...s.daily.map((d) => d.count), 1);
   const todayKey = new Date().toISOString().slice(0, 10);
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8 sm:px-5 md:py-10">
+    <div className="mx-auto max-w-[90rem] px-5 pb-20 pt-10 md:px-10 md:pt-14 lg:px-16">
       <AutoRefresh seconds={30} />
       {/* header + range */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-[0.66rem] uppercase tracking-[0.28em] text-ink-faint">Business overview</p>
-          <h1 className="mt-2 font-display text-3xl text-ink">Studio</h1>
-          <p className="mt-1 text-sm text-ink-soft">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-wine">Business overview</p>
+          <h1 className="mt-3 font-display text-5xl text-ink md:text-6xl">Studio</h1>
+          <p className="mt-3 text-sm text-ink-soft">
             {s.configured
               ? "Live traffic, bookings, and what to do next — last "
-              : "Connect Supabase to see live analytics — last "}
+              : "Analytics will appear when studio data is available — last "}
             {range} days.
           </p>
         </div>
-        <div className="flex gap-1.5">
+        <div className="flex gap-1.5" aria-label="Analytics date range">
           {RANGES.map((r) => (
             <Link
               key={r}
               href={`/admin?range=${r}`}
-              className={`rounded-full px-4 py-1.5 text-[0.7rem] uppercase tracking-[0.14em] transition-colors ${
-                r === range ? "bg-ink text-cream" : "border border-line text-ink-soft hover:text-ink"
+              aria-current={r === range ? "page" : undefined}
+              className={`inline-flex min-h-11 items-center rounded-lg px-4 text-xs font-semibold transition-colors ${
+                r === range ? "bg-ink text-white" : "border border-line bg-white text-ink-soft hover:border-ink hover:text-ink"
               }`}
             >
               {r}d
@@ -146,7 +146,7 @@ export default async function AdminDashboard({
       {s.paymentReview > 0 ? (
         <Link
           href="/admin/bookings"
-          className="mt-6 flex items-center justify-between gap-4 rounded-2xl border border-amber-400 bg-amber-50 p-5 transition-colors hover:border-amber-600"
+          className="mt-6 flex items-center justify-between gap-4 rounded-xl border border-amber-400 bg-amber-50 p-5 transition-colors hover:border-amber-600"
         >
           <div>
             <p className="text-[0.66rem] uppercase tracking-[0.18em] text-amber-700">Needs review</p>
@@ -161,7 +161,7 @@ export default async function AdminDashboard({
 
       {/* THE BOTTLENECK — the one thing to fix, named automatically. */}
       {s.bottleneck ? (
-        <section className="mt-6 rounded-2xl border-2 border-wine bg-white p-5">
+        <section className="mt-6 rounded-xl border-2 border-wine bg-white p-5">
           <p className="text-[0.66rem] uppercase tracking-[0.18em] text-wine-deep">
             Fix this first — your weakest funnel edge
           </p>
@@ -175,7 +175,7 @@ export default async function AdminDashboard({
       ) : null}
 
       {/* LIVE NOW — who's on the site this minute. */}
-      <section className="mt-4 rounded-2xl border border-line bg-white p-5">
+      <section className="mt-4 rounded-xl border border-line bg-white p-5">
         <div className="flex items-center justify-between">
           <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">
             On the site right now
@@ -219,7 +219,7 @@ export default async function AdminDashboard({
 
       {/* chart + insights */}
       <section className="mt-8 grid gap-4 lg:grid-cols-[1.3fr_0.7fr]">
-        <div className="rounded-2xl border border-line bg-white p-5">
+        <div className="rounded-xl border border-line bg-white p-5">
           <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">Visits per day · last {range} days</p>
           <div className="mt-6 flex h-40 items-end gap-1.5 border-b border-line pb-2">
             {s.daily.map((d) => {
@@ -244,7 +244,7 @@ export default async function AdminDashboard({
       </section>
 
       {/* funnel */}
-      <section className="mt-4 rounded-2xl border border-line bg-white p-5">
+      <section className="mt-4 rounded-xl border border-line bg-white p-5">
         <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">Booking funnel · last {range} days traffic, all-time pipeline</p>
         <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
           {s.funnel.map((step, i) => {
@@ -262,7 +262,7 @@ export default async function AdminDashboard({
       </section>
 
       {/* PAGE ENGAGEMENT — where families spend time, where they leave. */}
-      <section className="mt-4 rounded-2xl border border-line bg-white p-5">
+      <section className="mt-4 rounded-xl border border-line bg-white p-5">
         <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">
           Page behavior · time on page &amp; exits
         </p>
@@ -301,7 +301,7 @@ export default async function AdminDashboard({
       </section>
 
       {/* WEEKLY FLYWHEEL — events → proof → content → rank → premium clients. */}
-      <section className="mt-4 rounded-2xl border border-line bg-white p-5">
+      <section className="mt-4 rounded-xl border border-line bg-white p-5">
         <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">
           This week&apos;s flywheel · computed from live data
         </p>
@@ -335,7 +335,7 @@ export default async function AdminDashboard({
       </section>
 
       {/* revenue & leads by source — which channel actually makes money */}
-      <section className="mt-4 rounded-2xl border border-line bg-white p-5">
+      <section className="mt-4 rounded-xl border border-line bg-white p-5">
         <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">
           Revenue &amp; leads by source
         </p>
@@ -389,7 +389,7 @@ export default async function AdminDashboard({
             <Link
               key={m.href}
               href={m.href}
-              className="rounded-2xl border border-line bg-white p-5 text-center transition-colors hover:border-wine"
+              className="rounded-xl border border-line bg-white p-5 text-center transition-colors hover:border-wine"
             >
               <span className="font-display text-lg text-ink">{m.title}</span>
               <span className="mt-1 block text-[0.62rem] uppercase tracking-[0.16em] text-wine">Open →</span>
@@ -401,6 +401,6 @@ export default async function AdminDashboard({
       {!s.configured ? (
         <p className="mt-8 text-sm text-ink-faint">Analytics tables are ready; data will populate as visitors browse the live site.</p>
       ) : null}
-    </main>
+    </div>
   );
 }

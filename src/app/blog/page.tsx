@@ -33,7 +33,7 @@ export default function BlogIndexPage() {
 
   return (
     <>
-      <section className="mx-auto max-w-7xl px-5 pt-section md:px-10 lg:px-16 md:pt-section-lg">
+      <section className="mx-auto max-w-[90rem] px-5 pb-10 pt-14 md:px-10 md:pb-16 md:pt-24 lg:px-16">
         <Reveal className="max-w-3xl">
           <p className="eyebrow mb-5">The Quince Journal</p>
           <h1 className="display-1 text-ink text-balance">
@@ -48,11 +48,11 @@ export default function BlogIndexPage() {
 
       {/* Featured post */}
       {featured ? (
-        <section className="mx-auto max-w-7xl px-5 py-section md:px-10 lg:px-16">
+        <section className="mx-auto max-w-[90rem] px-5 py-10 md:px-10 md:py-16 lg:px-16">
           <Reveal>
             <Link
               href={`/blog/${featured.slug}`}
-              className="group block rounded-[1.75rem] border border-line bg-white p-8 transition-colors hover:border-wine md:p-12"
+              className="group block rounded-2xl border border-line bg-white p-7 transition-colors hover:border-wine hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine md:p-12"
             >
               <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">
                 {featured.category} · Featured
@@ -70,7 +70,7 @@ export default function BlogIndexPage() {
       ) : null}
 
       {/* Category sections */}
-      <section className="mx-auto max-w-7xl px-5 pb-section md:px-10 lg:px-16 md:pb-section-lg">
+      <section className="mx-auto max-w-[90rem] px-5 pb-20 md:px-10 md:pb-28 lg:px-16">
         {BLOG_CATEGORIES.map((cat) => {
           const inCat = rest.filter((p) => p.category === cat);
           if (inCat.length === 0) return null;
@@ -82,7 +82,7 @@ export default function BlogIndexPage() {
                   <Reveal key={p.slug} delay={(i % 3) * 70}>
                     <Link
                       href={`/blog/${p.slug}`}
-                      className="group flex h-full flex-col rounded-2xl border border-line bg-white p-6 transition-colors hover:border-wine"
+                      className="group flex h-full flex-col rounded-xl border border-line bg-white p-6 transition-colors hover:border-wine hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine"
                     >
                       <h3 className="font-display text-xl leading-tight text-ink group-hover:text-wine">
                         {p.title}

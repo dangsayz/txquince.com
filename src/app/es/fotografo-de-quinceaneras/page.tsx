@@ -29,13 +29,13 @@ export const metadata: Metadata = {
 export default function LocationsHubEs() {
   return (
     <>
-      <section className="mx-auto max-w-4xl px-5 pt-section text-center md:px-10 lg:px-16 md:pt-section-lg">
+      <section className="mx-auto max-w-[90rem] px-5 pt-14 md:px-10 md:pt-24 lg:px-16">
         <Reveal>
           <p className="eyebrow mb-5">Áreas que cubro</p>
-          <h1 className="mx-auto max-w-3xl display-2 text-ink text-balance">
+          <h1 className="max-w-4xl display-2 text-ink text-balance">
             Fotografía de quinceañeras en todo Dallas–Fort Worth.
           </h1>
-          <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-ink-soft">
+          <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-soft">
             Un fotógrafo, una celebración al día, todo el metroplex. Encuentra tu
             ciudad abajo — la misa, las fotos, el vals y la recepción,
             documentados de principio a fin.
@@ -49,7 +49,7 @@ export default function LocationsHubEs() {
               View in English →
             </Link>
           </p>
-          <div className="mt-9 flex justify-center">
+          <div className="mt-9 flex">
             <CTAButton href={site.cta.href} variant="primary">
               Reserva tu fecha
             </CTAButton>
@@ -57,13 +57,13 @@ export default function LocationsHubEs() {
         </Reveal>
       </section>
 
-      <section className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
+      <section className="mx-auto max-w-[90rem] px-5 py-16 md:px-10 md:py-24 lg:px-16">
         <div className="grid gap-5 sm:grid-cols-2">
           {locations.map((l, i) => (
             <Reveal key={l.slug} delay={i * 60}>
               <Link
                 href={`/es/fotografo-de-quinceaneras/${l.slug}`}
-                className="group block h-full border border-line bg-ivory p-7 transition-colors hover:border-wine"
+                className="group block h-full rounded-xl border border-line bg-white p-7 transition-colors hover:border-wine hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine"
               >
                 <div className="flex items-baseline justify-between gap-3">
                   <h2 className="font-display text-2xl text-ink">{l.city}</h2>

@@ -2,14 +2,10 @@ import { site } from "@/content/site";
 import { Reveal } from "@/components/Reveal";
 import { CTAButton } from "@/components/CTAButton";
 
-/**
- * Closing CTA — light, editorial, scarcity-driven. A script accent over a serif
- * line and a single outlined pill (the ONE primary CTA). Reused across pages.
- */
 export function FinalCTA({
-  accent = "A few dates remain",
-  headline = site.scarcity.finalBand,
-  sub = "Tell me about your celebration and I'll personally reply within 24 hours.",
+  accent = "Start the conversation",
+  headline = "Her day deserves to be remembered in full.",
+  sub = "Tell us about your celebration. We'll personally confirm availability before any payment.",
 }: {
   accent?: string;
   headline?: string;

@@ -1,25 +1,28 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { site } from "@/content/site";
-import { packages, isCollectionId } from "@/content/packages";
 import { BookingForm } from "@/components/BookingForm";
-import { SocialProofStrip } from "@/components/SocialProofStrip";
-import { HowBookingWorks } from "@/components/HowBookingWorks";
 import { Testimonials } from "@/components/Testimonials";
-import { CTAButton } from "@/components/CTAButton";
+import { isCollectionId, packages } from "@/content/packages";
+import { site } from "@/content/site";
 
 export const metadata: Metadata = {
-  title: "Reserve Your Date",
+  title: "Request Your Date",
   description:
-    "Lock in your daughter's quinceañera date with a deposit. Secure Stripe checkout, applied to your final balance, refundable if I ever have to cancel.",
+    "Request a date and choose a TX Quince photo or film collection. We confirm availability before sending a deposit link; no payment is due with your request.",
   alternates: { canonical: "/reserve" },
   openGraph: {
-    title: "Reserve Your Date · TX Quince",
+    title: "Request Your Date · TX Quince",
     description:
-      "Lock in her quinceañera date with a deposit — secure checkout, applied to your final balance.",
+      "Choose a collection and request your quinceañera date. We confirm the details before payment.",
     url: `${site.url}/reserve`,
   },
 };
+
+const nextSteps = [
+  { title: "Send your request", body: "Choose her date and collection, then tell us how to reach you. There is no payment at this step." },
+  { title: "We confirm the details", body: "We check availability and follow up about the celebration, coverage, and next steps." },
+  { title: "Complete the reservation", body: "Once the details are confirmed, we send a secure deposit link. The deposit applies to your final collection balance." },
+] as const;
 
 export default async function ReservePage({
   searchParams,
@@ -29,122 +32,62 @@ export default async function ReservePage({
   const { canceled, collection, date } = await searchParams;
   const defaultCollection = isCollectionId(collection) ? collection : undefined;
   const defaultDate = date && /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : undefined;
-  const signature = packages.find((p) => p.id === "signature") ?? packages[1];
-  const floor = packages[0];
 
   return (
     <>
-      {/* Trust bar — proof before the ask (56% want proof before committing). */}
-      <div className="border-b border-line bg-ivory">
-        <div className="mx-auto max-w-6xl px-5 py-5 md:px-10 lg:px-16">
-          <SocialProofStrip />
-        </div>
-      </div>
-
-      <div className="mx-auto grid max-w-6xl gap-12 px-5 py-section md:grid-cols-[0.9fr_1.1fr] md:gap-16 md:px-10 lg:px-16 md:py-section-lg">
-        {/* Left: framing + what the deposit does */}
-        <div className="md:sticky md:top-28 md:self-start">
-          <p className="eyebrow mb-5">Reserve</p>
-          <h1 className="display-2 text-ink text-balance">
-            Lock in her date today.
-          </h1>
-          <p className="mt-6 max-w-md text-base leading-relaxed text-ink-soft">
-            Tell me your date and collection and I&apos;ll hold it for you. I
-            personally confirm it&apos;s open and send a secure deposit link to
-            lock it in — usually within 24 hours. <span className="text-ink">No
-            payment right now.</span>
-          </p>
-
-          <div className="mt-8 border-l-2 border-wine pl-5">
-            <p className="text-sm leading-relaxed text-ink-soft">
-              {site.booking.policyNote} I only take one celebration per day, so once
-              your date is reserved it&apos;s yours alone.
-            </p>
+      <section className="mx-auto max-w-[88rem] px-5 pb-16 pt-12 sm:px-8 sm:pt-16 lg:px-12 lg:pb-24 lg:pt-20">
+        <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-14 xl:gap-24">
+          <div className="lg:sticky lg:top-28 lg:self-start">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-wine-deep">Reservation request</p>
+            <h1 className="mt-5 max-w-[11ch] font-display text-[clamp(3rem,5vw,5rem)] leading-[0.98] text-ink">Let&apos;s start with her date.</h1>
+            <p className="mt-6 max-w-md text-base leading-7 text-ink-soft">Tell us when you are celebrating and the collection you would like. We will confirm the details before any deposit is due.</p>
+            <div className="mt-8 rounded-2xl border border-line bg-white p-6">
+              <p className="text-sm font-semibold text-ink">No payment with this request.</p>
+              <p className="mt-2 text-sm leading-6 text-ink-soft">Your request is reviewed personally. A date is reserved only after availability is confirmed and the collection deposit is completed.</p>
+            </div>
+            <div className="mt-8">
+              <p className="text-sm font-semibold text-ink">Collection prices</p>
+              <ul className="mt-3 divide-y divide-line border-y border-line">
+                {packages.map((item) => (
+                  <li key={item.id} className="flex items-baseline justify-between gap-4 py-3 text-sm text-ink-soft"><span>{item.name}</span><span className="font-semibold text-ink">{item.priceLabel}</span></li>
+                ))}
+              </ul>
+              <Link href="/investment" className="mt-3 inline-block text-sm font-semibold text-ink underline underline-offset-4 hover:text-wine">Compare what is included ↗</Link>
+            </div>
+            <p className="mt-8 text-sm leading-6 text-ink-soft">Just have a question? <Link href={site.secondaryCta.href} className="font-semibold text-ink underline underline-offset-4 hover:text-wine">Send an inquiry first ↗</Link></p>
           </div>
+          <div className="min-w-0">
+            {canceled && <p role="status" className="mb-5 rounded-xl border border-line bg-white p-4 text-sm leading-6 text-ink-soft">The previous checkout was canceled, and no payment was taken. You can request your date below; we will confirm availability before sending a payment link.</p>}
+            <BookingForm defaultCollection={defaultCollection} defaultDate={defaultDate} />
+          </div>
+        </div>
+      </section>
 
-          <ul className="mt-8 flex flex-col gap-3 text-sm text-ink-soft">
-            {[
-              "Send your date — I confirm it's open within 24 hours.",
-              "Then I send a secure deposit link to lock it in.",
-              "The deposit applies to your final balance. Pay in full or split it interest-free.",
-            ].map((line) => (
-              <li key={line} className="flex gap-3">
-                <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-wine" />
-                {line}
+      <section className="bg-white py-16 sm:py-24" aria-labelledby="reserve-steps-title">
+        <div className="mx-auto max-w-[88rem] px-5 sm:px-8 lg:px-12">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-wine-deep">What happens next</p>
+          <h2 id="reserve-steps-title" className="mt-3 font-display text-[clamp(2.5rem,4vw,4rem)] leading-none text-ink">A request, a conversation, a celebration.</h2>
+          <ol className="mt-9 grid gap-4 md:grid-cols-3">
+            {nextSteps.map((step, index) => (
+              <li key={step.title} className="rounded-2xl border border-line bg-cream p-6 sm:p-8">
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-wine-deep">0{index + 1}</span>
+                <h3 className="mt-7 font-display text-2xl text-ink">{step.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-ink-soft">{step.body}</p>
               </li>
             ))}
-          </ul>
-
-          {/* Pricing reassurance — defuse "what does this cost?" at the moment
-              of decision. Real, fixed pricing; link to the full breakdown. */}
-          <div className="mt-8 border border-line bg-greige p-5">
-            <p className="text-sm leading-relaxed text-ink">
-              <strong className="text-ink">Wondering about the full cost?</strong>{" "}
-              Collections are fixed-price from {floor.priceLabel}; most families
-              choose {signature.name} at {signature.priceLabel} — two storytellers,
-              the whole day, film and gallery both.
-            </p>
-            <Link
-              href="/investment"
-              className="mt-3 inline-block text-sm text-wine underline underline-offset-2 hover:text-wine-deep"
-            >
-              See what&apos;s included in each collection →
-            </Link>
-          </div>
-
-          <p className="mt-8 text-sm text-ink-faint">
-            Not ready to commit?{" "}
-            <Link
-              href={site.secondaryCta.href}
-              className="text-ink underline underline-offset-2 hover:text-wine"
-            >
-              Send an inquiry first
-            </Link>{" "}
-            and I&apos;ll personally confirm your date.
-          </p>
+          </ol>
         </div>
+      </section>
 
-        {/* Right: the booking form */}
+      <section className="mx-auto flex max-w-[88rem] flex-col justify-between gap-6 px-5 py-16 sm:px-8 sm:py-24 lg:flex-row lg:items-end lg:px-12" aria-labelledby="reserve-work-title">
         <div>
-          {canceled ? (
-            <p
-              role="status"
-              className="mb-8 border border-line bg-ivory px-5 py-4 text-sm text-ink-soft"
-            >
-              No worries — your checkout was canceled and nothing was charged. Your
-              date isn&apos;t reserved yet. Finish below whenever you&apos;re ready.
-            </p>
-          ) : null}
-          <BookingForm defaultCollection={defaultCollection} defaultDate={defaultDate} />
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-wine-deep">Before you request</p>
+          <h2 id="reserve-work-title" className="mt-3 max-w-xl font-display text-[clamp(2.5rem,4vw,4rem)] leading-none text-ink">See the work and choose your collection.</h2>
+          <p className="mt-4 max-w-md text-sm leading-6 text-ink-soft">Browse the available photo and film portfolio to picture how your day could be covered.</p>
         </div>
-      </div>
-
-      {/* How booking works — remove "what happens next?" uncertainty. */}
-      <section className="bg-greige">
-        <div className="mx-auto max-w-7xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
-          <HowBookingWorks />
-        </div>
+        <Link href="/portfolio" className="inline-flex self-start rounded-full border border-ink px-6 py-3 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine">Explore the portfolio <span aria-hidden="true" className="ml-3">↗</span></Link>
       </section>
-
-      {/* See the real, full work — defuse the scam/"is this real?" fear. */}
-      <section className="mx-auto max-w-3xl px-5 py-section text-center md:px-10 lg:px-16 md:py-section-lg">
-        <p className="eyebrow mb-5">Before you reserve</p>
-        <h2 className="display-2 text-ink text-balance">
-          See full quinceañeras, start to finish.
-        </h2>
-        <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-ink-soft">
-          Not a highlight reel — complete galleries and films from real DFW
-          celebrations, so you know exactly what you&apos;re reserving.
-        </p>
-        <div className="mt-9 flex justify-center">
-          <CTAButton href="/portfolio" variant="ink">
-            View the galleries
-          </CTAButton>
-        </div>
-      </section>
-
-      {/* Testimonials — renders only when release-cleared ones exist. */}
-      <Testimonials className="mx-auto max-w-7xl px-5 pb-section md:px-10 lg:px-16 md:pb-section-lg" />
+      <Testimonials className="mx-auto max-w-[88rem] px-5 pb-16 sm:px-8 sm:pb-24 lg:px-12" />
     </>
   );
 }

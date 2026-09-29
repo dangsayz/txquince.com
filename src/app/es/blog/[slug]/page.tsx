@@ -130,7 +130,7 @@ export default async function EsBlogPostPage({
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <article className="mx-auto max-w-3xl px-5 pt-section md:px-10 lg:px-16 md:pt-section-lg">
+      <article className="mx-auto max-w-4xl px-5 pt-14 md:px-10 md:pt-24 lg:px-16">
         <div className="flex items-center justify-between gap-4">
           <nav className="text-xs text-ink-faint" aria-label="Ruta">
             <Link href="/" className="hover:text-wine">Inicio</Link>
@@ -144,7 +144,7 @@ export default async function EsBlogPostPage({
           ) : null}
         </div>
 
-        <Reveal className="mt-5">
+        <Reveal className="mt-8 border-b border-line pb-10 md:pb-14">
           <p className="eyebrow mb-4">{CATEGORY_ES[post.category]}</p>
           <h1 className="display-2 text-ink text-balance">{post.title}</h1>
           <p className="mt-4 text-sm text-ink-faint">
@@ -154,7 +154,7 @@ export default async function EsBlogPostPage({
         </Reveal>
 
         {toc.length >= 4 ? (
-          <div className="mt-10 rounded-2xl border border-line bg-greige p-5">
+          <div className="mt-10 rounded-xl border border-line bg-ivory p-6">
             <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">En esta guía</p>
             <ul className="mt-3 flex flex-col gap-1.5">
               {toc.map((h) => (
@@ -194,7 +194,7 @@ export default async function EsBlogPostPage({
                 <Link
                   key={r.slug}
                   href={`/es/blog/${r.slug}`}
-                  className="group rounded-2xl border border-line bg-white p-5 transition-colors hover:border-wine"
+                  className="group rounded-xl border border-line bg-white p-5 transition-colors hover:border-wine focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine"
                 >
                   <p className="text-[0.62rem] uppercase tracking-[0.16em] text-ink-faint">{CATEGORY_ES[r.category]}</p>
                   <h3 className="mt-2 font-display text-lg leading-tight text-ink group-hover:text-wine">{r.title}</h3>

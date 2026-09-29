@@ -1,20 +1,8 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { ButtonLink } from "@/components/ui";
 
-/**
- * Site-wide CTA, in the Claura pill language (rounded, sentence-case).
- * - primary / ink: solid espresso pill (the main action)
- * - onDark:        soft light pill that reads on dark sections
- * - text:          inline arrow link
- */
 type Variant = "primary" | "onDark" | "ink" | "text";
-
-const variants: Record<Variant, string> = {
-  primary: "btn-espresso",
-  onDark: "btn-soft",
-  ink: "btn-espresso",
-  text: "inline-flex items-center gap-1.5 text-sm font-medium text-ink transition-colors hover:text-wine",
-};
 
 export function CTAButton({
   href,
@@ -27,10 +15,11 @@ export function CTAButton({
   variant?: Variant;
   className?: string;
 }) {
-  return (
-    <Link href={href} className={`${variants[variant]} ${className}`}>
-      {children}
-      {variant === "text" ? <span aria-hidden>→</span> : null}
-    </Link>
-  );
+  if (variant === "text") {
+    return <Link href={href} className={`inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-wine transition-colors hover:text-wine-deep ${className}`}>{children}<span aria-hidden="true">↗</span></Link>;
+  }
+  if (variant === "onDark") {
+    return <Link href={href} className={`inline-flex min-h-11 items-center justify-center rounded-lg border border-white bg-white px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-ivory ${className}`}>{children}</Link>;
+  }
+  return <ButtonLink href={href} tone="primary" className={className}>{children}</ButtonLink>;
 }

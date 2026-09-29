@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Turnstile } from "@marsidev/react-turnstile";
 import {
@@ -15,6 +15,20 @@ import { trackEvent, getFirstTouch } from "@/components/Tracker";
 
 type Status = "idle" | "submitting" | "error";
 type FieldErrors = Partial<Record<string, string[]>>;
+type Step = 0 | 1 | 2 | 3;
+
+const STEPS = ["Her date", "The setting", "Coverage", "Your details"] as const;
+const STEP_FIELDS = [
+  ["event_date"],
+  ["venue"],
+  ["services", "budget_range"],
+  ["name", "email", "phone", "referral", "message"],
+] as const;
+
+function firstErrorStep(errors: FieldErrors): Step {
+  const found = STEP_FIELDS.findIndex((fields) => fields.some((field) => errors[field]?.length));
+  return (found < 0 ? 3 : found) as Step;
+}
 
 const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 // Locked to production hostnames, so it errors on localhost (110200). Only render
@@ -23,16 +37,23 @@ const SHOW_TURNSTILE =
   Boolean(SITE_KEY) && process.env.NODE_ENV === "production";
 
 const inputBase =
-  "w-full border-b border-line bg-transparent px-0 py-3 text-ink placeholder:text-ink-faint transition-colors focus:border-wine focus:outline-none";
+  "min-h-12 w-full rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink placeholder:text-ink-faint focus:border-wine focus:outline-none focus:ring-2 focus:ring-wine/20";
 const labelBase = "block text-sm font-medium text-ink";
 
 export function InquiryForm() {
   const router = useRouter();
+  const [step, setStep] = useState<Step>(0);
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [token, setToken] = useState<string>("");
   const honeypotRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    if (step > 0) headingRef.current?.focus();
+  }, [step]);
 
   const { todayStr, maxStr } = useMemo(() => {
     const now = new Date();
@@ -42,8 +63,35 @@ export function InquiryForm() {
     return { todayStr: fmt(today), maxStr: fmt(max) };
   }, []);
 
+  function nextStep() {
+    if (!formRef.current || step === 3) return;
+    const data = new FormData(formRef.current);
+    const partial = Object.fromEntries(
+      STEP_FIELDS[step].map((field) => [field, String(data.get(field) ?? "")]),
+    );
+    const shape = step === 0
+      ? inquirySchema.pick({ event_date: true })
+      : step === 1
+        ? inquirySchema.pick({ venue: true })
+        : inquirySchema.pick({ services: true, budget_range: true });
+    const parsed = shape.safeParse(partial);
+    if (!parsed.success) {
+      setErrors(parsed.error.flatten().fieldErrors);
+      setFormError("Please check this step before continuing.");
+      return;
+    }
+    setErrors({});
+    setFormError(null);
+    setStep((step + 1) as Step);
+  }
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (status === "submitting") return;
+    if (step !== 3) {
+      nextStep();
+      return;
+    }
     setStatus("submitting");
     setFormError(null);
     setErrors({});
@@ -64,7 +112,9 @@ export function InquiryForm() {
     // Client-side validation (server re-validates regardless).
     const parsed = inquirySchema.safeParse(payload);
     if (!parsed.success) {
-      setErrors(parsed.error.flatten().fieldErrors);
+      const fieldErrors = parsed.error.flatten().fieldErrors;
+      setErrors(fieldErrors);
+      setStep(firstErrorStep(fieldErrors));
       setFormError("Please check the highlighted fields.");
       setStatus("error");
       return;
@@ -94,7 +144,10 @@ export function InquiryForm() {
           error?: string;
           fieldErrors?: FieldErrors;
         };
-        if (data.fieldErrors) setErrors(data.fieldErrors);
+        if (data.fieldErrors) {
+          setErrors(data.fieldErrors);
+          setStep(firstErrorStep(data.fieldErrors));
+        }
         setFormError(data.error ?? "Something went wrong. Please try again.");
         setStatus("error");
         return;
@@ -115,9 +168,10 @@ export function InquiryForm() {
 
   return (
     <form
+      ref={formRef}
       onSubmit={handleSubmit}
       noValidate
-      className="flex flex-col gap-8"
+      className="rounded-2xl border border-line bg-white p-5 shadow-sm sm:p-8"
       onFocusCapture={(e) => {
         const f = e.currentTarget;
         if (f.dataset.started) return;
@@ -138,7 +192,47 @@ export function InquiryForm() {
         />
       </div>
 
-      <div className="grid gap-8 sm:grid-cols-2">
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-ink-faint">Step {step + 1} of {STEPS.length}</p>
+      <ol className="mt-3 grid grid-cols-4 gap-1.5" aria-label="Inquiry progress">
+        {STEPS.map((name, index) => (
+          <li key={name} className="min-w-0">
+            <span className={`block h-1.5 rounded-full ${index <= step ? "bg-wine" : "bg-greige"}`} />
+            <span className={`mt-2 block truncate text-[0.68rem] ${index === step ? "font-semibold text-ink" : "text-ink-faint"}`} aria-current={index === step ? "step" : undefined}>{name}</span>
+          </li>
+        ))}
+      </ol>
+      <h2 ref={headingRef} tabIndex={-1} className="mt-8 text-2xl font-semibold tracking-tight text-ink focus:outline-none">
+        {step === 0 ? "When is her quinceañera?" : step === 1 ? "Where will you celebrate?" : step === 2 ? "What would you like captured?" : "How can we reach you?"}
+      </h2>
+      <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+        {step === 0 ? "Still choosing a date? Leave this blank and continue." : step === 1 ? "A church, venue, or city is enough. You can add details later." : step === 2 ? "Choose the coverage and budget that fit your celebration." : "We will reply personally. No payment is needed to ask."}
+      </p>
+
+      <div hidden={step !== 0} style={{ display: step !== 0 ? "none" : undefined }} className="mt-8">
+        <Field label="Event date" error={errors.event_date} hint="Optional">
+          <input name="event_date" type="date" min={todayStr} max={maxStr} className={inputBase} />
+        </Field>
+      </div>
+      <div hidden={step !== 1} style={{ display: step !== 1 ? "none" : undefined }} className="mt-8">
+        <Field label="Venue or city" error={errors.venue} hint="Optional">
+          <input name="venue" type="text" maxLength={160} className={inputBase} placeholder="Church, venue, or city" />
+        </Field>
+      </div>
+      <div hidden={step !== 2} style={{ display: step !== 2 ? "none" : undefined }} className="mt-8 grid gap-5 sm:grid-cols-2">
+        <Field label="What do you need?" required error={errors.services}>
+          <select name="services" defaultValue="" className={inputBase}>
+            <option value="" disabled>Choose one…</option>
+            {SERVICE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+          </select>
+        </Field>
+        <Field label="Budget range" required error={errors.budget_range}>
+          <select name="budget_range" defaultValue="" className={inputBase}>
+            <option value="" disabled>Choose a range…</option>
+            {BUDGET_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+          </select>
+        </Field>
+      </div>
+      <div hidden={step !== 3} style={{ display: step !== 3 ? "none" : undefined }} className="mt-8 grid gap-5 sm:grid-cols-2">
         <Field label="Your name" required error={errors.name}>
           <input name="name" type="text" autoComplete="name" className={inputBase} placeholder="First and last" />
         </Field>
@@ -146,64 +240,22 @@ export function InquiryForm() {
           <input name="email" type="email" autoComplete="email" className={inputBase} placeholder="you@email.com" />
         </Field>
         <Field label="Phone" error={errors.phone}>
-          <input name="phone" type="tel" autoComplete="tel" className={inputBase} placeholder="(optional)" />
+          <input name="phone" type="tel" autoComplete="tel" className={inputBase} placeholder="Optional" />
         </Field>
-        <Field label="Event date" error={errors.event_date} hint="Future dates only">
-          <input name="event_date" type="date" min={todayStr} max={maxStr} className={inputBase} />
-        </Field>
-        <Field label="Venue or city" error={errors.venue} className="sm:col-span-2">
-          <input name="venue" type="text" className={inputBase} placeholder="Church, hall, or city" />
-        </Field>
-
-        <Field label="What do you need?" required error={errors.services}>
-          <select name="services" defaultValue="" className={`${inputBase} appearance-none`}>
-            <option value="" disabled>
-              Choose one…
-            </option>
-            {SERVICE_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value}>
-                {o.label}
-              </option>
-            ))}
-          </select>
-        </Field>
-        <Field label="Budget range" required error={errors.budget_range}>
-          <select name="budget_range" defaultValue="" className={`${inputBase} appearance-none`}>
-            <option value="" disabled>
-              Choose a range…
-            </option>
-            {BUDGET_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value}>
-                {o.label}
-              </option>
-            ))}
-          </select>
-        </Field>
-
-        <Field label="How did you hear about us?" error={errors.referral} className="sm:col-span-2">
-          <select name="referral" defaultValue="" className={`${inputBase} appearance-none`}>
+        <Field label="How did you hear about us?" error={errors.referral}>
+          <select name="referral" defaultValue="" className={inputBase}>
             <option value="">Optional</option>
-            {REFERRAL_OPTIONS.map((o) => (
-              <option key={o} value={o}>
-                {o}
-              </option>
-            ))}
+            {REFERRAL_OPTIONS.map((option) => <option key={option} value={option}>{option}</option>)}
           </select>
         </Field>
-
-        <Field label="Anything you'd like me to know?" error={errors.message} className="sm:col-span-2">
-          <textarea
-            name="message"
-            rows={4}
-            className={`${inputBase} resize-none`}
-            placeholder="Tell me about her day — the theme, the venue, what matters most."
-          />
+        <Field label="Anything else?" error={errors.message} className="sm:col-span-2">
+          <textarea name="message" rows={4} className={`${inputBase} resize-y`} placeholder="Tell us about her day and what matters most." />
         </Field>
       </div>
 
       {/* Turnstile (primary abuse gate). Production-only (errors on localhost). */}
       {SHOW_TURNSTILE && SITE_KEY ? (
-        <div>
+        <div hidden={step !== 3} className="mt-5">
           <Turnstile
             siteKey={SITE_KEY}
             onSuccess={setToken}
@@ -214,7 +266,7 @@ export function InquiryForm() {
         </div>
       ) : null}
 
-      <p className="text-xs leading-relaxed text-ink-faint">
+      <p hidden={step !== 3} className="mt-5 text-xs leading-relaxed text-ink-faint">
         By submitting, you agree to be contacted about your event. See our{" "}
         <a href="/privacy" className="underline underline-offset-2 hover:text-ink">
           privacy policy
@@ -223,28 +275,23 @@ export function InquiryForm() {
       </p>
 
       {formError ? (
-        <p role="alert" className="text-sm text-wine">
+        <p role="alert" className="mt-6 text-sm text-wine">
           {formError}
         </p>
       ) : null}
 
-      <button
-        type="submit"
-        disabled={submitting}
-        className="inline-flex items-center justify-center gap-3 self-start rounded-full bg-wine px-10 py-4 text-[0.7rem] uppercase tracking-[0.2em] text-cream transition-all duration-300 hover:bg-wine-deep disabled:cursor-not-allowed disabled:opacity-70"
-      >
-        {submitting ? (
-          <>
-            <span
-              className="h-4 w-4 animate-spin rounded-full border-2 border-cream/40 border-t-cream"
-              aria-hidden
-            />
-            Sending…
-          </>
+      <div className="mt-8 flex items-center justify-between gap-3 border-t border-line pt-6">
+        {step > 0 ? (
+          <button type="button" onClick={() => { setStep((step - 1) as Step); setFormError(null); }} className="min-h-11 rounded-lg px-4 text-sm font-semibold text-ink hover:bg-greige">Back</button>
+        ) : <span />}
+        {step < 3 ? (
+          <button type="button" onClick={nextStep} className="min-h-11 rounded-lg bg-ink px-6 text-sm font-semibold text-white hover:bg-ink-soft">Continue</button>
         ) : (
-          "Send my inquiry"
+          <button type="submit" disabled={submitting} className="min-h-11 rounded-lg bg-wine px-6 text-sm font-semibold text-white hover:bg-wine-deep disabled:cursor-not-allowed disabled:opacity-60">
+            {submitting ? "Sending…" : "Send my inquiry"}
+          </button>
         )}
-      </button>
+      </div>
     </form>
   );
 }

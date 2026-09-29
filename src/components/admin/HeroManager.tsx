@@ -136,7 +136,7 @@ export function HeroManager({ initial }: { initial: HeroMedia | null }) {
               {media.provider} video
             </div>
           ) : (
-            <div className="claura-art h-24 w-20 rounded-lg" />
+            <div className="media-placeholder h-24 w-20 rounded-lg" />
           )}
           <div className="text-sm text-ink-soft">
             {media?.kind === "image" && "A photo you uploaded."}

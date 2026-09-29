@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
+import { useState } from "react";
 import { trackEvent } from "@/components/Tracker";
+import { Modal } from "@/components/ui";
 
 type Channel = {
   label: string;
@@ -78,77 +78,21 @@ export function ShareModal({
   title: string;
   onClose: () => void;
 }) {
-  const [copied, setCopied] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
-
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    document.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [open, onClose]);
-
-  useEffect(() => {
-    if (!open) setCopied(false);
-  }, [open]);
-
-  if (!open || !mounted) return null;
+  const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
 
   async function copy() {
     try {
       await navigator.clipboard.writeText(url);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1800);
+      setCopiedUrl(url);
+      window.setTimeout(() => setCopiedUrl(null), 1800);
     } catch {
       /* ignore */
     }
   }
 
-  return createPortal(
-    <div
-      className="fixed inset-0 z-[200] flex items-end justify-center sm:items-center"
-      role="dialog"
-      aria-modal="true"
-      aria-label="Share"
-    >
-      {/* backdrop */}
-      <button
-        type="button"
-        aria-label="Close"
-        onClick={onClose}
-        className="share-fade absolute inset-0 bg-ink/45 backdrop-blur-sm"
-      />
-
-      {/* sheet */}
-      <div className="share-pop relative w-full max-w-sm rounded-t-[1.75rem] border border-line bg-cream p-6 shadow-[0_-20px_60px_-20px_rgba(44,29,18,0.4)] sm:rounded-[1.75rem] sm:shadow-[0_30px_80px_-30px_rgba(44,29,18,0.5)]">
-        {/* grab handle (mobile) */}
-        <div aria-hidden className="mx-auto mb-4 h-1 w-10 rounded-full bg-line sm:hidden" />
-
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="font-display text-2xl leading-tight text-ink">Share</p>
-            <p className="mt-1 text-sm text-ink-soft">{title}</p>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close"
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-greige hover:text-ink"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4">
-              <path d="M6 6l12 12M18 6L6 18" />
-            </svg>
-          </button>
-        </div>
-
-        {/* channels */}
-        <div className="mt-6 grid grid-cols-5 gap-2">
+  return (
+    <Modal open={open} onClose={onClose} title="Share this photograph" description={title}>
+        <div className="grid grid-cols-5 gap-2">
           {CHANNELS.map((c) => (
             <a
               key={c.label}
@@ -172,18 +116,16 @@ export function ShareModal({
         </div>
 
         {/* copy link */}
-        <div className="mt-6 flex items-center gap-2 rounded-full border border-line bg-ivory py-1.5 pl-4 pr-1.5">
+        <div className="mt-6 flex items-center gap-2 rounded-lg border border-line bg-ivory py-1.5 pl-4 pr-1.5">
           <span className="flex-1 truncate text-sm text-ink-soft">{url}</span>
           <button
             type="button"
             onClick={copy}
-            className="shrink-0 rounded-full bg-ink px-4 py-2 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-cream transition-colors hover:bg-wine"
+            className="min-h-11 shrink-0 rounded-lg bg-ink px-4 py-2 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-cream transition-colors hover:bg-wine"
           >
-            {copied ? "Copied" : "Copy"}
+            {copiedUrl === url ? "Copied" : "Copy"}
           </button>
         </div>
-      </div>
-    </div>,
-    document.body,
+    </Modal>
   );
 }

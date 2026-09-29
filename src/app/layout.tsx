@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Inter, Pinyon_Script } from "next/font/google";
+import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import { site } from "@/content/site";
 import { Nav } from "@/components/Nav";
@@ -15,19 +15,14 @@ const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
   variable: "--font-cormorant",
-  display: "swap",
+  display: "optional",
+  preload: false,
 });
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
-  display: "swap",
-});
-// Delicate copperplate script — used sparingly for couture accents.
-const pinyon = Pinyon_Script({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-script",
-  display: "swap",
+  display: "optional",
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -70,7 +65,8 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${cormorant.variable} ${inter.variable} ${pinyon.variable} h-full`}
+      data-scroll-behavior="smooth"
+      className={`${cormorant.variable} ${inter.variable} h-full`}
     >
       <body className="flex min-h-screen flex-col bg-cream">
         <Nav />

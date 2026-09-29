@@ -114,7 +114,7 @@ export default async function AdminInquiries() {
   const open = countOpenLeads(inquiries);
 
   return (
-    <main className="mx-auto max-w-4xl px-5 py-12">
+    <div className="mx-auto max-w-4xl px-5 py-12">
       <Link
         href="/admin"
         className="text-[0.72rem] uppercase tracking-[0.18em] text-ink-faint hover:text-wine"
@@ -142,6 +142,6 @@ export default async function AdminInquiries() {
           ))}
         </div>
       )}
-    </main>
+    </div>
   );
 }

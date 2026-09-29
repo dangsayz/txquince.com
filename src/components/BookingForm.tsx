@@ -10,6 +10,16 @@ import { Select } from "@/components/Select";
 
 type Status = "idle" | "submitting" | "done" | "error";
 type FieldErrors = Partial<Record<string, string[]>>;
+type Step = 0 | 1 | 2 | 3;
+
+const STEPS = ["Her date", "The setting", "Collection", "Your details"] as const;
+
+function firstErrorStep(errors: FieldErrors): Step {
+  if (errors.event_date?.length) return 0;
+  if (errors.notes?.length) return 1;
+  if (errors.collection?.length || errors.package?.length) return 2;
+  return 3;
+}
 
 const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 // Locked to production hostnames, so it errors on localhost (110200). Only
@@ -20,7 +30,7 @@ const SHOW_TURNSTILE =
 const DRAFT_KEY = "txq_reserve_draft";
 
 const inputBase =
-  "w-full border-b border-line bg-transparent px-0 py-3 text-ink placeholder:text-ink-faint transition-colors focus:border-wine focus:outline-none";
+  "min-h-12 w-full rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink placeholder:text-ink-faint focus:border-wine focus:outline-none focus:ring-2 focus:ring-wine/20";
 const labelBase = "block text-sm font-medium text-ink";
 
 type Draft = {
@@ -33,6 +43,14 @@ type Draft = {
   notes: string;
 };
 
+function isCollectionId(value: unknown): value is CollectionId {
+  return packages.some((item) => item.id === value);
+}
+
+function isEssentialService(value: unknown): value is "photo" | "video" {
+  return value === "photo" || value === "video";
+}
+
 export function BookingForm({
   defaultCollection,
   defaultDate,
@@ -41,6 +59,7 @@ export function BookingForm({
   /** Prefill from ?date= (e.g. the homepage date-checker). Wins over a saved draft. */
   defaultDate?: string;
 } = {}) {
+  const [step, setStep] = useState<Step>(0);
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState<string | null>(null);
@@ -59,34 +78,42 @@ export function BookingForm({
   );
   const [notes, setNotes] = useState("");
   const honeypotRef = useRef<HTMLInputElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
   const restored = useRef(false);
+
+  useEffect(() => {
+    if (step > 0) headingRef.current?.focus();
+  }, [step]);
 
   // Restore any saved draft on mount, so pressing back / reloading never loses
   // what they typed. defaultCollection only wins if there's no saved draft.
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(DRAFT_KEY);
-      if (raw) {
-        const d = JSON.parse(raw) as Partial<Draft>;
-        if (d.name) setName(d.name);
-        if (d.email) setEmail(d.email);
-        if (d.phone) setPhone(d.phone);
-        if (d.eventDate) setEventDate(d.eventDate);
-        if (d.collection) setCollection(d.collection);
-        if (d.essentialService) setEssentialService(d.essentialService);
-        if (d.notes) setNotes(d.notes);
+    const frame = requestAnimationFrame(() => {
+      try {
+        const raw = localStorage.getItem(DRAFT_KEY);
+        if (raw) {
+          const parsed: unknown = JSON.parse(raw);
+          if (parsed && typeof parsed === "object") {
+            const draft = parsed as Record<keyof Draft, unknown>;
+            if (typeof draft.name === "string") setName(draft.name);
+            if (typeof draft.email === "string") setEmail(draft.email);
+            if (typeof draft.phone === "string") setPhone(draft.phone);
+            if (typeof draft.eventDate === "string") setEventDate(draft.eventDate);
+            if (isCollectionId(draft.collection)) setCollection(draft.collection);
+            if (isEssentialService(draft.essentialService)) setEssentialService(draft.essentialService);
+            if (typeof draft.notes === "string") setNotes(draft.notes);
+          }
+        }
+      } catch {
+        /* A malformed or unavailable draft should not block booking. */
       }
-    } catch {
-      /* ignore */
-    }
-    // A date arriving via URL is explicit intent (they just checked it) — it
-    // beats whatever date a stale draft remembered.
-    if (defaultDate && /^\d{4}-\d{2}-\d{2}$/.test(defaultDate)) {
-      setEventDate(defaultDate);
-    }
-    restored.current = true;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      if (defaultDate && /^\d{4}-\d{2}-\d{2}$/.test(defaultDate)) {
+        setEventDate(defaultDate);
+      }
+      restored.current = true;
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [defaultDate]);
 
   // Auto-save the draft on every change (after the initial restore).
   useEffect(() => {
@@ -132,8 +159,35 @@ export function BookingForm({
     return { todayStr: fmt(today), maxStr: fmt(max) };
   }, []);
 
+  function nextStep() {
+    if (step === 3) return;
+    const partial = step === 0
+      ? bookingSchema.pick({ event_date: true }).safeParse({ event_date: eventDate })
+      : step === 1
+        ? bookingSchema.pick({ notes: true }).safeParse({ notes })
+        : bookingSchema.pick({ collection: true, package: true }).safeParse({ collection, package: packageValue });
+    if (!partial.success) {
+      setErrors(partial.error.flatten().fieldErrors);
+      setFormError("Please check this step before continuing.");
+      return;
+    }
+    if (step === 0 && takenDates?.has(eventDate)) {
+      setErrors({ event_date: ["That date is already requested. Please choose another."] });
+      setFormError("That date is already requested. Please choose another.");
+      return;
+    }
+    setErrors({});
+    setFormError(null);
+    setStep((step + 1) as Step);
+  }
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (status === "submitting") return;
+    if (step !== 3) {
+      nextStep();
+      return;
+    }
     setStatus("submitting");
     setFormError(null);
     setErrors({});
@@ -150,13 +204,16 @@ export function BookingForm({
 
     const parsed = bookingSchema.safeParse(payload);
     if (!parsed.success) {
-      setErrors(parsed.error.flatten().fieldErrors);
+      const fieldErrors = parsed.error.flatten().fieldErrors;
+      setErrors(fieldErrors);
+      setStep(firstErrorStep(fieldErrors));
       setFormError("Please check the highlighted fields.");
       setStatus("error");
       return;
     }
 
     if (takenDates?.has(parsed.data.event_date)) {
+      setStep(0);
       setErrors({ event_date: ["That date is already requested. Please choose another."] });
       setFormError("That date is already requested. Please choose another.");
       setStatus("error");
@@ -187,7 +244,10 @@ export function BookingForm({
       };
 
       if (!res.ok || !data.ok) {
-        if (data.fieldErrors) setErrors(data.fieldErrors);
+        if (data.fieldErrors) {
+          setErrors(data.fieldErrors);
+          setStep(firstErrorStep(data.fieldErrors));
+        }
         setFormError(data.error ?? "Something went wrong. Please try again.");
         setStatus("error");
         return;
@@ -220,7 +280,7 @@ export function BookingForm({
         <h3 className="mt-5 font-display text-2xl text-ink">Your date request is in.</h3>
         <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-ink-soft">
           Thank you, {name.split(" ")[0] || "there"}. I&apos;ll personally confirm your
-          date is open and reach out — usually within 24 hours — to talk through the
+          date is open and reach out to talk through the
           day and send you a secure link to place your {selectedCollection.depositLabel}{" "}
           deposit. <strong className="text-ink">No payment is needed right now.</strong>
         </p>
@@ -235,7 +295,7 @@ export function BookingForm({
     <form
       onSubmit={handleSubmit}
       noValidate
-      className="flex flex-col gap-8"
+      className="rounded-2xl border border-line bg-white p-5 shadow-sm sm:p-8"
       onFocusCapture={(e) => {
         const f = e.currentTarget;
         if (f.dataset.started) return;
@@ -249,7 +309,23 @@ export function BookingForm({
         <input ref={honeypotRef} id={HONEYPOT_FIELD} name={HONEYPOT_FIELD} type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
-      <div className="grid gap-8 sm:grid-cols-2">
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-ink-faint">Step {step + 1} of {STEPS.length}</p>
+      <ol className="mt-3 grid grid-cols-4 gap-1.5" aria-label="Reservation progress">
+        {STEPS.map((title, index) => (
+          <li key={title} className="min-w-0">
+            <span className={`block h-1.5 rounded-full ${index <= step ? "bg-wine" : "bg-greige"}`} />
+            <span className={`mt-2 block truncate text-[0.68rem] ${index === step ? "font-semibold text-ink" : "text-ink-faint"}`} aria-current={index === step ? "step" : undefined}>{title}</span>
+          </li>
+        ))}
+      </ol>
+      <h2 ref={headingRef} tabIndex={-1} className="mt-8 text-2xl font-semibold tracking-tight text-ink focus:outline-none">
+        {step === 0 ? "Choose her date" : step === 1 ? "Where is the celebration?" : step === 2 ? "Choose a collection" : "Who should we contact?"}
+      </h2>
+      <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+        {step === 0 ? "We will confirm it personally before any payment." : step === 1 ? "Share the venue or city and any details you already know." : step === 2 ? "Every collection has a clear price and deposit." : "Your request holds the conversation. No payment is needed now."}
+      </p>
+
+      <div hidden={step !== 3} style={{ display: step !== 3 ? "none" : undefined }} className="mt-8 grid gap-5 sm:grid-cols-2">
         <Field label="Your name" required error={errors.name}>
           <input value={name} onChange={(e) => setName(e.target.value)} type="text" autoComplete="name" className={inputBase} placeholder="First and last" />
         </Field>
@@ -259,6 +335,8 @@ export function BookingForm({
         <Field label="Phone" error={errors.phone}>
           <input value={phone} onChange={(e) => setPhone(e.target.value)} type="tel" autoComplete="tel" className={inputBase} placeholder="(optional)" />
         </Field>
+      </div>
+      <div hidden={step !== 0} style={{ display: step !== 0 ? "none" : undefined }} className="mt-8">
         <Field label="Event date" required error={errors.event_date} hint="The day to reserve">
           <input
             type="date"
@@ -274,17 +352,19 @@ export function BookingForm({
               <span className="mt-1.5 inline-flex items-center gap-1.5 text-xs text-wine">
                 <span aria-hidden>●</span>
                 That date is already requested — pick another, or{" "}
-                <a href="/check-your-date" className="underline hover:text-wine-deep">join the waitlist</a>.
+                <a href="/check-your-date" className="underline hover:text-wine-deep">ask about your options</a>.
               </span>
             ) : dateOpen ? (
               <span className="mt-1.5 inline-flex items-center gap-1.5 text-xs text-green-700">
                 <span aria-hidden>●</span>
-                Open — I only book one celebration a day, so request it before it&apos;s claimed.
+                Not currently marked as requested. I&apos;ll confirm availability personally.
               </span>
             ) : null}
           </span>
         </Field>
+      </div>
 
+      <div hidden={step !== 2} style={{ display: step !== 2 ? "none" : undefined }} className="mt-8 grid gap-5 sm:grid-cols-2">
         <Field
           label="Which collection?"
           required
@@ -294,10 +374,12 @@ export function BookingForm({
         >
           <Select
             value={collection}
-            onChange={(v) => setCollection(v as CollectionId)}
+            onChange={(value) => {
+              if (isCollectionId(value)) setCollection(value);
+            }}
             options={packages.map((p) => ({
               value: p.id,
-              label: `${p.name} · ${p.priceLabel}${p.highlight ? " — most popular" : ""}`,
+              label: `${p.name} · ${p.priceLabel}`,
             }))}
           />
         </Field>
@@ -306,7 +388,9 @@ export function BookingForm({
           <Field label="Photo or film?" required>
             <Select
               value={essentialService}
-              onChange={(v) => setEssentialService(v as "photo" | "video")}
+              onChange={(value) => {
+                if (isEssentialService(value)) setEssentialService(value);
+              }}
               options={[
                 { value: "photo", label: "Photography" },
                 { value: "video", label: "Film / Video" },
@@ -314,20 +398,22 @@ export function BookingForm({
             />
           </Field>
         )}
+      </div>
 
+      <div hidden={step !== 1} style={{ display: step !== 1 ? "none" : undefined }} className="mt-8">
         <Field label="Anything you'd like me to know?" error={errors.notes} className="sm:col-span-2">
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={4}
             className={`${inputBase} resize-none`}
-            placeholder="Theme, venue, timeline — anything that helps me plan her day."
+            placeholder="Venue or city, theme, timeline — anything you know so far."
           />
         </Field>
       </div>
 
       {SHOW_TURNSTILE && SITE_KEY ? (
-        <div>
+        <div hidden={step !== 3} className="mt-5">
           <Turnstile
             siteKey={SITE_KEY}
             onSuccess={setToken}
@@ -338,7 +424,7 @@ export function BookingForm({
         </div>
       ) : null}
 
-      <p className="text-xs leading-relaxed text-ink-faint">
+      <p hidden={step !== 3} className="mt-5 text-xs leading-relaxed text-ink-faint">
         <strong className="text-ink-soft">No payment now.</strong> I&apos;ll confirm
         your date is open and send a secure link to place your{" "}
         {selectedCollection.depositLabel} {selectedCollection.name} deposit — it
@@ -347,24 +433,19 @@ export function BookingForm({
         <a href="/privacy" className="underline underline-offset-2 hover:text-ink">privacy policy</a>.
       </p>
 
-      {formError ? (
-        <p role="alert" className="text-sm text-wine">{formError}</p>
-      ) : null}
-
-      <button
-        type="submit"
-        disabled={busy}
-        className="inline-flex items-center justify-center gap-3 self-start rounded-full bg-ink px-8 py-4 text-[0.95rem] font-medium text-cream transition-all duration-300 hover:bg-[#3c2a1b] disabled:cursor-not-allowed disabled:opacity-70"
-      >
-        {busy ? (
-          <>
-            <span className="h-4 w-4 animate-spin rounded-full border-2 border-cream/40 border-t-cream" aria-hidden />
-            Sending request…
-          </>
+      {formError ? <p role="alert" className="mt-6 text-sm text-wine">{formError}</p> : null}
+      <div className="mt-8 flex items-center justify-between gap-3 border-t border-line pt-6">
+        {step > 0 ? (
+          <button type="button" onClick={() => { setStep((step - 1) as Step); setFormError(null); }} className="min-h-11 rounded-lg px-4 text-sm font-semibold text-ink hover:bg-greige">Back</button>
+        ) : <span />}
+        {step < 3 ? (
+          <button type="button" onClick={nextStep} className="min-h-11 rounded-lg bg-ink px-6 text-sm font-semibold text-white hover:bg-ink-soft">Continue</button>
         ) : (
-          "Reserve my date"
+          <button type="submit" disabled={busy} className="min-h-11 rounded-lg bg-wine px-6 text-sm font-semibold text-white hover:bg-wine-deep disabled:cursor-not-allowed disabled:opacity-60">
+            {busy ? "Sending request…" : "Request her date"}
+          </button>
         )}
-      </button>
+      </div>
     </form>
   );
 }

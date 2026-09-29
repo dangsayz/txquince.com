@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { about } from "@/content/about";
 import { site } from "@/content/site";
 import { Figure } from "@/components/Figure";
-import { Reveal } from "@/components/Reveal";
 import { FinalCTA } from "@/components/FinalCTA";
+import { Badge, ButtonLink } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "About",
@@ -21,84 +22,64 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <>
-      {/* Spread — portrait right, statement pinned low-left, museum air above. */}
-      <section className="mx-auto grid max-w-[90rem] gap-10 px-5 pt-16 md:grid-cols-12 md:gap-8 md:px-10 lg:px-16 md:pt-24">
-        <Reveal className="md:order-2 md:col-span-6 md:col-start-7">
-          <Figure
-            imageKey={about.portraitKey}
-            alt={about.portraitAlt}
-            ratio="portrait"
-            sizes="(max-width: 768px) 100vw, 46vw"
-          />
-        </Reveal>
-        <div className="flex flex-col justify-end pb-2 md:order-1 md:col-span-5 md:pb-10">
-          <Reveal>
-            <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">
-              {about.eyebrow}
-            </p>
-            <h1
-              className="mt-5 font-display text-ink"
-              style={{ fontSize: "clamp(2.4rem,5vw,4.4rem)", lineHeight: 1, letterSpacing: "-0.024em" }}
-            >
+      <section className="border-b border-line bg-ivory">
+        <div className="mx-auto grid max-w-[96rem] gap-10 px-5 py-12 sm:px-6 md:grid-cols-[minmax(0,1.15fr)_minmax(280px,.85fr)] md:items-center md:gap-14 md:py-20 lg:px-8">
+          <div>
+            <Badge>About the studio</Badge>
+            <h1 className="mt-6 max-w-3xl font-display text-[clamp(2.8rem,5.5vw,5.8rem)] font-semibold leading-[.98] tracking-tight text-ink">
               {about.heading}
             </h1>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* Story — narrow measure, offset right like a magazine column. */}
-      <section className="mx-auto max-w-[90rem] px-5 py-24 md:px-10 lg:px-16 md:py-36">
-        <div className="grid md:grid-cols-12">
-          <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint md:col-span-3">
-            The story
-          </p>
-          <div className="mt-8 flex max-w-prose flex-col gap-6 text-[1.02rem] leading-relaxed text-ink-soft md:col-span-7 md:col-start-5 md:mt-0">
-            {about.story.map((p, i) => (
-              <Reveal key={i} delay={i * 60} as="p">
-                {p}
-              </Reveal>
-            ))}
+            <p className="mt-6 max-w-2xl text-base leading-7 text-ink-soft">
+              Quinceañera photography and film built around clear communication, careful preparation, and being present for every part of the day.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <ButtonLink href={site.secondaryCta.href}>Tell us your date</ButtonLink>
+              <ButtonLink href="/portfolio" tone="secondary">Explore the portfolio</ButtonLink>
+            </div>
           </div>
+          {about.portraitKey ? (
+            <Figure imageKey={about.portraitKey} alt={about.portraitAlt} ratio="portrait" sizes="(max-width: 768px) 100vw, 40vw" className="rounded-xl" />
+          ) : (
+            <div className="flex min-h-[320px] flex-col justify-between rounded-xl border border-line bg-white p-7 sm:p-9 md:min-h-[420px]">
+              <span className="font-display text-3xl font-semibold tracking-[0.08em] text-ink"><span className="text-wine">TX</span> QUINCE</span>
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.12em] text-wine-deep">Photography & film</p>
+                <p className="mt-4 max-w-xs font-display text-3xl leading-tight text-ink">A personal approach to an unrepeatable day.</p>
+                <p className="mt-5 text-sm text-ink-soft">{site.serviceArea}</p>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Culture + approach — white band, hairline-separated columns. */}
-      <section className="border-y border-ink/10 bg-white">
-        <div className="mx-auto grid max-w-[90rem] gap-14 px-5 py-20 md:grid-cols-2 md:gap-20 md:px-10 lg:px-16 md:py-28">
-          <Reveal>
-            <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">La cultura</p>
-            <h2 className="mt-4 font-display text-3xl text-ink md:text-4xl">
-              {about.culture.heading}
-            </h2>
-            <p className="mt-5 max-w-prose text-[0.98rem] leading-relaxed text-ink-soft">
-              {about.culture.body}
-            </p>
-          </Reveal>
-          <Reveal delay={90}>
-            <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">The approach</p>
-            <h2 className="mt-4 font-display text-3xl text-ink md:text-4xl">
-              {about.approach.heading}
-            </h2>
-            <p className="mt-5 max-w-prose text-[0.98rem] leading-relaxed text-ink-soft">
-              {about.approach.body}
-            </p>
-          </Reveal>
+      <section className="mx-auto grid max-w-[96rem] gap-10 px-5 py-16 sm:px-6 md:grid-cols-[minmax(180px,.35fr)_minmax(0,1fr)] md:gap-16 md:py-24 lg:px-8">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.12em] text-wine-deep">The story</p>
+          <h2 className="mt-4 font-display text-4xl leading-none text-ink">Why I do this.</h2>
+        </div>
+        <div className="max-w-3xl space-y-6 text-base leading-8 text-ink-soft">
+          {about.story.slice(0, 2).map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
         </div>
       </section>
 
-      {/* Closing — one italic line, left, large. */}
-      <section className="mx-auto max-w-[90rem] px-5 py-24 md:px-10 lg:px-16 md:py-36">
-        <Reveal>
-          <p
-            className="max-w-3xl font-display italic leading-snug text-ink"
-            style={{ fontSize: "clamp(1.7rem,3.4vw,2.8rem)" }}
-          >
-            {about.closing}
-          </p>
-        </Reveal>
+      <section className="border-y border-line bg-ivory">
+        <div className="mx-auto grid max-w-[96rem] gap-5 px-5 py-16 sm:px-6 md:grid-cols-2 md:py-20 lg:px-8">
+          {[about.culture, about.approach].map((item) => (
+            <article key={item.heading} className="rounded-xl border border-line bg-white p-7 sm:p-9">
+              <span aria-hidden="true" className="mb-8 block h-1 w-12 rounded-full bg-wine" />
+              <h2 className="font-display text-3xl leading-tight text-ink">{item.heading}</h2>
+              <p className="mt-4 max-w-xl text-sm leading-7 text-ink-soft">{item.body}</p>
+            </article>
+          ))}
+        </div>
       </section>
 
-      <FinalCTA />
+      <section className="mx-auto flex max-w-[96rem] flex-col gap-6 px-5 py-16 sm:px-6 md:flex-row md:items-end md:justify-between md:py-24 lg:px-8">
+        <p className="max-w-3xl font-display text-3xl leading-tight text-ink md:text-4xl">{about.closing}</p>
+        <Link href={site.secondaryCta.href} className="shrink-0 text-sm font-semibold text-wine underline underline-offset-4 hover:text-wine-deep">Check your date ↗</Link>
+      </section>
+
+      <FinalCTA accent="Planning your quinceañera" headline="Let's talk about your celebration." sub="Share your date and what you have in mind. We'll follow up personally." />
     </>
   );
 }

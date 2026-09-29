@@ -23,42 +23,33 @@ export function AdminHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-30 border-b border-line bg-cream/95 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3">
-        <div className="flex items-center gap-6">
-          <Link href="/admin" className="font-display text-lg text-ink">
-            TX Quince <span className="text-ink-faint">· Admin</span>
-          </Link>
-          <nav className="hidden gap-5 sm:flex">
-            {links.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                className={`text-[0.72rem] uppercase tracking-[0.16em] transition-colors hover:text-wine ${
-                  pathname === l.href ? "text-ink" : "text-ink-soft"
-                }`}
-              >
-                {l.label}
-              </Link>
-            ))}
-          </nav>
-        </div>
-        <div className="flex items-center gap-4">
-          <Link
-            href="/"
-            target="_blank"
-            className="text-[0.72rem] uppercase tracking-[0.16em] text-ink-soft hover:text-wine"
-          >
+    <header className="sticky top-0 z-30 border-b border-line bg-white/95 backdrop-blur-xl">
+      <div className="mx-auto flex min-h-16 max-w-[90rem] items-center justify-between gap-4 px-5 md:px-10 lg:px-16">
+        <Link href="/admin" className="inline-flex min-h-11 items-center gap-2 text-ink hover:text-wine">
+          <span className="font-display text-2xl">TX Quince</span>
+          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-ink-faint">Studio</span>
+        </Link>
+        <div className="flex items-center gap-2 sm:gap-4">
+          <Link href="/" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center rounded-lg px-2 text-xs font-medium text-ink-soft hover:bg-ivory hover:text-ink sm:px-3">
             View site ↗
           </Link>
-          <button
-            onClick={signOut}
-            className="rounded-full border border-line px-4 py-1.5 text-[0.66rem] uppercase tracking-[0.16em] text-ink-soft hover:border-wine hover:text-wine"
-          >
+          <button type="button" onClick={signOut} className="min-h-11 rounded-lg border border-line px-3 text-xs font-semibold text-ink hover:border-ink hover:bg-ivory sm:px-4">
             Sign out
           </button>
         </div>
       </div>
+      <nav aria-label="Admin" className="mx-auto flex max-w-[90rem] gap-1 overflow-x-auto px-5 md:px-10 lg:px-16">
+        {links.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            aria-current={pathname === link.href ? "page" : undefined}
+            className={`-mb-px inline-flex min-h-11 shrink-0 items-center border-b-2 px-3 text-sm font-medium transition-colors ${pathname === link.href ? "border-wine text-wine" : "border-transparent text-ink-soft hover:border-line hover:text-ink"}`}
+          >
+            {link.label}
+          </Link>
+        ))}
+      </nav>
     </header>
   );
 }

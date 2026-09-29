@@ -14,7 +14,7 @@ export const BOOKING_STEPS = [
   },
   {
     title: "We plan it together",
-    body: "I reach out personally within 24 hours to confirm the details — your timeline, the church and venue, and the moments that matter most to your family.",
+    body: "I reach out personally to confirm the details — your timeline, the church and venue, and the moments that matter most to your family.",
   },
   {
     title: "Your save-the-date session",

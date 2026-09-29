@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export default async function AdminHero() {
   const media = await getHeroMedia();
   return (
-    <main className="mx-auto max-w-3xl px-5 py-12">
+    <div className="mx-auto max-w-3xl px-5 py-12">
       <Link
         href="/admin"
         className="text-[0.72rem] uppercase tracking-[0.18em] text-ink-faint hover:text-wine"
@@ -22,6 +22,6 @@ export default async function AdminHero() {
       <div className="mt-10">
         <HeroManager initial={media} />
       </div>
-    </main>
+    </div>
   );
 }

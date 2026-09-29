@@ -76,7 +76,7 @@ export function Figure({
   const field = fieldFor(alt + ratio);
   return (
     <div
-      className={`grain relative overflow-hidden ${className}`}
+      className={`relative overflow-hidden ${className}`}
       style={{ aspectRatio: RATIO[ratio], background: field.bg }}
       role="img"
       aria-label={alt}

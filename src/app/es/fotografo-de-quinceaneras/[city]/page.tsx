@@ -130,13 +130,13 @@ export default async function CityPageEs({
       />
 
       {/* Hero */}
-      <section className="mx-auto max-w-4xl px-5 pt-section text-center md:px-10 lg:px-16 md:pt-section-lg">
+      <section className="mx-auto max-w-[90rem] px-5 pt-14 md:px-10 md:pt-24 lg:px-16">
         <Reveal>
           <p className="eyebrow mb-5">Fotografía de Quinceañeras · {loc.city}, TX</p>
-          <h1 className="mx-auto max-w-3xl display-2 text-ink text-balance">
+          <h1 className="max-w-4xl display-2 text-ink text-balance">
             Fotógrafo de Quinceañeras en {loc.city}
           </h1>
-          <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-ink-soft">
+          <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-soft">
             {loc.leadEs}
           </p>
           <p className="mt-4 text-sm">
@@ -148,7 +148,7 @@ export default async function CityPageEs({
               View this page in English →
             </Link>
           </p>
-          <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
+          <div className="mt-9 flex flex-wrap items-center gap-4">
             <CTAButton href={site.cta.href} variant="primary">
               Reserva tu fecha
             </CTAButton>
@@ -194,8 +194,8 @@ export default async function CityPageEs({
               <Reveal
                 key={p.id}
                 delay={i * 80}
-                className={`flex h-full flex-col border p-7 ${
-                  p.highlight ? "border-wine bg-ivory" : "border-line bg-ivory"
+                className={`flex h-full flex-col rounded-xl border p-7 ${
+                  p.highlight ? "border-wine bg-white" : "border-line bg-white"
                 }`}
               >
                 <div className="flex items-center justify-between">
@@ -303,7 +303,7 @@ export default async function CityPageEs({
               <Link
                 key={g.slug}
                 href={`/es/blog/${g.slug}`}
-                className="group rounded-2xl border border-line bg-white p-5 transition-colors hover:border-wine"
+                className="group rounded-xl border border-line bg-white p-5 transition-colors hover:border-wine focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine"
               >
                 <h3 className="font-display text-lg leading-tight text-ink group-hover:text-wine">
                   {g.title}
@@ -329,7 +329,7 @@ export default async function CityPageEs({
               <Link
                 key={n.slug}
                 href={`/es/fotografo-de-quinceaneras/${n.slug}`}
-                className="border border-line bg-ivory px-4 py-2 text-sm text-ink transition-colors hover:border-wine hover:text-wine"
+                className="rounded-full border border-line bg-white px-4 py-2 text-sm text-ink transition-colors hover:border-wine hover:text-wine"
               >
                 Fotógrafo de quinceañeras en {n.city}
               </Link>

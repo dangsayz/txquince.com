@@ -7,18 +7,57 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { site } from "@/content/site";
-import {
-  getImageBySlug,
-  getImagesBySection,
-  imagePagePath,
-} from "@/lib/content-db";
+import { portfolioFallback } from "@/content/portfolio-fallback";
+import { getPortfolioImages, imagePagePath } from "@/lib/content-db";
 import { Reveal } from "@/components/Reveal";
 import { ProtectedImg } from "@/components/ProtectedImg";
 import { EditOverlay } from "@/components/EditMode";
+import { PhotoActions } from "@/components/gallery/PhotoActions";
 
 /** Branded serve URL at an explicit derivative width. */
 function at(url: string, w: number): string {
-  return `${url}${url.includes("?") ? "&" : "?"}w=${w}`;
+  return url.startsWith("/api/img/") ? `${url}${url.includes("?") ? "&" : "?"}w=${w}` : url;
+}
+
+type DisplayPhoto = {
+  url: string;
+  alt: string;
+  section: string;
+  slug: string;
+  title?: string | null;
+  caption?: string | null;
+  city?: string | null;
+  width?: number | null;
+  height?: number | null;
+  id?: string | null;
+  focus_x?: number | null;
+  focus_y?: number | null;
+  source: "database" | "static";
+};
+
+async function getAvailablePhotos(): Promise<DisplayPhoto[]> {
+  const dbImages = await getPortfolioImages();
+  if (dbImages.length) {
+    return dbImages.filter((image): image is typeof image & { slug: string } => typeof image.slug === "string" && image.slug.length > 0).map((image) => ({
+      url: image.url,
+      alt: image.alt,
+      section: image.section,
+      slug: image.slug,
+      title: image.title,
+      caption: image.caption,
+      city: image.city,
+      width: image.width,
+      height: image.height,
+      id: image.id,
+      focus_x: image.focus_x,
+      focus_y: image.focus_y,
+      source: "database",
+    }));
+  }
+  return portfolioFallback.map((image) => ({
+    ...image,
+    source: "static",
+  }));
 }
 
 export const revalidate = 3600;
@@ -37,13 +76,13 @@ export async function generateMetadata({
   params: Promise<{ category: string; slug: string }>;
 }): Promise<Metadata> {
   const { category, slug } = await params;
-  const img = await getImageBySlug(slug);
-  if (!img || img.section !== category) return {};
+  const img = (await getAvailablePhotos()).find((image) => image.slug === slug && image.section === category);
+  if (!img) return {};
 
   const title = img.title || img.alt || "Quinceañera photograph";
   const description = `${img.caption || img.alt} — quinceañera photography by ${site.brand}, Dallas–Fort Worth. Collections from $2,500; reserve your date.`;
   const pagePath = imagePagePath(img.section, slug);
-  const imgUrl = `${site.url}/api/img/${slug}`;
+  const imgUrl = img.source === "database" ? `${site.url}/api/img/${slug}` : `${site.url}${img.url}`;
 
   return {
     title: `${title} · ${SECTION_LABELS[img.section] ?? "Portfolio"}`,
@@ -73,13 +112,14 @@ export default async function PhotoPage({
   params: Promise<{ category: string; slug: string }>;
 }) {
   const { category, slug } = await params;
-  const img = await getImageBySlug(slug);
-  if (!img || !img.slug || img.section !== category) notFound();
+  const photos = await getAvailablePhotos();
+  const img = photos.find((image) => image.slug === slug && image.section === category);
+  if (!img) notFound();
 
   const label = SECTION_LABELS[img.section] ?? "Portfolio";
   const pageUrl = `${site.url}${imagePagePath(img.section, slug)}`;
-  const related = (await getImagesBySection(img.section))
-    .filter((r) => r.slug && r.slug !== slug)
+  const related = photos
+    .filter((r) => r.section === img.section && r.slug !== slug)
     .slice(0, 3);
 
   const jsonLd = {
@@ -88,7 +128,7 @@ export default async function PhotoPage({
       {
         "@type": ["ImageObject", "Photograph"],
         "@id": `${pageUrl}#image`,
-        contentUrl: `${site.url}/api/img/${slug}`,
+        contentUrl: img.source === "database" ? `${site.url}/api/img/${slug}` : `${site.url}${img.url}`,
         url: pageUrl,
         name: img.title || img.alt,
         description: img.caption || img.alt,
@@ -136,9 +176,9 @@ export default async function PhotoPage({
         </Reveal>
 
         {/* The photograph — display derivative only; expanding never fetches more. */}
-        <div className="mt-8 grid gap-10 md:grid-cols-12 md:gap-8">
-          <Reveal className="md:col-span-7">
-            <div className="relative">
+        <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(280px,360px)] lg:gap-12">
+          <Reveal>
+            <div className="relative overflow-hidden rounded-xl bg-greige">
               <ProtectedImg
                 src={at(img.url, 1920)}
                 alt={img.alt}
@@ -147,15 +187,16 @@ export default async function PhotoPage({
                 loading="eager"
                 className="h-auto w-full"
               />
-              <EditOverlay
-                image={{ id: img.id, slug: img.slug, alt: img.alt, fx: img.focus_x, fy: img.focus_y }}
-              />
+              {img.source === "database" ? (
+                <EditOverlay image={{ id: img.id, slug: img.slug, alt: img.alt, fx: img.focus_x, fy: img.focus_y }} />
+              ) : null}
             </div>
           </Reveal>
 
           {/* Caption block — pinned low like a plate caption. */}
-          <div className="flex flex-col justify-end md:col-span-4 md:col-start-9">
+          <div className="flex flex-col lg:sticky lg:top-28 lg:self-start">
             <Reveal>
+              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-wine">{label}</p>
               <h1
                 className="font-display text-ink"
                 style={{ fontSize: "clamp(1.6rem,2.6vw,2.2rem)", lineHeight: 1.15, letterSpacing: "-0.01em" }}
@@ -179,14 +220,10 @@ export default async function PhotoPage({
                   <dd className="text-ink">{label}</dd>
                 </div>
               </dl>
-              <div className="mt-10 flex flex-col gap-3">
-                <Link
-                  href={site.cta.href}
-                  className="group inline-flex items-baseline gap-2 text-[0.72rem] uppercase tracking-[0.2em] text-ink underline decoration-ink/30 underline-offset-[6px] transition-colors hover:text-wine hover:decoration-wine"
-                >
-                  Reserve your date
-                  <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
-                </Link>
+              <div className="mt-8">
+                <PhotoActions section={img.section} slug={slug} title={img.title || img.alt} pageUrl={pageUrl} bookingHref={site.cta.href} />
+              </div>
+              <div className="mt-8 flex flex-col gap-3">
                 <Link
                   href={`/portfolio#${img.section}`}
                   className="text-[0.72rem] uppercase tracking-[0.2em] text-ink-soft underline decoration-ink/20 underline-offset-[6px] transition-colors hover:text-ink"
@@ -207,17 +244,20 @@ export default async function PhotoPage({
             <p className="text-[0.62rem] uppercase tracking-[0.28em] text-ink-faint">
               Also from {label}
             </p>
-            <div className="mt-6 grid grid-cols-3 gap-3 md:gap-5">
+            <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-6">
               {related.map((r) => (
-                <Link key={r.id} href={imagePagePath(r.section, r.slug as string)} className="group block overflow-hidden">
-                  <ProtectedImg
-                    src={at(r.url, 640)}
-                    alt={r.alt}
-                    loading="lazy"
-                    width={r.width}
-                    height={r.height}
-                    className="h-auto w-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
-                  />
+                <Link key={r.slug} href={imagePagePath(r.section, r.slug)} className="group block min-w-0">
+                  <div className="overflow-hidden rounded-xl bg-greige">
+                    <ProtectedImg
+                      src={at(r.url, 640)}
+                      alt={r.alt}
+                      loading="lazy"
+                      width={r.width}
+                      height={r.height}
+                      className="h-auto w-full transition-transform duration-300 group-hover:scale-[1.025]"
+                    />
+                  </div>
+                  <p className="mt-3 line-clamp-2 text-sm font-medium text-ink group-hover:text-wine">{r.title || r.alt}</p>
                 </Link>
               ))}
             </div>

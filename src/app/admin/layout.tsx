@@ -13,7 +13,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-screen bg-ivory text-ink">
       {/* Marks this browser so the public site offers on-page image editing. */}
       <AdminHint />
       <AdminHeader />
