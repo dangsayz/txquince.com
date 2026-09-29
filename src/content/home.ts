@@ -5,9 +5,9 @@
 
 export const home = {
   hero: {
-    headline: "Her quinceañera, remembered exactly as it felt.",
+    headline: "Her quinceañera is more than the dress.",
     subline:
-      "Portraits, traditions, and everything between — in photography and film.",
+      "The portraits, the traditions, the people beside her. Photography and film for the day she made her own.",
   },
 
   // THE EXPERIENCE — reliability is the anti-flaky-vendor differentiator.
