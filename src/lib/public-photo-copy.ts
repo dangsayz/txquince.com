@@ -26,7 +26,7 @@ export function publicPhotoCopy(image: PhotoCopyInput, categoryDescription: stri
   const fallback = city ? `${categoryDescription} in ${city}` : categoryDescription;
   const alt = writtenCopy(image.alt) || fallback;
   return {
-    title: writtenCopy(image.title) || writtenCopy(image.alt) || fallback,
+    title: writtenCopy(image.title) || fallback,
     alt,
     description: writtenCopy(image.caption) || alt,
   };
