@@ -8,9 +8,11 @@ The four source-controlled collections remain Moments $1,800, Essential $2,500, 
 
 Portfolio, homepage, and photo detail media continue to use `src/lib/content-db.ts` and the branded image route. Static photos under `public/portfolio` are visual fallback assets; cards without a database photo ID must not link to a photo detail URL that cannot resolve.
 
-## Release gate
+## Hosting and release
 
-This integration does **not** complete the portfolio infrastructure migration required by the parent `AGENTS.md`. The code still contains `@supabase/ssr`, `@supabase/supabase-js`, GoTrue admin authentication, and `SUPABASE_*` configuration. Admin AI descriptions also still route through the Vercel AI Gateway. The observed `db.txquince.com` endpoint identifies itself as self-hosted, but the repository rule requires verified replacement database, authentication, and storage paths before deployment. Do not merge or deploy this branch until those migrations, admin access verification, and a production smoke test are complete.
+The live application runs on Cloudflare Workers. `db.txquince.com` identifies itself as the self-hosted TX Quince service on DigitalOcean, with a responding GoTrue auth health endpoint. The production Cloudflare Worker has the existing `SUPABASE_*` secret names for this self-hosted endpoint; these names and the client packages do not establish use of Supabase's hosted service. Portfolio media is bound to Cloudflare R2. The old `MIGRATION-off-supabase.md` and `DEPLOY.md` retain historical hosted-provider language and must not be used as evidence of the current hosting provider.
+
+The admin AI suggestion routes contain optional Vercel AI Gateway code, but `AI_GATEWAY_API_KEY` is absent from the production Worker secrets, so those routes return a 503 before contacting that provider. No new Vercel or Supabase service is configured by this visual release. Verify the production deployment and public flows after publishing; authenticated admin and message-sending flows require separate credentials or controlled tests.
 
 ## Local verification, September 28, 2026
 
