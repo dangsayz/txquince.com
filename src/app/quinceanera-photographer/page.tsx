@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Image from "next/image";
-import { site } from "@/content/site";
+import Link from "next/link";
 import { locations } from "@/content/locations";
-import { getFeaturedImages, getPageHero } from "@/lib/content-db";
-import { Reveal } from "@/components/Reveal";
-import { FinalCTA } from "@/components/FinalCTA";
+import { site } from "@/content/site";
+import { getFeaturedImages, getImagesByCity, getPageHero } from "@/lib/content-db";
 
 export const revalidate = 3600;
 
@@ -26,128 +24,110 @@ function focal(fx?: number | null, fy?: number | null): string {
   return `${Math.round((fx ?? 0.5) * 100)}% ${Math.round((fy ?? 0.32) * 100)}%`;
 }
 
+const sectionSpace = "mx-auto max-w-[88rem] px-5 sm:px-8 lg:px-12";
+
 export default async function LocationsHub() {
-  const imgs = await getFeaturedImages(24);
-  // A landscape frame crops cleanest for the wide hero; portraits fill the city
-  // tiles. The operator can override the hero in /admin/hero.
+  const [imgs, assignedHero, cityPhotoSets] = await Promise.all([
+    getFeaturedImages(24),
+    getPageHero("areas"),
+    Promise.all(locations.map((location) => getImagesByCity(location.slug, 2))),
+  ]);
   const hero =
-    (await getPageHero("areas")) ??
+    assignedHero ??
     imgs.find((i) => (i.width ?? 0) >= (i.height ?? 0)) ??
     imgs[0] ??
     null;
-  const tilePool = imgs.filter((i) => i.url !== hero?.url);
-  const imgFor = (i: number) => (tilePool.length ? tilePool[i % tilePool.length] : (imgs[0] ?? null));
+  const cityImages = imgs.filter((i) => i.url !== hero?.url);
+  const imageFor = (index: number) =>
+    cityPhotoSets[index].find((image) => image.url !== hero?.url) ??
+    (cityImages.length ? cityImages[index % cityImages.length] : (imgs[0] ?? null));
 
   return (
     <>
-      {/* ===== Cinematic hero — image with type low-left ===== */}
-      <section className="relative overflow-hidden bg-ink">
-        <div className="relative h-[70svh] min-h-[460px] w-full md:h-[80svh]">
-          {hero?.url ? (
-            <Image
-              src={hero.url}
-              alt={hero.alt || "Quinceañera in Dallas–Fort Worth"}
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover"
-              style={{ objectPosition: focal(hero.focus_x, hero.focus_y) }}
-            />
-          ) : null}
-          <div className="absolute inset-0 bg-gradient-to-t from-ink/92 via-ink/45 to-ink/10" />
-          <div className="absolute inset-x-0 bottom-0">
-            <div className="mx-auto max-w-[90rem] px-5 pb-12 md:px-10 lg:px-16 md:pb-16">
-              <Reveal>
-                <p className="text-[0.62rem] uppercase tracking-[0.32em] text-cream/85">Areas Served</p>
-                <h1
-                  className="mt-4 max-w-3xl font-display text-cream text-balance"
-                  style={{ fontSize: "clamp(2.125rem,4.5vw,4.25rem)", lineHeight: 1.1, letterSpacing: "-0.02em" }}
-                >
-                  Quinceañera photography across Dallas–Fort Worth.
-                </h1>
-                <p className="mt-5 max-w-xl text-sm leading-relaxed text-cream/80 md:text-base">
-                  One photographer, one celebration a day, the whole metroplex — la misa,
-                  portraits, el vals, and the reception, documented start to finish. Fully
-                  bilingual, with fixed-price collections from $1,800.
-                </p>
-                <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-3">
-                  <Link
-                    href={site.cta.href}
-                    className="inline-flex rounded-full bg-cream px-7 py-3 text-[0.7rem] font-medium uppercase tracking-[0.16em] text-ink transition-colors hover:bg-white"
-                  >
-                    {site.cta.label}
-                  </Link>
-                  <Link
-                    href="/investment"
-                    className="text-[0.7rem] uppercase tracking-[0.18em] text-cream/85 underline decoration-cream/30 underline-offset-[6px] transition-colors hover:text-cream"
-                  >
-                    See pricing
-                  </Link>
-                </div>
-              </Reveal>
+      <section className={`${sectionSpace} pb-12 pt-5 sm:pb-16 sm:pt-10 lg:pt-14`}>
+        <div className="grid overflow-hidden rounded-[1.5rem] border border-line bg-white lg:min-h-[35rem] lg:grid-cols-[0.92fr_1.08fr] lg:rounded-[2rem]">
+          <div className="flex flex-col justify-center px-5 py-9 sm:px-10 sm:py-14 lg:px-14">
+            <p className="text-sm font-medium text-accent-strong">Areas served · Dallas–Fort Worth</p>
+            <h1 className="mt-4 max-w-[16ch] font-display text-[clamp(2rem,3.6vw,3.5rem)] font-medium leading-[1.12] text-ink sm:mt-6">
+              Quinceañera photo &amp; film across DFW.
+            </h1>
+            <p className="mt-5 max-w-lg text-base leading-7 text-ink-soft">
+              From la misa to the last dance, TX Quince photographs and films quinceañeras
+              across the metroplex. Find your city below and see how we cover your day.
+            </p>
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              <Link href="#cities" className="inline-flex min-h-12 items-center justify-center whitespace-nowrap rounded-full bg-accent px-6 text-sm font-semibold text-white transition-colors hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
+                Find your city <span aria-hidden="true" className="ml-3">↓</span>
+              </Link>
+              <Link href="/investment" className="inline-flex min-h-12 items-center justify-center whitespace-nowrap rounded-full border border-line px-6 text-sm font-semibold text-ink transition-colors hover:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
+                View collections <span aria-hidden="true" className="ml-3">↗</span>
+              </Link>
             </div>
+          </div>
+          <div className="relative min-h-[19rem] bg-greige sm:min-h-[28rem] lg:min-h-full">
+            <Image src={hero?.url ?? "/portfolio/kimberly-reception.webp"} alt={hero?.alt || "Quinceañera celebration in Dallas–Fort Worth"} fill priority sizes="(max-width: 1024px) 100vw, 55vw" className="object-cover" style={hero ? { objectPosition: focal(hero.focus_x, hero.focus_y) } : { objectPosition: "center 60%" }} />
           </div>
         </div>
       </section>
 
-      {/* ===== City grid — photo-led tiles, not bordered boxes ===== */}
-      <section className="mx-auto max-w-[90rem] px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
-        <Reveal className="mb-10 max-w-xl md:mb-12">
-          <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">Across the metroplex</p>
-          <h2
-            className="mt-4 font-display text-ink"
-            style={{ fontSize: "clamp(2rem,4vw,3.2rem)", lineHeight: 1.04, letterSpacing: "-0.02em" }}
-          >
-            Find your city.
-          </h2>
-          <p className="mt-5 max-w-md text-sm leading-relaxed text-ink-soft">
-            Real coverage across DFW — from the church to the reception. Pick your city to see
-            the work, the local venues, and how the day unfolds there.
+      <section id="cities" className={`${sectionSpace} scroll-mt-24 py-14 sm:py-20`} aria-labelledby="cities-title">
+        <div className="grid gap-5 border-b border-line pb-8 md:grid-cols-[minmax(0,1fr)_minmax(0,25rem)] md:items-end md:gap-12">
+          <div>
+            <p className="text-sm font-medium text-accent-strong">Find your city</p>
+            <h2 id="cities-title" className="mt-3 font-display text-[clamp(1.875rem,3vw,2.875rem)] font-medium leading-tight text-ink">
+              Explore your part of DFW.
+            </h2>
+          </div>
+          <p className="max-w-md text-base leading-7 text-ink-soft">
+            Each city page shares local portrait settings and how coverage works from church to reception.
           </p>
-        </Reveal>
-
-        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
-          {locations.map((l, i) => {
-            const img = imgFor(i);
+        </div>
+        <div className="grid md:grid-cols-2 md:gap-x-10 lg:gap-x-16">
+          {locations.map((location, index) => {
+            const image = imageFor(index);
             return (
-              <Reveal key={l.slug} delay={(i % 3) * 70}>
-                <Link
-                  href={`/quinceanera-photographer/${l.slug}`}
-                  className="group relative block overflow-hidden bg-ink"
-                >
-                  <div className="relative aspect-[4/5]">
-                    {img?.url ? (
-                      <Image
-                        src={img.url}
-                        alt={`Quinceañera photography in ${l.city}`}
-                        fill
-                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 30vw"
-                        className="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05]"
-                        style={{ objectPosition: focal(img.focus_x, img.focus_y) }}
-                      />
-                    ) : null}
-                    <div className="absolute inset-0 bg-gradient-to-t from-ink/88 via-ink/25 to-transparent" />
-                    {l.tier === "premium" ? (
-                      <span className="absolute left-4 top-4 bg-cream/15 px-2.5 py-1 text-[0.52rem] uppercase tracking-[0.2em] text-cream backdrop-blur-sm">
-                        Premium
-                      </span>
-                    ) : null}
-                    <div className="absolute inset-x-0 bottom-0 p-4 md:p-6">
-                      <h3 className="font-display text-2xl leading-none text-cream md:text-3xl">{l.city}</h3>
-                      <span className="mt-2 inline-flex items-center gap-1.5 text-[0.56rem] uppercase tracking-[0.2em] text-cream/85">
-                        Quinceañera photographer
-                        <span aria-hidden className="text-accent-soft transition-transform duration-300 group-hover:translate-x-0.5">→</span>
-                      </span>
-                    </div>
+              <article key={location.slug} className="min-w-0 border-b border-line">
+                <Link href={`/quinceanera-photographer/${location.slug}`} className="group flex min-h-32 items-center gap-4 py-5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:gap-6" aria-label={`Explore quinceañera photography in ${location.city}`}>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-medium text-ink-faint">{location.county}</p>
+                    <h3 className="mt-1 font-display text-[clamp(1.375rem,2vw,1.75rem)] font-medium leading-tight text-ink transition-colors group-hover:text-accent-strong">{location.city}</h3>
+                    <p className="mt-2 line-clamp-2 text-sm leading-6 text-ink-soft">{location.areas.slice(0, 2).join(" · ")}</p>
                   </div>
+                  {image?.url ? (
+                    <div className="relative size-20 shrink-0 overflow-hidden rounded-lg bg-greige sm:size-24">
+                      <Image src={image.url} alt={image.alt || "Quinceañera portfolio photograph"} fill sizes="96px" className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none" style={{ objectPosition: focal(image.focus_x, image.focus_y) }} />
+                    </div>
+                  ) : (
+                    <span aria-hidden="true" className="flex size-20 shrink-0 items-center justify-center rounded-lg bg-accent-soft text-xl text-accent-strong sm:size-24">↗</span>
+                  )}
                 </Link>
-              </Reveal>
+              </article>
             );
           })}
         </div>
       </section>
 
-      <FinalCTA />
+      <section className="bg-accent-soft py-14 sm:py-20" aria-labelledby="coverage-title">
+        <div className={`${sectionSpace} grid gap-8 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:gap-16`}>
+          <div>
+            <p className="text-sm font-medium text-accent-strong">Across Dallas–Fort Worth</p>
+            <h2 id="coverage-title" className="mt-3 max-w-md font-display text-[clamp(1.875rem,3vw,2.875rem)] font-medium leading-tight text-ink">From the church to the reception.</h2>
+          </div>
+          <div className="md:pt-8">
+            <p className="max-w-xl text-base leading-7 text-ink-soft">
+              We plan around your church, portrait location, and venue, so the story feels like your family and your city. Bilingual planning is available, and there is no travel fee within the DFW service area.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link href={site.cta.href} className="inline-flex min-h-12 items-center justify-center whitespace-nowrap rounded-full bg-accent px-6 text-sm font-semibold text-white transition-colors hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
+                Request your date <span aria-hidden="true" className="ml-3">↗</span>
+              </Link>
+              <Link href="/check-your-date" className="inline-flex min-h-12 items-center justify-center whitespace-nowrap rounded-full border border-accent/40 px-6 text-sm font-semibold text-ink transition-colors hover:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
+                Ask a question <span aria-hidden="true" className="ml-3">↗</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
     </>
   );
 }

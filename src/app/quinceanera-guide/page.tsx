@@ -193,7 +193,7 @@ const BUCKETS: Bucket[] = [
       },
       {
         q: "What's a pre-quince or save-the-date session?",
-        a: "It's a relaxed portrait session weeks or months before the celebration — for her invitations, social posts, and a calm first look at her in a gown before the big day. It's included free with every TX Quince collection.",
+        a: "It's a relaxed portrait session weeks or months before the celebration — for her invitations, social posts, and a calm first look at her in a gown before the big day. It's complimentary with Essential, Signature, and Legacy; families choosing Moments can add a session separately.",
         href: "/quinceanera-save-the-date",
         hrefLabel: "About the save-the-date session",
       },
@@ -201,6 +201,13 @@ const BUCKETS: Bucket[] = [
     cta: { label: "Reserve your date", href: "/reserve" },
   },
 ];
+
+const fallbackImages: Record<string, { src: string; alt: string }> = {
+  planning: { src: "/portfolio/save-date.webp", alt: "Quinceañera save-the-date portrait" },
+  cost: { src: "/portfolio/reception.webp", alt: "Quinceañera portrait in a pink gown" },
+  "photo-film": { src: "/portfolio/lilac-arch.webp", alt: "Quinceañera portrait in a lilac gown" },
+  celebration: { src: "/portfolio/kimberly-reception.webp", alt: "Quinceañera celebration and dance" },
+};
 
 export default async function QuinceaneraGuidePage() {
   const url = `${site.url}/quinceanera-guide`;
@@ -314,127 +321,114 @@ export default async function QuinceaneraGuidePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* Cover */}
-      <section className="mx-auto max-w-[90rem] px-5 pb-8 pt-20 md:px-10 lg:px-16 md:pb-12 md:pt-32">
-        <Reveal>
-          <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">
-            The Quinceañera Guide
-          </p>
-          <h1
-            className="mt-5 max-w-4xl font-display text-ink"
-            style={{ fontSize: "clamp(2.6rem,6.5vw,5.4rem)", lineHeight: 0.98, letterSpacing: "-0.028em" }}
-          >
-            Every quinceañera question, answered.
-          </h1>
-          <p className="mt-7 max-w-xl text-[0.98rem] leading-relaxed text-ink-soft">
-            Straight answers to what families actually ask us — cost, timeline, photo
-            vs. film, and every tradition — from a Dallas–Fort Worth quinceañera
-            photographer who shoots the whole day. No fluff. Collections from $1,800.
-          </p>
-        </Reveal>
-
-        {hero ? (
-          <Reveal className="mt-10">
-            <div className="relative aspect-[16/10] w-full overflow-hidden bg-greige md:aspect-[2/1]">
-              <Image
-                src={hero.url}
-                alt={hero.alt || "Quinceañera photographed across Dallas–Fort Worth"}
-                fill
-                sizes="(max-width: 1440px) 100vw, 1440px"
-                className="object-cover"
-                style={{ objectPosition: `${(hero.focus_x ?? 0.5) * 100}% ${(hero.focus_y ?? 0.35) * 100}%` }}
-                priority
-              />
-              <EditOverlay image={{ id: hero.id, slug: hero.slug, alt: hero.alt, fx: hero.focus_x, fy: hero.focus_y }} />
-            </div>
+      <section className="border-b border-line bg-ivory">
+        <div className="mx-auto grid max-w-[90rem] items-center gap-8 px-5 py-12 md:grid-cols-2 md:gap-12 md:px-10 md:py-18 lg:px-16">
+          <Reveal className="max-w-xl">
+            <p className="text-xs font-medium uppercase tracking-[0.16em] text-accent-strong">The Quinceañera Guide</p>
+            <h1 className="mt-5 font-display text-[clamp(2rem,3.5vw,3.25rem)] leading-[1.12] text-ink">
+              Plan her day with confidence.
+            </h1>
+            <p className="mt-5 text-base leading-7 text-ink-soft">
+              Clear answers on costs, timelines, photography, film, and the traditions that make her quinceañera hers.
+            </p>
+            <Link href="#guide-topics" className="mt-7 inline-flex min-h-12 items-center rounded-lg bg-accent px-6 text-base font-medium text-white hover:bg-accent-strong">
+              Explore the guide <span aria-hidden="true" className="ml-3">↗</span>
+            </Link>
+            <p className="mt-5 text-sm text-ink-soft">Dallas–Fort Worth · Collections from $1,800</p>
           </Reveal>
-        ) : null}
-
-        {/* Jump nav */}
-        <Reveal className="mt-8 flex flex-wrap gap-2">
-          {BUCKETS.map((b) => (
-            <a
-              key={b.id}
-              href={`#${b.id}`}
-              className="inline-flex min-h-[44px] items-center rounded-full border border-line bg-ivory px-4 text-sm text-ink transition-colors hover:border-wine hover:text-wine"
-            >
-              {b.title}
-            </a>
-          ))}
-        </Reveal>
+          <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-greige md:aspect-[5/6] lg:aspect-[4/3]">
+            <Image
+              src={hero?.url ?? "/portfolio/hero.webp"}
+              alt={hero?.alt || "Quinceañera photographed across Dallas–Fort Worth"}
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover"
+              style={{ objectPosition: `${(hero?.focus_x ?? 0.5) * 100}% ${(hero?.focus_y ?? 0.55) * 100}%` }}
+              priority
+            />
+            {hero ? <EditOverlay image={{ id: hero.id, slug: hero.slug, alt: hero.alt, fx: hero.focus_x, fy: hero.focus_y }} /> : null}
+          </div>
+        </div>
       </section>
+
+      <nav id="guide-topics" aria-label="Guide topics" className="scroll-mt-24 border-b border-line bg-white">
+        <div className="mx-auto max-w-[90rem] px-5 py-10 md:px-10 lg:px-16">
+          <p className="text-xs font-medium uppercase tracking-[0.16em] text-accent-strong">Explore by topic</p>
+          <div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+            {BUCKETS.map((bucket, index) => (
+              <a key={bucket.id} href={`#${bucket.id}`} className="group flex min-h-14 items-center justify-between gap-3 border-b border-line py-3 text-base text-ink hover:text-accent-strong sm:px-3">
+                <span><span className="mr-3 text-sm text-ink-faint">0{index + 1}</span>{bucket.title}</span>
+                <span aria-hidden="true" className="text-accent transition-transform group-hover:translate-x-1">↗</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </nav>
 
       {/* Buckets */}
       {BUCKETS.map((bucket, bi) => (
         <section
           key={bucket.id}
           id={bucket.id}
-          className="scroll-mt-24 border-t border-ink/10 bg-white"
+          className={`scroll-mt-24 border-b border-line ${bi % 2 === 0 ? "bg-white" : "bg-ivory"}`}
         >
-          <div className="mx-auto max-w-3xl px-5 py-14 md:px-10 md:py-20">
-            <Reveal>
-              <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">
-                {bucket.eyebrow}
-              </p>
-              <h2
-                className="mt-3 font-display text-ink"
-                style={{ fontSize: "clamp(1.9rem,3.8vw,3rem)", lineHeight: 1.02, letterSpacing: "-0.02em" }}
-              >
-                {bucket.title}
-              </h2>
-              <p className="mt-3 text-sm leading-relaxed text-ink-soft">{bucket.intro}</p>
-            </Reveal>
+          <div className="mx-auto grid max-w-[90rem] gap-8 px-5 py-14 md:px-10 md:py-20 lg:grid-cols-[minmax(0,.65fr)_minmax(0,1fr)] lg:gap-14 lg:px-16">
+            <div>
+              <Reveal>
+                <p className="text-xs font-medium uppercase tracking-[0.16em] text-accent-strong">
+                  {bucket.eyebrow}
+                </p>
+                <h2 className="mt-3 font-display text-[clamp(1.75rem,2.8vw,2.5rem)] leading-tight text-ink">
+                  {bucket.title}
+                </h2>
+                <p className="mt-3 max-w-md text-base leading-7 text-ink-soft">{bucket.intro}</p>
+              </Reveal>
 
-            {bucketImg[bucket.id] ? (
-              <Reveal className="mt-8">
-                <figure className="overflow-hidden bg-greige">
+              <Reveal className="mt-7">
+                <figure className="relative aspect-[4/5] overflow-hidden rounded-lg bg-greige">
                   <Image
-                    src={(bucketImg[bucket.id] as PortfolioImage).url}
-                    alt={
-                      (bucketImg[bucket.id] as PortfolioImage).alt ||
-                      "Quinceañera in Dallas–Fort Worth"
-                    }
-                    width={(bucketImg[bucket.id] as PortfolioImage).width ?? 1600}
-                    height={(bucketImg[bucket.id] as PortfolioImage).height ?? 1067}
-                    sizes="(max-width: 768px) 100vw, 720px"
-                    className="block h-auto w-full"
+                    src={bucketImg[bucket.id]?.url ?? fallbackImages[bucket.id].src}
+                    alt={bucketImg[bucket.id]?.alt || fallbackImages[bucket.id].alt}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 40vw"
+                    className="object-cover"
+                    style={{ objectPosition: `${(bucketImg[bucket.id]?.focus_x ?? 0.5) * 100}% ${(bucketImg[bucket.id]?.focus_y ?? 0.5) * 100}%` }}
                   />
                 </figure>
               </Reveal>
-            ) : null}
+            </div>
 
-            <dl className="mt-10 divide-y divide-ink/10 border-t border-ink/10">
-              {bucket.qas.map((qa) => (
-                <div key={qa.q} className="py-7">
-                  <dt
-                    className="font-display text-ink"
-                    style={{ fontSize: "clamp(1.2rem,2.2vw,1.5rem)", lineHeight: 1.2 }}
-                  >
-                    {qa.q}
-                  </dt>
-                  <dd className="guide-answer mt-3 text-[0.98rem] leading-relaxed text-ink-soft">
-                    {qa.a}
-                  </dd>
-                  {qa.href ? (
-                    <dd className="mt-2.5">
-                      <Link
-                        href={qa.href}
-                        className="group inline-flex items-baseline gap-1.5 text-[0.72rem] uppercase tracking-[0.18em] text-wine underline decoration-wine/30 underline-offset-[5px] transition-colors hover:decoration-wine"
-                      >
-                        {qa.hrefLabel ?? "Full guide"}
-                        <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
-                      </Link>
+            <div>
+              <dl className="divide-y divide-line border-t border-line">
+                {bucket.qas.map((qa) => (
+                  <div key={qa.q} className="py-6 first:pt-0">
+                    <dt className="font-display text-xl leading-snug text-ink">
+                      {qa.q}
+                    </dt>
+                    <dd className="guide-answer mt-3 text-base leading-7 text-ink-soft">
+                      {qa.a}
                     </dd>
-                  ) : null}
-                </div>
-              ))}
-            </dl>
+                    {qa.href ? (
+                      <dd className="mt-3">
+                        <Link
+                          href={qa.href}
+                          className="group inline-flex min-h-11 items-center gap-2 text-sm font-medium text-accent-strong underline decoration-accent/30 underline-offset-[5px] hover:decoration-accent"
+                        >
+                          {qa.hrefLabel ?? "Full guide"}
+                          <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
+                        </Link>
+                      </dd>
+                    ) : null}
+                  </div>
+                ))}
+              </dl>
 
-            <Reveal className="mt-10">
-              <CTAButton href={bucket.cta.href} variant={bi % 2 === 0 ? "primary" : "text"}>
-                {bucket.cta.label}
-              </CTAButton>
-            </Reveal>
+              <Reveal className="mt-5">
+                <CTAButton href={bucket.cta.href} variant={bi % 2 === 0 ? "primary" : "text"}>
+                  {bucket.cta.label}
+                </CTAButton>
+              </Reveal>
+            </div>
           </div>
         </section>
       ))}
@@ -447,15 +441,13 @@ export default async function QuinceaneraGuidePage() {
               Fixed-price collections
             </p>
             <h2
-              className="mt-3 font-display text-ink"
-              style={{ fontSize: "clamp(1.9rem,3.8vw,3rem)", lineHeight: 1.02, letterSpacing: "-0.02em" }}
+              className="mt-3 max-w-2xl font-display text-[clamp(1.75rem,2.8vw,2.5rem)] leading-tight text-ink"
             >
-              From ${packages[0].price.toLocaleString()} — every part of the day, never cut short.
+              From ${packages[0].price.toLocaleString()} — choose the coverage that fits her day.
             </h2>
             <p className="mt-4 max-w-xl text-sm leading-relaxed text-ink-soft">
-              Fixed pricing, held for your {site.scarcity.reservingYear} date. Every
-              collection includes a free save-the-date session. We&apos;re reserved through{" "}
-              {site.scarcity.bookedThrough}.
+              Fixed pricing and a clear reservation deposit for each collection.
+              A complimentary save-the-date session starts with Essential.
             </p>
           </Reveal>
 
@@ -470,7 +462,7 @@ export default async function QuinceaneraGuidePage() {
                   <h3 className="font-display text-2xl text-ink">{p.name}</h3>
                   <p className="mt-1 font-display text-xl text-wine-deep">{p.priceLabel}</p>
                 </div>
-                <p className="text-sm leading-relaxed text-ink-soft md:col-span-7">{p.teaser}</p>
+                <p className="text-base leading-7 text-ink-soft md:col-span-7">{p.teaser}</p>
                 <div className="md:col-span-2 md:text-right">
                   <CTAButton href={`/reserve?collection=${p.id}`} variant="text">
                     Reserve
