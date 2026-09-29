@@ -10,9 +10,9 @@
   --color-ink-soft: #4d4d4d;
   --color-ink-faint: #616161;
   --color-line: #dedede;
-  --color-accent: #0057ff;
-  --color-accent-strong: #0046d5;
-  --color-accent-soft: #edf3ff;
+  --color-accent: #566e60;
+  --color-accent-strong: #405447;
+  --color-accent-soft: #f1f4f1;
   --color-danger: #b42318;
   --color-danger-soft: #fef3f2;
   --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
@@ -44,30 +44,30 @@ body {
 
 .font-display {
   font-family: var(--font-display);
-  letter-spacing: -0.045em;
-  font-weight: 750;
+  letter-spacing: -0.03em;
+  font-weight: 550;
 }
 
 .display-1 {
   font-family: var(--font-display);
-  font-weight: 800;
-  font-size: clamp(2.9rem, 7vw, 6.75rem);
-  line-height: 1.02;
-  letter-spacing: -0.055em;
+  font-weight: 600;
+  font-size: clamp(2.35rem, 6vw, 5.25rem);
+  line-height: 1.08;
+  letter-spacing: -0.04em;
 }
 .display-2 {
   font-family: var(--font-display);
-  font-weight: 750;
-  font-size: clamp(2.1rem, 4.8vw, 4.25rem);
-  line-height: 1.06;
-  letter-spacing: -0.05em;
+  font-weight: 550;
+  font-size: clamp(1.9rem, 4vw, 3.5rem);
+  line-height: 1.12;
+  letter-spacing: -0.03em;
 }
 .display-3 {
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(1.6rem, 3vw, 2.4rem);
-  line-height: 1.12;
-  letter-spacing: -0.04em;
+  font-weight: 550;
+  font-size: clamp(1.5rem, 2.6vw, 2.15rem);
+  line-height: 1.16;
+  letter-spacing: -0.025em;
 }
 
 .card-surface {
@@ -80,8 +80,8 @@ body {
 .accent {
   font-family: var(--font-display);
   font-style: normal;
-  font-weight: 700;
-  letter-spacing: -0.035em;
+  font-weight: 600;
+  letter-spacing: -0.025em;
 }
 
 .btn-pill {
@@ -141,7 +141,7 @@ body {
 
 /* yet-another-react-lightbox: tone its chrome to the brand */
 .yarl__root {
-  --yarl__color_backdrop: rgba(20, 16, 14, 0.94);
+  --yarl__color_backdrop: rgba(25, 25, 25, 0.94);
 }
 
 .btn-primary {

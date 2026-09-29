@@ -49,7 +49,7 @@ export function renderOg(opts: {
             style={{
               fontSize: 30,
               letterSpacing: "0.02em",
-              fontWeight: 700,
+              fontWeight: 600,
             }}
           >
             {site.brand}
@@ -69,12 +69,12 @@ export function renderOg(opts: {
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div
             style={{
-              fontSize: 72,
-              lineHeight: 1.05,
+              fontSize: 60,
+              lineHeight: 1.1,
               color: "#191919",
               maxWidth: 940,
-              letterSpacing: "-0.035em",
-              fontWeight: 700,
+              letterSpacing: "-0.025em",
+              fontWeight: 600,
             }}
           >
             {title}
@@ -90,7 +90,7 @@ export function renderOg(opts: {
             fontSize: 24,
           }}
         >
-          <div style={{ width: 48, height: 4, background: "#0057ff" }} />
+          <div style={{ width: 48, height: 4, background: "#566e60" }} />
           {foot}
         </div>
       </div>

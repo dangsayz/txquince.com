@@ -33,7 +33,7 @@ export default function PortfolioPage({ searchParams }: {
           <p className="text-xs font-semibold text-accent">Portfolio</p>
           <Link href={site.cta.href} className="inline-flex min-h-11 items-center rounded-full border border-ink px-5 text-sm font-medium text-ink hover:bg-ink hover:text-white">Ask about your date ↗</Link>
         </div>
-        <h1 className="mt-8 max-w-5xl font-display text-[clamp(2.75rem,5.6vw,5.5rem)] leading-[1.04] text-ink">
+        <h1 className="mt-8 max-w-5xl font-display text-[clamp(2rem,4vw,4rem)] leading-[1.12] text-ink">
           Quinceañera photography <span className="text-accent">portfolio.</span>
         </h1>
         <p className="mt-6 max-w-2xl text-base leading-relaxed text-ink-soft md:text-lg">

@@ -26,7 +26,7 @@ export default function AboutPage() {
         <div className="mx-auto grid max-w-[96rem] gap-10 px-5 py-12 sm:px-6 md:grid-cols-[minmax(0,1.15fr)_minmax(280px,.85fr)] md:items-center md:gap-14 md:py-20 lg:px-8">
           <div>
             <Badge>About the studio</Badge>
-            <h1 className="mt-6 max-w-3xl font-display text-[clamp(2.75rem,5.2vw,5.25rem)] leading-[1.04] text-ink">
+            <h1 className="mt-6 max-w-3xl font-display text-[clamp(2rem,4vw,4rem)] leading-[1.12] text-ink">
               About <span className="text-accent">TX Quince.</span>
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-7 text-ink-soft">

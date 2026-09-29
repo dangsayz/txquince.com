@@ -39,7 +39,7 @@ export default async function ReservePage({
         <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-14 xl:gap-24">
           <div className="lg:sticky lg:top-28 lg:self-start">
             <p className="text-xs font-semibold text-accent-strong">Reservation request</p>
-            <h1 className="mt-5 max-w-[12ch] font-display text-[clamp(2.75rem,4.5vw,4.5rem)] leading-[1.04] text-ink">Request your <span className="text-accent">date.</span></h1>
+            <h1 className="mt-5 max-w-[12ch] font-display text-[clamp(2rem,4vw,4rem)] leading-[1.12] text-ink">Request your <span className="text-accent">date.</span></h1>
             <p className="mt-6 max-w-md text-base leading-7 text-ink-soft">Tell us when you are celebrating and the collection you would like. We will confirm the details before any deposit is due.</p>
             <div className="mt-8 rounded-2xl border border-line bg-white p-6">
               <p className="text-sm font-semibold text-ink">No payment with this request.</p>
@@ -66,7 +66,7 @@ export default async function ReservePage({
       <section className="bg-white py-16 sm:py-24" aria-labelledby="reserve-steps-title">
         <div className="mx-auto max-w-[88rem] px-5 sm:px-8 lg:px-12">
           <p className="text-xs font-semibold text-accent-strong">What happens next</p>
-          <h2 id="reserve-steps-title" className="mt-3 font-display text-[clamp(2.25rem,3.6vw,3.5rem)] leading-tight text-ink">How reservations work.</h2>
+          <h2 id="reserve-steps-title" className="mt-3 font-display text-[clamp(1.875rem,3vw,2.875rem)] leading-tight text-ink">How reservations work.</h2>
           <ol className="mt-9 grid gap-4 md:grid-cols-3">
             {nextSteps.map((step, index) => (
               <li key={step.title} className="rounded-2xl border border-line bg-cream p-6 sm:p-8">
@@ -82,7 +82,7 @@ export default async function ReservePage({
       <section className="mx-auto flex max-w-[88rem] flex-col justify-between gap-6 px-5 py-16 sm:px-8 sm:py-24 lg:flex-row lg:items-end lg:px-12" aria-labelledby="reserve-work-title">
         <div>
           <p className="text-xs font-semibold text-accent-strong">Before you request</p>
-          <h2 id="reserve-work-title" className="mt-3 max-w-xl font-display text-[clamp(2.25rem,3.6vw,3.5rem)] leading-tight text-ink">Review the portfolio and collections.</h2>
+          <h2 id="reserve-work-title" className="mt-3 max-w-xl font-display text-[clamp(1.875rem,3vw,2.875rem)] leading-tight text-ink">Review the portfolio and collections.</h2>
           <p className="mt-4 max-w-md text-sm leading-6 text-ink-soft">Browse the available photo and film portfolio to picture how your day could be covered.</p>
         </div>
         <Link href="/portfolio" className="inline-flex self-start rounded-full border border-ink px-6 py-3 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">Explore the portfolio <span aria-hidden="true" className="ml-3">↗</span></Link>

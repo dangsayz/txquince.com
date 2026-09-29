@@ -271,7 +271,7 @@ function FrameDialog({
             className="pointer-events-none absolute"
             style={{ left: `${fx * 100}%`, top: `${fy * 100}%`, transform: "translate(-50%, -50%)" }}
           >
-            <span className="block h-7 w-7 rounded-full border-2 border-white shadow-[0_0_0_2px_rgba(0,87,255,0.9)]" />
+            <span className="block h-7 w-7 rounded-full border-2 border-white shadow-[0_0_0_2px_rgba(86,110,96,0.9)]" />
           </span>
         </div>
 

@@ -68,7 +68,7 @@ export default async function HomePage() {
         <div className="grid overflow-hidden rounded-[1.5rem] border border-line bg-white lg:min-h-[42rem] lg:grid-cols-[0.9fr_1.1fr] lg:rounded-[2rem]">
           <div className="flex flex-col justify-center px-5 py-7 sm:px-10 sm:py-16 lg:px-14 lg:py-20">
             <p className="text-xs font-semibold text-accent-strong">Dallas–Fort Worth · Quinceañera photography &amp; film</p>
-            <h1 className="mt-4 max-w-[14ch] font-display text-[clamp(2.65rem,5.8vw,5.75rem)] leading-[1.02] text-ink sm:mt-7">
+            <h1 className="mt-4 max-w-[14ch] font-display text-[clamp(2rem,4vw,4rem)] leading-[1.12] text-ink sm:mt-7">
               Quinceañera <span className="text-accent">photo &amp; film</span> for her day.
             </h1>
             <p className="mt-4 max-w-lg text-sm leading-6 text-ink-soft sm:mt-7 sm:text-lg sm:leading-7">{home.hero.subline}<span className="hidden sm:inline"> Explore the photographs, find the collection that fits your day, and ask about your date.</span></p>
@@ -97,7 +97,7 @@ export default async function HomePage() {
         <div className="mb-10 flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <div>
             <p className="text-xs font-semibold text-accent-strong">The portfolio</p>
-            <h2 id="work-title" className="mt-3 max-w-2xl font-display text-[clamp(2.25rem,4vw,3.75rem)] leading-tight text-ink">Explore the photo portfolio.</h2>
+            <h2 id="work-title" className="mt-3 max-w-2xl font-display text-[clamp(1.875rem,3.2vw,3rem)] leading-tight text-ink">Explore the photo portfolio.</h2>
           </div>
           <Link href="/portfolio" className="inline-flex self-start border-b border-accent pb-1 text-sm font-semibold text-accent transition-colors hover:text-accent-strong md:self-end">View full portfolio <span aria-hidden="true" className="ml-3">↗</span></Link>
         </div>
@@ -110,7 +110,7 @@ export default async function HomePage() {
             <div className="mb-9 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
               <div>
                 <p className="text-xs font-semibold text-accent-strong">On film</p>
-                <h2 id="film-title" className="mt-3 font-display text-[clamp(2.25rem,3.6vw,3.5rem)] leading-tight text-ink">Watch the quinceañera films.</h2>
+                <h2 id="film-title" className="mt-3 font-display text-[clamp(1.875rem,3vw,2.875rem)] leading-tight text-ink">Watch the quinceañera films.</h2>
               </div>
               <Link href="/portfolio#films" className="border-b border-accent pb-1 text-sm font-semibold text-accent hover:text-accent-strong">Explore films ↗</Link>
             </div>
@@ -123,7 +123,7 @@ export default async function HomePage() {
         <div className="mb-9 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
             <p className="text-xs font-semibold text-accent-strong">Collections</p>
-            <h2 id="collections-title" className="mt-3 font-display text-[clamp(2.25rem,3.8vw,3.5rem)] leading-tight text-ink">Compare photo and film collections.</h2>
+            <h2 id="collections-title" className="mt-3 font-display text-[clamp(1.875rem,3vw,2.875rem)] leading-tight text-ink">Compare photo and film collections.</h2>
           </div>
           <Link href="/investment" className="self-start border-b border-accent pb-1 text-sm font-semibold text-accent hover:text-accent-strong sm:self-end">Compare every detail ↗</Link>
         </div>
@@ -148,7 +148,7 @@ export default async function HomePage() {
       <section className="bg-white py-16 sm:py-24" aria-labelledby="process-title">
         <div className={sectionSpace}>
           <p className="text-xs font-semibold text-accent-strong">The process</p>
-          <h2 id="process-title" className="mt-3 font-display text-[clamp(2.25rem,3.8vw,3.5rem)] leading-tight text-ink">How booking works.</h2>
+          <h2 id="process-title" className="mt-3 font-display text-[clamp(1.875rem,3vw,2.875rem)] leading-tight text-ink">How booking works.</h2>
           <ol className="mt-10 grid gap-4 md:grid-cols-3">
             {[
               { title: "Explore the work", body: "Browse real photographs and films to see how the day is documented." },
@@ -169,7 +169,7 @@ export default async function HomePage() {
         <div className="grid overflow-hidden rounded-2xl border border-line bg-white md:grid-cols-[1fr_0.8fr]">
           <div className="p-7 sm:p-10 lg:p-14">
             <p className="text-xs font-semibold text-accent-strong">Studio profile</p>
-            <h2 id="studio-title" className="mt-4 max-w-lg font-display text-[clamp(2.25rem,3.6vw,3.5rem)] leading-tight text-ink">{hasNamedPhotographer ? `Meet ${operatorName}` : "About TX Quince"}</h2>
+            <h2 id="studio-title" className="mt-4 max-w-lg font-display text-[clamp(1.875rem,3vw,2.875rem)] leading-tight text-ink">{hasNamedPhotographer ? `Meet ${operatorName}` : "About TX Quince"}</h2>
             <p className="mt-6 max-w-lg text-base leading-7 text-ink-soft">{about.approach.body}</p>
             <p className="mt-4 max-w-lg text-sm leading-6 text-ink-soft">Based in {site.serviceArea}. Learn how TX Quince approaches portraits, traditions, and the celebration itself.</p>
             <Link href="/about" className="mt-7 inline-flex border-b border-ink pb-1 text-sm font-semibold text-ink hover:border-accent hover:text-accent">About the studio <span aria-hidden="true" className="ml-3">↗</span></Link>
@@ -187,7 +187,7 @@ export default async function HomePage() {
       {testimonials.length > 0 && (
         <section className={`${sectionSpace} py-16 sm:py-24`} aria-labelledby="voices-title">
           <p className="text-xs font-semibold text-accent-strong">From our families</p>
-          <h2 id="voices-title" className="mt-3 font-display text-[clamp(2.25rem,3.6vw,3.5rem)] leading-tight text-ink">What families say.</h2>
+          <h2 id="voices-title" className="mt-3 font-display text-[clamp(1.875rem,3vw,2.875rem)] leading-tight text-ink">What families say.</h2>
           <div className="mt-9 grid gap-4 md:grid-cols-2">
             {testimonials.slice(0, 2).map((item) => (
               <figure key={`${item.momName}-${item.daughterName}`} className="rounded-2xl border border-line bg-white p-7 sm:p-9">
@@ -212,7 +212,7 @@ export default async function HomePage() {
         <div className="grid gap-9 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
           <div>
             <p className="text-xs font-semibold text-accent-strong">Good to know</p>
-            <h2 id="faq-title" className="mt-3 font-display text-[clamp(2.25rem,3.6vw,3.5rem)] leading-tight text-ink">Frequently asked questions.</h2>
+            <h2 id="faq-title" className="mt-3 font-display text-[clamp(1.875rem,3vw,2.875rem)] leading-tight text-ink">Frequently asked questions.</h2>
             <p className="mt-5 max-w-sm text-sm leading-6 text-ink-soft">Have a different question? Send it with your inquiry and we will answer directly.</p>
           </div>
           <div className="divide-y divide-line border-y border-line">
@@ -247,7 +247,7 @@ export default async function HomePage() {
         <div className="grid gap-9 rounded-[1.5rem] bg-greige px-5 py-10 sm:rounded-[2rem] sm:px-10 sm:py-14 lg:grid-cols-[0.75fr_1.25fr] lg:gap-14 lg:px-12">
           <div className="lg:pt-4">
             <p className="text-xs font-semibold text-accent-strong">Your celebration starts here</p>
-            <h2 id="date-title" className="mt-4 max-w-xl font-display text-[clamp(2.25rem,3.8vw,3.5rem)] leading-tight text-ink">Check your celebration date.</h2>
+            <h2 id="date-title" className="mt-4 max-w-xl font-display text-[clamp(1.875rem,3vw,2.875rem)] leading-tight text-ink">Check your celebration date.</h2>
             <p className="mt-5 max-w-lg text-sm leading-6 text-ink-soft">Tell us when and where you are celebrating. We will check the calendar personally and talk through the coverage that fits your family.</p>
             <p className="mt-5 text-sm font-medium text-ink">No payment is needed to ask.</p>
           </div>

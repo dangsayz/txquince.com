@@ -14,11 +14,11 @@ export default function AppleIcon() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "#0057ff",
+          background: "#566e60",
           color: "#ffffff",
         }}
       >
-        <div style={{ fontSize: 78, fontWeight: 700, letterSpacing: "-0.04em" }}>
+        <div style={{ fontSize: 78, fontWeight: 600, letterSpacing: "-0.04em" }}>
           TX
         </div>
         <div

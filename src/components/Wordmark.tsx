@@ -1,7 +1,7 @@
 export function Wordmark({ subline = true }: { subline?: boolean }) {
   return (
     <span className="inline-flex flex-col">
-      <span className="text-[1.25rem] font-extrabold leading-none tracking-[-0.055em] text-ink md:text-[1.4rem]">
+      <span className="text-[1.25rem] font-semibold leading-none tracking-[-0.035em] text-ink md:text-[1.4rem]">
         TX Quince
       </span>
       {subline && (

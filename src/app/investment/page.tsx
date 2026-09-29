@@ -70,7 +70,7 @@ export default function InvestmentPage() {
       <section className="border-b border-line bg-ivory">
         <div className="mx-auto max-w-[96rem] px-5 py-14 sm:px-6 md:py-20 lg:px-8">
           <Badge>{investmentIntro.eyebrow}</Badge>
-          <h1 className="mt-6 max-w-5xl font-display text-[clamp(2.75rem,5.5vw,5.5rem)] leading-[1.04] text-ink">Photo and film <span className="text-accent">collections.</span></h1>
+          <h1 className="mt-6 max-w-5xl font-display text-[clamp(2rem,4vw,4rem)] leading-[1.12] text-ink">Photo and film <span className="text-accent">collections.</span></h1>
           <p className="mt-6 max-w-2xl text-base leading-7 text-ink-soft">Choose photo, film, or both. Each collection shows its coverage and price up front.</p>
           <p className="mt-5 text-sm font-medium text-accent-strong">{investmentIntro.hook}</p>
         </div>
@@ -86,7 +86,7 @@ export default function InvestmentPage() {
         </div>
         <div className="grid gap-5 lg:grid-cols-3">
           {packages.map((collection) => (
-            <article key={collection.id} className={`flex h-full flex-col rounded-xl border bg-white p-6 sm:p-7 ${collection.highlight ? "border-accent shadow-[0_12px_36px_-28px_rgba(0,87,255,.35)]" : "border-line"}`}>
+            <article key={collection.id} className={`flex h-full flex-col rounded-xl border bg-white p-6 sm:p-7 ${collection.highlight ? "border-accent shadow-[0_12px_36px_-28px_rgba(86,110,96,.3)]" : "border-line"}`}>
               <div className="flex min-h-7 items-center justify-between gap-3">
                 <span className="text-xs font-bold uppercase tracking-[0.12em] text-ink-faint">{collection.name} collection</span>
                 {collection.highlight ? <Badge>Photo + film</Badge> : null}
