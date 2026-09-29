@@ -57,6 +57,11 @@ const post: BlogPost = {
       text: "The Irving–Carrollton corridor is loaded with banquet halls and central to most of the metroplex. Planning here? Line up an [Irving quinceañera photographer](/quinceanera-photographer/irving) who can scout the room before the day.",
     },
     {
+      type: "image",
+      slug: "las-lomas-banquet-hall-valarie-539",
+      caption: "Quinceañera reception on the dance floor at Las Lomas Banquet Hall in Irving.",
+    },
+    {
       type: "ul",
       items: [
         "DFW Celebrations — about 75–400 guests. A large, flexible event space.",
@@ -64,6 +69,11 @@ const post: BlogPost = {
         "Luxor Banquet Hall — roughly 50–250 guests. A dependable mid-size choice.",
         "Dallas Palms — a well-known banquet venue in the corridor with multiple room configurations.",
       ],
+    },
+    {
+      type: "image",
+      slug: "convention-plaza-ballroom-clarissa-433",
+      caption: "Reception celebration at Convention Plaza Ballroom in Irving.",
     },
     { type: "h2", text: "Arlington & the mid-cities" },
     {
@@ -102,6 +112,11 @@ const post: BlogPost = {
       ],
     },
     {
+      type: "image",
+      slug: "las-lomas-banquet-hall-valarie-263",
+      caption: "The vals on the dance floor at Las Lomas Banquet Hall in Irving.",
+    },
+    {
       type: "cta",
       heading: "Found your hall? Lock your photographer next.",
       body: "Reserve your date with TX Quince before the best Saturdays go — we'll confirm we know your venue and how to light it.",
@@ -114,12 +129,17 @@ const post: BlogPost = {
       text: "A photographer who has shot your hall before walks in already knowing where the good light is, where the surprise dance reads best, and how the room turns over from misa to reception. That's why families book the venue and the photographer close together — see how it comes together in our [portfolio](/portfolio), then [reserve your date](/reserve) once your hall is set.",
     },
     {
+      type: "image",
+      slug: "convention-plaza-ballroom-clarissa-120",
+      caption: "Quinceañera reception at Convention Plaza Ballroom in Irving.",
+    },
+    {
       type: "p",
       text: "Keep planning from here: study [the best quince photo locations across DFW](/blog/best-quinceanera-photo-locations-dfw), map the full numbers with a [quinceañera budget breakdown for Texas](/blog/quinceanera-budget-breakdown-texas), and stay on track with a [planning timeline and checklist](/blog/quinceanera-planning-timeline-checklist).",
     },
     {
       type: "p",
-      text: "One last note on money: venue and catering are their own line in your budget — completely separate from photography. Our photo and film collections are fixed at $2,500, $3,900, and $5,500, so once your hall is chosen, your coverage cost is already a known number.",
+      text: "One last note on money: venue and catering are their own line in your budget — completely separate from photography. Our photo and film collections are fixed at $1,800, $2,500, $3,900, and $5,500, so once your hall is chosen, your coverage cost is already a known number.",
     },
   ],
   faqs: [
@@ -137,7 +157,7 @@ const post: BlogPost = {
     },
     {
       q: "How much do quinceañera venues cost in Dallas?",
-      a: "Venue cost varies widely by hall, season, day of the week, and whether catering is bundled, so request a current quote from each venue directly — that number is separate from photography. For reference, TX Quince photo and film collections are fixed at $2,500, $3,900, and $5,500, independent of which hall you book.",
+      a: "Venue cost varies widely by hall, season, day of the week, and whether catering is bundled, so request a current quote from each venue directly — that number is separate from photography. For reference, TX Quince photo and film collections are fixed at $1,800, $2,500, $3,900, and $5,500, independent of which hall you book.",
     },
     {
       q: "Can I bring my own photographer to a DFW quinceañera hall?",

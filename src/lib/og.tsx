@@ -1,14 +1,7 @@
 import { ImageResponse } from "next/og";
 import { site } from "@/content/site";
 
-/**
- * Shared OG card renderer (OG/SOCIAL CARDS LAW: FB previews must look expensive).
- * Uses only the flexbox subset ImageResponse supports. System font is used for
- * reliability (no external font fetch at build); the composition does the work —
- * deep wine field, cream type, a thin inset frame, and dramatic scale contrast.
- *
- * Each route exports a tiny opengraph-image.tsx that calls this with its title.
- */
+/** Shared visual renderer for social previews. No server or data contract changes. */
 export const ogSize = { width: 1200, height: 630 };
 export const ogContentType = "image/png";
 
@@ -29,12 +22,10 @@ export function renderOg(opts: {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          background:
-            "radial-gradient(120% 120% at 50% 0%, #6b2230 0%, #4f1822 55%, #3a1119 100%)",
+          background: "#ffffff",
           padding: 64,
         }}
       >
-        {/* inset frame */}
         <div
           style={{
             position: "absolute",
@@ -42,7 +33,7 @@ export function renderOg(opts: {
             left: 28,
             right: 28,
             bottom: 28,
-            border: "1px solid rgba(250,247,242,0.28)",
+            border: "1px solid #e6e6e6",
           }}
         />
 
@@ -51,7 +42,7 @@ export function renderOg(opts: {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            color: "#faf7f2",
+            color: "#191919",
           }}
         >
           <div
@@ -66,9 +57,9 @@ export function renderOg(opts: {
           <div
             style={{
               fontSize: 18,
-              letterSpacing: "0.28em",
+              letterSpacing: "0.08em",
               textTransform: "uppercase",
-              color: "rgba(250,247,242,0.75)",
+              color: "#585858",
             }}
           >
             {eyebrow}
@@ -78,11 +69,12 @@ export function renderOg(opts: {
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div
             style={{
-              fontSize: 76,
-              lineHeight: 1.05,
-              color: "#faf7f2",
+              fontSize: 60,
+              lineHeight: 1.1,
+              color: "#191919",
               maxWidth: 940,
-              letterSpacing: "-0.01em",
+              letterSpacing: "-0.025em",
+              fontWeight: 600,
             }}
           >
             {title}
@@ -94,11 +86,11 @@ export function renderOg(opts: {
             display: "flex",
             alignItems: "center",
             gap: 16,
-            color: "rgba(250,247,242,0.8)",
+            color: "#585858",
             fontSize: 24,
           }}
         >
-          <div style={{ width: 48, height: 1, background: "rgba(250,247,242,0.5)" }} />
+          <div style={{ width: 48, height: 4, background: "#566e60" }} />
           {foot}
         </div>
       </div>

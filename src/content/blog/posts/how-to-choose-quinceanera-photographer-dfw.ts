@@ -10,7 +10,7 @@ const post: BlogPost = {
     "How to pick the right photographer for your daughter's quince — styles explained, what a real portfolio shows, and the questions that protect your money and your date.",
   publishedAt: "2026-06-09",
   readMinutes: 9,
-  lead: "Your daughter's quinceañera happens once. The photos and film are what's left after the flowers wilt and the dress goes in the closet — so choosing the right photographer matters more than almost any other vendor decision. This is the honest, DFW-specific guide: how to read a portfolio, what the styles actually mean, and exactly what to verify before you hand over a deposit.",
+  lead: "Your daughter's quinceañera happens once. The photos and film are what's left after the flowers wilt and the dress goes in the closet — so choosing the right photographer matters more than almost any other vendor decision. This DFW-specific guide walks you through it: how to read a portfolio, what the styles actually mean, and exactly what to verify before you hand over a deposit.",
   content: [
     { type: "h2", text: "Start with the style you actually want" },
     {
@@ -77,8 +77,8 @@ const post: BlogPost = {
     },
     {
       type: "cta",
-      heading: "See the three collections and what's included",
-      body: "Essential, Signature, and Legacy — fixed prices, full inclusions, and a real-time date check on one page.",
+      heading: "See the four collections and what's included",
+      body: "Moments, Essential, Signature, and Legacy — fixed prices, full inclusions, and a real-time date check on one page.",
       href: "/investment",
       label: "View collections & pricing",
     },
@@ -105,7 +105,7 @@ const post: BlogPost = {
     { type: "h2", text: "Local DFW knowledge is a quality signal" },
     {
       type: "p",
-      text: "A photographer who actually works in Dallas–Fort Worth knows where the light is good in the afternoon, which parks and venues allow portrait sessions, and how to plan around the metroplex's traffic and weather. Ask where they'd shoot your pre-quince portraits — a real local will name specific spots (the Dallas Arboretum, the Fort Worth Water Gardens, Main Street in Grapevine) and explain why each one works for your dress and your timeline. A photographer driving in blind from out of town can't give you that.",
+      text: "A photographer who actually works in Dallas–Fort Worth knows where the light is good in the afternoon, which parks and venues allow portrait sessions, and how to plan around the metroplex's traffic and weather. Ask where they'd shoot your pre-quince portraits — a real local will name specific spots (the Dallas Arboretum, the Fort Worth Water Gardens, Main Street in Grapevine) and explain why each one works for your dress and your timeline. A photographer driving in blind from out of town can't give you that. That local fluency is why I keep dedicated pages for the cities I shoot most — [Dallas](/quinceanera-photographer/dallas), [Fort Worth](/quinceanera-photographer/fort-worth), [Irving](/quinceanera-photographer/irving), [Arlington](/quinceanera-photographer/arlington), and [Grand Prairie](/quinceanera-photographer/grand-prairie) — each with the parishes, venues, and portrait spots that actually fit a quince there.",
     },
     {
       type: "quote",

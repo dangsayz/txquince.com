@@ -1,30 +1,24 @@
 import type { Metadata } from "next";
 import { packages, investmentIntro, investmentFaqs } from "@/content/packages";
 import { site } from "@/content/site";
-import { Reveal } from "@/components/Reveal";
-import { CTAButton } from "@/components/CTAButton";
 import { FinalCTA } from "@/components/FinalCTA";
-import { SocialProofStrip } from "@/components/SocialProofStrip";
-import { Testimonials } from "@/components/Testimonials";
+import { Badge, ButtonLink } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Investment — Quinceañera Collections",
   description:
-    "Fixed-price quinceañera photography & film collections from $2,500. Most families choose Signature ($3,900): two storytellers, the full day, film + gallery.",
+    "Fixed-price quinceañera photography and film collections from $1,800. Compare Moments, Essential, Signature, and Legacy coverage for your celebration.",
   alternates: { canonical: "/investment" },
   openGraph: {
     title: "Investment — Quinceañera Collections · TX Quince",
-    description:
-      "Fixed-price collections from $2,500. Most families choose Signature ($3,900).",
+    description: "Fixed-price quinceañera photography and film collections from $1,800.",
     url: `${site.url}/investment`,
   },
 };
 
+const visibleFaqs = investmentFaqs;
+
 export default function InvestmentPage() {
-  // Machine-readable pricing (Service + Offer per collection) so the fixed
-  // prices win cost-query SERPs + AI overviews where rivals show "inquire for
-  // pricing". Plus FAQPage + breadcrumb. No Review/AggregateRating (no consented
-  // reviews — subjects are minors).
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
@@ -36,26 +30,25 @@ export default function InvestmentPage() {
         provider: { "@type": "Organization", name: site.brand, "@id": `${site.url}/#business` },
         areaServed: { "@type": "City", name: "Dallas–Fort Worth, TX" },
         url: `${site.url}/investment`,
-        offers: packages.map((p) => ({
+        offers: packages.map((collection) => ({
           "@type": "Offer",
-          price: String(p.price),
+          price: String(collection.price),
           priceCurrency: "USD",
-          availability: "https://schema.org/InStock",
-          url: `${site.url}/reserve?collection=${p.id}`,
+          url: `${site.url}/reserve?collection=${collection.id}`,
           itemOffered: {
             "@type": "Service",
-            name: `${p.name} Collection`,
-            description: p.teaser,
+            name: `${collection.name} Collection`,
+            description: collection.teaser,
           },
         })),
       },
       {
         "@type": "FAQPage",
         "@id": `${site.url}/investment#faq`,
-        mainEntity: investmentFaqs.map((f) => ({
+        mainEntity: visibleFaqs.map((faq) => ({
           "@type": "Question",
-          name: f.q,
-          acceptedAnswer: { "@type": "Answer", text: f.a },
+          name: faq.q,
+          acceptedAnswer: { "@type": "Answer", text: faq.a },
         })),
       },
       {
@@ -71,124 +64,68 @@ export default function InvestmentPage() {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      {/* Cover — editorial: overline, oversized statement, narrow standfirst. */}
-      <section className="mx-auto max-w-[90rem] px-5 pt-20 md:px-10 lg:px-16 md:pt-32">
-        <Reveal>
-          <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">
-            {investmentIntro.eyebrow}
-          </p>
-          <h1
-            className="mt-5 max-w-5xl font-display text-ink"
-            style={{ fontSize: "clamp(2.6rem,6.4vw,5.6rem)", lineHeight: 0.98, letterSpacing: "-0.026em" }}
-          >
-            {investmentIntro.heading}
-          </h1>
-          <p className="mt-7 max-w-md text-[0.95rem] leading-relaxed text-ink-soft">
-            {investmentIntro.subhead}
-          </p>
-          <p className="mt-6 text-[0.7rem] uppercase tracking-[0.22em] text-wine-deep">
-            {investmentIntro.hook}
-          </p>
-          <SocialProofStrip className="mt-12" />
-        </Reveal>
-      </section>
-
-      {/* Collections — a lookbook ledger: hairline rows, includes set like an
-          index, emphasis through scale (no cards, no dark blocks, no badges). */}
-      <section className="mt-20 border-y border-ink/10 bg-white md:mt-28">
-        <div className="mx-auto max-w-[90rem] px-5 py-8 md:px-10 lg:px-16 md:py-12">
-          {packages.map((p, i) => (
-            <Reveal
-              key={p.id}
-              delay={i * 60}
-              className={`grid gap-y-8 py-12 md:grid-cols-12 md:gap-x-8 md:py-16 ${
-                i > 0 ? "border-t border-ink/10" : ""
-              }`}
-            >
-              {/* Name · tagline · price */}
-              <div className="md:col-span-4">
-                <h2
-                  className="font-display text-ink"
-                  style={{
-                    fontSize: p.highlight ? "clamp(2.2rem,4vw,3.4rem)" : "clamp(1.9rem,3.2vw,2.7rem)",
-                    lineHeight: 1,
-                    letterSpacing: "-0.02em",
-                  }}
-                >
-                  {p.name}
-                </h2>
-                {p.highlight ? (
-                  <p className="mt-3 text-[0.6rem] uppercase tracking-[0.26em] text-wine-deep">
-                    Most reserved
-                  </p>
-                ) : null}
-                <p className="mt-4 max-w-xs text-sm leading-relaxed text-ink-soft">{p.tagline}</p>
-                <p
-                  className="mt-7 font-display text-ink"
-                  style={{ fontSize: "clamp(2.4rem,4.4vw,3.6rem)", lineHeight: 1 }}
-                >
-                  {p.priceLabel}
-                </p>
-              </div>
-
-              {/* Includes — two quiet columns */}
-              <div className="md:col-span-6 md:col-start-6">
-                <p className="text-[0.62rem] uppercase tracking-[0.24em] text-ink-faint">Included</p>
-                <ul className="mt-5 grid gap-x-10 gap-y-3 sm:grid-cols-2">
-                  {p.includes.map((item) => (
-                    <li key={item} className="border-b border-ink/[0.06] pb-3 text-sm leading-relaxed text-ink-soft">
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-                <p className="mt-7">
-                  <CTAButton href={`/reserve?collection=${p.id}`} variant="text">
-                    Reserve {p.name}
-                  </CTAButton>
-                </p>
-              </div>
-            </Reveal>
-          ))}
-
-          <p className="border-t border-ink/10 pt-8 text-xs text-ink-faint">
-            Payment plans available — reserve with a deposit and split the balance into
-            interest-free installments before your date.
-          </p>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <section className="border-b border-line bg-ivory">
+        <div className="mx-auto max-w-[96rem] px-5 py-14 sm:px-6 md:py-20 lg:px-8">
+          <Badge>{investmentIntro.eyebrow}</Badge>
+          <h1 className="mt-6 max-w-5xl font-display text-[clamp(2rem,4vw,4rem)] leading-[1.12] text-ink">Photo and film <span className="text-accent">collections.</span></h1>
+          <p className="mt-6 max-w-2xl text-base leading-7 text-ink-soft">Choose photo, film, or both. Each collection shows its coverage and price up front.</p>
+          <p className="mt-5 text-sm font-medium text-accent-strong">{investmentIntro.hook}</p>
         </div>
       </section>
 
-      {/* FAQ — offset editorial Q&A */}
-      <section className="mx-auto max-w-[90rem] px-5 py-24 md:px-10 lg:px-16 md:py-36">
-        <div className="grid md:grid-cols-12">
-          <div className="md:col-span-3">
-            <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">Questions</p>
-            <h2
-              className="mt-4 font-display text-ink"
-              style={{ fontSize: "clamp(2rem,3.6vw,3rem)", lineHeight: 1.04, letterSpacing: "-0.02em" }}
-            >
-              Answered plainly.
-            </h2>
+      <section aria-labelledby="collections-heading" className="mx-auto max-w-[96rem] px-5 py-14 sm:px-6 md:py-20 lg:px-8">
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold text-accent-strong">Compare collections</p>
+            <h2 id="collections-heading" className="mt-3 font-display text-3xl leading-tight text-ink md:text-4xl">Coverage and pricing</h2>
           </div>
-          <dl className="mt-10 md:col-span-6 md:col-start-6 md:mt-0">
-            {investmentFaqs.map((f, i) => (
-              <div key={f.q} className={`py-7 ${i > 0 ? "border-t border-ink/10" : ""}`}>
-                <dt className="font-display text-xl text-ink">{f.q}</dt>
-                <dd className="mt-3 max-w-prose text-sm leading-relaxed text-ink-soft">{f.a}</dd>
+          <span className="text-sm text-ink-soft">All prices in USD</span>
+        </div>
+        <div className="grid gap-5 md:grid-cols-2">
+          {packages.map((collection) => (
+            <article key={collection.id} className={`flex h-full flex-col rounded-xl border bg-white p-6 sm:p-7 ${collection.highlight ? "border-accent shadow-[0_12px_36px_-28px_rgba(86,110,96,.3)]" : "border-line"}`}>
+              <div className="flex min-h-7 items-center justify-between gap-3">
+                <span className="text-xs font-bold uppercase tracking-[0.12em] text-ink-faint">{collection.name} collection</span>
+                {collection.highlight ? <Badge>Photo + film</Badge> : null}
+              </div>
+              <h3 className="mt-5 font-display text-3xl leading-tight text-ink">{collection.name}</h3>
+              <p className="mt-3 min-h-12 text-sm leading-6 text-ink-soft">{collection.teaser}</p>
+              <p className="mt-7 border-b border-line pb-6 font-display text-4xl leading-tight text-ink">{collection.priceLabel}</p>
+              <p className="mt-6 text-xs font-bold uppercase tracking-[0.12em] text-ink-faint">Included</p>
+              <ul className="mt-4 flex-1 space-y-3">
+                {collection.includes.map((item) => (
+                  <li key={item} className="flex gap-3 text-sm leading-6 text-ink-soft"><span aria-hidden="true" className="mt-1 text-accent">✓</span><span>{item}</span></li>
+                ))}
+              </ul>
+              <div className="mt-8 border-t border-line pt-6">
+                <p className="mb-4 text-xs text-ink-soft">Reserve with a {collection.depositLabel} deposit applied to your collection.</p>
+                <ButtonLink href={`/reserve?collection=${collection.id}`} tone={collection.highlight ? "primary" : "secondary"} className="w-full">Choose {collection.name}</ButtonLink>
+              </div>
+            </article>
+          ))}
+        </div>
+        <p className="mt-6 text-sm text-ink-soft">Payment plans are available. After your date and coverage are confirmed, a collection deposit holds the date and applies to the balance.</p>
+      </section>
+
+      <section className="border-t border-line bg-ivory">
+        <div className="mx-auto grid max-w-[96rem] gap-10 px-5 py-16 sm:px-6 md:grid-cols-[minmax(180px,.35fr)_minmax(0,1fr)] md:gap-14 md:py-20 lg:px-8">
+          <div>
+            <p className="text-xs font-semibold text-accent-strong">Questions</p>
+            <h2 className="mt-3 font-display text-3xl text-ink md:text-4xl">Collection FAQs</h2>
+          </div>
+          <dl className="grid gap-4">
+            {visibleFaqs.map((faq) => (
+              <div key={faq.q} className="rounded-xl border border-line bg-white p-6">
+                <dt className="text-base font-semibold text-ink">{faq.q}</dt>
+                <dd className="mt-3 text-sm leading-7 text-ink-soft">{faq.a}</dd>
               </div>
             ))}
           </dl>
         </div>
       </section>
 
-      {/* Reviews on the pricing page — 56% want proof before they inquire.
-          Renders only when release-cleared testimonials exist. */}
-      <Testimonials className="mx-auto max-w-7xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg" />
-
-      <FinalCTA />
+      <FinalCTA accent="Ready to plan?" headline="Tell us about your celebration." sub="Share your date and preferred collection. We'll follow up personally." />
     </>
   );
 }

@@ -46,7 +46,7 @@ export function HeroShowcase({
           : null;
     return (
       <div className="relative flex min-h-[16rem] items-center justify-center md:min-h-[34rem]">
-        <div className="fade-in-soft relative aspect-video w-full max-w-[22rem] overflow-hidden rounded-[2rem] bg-ink shadow-[0_30px_70px_-30px_rgba(60,40,20,0.5)] md:ml-auto md:max-w-[34rem]">
+        <div className="fade-in-soft relative aspect-video w-full max-w-[22rem] overflow-hidden rounded-[2rem] bg-ink shadow-[0_30px_70px_-30px_rgba(28,26,23,0.5)] md:ml-auto md:max-w-[34rem]">
           {provider === "file" ? (
             <video
               src={videoUrl ?? undefined}
@@ -88,7 +88,7 @@ export function HeroShowcase({
   if (img?.url) {
     return (
       <div className="relative min-h-[18rem] md:min-h-[34rem]">
-        <div className="fade-in-soft absolute left-1/2 top-1/2 h-[20rem] w-[18rem] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-[2rem] shadow-[0_30px_70px_-30px_rgba(60,40,20,0.5)] md:left-auto md:right-[-6%] md:h-[36rem] md:w-[30rem] md:translate-x-0">
+        <div className="fade-in-soft absolute left-1/2 top-1/2 h-[20rem] w-[18rem] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-[2rem] shadow-[0_30px_70px_-30px_rgba(28,26,23,0.5)] md:left-auto md:right-[-6%] md:h-[36rem] md:w-[30rem] md:translate-x-0">
           <Image
             src={img.url}
             alt={img.alt || "Quinceañera portrait"}

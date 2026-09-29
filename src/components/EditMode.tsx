@@ -13,8 +13,8 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
-import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
 const HINT_KEY = "txq_admin";
 
@@ -44,6 +44,24 @@ function checkAdmin(): Promise<boolean> {
     })
     .catch(() => (adminCache = false));
   return adminPromise;
+}
+
+/**
+ * Subscribe to admin status on the PUBLIC site. Returns false for visitors;
+ * true once the /api/admin/me probe confirms a signed-in operator. Shares the
+ * same module-level cache + localStorage hint as the image editor, so it costs
+ * a visitor nothing.
+ */
+export function useIsAdmin(): boolean {
+  const [admin, setAdmin] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    checkAdmin().then((ok) => alive && setAdmin(ok));
+    return () => {
+      alive = false;
+    };
+  }, []);
+  return admin;
 }
 
 /** Mounted on /admin — marks this browser so the public site offers editing. */
@@ -91,7 +109,7 @@ export type EditableImageMeta = {
  * Drop inside any `relative` image frame. Renders nothing for visitors.
  * For the admin: a "Frame" chip → anchor/replace dialog.
  */
-export function EditOverlay({ image }: { image: EditableImageMeta }) {
+export function EditOverlay({ image, editHref = "/admin", label }: { image: EditableImageMeta; editHref?: string; label?: string }) {
   const [admin, setAdmin] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -112,7 +130,7 @@ export function EditOverlay({ image }: { image: EditableImageMeta }) {
     e.preventDefault();
     e.stopPropagation();
     if (editable) setOpen(true);
-    else window.location.href = "/admin";
+    else window.location.href = editHref;
   }
 
   return (
@@ -124,10 +142,10 @@ export function EditOverlay({ image }: { image: EditableImageMeta }) {
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") activate(e);
         }}
-        title={editable ? "Set the focal anchor or replace this photo" : "Edit in admin"}
-        className="absolute bottom-2 left-2 z-20 inline-flex cursor-pointer items-center gap-1.5 bg-ink/80 px-2.5 py-1.5 text-[0.58rem] uppercase tracking-[0.18em] text-cream backdrop-blur-sm transition-colors hover:bg-wine"
+        title={editable ? "Set the focal anchor or replace this photo" : label ?? "Edit in admin"}
+        className="absolute bottom-2 left-2 z-20 inline-flex cursor-pointer items-center gap-1.5 bg-ink/80 px-2.5 py-1.5 text-[0.58rem] uppercase tracking-[0.18em] text-cream backdrop-blur-sm transition-colors hover:bg-accent"
       >
-        <span aria-hidden>⌖</span> {editable ? "Frame" : "Edit"}
+        <span aria-hidden>⌖</span> {editable ? "Frame" : label ?? "Edit"}
       </span>
       {open && editable ? (
         <FrameDialog image={image} onClose={() => setOpen(false)} />
@@ -200,18 +218,13 @@ function FrameDialog({
     setError(null);
     try {
       const { body, ext, type, width, height } = await optimize(files[0]);
-      const signRes = await fetch("/api/admin/sign-upload", {
+      const upRes = await fetch(`/api/admin/upload?ext=${ext}`, {
         method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ ext }),
+        headers: { "content-type": type },
+        body,
       });
-      if (!signRes.ok) throw new Error("Could not start upload.");
-      const { path, token } = (await signRes.json()) as { path: string; token: string };
-      const supabase = createBrowserSupabaseClient();
-      const { error: upErr } = await supabase.storage
-        .from("portfolio")
-        .uploadToSignedUrl(path, token, body, { contentType: type });
-      if (upErr) throw upErr;
+      if (!upRes.ok) throw new Error("Upload failed.");
+      const { path } = (await upRes.json()) as { path: string };
 
       const res = await fetch("/api/admin/images", {
         method: "PATCH",
@@ -232,7 +245,10 @@ function FrameDialog({
     }
   }
 
-  return (
+  // Portal to <body> so `position: fixed` resolves against the viewport — not a
+  // transformed/contained ancestor (which would strand the card far down the
+  // page while the dark backdrop reads as a "gray screen").
+  return createPortal(
     <div
       className="fixed inset-0 z-[120] flex items-center justify-center bg-ink/85 p-4"
       role="dialog"
@@ -251,7 +267,7 @@ function FrameDialog({
           </p>
           <button
             onClick={onClose}
-            className="text-[0.62rem] uppercase tracking-[0.2em] text-ink-soft hover:text-wine"
+            className="text-[0.62rem] uppercase tracking-[0.2em] text-ink-soft hover:text-accent"
           >
             Close ✕
           </button>
@@ -271,7 +287,7 @@ function FrameDialog({
             className="pointer-events-none absolute"
             style={{ left: `${fx * 100}%`, top: `${fy * 100}%`, transform: "translate(-50%, -50%)" }}
           >
-            <span className="block h-7 w-7 rounded-full border-2 border-cream shadow-[0_0_0_2px_rgba(108,31,49,0.9)]" />
+            <span className="block h-7 w-7 rounded-full border-2 border-cream shadow-[0_0_0_2px_rgba(86,110,96,0.9)]" />
           </span>
         </div>
 
@@ -279,14 +295,14 @@ function FrameDialog({
           <button
             onClick={saveAnchor}
             disabled={!!busy || !dirty}
-            className="bg-ink px-6 py-2.5 text-[0.66rem] uppercase tracking-[0.18em] text-cream transition-colors hover:bg-wine disabled:opacity-40"
+            className="bg-ink px-6 py-2.5 text-[0.66rem] uppercase tracking-[0.18em] text-cream transition-colors hover:bg-accent disabled:opacity-40"
           >
             Save anchor
           </button>
           <button
             onClick={() => fileRef.current?.click()}
             disabled={!!busy}
-            className="text-[0.66rem] uppercase tracking-[0.18em] text-ink underline decoration-ink/30 underline-offset-4 hover:text-wine hover:decoration-wine disabled:opacity-40"
+            className="text-[0.66rem] uppercase tracking-[0.18em] text-ink underline decoration-ink/30 underline-offset-4 hover:text-accent hover:decoration-accent disabled:opacity-40"
           >
             Replace photo
           </button>
@@ -305,8 +321,9 @@ function FrameDialog({
           />
         </div>
         {busy ? <p className="mt-3 text-sm text-ink-soft">{busy}</p> : null}
-        {error ? <p className="mt-3 text-sm text-wine">{error}</p> : null}
+        {error ? <p role="alert" className="mt-3 text-sm text-danger">{error}</p> : null}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

@@ -1,157 +1,80 @@
 import type { Metadata } from "next";
-import { site } from "@/content/site";
+import Link from "next/link";
 import { InquiryForm } from "@/components/InquiryForm";
-import { SocialProofStrip } from "@/components/SocialProofStrip";
 import { Testimonials } from "@/components/Testimonials";
-import { CTAButton } from "@/components/CTAButton";
-import { Reveal } from "@/components/Reveal";
+import { site } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "Check Your Date",
   description:
-    "Tell me about your daughter's quinceañera and I'll personally reply within 24 hours to confirm whether your date is open.",
+    "Ask TX Quince about your quinceañera date and photo or film coverage in Dallas–Fort Worth. We confirm availability personally; no payment is needed to inquire.",
   alternates: { canonical: "/check-your-date" },
   openGraph: {
     title: "Check Your Date · TX Quince",
     description:
-      "Tell me about your celebration and I'll personally reply within 24 hours.",
+      "Tell us about your celebration. We will confirm availability personally, with no payment needed to inquire.",
     url: `${site.url}/check-your-date`,
   },
 };
 
-const NEXT_STEPS = [
-  {
-    title: "You send your details",
-    body: "A few quick questions about your date, venue, and what you're looking for. Takes two minutes.",
-  },
-  {
-    title: "I reply within 24 hours",
-    body: "Personally — not an auto-bot. I'll confirm whether your date is open and answer anything you asked.",
-  },
-  {
-    title: "You reserve your day",
-    body: `If it's open, you lock it with a deposit from ${site.booking.depositLabel} (pay in full or in installments). One celebration per day — once it's yours, it's yours.`,
-  },
+const nextSteps = [
+  { title: "Tell us about her day", body: "Share the date if you have one, where you are celebrating, and the coverage you are considering." },
+  { title: "We check the details", body: "We review your inquiry and confirm availability with you personally." },
+  { title: "Choose your next step", body: "If the date works, we can discuss collections and how to request a reservation. There is no payment to send this inquiry." },
 ] as const;
 
-export default function CheckYourDatePage() {
+export default async function CheckYourDatePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ date?: string | string[] }>;
+}) {
+  const date = (await searchParams).date;
+  const initialDate = typeof date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : "";
+
   return (
     <>
-      {/* Trust bar — proof before the ask. */}
-      <div className="border-b border-ink/10 bg-white">
-        <div className="mx-auto max-w-[90rem] px-5 py-5 md:px-10 lg:px-16">
-          <SocialProofStrip />
-        </div>
-      </div>
-
-      <div className="mx-auto grid max-w-[90rem] gap-12 px-5 py-20 md:grid-cols-[0.9fr_1.1fr] md:gap-20 md:px-10 lg:px-16 md:py-28">
-        {/* Left: framing + scarcity (sold-out reality) */}
-        <div className="md:sticky md:top-28 md:self-start">
-          <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">Inquiries</p>
-          <h1
-            className="mt-5 font-display text-ink"
-            style={{ fontSize: "clamp(2.3rem,4.6vw,3.9rem)", lineHeight: 1, letterSpacing: "-0.022em" }}
-          >
-            Let&apos;s see if your date is open.
-          </h1>
-          <p className="mt-6 max-w-md text-base leading-relaxed text-ink-soft">
-            Tell me about your celebration and I&apos;ll personally reply within 24
-            hours.
-          </p>
-
-          <div className="mt-8 border-l-2 border-wine pl-5">
-            <p className="text-sm leading-relaxed text-ink-soft">
-              I&apos;m currently <strong className="text-ink">booked through {site.scarcity.bookedThrough}</strong> and
-              reserving a limited number of {site.scarcity.reservingYear} dates. If your
-              date is already taken, I&apos;ll add you to the cancellation waitlist —
-              reaching out early is the surest way to hold your day.
-            </p>
-          </div>
-
-          <p className="mt-8 text-sm text-ink-soft">
-            Already sure?{" "}
-            <a
-              href={site.cta.href}
-              className="text-ink underline underline-offset-2 hover:text-wine"
-            >
-              Reserve your date now
-            </a>{" "}
-            with a deposit from {site.booking.depositLabel}.
-          </p>
-
-          <p className="mt-4 text-sm text-ink-faint">
-            Prefer email?{" "}
-            <a
-              href={`mailto:${site.contact.email}`}
-              className="text-ink underline underline-offset-2"
-            >
-              {site.contact.email}
-            </a>
-          </p>
-        </div>
-
-        {/* Right: the form */}
-        <div>
-          <InquiryForm />
-        </div>
-      </div>
-
-      {/* What happens next — calm numbered rows, offset right. */}
-      <section className="border-y border-ink/10 bg-white">
-        <div className="mx-auto max-w-[90rem] px-5 py-20 md:px-10 lg:px-16 md:py-28">
-          <div className="grid md:grid-cols-12">
-            <div className="md:col-span-4">
-              <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">
-                What happens next
-              </p>
-              <h2
-                className="mt-4 max-w-xs font-display text-ink"
-                style={{ fontSize: "clamp(2rem,3.8vw,3.2rem)", lineHeight: 1.04, letterSpacing: "-0.02em" }}
-              >
-                No mystery, no waiting in the dark.
-              </h2>
+      <section className="mx-auto max-w-[88rem] px-5 pb-16 pt-12 sm:px-8 sm:pt-16 lg:px-12 lg:pb-24 lg:pt-20">
+        <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-14 xl:gap-24">
+          <div className="lg:sticky lg:top-28 lg:self-start">
+            <p className="text-xs font-semibold text-accent-strong">Date inquiry</p>
+            <h1 className="mt-5 max-w-[12ch] font-display text-[clamp(2rem,4vw,4rem)] leading-[1.12] text-ink">Check your <span className="text-accent">date.</span></h1>
+            <p className="mt-6 max-w-md text-base leading-7 text-ink-soft">Tell us about the celebration. We will check the date personally and help you understand your photo and film options.</p>
+            <div className="mt-8 rounded-2xl border border-line bg-white p-6">
+              <p className="text-sm font-semibold text-ink">Ask without a commitment.</p>
+              <p className="mt-2 text-sm leading-6 text-ink-soft">You can ask even if you are still choosing a date. Sending this form does not reserve a date or require payment.</p>
             </div>
-            <ol className="mt-10 md:col-span-6 md:col-start-6 md:mt-0">
-              {NEXT_STEPS.map((step, i) => (
-                <Reveal
-                  key={step.title}
-                  delay={i * 70}
-                  className={`grid grid-cols-12 gap-4 py-8 ${i > 0 ? "border-t border-ink/10" : ""}`}
-                >
-                  <p className="col-span-2 font-display text-2xl text-ink/25">0{i + 1}</p>
-                  <div className="col-span-10">
-                    <h3 className="font-display text-xl text-ink">{step.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-ink-soft">{step.body}</p>
-                  </div>
-                </Reveal>
-              ))}
-            </ol>
+            <p className="mt-8 text-sm leading-6 text-ink-soft">Know the date and collection already? <Link href={site.cta.href} className="font-semibold text-ink underline underline-offset-4 hover:text-accent">Request a reservation ↗</Link></p>
+            <p className="mt-3 text-sm leading-6 text-ink-soft">Prefer email? <a href={`mailto:${site.contact.email}`} className="font-semibold text-ink underline underline-offset-4 hover:text-accent">{site.contact.email}</a></p>
           </div>
+          <div className="min-w-0"><InquiryForm initialDate={initialDate} /></div>
         </div>
       </section>
 
-      {/* See the real, full work — defuse the "is this real?" fear. */}
-      <section className="mx-auto max-w-[90rem] px-5 py-24 md:px-10 lg:px-16 md:py-36">
-        <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">See the work first</p>
-        <h2
-          className="mt-4 max-w-2xl font-display text-ink"
-          style={{ fontSize: "clamp(2rem,3.8vw,3.2rem)", lineHeight: 1.04, letterSpacing: "-0.02em" }}
-        >
-          Full quinceañeras, not just highlights.
-        </h2>
-        <p className="mt-5 max-w-md text-sm leading-relaxed text-ink-soft">
-          Complete galleries and films from real DFW celebrations — so you know
-          exactly who you&apos;re reaching out to.
-        </p>
-        <div className="mt-8">
-          <CTAButton href="/portfolio" variant="text">
-            View the galleries
-          </CTAButton>
+      <section className="bg-white py-16 sm:py-24" aria-labelledby="inquiry-steps-title">
+        <div className="mx-auto max-w-[88rem] px-5 sm:px-8 lg:px-12">
+          <p className="text-xs font-semibold text-accent-strong">What happens next</p>
+          <h2 id="inquiry-steps-title" className="mt-3 font-display text-[clamp(1.875rem,3vw,2.875rem)] leading-tight text-ink">How inquiries work.</h2>
+          <ol className="mt-9 grid gap-4 md:grid-cols-3">
+            {nextSteps.map((step, index) => (
+              <li key={step.title} className="rounded-2xl border border-line bg-cream p-6 sm:p-8">
+                <span className="text-xs font-semibold text-accent-strong">0{index + 1}</span>
+                <h3 className="mt-7 font-display text-2xl text-ink">{step.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-ink-soft">{step.body}</p>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 
-      {/* Testimonials — renders only when release-cleared ones exist. */}
-      <Testimonials className="mx-auto max-w-7xl px-5 pb-section md:px-10 lg:px-16 md:pb-section-lg" />
+      <section className="mx-auto flex max-w-[88rem] flex-col justify-between gap-6 px-5 py-16 sm:px-8 sm:py-24 lg:flex-row lg:items-end lg:px-12" aria-labelledby="inquiry-work-title">
+        <div>
+          <p className="text-xs font-semibold text-accent-strong">Portfolio</p>
+          <h2 id="inquiry-work-title" className="mt-3 max-w-xl font-display text-[clamp(1.875rem,3vw,2.875rem)] leading-tight text-ink">See our photo and film work.</h2>
+          <p className="mt-4 max-w-md text-sm leading-6 text-ink-soft">Browse the available photographs and films, then tell us what feels right for your family.</p>
+        </div>
+        <Link href="/portfolio" className="inline-flex self-start rounded-full border border-ink px-6 py-3 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">Explore the portfolio <span aria-hidden="true" className="ml-3">↗</span></Link>
+      </section>
+      <Testimonials className="mx-auto max-w-[88rem] px-5 pb-16 sm:px-8 sm:pb-24 lg:px-12" />
     </>
   );
 }

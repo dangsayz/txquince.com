@@ -14,12 +14,12 @@ const post: BlogPost = {
   publishedAt: "2026-06-09",
   readMinutes: 9,
   lang: "es",
-  lead: "Una quinceañera no es un solo evento: es un día entero de momentos, y ocurren en un orden que se ha transmitido de generación en generación. Si está organizando la quinceañera de su hija, o usted es chambelán, padrino o un invitado que quiere saber qué sigue, aquí tiene el día completo de principio a fin: qué significa cada momento, más o menos a qué hora pasa y cuáles nunca va a querer quedarse sin fotografiar.",
+  lead: "Una quinceañera es un día entero de momentos, y ocurren en un orden que se ha transmitido de generación en generación. Si está organizando la quinceañera de su hija, o usted es chambelán, padrino o un invitado que quiere saber qué sigue, este es el día completo de principio a fin: qué significa cada momento, más o menos a qué hora pasa y cuáles nunca va a querer quedarse sin fotografiar.",
   content: [
     { type: "h2", text: "El día en una sola mirada" },
     {
       type: "p",
-      text: "Casi todas las quinceañeras siguen el mismo recorrido: la festejada y su corte se arreglan por la mañana, una misa de acción de gracias bendice el día, una sesión de fotos une la iglesia con la fiesta, y después la recepción avanza con la entrada triunfal, el vals, las ceremonias simbólicas, la cena, el baile sorpresa y el baile abierto hasta la última canción. El orden que sigue es la versión católica tradicional que siguen la mayoría de las familias de Dallas–Fort Worth. La suya puede mover piezas de lugar, y eso es completamente normal.",
+      text: "Casi todas las quinceañeras siguen el mismo recorrido: la festejada y su corte se arreglan por la mañana, una misa de acción de gracias bendice el día, una sesión de fotos une la iglesia con la fiesta, y después la recepción avanza con la entrada triunfal, el vals, las ceremonias simbólicas, la cena, el baile sorpresa y el baile abierto hasta la última canción. El orden que sigue es la versión católica tradicional que siguen la mayoría de las familias de Dallas–Fort Worth. La suya puede mover piezas de lugar, y eso es normal.",
     },
     {
       type: "ol",
@@ -63,7 +63,7 @@ const post: BlogPost = {
     { type: "h3", text: "La ofrenda de flores a la Virgen" },
     {
       type: "p",
-      text: "Uno de los momentos más fotografiados de la misa: la joven ofrece un ramo de flores a los pies de la Virgen, casi siempre Nuestra Señora de Guadalupe, encomendando a su cuidado esta nueva etapa de su vida. Es breve, lleno de reverencia y muy significativo para la mayoría de las familias.",
+      text: "Uno de los momentos más fotografiados de la misa: la joven ofrece un ramo de flores a los pies de la Virgen, casi siempre Nuestra Señora de Guadalupe, encomendando a su cuidado esta nueva etapa de su vida. Es breve, lleno de reverencia y profundamente significativo para la mayoría de las familias.",
     },
     { type: "h3", text: "La bendición de los símbolos" },
     {
@@ -101,7 +101,7 @@ const post: BlogPost = {
     { type: "h2", text: "El vals y el baile con el papá" },
     {
       type: "p",
-      text: "El vals es el número formal y coreografiado del día: la festejada baila con sus chambelanes y su corte una pieza clásica o elegida que ensayaron durante meses. De ahí pasa al baile con el papá, uno de los momentos más emotivos de todo el día, cuando su papá, o quien hace esa figura, sale a la pista con ella. Las lágrimas son normales. Este es un momento que casi todas las familias desean tener también en video, no solo en fotos.",
+      text: "El vals es el número formal y coreografiado del día: la festejada baila con sus chambelanes y su corte una pieza clásica o elegida que ensayaron durante meses. De ahí pasa al baile con el papá, uno de los momentos más emotivos de todo el día, cuando su papá, o quien hace esa figura, sale a la pista con ella. Las lágrimas son normales. Casi todas las familias quieren este momento en video, además de las fotos.",
     },
     { type: "h2", text: "El cambio de zapatillas" },
     {
@@ -152,7 +152,7 @@ const post: BlogPost = {
     { type: "h2", text: "¿Cuántas horas de cobertura necesita?" },
     {
       type: "p",
-      text: "Si quiere toda la historia, del arreglo de la mañana hasta el baile sorpresa, considere alrededor de 8 a 10 horas de cobertura. Los paquetes más cortos, de 4 a 6 horas, por lo general alcanzan solo para la recepción, lo que deja fuera el arreglo, la misa y las fotos. El arrepentimiento más común que escuchamos es haber reservado muy pocas horas y haberse perdido el baile con el papá o el cambio de zapatillas porque se acabó el tiempo del fotógrafo. Cuando compare opciones, fíjese en lo que [incluye cada colección](/investment) por horas de cobertura, no solo por el precio.",
+      text: "Si quiere toda la historia, del arreglo de la mañana hasta el baile sorpresa, considere alrededor de 8 a 10 horas de cobertura. Los paquetes más cortos, de 4 a 6 horas, por lo general alcanzan solo para la recepción, lo que deja fuera el arreglo, la misa y las fotos. El arrepentimiento más común que escuchamos es haber reservado muy pocas horas y haberse perdido el baile con el papá o el cambio de zapatillas porque se acabó el tiempo del fotógrafo. Cuando compare opciones, compare lo que [incluye cada colección](/investment) por sus horas de cobertura, no nada más por el precio.",
     },
     {
       type: "p",

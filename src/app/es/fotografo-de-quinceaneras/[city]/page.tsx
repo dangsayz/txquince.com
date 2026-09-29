@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { site } from "@/content/site";
 import { packages } from "@/content/packages";
-import { locations, getLocation, nearbyLocations } from "@/content/locations";
+import { locations, getLocation, nearbyLocations, cityGeo } from "@/content/locations";
+import { getCityContent } from "@/content/city-content";
 import { getEsPost } from "@/content/blog";
+import { getFeaturedImages, getImagesByCity } from "@/lib/content-db";
+import { venuesByCity } from "@/content/venues";
 import { Reveal } from "@/components/Reveal";
 import { CTAButton } from "@/components/CTAButton";
 
@@ -15,6 +19,9 @@ const ES_CITY_GUIDES = [
   "cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth",
   "cuando-reservar-fotografo-quinceanera-dfw",
 ];
+
+// ISR: regenerate hourly so newly city-tagged photos surface without a redeploy.
+export const revalidate = 3600;
 
 export function generateStaticParams() {
   return locations.map((l) => ({ city: l.slug }));
@@ -30,7 +37,7 @@ export async function generateMetadata({
   if (!loc) return {};
 
   const title = `Fotógrafo de Quinceañeras en ${loc.city}, TX`;
-  const description = `Fotografía y video de quinceañera en ${loc.city}, Texas. Colecciones a precio fijo desde $2,500 — la misa, las fotos y la recepción, de principio a fin. Reserva tu fecha.`;
+  const description = `Fotógrafo y videógrafo de quinceañeras en ${loc.city}. Colecciones a precio fijo desde $1,800, Save-the-Date sin costo — de la misa a la recepción.`;
   const esUrl = `${site.url}/es/fotografo-de-quinceaneras/${loc.slug}`;
   const enUrl = `${site.url}/quinceanera-photographer/${loc.slug}`;
 
@@ -47,6 +54,11 @@ export async function generateMetadata({
       url: esUrl,
       locale: "es_MX",
     },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} · ${site.brand}`,
+      description,
+    },
   };
 }
 
@@ -59,8 +71,43 @@ const TIER_ES: Record<string, string> = {
     "Todo lo de Signature, más video de larga duración, dron y un álbum premium.",
 };
 
+/** Spanish top-4 inclusions per tier (packages.includes is English-only; hand-authored, not auto-translated). */
+const INCLUDES_ES: Record<string, string[]> = {
+  moments: [
+    "Foto O video — un servicio, un artista",
+    "5 horas de cobertura — de la misa a la recepción temprana",
+    "Galería editada O un video de momentos",
+  ],
+  essential: [
+    "Foto O video — un servicio, un artista",
+    "Hasta 6 horas de cobertura (iglesia + recepción)",
+    "Galería editada O un video de momentos",
+    "Sesión Save-the-Date sin costo",
+  ],
+  signature: [
+    "Foto + video — dos narradores, todo el día",
+    "Hasta 8 horas de cobertura del día completo",
+    "Video de momentos + galería completa editada",
+    "Adelanto la misma semana",
+  ],
+  legacy: [
+    "Todo lo de Signature",
+    "Video cinematográfico de larga duración (1–3 horas)",
+    "Cobertura con dron / aérea",
+    "Horas extra + una segunda sesión de retratos",
+  ],
+};
+
 function sharedFaqsEs(city: string) {
   return [
+    {
+      q: `¿Cuánto cuesta un fotógrafo de quinceañera en ${city}?`,
+      a: `Mis colecciones son a precio fijo — de $1,800 a $5,500 en ${city} — con el precio a la vista, sin llamada para cotizar. Cada colección incluye una sesión Save-the-Date sin costo, y puedes pagar completo o en mensualidades sin intereses.`,
+    },
+    {
+      q: "¿También ofreces video, o solo fotografía?",
+      a: "Los dos — soy fotógrafo y videógrafo de quinceañeras. Las colecciones Signature y Legacy cubren el día con foto y video juntos, un solo equipo, para que la misa, el vals y la recepción queden en fotos y en video cinematográfico sin que dos proveedores se estorben.",
+    },
     {
       q: "¿Cobras por traslado?",
       a: `No — ${city} está dentro de mi área de Dallas–Fort Worth, así que no hay cargo por traslado. Las horas de cobertura son las mismas, esté tu iglesia y salón cerca o al otro lado de la ciudad.`,
@@ -81,11 +128,20 @@ export default async function CityPageEs({
   const loc = getLocation(city);
   if (!loc) notFound();
 
-  const faqs = [...loc.faqsEs, ...sharedFaqsEs(loc.city)];
+  const content = getCityContent(loc.slug);
+  const faqs = content?.faqsEs ?? [...loc.faqsEs, ...sharedFaqsEs(loc.city)];
   const nearby = nearbyLocations(loc.slug);
+  const cityVenues = venuesByCity(loc.slug);
   const guides = ES_CITY_GUIDES.map(getEsPost).filter((p) => p !== undefined);
   const esUrl = `${site.url}/es/fotografo-de-quinceaneras/${loc.slug}`;
   const prices = packages.map((p) => p.price);
+  // Las fotos propias de esta ciudad primero; si no hay, se usan las destacadas.
+  const cityShots = await getImagesByCity(loc.slug, 6);
+  const featured = cityShots.length ? cityShots : await getFeaturedImages(6);
+  const isCityWork = cityShots.length > 0;
+  // El opener recibe su propio cuadro cinematográfico; el resto llena la cuadrícula.
+  const hero = featured[0] ?? null;
+  const recentWork = featured.slice(1);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -99,7 +155,19 @@ export default async function CityPageEs({
         image: `${site.url}/opengraph-image`,
         email: site.contact.email,
         ...(site.contact.phoneE164 ? { telephone: site.contact.phoneE164 } : {}),
-        areaServed: { "@type": "City", name: `${loc.city}, TX` },
+        areaServed: [
+          { "@type": "City", name: `${loc.city}, TX` },
+          { "@type": "AdministrativeArea", name: "Dallas–Fort Worth, TX" },
+        ],
+        ...(cityGeo[loc.slug]
+          ? {
+              geo: {
+                "@type": "GeoCoordinates",
+                latitude: cityGeo[loc.slug].lat,
+                longitude: cityGeo[loc.slug].lon,
+              },
+            }
+          : {}),
         address: {
           "@type": "PostalAddress",
           addressLocality: loc.city,
@@ -108,6 +176,18 @@ export default async function CityPageEs({
         },
         priceRange: `$${Math.min(...prices)}–$${Math.max(...prices)}`,
         knowsLanguage: ["es", "en"],
+        hasOfferCatalog: {
+          "@type": "OfferCatalog",
+          name: "Colecciones de Quinceañera",
+          itemListElement: packages.map((p) => ({
+            "@type": "Offer",
+            name: p.name,
+            description: TIER_ES[p.id],
+            price: String(p.price),
+            priceCurrency: "USD",
+            url: `${site.url}/reserve?collection=${p.id}`,
+          })),
+        },
       },
       {
         "@type": "FAQPage",
@@ -119,6 +199,20 @@ export default async function CityPageEs({
           acceptedAnswer: { "@type": "Answer", text: f.a },
         })),
       },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${esUrl}#breadcrumb`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Inicio", item: site.url },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Fotógrafo de Quinceañeras",
+            item: `${site.url}/es/fotografo-de-quinceaneras`,
+          },
+          { "@type": "ListItem", position: 3, name: `${loc.city}, TX`, item: esUrl },
+        ],
+      },
     ],
   };
 
@@ -129,40 +223,92 @@ export default async function CityPageEs({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* Hero */}
-      <section className="mx-auto max-w-4xl px-5 pt-section text-center md:px-10 lg:px-16 md:pt-section-lg">
-        <Reveal>
-          <p className="eyebrow mb-5">Fotografía de Quinceañeras · {loc.city}, TX</p>
-          <h1 className="mx-auto max-w-3xl display-2 text-ink text-balance">
-            Fotógrafo de Quinceañeras en {loc.city}
-          </h1>
-          <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-ink-soft">
-            {loc.leadEs}
-          </p>
-          <p className="mt-4 text-sm">
-            <Link
-              href={`/quinceanera-photographer/${loc.slug}`}
-              className="text-wine underline underline-offset-2 hover:text-wine-deep"
-              hrefLang="en"
-            >
-              View this page in English →
-            </Link>
-          </p>
-          <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
-            <CTAButton href={site.cta.href} variant="primary">
-              Reserva tu fecha
-            </CTAButton>
-            <CTAButton href={site.secondaryCta.href} variant="text">
-              ¿Preguntas primero? Escríbeme
-            </CTAButton>
+      {/* Breadcrumb — rastro visible, refleja el BreadcrumbList */}
+      <nav
+        aria-label="Breadcrumb"
+        className="mx-auto max-w-4xl px-5 pt-10 text-xs text-ink-faint md:px-10 lg:px-16"
+      >
+        <Link href="/es/fotografo-de-quinceaneras" className="transition-colors hover:text-ink">
+          Inicio
+        </Link>
+        <span className="mx-1.5" aria-hidden>
+          /
+        </span>
+        <Link
+          href="/es/fotografo-de-quinceaneras"
+          className="transition-colors hover:text-ink"
+        >
+          Fotógrafo de Quinceañeras
+        </Link>
+        <span className="mx-1.5" aria-hidden>
+          /
+        </span>
+        <span className="text-ink-soft">{loc.city}, TX</span>
+      </nav>
+
+      {/* Hero — imagen cinematográfica, texto abajo-izquierda (el trabajo propio de la ciudad cuando está etiquetado) */}
+      <section className="relative mt-6 overflow-hidden bg-ink md:mt-8">
+        <div className="relative h-[66svh] min-h-[440px] w-full md:h-[76svh]">
+          {hero?.url ? (
+            <Image
+              src={hero.url}
+              alt={hero.alt || `Fotografía de quinceañera en ${loc.city}, TX`}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+              style={{
+                objectPosition: `${hero.focus_x != null ? Math.round(hero.focus_x * 100) : 50}% ${hero.focus_y != null ? Math.round(hero.focus_y * 100) : 32}%`,
+              }}
+            />
+          ) : null}
+          <div className="absolute inset-0 bg-gradient-to-t from-ink/92 via-ink/45 to-ink/10" />
+          <div className="absolute inset-x-0 bottom-0">
+            <div className="mx-auto max-w-[90rem] px-5 pb-12 md:px-10 lg:px-16 md:pb-16">
+              <Reveal>
+                <p className="text-[0.62rem] uppercase tracking-[0.3em] text-cream/85">
+                  Fotografía y Video de Quinceañeras · {loc.city}, TX
+                </p>
+                <h1
+                  className="mt-4 max-w-3xl font-display text-cream text-balance"
+                  style={{ fontSize: "clamp(2.125rem,4.6vw,4.375rem)", lineHeight: 1.1, letterSpacing: "-0.02em" }}
+                >
+                  Fotógrafo de Quinceañeras en {loc.city}
+                </h1>
+                <p className="mt-5 max-w-xl text-sm leading-relaxed text-cream/80 md:text-base">
+                  {loc.leadEs}
+                </p>
+                <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+                  <Link
+                    href={site.cta.href}
+                    className="inline-flex whitespace-nowrap rounded-full bg-cream px-7 py-3 text-[0.7rem] font-medium uppercase tracking-[0.16em] text-ink transition-colors hover:bg-white"
+                  >
+                    Reserva tu fecha
+                  </Link>
+                  <Link
+                    href={site.secondaryCta.href}
+                    className="text-[0.7rem] uppercase tracking-[0.18em] text-cream/85 underline decoration-cream/30 underline-offset-[6px] transition-colors hover:text-cream"
+                  >
+                    ¿Preguntas primero? Escríbeme
+                  </Link>
+                  <Link
+                    href={`/quinceanera-photographer/${loc.slug}`}
+                    hrefLang="en"
+                    className="whitespace-nowrap text-[0.7rem] uppercase tracking-[0.18em] text-cream/65 underline decoration-cream/20 underline-offset-[6px] transition-colors hover:text-cream"
+                  >
+                    View this page in English →
+                  </Link>
+                </div>
+              </Reveal>
+            </div>
           </div>
-        </Reveal>
+        </div>
       </section>
 
       {/* Intro local */}
       <section className="mx-auto max-w-3xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
         <Reveal className="flex flex-col gap-6">
-          {loc.introEs.map((para) => (
+          {(content?.introEs ?? loc.introEs).map((para) => (
             <p key={para.slice(0, 24)} className="text-base leading-relaxed text-ink-soft">
               {para}
             </p>
@@ -175,58 +321,99 @@ export default async function CityPageEs({
         </Reveal>
       </section>
 
+      {/* Dónde tomar las fotos — lugares reales (único por ciudad) */}
+      {content?.photoSpots?.length ? (
+        <section className="mx-auto max-w-5xl px-5 pb-section md:px-10 lg:px-16 md:pb-section-lg">
+          <Reveal className="mb-8 max-w-xl md:mb-10">
+            <p className="eyebrow">Dónde tomar las fotos en {loc.city}</p>
+            <h2
+              className="mt-4 font-display text-ink"
+              style={{ fontSize: "clamp(1.9rem,3.6vw,2.8rem)", lineHeight: 1.06, letterSpacing: "-0.02em" }}
+            >
+              Los lugares de {loc.city} que se ven increíbles en cámara.
+            </h2>
+          </Reveal>
+          <div className="border-t border-ink/10">
+            {content.photoSpots.map((s) => (
+              <Reveal
+                key={s.name}
+                className="grid gap-1.5 border-b border-ink/10 py-6 md:grid-cols-12 md:gap-x-8"
+              >
+                <h3 className="font-display text-xl text-ink md:col-span-4">{s.name}</h3>
+                <p className="text-sm leading-relaxed text-ink-soft md:col-span-8">{s.whyEs}</p>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       {/* Colecciones */}
       <section className="bg-greige">
         <div className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
           <Reveal>
-            <h2 className="display-2 text-ink text-center text-balance">
+            <h2 className="display-2 text-ink text-balance">
               Colecciones a precio fijo desde {packages[0].priceLabel}
             </h2>
-            <p className="mx-auto mt-5 max-w-xl text-center text-sm leading-relaxed text-ink-soft">
+            <p className="mt-5 max-w-xl text-sm leading-relaxed text-ink-soft">
               Cada quinceañera en {loc.city} se cubre de la iglesia a la recepción.
               La mayoría elige Signature — dos narradores, el día completo, foto y
               video.
             </p>
           </Reveal>
 
-          <div className="mt-12 grid gap-5 md:grid-cols-3">
+          <div className="mt-10 border-t border-line">
             {packages.map((p, i) => (
               <Reveal
                 key={p.id}
-                delay={i * 80}
-                className={`flex h-full flex-col border p-7 ${
-                  p.highlight ? "border-wine bg-ivory" : "border-line bg-ivory"
-                }`}
+                delay={i * 60}
+                className="grid gap-y-4 border-b border-line py-8 md:grid-cols-12 md:gap-x-8"
               >
-                <div className="flex items-center justify-between">
-                  <h3 className="font-display text-2xl text-ink">{p.name}</h3>
-                  {p.highlight ? (
-                    <span className="bg-wine px-2.5 py-1 text-[0.6rem] uppercase tracking-[0.16em] text-cream">
-                      Más popular
-                    </span>
-                  ) : null}
+                <div className="md:col-span-4">
+                  <div className="flex items-baseline gap-3">
+                    <h3 className="font-display text-3xl text-ink">{p.name}</h3>
+                    {p.highlight ? (
+                      <span className="text-[0.6rem] uppercase tracking-[0.18em] text-accent-strong">
+                        Más popular
+                      </span>
+                    ) : null}
+                  </div>
+                  <p className="mt-2 max-w-xs text-sm text-ink-soft">{TIER_ES[p.id]}</p>
+                  <p className="mt-4 font-display text-3xl text-ink">{p.priceLabel}</p>
                 </div>
-                <p className="mt-5 font-display text-4xl text-ink">{p.priceLabel}</p>
-                <p className="mt-4 flex-1 text-sm leading-relaxed text-ink-soft">
-                  {TIER_ES[p.id]}
-                </p>
-                <CTAButton
-                  href={`/reserve?collection=${p.id}`}
-                  variant="ink"
-                  className="mt-6 w-full"
-                >
-                  Reservar {p.name}
-                </CTAButton>
+                <div className="md:col-span-7 md:col-start-6">
+                  <ul className="grid gap-x-8 gap-y-2 text-sm leading-relaxed text-ink-soft sm:grid-cols-2">
+                    {(INCLUDES_ES[p.id] ?? p.includes).map((item) => (
+                      <li key={item} className="border-b border-line/70 pb-2">
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  <CTAButton
+                    href={`/reserve?collection=${p.id}`}
+                    variant="text"
+                    className="mt-5"
+                  >
+                    Reservar {p.name}
+                  </CTAButton>
+                </div>
               </Reveal>
             ))}
           </div>
 
-          <p className="mt-8 text-center text-sm">
+          <p className="mt-8 text-sm">
             <Link
               href="/investment"
-              className="text-wine underline underline-offset-2 hover:text-wine-deep"
+              className="text-accent underline underline-offset-2 hover:text-accent-strong"
             >
               Ver todo lo que incluye cada colección →
+            </Link>
+          </p>
+          <p className="mt-3 text-sm">
+            <Link
+              href="/es/save-the-date-quinceanera"
+              className="text-accent underline underline-offset-2 hover:text-accent-strong"
+            >
+              Tu sesión Save-the-Date está incluida gratis →
             </Link>
           </p>
         </div>
@@ -253,13 +440,55 @@ export default async function CityPageEs({
             },
           ].map((step, i) => (
             <li key={step.t} className="flex flex-col gap-3">
-              <span className="font-display text-3xl text-wine">{i + 1}</span>
+              <span className="font-display text-3xl text-cream">{i + 1}</span>
               <span className="font-display text-xl text-ink">{step.t}</span>
               <span className="text-sm leading-relaxed text-ink-soft">{step.b}</span>
             </li>
           ))}
         </ol>
       </section>
+
+      {/* Trabajo reciente — fotos destacadas reales (no renderiza nada si no hay) */}
+      {recentWork.length ? (
+        <section className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
+          <Reveal>
+            <p className="eyebrow mb-5">
+              {isCityWork ? `Trabajo reciente en ${loc.city}` : "Trabajo seleccionado"}
+            </p>
+          </Reveal>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {recentWork.map((img, i) => (
+              <Reveal
+                key={img.slug ?? i}
+                delay={i * 70}
+                className={i === 0 ? "sm:col-span-2" : ""}
+              >
+                <Link href="/portfolio" className="group block">
+                  <div
+                    className={`relative overflow-hidden ${i === 0 ? "aspect-[16/10]" : "aspect-[4/5]"}`}
+                  >
+                    <Image
+                      src={img.url}
+                      alt={img.alt || `Fotografía de quinceañera en ${loc.city}, TX`}
+                      fill
+                      sizes={i === 0 ? "(max-width: 768px) 100vw, 64rem" : "(max-width: 768px) 100vw, 32rem"}
+                      className="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02]"
+                      style={{
+                        objectPosition: `${img.focus_x != null ? Math.round(img.focus_x * 100) : 50}% ${img.focus_y != null ? Math.round(img.focus_y * 100) : 35}%`,
+                      }}
+                    />
+                  </div>
+                </Link>
+              </Reveal>
+            ))}
+          </div>
+          <p className="mt-4 text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">
+            {isCityWork
+              ? `Fotografía de quinceañera en ${loc.city}`
+              : "Fotografía de quinceañera en Dallas–Fort Worth"}
+          </p>
+        </section>
+      ) : null}
 
       {/* Portafolio CTA */}
       <section className="bg-ink text-cream">
@@ -303,9 +532,9 @@ export default async function CityPageEs({
               <Link
                 key={g.slug}
                 href={`/es/blog/${g.slug}`}
-                className="group rounded-2xl border border-line bg-white p-5 transition-colors hover:border-wine"
+                className="group border border-line bg-white p-5 transition-colors hover:border-accent"
               >
-                <h3 className="font-display text-lg leading-tight text-ink group-hover:text-wine">
+                <h3 className="font-display text-lg leading-tight text-ink group-hover:text-accent">
                   {g.title}
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-soft">{g.excerpt}</p>
@@ -313,10 +542,34 @@ export default async function CityPageEs({
             ))}
           </div>
           <p className="mt-6 text-sm">
-            <Link href="/es/blog" className="text-wine underline underline-offset-2 hover:text-wine-deep">
+            <Link href="/es/blog" className="text-accent underline underline-offset-2 hover:text-accent-strong">
               Ver toda la guía de quinceañera →
             </Link>
           </p>
+        </section>
+      ) : null}
+
+      {/* Sedes que fotografiamos en esta ciudad — enlaces al clúster de sedes */}
+      {cityVenues.length ? (
+        <section className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
+          <p className="eyebrow mb-5">Sedes de quinceañera en {loc.city}</p>
+          <div className="flex flex-wrap gap-3">
+            {cityVenues.map((v) => (
+              <Link
+                key={v.slug}
+                href={`/venues/${v.slug}`}
+                className="border border-line bg-white px-4 py-2 text-sm text-ink transition-colors hover:border-accent hover:text-accent"
+              >
+                {v.venue}
+              </Link>
+            ))}
+            <Link
+              href="/venues"
+              className="border border-accent/40 px-4 py-2 text-sm text-accent transition-colors hover:bg-accent hover:text-cream"
+            >
+              Todas las sedes →
+            </Link>
+          </div>
         </section>
       ) : null}
 
@@ -329,7 +582,7 @@ export default async function CityPageEs({
               <Link
                 key={n.slug}
                 href={`/es/fotografo-de-quinceaneras/${n.slug}`}
-                className="border border-line bg-ivory px-4 py-2 text-sm text-ink transition-colors hover:border-wine hover:text-wine"
+                className="border border-line bg-ivory px-4 py-2 text-sm text-ink transition-colors hover:border-accent hover:text-accent"
               >
                 Fotógrafo de quinceañeras en {n.city}
               </Link>
@@ -338,17 +591,22 @@ export default async function CityPageEs({
         </div>
       </section>
 
-      {/* CTA final */}
-      <section className="mx-auto max-w-3xl px-5 py-section text-center md:px-10 lg:px-16 md:py-section-lg">
-        <h2 className="display-2 text-ink text-balance">Aparta su fecha hoy.</h2>
-        <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-ink-soft">
-          Solo reservo una quinceañera al día. Asegura la suya con un depósito —
-          checkout seguro, aplicado a tu saldo final.
-        </p>
-        <div className="mt-9 flex justify-center">
-          <CTAButton href={site.cta.href} variant="primary">
-            Reserva tu fecha
-          </CTAButton>
+      {/* CTA final — banda oscura (cierre de alto contraste) */}
+      <section className="bg-dark">
+        <div className="mx-auto max-w-3xl px-5 py-section text-center md:px-10 lg:px-16 md:py-section-lg">
+          <span className="text-[0.66rem] uppercase tracking-[0.24em] text-cream/85">
+            Quedan pocas fechas de {site.scarcity.reservingYear}
+          </span>
+          <h2 className="mt-5 display-2 text-cream text-balance">Aparta su fecha hoy.</h2>
+          <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-cream/70">
+            Solo reservo una quinceañera al día. Asegura la suya con un depósito —
+            checkout seguro, aplicado a tu saldo final.
+          </p>
+          <div className="mt-10 flex justify-center">
+            <CTAButton href={site.cta.href} variant="onDark">
+              Reserva tu fecha
+            </CTAButton>
+          </div>
         </div>
       </section>
     </>

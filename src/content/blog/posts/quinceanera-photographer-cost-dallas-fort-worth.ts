@@ -10,12 +10,16 @@ const post: BlogPost = {
     "Fixed-price collections, what each one includes, and exactly what drives the price up or down — no “inquire for pricing” games.",
   publishedAt: "2026-06-09",
   readMinutes: 7,
-  lead: "If you've started calling around, you've already noticed the problem: half the photographers won't tell you a price until you fill out a form. Here's the honest version — real numbers, what they include, and what actually changes the cost — so you can budget your daughter's quinceañera with no surprises.",
+  lead: "If you've started calling around, you've already noticed the problem: half the photographers won't tell you a price until you fill out a form. So let's put the numbers on the table — what each collection includes, and what actually changes the cost — so you can budget your daughter's quinceañera with no surprises.",
   content: [
     { type: "h2", text: "The short answer" },
     {
       type: "p",
-      text: "In Dallas–Fort Worth, professional quinceañera photography typically runs from about $1,500 for photo-only coverage with a single artist up to $5,000+ for a two-person photo-and-film team covering the whole day. At [TX Quince](/investment), collections are fixed at $2,500, $3,900, and $5,500 — published on the site, no quote form required.",
+      text: "In Dallas–Fort Worth, professional quinceañera photography typically runs from about $1,500 for photo-only coverage with a single artist up to $5,000+ for a two-person photo-and-film team covering the whole day. At [TX Quince](/investment), collections are fixed at $1,800, $2,500, $3,900, and $5,500 — published on the site, no quote form required.",
+    },
+    {
+      type: "p",
+      text: "Those prices hold across the whole metroplex — your collection costs the same whether the quince is in [Irving](/quinceanera-photographer/irving), [Arlington](/quinceanera-photographer/arlington), or [Garland](/quinceanera-photographer/garland), with no venue-based markup and no surprise quote.",
     },
     {
       type: "callout",
@@ -24,7 +28,7 @@ const post: BlogPost = {
     { type: "h2", text: "What you're actually paying for" },
     {
       type: "p",
-      text: "The number on the package is really four things bundled together — coverage hours, the number of artists, whether you get film as well as photos, and how the final gallery is delivered.",
+      text: "The number on the package is four things bundled together — coverage hours, the number of artists, whether you get film as well as photos, and how the final gallery is delivered.",
     },
     {
       type: "ul",
@@ -38,7 +42,7 @@ const post: BlogPost = {
     { type: "h2", text: "Photo only, or photo and film?" },
     {
       type: "p",
-      text: "This is the single biggest lever on price — and the most common regret. Families who book photo-only most often wish, afterward, that they had the vals and the surprise dance on video. If the budget only stretches one way, prioritize the moments that move: the [vals and the surprise dance](/portfolio) are made for film. See our full [collection breakdown](/investment) to compare photo-only against photo + film side by side.",
+      text: "This one choice changes the price more than any other — and it's the most common regret. Families who book photo-only most often wish, afterward, that they had the vals and the surprise dance on video. If the budget only stretches one way, prioritize the moments that move: the [vals and the surprise dance](/portfolio) are made for film. See our full [collection breakdown](/investment) to compare photo-only against photo + film side by side.",
     },
     { type: "h2", text: "Deposits and payment plans" },
     {
@@ -73,13 +77,13 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "When you're ready, you can [check if your date is open](/check-your-date) in a few seconds, or read [when to book your photographer](/blog/when-to-book-quinceanera-photographer-dfw) so you don't lose your Saturday.",
+      text: "When you're ready, you can [check if your date is open](/check-your-date) in a few seconds, or read [when to book your photographer](/blog/when-to-book-quinceanera-photographer-dfw) so you don't lose your Saturday. If the number feels like a lot up front, see how [interest-free payment plans and deposits](/blog/quinceanera-payment-plans-deposits-dfw) make a collection comfortable to book. For local coverage, see our [quinceañera photographer in Dallas](/quinceanera-photographer/dallas) or [Fort Worth](/quinceanera-photographer/fort-worth).",
     },
   ],
   faqs: [
     {
       q: "How much should I budget for quinceañera photography in DFW?",
-      a: "Plan for roughly $2,500–$5,500 for professional coverage. Photo-only with one artist sits at the lower end; a two-person photo-and-film team covering the full day sits at the top. TX Quince publishes fixed collections at $2,500, $3,900, and $5,500.",
+      a: "Plan for roughly $1,800–$5,500 for professional coverage. Photo-only with one artist sits at the lower end; a two-person photo-and-film team covering the full day sits at the top. TX Quince publishes fixed collections at $1,800, $2,500, $3,900, and $5,500.",
     },
     {
       q: "Do I need both a photographer and a videographer?",
@@ -98,6 +102,7 @@ const post: BlogPost = {
     "when-to-book-quinceanera-photographer-dfw",
     "quinceanera-photo-vs-video",
     "quinceanera-budget-breakdown-texas",
+    "quinceanera-payment-plans-deposits-dfw",
   ],
 };
 

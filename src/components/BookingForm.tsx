@@ -21,7 +21,10 @@ const DRAFT_KEY = "txq_reserve_draft";
 
 const inputBase =
   "w-full border-b border-line bg-transparent px-0 py-3 text-ink placeholder:text-ink-faint transition-colors focus:border-wine focus:outline-none";
-const labelBase = "block text-sm font-medium text-ink";
+// Editorial label: tiny tracked caps, quiet. No asterisks, no inline hints.
+// ink-soft (not ink-faint) so the small caps clear WCAG 4.5:1 on cream.
+const labelBase =
+  "block text-[0.66rem] font-medium uppercase tracking-[0.18em] text-ink-soft";
 
 type Draft = {
   name: string;
@@ -64,27 +67,28 @@ export function BookingForm({
   // Restore any saved draft on mount, so pressing back / reloading never loses
   // what they typed. defaultCollection only wins if there's no saved draft.
   useEffect(() => {
+    let active = true;
+    let draft: Partial<Draft> = {};
     try {
       const raw = localStorage.getItem(DRAFT_KEY);
-      if (raw) {
-        const d = JSON.parse(raw) as Partial<Draft>;
-        if (d.name) setName(d.name);
-        if (d.email) setEmail(d.email);
-        if (d.phone) setPhone(d.phone);
-        if (d.eventDate) setEventDate(d.eventDate);
-        if (d.collection) setCollection(d.collection);
-        if (d.essentialService) setEssentialService(d.essentialService);
-        if (d.notes) setNotes(d.notes);
-      }
+      if (raw) draft = JSON.parse(raw) as Partial<Draft>;
     } catch {
       /* ignore */
     }
-    // A date arriving via URL is explicit intent (they just checked it) — it
-    // beats whatever date a stale draft remembered.
-    if (defaultDate && /^\d{4}-\d{2}-\d{2}$/.test(defaultDate)) {
-      setEventDate(defaultDate);
-    }
-    restored.current = true;
+    queueMicrotask(() => {
+      if (!active) return;
+      if (draft.name) setName(draft.name);
+      if (draft.email) setEmail(draft.email);
+      if (draft.phone) setPhone(draft.phone);
+      if (draft.collection && packages.some((item) => item.id === draft.collection)) setCollection(draft.collection);
+      if (draft.essentialService === "photo" || draft.essentialService === "video") setEssentialService(draft.essentialService);
+      if (draft.notes) setNotes(draft.notes);
+      // An explicit URL date takes precedence over a saved draft.
+      const nextDate = defaultDate && /^\d{4}-\d{2}-\d{2}$/.test(defaultDate) ? defaultDate : draft.eventDate;
+      if (nextDate && /^\d{4}-\d{2}-\d{2}$/.test(nextDate)) setEventDate(nextDate);
+      restored.current = true;
+    });
+    return () => { active = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -122,7 +126,7 @@ export function BookingForm({
   const selectedCollection =
     packages.find((p) => p.id === collection) ?? packages[1];
   const packageValue: "photo" | "video" | "both" =
-    collection === "essential" ? essentialService : "both";
+    selectedCollection.singleCraft ? essentialService : "both";
 
   const { todayStr, maxStr } = useMemo(() => {
     const now = new Date();
@@ -235,7 +239,7 @@ export function BookingForm({
     <form
       onSubmit={handleSubmit}
       noValidate
-      className="flex flex-col gap-8"
+      className="flex flex-col gap-10"
       onFocusCapture={(e) => {
         const f = e.currentTarget;
         if (f.dataset.started) return;
@@ -249,7 +253,7 @@ export function BookingForm({
         <input ref={honeypotRef} id={HONEYPOT_FIELD} name={HONEYPOT_FIELD} type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
-      <div className="grid gap-8 sm:grid-cols-2">
+      <div className="grid gap-x-10 gap-y-9 sm:grid-cols-2">
         <Field label="Your name" required error={errors.name}>
           <input value={name} onChange={(e) => setName(e.target.value)} type="text" autoComplete="name" className={inputBase} placeholder="First and last" />
         </Field>
@@ -271,10 +275,10 @@ export function BookingForm({
           />
           <span id="date-availability" aria-live="polite" className="block">
             {dateTaken ? (
-              <span className="mt-1.5 inline-flex items-center gap-1.5 text-xs text-wine">
+              <span className="mt-1.5 inline-flex items-center gap-1.5 text-xs text-red-700">
                 <span aria-hidden>●</span>
                 That date is already requested — pick another, or{" "}
-                <a href="/check-your-date" className="underline hover:text-wine-deep">join the waitlist</a>.
+                <a href="/check-your-date" className="underline hover:text-red-800">join the waitlist</a>.
               </span>
             ) : dateOpen ? (
               <span className="mt-1.5 inline-flex items-center gap-1.5 text-xs text-green-700">
@@ -290,7 +294,7 @@ export function BookingForm({
           required
           error={errors.collection}
           hint="Applies to your final balance"
-          className={collection === "essential" ? "" : "sm:col-span-2"}
+          className={selectedCollection.singleCraft ? "" : "sm:col-span-2"}
         >
           <Select
             value={collection}
@@ -302,7 +306,7 @@ export function BookingForm({
           />
         </Field>
 
-        {collection === "essential" && (
+        {selectedCollection.singleCraft && (
           <Field label="Photo or film?" required>
             <Select
               value={essentialService}
@@ -338,23 +342,20 @@ export function BookingForm({
         </div>
       ) : null}
 
-      <p className="text-xs leading-relaxed text-ink-faint">
-        <strong className="text-ink-soft">No payment now.</strong> I&apos;ll confirm
-        your date is open and send a secure link to place your{" "}
-        {selectedCollection.depositLabel} {selectedCollection.name} deposit — it
-        applies to your final balance. By requesting, you agree to be contacted
-        about your event. See our{" "}
-        <a href="/privacy" className="underline underline-offset-2 hover:text-ink">privacy policy</a>.
+      <p className="text-xs leading-relaxed text-ink-soft">
+        No payment now — I&apos;ll confirm your date and send a secure deposit link,
+        applied to your final balance. By requesting you agree to be contacted.{" "}
+        <a href="/privacy" className="underline underline-offset-2 hover:text-ink">Privacy</a>.
       </p>
 
       {formError ? (
-        <p role="alert" className="text-sm text-wine">{formError}</p>
+        <p role="alert" className="text-sm text-red-700">{formError}</p>
       ) : null}
 
       <button
         type="submit"
         disabled={busy}
-        className="inline-flex items-center justify-center gap-3 self-start rounded-full bg-ink px-8 py-4 text-[0.95rem] font-medium text-cream transition-all duration-300 hover:bg-[#3c2a1b] disabled:cursor-not-allowed disabled:opacity-70"
+        className="inline-flex items-center justify-center gap-3 self-start rounded-full bg-accent px-8 py-4 text-[0.95rem] font-medium text-white transition-colors hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-70"
       >
         {busy ? (
           <>
@@ -371,13 +372,12 @@ export function BookingForm({
 
 function Field({
   label,
-  required,
   error,
-  hint,
   className = "",
   children,
 }: {
   label: string;
+  /** Accepted for call-site clarity; not rendered (editorial labels stay clean). */
   required?: boolean;
   error?: string[];
   hint?: string;
@@ -385,14 +385,10 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <label className={`flex flex-col gap-1.5 ${className}`}>
-      <span className={labelBase}>
-        {label}
-        {required ? <span className="text-wine"> *</span> : null}
-        {hint ? <span className="ml-2 text-xs font-normal text-ink-faint">{hint}</span> : null}
-      </span>
+    <label className={`flex flex-col gap-2.5 ${className}`}>
+      <span className={labelBase}>{label}</span>
       {children}
-      {error?.length ? <span className="text-xs text-wine">{error[0]}</span> : null}
+      {error?.length ? <span className="text-xs normal-case tracking-normal text-red-700">{error[0]}</span> : null}
     </label>
   );
 }

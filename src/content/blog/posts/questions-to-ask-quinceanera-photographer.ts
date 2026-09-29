@@ -10,7 +10,7 @@ const post: BlogPost = {
     "You've narrowed it down to a few names. Here are the eight questions that separate a safe booking from a regret — and the answer you want to hear.",
   publishedAt: "2026-06-09",
   readMinutes: 8,
-  lead: "By the time you're reading this, you probably already have two or three photographers saved and a quote or two in your inbox. This isn't about finding more options — it's about screening the ones you have. Below are the eight questions that actually matter, and, just as importantly, what a good answer to each one sounds like, so you can tell a confident professional from a nice website.",
+  lead: "By the time you're reading this, you probably already have two or three photographers saved and a quote or two in your inbox. You don't need more options — you need a way to screen the ones you have. Below are the eight questions that actually matter, along with what a good answer to each one sounds like, so you can tell a confident professional from a nice website.",
   content: [
     { type: "h2", text: "How to use this list" },
     {

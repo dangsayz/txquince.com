@@ -1,147 +1,43 @@
 import Link from "next/link";
-import { getInquiries, countOpenLeads, type InquiryRow } from "@/lib/clients-db";
+import { getInquiries, getInquiryActivity } from "@/lib/clients-db";
+import { buildLeadWork, countDue } from "@/lib/admin-workflow";
 import { formatEventDate } from "@/lib/booking";
 
 export const dynamic = "force-dynamic";
 
-const SERVICE_LABEL: Record<string, string> = {
-  photo: "Photography",
-  video: "Film / Video",
-  both: "Photo + Film",
-};
+type View = "all" | "due" | "unreplied" | "open" | "won" | "lost";
+const views: { id: View; label: string }[] = [
+  { id: "all", label: "All" }, { id: "due", label: "Follow-ups due" }, { id: "unreplied", label: "Awaiting reply" },
+  { id: "open", label: "Open" }, { id: "won", label: "Won" }, { id: "lost", label: "Lost" },
+];
 
-function shortDate(iso: string): string {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return iso;
-  return d.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
+export default async function AdminInquiries({ searchParams }: { searchParams: Promise<{ view?: string; q?: string }> }) {
+  const [inquiries, activity, params] = await Promise.all([getInquiries(), getInquiryActivity(), searchParams]);
+  const work = buildLeadWork(inquiries, activity);
+  const byId = new Map(work.map((item) => [item.inquiry.id, item]));
+  const view: View = views.some((item) => item.id === params.view) ? params.view as View : "all";
+  const query = (params.q ?? "").trim().toLowerCase();
+  const filtered = inquiries.filter((item) => {
+    const priority = byId.get(item.id)?.priority;
+    if (view === "due" && priority !== "overdue" && priority !== "due_today") return false;
+    if (view === "unreplied" && priority !== "unreplied") return false;
+    if (view === "open" && (item.status !== "new" || item.unsubscribed_at)) return false;
+    if (view === "won" && item.status !== "won") return false;
+    if (view === "lost" && item.status !== "lost") return false;
+    return !query || [item.name, item.email, item.venue, item.services].some((value) => value?.toLowerCase().includes(query));
+  }).sort((a, b) => {
+    const aRank = work.findIndex((item) => item.inquiry.id === a.id);
+    const bRank = work.findIndex((item) => item.inquiry.id === b.id);
+    if (aRank >= 0 && bRank >= 0) return aRank - bRank;
+    if (aRank >= 0) return -1;
+    if (bRank >= 0) return 1;
+    return b.created_at.localeCompare(a.created_at);
   });
-}
-
-function statusPill(i: InquiryRow): { label: string; cls: string } {
-  if (i.unsubscribed_at)
-    return { label: "Unsubscribed", cls: "bg-stone-100 text-stone-400 ring-stone-300/20" };
-  // Match the DB constraint: new | won | lost (unsubscribed handled above).
-  switch (i.status) {
-    case "won":
-      return { label: "Won", cls: "bg-emerald-50 text-emerald-700 ring-emerald-600/20" };
-    case "lost":
-      return { label: "Lost", cls: "bg-stone-100 text-stone-500 ring-stone-400/20" };
-    default:
-      return { label: "New", cls: "bg-amber-50 text-amber-700 ring-amber-600/20" };
-  }
-}
-
-function InquiryCard({ i }: { i: InquiryRow }) {
-  const pill = statusPill(i);
-  return (
-    <div className="border border-line bg-ivory p-5">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <h3 className="font-display text-xl text-ink">{i.name}</h3>
-          <p className="mt-0.5 text-sm text-ink-soft">
-            {i.event_date ? formatEventDate(i.event_date) : "Date TBD"}
-            {i.venue && <span> · {i.venue}</span>}
-          </p>
-        </div>
-        <span
-          className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider ring-1 ${pill.cls}`}
-        >
-          {pill.label}
-        </span>
-      </div>
-
-      <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-        <div>
-          <dt className="text-[0.7rem] uppercase tracking-[0.14em] text-ink-faint">
-            Wants
-          </dt>
-          <dd className="text-ink">
-            {(i.services && SERVICE_LABEL[i.services]) || i.services || "—"}
-            {i.budget_range && (
-              <span className="text-ink-soft"> · {i.budget_range}</span>
-            )}
-          </dd>
-        </div>
-        <div>
-          <dt className="text-[0.7rem] uppercase tracking-[0.14em] text-ink-faint">
-            Heard via
-          </dt>
-          <dd className="text-ink">
-            {i.referral || <span className="text-ink-faint">—</span>}
-          </dd>
-        </div>
-        <div className="col-span-2">
-          <dt className="text-[0.7rem] uppercase tracking-[0.14em] text-ink-faint">
-            Contact
-          </dt>
-          <dd className="text-ink">
-            <a className="underline decoration-line hover:text-wine" href={`mailto:${i.email}`}>
-              {i.email}
-            </a>
-            {i.phone && (
-              <>
-                {" · "}
-                <a className="underline decoration-line hover:text-wine" href={`tel:${i.phone}`}>
-                  {i.phone}
-                </a>
-              </>
-            )}
-          </dd>
-        </div>
-        {i.message && (
-          <div className="col-span-2">
-            <dt className="text-[0.7rem] uppercase tracking-[0.14em] text-ink-faint">
-              Message
-            </dt>
-            <dd className="whitespace-pre-wrap text-ink-soft">{i.message}</dd>
-          </div>
-        )}
-      </dl>
-
-      <p className="mt-4 text-[0.7rem] uppercase tracking-[0.14em] text-ink-faint">
-        Inquired {shortDate(i.created_at)}
-        {i.last_touch_at && <span> · last touch {shortDate(i.last_touch_at)}</span>}
-      </p>
-    </div>
-  );
-}
-
-export default async function AdminInquiries() {
-  const inquiries = await getInquiries();
-  const open = countOpenLeads(inquiries);
-
-  return (
-    <main className="mx-auto max-w-4xl px-5 py-12">
-      <Link
-        href="/admin"
-        className="text-[0.72rem] uppercase tracking-[0.18em] text-ink-faint hover:text-wine"
-      >
-        ← Studio
-      </Link>
-      <h1 className="mt-3 font-display text-3xl text-ink">Leads</h1>
-      <p className="mt-2 text-sm text-ink-soft">
-        {inquiries.length === 0
-          ? "Inquiries from your contact form will land here."
-          : `${open} open · ${inquiries.length} total`}
-      </p>
-
-      {inquiries.length === 0 ? (
-        <div className="mt-10 border border-dashed border-line bg-ivory p-10 text-center">
-          <p className="text-sm text-ink-soft">
-            No leads yet. Every inquiry form submission shows up here with the
-            family&apos;s date, budget, and message — so you can follow up fast.
-          </p>
-        </div>
-      ) : (
-        <div className="mt-8 space-y-4">
-          {inquiries.map((i) => (
-            <InquiryCard key={i.id} i={i} />
-          ))}
-        </div>
-      )}
-    </main>
-  );
+  const counts: Record<View, number> = { all: inquiries.length, due: countDue(work), unreplied: work.filter((item) => item.priority === "unreplied").length, open: work.length, won: inquiries.filter((item) => item.status === "won").length, lost: inquiries.filter((item) => item.status === "lost").length };
+  return <main className="mx-auto max-w-[92rem] px-5 pb-20 pt-8 sm:px-8 lg:px-12 lg:pt-12">
+    <p className="text-xs font-medium uppercase tracking-[0.18em] text-accent">Client relationships</p><h1 className="mt-2 font-display text-3xl text-ink sm:text-4xl">Inquiries</h1><p className="mt-3 max-w-2xl text-base text-ink-soft">Find every family, see who needs a reply, and keep your next step in one place.</p>
+    <form action="/admin/inquiries" className="mt-8 flex flex-wrap gap-3"><label htmlFor="inquiry-search" className="sr-only">Search inquiries</label><input id="inquiry-search" name="q" defaultValue={params.q ?? ""} placeholder="Search name, email, venue, or service" className="min-h-12 min-w-0 flex-1 rounded-xl border border-line bg-white px-4 text-base text-ink placeholder:text-ink-faint sm:min-w-80"/><input type="hidden" name="view" value={view}/><button className="min-h-12 rounded-xl bg-ink px-6 text-sm font-medium text-cream hover:bg-accent">Search</button></form>
+    <nav aria-label="Inquiry views" className="mt-7 flex gap-2 overflow-x-auto pb-2">{views.map((item) => <Link key={item.id} href={`/admin/inquiries?view=${item.id}${query ? `&q=${encodeURIComponent(query)}` : ""}`} aria-current={view === item.id ? "page" : undefined} className={`inline-flex min-h-11 shrink-0 items-center rounded-full border px-4 text-sm ${view === item.id ? "border-ink bg-ink text-cream" : "border-line bg-white text-ink-soft hover:text-ink"}`}>{item.label}<span className="ml-2 tabular-nums opacity-70">{counts[item.id]}</span></Link>)}</nav>
+    <section className="mt-5 overflow-hidden rounded-2xl border border-line bg-white" aria-label="Inquiry results">{filtered.length ? filtered.map((item) => { const next = byId.get(item.id); const label = next?.priority === "overdue" ? "Overdue" : next?.priority === "due_today" ? "Due today" : next?.priority === "unreplied" ? "Needs reply" : next?.priority === "scheduled" ? "Scheduled" : item.status === "won" ? "Won" : item.status === "lost" ? "Lost" : item.unsubscribed_at ? "Unsubscribed" : "Open"; return <Link key={item.id} href={`/admin/inquiries/${item.id}`} className="group flex min-h-28 flex-col gap-3 border-b border-line px-5 py-5 last:border-0 hover:bg-ivory sm:flex-row sm:items-center sm:justify-between sm:px-7"><div className="min-w-0"><div className="flex flex-wrap items-center gap-3"><h2 className="font-display text-2xl text-ink group-hover:text-accent">{item.name}</h2><span className={`rounded-full px-2.5 py-1 text-xs font-medium ${label === "Overdue" || label === "Due today" ? "bg-amber-100 text-amber-900" : label === "Needs reply" ? "bg-rose-50 text-rose-800" : "bg-greige text-ink-soft"}`}>{label}</span></div><p className="mt-1 text-sm text-ink-soft">{item.event_date ? formatEventDate(item.event_date) : "Date to confirm"}{item.venue ? ` · ${item.venue}` : ""}</p><p className="mt-1 text-sm text-ink-soft">{next?.nextReminder?.due_at ? `Next follow-up ${new Date(next.nextReminder.due_at).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/Chicago" })}` : next?.lastContact ? "No next step set" : next ? "No personal contact recorded" : item.email}</p></div><span className="self-end text-sm font-medium text-accent sm:self-auto">Open client ↗</span></Link> }) : <div className="p-10 text-center"><h2 className="font-display text-2xl text-ink">No inquiries in this view.</h2><p className="mt-2 text-sm text-ink-soft">Try another view or search term.</p><Link href="/admin/inquiries" className="mt-4 inline-flex min-h-11 items-center text-sm font-medium text-accent underline">See all inquiries</Link></div>}</section>
+  </main>;
 }

@@ -10,6 +10,7 @@ import {
   enSlugForEs,
   type BlogCategory,
 } from "@/content/blog";
+import { getBlogImages } from "@/lib/content-db";
 import { BlogContent } from "@/components/BlogContent";
 import { Reveal } from "@/components/Reveal";
 
@@ -83,6 +84,10 @@ export default async function EsBlogPostPage({
   const enSlug = enSlugForEs(post.slug);
   const toc = post.content.filter((b) => b.type === "h2") as { type: "h2"; text: string }[];
   const related = relatedEsPosts(post);
+  const images = await getBlogImages(post.content);
+  const imageUrls = Object.values(images).map((im) =>
+    im.url.startsWith("http") ? im.url : `${site.url}${im.url}`,
+  );
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -99,6 +104,7 @@ export default async function EsBlogPostPage({
         publisher: { "@type": "Organization", name: site.brand, url: site.url },
         mainEntityOfPage: url,
         articleSection: post.category,
+        ...(imageUrls.length ? { image: imageUrls } : {}),
       },
       {
         "@type": "BreadcrumbList",
@@ -133,12 +139,12 @@ export default async function EsBlogPostPage({
       <article className="mx-auto max-w-3xl px-5 pt-section md:px-10 lg:px-16 md:pt-section-lg">
         <div className="flex items-center justify-between gap-4">
           <nav className="text-xs text-ink-faint" aria-label="Ruta">
-            <Link href="/" className="hover:text-wine">Inicio</Link>
+            <Link href="/" className="hover:text-accent">Inicio</Link>
             <span className="mx-1.5">/</span>
-            <Link href="/es/blog" className="hover:text-wine">Guía</Link>
+            <Link href="/es/blog" className="hover:text-accent">Guía</Link>
           </nav>
           {enSlug ? (
-            <Link href={`/blog/${enSlug}`} hrefLang="en" className="text-xs text-wine underline underline-offset-2 hover:text-wine-deep">
+            <Link href={`/blog/${enSlug}`} hrefLang="en" className="text-xs text-accent underline underline-offset-2 hover:text-accent-strong">
               Read in English
             </Link>
           ) : null}
@@ -154,22 +160,28 @@ export default async function EsBlogPostPage({
         </Reveal>
 
         {toc.length >= 4 ? (
-          <div className="mt-10 rounded-2xl border border-line bg-greige p-5">
-            <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">En esta guía</p>
-            <ul className="mt-3 flex flex-col gap-1.5">
-              {toc.map((h) => (
+          <nav aria-label="En esta guía" className="mt-10 border-y border-ink/10 py-6">
+            <p className="text-[0.6rem] uppercase tracking-[0.24em] text-ink-faint">En esta guía</p>
+            <ul className="mt-4 flex flex-col gap-2.5">
+              {toc.map((h, idx) => (
                 <li key={h.text}>
-                  <a href={`#${slugifyHeading(h.text)}`} className="text-sm text-ink-soft hover:text-wine">
-                    {h.text}
+                  <a
+                    href={`#${slugifyHeading(h.text)}`}
+                    className="group inline-flex items-baseline gap-3 text-[0.95rem] text-ink-soft transition-colors hover:text-accent"
+                  >
+                    <span className="font-display text-xs tabular-nums text-ink-faint">
+                      {String(idx + 1).padStart(2, "0")}
+                    </span>
+                    <span className="underline-offset-4 group-hover:underline">{h.text}</span>
                   </a>
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
         ) : null}
 
         <div className="mt-10">
-          <BlogContent blocks={post.content} />
+          <BlogContent blocks={post.content} images={images} />
         </div>
 
         {post.faqs && post.faqs.length ? (
@@ -187,17 +199,19 @@ export default async function EsBlogPostPage({
         ) : null}
 
         {related.length ? (
-          <section className="mt-14">
-            <p className="eyebrow mb-5">Sigue leyendo</p>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {related.map((r) => (
+          <section className="mt-16 border-t border-ink/10 pt-10">
+            <p className="eyebrow mb-2">Sigue leyendo</p>
+            <div>
+              {related.map((r, idx) => (
                 <Link
                   key={r.slug}
                   href={`/es/blog/${r.slug}`}
-                  className="group rounded-2xl border border-line bg-white p-5 transition-colors hover:border-wine"
+                  className={`group block py-5 ${idx > 0 ? "border-t border-ink/10" : ""}`}
                 >
-                  <p className="text-[0.62rem] uppercase tracking-[0.16em] text-ink-faint">{CATEGORY_ES[r.category]}</p>
-                  <h3 className="mt-2 font-display text-lg leading-tight text-ink group-hover:text-wine">{r.title}</h3>
+                  <p className="text-[0.6rem] uppercase tracking-[0.2em] text-ink-faint">{CATEGORY_ES[r.category]}</p>
+                  <h3 className="mt-1.5 font-display text-lg leading-tight text-ink transition-colors group-hover:text-accent md:text-xl">
+                    {r.title}
+                  </h3>
                 </Link>
               ))}
             </div>

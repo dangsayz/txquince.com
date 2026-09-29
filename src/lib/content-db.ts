@@ -2,6 +2,9 @@ import "server-only";
 import { cache } from "react";
 import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
 import type { VideoProvider } from "@/lib/video";
+import type { BlogBlock } from "@/content/blog";
+import { getVenue, venueSlugify } from "@/content/venues";
+import { resolveHeroFocus } from "@/lib/hero-focus";
 
 /**
  * INTERNAL storage URL — only ever fetched server-side (by /api/img). Raw
@@ -37,6 +40,19 @@ export function imagePagePath(section: string, slug: string): string {
   return `/photos/${section}/${slug}`;
 }
 
+/** A vendor credited on a photo — the PUBLIC-safe shape (no email/phone). */
+export type ImageVendorCredit = {
+  vendor_id: string;
+  name: string;
+  business: string | null;
+  slug: string;
+  category: string | null;
+  ig_handle: string | null;
+  website: string | null;
+  /** Credit label override; falls back to the category's credit word. */
+  role: string | null;
+};
+
 export type PortfolioImage = {
   id: string;
   storage_path: string;
@@ -55,9 +71,31 @@ export type PortfolioImage = {
   title?: string | null;
   caption?: string | null;
   city?: string | null;
+  /** Short punchy line shown under the title. */
+  hook?: string | null;
+  /** Free-form comma-separated keywords (meta) for search/SEO. */
+  tags?: string | null;
+  /** Vendors credited on this photo (public-safe). */
+  vendors?: ImageVendorCredit[];
   /** Branded serve URL (/api/img/{slug}) — never the raw bucket URL. */
   url: string;
 };
+
+/** A vendor directory record — FULL shape (admin only; email/phone private). */
+export type Vendor = {
+  id: string;
+  name: string;
+  business: string | null;
+  category: string | null;
+  ig_handle: string | null;
+  email: string | null;
+  phone: string | null;
+  website: string | null;
+  notes: string | null;
+  slug: string;
+};
+
+export type VideoOrientation = "landscape" | "vertical";
 
 export type VideoRow = {
   id: string;
@@ -68,9 +106,56 @@ export type VideoRow = {
   poster_url: string | null;
   is_feature: boolean;
   sort_order: number;
+  orientation: VideoOrientation;
 };
 
-/** All portfolio images, ordered. Empty array if storage/DB not configured. */
+/**
+ * Vendor credits keyed by image id. Small tables, so we load both in full and
+ * stitch in memory (one map reused across every image this request). Guarded:
+ * if the vendor tables don't exist yet (migration not applied) it returns an
+ * empty map and the gallery renders exactly as before.
+ */
+const loadVendorCredits = cache(
+  async (): Promise<Map<string, ImageVendorCredit[]>> => {
+    const map = new Map<string, ImageVendorCredit[]>();
+    if (!isSupabaseConfigured()) return map;
+    try {
+      const supabase = getServiceSupabase();
+      const [linksRes, vendorsRes] = await Promise.all([
+        supabase.from("portfolio_image_vendors").select("image_id, vendor_id, role"),
+        supabase
+          .from("vendors")
+          .select("id, name, business, slug, category, ig_handle, website"),
+      ]);
+      const links = linksRes.data;
+      const vendors = vendorsRes.data;
+      if (!links || !vendors) return map;
+      const vById = new Map(vendors.map((v) => [v.id as string, v]));
+      for (const l of links) {
+        const v = vById.get(l.vendor_id as string);
+        if (!v) continue;
+        const list = map.get(l.image_id as string) ?? [];
+        list.push({
+          vendor_id: v.id as string,
+          name: v.name as string,
+          business: (v.business as string) ?? null,
+          slug: v.slug as string,
+          category: (v.category as string) ?? null,
+          ig_handle: (v.ig_handle as string) ?? null,
+          website: (v.website as string) ?? null,
+          role: (l.role as string) ?? null,
+        });
+        map.set(l.image_id as string, list);
+      }
+    } catch {
+      /* vendor tables not present yet — credits stay empty */
+    }
+    return map;
+  },
+);
+
+/** All portfolio images, ordered, with vendor credits attached. Empty array if
+ *  storage/DB not configured. */
 export const getPortfolioImages = cache(async (): Promise<PortfolioImage[]> => {
   if (!isSupabaseConfigured()) return [];
   try {
@@ -78,17 +163,21 @@ export const getPortfolioImages = cache(async (): Promise<PortfolioImage[]> => {
     // select("*") so newly-added columns (e.g. focal anchors) flow through
     // without a brittle hand-kept list — and a lagging migration can never
     // blank the gallery.
-    const { data, error } = await supabase
-      .from("portfolio_images")
-      .select("*")
-      .order("section", { ascending: true })
-      .order("sort_order", { ascending: true });
+    const [{ data, error }, credits] = await Promise.all([
+      supabase
+        .from("portfolio_images")
+        .select("*")
+        .order("section", { ascending: true })
+        .order("sort_order", { ascending: true }),
+      loadVendorCredits(),
+    ]);
     if (error || !data) return [];
     // Branded serve route when a slug exists (always, post-0017); raw URL is
     // the last-resort fallback so a missing slug shows the photo rather than 404.
     return data.map((r) => ({
       ...r,
       url: r.slug ? imageServeUrl(r.slug, r.storage_path) : storageUrl(r.storage_path),
+      vendors: credits.get(r.id as string) ?? [],
     }));
   } catch {
     return [];
@@ -101,18 +190,157 @@ export const getImageBySlug = cache(
     if (!isSupabaseConfigured()) return null;
     try {
       const supabase = getServiceSupabase();
-      const { data, error } = await supabase
-        .from("portfolio_images")
-        .select("*")
-        .eq("slug", slug)
-        .maybeSingle();
+      const [{ data, error }, credits] = await Promise.all([
+        supabase.from("portfolio_images").select("*").eq("slug", slug).maybeSingle(),
+        loadVendorCredits(),
+      ]);
       if (error || !data) return null;
-      return { ...data, url: imageServeUrl(data.slug as string, data.storage_path) };
+      return {
+        ...data,
+        url: imageServeUrl(data.slug as string, data.storage_path),
+        vendors: credits.get(data.id as string) ?? [],
+      };
     } catch {
       return null;
     }
   },
 );
+
+export type ResolvedBlogImage = {
+  url: string;
+  width: number | null;
+  height: number | null;
+  alt: string;
+  caption: string | null;
+};
+
+/**
+ * Resolve every `image` block in a post to a servable photo (branded URL + real
+ * dimensions for zero layout shift + a fallback alt), keyed by slug. Powers
+ * inline blog images. A slug that doesn't resolve is simply omitted — the
+ * renderer then shows nothing rather than a broken/placeholder frame.
+ */
+export async function getBlogImages(
+  blocks: BlogBlock[],
+): Promise<Record<string, ResolvedBlogImage>> {
+  const slugs = Array.from(
+    new Set(blocks.flatMap((b) => (b.type === "image" ? [b.slug] : []))),
+  );
+  const out: Record<string, ResolvedBlogImage> = {};
+  await Promise.all(
+    slugs.map(async (s) => {
+      const im = await getImageBySlug(s);
+      if (im?.slug) {
+        out[im.slug] = {
+          url: im.url,
+          width: im.width,
+          height: im.height,
+          alt: im.alt,
+          caption: im.caption ?? null,
+        };
+      }
+    }),
+  );
+  return out;
+}
+
+/** Every vendor in the directory, ordered by name. Empty if not configured /
+ *  tables absent. FULL records (admin use); strip email/phone before rendering
+ *  publicly. */
+export const getVendors = cache(async (): Promise<Vendor[]> => {
+  if (!isSupabaseConfigured()) return [];
+  try {
+    const supabase = getServiceSupabase();
+    const { data, error } = await supabase
+      .from("vendors")
+      .select("id, name, business, category, ig_handle, email, phone, website, notes, slug")
+      .order("name", { ascending: true });
+    if (error || !data) return [];
+    return data as Vendor[];
+  } catch {
+    return [];
+  }
+});
+
+/** One vendor by public slug. */
+export const getVendorBySlug = cache(
+  async (slug: string): Promise<Vendor | null> => {
+    const all = await getVendors();
+    return all.find((v) => v.slug === slug) ?? null;
+  },
+);
+
+/** Every photo that credits a given vendor (by slug), in gallery order. */
+export async function getImagesByVendor(slug: string): Promise<PortfolioImage[]> {
+  const target = slug.trim().toLowerCase();
+  if (!target) return [];
+  const all = await getPortfolioImages();
+  return all.filter((i) => i.vendors?.some((v) => v.slug.toLowerCase() === target));
+}
+
+/* ── Venues ──────────────────────────────────────────────────────────────
+ * Venue FACTS come from the shared registry (src/content/venues.ts); this is
+ * the editable COPY (about + FAQ) authored in /admin/venues + drafted by AI. */
+export type VenueFaq = { q: string; a: string };
+export type VenueCopy = {
+  slug: string;
+  about: string | null;
+  faq: VenueFaq[];
+  address: string | null;
+  area: string | null;
+  ig_handle: string | null;
+  website: string | null;
+};
+
+/** All venue copy rows, keyed by slug. Guarded (empty if table absent). */
+export const getAllVenueCopy = cache(async (): Promise<Record<string, VenueCopy>> => {
+  const out: Record<string, VenueCopy> = {};
+  if (!isSupabaseConfigured()) return out;
+  try {
+    const supabase = getServiceSupabase();
+    const { data, error } = await supabase
+      .from("venues")
+      .select("slug, about, faq, address, area, ig_handle, website");
+    if (error || !data) return out;
+    for (const r of data) {
+      out[r.slug as string] = {
+        slug: r.slug as string,
+        about: (r.about as string) ?? null,
+        faq: Array.isArray(r.faq) ? (r.faq as VenueFaq[]) : [],
+        address: (r.address as string) ?? null,
+        area: (r.area as string) ?? null,
+        ig_handle: (r.ig_handle as string) ?? null,
+        website: (r.website as string) ?? null,
+      };
+    }
+  } catch {
+    /* venues table not present yet */
+  }
+  return out;
+});
+
+/** Editable copy for one venue (null if none authored yet). */
+export const getVenueCopy = cache(
+  async (slug: string): Promise<VenueCopy | null> => (await getAllVenueCopy())[slug] ?? null,
+);
+
+/** Photos shot at a registry venue (matched on the `location` the ingest script
+ *  stamps), in gallery order. */
+export async function getImagesByVenue(slug: string): Promise<PortfolioImage[]> {
+  const v = getVenue(slug);
+  if (!v) return [];
+  const all = await getPortfolioImages();
+  const venueLc = v.venue.toLowerCase();
+  return all.filter((i) => {
+    const loc = (i.location ?? "").trim();
+    if (!loc) return false;
+    return (
+      loc === v.locationTag ||
+      venueSlugify(loc) === v.slug ||
+      loc.toLowerCase().includes(venueLc)
+    );
+  });
+}
 
 export async function getImagesBySection(section: string): Promise<PortfolioImage[]> {
   return (await getPortfolioImages()).filter((i) => i.section === section);
@@ -122,6 +350,21 @@ export async function getFeaturedImages(limit = 9): Promise<PortfolioImage[]> {
   const all = await getPortfolioImages();
   const featured = all.filter((i) => i.is_feature);
   return (featured.length ? featured : all).slice(0, limit);
+}
+
+/**
+ * Photos tagged with a given city (slug, e.g. "dallas") — powers the per-city
+ * gallery so each /quinceanera-photographer/<city> page shows its OWN real work
+ * instead of the same featured set everywhere. Empty until the operator tags
+ * images by city in /admin/portfolio (callers fall back to featured).
+ */
+export async function getImagesByCity(citySlug: string, limit = 6): Promise<PortfolioImage[]> {
+  const target = citySlug.trim().toLowerCase();
+  if (!target) return [];
+  const all = await getPortfolioImages();
+  return all
+    .filter((i) => (i.city ?? "").trim().toLowerCase() === target)
+    .slice(0, limit);
 }
 
 /** Raw hero image source — server-only, consumed by /api/img/hero. */
@@ -149,6 +392,9 @@ export type HeroMedia = {
   provider: VideoProvider | null;
   videoId: string | null;
   posterUrl: string | null;
+  focusX: number;
+  focusY: number;
+  updatedAt: string;
 };
 
 /**
@@ -161,7 +407,7 @@ export const getHeroMedia = cache(async (): Promise<HeroMedia | null> => {
     const supabase = getServiceSupabase();
     const { data, error } = await supabase
       .from("site_settings")
-      .select("value")
+      .select("value, updated_at")
       .eq("key", "hero_media")
       .maybeSingle();
     if (error || !data?.value) return null;
@@ -179,11 +425,109 @@ export const getHeroMedia = cache(async (): Promise<HeroMedia | null> => {
       provider: (v.provider as VideoProvider) ?? null,
       videoId: v.videoId ?? null,
       posterUrl: v.posterUrl ?? null,
+      ...resolveHeroFocus(v),
+      updatedAt: data.updated_at as string,
     };
   } catch {
     return null;
   }
 });
+
+/**
+ * Pages that support an operator-chosen hero (each leads with a full-bleed
+ * cinematic photo). Key → the public path to revalidate on change. The API
+ * route validates against this same map, so it's the single allowlist.
+ */
+export const HERO_PAGES: Record<string, { label: string; path: string }> = {
+  blog: { label: "Guide (Blog)", path: "/blog" },
+  guide: { label: "Quinceañera Guide", path: "/quinceanera-guide" },
+  investment: { label: "Investment", path: "/investment" },
+  about: { label: "About", path: "/about" },
+  areas: { label: "Areas Served", path: "/quinceanera-photographer" },
+};
+
+/**
+ * The operator-chosen hero for a marketing page, set in /admin/hero. Stored in
+ * site_settings under `page_hero:<page>` as `{ slug }` referencing a photo
+ * already in the portfolio library (so it carries its own focus anchor, alt,
+ * and dimensions). Returns null → the page falls back to its automatic
+ * top-featured pick. Cached per page key for the request.
+ */
+export const getPageHero = cache(async (page: string): Promise<PortfolioImage | null> => {
+  if (!isSupabaseConfigured()) return null;
+  try {
+    const supabase = getServiceSupabase();
+    const { data } = await supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", `page_hero:${page}`)
+      .maybeSingle();
+    const slug = (data?.value as { slug?: string } | undefined)?.slug;
+    if (!slug) return null;
+    const all = await getPortfolioImages();
+    return all.find((i) => i.slug === slug) ?? null;
+  } catch {
+    return null;
+  }
+});
+
+/**
+ * Editable static-cover slots — the brand "plate" images (home + contact) that
+ * are NOT portfolio rows. The admin can replace each in place; the upload is
+ * stored in site_settings under `cover:<slot>` as { storage_path, width, height }
+ * and served, like the hero, through the branded /api/img/cover-<slot> route.
+ * `path` is the public route to revalidate when the slot changes. This object is
+ * also the single allowlist the admin API validates against.
+ */
+export const COVER_SLOTS: Record<string, { label: string; path: string }> = {
+  "home-brand": { label: "Home — TXQUINCE plate", path: "/" },
+  contact: { label: "Contact plate", path: "/check-your-date" },
+};
+
+type CoverValue = { storage_path: string; width: number; height: number };
+
+/** Raw storage URL for a cover slot — server-only, used by /api/img/cover-<slot>. */
+export async function getCoverRawImageUrl(slot: string): Promise<string | null> {
+  if (!isSupabaseConfigured()) return null;
+  try {
+    const supabase = getServiceSupabase();
+    const { data } = await supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", `cover:${slot}`)
+      .maybeSingle();
+    const v = data?.value as Partial<CoverValue> | undefined;
+    return v?.storage_path ? storageUrl(v.storage_path) : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Resolve a cover slot for rendering: the admin override (branded route + the
+ * uploaded image's stored dimensions, for zero CLS) or the static fallback file.
+ */
+export async function getCoverImage(
+  slot: string,
+  fallback: { src: string; width: number; height: number },
+): Promise<{ src: string; width: number; height: number }> {
+  if (!isSupabaseConfigured()) return fallback;
+  try {
+    const supabase = getServiceSupabase();
+    const { data } = await supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", `cover:${slot}`)
+      .maybeSingle();
+    const v = data?.value as Partial<CoverValue> | undefined;
+    if (v?.storage_path && v.width && v.height) {
+      return { src: `/api/img/cover-${slot}`, width: v.width, height: v.height };
+    }
+  } catch {
+    /* fall back to the static default */
+  }
+  return fallback;
+}
 
 /** All videos, ordered. */
 export const getVideos = cache(async (): Promise<VideoRow[]> => {
@@ -192,7 +536,7 @@ export const getVideos = cache(async (): Promise<VideoRow[]> => {
     const supabase = getServiceSupabase();
     const { data, error } = await supabase
       .from("videos")
-      .select("id, url, provider, video_id, title, poster_url, is_feature, sort_order")
+      .select("id, url, provider, video_id, title, poster_url, is_feature, sort_order, orientation")
       .order("sort_order", { ascending: true });
     if (error || !data) return [];
     return data as VideoRow[];

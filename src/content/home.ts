@@ -7,7 +7,7 @@ export const home = {
   hero: {
     headline: "Her quinceañera, remembered exactly as it felt.",
     subline:
-      "Cinematic quinceañera photography & film across Dallas–Fort Worth.",
+      "Browse quinceañera photography and film across Dallas–Fort Worth.",
   },
 
   // THE EXPERIENCE — reliability is the anti-flaky-vendor differentiator.
@@ -42,16 +42,22 @@ export const home = {
     body: "Her voice, the music, the room — a highlight film the whole family returns to.",
   },
 
+  shorts: {
+    eyebrow: "Shorts",
+    heading: "Quick moments, straight from the day.",
+    body: "Bite-sized clips from real quinceañeras — the entrance, the vals, the reaction shots.",
+  },
+
   // AVAILABILITY — the homepage micro-commitment (live date check).
   checkDate: {
     heading: "Is her date still open?",
-    body: "One celebration per day, no exceptions. Check your date — if it's open, you can hold it in two minutes.",
+    body: "Share the date you are considering. We'll check the calendar and personally reply within 24 hours.",
   },
 
   packages: {
     eyebrow: "Investment",
-    heading: "Collections starting at $2,500.",
-    body: "Fixed pricing, no surprises — reserve with a $500 deposit and split the rest into interest-free payments. Most families choose Signature.",
+    heading: "Collections starting at $1,800.",
+    body: "Fixed pricing, no surprises — reserve from a $300 deposit and split the rest into interest-free payments. Most families choose Signature.",
     cta: "See all collections",
   },
 
@@ -62,7 +68,7 @@ export const home = {
     items: [
       {
         q: "Do you offer payment plans?",
-        a: "Yes. A $500 deposit reserves your date, and the balance splits into interest-free installments before the day — pay in full or in payments, your choice at checkout.",
+        a: "Yes. Deposits start at $300 and scale with the collection. After we confirm the date, the balance can be split into interest-free installments before the celebration.",
       },
       {
         q: "¿Hablan español?",

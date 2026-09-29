@@ -11,7 +11,7 @@ const post: BlogPost = {
     "Cómo elegir al fotógrafo indicado para los quince de su hija: los estilos explicados, lo que muestra un portafolio de verdad y lo que debe verificar para proteger su dinero y su fecha.",
   publishedAt: "2026-06-09",
   readMinutes: 9,
-  lead: "Los quince años de su hija pasan una sola vez. Las fotos y el video son lo que queda cuando se marchitan las flores y el vestido vuelve al clóset; por eso elegir al fotógrafo correcto pesa más que casi cualquier otra decisión de proveedor. Esta es la guía honesta, pensada para Dallas–Fort Worth: cómo leer un portafolio, qué significan de verdad los estilos y exactamente qué debe verificar antes de entregar un anticipo.",
+  lead: "Los quince años de su hija pasan una sola vez. Las fotos y el video son lo que queda cuando se marchitan las flores y el vestido vuelve al clóset; por eso elegir al fotógrafo correcto pesa más que casi cualquier otra decisión de proveedor. Esta guía, pensada para Dallas–Fort Worth, le muestra cómo leer un portafolio, qué significan de verdad los estilos y exactamente qué debe verificar antes de entregar un anticipo.",
   content: [
     { type: "h2", text: "Empiece por el estilo que de verdad quiere" },
     {
@@ -78,8 +78,8 @@ const post: BlogPost = {
     },
     {
       type: "cta",
-      heading: "Vea las tres colecciones y qué incluye cada una",
-      body: "Essential, Signature y Legacy: precios fijos, todo lo que incluye cada paquete y una verificación de fecha en tiempo real, todo en una sola página.",
+      heading: "Vea las cuatro colecciones y qué incluye cada una",
+      body: "Moments, Essential, Signature y Legacy: precios fijos, todo lo que incluye cada paquete y una verificación de fecha en tiempo real, todo en una sola página.",
       href: "/investment",
       label: "Ver colecciones y precios",
     },
@@ -106,7 +106,7 @@ const post: BlogPost = {
     { type: "h2", text: "Conocer las locaciones de DFW es señal de calidad" },
     {
       type: "p",
-      text: "Un fotógrafo que de verdad trabaja en Dallas–Fort Worth sabe dónde cae bien la luz por la tarde, qué parques y salones permiten sesiones de retrato y cómo planear alrededor del tráfico y el clima del metroplex. Pregúntele dónde haría sus retratos pre-quince: un verdadero conocedor de la zona le nombrará lugares específicos (el Dallas Arboretum, los Fort Worth Water Gardens, Main Street en Grapevine) y le explicará por qué cada uno funciona con su vestido y su horario. Un fotógrafo que llega de fuera, sin conocer el área, no puede darle eso.",
+      text: "Un fotógrafo que de verdad trabaja en Dallas–Fort Worth sabe dónde cae bien la luz por la tarde, qué parques y salones permiten sesiones de retrato y cómo planear alrededor del tráfico y el clima del metroplex. Pregúntele dónde haría sus retratos pre-quince: un verdadero conocedor de la zona le nombrará lugares específicos (el Dallas Arboretum, los Fort Worth Water Gardens, Main Street en Grapevine) y le explicará por qué cada uno funciona con su vestido y su horario. Un fotógrafo que llega de fuera, sin conocer el área, no puede darle eso. Esa familiaridad con la zona es la razón por la que mantengo páginas dedicadas para las ciudades que más fotografío — [Irving](/es/fotografo-de-quinceaneras/irving), [Arlington](/es/fotografo-de-quinceaneras/arlington) y [Grand Prairie](/es/fotografo-de-quinceaneras/grand-prairie) — cada una con las parroquias, los salones y los lugares de retrato que de verdad le quedan a una quince ahí.",
     },
     {
       type: "quote",
@@ -119,7 +119,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Si ya tiene una fecha en mente, puede [verificar si está disponible](/check-your-date) en unos segundos, leer [cuándo reservar a su fotógrafo](/es/blog/cuando-reservar-fotografo-quinceanera-dfw) para no perder su sábado, o ir directo a [reservar su fecha](/reserve) cuando esté lista. Y si el costo es su siguiente pregunta, aquí está [cuánto cuesta de verdad un fotógrafo de quinceañera en DFW](/es/blog/cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth). Si busca a alguien por zona, también tenemos [fotógrafo de quinceañeras en Dallas](/es/fotografo-de-quinceaneras/dallas) y en [Fort Worth](/es/fotografo-de-quinceaneras/fort-worth).",
+      text: "Si ya tiene una fecha en mente, puede [verificar si está disponible](/check-your-date) en unos segundos, leer [cuándo reservar a su fotógrafo](/es/blog/cuando-reservar-fotografo-quinceanera-dfw) para no perder su sábado, o ir directo a [reservar su fecha](/reserve) cuando esté lista. Y si el costo es su siguiente pregunta, vea [cuánto cuesta de verdad un fotógrafo de quinceañera en DFW](/es/blog/cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth). Si busca a alguien por zona, también tenemos [fotógrafo de quinceañeras en Dallas](/es/fotografo-de-quinceaneras/dallas) y en [Fort Worth](/es/fotografo-de-quinceaneras/fort-worth).",
     },
   ],
   faqs: [

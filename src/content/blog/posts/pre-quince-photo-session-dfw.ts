@@ -16,7 +16,7 @@ const post: BlogPost = {
     { type: "h2", text: "What a pre-quince session actually is" },
     {
       type: "p",
-      text: "A pre-quince session — la sesión de fotos de quinceañera, or sesión de pre-quince — is a separate portrait shoot before the celebration itself. It's not the event-day coverage. It's a standalone session, usually a few weeks to a few months ahead, where the focus is entirely on your daughter and her dress without anything else competing for the camera.",
+      text: "A pre-quince session — la sesión de fotos de quinceañera, or sesión de pre-quince — is a separate portrait shoot before the celebration itself, distinct from the event-day coverage. It stands on its own, usually a few weeks to a few months ahead, where the focus is entirely on your daughter and her dress without anything else competing for the camera.",
     },
     {
       type: "p",
@@ -35,6 +35,11 @@ const post: BlogPost = {
       type: "p",
       text: "From a session that length, you can expect a gallery of roughly 40 to 80 fully edited images delivered after the shoot — more than enough for the invitations, the décor, and prints, with frames to spare. You can see how full pre-quince galleries come together in our [session galleries](/portfolio).",
     },
+    {
+      type: "image",
+      slug: "mandalay-canal-walk-zapata-27",
+      caption: "Pre-quince portraits along the Mandalay Canal Walk in Irving.",
+    },
     { type: "h2", text: "Best DFW locations for a pre-quince session" },
     {
       type: "p",
@@ -50,6 +55,11 @@ const post: BlogPost = {
         "Adriatica Village in McKinney — a recreated Croatian seaside village with stone, a bell tower, and waterfront; storybook European backdrops without leaving DFW.",
         "Mandalay Canal in Las Colinas — Venetian-style canal, arched bridges, and walkways for a romantic, water-side set.",
       ],
+    },
+    {
+      type: "image",
+      slug: "mandalay-canal-walk-zapata-50",
+      caption: "Quinceañera portraits at the Mandalay Canal Walk in Irving.",
     },
     {
       type: "p",
@@ -68,6 +78,11 @@ const post: BlogPost = {
         "Fairytale / enchanted — the full ballgown among gardens and blooms, soft and romantic, built for the Arboretum or a botanic garden.",
         "Urban / editorial — a sleeker, fashion-forward look against downtown architecture and city light, strong for a daughter who wants modern over princess.",
       ],
+    },
+    {
+      type: "image",
+      slug: "fort-worth-stockyards-stock-53",
+      caption: "Quinceañera portraits in the Fort Worth Stockyards.",
     },
     {
       type: "cta",
@@ -105,6 +120,11 @@ const post: BlogPost = {
         "Bring any props that match the theme: the tiara, the last doll, the ramo, a bilingual sign for the save-the-date, or boots for a western set.",
       ],
     },
+    {
+      type: "image",
+      slug: "fort-worth-stockyards-001-65",
+      caption: "Western-themed quinceañera portraits in the Fort Worth Stockyards.",
+    },
     { type: "h2", text: "Turnaround — when you'll see the photos" },
     {
       type: "p",
@@ -112,7 +132,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "When you're ready, see whether the session is included in your collection or an add-on on the [investment page](/investment), browse [session galleries](/portfolio) for ideas, and [reserve your date](/reserve). If you're still choosing a photographer, start with [how to choose a quinceañera photographer in DFW](/blog/how-to-choose-quinceanera-photographer-dfw) — and if you're booking the whole celebration, our [quinceañera photographer in Dallas](/quinceanera-photographer/dallas) and [Fort Worth](/quinceanera-photographer/fort-worth) pages cover full event coverage.",
+      text: "When you're ready, book it on its own as a [quinceañera save-the-date session](/quinceanera-save-the-date), or see whether it's already included in your collection or an add-on on the [investment page](/investment), browse [session galleries](/portfolio) for ideas, and [reserve your date](/reserve). If you're still choosing a photographer, start with [how to choose a quinceañera photographer in DFW](/blog/how-to-choose-quinceanera-photographer-dfw) — and if you're booking the whole celebration, our [quinceañera photographer in Dallas](/quinceanera-photographer/dallas) and [Fort Worth](/quinceanera-photographer/fort-worth) pages cover full event coverage.",
     },
   ],
   faqs: [

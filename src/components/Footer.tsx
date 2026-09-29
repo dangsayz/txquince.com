@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { site } from "@/content/site";
 import { locations } from "@/content/locations";
+import { Wordmark } from "@/components/Wordmark";
 
 const COLUMNS = [
   {
@@ -8,6 +9,9 @@ const COLUMNS = [
     links: [
       { label: "Home", href: "/" },
       { label: "Portfolio", href: "/portfolio" },
+      { label: "Venues", href: "/venues" },
+      { label: "Vendors", href: "/vendors" },
+      { label: "Guide", href: "/quinceanera-guide" },
       { label: "Investment", href: "/investment" },
       { label: "About", href: "/about" },
     ],
@@ -17,6 +21,7 @@ const COLUMNS = [
     links: [
       { label: "Reserve your date", href: "/reserve" },
       { label: "Check your date", href: "/check-your-date" },
+      { label: "Save-the-Date", href: "/quinceanera-save-the-date" },
       { label: "Areas served", href: "/quinceanera-photographer" },
     ],
   },
@@ -24,6 +29,7 @@ const COLUMNS = [
     title: "Connect",
     links: [
       { label: "Instagram", href: site.social.instagram, external: true },
+      { label: "YouTube", href: site.social.youtube, external: true },
       { label: "Facebook", href: site.social.facebook, external: true },
       { label: site.contact.email, href: `mailto:${site.contact.email}` },
     ],
@@ -34,51 +40,83 @@ const COLUMNS = [
   },
 ];
 
+const socialPill =
+  "flex h-11 w-11 items-center justify-center rounded-full bg-cream/[0.06] text-cream/70 ring-1 ring-cream/15 transition-colors hover:bg-cream/10 hover:text-cream";
+
 export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative bg-cream pt-section">
-      <div className="mx-auto max-w-5xl px-5 text-center md:px-10 lg:px-16">
-        {/* Wordmark + tagline — masthead lockup, scaled up for the close */}
-        <p className="font-display text-4xl tracking-[0.16em] text-ink md:text-5xl">
-          <span className="text-wine-deep">TX</span> QUINCE
-        </p>
-        <p className="mt-3 text-sm leading-relaxed text-ink-soft">{site.tagline}</p>
+    <footer className="relative overflow-hidden bg-ink text-cream">
+      {/* A quiet accent seam marks the page's close. */}
+      <div
+        aria-hidden
+        className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-wine to-transparent opacity-70"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-28 left-1/2 h-56 w-[130%] -translate-x-1/2 opacity-[0.07]"
+        style={{ background: "radial-gradient(60% 100% at 50% 0%, var(--color-wine), transparent)" }}
+      />
 
-        {/* Social pills */}
-        <div className="mt-6 flex items-center justify-center gap-3">
-          <a
-            href={site.social.instagram}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Instagram"
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-ivory text-ink-soft shadow-[inset_0_0_0_1px_var(--color-line)] transition-colors hover:text-wine"
-          >
-            <IgIcon />
-          </a>
-          {site.social.facebook ? (
-            <a
-              href={site.social.facebook}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Facebook"
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-ivory text-ink-soft shadow-[inset_0_0_0_1px_var(--color-line)] transition-colors hover:text-wine"
+      <div className="relative mx-auto max-w-[90rem] px-5 md:px-10 lg:px-16">
+        {/* Masthead — brand left, the closing CTA + socials right. */}
+        <div className="flex flex-col gap-10 pt-16 md:flex-row md:items-end md:justify-between md:pt-24">
+          <div>
+            <Wordmark size="masthead" tone="dark" />
+            <p className="mt-6 max-w-sm text-base leading-7 text-cream/75">{site.tagline}</p>
+          </div>
+
+          <div className="flex flex-col gap-6 md:items-end">
+            <Link
+              href="/check-your-date"
+              className="group inline-flex min-h-12 items-center gap-3 font-display text-[clamp(1.5rem,2.5vw,2.25rem)] leading-tight text-cream transition-colors hover:text-wine-tint"
             >
-              <FbIcon />
-            </a>
-          ) : null}
+              Check her date
+              <span aria-hidden className="text-wine-tint transition-transform duration-300 group-hover:translate-x-1">→</span>
+            </Link>
+            <div className="flex items-center gap-3">
+              <a
+                href={site.social.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className={socialPill}
+              >
+                <IgIcon />
+              </a>
+              {site.social.youtube ? (
+                <a
+                  href={site.social.youtube}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="YouTube"
+                  className={socialPill}
+                >
+                  <YtIcon />
+                </a>
+              ) : null}
+              {site.social.facebook ? (
+                <a
+                  href={site.social.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className={socialPill}
+                >
+                  <FbIcon />
+                </a>
+              ) : null}
+            </div>
+          </div>
         </div>
 
-      </div>
-
-      {/* Link columns */}
-      <div className="mx-auto max-w-5xl px-5 md:px-10 lg:px-16">
-        <div className="mt-12 grid grid-cols-2 gap-8 border-t border-line pt-10 sm:grid-cols-4">
+        {/* Navigation and service links. */}
+        <div className="mt-16 grid grid-cols-2 gap-x-8 gap-y-10 border-t border-cream/10 pt-12 sm:grid-cols-4 md:mt-20">
           {COLUMNS.map((col) => (
             <div key={col.title}>
-              <p className="text-sm font-semibold text-ink">{col.title}</p>
-              <ul className="mt-3 space-y-2.5">
+              <p className="text-sm font-semibold text-cream">{col.title}</p>
+              <ul className="mt-3">
                 {col.links.filter((l) => l.href).map((l) => (
                   <li key={l.label}>
                     {"external" in l && l.external ? (
@@ -86,14 +124,14 @@ export function Footer() {
                         href={l.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-ink-soft transition-colors hover:text-ink"
+                        className="inline-flex min-h-11 items-center text-base text-cream/75 transition-colors hover:text-cream"
                       >
                         {l.label}
                       </a>
                     ) : (
                       <Link
                         href={l.href}
-                        className="text-sm text-ink-soft transition-colors hover:text-ink"
+                        className="inline-flex min-h-11 items-center text-base text-cream/75 transition-colors hover:text-cream"
                       >
                         {l.label}
                       </Link>
@@ -106,16 +144,16 @@ export function Footer() {
         </div>
 
         {/* Areas served — internal links to the local landing pages (SEO). */}
-        <div className="mt-10 border-t border-line pt-6">
-          <p className="text-[0.7rem] uppercase tracking-[0.18em] text-ink-faint">
+        <div className="mt-14 border-t border-cream/10 pt-7">
+          <p className="text-sm font-semibold text-cream/80">
             Quinceañera photographer serving
           </p>
-          <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-ink-soft">
+          <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-base text-cream/75">
             {locations.map((l) => (
               <Link
                 key={l.slug}
                 href={`/quinceanera-photographer/${l.slug}`}
-                className="transition-colors hover:text-ink"
+                className="inline-flex min-h-11 items-center transition-colors hover:text-cream"
               >
                 {l.city}
               </Link>
@@ -123,12 +161,15 @@ export function Footer() {
           </div>
         </div>
 
-        <p className="mt-8 pb-14 text-center text-xs text-ink-faint">
-          © {year} {site.brand} · {site.serviceArea} ·{" "}
-          <Link href="/admin/login" className="transition-colors hover:text-ink">
+        {/* Bottom bar */}
+        <div className="mt-12 flex flex-col gap-3 border-t border-cream/10 py-8 text-sm text-cream/70 sm:flex-row sm:items-center sm:justify-between">
+          <p>
+            © {year} {site.brand} · {site.serviceArea}
+          </p>
+          <Link href="/admin/login" className="transition-colors hover:text-cream/70">
             Studio
           </Link>
-        </p>
+        </div>
       </div>
     </footer>
   );
@@ -153,6 +194,15 @@ function FbIcon() {
         strokeWidth="1.4"
         strokeLinejoin="round"
       />
+    </svg>
+  );
+}
+
+function YtIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="2.5" y="5.5" width="19" height="13" rx="3.5" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M10.2 9.2v5.6l4.8-2.8-4.8-2.8Z" fill="currentColor" />
     </svg>
   );
 }

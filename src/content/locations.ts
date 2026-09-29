@@ -384,11 +384,28 @@ export const locations: Location[] = [
   },
 ];
 
+/** Public city centroids (lat/lon) for ProfessionalService `geo` structured data. */
+export const cityGeo: Record<string, { lat: number; lon: number }> = {
+  "grand-prairie": { lat: 32.7459, lon: -96.9978 },
+  irving: { lat: 32.814, lon: -96.9489 },
+  garland: { lat: 32.9126, lon: -96.6389 },
+  dallas: { lat: 32.7767, lon: -96.797 },
+  "fort-worth": { lat: 32.7555, lon: -97.3308 },
+  arlington: { lat: 32.7357, lon: -97.1081 },
+  mansfield: { lat: 32.5632, lon: -97.1417 },
+  "farmers-branch": { lat: 32.9265, lon: -96.8961 },
+};
+
 export function getLocation(slug: string): Location | undefined {
   return locations.find((l) => l.slug === slug);
 }
 
-/** Up to `n` other cities for the "also serving" internal links. */
-export function nearbyLocations(slug: string, n = 5): Location[] {
+/**
+ * Other cities for the "also serving" internal links. Defaults to the FULL set
+ * (every other city) so the reciprocal link graph is complete — with 8 cities
+ * the old slice(0,5) silently starved the two tail cities (Mansfield, Farmers
+ * Branch) from every page. `n` stays optional for any caller that wants a cap.
+ */
+export function nearbyLocations(slug: string, n = locations.length): Location[] {
   return locations.filter((l) => l.slug !== slug).slice(0, n);
 }

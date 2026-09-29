@@ -21,6 +21,14 @@
   "images": {
     "binding": "IMAGES"
   },
+  // Portfolio photos (moved off Supabase Storage). PRIVATE — /api/img is the
+  // only public reader, /api/admin/upload the only writer.
+  "r2_buckets": [
+    {
+      "binding": "PORTFOLIO",
+      "bucket_name": "txquince-portfolio"
+    }
+  ],
   "observability": {
     "enabled": true
   },

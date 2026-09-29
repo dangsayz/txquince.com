@@ -8,11 +8,11 @@ const post: BlogPost = {
     "Cronograma completo, mes a mes, para planear una quinceañera en Dallas–Fort Worth: cuándo empezar, por qué se reserva primero al fotógrafo y el salón, y qué hacer si solo le quedan 6 meses.",
   category: "Planning",
   excerpt:
-    "Empiece de 12 a 18 meses antes, reserve primero al fotógrafo y el salón, y de ahí trabaje hacia atrás. Aquí tiene la lista completa, mes a mes.",
+    "Empiece de 12 a 18 meses antes, reserve primero al fotógrafo y el salón, y de ahí trabaje hacia atrás. La lista completa, mes a mes.",
   publishedAt: "2026-06-09",
   readMinutes: 8,
   lang: "es",
-  lead: "Casi todas las familias hacen la misma primera pregunta: ¿con cuánta anticipación hay que empezar? La respuesta honesta es de doce a dieciocho meses, y no porque todo tarde tanto, sino porque los dos proveedores que se llenan primero —el fotógrafo y el salón— son justamente los que no se pueden reemplazar. Aquí le dejamos un plan tranquilo, mes a mes, que trabaja hacia atrás desde la fecha, con una nota al principio para quien va empezando un poco más tarde de lo que quisiera.",
+  lead: "De doce a dieciocho meses. Esa es la anticipación con la que empieza la mayoría de las familias de Dallas–Fort Worth, y la razón no es que cada tarea tarde tanto. Es que los dos proveedores que se llenan primero —el fotógrafo y el salón— son justamente los que no se pueden reemplazar. Lo que sigue es un plan tranquilo, mes a mes, que trabaja hacia atrás desde la fecha, con una nota al principio para quien va empezando un poco más tarde de lo que quisiera.",
   content: [
     { type: "h2", text: "¿Con cuánta anticipación se planea una quinceañera?" },
     {

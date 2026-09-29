@@ -4,7 +4,7 @@ import { z } from "zod";
 import { requireAdmin } from "@/lib/require-admin";
 import { unauthorizedAdminResponse } from "@/lib/admin-auth";
 import { getServiceSupabase } from "@/lib/supabase-server";
-import { parseVideoUrl } from "@/lib/video";
+import { parseVideoUrl, isShortsUrl } from "@/lib/video";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +18,7 @@ const AddSchema = z.object({
   url: z.string().url("Paste a valid link."),
   title: z.string().max(200).optional().default(""),
   poster_url: z.string().url().optional().or(z.literal("")),
+  orientation: z.enum(["landscape", "vertical"]).optional(),
 });
 
 export async function POST(request: Request) {
@@ -29,7 +30,7 @@ export async function POST(request: Request) {
       { status: 400 },
     );
   }
-  const { url, title, poster_url } = parsed.data;
+  const { url, title, poster_url, orientation } = parsed.data;
   const v = parseVideoUrl(url);
 
   const supabase = getServiceSupabase();
@@ -49,6 +50,7 @@ export async function POST(request: Request) {
       video_id: v.videoId,
       title,
       poster_url: poster_url || v.posterUrl,
+      orientation: orientation ?? (isShortsUrl(url) ? "vertical" : "landscape"),
       sort_order,
     })
     .select()
@@ -64,6 +66,7 @@ const UpdateSchema = z.object({
   title: z.string().max(200).optional(),
   poster_url: z.string().url().optional().or(z.literal("")),
   is_feature: z.boolean().optional(),
+  orientation: z.enum(["landscape", "vertical"]).optional(),
 });
 
 export async function PATCH(request: Request) {

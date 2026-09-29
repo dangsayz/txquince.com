@@ -5,13 +5,13 @@ const post: BlogPost = {
   title: "Quinceañera Photo vs. Video: Do You Need Both? (And What Each Costs in DFW)",
   metaTitle: "Quinceañera Photo vs. Video — Do You Need Both? (DFW Costs)",
   description:
-    "Photos or film for your quinceañera — or both? An honest look at what each one captures, what quince videography really includes, and the real DFW cost when you book them together.",
+    "Photos or film for your quinceañera — or both? A clear look at what each one captures, what quince videography includes, and the real DFW cost when you book them together.",
   category: "Photography & Film",
   excerpt:
-    "Photos hold the still, perfect frames. Film holds the sound and the motion — the vals, the speeches, the surprise dance. Here's how to decide, and what each costs in DFW.",
+    "Photos hold the still, perfect frames. Film holds the sound and the motion — the vals, the speeches, the surprise dance. How to decide between them, and what each costs in DFW.",
   publishedAt: "2026-06-09",
   readMinutes: 8,
-  lead: "Almost every parent planning a quinceañera asks the same question: do we really need video, or is a photographer enough? It's a fair question — and the honest answer depends on which moments you can't imagine losing. Here's what photos capture, what film captures, what quince videography actually includes, and the real cost picture in Dallas–Fort Worth so you can decide without guessing.",
+  lead: "Almost every parent planning a quinceañera asks the same question: do we really need video, or is a photographer enough? It's a fair question, and the answer depends on which moments you can't imagine losing. This walks through what photos capture, what film captures, what quince videography actually includes, and the real cost picture in Dallas–Fort Worth so you can decide without guessing.",
   content: [
     { type: "h2", text: "The short answer" },
     {
@@ -45,7 +45,7 @@ const post: BlogPost = {
       type: "p",
       text: "Two of those — the [vals and the surprise dance](/blog/court-vals-surprise-dance-quinceanera) — are the single most common thing families wish they had on video afterward. See how they read on screen in our [portfolio highlight films](/portfolio).",
     },
-    { type: "h2", text: "The honest emotional case" },
+    { type: "h2", text: "The emotional case for film" },
     {
       type: "p",
       text: "We won't fear-monger you into a bigger package. But we'll tell you what we see: the families who skip film are the ones who most often wish, a year later, that they hadn't. Photos almost never get regretted — you have them, they're beautiful, done. Film is the one people wish for after the fact, because by then the day is gone and there's no second chance to record a voice or a dance.",
@@ -57,7 +57,7 @@ const post: BlogPost = {
     { type: "h2", text: "What quince videography actually includes" },
     {
       type: "p",
-      text: "\"Video\" sounds vague, so here's what a real quince film is — and what it isn't. It is not a raw, hour-long recording nobody watches. A proper quince film is edited storytelling, usually delivered in two forms:",
+      text: "\"Video\" sounds vague, so let's be specific. A real quince film is not a raw, hour-long recording nobody watches. It's edited storytelling, usually delivered in two forms:",
     },
     {
       type: "ul",
@@ -80,7 +80,7 @@ const post: BlogPost = {
     { type: "h2", text: "One team for both vs. two separate vendors" },
     {
       type: "p",
-      text: "If you decide on both, the next question is whether to hire one team that shoots photo + film or book a separate photographer and a separate videographer. We're biased, but here's the practical case for one team.",
+      text: "If you decide on both, the next question is whether to hire one team that shoots photo + film or book a separate photographer and a separate videographer. We're biased, but the practical case for one team comes down to four things.",
     },
     {
       type: "ul",
@@ -98,7 +98,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Anchored to our collections, the math is simple: Essential is $2,500 for photo or film with one artist. Signature is $3,900 for photo + film — two artists, full-day coverage, a same-week sneak peek. Legacy is $5,500 for the most coverage of both. So the moment you want both, a Signature collection at $3,900 typically beats stitching together two separate vendors. For the full breakdown of every inclusion, see [which collections include film](/investment), and for a wider look at pricing read our [quinceañera photographer cost guide for DFW](/blog/quinceanera-photographer-cost-dallas-fort-worth).",
+      text: "Anchored to our collections, the math is simple: Moments is $1,800 and Essential is $2,500 — both photo or film with one artist. Signature is $3,900 for photo + film — two artists, full-day coverage, a same-week sneak peek. Legacy is $5,500 for the most coverage of both. So the moment you want both, a Signature collection at $3,900 typically beats stitching together two separate vendors. For the full breakdown of every inclusion, see [which collections include film](/investment), and for a wider look at pricing read our [quinceañera photographer cost guide for DFW](/blog/quinceanera-photographer-cost-dallas-fort-worth).",
     },
     { type: "h2", text: "If your budget only stretches one way" },
     {
@@ -109,13 +109,13 @@ const post: BlogPost = {
       type: "ol",
       items: [
         "If you want something to hold, print, and display — choose photo. It's the durable keepsake, and it's the foundation we'd start everyone on.",
-        "If the moments that matter most to you move and make sound — the vals, the surprise dance, the toasts — lean film, because those simply don't survive as stills.",
+        "If the moments that matter most to you move and make sound — the vals, the surprise dance, the toasts — lean film, because those don't survive as stills.",
         "If you can stretch a little, choose the collection that includes both rather than adding a second vendor — it's the better value and the smoother day.",
       ],
     },
     {
       type: "p",
-      text: "Still weighing it? Read [how to choose a quinceañera photographer in DFW](/blog/how-to-choose-quinceanera-photographer-dfw) so you know what to look for in either one. When you're ready, you can [check if your date is open](/check-your-date) in a few seconds, or [reserve your date](/reserve) to lock today's price.",
+      text: "Still weighing it? Read [how to choose a quinceañera photographer in DFW](/blog/how-to-choose-quinceanera-photographer-dfw) so you know what to look for in either one, then run through [the questions to ask before you book](/blog/questions-to-ask-quinceanera-photographer). When you're ready, you can [check if your date is open](/check-your-date) in a few seconds, or [reserve your date](/reserve) to lock today's price.",
     },
   ],
   faqs: [
@@ -137,7 +137,7 @@ const post: BlogPost = {
     },
     {
       q: "Which TX Quince collections include both photo and film?",
-      a: "Essential ($2,500) is photo or film with one artist. Signature ($3,900) and Legacy ($5,500) both include photo + film with two artists. Signature adds full-day coverage and a same-week sneak peek; Legacy adds the most coverage of both. You can compare every inclusion on the investment page.",
+      a: "Moments ($1,800) and Essential ($2,500) are photo or film with one artist. Signature ($3,900) and Legacy ($5,500) both include photo + film with two artists. Signature adds full-day coverage and a same-week sneak peek; Legacy adds the most coverage of both. You can compare every inclusion on the investment page.",
     },
     {
       q: "Can one team shoot both the photos and the video?",
@@ -148,6 +148,7 @@ const post: BlogPost = {
     "how-to-choose-quinceanera-photographer-dfw",
     "court-vals-surprise-dance-quinceanera",
     "quinceanera-photographer-cost-dallas-fort-worth",
+    "questions-to-ask-quinceanera-photographer",
   ],
 };
 

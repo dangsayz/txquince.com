@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { AdminHeader } from "@/components/admin/AdminHeader";
+import { AdminWorkspace } from "@/components/admin/AdminWorkspace";
 import { AdminHint } from "@/components/EditMode";
 
 export const metadata: Metadata = {
@@ -13,11 +13,10 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-dvh bg-cream">
       {/* Marks this browser so the public site offers on-page image editing. */}
       <AdminHint />
-      <AdminHeader />
-      {children}
+      <AdminWorkspace>{children}</AdminWorkspace>
     </div>
   );
 }

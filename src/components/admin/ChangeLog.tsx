@@ -130,7 +130,7 @@ export function ChangeLog({ initial }: { initial: ConversionChange[] }) {
               onChange={(e) => setTitle(e.target.value)}
               required
               placeholder="Shortened the inquiry form"
-              className="mt-1 w-full border-b border-line bg-transparent py-1.5 text-sm focus:border-wine focus:outline-none"
+              className="mt-1 w-full border-b border-line bg-transparent py-1.5 text-sm focus:border-accent focus:outline-none"
             />
           </label>
           <label className="text-sm text-ink sm:w-48">
@@ -139,7 +139,7 @@ export function ChangeLog({ initial }: { initial: ConversionChange[] }) {
               value={area}
               onChange={(e) => setArea(e.target.value)}
               placeholder="Homepage hero"
-              className="mt-1 w-full border-b border-line bg-transparent py-1.5 text-sm focus:border-wine focus:outline-none"
+              className="mt-1 w-full border-b border-line bg-transparent py-1.5 text-sm focus:border-accent focus:outline-none"
             />
           </label>
         </div>
@@ -151,7 +151,7 @@ export function ChangeLog({ initial }: { initial: ConversionChange[] }) {
             onChange={(e) => setReason(e.target.value)}
             rows={2}
             placeholder="Why you made the change and what you expect to move"
-            className="mt-1 w-full resize-none border-b border-line bg-transparent py-1.5 text-sm focus:border-wine focus:outline-none"
+            className="mt-1 w-full resize-none border-b border-line bg-transparent py-1.5 text-sm focus:border-accent focus:outline-none"
           />
         </label>
 
@@ -161,7 +161,7 @@ export function ChangeLog({ initial }: { initial: ConversionChange[] }) {
             <select
               value={targetMetric}
               onChange={(e) => setTargetMetric(e.target.value)}
-              className="mt-1 w-full border-b border-line bg-transparent py-1.5 text-sm focus:border-wine focus:outline-none"
+              className="mt-1 w-full border-b border-line bg-transparent py-1.5 text-sm focus:border-accent focus:outline-none"
             >
               <option value="">No specific metric</option>
               {METRIC_OPTIONS.map((o) => (
@@ -177,7 +177,7 @@ export function ChangeLog({ initial }: { initial: ConversionChange[] }) {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Anything else worth remembering"
-              className="mt-1 w-full border-b border-line bg-transparent py-1.5 text-sm focus:border-wine focus:outline-none"
+              className="mt-1 w-full border-b border-line bg-transparent py-1.5 text-sm focus:border-accent focus:outline-none"
             />
           </label>
         </div>
@@ -190,7 +190,7 @@ export function ChangeLog({ initial }: { initial: ConversionChange[] }) {
           >
             {busy ? "Logging…" : "Log change"}
           </button>
-          {error ? <p className="text-xs text-wine">{error}</p> : null}
+          {error ? <p className="text-xs text-danger">{error}</p> : null}
         </div>
       </form>
 
@@ -216,7 +216,7 @@ export function ChangeLog({ initial }: { initial: ConversionChange[] }) {
                   <button
                     type="button"
                     onClick={() => archive(c.id)}
-                    className="shrink-0 rounded-full border border-line px-3 py-1 text-[0.62rem] uppercase tracking-[0.16em] text-ink-soft transition-colors hover:border-wine hover:text-wine"
+                    className="shrink-0 rounded-full border border-line px-3 py-1 text-[0.62rem] uppercase tracking-[0.16em] text-ink-soft transition-colors hover:border-accent hover:text-accent"
                   >
                     Archive
                   </button>

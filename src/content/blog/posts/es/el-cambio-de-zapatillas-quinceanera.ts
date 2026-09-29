@@ -14,7 +14,7 @@ const post: BlogPost = {
   publishedAt: "2026-06-09",
   readMinutes: 6,
   lang: "es",
-  lead: "Dura unos treinta segundos. Una silla, un par de tacones y alguien que la quiere hincado a sus pies. El cambio de zapatillas es de los momentos más callados de toda la celebración y, a la vez, de los más fotografiados. Aquí le contamos qué significa, quién lo hace, en qué parte del día cae y cómo hacerlo sentir suyo.",
+  lead: "Dura unos treinta segundos. Una silla, un par de tacones y alguien que la quiere hincado a sus pies. El cambio de zapatillas es de los momentos más callados de toda la celebración y, a la vez, de los más fotografiados. Veamos qué significa, quién lo hace, en qué parte del día cae y cómo hacerlo sentir suyo.",
   content: [
     { type: "h2", text: "Qué significa el cambio de zapatillas" },
     {
@@ -27,7 +27,7 @@ const post: BlogPost = {
     },
     {
       type: "callout",
-      text: "No se trata de las zapatillas. Se trata de la persona que se hinca para ponérselas. Esa es la fotografía que las familias conservan.",
+      text: "La fotografía que las familias conservan es la de la persona que se hinca para poner las zapatillas, no la de las zapatillas en sí. Esa es la que guardan.",
     },
     { type: "h2", text: "¿Quién le cambia las zapatillas a la quinceañera?" },
     {
@@ -49,12 +49,12 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Hay un detalle precioso que se ve muy seguido: un hermanito o hermanita menor entra cargando los tacones sobre un cojín y los presenta, mientras el papá hace el cambio. Le da un papel al más pequeño de la familia y duplica los rostros que vale la pena fotografiar.",
+      text: "Hay un detalle precioso que se ve seguido: un hermanito o hermanita menor entra cargando los tacones sobre un cojín y los presenta, mientras el papá hace el cambio. Le da un papel al más pequeño de la familia y duplica los rostros que vale la pena fotografiar.",
     },
     { type: "h2", text: "¿Cuándo se hace el cambio de zapatillas?" },
     {
       type: "p",
-      text: "El cambio de zapatillas casi siempre cae en la recepción, justo antes del vals. Es el puente entre la misa y el baile: la presentan, toma asiento, le cambian las zapatillas y entonces se levanta para su primer vals. Ubicarlo ahí no es solo tradición, también es práctico. Necesita los tacones puestos antes del vals, y el cambio es lo que le avisa al salón que el vals está por comenzar.",
+      text: "El cambio de zapatillas casi siempre cae en la recepción, justo antes del vals. Es el puente entre la misa y el baile: la presentan, toma asiento, le cambian las zapatillas y entonces se levanta para su primer vals. Ubicarlo ahí responde a la tradición y también a la práctica. Necesita los tacones puestos antes del vals, y el cambio es lo que le avisa al salón que el vals está por comenzar.",
     },
     {
       type: "p",
@@ -92,7 +92,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Aquí va la parte honesta. El cambio de zapatillas sucede una sola vez. No se monta para la cámara, no se puede recrear después y lo mejor de todo — el quiebre en su voz, la mano de ella sobre el hombro de él, los primos secándose los ojos al fondo — ocurre en los mismos pocos segundos, en distintos puntos del salón.",
+      text: "El cambio de zapatillas sucede una sola vez. No se monta para la cámara, no se puede recrear después y lo mejor de todo — el quiebre en su voz, la mano de ella sobre el hombro de él, los primos secándose los ojos al fondo — ocurre en los mismos pocos segundos, en distintos puntos del salón.",
     },
     {
       type: "p",

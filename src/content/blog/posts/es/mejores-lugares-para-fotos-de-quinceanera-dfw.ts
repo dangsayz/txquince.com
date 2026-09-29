@@ -14,7 +14,7 @@ const post: BlogPost = {
   publishedAt: "2026-06-09",
   readMinutes: 8,
   lang: "es",
-  lead: "Elegir el lugar para los retratos de quinceañera de su hija es la mitad de la magia. El sitio adecuado hace algo que ni el vestido ni el ramo pueden hacer solos: marca el ambiente, el color y la historia. Aquí tiene los lugares de Dallas–Fort Worth que de verdad se fotografían hermoso, agrupados por ciudad, con lo práctico que casi ninguna guía menciona: cuáles piden permiso, cuándo la luz es la mejor y qué conviene llevar.",
+  lead: "Elegir el lugar para los retratos de quinceañera de su hija es la mitad de la magia. El sitio adecuado hace algo que ni el vestido ni el ramo pueden hacer solos: marca el ambiente, el color y la historia. Estos son los lugares de Dallas–Fort Worth que se fotografían hermoso, agrupados por ciudad, con lo práctico que casi ninguna guía menciona: cuáles piden permiso, cuándo la luz es la mejor y qué conviene llevar.",
   content: [
     { type: "h2", text: "Cómo pensar el lugar (antes de los nombres)" },
     {
@@ -124,7 +124,7 @@ const post: BlogPost = {
     { type: "h2", text: "Permisos: cuáles son gratis y cuáles no" },
     {
       type: "p",
-      text: "Esta es la pregunta que más confunde a las familias, así que aquí tiene el resumen honesto para sesiones de retratos:",
+      text: "Esta es la pregunta que más confunde a las familias, así que vamos lugar por lugar para sesiones de retratos:",
     },
     {
       type: "ul",

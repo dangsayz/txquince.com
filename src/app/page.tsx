@@ -1,489 +1,262 @@
-import Link from "next/link";
 import Image from "next/image";
-import { site } from "@/content/site";
-import { home } from "@/content/home";
-import { homeTeaser } from "@/content/gallery";
-import { packages } from "@/content/packages";
-import { releasedTestimonials } from "@/content/testimonials";
-import { getFeaturedImages, getVideos, getHeroMedia } from "@/lib/content-db";
-import { DateChecker } from "@/components/DateChecker";
-import { BOOKING_STEPS } from "@/components/HowBookingWorks";
-import { VideoGallery } from "@/components/VideoGallery";
-import { Reveal } from "@/components/Reveal";
+import Link from "next/link";
+import { Figure } from "@/components/Figure";
+import { InquiryForm } from "@/components/InquiryForm";
 import { EditOverlay } from "@/components/EditMode";
+import { HomeWorkGallery, type HomeImage } from "@/components/home/HomeWorkGallery";
+import { VideoGallery } from "@/components/VideoGallery";
+import { home } from "@/content/home";
+import { about } from "@/content/about";
+import { packages } from "@/content/packages";
+import { portfolioFallback } from "@/content/portfolio-fallback";
+import { site } from "@/content/site";
+import { releasedTestimonials } from "@/content/testimonials";
+import { getFeaturedImages, getHeroMedia, getVideos } from "@/lib/content-db";
+import { heroObjectPosition } from "@/lib/hero-focus";
 
 export const revalidate = 60;
 
-/**
- * HOME — editorial system, not template blocks.
- *
- * Rules of the composition:
- *  · left-aligned; the page has ONE deliberate centered moment (the date check)
- *  · image scale is the drama — oversized, narrow, detail, full-bleed cinematic
- *  · hairlines are the only ornament; no cards, no badges, no decoration
- *  · type contrast: display moments up to ~8rem against a quiet 1rem body
- *  · in-page CTAs stay quiet (underlined); the nav + sticky bar carry the loud one
- */
-
-type Frame = {
-  url: string | null;
-  alt: string;
-  fx?: number | null;
-  fy?: number | null;
-  /** DB identity — lets the admin overlay anchor/replace this image in place. */
-  id?: string | null;
-  slug?: string | null;
-};
-
-/** Admin-only edit chip for a frame (renders nothing for visitors). */
-function editable(f: Frame | null | undefined) {
-  if (!f) return null;
-  return <EditOverlay image={{ id: f.id, slug: f.slug, alt: f.alt, fx: f.fx, fy: f.fy }} />;
-}
-
-/** objectPosition from a frame's focal anchor (admin-set), else a slot default. */
-function focal(f: Frame | null | undefined, defX = 50, defY = 35): string {
-  const x = f?.fx != null ? Math.round(f.fx * 100) : defX;
-  const y = f?.fy != null ? Math.round(f.fy * 100) : defY;
-  return `${x}% ${y}%`;
-}
-
-function quietLink(extra = "") {
-  return `group inline-flex items-baseline gap-2 text-[0.72rem] uppercase tracking-[0.2em] underline-offset-[6px] transition-colors ${extra}`;
-}
+const sectionSpace = "mx-auto max-w-[88rem] px-5 sm:px-8 lg:px-12";
 
 export default async function HomePage() {
-  const testimonials = releasedTestimonials();
   const [featured, videos, heroMedia] = await Promise.all([
-    getFeaturedImages(9),
+    getFeaturedImages(12),
     getVideos(),
     getHeroMedia(),
   ]);
-
-  const frames: Frame[] = featured.length
-    ? featured.map((i) => ({
-        url: i.url,
-        alt: i.alt,
-        fx: i.focus_x,
-        fy: i.focus_y,
-        id: i.id,
-        slug: i.slug,
+  const testimonials = releasedTestimonials();
+  const operatorName = about.operatorName.trim();
+  const hasNamedPhotographer = Boolean(operatorName) && !operatorName.startsWith("[");
+  const images: HomeImage[] = featured.length
+    ? featured.map((image) => ({
+        id: image.id,
+        url: image.url,
+        alt: image.alt,
+        section: image.section,
+        slug: image.slug ?? null,
+        title: image.title ?? null,
+        location: image.location ?? null,
+        focusX: image.focus_x ?? null,
+        focusY: image.focus_y ?? null,
       }))
-    : homeTeaser.slice(0, 6).map((i) => ({ url: null, alt: i.alt }));
-
-  // Hero frame: admin-set hero (photo / film poster), else top featured.
-  const cover: Frame | null =
-    heroMedia?.kind === "image" && heroMedia.imageUrl
-      ? { url: heroMedia.imageUrl, alt: heroMedia.imageAlt }
-      : heroMedia?.kind === "video" && heroMedia.posterUrl
-        ? { url: heroMedia.posterUrl, alt: "Quinceañera film still" }
-        : frames[0] ?? null;
-  // If the hero is the top featured photo, its admin-set anchor applies too.
-  const coverFocal = focal(cover?.fx != null ? cover : null, 50, 30);
-
-  // The sequence avoids repeating the hero frame when possible.
-  const seq = frames.filter((f) => f.url !== cover?.url);
-  const seqA = seq[0] ?? frames[0]; // oversized
-  const seqB = seq[1] ?? frames[1]; // narrow vertical
-  const seqC = seq[2] ?? frames[2]; // detail crop
-  const seqD = seq[3] ?? frames[3]; // full-bleed cinematic
-  const closing = seq[4] ?? frames[4] ?? seqA; // campaign close
+    : portfolioFallback.map((image) => ({
+        id: null,
+        url: image.url,
+        alt: image.alt,
+        section: image.section,
+        slug: image.slug,
+        title: image.title,
+        location: image.city ?? null,
+        focusX: null,
+        focusY: image.url === portfolioFallback[0]?.url ? 0.65 : null,
+      }));
+  const topImage = featured[0];
+  const fallbackHero = portfolioFallback[0];
+  const hero = heroMedia?.kind === "image" && heroMedia.imageUrl
+    ? { url: heroMedia.imageUrl, alt: heroMedia.imageAlt, focusX: null, focusY: null, id: null, slug: null }
+    : heroMedia?.kind === "video" && heroMedia.posterUrl
+      ? { url: heroMedia.posterUrl, alt: "Quinceañera film still", focusX: null, focusY: null, id: null, slug: null }
+      : topImage
+        ? { url: topImage.url, alt: topImage.alt, focusX: topImage.focus_x, focusY: topImage.focus_y, id: topImage.id, slug: topImage.slug }
+        : fallbackHero
+          ? { url: "/portfolio/hero-960.webp", alt: fallbackHero.alt, focusX: null, focusY: 0.75, id: null, slug: null }
+          : null;
+  const heroPosition = heroMedia?.kind === "image"
+    ? heroObjectPosition(heroMedia)
+    : `${Math.round((hero?.focusX ?? 0.5) * 100)}% ${Math.round((hero?.focusY ?? 0.35) * 100)}%`;
 
   return (
     <>
-      {/* ================= HERO — type bottom-left, image bleeding off the right edge ================= */}
-      <section className="relative">
-        <div className="grid md:grid-cols-12">
-          {/* Image: flush to the top + right edge of the viewport. */}
-          <div className="relative order-1 h-[62svh] md:order-2 md:col-span-7 md:h-[88svh]">
-            {cover?.url ? (
-              <Image
-                src={cover.url}
-                alt={cover.alt || "Quinceañera portrait"}
-                fill
-                priority
-                sizes="(max-width: 768px) 100vw, 58vw"
-                className="object-cover"
-                style={{ objectPosition: coverFocal }}
-              />
-            ) : (
-              <div className="absolute inset-0 bg-greige" />
-            )}
-            {editable(cover)}
-          </div>
-
-          {/* Type: pinned to the bottom of the cream field — museum air above. */}
-          <div className="order-2 flex flex-col justify-end px-5 pb-12 pt-14 md:order-1 md:col-span-5 md:pb-20 md:pl-10 md:pr-12 md:pt-24 lg:pl-16">
-            <p className="hero-enter hero-delay-1 text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">
-              Quinceañera photography &amp; film
-              <span className="mt-1 block">Dallas–Fort Worth</span>
-            </p>
-
-            <h1 className="hero-enter hero-delay-2 mt-8">
-              <span
-                className="block font-display text-ink"
-                style={{
-                  fontSize: "clamp(3.2rem,8.6vw,7.6rem)",
-                  lineHeight: 0.96,
-                  letterSpacing: "-0.03em",
-                }}
-              >
-                Once in
-              </span>
-              <span
-                className="block font-display italic text-ink"
-                style={{
-                  fontSize: "clamp(3.2rem,8.6vw,7.6rem)",
-                  lineHeight: 1.02,
-                  letterSpacing: "-0.03em",
-                }}
-              >
-                her lifetime.
-              </span>
+      <section className={`${sectionSpace} pb-12 pt-5 sm:pb-16 sm:pt-10 lg:pt-14`}>
+        <div className="grid overflow-hidden rounded-[1.5rem] border border-line bg-white lg:min-h-[42rem] lg:grid-cols-[0.9fr_1.1fr] lg:rounded-[2rem]">
+          <div className="flex flex-col justify-center px-5 py-7 sm:px-10 sm:py-16 lg:px-14 lg:py-20">
+            <p className="text-xs font-semibold text-accent-strong">Dallas–Fort Worth · Quinceañera photography &amp; film</p>
+            <h1 className="mt-4 max-w-[14ch] font-display text-[clamp(2rem,4vw,4rem)] leading-[1.12] text-ink sm:mt-7">
+              Quinceañera <span className="text-accent">photo &amp; film</span> for her day.
             </h1>
-
-            <p className="hero-enter hero-delay-3 mt-7 max-w-sm text-[0.95rem] leading-relaxed text-ink-soft">
-              {site.tagline}. One celebration per day — never two.
-            </p>
-
-            <div className="hero-enter hero-delay-4 mt-9 flex flex-wrap items-baseline gap-x-8 gap-y-3">
-              <Link
-                href={site.cta.href}
-                className={quietLink("text-ink underline decoration-ink/30 hover:decoration-wine hover:text-wine")}
-              >
-                Reserve your date
-                <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
-              </Link>
-              <Link
-                href="/portfolio"
-                className={quietLink("text-ink-soft underline decoration-ink/20 hover:text-ink")}
-              >
-                The work
-              </Link>
+            <p className="mt-4 max-w-lg text-sm leading-6 text-ink-soft sm:mt-7 sm:text-lg sm:leading-7">{home.hero.subline}<span className="hidden sm:inline"> Explore the photographs, find the collection that fits your day, and ask about your date.</span></p>
+            <div className="mt-5 flex flex-wrap gap-3 sm:mt-9">
+              <Link href={site.cta.href} className="inline-flex min-h-12 items-center justify-center rounded-full bg-accent px-7 text-sm font-semibold text-white transition-colors hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">Request your date <span aria-hidden="true" className="ml-3">↗</span></Link>
+              <Link href="#work" className="hidden min-h-12 items-center justify-center rounded-full border border-line bg-white px-7 text-sm font-semibold text-ink transition-colors hover:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:inline-flex">Explore the work</Link>
             </div>
+            <p className="mt-8 hidden border-t border-line pt-5 text-sm text-ink-soft sm:block">Photo and film for the portraits, traditions, and celebration you will want to revisit.</p>
+          </div>
+          <div className="relative min-h-[22rem] overflow-hidden bg-greige sm:min-h-[34rem] lg:min-h-full">
+            {hero ? (
+              <Image src={hero.url} alt={hero.alt} fill priority fetchPriority="high" decoding="sync" unoptimized={hero.url.startsWith("/portfolio/")} sizes="(max-width: 1024px) 100vw, 55vw" className="object-cover" style={{ objectPosition: heroPosition }} />
+            ) : (
+              <div className="flex h-full min-h-[24rem] flex-col items-center justify-center px-8 text-center sm:min-h-[34rem]">
+                <span aria-hidden="true" className="font-display text-6xl text-accent/30">TX</span>
+                <p className="mt-4 max-w-xs font-display text-2xl text-ink">Portfolio photos are unavailable.</p>
+                <p className="mt-2 max-w-xs text-sm leading-6 text-ink-soft">Ask us about photo and film coverage for your date.</p>
+              </div>
+            )}
+            {heroMedia?.kind === "image"
+              ? <EditOverlay image={{ alt: hero?.alt }} editHref="/admin/hero#framing" label="Set focal point" />
+              : hero?.id && <EditOverlay image={{ id: hero.id, slug: hero.slug, alt: hero.alt, fx: hero.focusX, fy: hero.focusY }} />}
           </div>
         </div>
       </section>
 
-      {/* ================= CREDIBILITY — editorial stat line, not stars ================= */}
-      <section className="border-y border-ink/10">
-        <div className="mx-auto grid max-w-[90rem] grid-cols-2 gap-y-8 px-5 py-12 md:grid-cols-4 md:px-10 lg:px-16 md:py-14">
-          {[
-            { n: "100+", l: "DFW families" },
-            { n: "01", l: "celebration per day" },
-            { n: "ES / EN", l: "se habla español" },
-            { n: "’26", l: `booked through ${site.scarcity.bookedThrough.split(" ")[0]}` },
-          ].map((s) => (
-            <Reveal key={s.l}>
-              <p
-                className="font-display text-ink"
-                style={{ fontSize: "clamp(1.9rem,3.4vw,3rem)", lineHeight: 1 }}
-              >
-                {s.n}
-              </p>
-              <p className="mt-2 text-[0.64rem] uppercase tracking-[0.22em] text-ink-faint">
-                {s.l}
-              </p>
-            </Reveal>
+      <section id="work" className={`${sectionSpace} scroll-mt-24 py-16 sm:py-20`} aria-labelledby="work-title">
+        <div className="mb-10 flex flex-col justify-between gap-6 md:flex-row md:items-end">
+          <div>
+            <p className="text-xs font-semibold text-accent-strong">The portfolio</p>
+            <h2 id="work-title" className="mt-3 max-w-2xl font-display text-[clamp(1.875rem,3.2vw,3rem)] leading-tight text-ink">Explore the photo portfolio.</h2>
+          </div>
+          <Link href="/portfolio" className="inline-flex self-start border-b border-accent pb-1 text-sm font-semibold text-accent transition-colors hover:text-accent-strong md:self-end">View full portfolio <span aria-hidden="true" className="ml-3">↗</span></Link>
+        </div>
+        <HomeWorkGallery images={images} />
+      </section>
+
+      {videos.length > 0 && (
+        <section className="bg-white py-16 sm:py-24" aria-labelledby="film-title">
+          <div className={sectionSpace}>
+            <div className="mb-9 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+              <div>
+                <p className="text-xs font-semibold text-accent-strong">On film</p>
+                <h2 id="film-title" className="mt-3 font-display text-[clamp(1.875rem,3vw,2.875rem)] leading-tight text-ink">Watch the quinceañera films.</h2>
+              </div>
+              <Link href="/portfolio#films" className="border-b border-accent pb-1 text-sm font-semibold text-accent hover:text-accent-strong">Explore films ↗</Link>
+            </div>
+            <VideoGallery videos={videos.slice(0, 2)} />
+          </div>
+        </section>
+      )}
+
+      <section className={`${sectionSpace} py-16 sm:py-24`} aria-labelledby="collections-title">
+        <div className="mb-9 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+          <div>
+            <p className="text-xs font-semibold text-accent-strong">Collections</p>
+            <h2 id="collections-title" className="mt-3 font-display text-[clamp(1.875rem,3vw,2.875rem)] leading-tight text-ink">Compare photo and film collections.</h2>
+          </div>
+          <Link href="/investment" className="self-start border-b border-accent pb-1 text-sm font-semibold text-accent hover:text-accent-strong sm:self-end">Compare every detail ↗</Link>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          {packages.map((item) => (
+            <article key={item.id} className="flex flex-col rounded-2xl border border-line bg-white p-6 sm:p-8">
+              <div className="flex items-baseline justify-between gap-4">
+                <h3 className="font-display text-3xl text-ink">{item.name}</h3>
+                <p className="font-display text-2xl text-ink">{item.priceLabel}</p>
+              </div>
+              <p className="mt-3 min-h-12 text-sm leading-6 text-ink-soft">{item.teaser}</p>
+              <ul className="my-7 space-y-3 border-t border-line pt-6 text-sm leading-6 text-ink-soft">
+                {item.includes.slice(0, 3).map((detail) => <li key={detail} className="flex gap-3"><span aria-hidden="true" className="text-accent-strong">✓</span>{detail}</li>)}
+              </ul>
+              <Link href={`/reserve?collection=${item.id}`} className="mt-auto inline-flex min-h-11 items-center justify-between rounded-full border border-ink px-5 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">Request {item.name} <span aria-hidden="true">↗</span></Link>
+            </article>
           ))}
         </div>
+        <p className="mt-5 text-sm text-ink-soft">A request starts the conversation. Collection deposits vary; we confirm the details before sending a payment link.</p>
       </section>
 
-      {/* ================= THE WORK — a curated sequence, not a grid ================= */}
-      <section className="pt-24 md:pt-36">
-        {/* Spread title — oversized, left, with the section index far right. */}
-        <div className="mx-auto flex max-w-[90rem] items-end justify-between px-5 md:px-10 lg:px-16">
-          <Reveal>
-            <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">{home.work.eyebrow}</p>
-            <h2
-              className="mt-4 font-display text-ink"
-              style={{ fontSize: "clamp(2.6rem,6vw,5.4rem)", lineHeight: 0.98, letterSpacing: "-0.025em" }}
-            >
-              Selected work
-            </h2>
-          </Reveal>
-          <p aria-hidden className="hidden font-display text-ink/15 md:block" style={{ fontSize: "5rem", lineHeight: 1 }}>
-            01
-          </p>
-        </div>
-
-        {/* (a) Oversized — takes most of the width, deliberately off-center. */}
-        <div className="mx-auto mt-14 max-w-[90rem] px-5 md:mt-20 md:px-10 lg:px-16">
-          <Reveal className="md:mr-[18%]">
-            <Link href="/portfolio" className="group block">
-              <div className="relative aspect-[4/5] overflow-hidden sm:aspect-[16/11]">
-                {seqA?.url ? (
-                  <Image src={seqA.url} alt={seqA.alt} fill sizes="(max-width: 768px) 100vw, 74vw" className="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02]" style={{ objectPosition: focal(seqA, 50, 28) }} />
-                ) : (
-                  <div className="absolute inset-0 bg-greige" />
-                )}
-                {editable(seqA)}
-              </div>
-              <p className="mt-3 text-[0.6rem] uppercase tracking-[0.24em] text-ink-faint">{seqA?.alt}</p>
-            </Link>
-          </Reveal>
-        </div>
-
-        {/* (b) + (c) Narrow vertical right · detail crop left, staggered. */}
-        <div className="mx-auto mt-16 grid max-w-[90rem] grid-cols-12 gap-y-16 px-5 md:mt-24 md:px-10 lg:px-16">
-          <Reveal className="col-span-7 col-start-6 md:col-span-3 md:col-start-9">
-            <Link href="/portfolio" className="group block">
-              <div className="relative aspect-[3/4.6] overflow-hidden">
-                {seqB?.url ? (
-                  <Image src={seqB.url} alt={seqB.alt} fill sizes="(max-width: 768px) 58vw, 24vw" className="object-cover transition-transform duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]" style={{ objectPosition: focal(seqB, 50, 35) }} />
-                ) : (
-                  <div className="absolute inset-0 bg-greige" />
-                )}
-                {editable(seqB)}
-              </div>
-              <p className="mt-3 text-[0.6rem] uppercase tracking-[0.24em] text-ink-faint">{seqB?.alt}</p>
-            </Link>
-          </Reveal>
-
-          <Reveal delay={80} className="col-span-6 md:col-span-3 md:col-start-2 md:-mt-32">
-            <Link href="/portfolio" className="group block">
-              <div className="relative aspect-square overflow-hidden">
-                {seqC?.url ? (
-                  <Image src={seqC.url} alt={seqC.alt} fill sizes="(max-width: 768px) 50vw, 24vw" className="object-cover transition-transform duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]" style={{ objectPosition: focal(seqC, 50, 22) }} />
-                ) : (
-                  <div className="absolute inset-0 bg-greige" />
-                )}
-                {editable(seqC)}
-              </div>
-              <p className="mt-3 text-[0.6rem] uppercase tracking-[0.24em] text-ink-faint">{seqC?.alt}</p>
-            </Link>
-          </Reveal>
-        </div>
-
-        {/* (d) Cinematic wide — contained with offset air, not a viewport-swallowing bleed. */}
-        <div className="mx-auto mt-20 max-w-[90rem] px-5 md:mt-28 md:px-10 lg:px-16">
-          <Reveal className="md:ml-[14%]">
-            <Link href="/portfolio" className="group block">
-              <div className="relative aspect-[4/5] overflow-hidden sm:aspect-[16/8]">
-                {seqD?.url ? (
-                  <Image src={seqD.url} alt={seqD.alt} fill sizes="(max-width: 768px) 100vw, 74vw" className="object-cover transition-transform duration-[1400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.015]" style={{ objectPosition: focal(seqD, 50, 30) }} />
-                ) : (
-                  <div className="absolute inset-0 bg-greige" />
-                )}
-                {editable(seqD)}
-              </div>
-            </Link>
-            <div className="flex items-baseline justify-between pt-3">
-              <p className="text-[0.6rem] uppercase tracking-[0.24em] text-ink-faint">{seqD?.alt}</p>
-              <Link href="/portfolio" className={quietLink("text-ink underline decoration-ink/30 hover:text-wine hover:decoration-wine")}>
-                {home.work.cta}
-                <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
-              </Link>
-            </div>
-          </Reveal>
+      <section className="bg-white py-16 sm:py-24" aria-labelledby="process-title">
+        <div className={sectionSpace}>
+          <p className="text-xs font-semibold text-accent-strong">The process</p>
+          <h2 id="process-title" className="mt-3 font-display text-[clamp(1.875rem,3vw,2.875rem)] leading-tight text-ink">How booking works.</h2>
+          <ol className="mt-10 grid gap-4 md:grid-cols-3">
+            {[
+              { title: "Explore the work", body: "Browse real photographs and films to see how the day is documented." },
+              { title: "Tell us your date", body: "Choose a collection and send your request. We will check availability and confirm the details with you." },
+              { title: "Plan the celebration", body: "Once your date and coverage are confirmed, we plan the portraits, traditions, and timeline together." },
+            ].map((step, index) => (
+              <li key={step.title} className="rounded-2xl border border-line bg-cream p-6 sm:p-8">
+                <span className="text-xs font-semibold text-accent-strong">0{index + 1}</span>
+                <h3 className="mt-7 font-display text-2xl text-ink">{step.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-ink-soft">{step.body}</p>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 
-      {/* ================= AVAILABILITY — the one centered moment ================= */}
-      <section className="mt-24 border-y border-ink/10 md:mt-36">
-        <div className="px-5 py-20 md:py-28">
-          <Reveal>
-            <DateChecker heading={home.checkDate.heading} body={home.checkDate.body} />
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ================= INVESTMENT — a lookbook list, not pricing cards ================= */}
-      <section className="pt-24 md:pt-36">
-        <div className="mx-auto max-w-[90rem] px-5 md:px-10 lg:px-16">
-          <div className="grid md:grid-cols-12">
-            <Reveal className="md:col-span-4">
-              <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">{home.packages.eyebrow}</p>
-              <h2
-                className="mt-4 max-w-[12ch] font-display text-ink"
-                style={{ fontSize: "clamp(2.4rem,4.6vw,4rem)", lineHeight: 1, letterSpacing: "-0.02em" }}
-              >
-                Three collections.
-              </h2>
-              <p className="mt-6 max-w-xs text-sm leading-relaxed text-ink-soft">
-                Fixed pricing, stated plainly. {site.booking.depositLabel} reserves the
-                date; the balance splits into interest-free installments.
-              </p>
-            </Reveal>
-
-            <div className="mt-12 md:col-span-7 md:col-start-6 md:mt-0">
-              {packages.map((p, i) => (
-                <Reveal key={p.id} delay={i * 60}>
-                  <Link
-                    href={`/reserve?collection=${p.id}`}
-                    className={`group block py-9 md:py-10 ${i > 0 ? "border-t border-ink/10" : ""}`}
-                  >
-                    <div className="flex items-baseline justify-between gap-6">
-                      <h3
-                        className="font-display text-ink transition-colors group-hover:text-wine"
-                        style={{ fontSize: p.highlight ? "clamp(2rem,3.6vw,3rem)" : "clamp(1.7rem,3vw,2.4rem)", lineHeight: 1 }}
-                      >
-                        {p.name}
-                        {p.highlight ? (
-                          <span className="ml-4 align-middle text-[0.58rem] uppercase tracking-[0.26em] text-wine-deep">
-                            Most reserved
-                          </span>
-                        ) : null}
-                      </h3>
-                      <p className="whitespace-nowrap font-display text-ink" style={{ fontSize: "clamp(1.4rem,2.4vw,2rem)", lineHeight: 1 }}>
-                        {p.priceLabel}
-                      </p>
-                    </div>
-                    <p className="mt-3 max-w-md text-sm leading-relaxed text-ink-soft">{p.teaser}</p>
-                    <p className="mt-4 text-[0.62rem] uppercase tracking-[0.22em] text-ink-faint opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                      Reserve {p.name} →
-                    </p>
-                  </Link>
-                </Reveal>
-              ))}
-              <Reveal>
-                <p className="border-t border-ink/10 pt-6 text-xs text-ink-faint">
-                  Interest-free installments &amp; Affirm at checkout ·{" "}
-                  <Link href="/investment" className="text-wine-deep underline underline-offset-4 hover:text-wine">
-                    everything included
-                  </Link>
-                </p>
-              </Reveal>
-            </div>
+      <section className={`${sectionSpace} py-16 sm:py-24`} aria-labelledby="studio-title">
+        <div className="grid overflow-hidden rounded-2xl border border-line bg-white md:grid-cols-[1fr_0.8fr]">
+          <div className="p-7 sm:p-10 lg:p-14">
+            <p className="text-xs font-semibold text-accent-strong">Studio profile</p>
+            <h2 id="studio-title" className="mt-4 max-w-lg font-display text-[clamp(1.875rem,3vw,2.875rem)] leading-tight text-ink">{hasNamedPhotographer ? `Meet ${operatorName}` : "About TX Quince"}</h2>
+            <p className="mt-6 max-w-lg text-base leading-7 text-ink-soft">{about.approach.body}</p>
+            <p className="mt-4 max-w-lg text-sm leading-6 text-ink-soft">Based in {site.serviceArea}. Learn how TX Quince approaches portraits, traditions, and the celebration itself.</p>
+            <Link href="/about" className="mt-7 inline-flex border-b border-ink pb-1 text-sm font-semibold text-ink hover:border-accent hover:text-accent">About the studio <span aria-hidden="true" className="ml-3">↗</span></Link>
           </div>
-        </div>
-      </section>
-
-      {/* ================= PROCESS — a calm numbered column, offset right ================= */}
-      <section className="pt-24 md:pt-36">
-        <div className="mx-auto max-w-[90rem] px-5 md:px-10 lg:px-16">
-          <div className="grid md:grid-cols-12">
-            <Reveal className="md:col-span-3">
-              <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">The process</p>
-              <h2
-                className="mt-4 font-display text-ink"
-                style={{ fontSize: "clamp(2.2rem,4vw,3.4rem)", lineHeight: 1.02, letterSpacing: "-0.02em" }}
-              >
-                No guesswork.
-              </h2>
-            </Reveal>
-            <div className="mt-12 md:col-span-6 md:col-start-6 md:mt-2">
-              {BOOKING_STEPS.map((step, i) => (
-                <Reveal key={step.title} delay={i * 60} className={`grid grid-cols-12 gap-4 py-8 ${i > 0 ? "border-t border-ink/10" : ""}`}>
-                  <p className="col-span-2 font-display text-2xl text-ink/25">0{i + 1}</p>
-                  <div className="col-span-10">
-                    <h3 className="font-display text-xl text-ink">{step.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-ink-soft">{step.body}</p>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= FILM — only when a real film exists ================= */}
-      {videos.length > 0 ? (
-        <section className="pt-24 md:pt-36">
-          <div className="mx-auto max-w-[90rem] px-5 md:px-10 lg:px-16">
-            <Reveal className="mb-10 max-w-xl">
-              <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">{home.film.eyebrow}</p>
-              <h2
-                className="mt-4 font-display text-ink"
-                style={{ fontSize: "clamp(2.2rem,4vw,3.4rem)", lineHeight: 1.04, letterSpacing: "-0.02em" }}
-              >
-                {home.film.heading}
-              </h2>
-            </Reveal>
-            <VideoGallery videos={videos.slice(0, 1)} />
-          </div>
-        </section>
-      ) : null}
-
-      {/* ================= GOOD TO KNOW — narrow editorial Q&A ================= */}
-      <section className="pt-24 md:pt-36">
-        <div className="mx-auto max-w-[90rem] px-5 md:px-10 lg:px-16">
-          <div className="grid md:grid-cols-12">
-            <Reveal className="md:col-span-3">
-              <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">{home.faq.eyebrow}</p>
-            </Reveal>
-            <dl className="md:col-span-6 md:col-start-6">
-              {home.faq.items.map((f, i) => (
-                <Reveal key={f.q} className={`py-7 ${i > 0 ? "border-t border-ink/10" : ""}`}>
-                  <dt className="font-display text-xl text-ink">{f.q}</dt>
-                  <dd className="mt-2.5 max-w-prose text-sm leading-relaxed text-ink-soft">{f.a}</dd>
-                </Reveal>
-              ))}
-            </dl>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= TESTIMONIALS — pull-quotes, when released ones exist ================= */}
-      {testimonials.length > 0 ? (
-        <section className="pt-24 md:pt-36">
-          <div className="mx-auto max-w-[90rem] px-5 md:px-10 lg:px-16">
-            <div className="grid gap-y-14 md:grid-cols-12">
-              <Reveal className="md:col-span-3">
-                <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">{home.testimonials.eyebrow}</p>
-              </Reveal>
-              <div className="space-y-14 md:col-span-7 md:col-start-5">
-                {testimonials.slice(0, 2).map((t, i) => (
-                  <Reveal key={i} delay={i * 80}>
-                    <blockquote
-                      className="font-display italic leading-snug text-ink"
-                      style={{ fontSize: "clamp(1.5rem,2.8vw,2.2rem)" }}
-                    >
-                      &ldquo;{t.quote}&rdquo;
-                    </blockquote>
-                    <p className="mt-4 text-[0.64rem] uppercase tracking-[0.22em] text-ink-faint">
-                      {t.momName} · {t.daughterName}&apos;s quinceañera{t.location ? ` · ${t.location}` : ""}
-                    </p>
-                  </Reveal>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-      ) : null}
-
-      {/* ================= CLOSE — campaign spread: full-bleed image, type low-left ================= */}
-      <section className="relative mt-24 md:mt-36">
-        <div className="relative h-[78svh] w-full overflow-hidden">
-          {closing?.url ? (
-            <Image
-              src={closing.url}
-              alt={closing.alt || "Quinceañera"}
-              fill
-              sizes="100vw"
-              className="object-cover"
-              style={{ objectPosition: focal(closing, 50, 25) }}
-            />
+          {about.portraitKey ? (
+            <Figure imageKey={about.portraitKey} alt={about.portraitAlt} ratio="portrait" sizes="(max-width: 768px) 100vw, 40vw" className="min-h-80" />
           ) : (
-            <div className="absolute inset-0 bg-ink" />
-          )}
-          {editable(closing)}
-          <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-ink/75 via-ink/15 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0">
-            <div className="mx-auto max-w-[90rem] px-5 pb-14 md:px-10 lg:px-16 md:pb-20">
-              <p
-                className="max-w-3xl font-display italic text-cream"
-                style={{ fontSize: "clamp(2rem,5vw,4.2rem)", lineHeight: 1.05 }}
-              >
-                Only a few {site.scarcity.reservingYear} dates remain.
-              </p>
-              <div className="mt-7 flex flex-wrap items-baseline gap-x-8 gap-y-3">
-                <Link
-                  href={site.cta.href}
-                  className={quietLink("text-cream underline decoration-cream/40 hover:decoration-cream")}
-                >
-                  Reserve your date
-                  <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
-                </Link>
-                <Link
-                  href={site.secondaryCta.href}
-                  className={quietLink("text-cream/70 underline decoration-cream/25 hover:text-cream")}
-                >
-                  Questions first
-                </Link>
-              </div>
+            <div className="flex min-h-64 items-end bg-greige p-7 sm:p-10 lg:p-14">
+              <p className="max-w-xs font-display text-3xl leading-tight text-ink">Quinceañera photography and film in Dallas–Fort Worth.</p>
             </div>
+          )}
+        </div>
+      </section>
+
+      {testimonials.length > 0 && (
+        <section className={`${sectionSpace} py-16 sm:py-24`} aria-labelledby="voices-title">
+          <p className="text-xs font-semibold text-accent-strong">From our families</p>
+          <h2 id="voices-title" className="mt-3 font-display text-[clamp(1.875rem,3vw,2.875rem)] leading-tight text-ink">What families say.</h2>
+          <div className="mt-9 grid gap-4 md:grid-cols-2">
+            {testimonials.slice(0, 2).map((item) => (
+              <figure key={`${item.momName}-${item.daughterName}`} className="rounded-2xl border border-line bg-white p-7 sm:p-9">
+                <blockquote className="font-display text-2xl leading-snug text-ink">“{item.quote}”</blockquote>
+                <figcaption className="mt-6 text-sm text-ink-soft">{item.momName}{item.location ? ` · ${item.location}` : ""}</figcaption>
+              </figure>
+            ))}
           </div>
+        </section>
+      )}
+      {testimonials.length === 0 && (
+        <section className={`${sectionSpace} pb-16 sm:pb-24`} aria-labelledby="family-voices-title">
+          <div className="rounded-2xl border border-line bg-white px-7 py-9 sm:px-10">
+            <p className="text-xs font-semibold text-accent-strong">Family voices</p>
+            <h2 id="family-voices-title" className="mt-3 font-display text-2xl text-ink">Family reviews</h2>
+            <p className="mt-3 max-w-xl text-sm leading-6 text-ink-soft">We publish family feedback only with permission. No reviews are available to share here yet.</p>
+          </div>
+        </section>
+      )}
+
+      <section className={`${sectionSpace} py-16 sm:py-24`} aria-labelledby="faq-title">
+        <div className="grid gap-9 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+          <div>
+            <p className="text-xs font-semibold text-accent-strong">Good to know</p>
+            <h2 id="faq-title" className="mt-3 font-display text-[clamp(1.875rem,3vw,2.875rem)] leading-tight text-ink">Frequently asked questions.</h2>
+            <p className="mt-5 max-w-sm text-sm leading-6 text-ink-soft">Have a different question? Send it with your inquiry and we will answer directly.</p>
+          </div>
+          <div className="divide-y divide-line border-y border-line">
+            {[
+              { q: "What happens when I request a date?", a: "Send your date and preferred collection. We will confirm availability and the next steps with you. There is no payment in the initial request." },
+              { q: "Can we plan in Spanish?", a: home.faq.items[1].a },
+              { q: "Do you charge travel within Dallas–Fort Worth?", a: home.faq.items[2].a },
+              { q: "What are the collection deposits?", a: `${packages.map((collection) => `${collection.name} ${collection.depositLabel}`).join(", ")}. Each deposit applies to its collection after your date is confirmed.` },
+            ].map((item) => (
+              <details key={item.q} className="group py-5">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-base font-semibold text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent [&::-webkit-details-marker]:hidden">{item.q}<span aria-hidden="true" className="text-2xl font-light text-accent-strong group-open:rotate-45">+</span></summary>
+                <p className="max-w-2xl pt-3 text-sm leading-6 text-ink-soft">{item.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {site.social.instagram && (
+        <section className="bg-white py-12 sm:py-16">
+          <div className={`${sectionSpace} flex flex-col justify-between gap-5 sm:flex-row sm:items-center`}>
+            <div>
+              <p className="text-xs font-semibold text-accent-strong">Follow along</p>
+              <h2 className="mt-2 font-display text-2xl text-ink sm:text-3xl">TX Quince on Instagram</h2>
+            </div>
+            <a href={site.social.instagram} target="_blank" rel="noopener noreferrer" className="inline-flex self-start rounded-full border border-ink px-6 py-3 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">Visit @txquince <span aria-hidden="true" className="ml-3">↗</span></a>
+          </div>
+        </section>
+      )}
+
+      <section className={`${sectionSpace} py-16 sm:py-24`} aria-labelledby="date-title">
+        <div className="grid gap-9 rounded-[1.5rem] bg-greige px-5 py-10 sm:rounded-[2rem] sm:px-10 sm:py-14 lg:grid-cols-[0.75fr_1.25fr] lg:gap-14 lg:px-12">
+          <div className="lg:pt-4">
+            <p className="text-xs font-semibold text-accent-strong">Your celebration starts here</p>
+            <h2 id="date-title" className="mt-4 max-w-xl font-display text-[clamp(1.875rem,3vw,2.875rem)] leading-tight text-ink">Check your celebration date.</h2>
+            <p className="mt-5 max-w-lg text-sm leading-6 text-ink-soft">Tell us when and where you are celebrating. We will check the calendar personally and talk through the coverage that fits your family.</p>
+            <p className="mt-5 text-sm font-medium text-ink">No payment is needed to ask.</p>
+          </div>
+          <InquiryForm />
         </div>
       </section>
     </>

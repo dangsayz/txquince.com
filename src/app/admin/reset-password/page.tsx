@@ -85,20 +85,21 @@ function ResetForm() {
   }
 
   const inputBase =
-    "mt-1.5 w-full border-b border-line bg-transparent py-2 text-ink focus:border-wine focus:outline-none";
+    "mt-2 min-h-12 w-full rounded-lg border border-line bg-white px-3.5 py-2.5 text-base text-ink outline-none focus:border-accent focus:ring-2 focus:ring-accent/20";
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-cream px-5">
-      <div className="w-full max-w-sm rounded-[1.5rem] border border-line bg-ivory p-8 shadow-[0_24px_70px_-30px_rgba(60,40,20,0.3)]">
-        <p className="font-display text-3xl text-ink">TX Quince</p>
-        <p className="mt-1 text-sm text-ink-soft">Set a new password</p>
+    <div className="flex min-h-svh items-center justify-center bg-ivory px-4 py-12 sm:px-6">
+      <div className="w-full max-w-md rounded-xl border border-line bg-white p-6 shadow-[0_20px_60px_-32px_rgba(0,0,0,0.2)] sm:p-9">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent-strong">TX Quince · Studio</p>
+        <h1 className="mt-3 font-display text-3xl text-ink">Set a new password.</h1>
+        <p className="mt-2 text-sm text-ink-soft">Choose a new password for your studio account.</p>
 
         {linkError ? (
           <>
-            <p className="mt-8 text-sm text-wine">{linkError}</p>
+            <p role="alert" className="mt-8 text-sm text-danger">{linkError}</p>
             <a
               href="/admin/login"
-              className="mt-6 inline-block text-sm text-wine hover:text-wine-deep"
+              className="mt-6 inline-flex min-h-11 items-center text-sm text-accent-strong hover:text-accent"
             >
               ← Back to login
             </a>
@@ -120,7 +121,8 @@ function ResetForm() {
                 <button
                   type="button"
                   onClick={() => setShow((v) => !v)}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 text-xs font-medium uppercase tracking-wider text-ink-faint hover:text-wine"
+                  className="absolute right-1 top-1/2 inline-flex min-h-11 -translate-y-1/2 items-center rounded-md px-3 text-xs font-medium text-ink-soft hover:text-accent"
+                  aria-label={show ? "Hide password" : "Show password"}
                 >
                   {show ? "Hide" : "Show"}
                 </button>
@@ -137,9 +139,9 @@ function ResetForm() {
               />
             </label>
 
-            {error ? <p className="mt-4 text-sm text-wine">{error}</p> : null}
+            {error ? <p role="alert" className="mt-4 text-sm text-danger">{error}</p> : null}
 
-            <button type="submit" disabled={busy} className="btn-espresso mt-8 w-full">
+            <button type="submit" disabled={busy} className="mt-8 inline-flex min-h-12 w-full items-center justify-center rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-white hover:bg-accent-strong disabled:opacity-50">
               {busy ? "Saving…" : "Save new password"}
             </button>
           </form>

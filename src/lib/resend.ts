@@ -38,7 +38,7 @@ export function isResendConfigured(): boolean {
 }
 
 const FROM = process.env.RESEND_FROM ?? `${site.brand} <hello@${site.domain}>`;
-const WINE = "#6b2230";
+const WINE = "#8a6f43";
 const CREAM = "#faf7f2";
 const INK = "#1a1a1a";
 
@@ -407,7 +407,7 @@ export async function sendFollowupEmail(
       "",
       `If it helps, here are full galleries and films from real DFW celebrations (not just highlights): ${galleryUrl}`,
       "",
-      `Pricing is fixed and on the site — collections from $2,500, and most families choose Signature at $3,900: ${investmentUrl}`,
+      `Pricing is fixed and on the site — collections from $1,800, and most families choose Signature at $3,900: ${investmentUrl}`,
       "",
       "Whenever you're ready, just reply here and I'll confirm whether your date is open.",
       "",
@@ -415,7 +415,7 @@ export async function sendFollowupEmail(
     ].join("\n");
     bodyHtml = `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">Just circling back on your daughter&apos;s quinceañera — no pressure at all, I know there&apos;s a lot to plan.</p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">If it helps, here are <a href="${galleryUrl}" style="color:${WINE}">full galleries and films</a> from real DFW celebrations — not just highlights, so you see exactly what you&apos;d be getting. Pricing is <a href="${investmentUrl}" style="color:${WINE}">fixed and right on the site</a>: collections from $2,500, and most families choose Signature at $3,900.</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">If it helps, here are <a href="${galleryUrl}" style="color:${WINE}">full galleries and films</a> from real DFW celebrations — not just highlights, so you see exactly what you&apos;d be getting. Pricing is <a href="${investmentUrl}" style="color:${WINE}">fixed and right on the site</a>: collections from $1,800, and most families choose Signature at $3,900.</p>
       <p style="margin:0;font-size:15px;line-height:1.7;color:#56504a">Whenever you&apos;re ready, just reply and I&apos;ll confirm whether your date is open.</p>`;
   } else if (step === 2) {
     subject = "The part most families ask about: paying for it";
@@ -722,5 +722,46 @@ export async function sendDepositLinkEmail(
     return { ok: true };
   } catch (err) {
     return { ok: false, error: String(err) };
+  }
+}
+
+/** Existing post-event review request; called only by the authenticated cron. */
+export async function sendReviewRequestEmail(
+  booking: BookingRecord,
+  reviewUrl: string,
+): Promise<{ ok: boolean; error?: string }> {
+  const resend = getResend();
+  if (!resend) return { ok: false, error: "resend-not-configured" };
+  const firstName = booking.name.split(" ")[0] || "there";
+  const subject = `${firstName}, thank you for trusting us with her day`;
+  const text = [
+    `Hi ${firstName},`,
+    "",
+    "Thank you for inviting us to be part of her quinceañera. We hope the photographs and film bring the day back every time you see them.",
+    "",
+    "If you have a moment, would you share your experience with other families? Your honest review helps them choose with confidence:",
+    reviewUrl,
+    "",
+    "Thank you again,",
+    site.brand,
+  ].join("\n");
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM,
+      to: booking.email,
+      replyTo: process.env.OPERATOR_NOTIFY_EMAIL || undefined,
+      subject,
+      text,
+      html: followupHtml({
+        firstName,
+        bodyHtml: `<p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">Thank you for inviting us to be part of her quinceañera. We hope the photographs and film bring the day back every time you see them.</p><p style="margin:0;font-size:15px;line-height:1.7;color:#56504a">If you have a moment, would you share your experience with other families? Your honest review helps them choose with confidence.</p>`,
+        ctaUrl: reviewUrl,
+        ctaLabel: "Share your experience",
+      }),
+    });
+    if (error) return { ok: false, error: String(error.message ?? error) };
+    return { ok: true };
+  } catch (error) {
+    return { ok: false, error: String(error) };
   }
 }

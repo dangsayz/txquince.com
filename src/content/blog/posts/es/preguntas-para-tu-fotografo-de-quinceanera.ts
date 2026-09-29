@@ -11,12 +11,12 @@ const post: BlogPost = {
     "Ya tiene dos o tres nombres en su lista corta. Estas son las preguntas que separan una buena decisión de un arrepentimiento, y la respuesta que quiere escuchar en cada una.",
   publishedAt: "2026-06-09",
   readMinutes: 8,
-  lead: "Si está leyendo esto, lo más probable es que ya tenga dos o tres fotógrafos guardados y una cotización o dos en su correo. Esta nota no es para encontrar más opciones, sino para evaluar las que ya tiene. Abajo están las preguntas que de verdad importan y, lo más útil, cómo suena una buena respuesta a cada una, para que pueda distinguir a un profesional seguro de una página web bonita.",
+  lead: "Si está leyendo esto, lo más probable es que ya tenga dos o tres fotógrafos guardados y una cotización o dos en su correo. Esta nota le ayuda a evaluar las opciones que ya tiene, no a buscar más. Abajo están las preguntas que de verdad importan y, lo más útil, cómo suena una buena respuesta a cada una, para que pueda distinguir a un profesional seguro de una página web bonita.",
   content: [
     { type: "h2", text: "Cómo usar esta lista" },
     {
       type: "p",
-      text: "No tiene que interrogar a nadie. Puede enviar todas estas preguntas en un solo mensaje o hacerlas en una llamada corta. Lo que quiere escuchar es concreción: un buen fotógrafo responde con números, nombres y políticas claras, no con frases vagas. Si una respuesta es ambigua o esquiva la pregunta, eso también le dice algo. Aquí va cada una, con lo que suena como una respuesta honesta.",
+      text: "No tiene que interrogar a nadie. Puede enviar todas estas preguntas en un solo mensaje o hacerlas en una llamada corta. Lo que quiere escuchar es concreción: un buen fotógrafo responde con números, nombres y políticas claras, no con frases vagas. Si una respuesta es ambigua o esquiva la pregunta, eso también le dice algo. Tomamos cada pregunta una por una y le decimos cómo suena una buena respuesta.",
     },
     { type: "h2", text: "1. ¿Cuántas quinceañeras ha fotografiado?" },
     {
@@ -43,7 +43,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Así suena una buena respuesta: un rango de entrega y un tiempo de entrega, por escrito. Una galería privada en línea que usted pueda descargar y compartir, una cantidad de fotos honesta según las horas de cobertura, y una fecha a la que pueda darle seguimiento. En nuestras colecciones con video también recibe un adelanto la misma semana, para que tenga algo que compartir con la familia mientras se termina la galería completa.",
+      text: "Así suena una buena respuesta: un rango de entrega y un tiempo de entrega, por escrito. Una galería privada en línea que usted pueda descargar y compartir, una cantidad de fotos acorde a las horas de cobertura, y una fecha a la que pueda darle seguimiento. En nuestras colecciones con video también recibe un adelanto la misma semana, para que tenga algo que compartir con la familia mientras se termina la galería completa.",
     },
     {
       type: "callout",
@@ -108,7 +108,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Así suena una buena respuesta: un sí o un no directo. Nosotros ofrecemos foto y video como un solo equipo en nuestras colecciones con video, con dos artistas trabajando el mismo día y una edición documental junto a un video cinematográfico, no una sola persona haciendo malabares entre la cámara y el tripié. Si todavía está decidiendo si vale la pena el video, [foto o video para la quinceañera](/es/blog/foto-o-video-quinceanera) repasa esa decisión con honestidad.",
+      text: "Así suena una buena respuesta: un sí o un no directo. Nosotros ofrecemos foto y video como un solo equipo en nuestras colecciones con video, con dos artistas trabajando el mismo día y una edición documental junto a un video cinematográfico, no una sola persona haciendo malabares entre la cámara y el tripié. Si todavía está decidiendo si vale la pena el video, [foto o video para la quinceañera](/es/blog/foto-o-video-quinceanera) sopesa esa decisión sin rodeos.",
     },
     { type: "h2", text: "Para cerrar" },
     {
