@@ -12,8 +12,6 @@ export type HomeImage = {
   alt: string;
   section: string;
   slug: string | null;
-  title: string | null;
-  location: string | null;
   focusX: number | null;
   focusY: number | null;
 };
@@ -36,7 +34,7 @@ function PhotoCard({ image }: { image: HomeImage }) {
   return (
     <article className="group min-w-0">
       <div className="relative overflow-hidden rounded-xl bg-greige">
-        <Link href={photoPath(image)} className="block focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent" aria-label={`View ${image.title || image.alt}`}>
+        <Link href={photoPath(image)} className="block focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent" aria-label={`View ${image.alt}`}>
           <div className="relative aspect-[4/5]">
             <Image
               src={image.url}
@@ -50,13 +48,6 @@ function PhotoCard({ image }: { image: HomeImage }) {
           </div>
         </Link>
         {image.id && <EditOverlay image={{ id: image.id, slug: image.slug, alt: image.alt, fx: image.focusX, fy: image.focusY }} />}
-      </div>
-      <div className="flex items-start justify-between gap-3 pt-3">
-        <div className="min-w-0">
-          <h3 className="truncate text-sm font-medium text-ink">{image.title || sectionLabel(image.section)}</h3>
-          <p className="mt-1 text-xs text-ink-soft">{sectionLabel(image.section)}{image.location ? ` · ${image.location}` : ""}</p>
-        </div>
-        <span aria-hidden="true" className="text-base text-ink-soft transition-transform group-hover:translate-x-1">↗</span>
       </div>
     </article>
   );
