@@ -15,8 +15,9 @@ import {
 import { Reveal } from "@/components/Reveal";
 import { ProtectedImg } from "@/components/ProtectedImg";
 import { EditOverlay } from "@/components/EditMode";
-import { categoryLabel, vendorCreditLabel } from "@/content/portfolio-taxonomy";
+import { altPhraseFor, categoryLabel, vendorCreditLabel } from "@/content/portfolio-taxonomy";
 import { igUrl, websiteUrl } from "@/lib/vendor-links";
+import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import { venueForLocation } from "@/content/venues";
 import { PhotoActions } from "@/components/gallery/PhotoActions";
 
@@ -36,18 +37,18 @@ export async function generateMetadata({
   const img = await getImageBySlug(slug);
   if (!img || img.section !== category) return {};
 
-  const title = img.title || img.alt || "Quinceañera photograph";
-  const description = `${img.caption || img.alt} — quinceañera photography by ${site.brand}, Dallas–Fort Worth. Collections from $1,800; reserve your date.`;
+  const copy = publicPhotoCopy(img, altPhraseFor(img.section));
+  const description = `${copy.description} — quinceañera photography by ${site.brand}, Dallas–Fort Worth. Collections from $1,800; reserve your date.`;
   const pagePath = imagePagePath(img.section, slug);
   const imgUrl = `${site.url}/api/img/${slug}`;
 
   return {
-    title: `${title} · ${categoryLabel(img.section)}`,
+    title: `${copy.title} · ${categoryLabel(img.section)}`,
     description,
     ...(img.tags ? { keywords: img.tags } : {}),
     alternates: { canonical: pagePath },
     openGraph: {
-      title: `${title} · ${site.brand}`,
+      title: `${copy.title} · ${site.brand}`,
       description,
       url: `${site.url}${pagePath}`,
       type: "article",
@@ -56,7 +57,7 @@ export async function generateMetadata({
           url: imgUrl,
           width: img.width ?? 1600,
           height: img.height ?? 2400,
-          alt: img.alt,
+          alt: copy.alt,
         },
       ],
     },
@@ -74,6 +75,7 @@ export default async function PhotoPage({
   if (!img || !img.slug || img.section !== category) notFound();
 
   const label = categoryLabel(img.section);
+  const copy = publicPhotoCopy(img, altPhraseFor(img.section));
   const pageUrl = `${site.url}${imagePagePath(img.section, slug)}`;
   const related = (await getImagesBySection(img.section))
     .filter((r) => r.slug && r.slug !== slug)
@@ -87,8 +89,8 @@ export default async function PhotoPage({
         "@id": `${pageUrl}#image`,
         contentUrl: `${site.url}/api/img/${slug}`,
         url: pageUrl,
-        name: img.title || img.alt,
-        description: img.caption || img.alt,
+        name: copy.title,
+        description: copy.description,
         ...(img.tags ? { keywords: img.tags } : {}),
         ...(img.width && img.height ? { width: img.width, height: img.height } : {}),
         creator: { "@type": "Organization", name: site.brand, url: site.url },
@@ -106,7 +108,7 @@ export default async function PhotoPage({
           { "@type": "ListItem", position: 1, name: "Home", item: site.url },
           { "@type": "ListItem", position: 2, name: "Portfolio", item: `${site.url}/portfolio` },
           { "@type": "ListItem", position: 3, name: label, item: `${site.url}/portfolio#${img.section}` },
-          { "@type": "ListItem", position: 4, name: img.title || img.alt, item: pageUrl },
+          { "@type": "ListItem", position: 4, name: copy.title, item: pageUrl },
         ],
       },
     ],
@@ -139,7 +141,7 @@ export default async function PhotoPage({
             <div className="relative">
               <ProtectedImg
                 src={at(img.url, 1920)}
-                alt={img.alt}
+                alt={copy.alt}
                 width={img.width}
                 height={img.height}
                 loading="eager"
@@ -157,13 +159,13 @@ export default async function PhotoPage({
               <h1
                 className="font-display text-[clamp(1.75rem,2.8vw,2.5rem)] leading-tight text-ink"
               >
-                {img.title || img.alt}
+                {copy.title}
               </h1>
               {img.hook ? (
                 <p className="accent mt-3 text-lg text-accent-strong">{img.hook}</p>
               ) : null}
-              {img.caption ? (
-                <p className="mt-4 text-base leading-relaxed text-ink-soft">{img.caption}</p>
+              {img.caption && copy.description !== copy.alt ? (
+                <p className="mt-4 text-base leading-relaxed text-ink-soft">{copy.description}</p>
               ) : null}
               <dl className="mt-8 space-y-3 border-t border-ink/10 pt-6 text-sm">
                 <div className="flex justify-between gap-6">
@@ -226,7 +228,7 @@ export default async function PhotoPage({
                 })}
               </dl>
               <div className="mt-10 flex flex-col gap-5">
-                <PhotoActions section={img.section} slug={slug} title={img.title || img.alt} pageUrl={pageUrl} bookingHref={site.cta.href} />
+                <PhotoActions section={img.section} slug={slug} title={copy.title} pageUrl={pageUrl} bookingHref={site.cta.href} />
                 <Link
                   href={`/portfolio#${img.section}`}
                   className="text-sm text-accent underline decoration-accent/30 underline-offset-4 transition-colors hover:text-accent-strong"
@@ -252,7 +254,7 @@ export default async function PhotoPage({
                 <Link key={r.id} href={imagePagePath(r.section, r.slug as string)} className="group block overflow-hidden">
                   <ProtectedImg
                     src={at(r.url, 640)}
-                    alt={r.alt}
+                    alt={publicPhotoCopy(r, altPhraseFor(r.section)).alt}
                     loading="lazy"
                     width={r.width}
                     height={r.height}

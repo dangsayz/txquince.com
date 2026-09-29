@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { locations } from "@/content/locations";
+import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { site } from "@/content/site";
 import { getFeaturedImages, getImagesByCity, getPageHero } from "@/lib/content-db";
+import { publicPhotoCopy } from "@/lib/public-photo-copy";
 
 export const revalidate = 3600;
 
@@ -65,7 +67,7 @@ export default async function LocationsHub() {
             </div>
           </div>
           <div className="relative min-h-[19rem] bg-greige sm:min-h-[28rem] lg:min-h-full">
-            <Image src={hero?.url ?? "/portfolio/kimberly-reception.webp"} alt={hero?.alt || "Quinceañera celebration in Dallas–Fort Worth"} fill priority sizes="(max-width: 1024px) 100vw, 55vw" className="object-cover" style={hero ? { objectPosition: focal(hero.focus_x, hero.focus_y) } : { objectPosition: "center 60%" }} />
+            <Image src={hero?.url ?? "/portfolio/kimberly-reception.webp"} alt={hero ? publicPhotoCopy(hero, altPhraseFor(hero.section)).alt : "Quinceañera celebration in Dallas–Fort Worth"} fill priority sizes="(max-width: 1024px) 100vw, 55vw" className="object-cover" style={hero ? { objectPosition: focal(hero.focus_x, hero.focus_y) } : { objectPosition: "center 60%" }} />
           </div>
         </div>
       </section>
@@ -95,7 +97,7 @@ export default async function LocationsHub() {
                   </div>
                   {image?.url ? (
                     <div className="relative size-20 shrink-0 overflow-hidden rounded-lg bg-greige sm:size-24">
-                      <Image src={image.url} alt={image.alt || "Quinceañera portfolio photograph"} fill sizes="96px" className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none" style={{ objectPosition: focal(image.focus_x, image.focus_y) }} />
+                      <Image src={image.url} alt={publicPhotoCopy(image, altPhraseFor(image.section)).alt} fill sizes="96px" className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none" style={{ objectPosition: focal(image.focus_x, image.focus_y) }} />
                     </div>
                   ) : (
                     <span aria-hidden="true" className="flex size-20 shrink-0 items-center justify-center rounded-lg bg-accent-soft text-xl text-accent-strong sm:size-24">↗</span>

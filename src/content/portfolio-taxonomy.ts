@@ -175,7 +175,7 @@ export const CATEGORIES: PortfolioCategory[] = [
   { id: "toast", label: "Toast / Brindis", group: "celebration", kind: "moment", altPhrase: "Quinceañera toast, el brindis" },
   { id: "cake", label: "The Cake", group: "celebration", kind: "moment", altPhrase: "Quinceañera cake" },
   { id: "dinner", label: "Dinner", group: "celebration", kind: "moment", altPhrase: "Quinceañera reception dinner" },
-  { id: "celebration", label: "The Party", group: "celebration", kind: "moment", altPhrase: "Quinceañera celebration and dancing" }, // legacy
+  { id: "celebration", label: "The Party", group: "celebration", kind: "moment", altPhrase: "Quinceañera celebration" }, // legacy
   { id: "photo-booth", label: "Photo Booth", group: "celebration", kind: "moment", altPhrase: "Quinceañera photo booth candids" },
   { id: "send-off", label: "The Send-Off", group: "celebration", kind: "moment", altPhrase: "Quinceañera send-off at the end of the night" },
 

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { categoryLabel } from "@/content/portfolio-taxonomy";
+import { altPhraseFor, categoryLabel } from "@/content/portfolio-taxonomy";
 import { getPortfolioImages } from "@/lib/content-db";
+import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import { PortfolioGallery, type GalleryItem } from "@/components/PortfolioGallery";
 
 export const dynamic = "force-dynamic";
@@ -14,20 +15,23 @@ export const metadata: Metadata = {
 
 export default async function SavedPage() {
   const images = await getPortfolioImages();
-  const items: GalleryItem[] = images.map((image) => ({
-    url: image.url,
-    alt: image.alt,
-    width: image.width,
-    height: image.height,
-    slug: image.slug,
-    section: image.section,
-    id: image.id,
-    fx: image.focus_x,
-    fy: image.focus_y,
-    title: image.title,
-    caption: image.caption,
-    city: image.city,
-  }));
+  const items: GalleryItem[] = images.map((image) => {
+    const copy = publicPhotoCopy(image, altPhraseFor(image.section));
+    return {
+      url: image.url,
+      alt: copy.alt,
+      width: image.width,
+      height: image.height,
+      slug: image.slug,
+      section: image.section,
+      id: image.id,
+      fx: image.focus_x,
+      fy: image.focus_y,
+      title: copy.title,
+      caption: copy.description,
+      city: image.city,
+    };
+  });
   const sections = [...new Set(images.map((image) => image.section))]
     .map((id) => ({ id, title: categoryLabel(id) }));
 

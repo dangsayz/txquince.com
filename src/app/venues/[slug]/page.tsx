@@ -18,6 +18,8 @@ import { PortfolioGallery, type GalleryItem } from "@/components/PortfolioGaller
 import { Reveal } from "@/components/Reveal";
 import { CTAButton } from "@/components/CTAButton";
 import { FinalCTA } from "@/components/FinalCTA";
+import { altPhraseFor } from "@/content/portfolio-taxonomy";
+import { publicPhotoCopy } from "@/lib/public-photo-copy";
 
 export const revalidate = 3600;
 
@@ -66,19 +68,25 @@ export default async function VenuePage({
   const web = websiteUrl(copy?.website);
   const url = `${site.url}/venues/${slug}`;
 
-  const items: GalleryItem[] = photos.map((i) => ({
-    url: i.url,
-    alt: i.alt,
-    ratio: i.is_feature ? "landscape" : "portrait",
-    feature: i.is_feature,
-    width: i.width,
-    height: i.height,
-    slug: i.slug,
-    section: i.section,
-    id: i.id,
-    fx: i.focus_x,
-    fy: i.focus_y,
-  }));
+  const items: GalleryItem[] = photos.map((i) => {
+    const photoCopy = publicPhotoCopy(i, altPhraseFor(i.section));
+    return {
+      url: i.url,
+      alt: photoCopy.alt,
+      title: photoCopy.title,
+      caption: photoCopy.description,
+      city: i.city,
+      ratio: i.is_feature ? "landscape" : "portrait",
+      feature: i.is_feature,
+      width: i.width,
+      height: i.height,
+      slug: i.slug,
+      section: i.section,
+      id: i.id,
+      fx: i.focus_x,
+      fy: i.focus_y,
+    };
+  });
 
   const about =
     copy?.about ||
@@ -124,11 +132,12 @@ export default async function VenuePage({
               associatedMedia: photos.slice(0, 40).map((i) => {
                 const path = i.url.split("?")[0];
                 const contentUrl = path.startsWith("http") ? path : `${site.url}${path}`;
+                const photoCopy = publicPhotoCopy(i, altPhraseFor(i.section));
                 return {
                   "@type": ["ImageObject", "Photograph"],
                   contentUrl,
-                  name: i.title || i.alt,
-                  description: i.caption || i.alt,
+                  name: photoCopy.title,
+                  description: photoCopy.description,
                   ...(i.width && i.height ? { width: i.width, height: i.height } : {}),
                   creator: { "@type": "Organization", name: site.brand, url: site.url },
                   contentLocation: { "@type": "Place", name: `${venue.venue}, ${venue.city}, TX` },
