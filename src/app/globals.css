@@ -2,25 +2,25 @@
 
 /*
   TX QUINCE — DESIGN SYSTEM
-  Warm editorial system. Photography carries the color; interface accents use muted leaf.
+  Warm editorial surfaces and quiet graphite controls let the photography carry the color.
   Fonts are injected as CSS variables by next/font in layout.tsx.
 */
 
 @theme {
-  /* Paper neutrals, readable ink, and a single leaf green action color. */
+  /* Paper neutrals, graphite ink, and soft silver accents. */
   --color-sand: #e2ded6;
   --color-cream: #faf8f4;
   --color-ivory: #f3f0e9;
   --color-greige: #eae8df;
   --color-white: #ffffff;
-  --color-ink: #20251f;
-  --color-dark: #20251f;
-  --color-ink-soft: #4c554d;
-  --color-ink-faint: #586159;
-  --color-line: #d5d9d1;
-  --color-accent: #4e6755;
-  --color-accent-strong: #38513f;
-  --color-accent-soft: #eaf0e9;
+  --color-ink: #1d1d1f;
+  --color-dark: #1d1d1f;
+  --color-ink-soft: #515154;
+  --color-ink-faint: #626267;
+  --color-line: #d7d7d9;
+  --color-accent: #303033;
+  --color-accent-strong: #1d1d1f;
+  --color-accent-soft: #efeff1;
   --color-clay: #bd8c72;
   --color-wine: var(--color-accent);
   --color-wine-deep: var(--color-accent-strong);
@@ -239,9 +239,9 @@ body {
 }
 
 /* =====================================================================
-   CLAURA warm system — pill buttons, tags, and imagery placeholders.
+   Shared buttons, tags, and imagery placeholders.
    Sentence-case buttons (not the old uppercase tracked pills), generous
-   radius, espresso primary + soft secondary.
+   radius, graphite primary + soft secondary.
    ===================================================================== */
 
 .btn-espresso {
