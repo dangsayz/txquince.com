@@ -58,7 +58,7 @@ export default async function ReservePage({
           </div>
           <div className="min-w-0">
             {canceled && <p role="status" className="mb-5 rounded-xl border border-line bg-white p-4 text-sm leading-6 text-ink-soft">The previous checkout was canceled, and no payment was taken. You can request your date below; we will confirm availability before sending a payment link.</p>}
-            <BookingForm defaultCollection={defaultCollection} defaultDate={defaultDate} />
+            <BookingForm key={`${defaultCollection ?? ""}:${defaultDate ?? ""}`} defaultCollection={defaultCollection} defaultDate={defaultDate} />
           </div>
         </div>
       </section>
