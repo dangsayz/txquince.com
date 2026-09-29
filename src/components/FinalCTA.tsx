@@ -1,10 +1,6 @@
 import { Reveal } from "@/components/Reveal";
 import { CTAButton } from "@/components/CTAButton";
 
-/**
- * Closing CTA — light, editorial, scarcity-driven. A script accent over a serif
- * line and a single outlined pill (the ONE primary CTA). Reused across pages.
- */
 export function FinalCTA({
   accent = "The next step",
   headline = "Let's see if her date is still open.",
@@ -15,20 +11,20 @@ export function FinalCTA({
   sub?: string;
 }) {
   return (
-    <section className="bg-dark">
+    <section className="border-t border-line bg-ivory">
       <div className="mx-auto max-w-3xl px-5 py-section text-center md:px-10 lg:px-16 md:py-section-lg">
         <Reveal>
-          <span className="text-sm font-medium text-wine-tint">
+          <span className="text-sm font-medium text-ink-soft">
             {accent}
           </span>
-          <h2 className="mx-auto mt-5 max-w-2xl font-serif text-[clamp(3rem,5vw,4.5rem)] leading-[0.95] text-cream text-balance">
+          <h2 className="mx-auto mt-4 max-w-2xl font-display text-[clamp(2rem,3.5vw,3rem)] leading-[1.14] text-ink text-balance">
             {headline}
           </h2>
-          <p className="mx-auto mt-6 max-w-md text-base leading-7 text-cream/80">
+          <p className="mx-auto mt-5 max-w-md text-base leading-7 text-ink-soft">
             {sub}
           </p>
-          <div className="mt-10 flex justify-center">
-            <CTAButton href="/check-your-date" variant="onDark" className="min-h-12 px-7 text-base font-semibold">
+          <div className="mt-8 flex justify-center">
+            <CTAButton href="/check-your-date" className="min-h-12 rounded-md px-7 text-base font-medium">
               Check her date
             </CTAButton>
           </div>

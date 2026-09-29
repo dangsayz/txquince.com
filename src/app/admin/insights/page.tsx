@@ -27,11 +27,11 @@ function MetricCard({
   emphasis?: boolean;
 }) {
   return (
-    <div className={`rounded-2xl border border-line p-5 ${emphasis ? "bg-ink text-cream" : "bg-white"}`}>
-      <p className={`text-[0.66rem] uppercase tracking-[0.18em] ${emphasis ? "text-cream/70" : "text-ink-faint"}`}>
+    <div className={`rounded-lg border border-line p-5 ${emphasis ? "bg-ink text-cream" : "bg-white"}`}>
+      <p className={`text-xs uppercase tracking-[0.18em] ${emphasis ? "text-cream/70" : "text-ink-faint"}`}>
         {label}
       </p>
-      <p className={`mt-3 font-display text-3xl tabular-nums ${emphasis ? "text-cream" : "text-ink"}`}>{value}</p>
+      <p className={`mt-3 font-display text-[clamp(1.75rem,3vw,2rem)] font-normal tabular-nums ${emphasis ? "text-cream" : "text-ink"}`}>{value}</p>
       {helper ? (
         <p className={`mt-1.5 text-xs ${emphasis ? "text-cream/60" : "text-ink-soft"}`}>{helper}</p>
       ) : null}
@@ -42,20 +42,20 @@ function MetricCard({
 function RankedList({ title, items, empty }: { title: string; items: { label: string; count: number }[]; empty: string }) {
   const max = Math.max(...items.map((i) => i.count), 1);
   return (
-    <div className="rounded-2xl border border-line bg-white p-5">
-      <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">{title}</p>
+    <div className="rounded-lg border border-line bg-white p-5">
+      <p className="text-xs uppercase tracking-[0.18em] text-ink-faint">{title}</p>
       <div className="mt-4 space-y-2.5">
         {items.length === 0 ? (
-          <p className="text-sm text-ink-faint">{empty}</p>
+          <p className="text-base text-ink-faint">{empty}</p>
         ) : (
           items.map((i) => (
             <div key={i.label} className="relative">
-              <div className="flex items-center justify-between gap-3 text-sm">
+              <div className="flex items-center justify-between gap-3 text-base">
                 <span className="truncate text-ink">{i.label}</span>
                 <span className="shrink-0 tabular-nums text-ink-soft">{i.count}</span>
               </div>
               <div className="mt-1 h-1 overflow-hidden rounded-full bg-greige">
-                <div className="h-full rounded-full bg-accent/60" style={{ width: `${(i.count / max) * 100}%` }} />
+                <div className="h-full rounded-full bg-ink/60" style={{ width: `${(i.count / max) * 100}%` }} />
               </div>
             </div>
           ))
@@ -72,14 +72,14 @@ function InsightPanel({ insights }: { insights: RangedStats["insights"] }) {
     info: "text-ink-soft",
   };
   return (
-    <div className="rounded-2xl border border-line bg-white p-5">
-      <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">What to do next</p>
+    <div className="rounded-lg border border-line bg-white p-5">
+      <p className="text-xs uppercase tracking-[0.18em] text-ink-faint">What to do next</p>
       <ul className="mt-4 space-y-3">
         {insights.length === 0 ? (
-          <li className="text-sm text-ink-faint">Insights appear as data comes in.</li>
+          <li className="text-base text-ink-faint">Insights appear as data comes in.</li>
         ) : (
           insights.map((ins, i) => (
-            <li key={i} className={`flex gap-2.5 text-sm leading-relaxed ${tone[ins.type]}`}>
+            <li key={i} className={`flex gap-2.5 text-base leading-relaxed ${tone[ins.type]}`}>
               <span aria-hidden className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-current" />
               {ins.text}
             </li>
@@ -109,21 +109,20 @@ export default async function AdminDashboard({
       {/* header + range */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-[0.66rem] uppercase tracking-[0.28em] text-ink-faint">Business overview</p>
-          <h1 className="mt-2 font-display text-3xl text-ink">Business insights</h1>
-          <p className="mt-1 text-sm text-ink-soft">
+          <p className="text-xs uppercase tracking-[0.28em] text-ink-faint">Business overview</p>
+          <h1 className="mt-2 font-display text-[clamp(2rem,4vw,2.5rem)] font-normal text-ink">Business insights</h1>
+          <p className="mt-1 text-base text-ink-soft">
             {s.configured
-              ? "Live traffic, bookings, and what to do next — last "
-              : "Connect Supabase to see live analytics — last "}
-            {range} days.
+              ? `Live traffic, bookings, and what to do next — last ${range} days.`
+              : "Live analytics will appear when the data connection is available."}
           </p>
         </div>
-        <div className="flex gap-1.5">
+        <div className="flex flex-wrap gap-1.5">
           {RANGES.map((r) => (
             <Link
               key={r}
               href={`/admin/insights?range=${r}`}
-              className={`rounded-full px-4 py-1.5 text-[0.7rem] uppercase tracking-[0.14em] transition-colors ${
+              className={`inline-flex min-h-11 items-center rounded-md px-4 py-1.5 text-base font-medium tracking-[0.14em] transition-colors ${
                 r === range ? "bg-ink text-cream" : "border border-line text-ink-soft hover:text-ink"
               }`}
             >
@@ -138,43 +137,41 @@ export default async function AdminDashboard({
       {s.paymentReview > 0 ? (
         <Link
           href="/admin/bookings"
-          className="mt-6 flex items-center justify-between gap-4 rounded-2xl border border-amber-400 bg-amber-50 p-5 transition-colors hover:border-amber-600"
+          className="mt-6 flex items-center justify-between gap-4 rounded-lg border border-amber-400 bg-amber-50 p-5 transition-colors hover:border-amber-600"
         >
           <div>
-            <p className="text-[0.66rem] uppercase tracking-[0.18em] text-amber-700">Needs review</p>
-            <p className="mt-1 text-sm text-ink">
+            <p className="text-xs uppercase tracking-[0.18em] text-amber-700">Needs review</p>
+            <p className="mt-1 text-base text-ink">
               {s.paymentReview} payment{s.paymentReview === 1 ? "" : "s"} collected but not auto-confirmed
               {s.paymentReviewValue ? ` · ${money(s.paymentReviewValue)} held` : ""} — verify the date or refund.
             </p>
           </div>
-          <span className="shrink-0 text-[0.62rem] uppercase tracking-[0.16em] text-amber-700">Open →</span>
+          <span className="shrink-0 text-xs uppercase tracking-[0.16em] text-amber-700">Open →</span>
         </Link>
       ) : null}
 
-      {/* THE BOTTLENECK — the one thing to fix, named automatically. A calm
-          champagne-tinted card (not a loud 2px gold frame) keeps it the
-          priority without shouting over the rest of the dashboard. */}
+      {/* THE BOTTLENECK — the one thing to fix, named automatically. */}
       {s.bottleneck ? (
-        <section className="mt-6 rounded-2xl border border-line bg-accent-soft/40 p-5">
+        <section className="mt-6 rounded-lg border border-line bg-ivory p-5">
           <div className="flex items-center gap-2">
             <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
-            <p className="text-[0.62rem] uppercase tracking-[0.2em] text-ink-faint">
+            <p className="text-xs uppercase tracking-[0.2em] text-ink-faint">
               Fix this first — your weakest funnel edge
             </p>
           </div>
           <p className="mt-3 font-display text-xl text-ink">
             {s.bottleneck.edge}:{" "}
             <span className="text-accent-strong">{s.bottleneck.rate}%</span>
-            <span className="ml-1.5 text-sm text-ink-faint">healthy ≈ {s.bottleneck.baseline}%</span>
+            <span className="ml-1.5 text-base text-ink-faint">healthy ≈ {s.bottleneck.baseline}%</span>
           </p>
-          <p className="mt-2 text-sm leading-relaxed text-ink-soft">{s.bottleneck.action}</p>
+          <p className="mt-2 text-base leading-relaxed text-ink-soft">{s.bottleneck.action}</p>
         </section>
       ) : null}
 
       {/* LIVE NOW — who's on the site this minute. */}
-      <section className="mt-4 rounded-2xl border border-line bg-white p-5">
+      <section className="mt-4 rounded-lg border border-line bg-white p-5">
         <div className="flex items-center justify-between">
-          <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">
+          <p className="text-xs uppercase tracking-[0.18em] text-ink-faint">
             On the site right now
           </p>
           <span className="flex items-center gap-1.5 text-xs text-ink-soft">
@@ -185,7 +182,7 @@ export default async function AdminDashboard({
         {s.liveNow.length ? (
           <ul className="mt-3 divide-y divide-line">
             {s.liveNow.map((v, i) => (
-              <li key={i} className="flex items-baseline justify-between gap-3 py-2 text-sm">
+              <li key={i} className="flex items-baseline justify-between gap-3 py-2 text-base">
                 <span className="truncate text-ink">{v.path === "/" ? "Homepage" : v.path}</span>
                 <span className="shrink-0 tabular-nums text-ink-soft">
                   {v.pages} pg · {mins(v.seconds)}
@@ -194,7 +191,7 @@ export default async function AdminDashboard({
             ))}
           </ul>
         ) : (
-          <p className="mt-3 text-sm text-ink-faint">Quiet right now — refreshes every 30s.</p>
+          <p className="mt-3 text-base text-ink-faint">Quiet right now — refreshes every 30s.</p>
         )}
       </section>
 
@@ -216,22 +213,22 @@ export default async function AdminDashboard({
 
       {/* chart + insights */}
       <section className="mt-8 grid gap-4 lg:grid-cols-[1.3fr_0.7fr]">
-        <div className="rounded-2xl border border-line bg-white p-5">
-          <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">Visits per day · last {range} days</p>
+        <div className="rounded-lg border border-line bg-white p-5">
+          <p className="text-xs uppercase tracking-[0.18em] text-ink-faint">Visits per day · last {range} days</p>
           <div className="mt-6 flex h-40 items-end gap-1.5 border-b border-line pb-2">
             {s.daily.map((d) => {
               const isToday = d.date === todayKey;
               return (
                 <div key={d.date} className="group flex h-full flex-1 flex-col justify-end" title={`${d.date}: ${d.count}`}>
                   <div
-                    className={`w-full rounded-t-sm ${isToday ? "bg-ink" : "bg-accent/30 group-hover:bg-accent/55"}`}
+                    className={`w-full rounded-t-sm ${isToday ? "bg-ink" : "bg-ink/25 group-hover:bg-ink/45"}`}
                     style={{ height: `${Math.max((d.count / maxDaily) * 100, d.count > 0 ? 6 : 1)}%` }}
                   />
                 </div>
               );
             })}
           </div>
-          <div className="mt-2 flex justify-between text-[0.62rem] uppercase tracking-[0.14em] text-ink-faint">
+          <div className="mt-2 flex justify-between text-xs uppercase tracking-[0.14em] text-ink-faint">
             <span>{s.daily[0]?.date.slice(5)}</span>
             <span>peak {maxDaily}</span>
             <span>today</span>
@@ -241,15 +238,15 @@ export default async function AdminDashboard({
       </section>
 
       {/* funnel */}
-      <section className="mt-4 rounded-2xl border border-line bg-white p-5">
-        <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">Booking funnel · last {range} days traffic, all-time pipeline</p>
+      <section className="mt-4 rounded-lg border border-line bg-white p-5">
+        <p className="text-xs uppercase tracking-[0.18em] text-ink-faint">Booking funnel · last {range} days traffic, all-time pipeline</p>
         <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
           {s.funnel.map((step, i) => {
             const prev = i > 0 ? s.funnel[i - 1].value : 0;
             const pct = i > 0 && prev > 0 ? Math.round((step.value / prev) * 100) : null;
             return (
-              <div key={step.label} className="rounded-xl bg-greige p-4">
-                <p className="text-[0.62rem] uppercase tracking-[0.16em] text-ink-faint">{step.label}</p>
+              <div key={step.label} className="rounded-md border border-line bg-ivory p-4">
+                <p className="text-xs uppercase tracking-[0.16em] text-ink-faint">{step.label}</p>
                 <p className="mt-2 font-display text-2xl text-ink tabular-nums">{step.value}</p>
                 {pct !== null ? <p className="mt-1 text-xs text-ink-soft">{pct}% of prior</p> : <p className="mt-1 text-xs text-ink-faint">top of funnel</p>}
               </div>
@@ -259,14 +256,14 @@ export default async function AdminDashboard({
       </section>
 
       {/* PAGE ENGAGEMENT — where families spend time, where they leave. */}
-      <section className="mt-4 rounded-2xl border border-line bg-white p-5">
-        <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">
+      <section className="mt-4 rounded-lg border border-line bg-white p-5">
+        <p className="text-xs uppercase tracking-[0.18em] text-ink-faint">
           Page behavior · time on page &amp; exits
         </p>
         <div className="mt-4 overflow-x-auto">
-          <table className="w-full min-w-[420px] text-sm">
+          <table className="w-full min-w-[420px] text-base">
             <thead>
-              <tr className="text-left text-[0.62rem] uppercase tracking-[0.14em] text-ink-faint">
+              <tr className="text-left text-xs uppercase tracking-[0.14em] text-ink-faint">
                 <th className="pb-2 font-medium">Page</th>
                 <th className="pb-2 text-right font-medium">Views</th>
                 <th className="pb-2 text-right font-medium">Avg time</th>
@@ -298,8 +295,8 @@ export default async function AdminDashboard({
       </section>
 
       {/* WEEKLY FLYWHEEL — events → proof → content → rank → premium clients. */}
-      <section className="mt-4 rounded-2xl border border-line bg-white p-5">
-        <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">
+      <section className="mt-4 rounded-lg border border-line bg-white p-5">
+        <p className="text-xs uppercase tracking-[0.18em] text-ink-faint">
           This week&apos;s flywheel · computed from live data
         </p>
         <ul className="mt-4 space-y-3">
@@ -307,13 +304,13 @@ export default async function AdminDashboard({
             <li key={f.label} className="flex gap-3">
               <span
                 aria-hidden
-                className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[0.7rem] ${
+                className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-sm ${
                   f.done ? "bg-emerald-600 text-white" : "border border-accent text-accent"
                 }`}
               >
                 {f.done ? "✓" : "!"}
               </span>
-              <span className="text-sm leading-snug">
+              <span className="text-base leading-snug">
                 <span className={f.done ? "text-ink-soft line-through decoration-ink/30" : "font-medium text-ink"}>
                   {f.label}
                 </span>
@@ -332,8 +329,8 @@ export default async function AdminDashboard({
       </section>
 
       {/* revenue & leads by source — which channel actually makes money */}
-      <section className="mt-4 rounded-2xl border border-line bg-white p-5">
-        <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">
+      <section className="mt-4 rounded-lg border border-line bg-white p-5">
+        <p className="text-xs uppercase tracking-[0.18em] text-ink-faint">
           Revenue &amp; leads by source
         </p>
         <p className="mt-1 text-xs text-ink-soft">
@@ -341,15 +338,15 @@ export default async function AdminDashboard({
           <code className="text-ink">?utm_source=</code> to sharpen this).
         </p>
         {s.bySource.length === 0 ? (
-          <p className="mt-4 text-sm text-ink-faint">
+          <p className="mt-4 text-base text-ink-faint">
             No attributed leads or bookings yet — they&apos;ll appear here as inquiries and date
             requests come in.
           </p>
         ) : (
           <div className="mt-4 overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-base">
               <thead>
-                <tr className="text-left text-[0.62rem] uppercase tracking-[0.14em] text-ink-faint">
+                <tr className="text-left text-xs uppercase tracking-[0.14em] text-ink-faint">
                   <th className="pb-2 font-medium">Source</th>
                   <th className="pb-2 text-right font-medium">Leads</th>
                   <th className="pb-2 text-right font-medium">Requests</th>
@@ -379,7 +376,7 @@ export default async function AdminDashboard({
       </section>
 
       {!s.configured ? (
-        <p className="mt-8 text-sm text-ink-faint">Analytics tables are ready; data will populate as visitors browse the live site.</p>
+        <p className="mt-8 text-base text-ink-faint">Analytics tables are ready; data will populate as visitors browse the live site.</p>
       ) : null}
     </main>
   );

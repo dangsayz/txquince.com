@@ -28,17 +28,17 @@ export default function PortfolioPage({ searchParams }: {
 }) {
   return (
     <>
-      <header className="mx-auto max-w-[90rem] px-5 pb-12 pt-12 md:px-10 md:pb-16 md:pt-20 lg:px-16">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <p className="text-xs font-semibold text-accent">Portfolio</p>
-          <Link href={site.cta.href} className="inline-flex min-h-11 items-center rounded-full border border-ink px-5 text-sm font-medium text-ink hover:bg-ink hover:text-white">Ask about your date ↗</Link>
-        </div>
-        <h1 className="mt-8 max-w-5xl font-display text-[clamp(2rem,4vw,4rem)] leading-[1.12] text-ink">
-          Quinceañera photography <span className="text-accent">portfolio.</span>
+      <header className="border-b border-line bg-white px-5 pb-12 pt-14 text-center md:px-10 md:pb-16 md:pt-20">
+        <p className="text-xs font-medium uppercase tracking-[0.2em] text-ink-soft">The portfolio</p>
+        <h1 className="mx-auto mt-5 max-w-3xl font-display text-[clamp(2rem,3vw,2.75rem)] font-medium leading-[1.15] tracking-[-0.035em] text-ink">
+          Quinceañera photography, seen in full.
         </h1>
-        <p className="mt-6 max-w-2xl text-base leading-relaxed text-ink-soft md:text-lg">
-          Explore quinceañera portraits, ceremonies, and celebrations photographed across Dallas–Fort Worth.
+        <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-ink-soft">
+          Portraits, traditions, and celebrations across Dallas–Fort Worth. Browse the moments that matter to her.
         </p>
+        <Link href={site.cta.href} className="mt-7 inline-flex min-h-12 items-center justify-center whitespace-nowrap rounded-lg bg-accent px-6 text-base font-medium text-white transition-colors hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
+          Check her date <span aria-hidden="true" className="ml-3">↗</span>
+        </Link>
       </header>
       <Suspense fallback={<PortfolioLoading />}>
         <PortfolioContent searchParams={searchParams} />
@@ -135,7 +135,7 @@ async function PortfolioContent({ searchParams }: {
     <>
       {videoJsonLd ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(videoJsonLd).replaceAll("<", "\\u003c") }} /> : null}
       {imageGalleryJsonLd ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(imageGalleryJsonLd).replaceAll("<", "\\u003c") }} /> : null}
-      <section className="border-t border-line bg-ivory" aria-label="Photograph gallery">
+      <section className="bg-white" aria-label="Photograph gallery">
         <div className="mx-auto max-w-[90rem] px-5 py-10 md:px-10 md:py-14 lg:px-16">
           <PortfolioGallery key={initialQuery} images={items} sections={sections} initialQuery={initialQuery} />
         </div>
@@ -144,9 +144,9 @@ async function PortfolioContent({ searchParams }: {
       {videos.length ? (
         <section id="films" className="scroll-mt-24 border-t border-line bg-white">
           <div className="mx-auto max-w-[90rem] px-5 py-16 md:px-10 md:py-24 lg:px-16">
-            <p className="text-xs font-semibold text-accent">Films</p>
-            <h2 className="mt-3 font-display text-3xl text-ink md:text-4xl">Quinceañera films</h2>
-            <p className="mt-4 mb-10 max-w-lg text-sm leading-relaxed text-ink-soft">Watch highlights from quinceañera celebrations.</p>
+            <p className="text-xs font-medium uppercase tracking-[0.2em] text-ink-soft">Films</p>
+            <h2 className="mt-3 font-display text-[clamp(1.75rem,2.5vw,2.5rem)] font-medium tracking-[-0.025em] text-ink">Her day in motion</h2>
+            <p className="mb-10 mt-4 max-w-lg text-base leading-relaxed text-ink-soft">Watch highlights from quinceañera celebrations.</p>
             <VideoGallery videos={videos} />
           </div>
         </section>

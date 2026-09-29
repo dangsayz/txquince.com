@@ -5,6 +5,7 @@
  */
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { site } from "@/content/site";
 import { getVendors, getPortfolioImages } from "@/lib/content-db";
 import { VENDOR_CATEGORIES, vendorCategoryLabel } from "@/content/portfolio-taxonomy";
@@ -31,9 +32,12 @@ export default async function VendorsPage() {
 
   // Photos per vendor (drives the count + sorts the busiest first).
   const counts = new Map<string, number>();
+  const covers = new Map<string, (typeof images)[number]>();
   for (const img of images)
-    for (const v of img.vendors ?? [])
+    for (const v of img.vendors ?? []) {
       counts.set(v.vendor_id, (counts.get(v.vendor_id) ?? 0) + 1);
+      if (!covers.has(v.vendor_id)) covers.set(v.vendor_id, img);
+    }
 
   // Group vendors by category in the taxonomy's order; unknown → "Other".
   const order = VENDOR_CATEGORIES.map((c) => c.id);
@@ -80,16 +84,11 @@ export default async function VendorsPage() {
         />
       ) : null}
 
-      <section className="mx-auto max-w-[90rem] px-5 pb-10 pt-20 md:px-10 lg:px-16 md:pb-14 md:pt-32">
-        <Reveal>
-          <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">Vendors</p>
-          <h1
-            className="mt-5 max-w-4xl font-display text-ink"
-            style={{ fontSize: "clamp(2.6rem,6.5vw,5.4rem)", lineHeight: 0.98, letterSpacing: "-0.028em" }}
-          >
-            The team behind the day.
-          </h1>
-          <p className="mt-7 max-w-md text-[0.95rem] leading-relaxed text-ink-soft">
+      <section className="mx-auto max-w-[90rem] px-5 pb-14 pt-14 text-center md:px-10 md:pb-20 md:pt-20 lg:px-16">
+        <Reveal className="mx-auto max-w-2xl">
+          <p className="text-xs font-medium uppercase tracking-[0.14em] text-ink-soft">Vendors</p>
+          <h1 className="mt-5 font-display text-[clamp(2rem,3.4vw,3rem)] leading-[1.14] text-ink">The team behind the day.</h1>
+          <p className="mx-auto mt-5 max-w-xl text-base leading-7 text-ink-soft sm:text-lg">
             The venues, florists, glam artists, bakers, and DJs we love working
             with across Dallas–Fort Worth. Tap any name to see the work.
           </p>
@@ -102,35 +101,27 @@ export default async function VendorsPage() {
         </section>
       ) : (
         sections.map((s) => (
-          <section key={s.id} className="mt-12 border-t border-ink/10 bg-white">
+          <section key={s.id} className="border-t border-line bg-white">
             <div className="mx-auto max-w-[90rem] px-5 py-12 md:px-10 lg:px-16 md:py-16">
               <Reveal>
-                <h2
-                  className="font-display text-ink"
-                  style={{ fontSize: "clamp(1.6rem,3vw,2.4rem)", lineHeight: 1.05, letterSpacing: "-0.015em" }}
-                >
-                  {s.label}
-                </h2>
+                <h2 className="font-display text-[clamp(1.5rem,2.6vw,2.2rem)] text-ink">{s.label}</h2>
               </Reveal>
-              <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <ul className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {s.vendors.map((v) => {
                   const n = counts.get(v.id) ?? 0;
+                  const cover = covers.get(v.id);
                   return (
                     <li key={v.id}>
                       <Link
                         href={`/vendors/${v.slug}`}
-                        className="flex min-h-[44px] items-center justify-between gap-3 rounded-xl border border-line bg-ivory px-4 py-3 transition-colors hover:border-wine"
+                        className="group block h-full overflow-hidden rounded-xl border border-line bg-white transition-colors hover:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
                       >
-                        <span className="min-w-0">
-                          <span className="block truncate text-ink">{v.business || v.name}</span>
-                          {v.ig_handle ? (
-                            <span className="block truncate text-xs text-ink-faint">
-                              @{v.ig_handle}
-                            </span>
-                          ) : null}
+                        <span className="relative block aspect-[16/10] overflow-hidden bg-greige">
+                          {cover?.url ? <Image src={cover.url} alt={cover.alt || `Quinceañera work with ${v.business || v.name}`} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover transition-transform duration-300 motion-reduce:transition-none group-hover:scale-[1.025]" /> : null}
                         </span>
-                        <span className="shrink-0 text-xs text-ink-faint">
-                          {n} photo{n === 1 ? "" : "s"}
+                        <span className="flex min-h-16 items-center justify-between gap-3 px-5 py-4">
+                          <span className="min-w-0"><span className="block text-base font-medium text-ink">{v.business || v.name}</span>{v.ig_handle ? <span className="block text-sm text-ink-soft">@{v.ig_handle}</span> : null}</span>
+                          <span className="shrink-0 text-sm text-ink-soft">{n} photo{n === 1 ? "" : "s"} ↗</span>
                         </span>
                       </Link>
                     </li>

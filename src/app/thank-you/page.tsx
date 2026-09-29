@@ -16,10 +16,10 @@ export default function ThankYouPage() {
     <section className="bg-ivory px-5 py-12 sm:px-6 md:py-20">
       <div className="mx-auto max-w-2xl rounded-xl border border-line bg-white p-7 text-center sm:p-12">
         <Badge>Inquiry received</Badge>
-        <h1 className="mt-5 font-display text-4xl leading-[1.08] text-ink text-balance md:text-5xl">
+        <h1 className="mt-5 font-display text-[clamp(2rem,3.4vw,3rem)] leading-[1.14] text-ink text-balance">
           Thank you — your inquiry is on its way.
         </h1>
-        <p className="mt-6 max-w-md text-base leading-relaxed text-ink-soft">
+        <p className="mx-auto mt-6 max-w-md text-base leading-7 text-ink-soft">
           I&apos;ll review your details and confirm whether your date is open.
           Check your inbox for a reply from the studio.
         </p>
@@ -29,7 +29,7 @@ export default function ThankYouPage() {
           </CTAButton>
           <Link
             href="/"
-            className="text-sm text-ink-soft underline underline-offset-4 hover:text-ink"
+            className="inline-flex min-h-11 items-center text-base text-ink-soft underline underline-offset-4 hover:text-ink"
           >
             Back home
           </Link>

@@ -10,9 +10,9 @@ export default async function AdminPortfolioPage() {
   // locations content out of the client bundle).
   const cities = locations.map((l) => ({ slug: l.slug, label: l.city }));
   return (
-    <div className="mx-auto max-w-6xl px-5 py-12">
-      <h1 className="font-display text-3xl text-ink">Portfolio</h1>
-      <p className="mt-2 max-w-2xl text-sm text-ink-soft">
+    <div className="mx-auto max-w-[90rem] px-5 py-10 md:px-10 md:py-14 lg:px-16">
+      <h1 className="font-display text-[clamp(1.75rem,2.8vw,2.25rem)] leading-tight text-ink">Portfolio</h1>
+      <p className="mt-3 max-w-2xl text-base leading-7 text-ink-soft">
         Dump a whole shoot here, then sort it. Pick a category (the full quince-day
         timeline + vendors), add a title/hook/description/tags, tag any vendors you
         snapped (they autocomplete after the first time), set the <em>City</em>, and

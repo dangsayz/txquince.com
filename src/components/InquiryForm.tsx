@@ -23,7 +23,7 @@ const SHOW_TURNSTILE =
   Boolean(SITE_KEY) && process.env.NODE_ENV === "production";
 
 const inputBase =
-  "min-h-12 w-full border border-[#8c8377] bg-white px-4 py-3 text-base text-ink placeholder:text-ink-soft focus:border-ink focus:outline-none focus:ring-2 focus:ring-ink/20";
+  "min-h-12 w-full rounded-md border border-line bg-white px-4 py-3 text-base text-ink placeholder:text-ink-faint focus:border-ink focus:outline-none focus:ring-2 focus:ring-ink/15";
 const labelBase = "block text-base font-medium text-ink";
 
 const spanish = {
@@ -275,7 +275,7 @@ export function InquiryForm({ initialDate = "", locale = "en" }: { initialDate?:
       <button
         type="submit"
         disabled={submitting}
-        className="inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-full bg-accent px-8 py-3 text-base font-medium text-white transition-colors hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
+        className="inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-md bg-ink px-8 py-3 text-base font-medium text-white transition-colors hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
       >
         {submitting ? (
           <>

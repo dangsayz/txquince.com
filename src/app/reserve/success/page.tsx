@@ -48,7 +48,7 @@ export default async function ReserveSuccessPage({
       <div className="mx-auto max-w-2xl rounded-xl border border-line bg-white p-7 text-center sm:p-12">
         <Badge>{paid ? "Reserved" : "Almost there"}</Badge>
 
-        <h1 className="mt-5 font-display text-4xl leading-[1.08] text-ink text-balance md:text-5xl">
+        <h1 className="mt-5 font-display text-[clamp(2rem,3.4vw,3rem)] leading-[1.14] text-ink text-balance">
           {eventDate ? (
             <>Your date is reserved — {eventDate}.</>
           ) : paid ? (
@@ -58,7 +58,7 @@ export default async function ReserveSuccessPage({
           )}
         </h1>
 
-        <p className="mt-6 max-w-md text-base leading-relaxed text-ink-soft">
+        <p className="mx-auto mt-6 max-w-md text-base leading-7 text-ink-soft">
           {paid ? (
             <>
               {depositLabel ? `Your ${depositLabel} deposit is in` : "Your deposit is in"}
@@ -81,7 +81,7 @@ export default async function ReserveSuccessPage({
           </CTAButton>
           <Link
             href="/"
-            className="text-sm text-ink-soft underline underline-offset-4 hover:text-ink"
+            className="inline-flex min-h-11 items-center text-base text-ink-soft underline underline-offset-4 hover:text-ink"
           >
             Back home
           </Link>

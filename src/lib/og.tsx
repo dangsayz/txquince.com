@@ -90,7 +90,7 @@ export function renderOg(opts: {
             fontSize: 24,
           }}
         >
-          <div style={{ width: 48, height: 4, background: "#566e60" }} />
+          <div style={{ width: 48, height: 4, background: "#1d1d1f" }} />
           {foot}
         </div>
       </div>

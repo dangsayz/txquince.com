@@ -24,7 +24,7 @@ type Copy = {
 };
 
 const field =
-  "w-full border-b border-line bg-transparent pb-1 text-sm focus:border-accent focus:outline-none";
+  "min-h-11 w-full rounded-lg border border-line bg-white px-3 py-2 text-base focus:border-accent focus:outline-2 focus:outline-offset-2 focus:outline-accent";
 
 function VenueCard({ venue, initial }: { venue: VenueRow; initial: Copy }) {
   const [about, setAbout] = useState(initial.about ?? "");
@@ -103,7 +103,7 @@ function VenueCard({ venue, initial }: { venue: VenueRow; initial: Copy }) {
         <Link
           href={`/venues/${venue.slug}`}
           target="_blank"
-          className="text-[0.66rem] uppercase tracking-[0.14em] text-accent underline-offset-4 hover:underline"
+          className="inline-flex min-h-11 items-center text-sm font-medium text-accent underline-offset-4 hover:underline"
         >
           View page ↗
         </Link>
@@ -111,7 +111,7 @@ function VenueCard({ venue, initial }: { venue: VenueRow; initial: Copy }) {
 
       <div className="mt-4 flex flex-col gap-4">
         <label className="block">
-          <span className="text-[0.66rem] uppercase tracking-[0.14em] text-ink-faint">
+          <span className="text-sm uppercase tracking-[0.14em] text-ink-faint">
             About (intro paragraph + meta description)
           </span>
           <textarea
@@ -126,13 +126,13 @@ function VenueCard({ venue, initial }: { venue: VenueRow; initial: Copy }) {
         {/* FAQ editor */}
         <div>
           <div className="flex items-center justify-between">
-            <span className="text-[0.66rem] uppercase tracking-[0.14em] text-ink-faint">
+            <span className="text-sm uppercase tracking-[0.14em] text-ink-faint">
               FAQ (shows on page + FAQ rich-result schema)
             </span>
             <button
               type="button"
               onClick={() => setFaq((f) => [...f, { q: "", a: "" }])}
-              className="text-[0.66rem] uppercase tracking-[0.14em] text-accent hover:underline"
+              className="inline-flex min-h-11 items-center text-sm font-medium text-accent hover:underline"
             >
               + Add Q&amp;A
             </button>
@@ -167,7 +167,7 @@ function VenueCard({ venue, initial }: { venue: VenueRow; initial: Copy }) {
                       type="button"
                       onClick={() => setFaq((prev) => prev.filter((_, j) => j !== i))}
                       aria-label="Remove question"
-                      className="mt-1 grid h-7 w-7 shrink-0 place-items-center rounded-full text-ink-faint hover:bg-accent hover:text-cream"
+                      className="mt-1 grid h-11 w-11 shrink-0 place-items-center rounded-lg text-ink-faint hover:bg-accent hover:text-white"
                     >
                       ✕
                     </button>
@@ -181,19 +181,19 @@ function VenueCard({ venue, initial }: { venue: VenueRow; initial: Copy }) {
         {/* Facts */}
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block">
-            <span className="text-[0.66rem] uppercase tracking-[0.14em] text-ink-faint">Address</span>
+            <span className="text-sm uppercase tracking-[0.14em] text-ink-faint">Address</span>
             <input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="123 Main St, City, TX" className={`${field} mt-1`} />
           </label>
           <label className="block">
-            <span className="text-[0.66rem] uppercase tracking-[0.14em] text-ink-faint">Area / neighborhood</span>
+            <span className="text-sm uppercase tracking-[0.14em] text-ink-faint">Area / neighborhood</span>
             <input value={area} onChange={(e) => setArea(e.target.value)} placeholder="Las Colinas" className={`${field} mt-1`} />
           </label>
           <label className="block">
-            <span className="text-[0.66rem] uppercase tracking-[0.14em] text-ink-faint">Venue Instagram</span>
+            <span className="text-sm uppercase tracking-[0.14em] text-ink-faint">Venue Instagram</span>
             <input value={ig} onChange={(e) => setIg(e.target.value)} placeholder="@venuehandle" className={`${field} mt-1`} />
           </label>
           <label className="block">
-            <span className="text-[0.66rem] uppercase tracking-[0.14em] text-ink-faint">Venue website</span>
+            <span className="text-sm uppercase tracking-[0.14em] text-ink-faint">Venue website</span>
             <input value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="venue.com" className={`${field} mt-1`} />
           </label>
         </div>
@@ -203,7 +203,7 @@ function VenueCard({ venue, initial }: { venue: VenueRow; initial: Copy }) {
             type="button"
             onClick={save}
             disabled={busy}
-            className="min-h-[44px] rounded-full bg-accent px-6 text-[0.7rem] uppercase tracking-[0.16em] text-cream transition-opacity hover:opacity-90 disabled:opacity-50"
+            className="min-h-12 rounded-lg bg-accent px-6 text-base font-medium text-cream transition-opacity hover:opacity-90 disabled:opacity-50"
           >
             Save
           </button>
@@ -211,7 +211,7 @@ function VenueCard({ venue, initial }: { venue: VenueRow; initial: Copy }) {
             type="button"
             onClick={aiDraft}
             disabled={busy}
-            className="min-h-[44px] rounded-full border border-accent/40 px-5 text-[0.7rem] uppercase tracking-[0.16em] text-accent transition-colors hover:border-accent hover:bg-accent hover:text-cream disabled:opacity-50"
+            className="min-h-12 rounded-lg border border-accent/40 px-5 text-base font-medium text-accent transition-colors hover:border-accent hover:bg-accent hover:text-cream disabled:opacity-50"
             title="Draft the about paragraph + FAQ with AI (you edit, then Save)"
           >
             AI: write venue copy

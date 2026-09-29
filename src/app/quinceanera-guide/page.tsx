@@ -321,27 +321,27 @@ export default async function QuinceaneraGuidePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <section className="border-b border-line bg-ivory">
-        <div className="mx-auto grid max-w-[90rem] items-center gap-8 px-5 py-12 md:grid-cols-2 md:gap-12 md:px-10 md:py-18 lg:px-16">
-          <Reveal className="max-w-xl">
-            <p className="text-xs font-medium uppercase tracking-[0.16em] text-accent-strong">The Quinceañera Guide</p>
-            <h1 className="mt-5 font-display text-[clamp(2rem,3.5vw,3.25rem)] leading-[1.12] text-ink">
+      <section className="border-b border-line bg-cream">
+        <div className="mx-auto max-w-[90rem] px-5 pb-14 pt-12 md:px-10 md:pb-20 md:pt-16 lg:px-16 lg:pt-20">
+          <Reveal className="mx-auto max-w-2xl text-center">
+            <p className="text-sm font-medium text-ink-soft">The Quinceañera Guide</p>
+            <h1 className="mt-4 font-display text-[clamp(2rem,3.5vw,3rem)] leading-[1.14] text-ink">
               Plan her day with confidence.
             </h1>
-            <p className="mt-5 text-base leading-7 text-ink-soft">
+            <p className="mx-auto mt-5 max-w-xl text-base leading-7 text-ink-soft">
               Clear answers on costs, timelines, photography, film, and the traditions that make her quinceañera hers.
             </p>
-            <Link href="#guide-topics" className="mt-7 inline-flex min-h-12 items-center rounded-lg bg-accent px-6 text-base font-medium text-white hover:bg-accent-strong">
+            <Link href="#guide-topics" className="mt-7 inline-flex min-h-12 items-center whitespace-nowrap rounded-md bg-ink px-6 text-base font-medium text-white hover:bg-accent-strong">
               Explore the guide <span aria-hidden="true" className="ml-3">↗</span>
             </Link>
-            <p className="mt-5 text-sm text-ink-soft">Dallas–Fort Worth · Collections from $1,800</p>
+            <p className="mt-4 text-sm text-ink-soft">Dallas–Fort Worth · Collections from $1,800</p>
           </Reveal>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-greige md:aspect-[5/6] lg:aspect-[4/3]">
+          <div className="relative mt-10 aspect-[4/3] overflow-hidden rounded-lg bg-greige md:mt-12 md:aspect-[16/8] lg:aspect-[16/7]">
             <Image
               src={hero?.url ?? "/portfolio/hero.webp"}
               alt={hero?.alt || "Quinceañera photographed across Dallas–Fort Worth"}
               fill
-              sizes="(max-width: 768px) 100vw, 50vw"
+              sizes="(max-width: 1024px) 100vw, 1440px"
               className="object-cover"
               style={{ objectPosition: `${(hero?.focus_x ?? 0.5) * 100}% ${(hero?.focus_y ?? 0.55) * 100}%` }}
               priority
@@ -352,13 +352,13 @@ export default async function QuinceaneraGuidePage() {
       </section>
 
       <nav id="guide-topics" aria-label="Guide topics" className="scroll-mt-24 border-b border-line bg-white">
-        <div className="mx-auto max-w-[90rem] px-5 py-10 md:px-10 lg:px-16">
-          <p className="text-xs font-medium uppercase tracking-[0.16em] text-accent-strong">Explore by topic</p>
-          <div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mx-auto max-w-[90rem] px-5 py-12 md:px-10 lg:px-16">
+          <p className="text-sm font-medium text-ink-soft">Explore by topic</p>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {BUCKETS.map((bucket, index) => (
-              <a key={bucket.id} href={`#${bucket.id}`} className="group flex min-h-14 items-center justify-between gap-3 border-b border-line py-3 text-base text-ink hover:text-accent-strong sm:px-3">
+              <a key={bucket.id} href={`#${bucket.id}`} className="group flex min-h-16 items-center justify-between gap-3 rounded-lg border border-line bg-ivory px-4 py-3 text-base text-ink transition-colors hover:border-ink hover:bg-white">
                 <span><span className="mr-3 text-sm text-ink-faint">0{index + 1}</span>{bucket.title}</span>
-                <span aria-hidden="true" className="text-accent transition-transform group-hover:translate-x-1">↗</span>
+                <span aria-hidden="true" className="text-ink transition-transform group-hover:translate-x-1">↗</span>
               </a>
             ))}
           </div>
@@ -370,12 +370,12 @@ export default async function QuinceaneraGuidePage() {
         <section
           key={bucket.id}
           id={bucket.id}
-          className={`scroll-mt-24 border-b border-line ${bi % 2 === 0 ? "bg-white" : "bg-ivory"}`}
+          className={`scroll-mt-24 border-b border-line ${bi % 2 === 0 ? "bg-white" : "bg-cream"}`}
         >
           <div className="mx-auto grid max-w-[90rem] gap-8 px-5 py-14 md:px-10 md:py-20 lg:grid-cols-[minmax(0,.65fr)_minmax(0,1fr)] lg:gap-14 lg:px-16">
             <div>
               <Reveal>
-                <p className="text-xs font-medium uppercase tracking-[0.16em] text-accent-strong">
+                <p className="text-sm font-medium text-ink-soft">
                   {bucket.eyebrow}
                 </p>
                 <h2 className="mt-3 font-display text-[clamp(1.75rem,2.8vw,2.5rem)] leading-tight text-ink">
@@ -412,7 +412,7 @@ export default async function QuinceaneraGuidePage() {
                       <dd className="mt-3">
                         <Link
                           href={qa.href}
-                          className="group inline-flex min-h-11 items-center gap-2 text-sm font-medium text-accent-strong underline decoration-accent/30 underline-offset-[5px] hover:decoration-accent"
+                          className="group inline-flex min-h-11 items-center gap-2 text-base font-medium text-ink underline decoration-ink/30 underline-offset-[5px] hover:decoration-ink"
                         >
                           {qa.hrefLabel ?? "Full guide"}
                           <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
@@ -424,7 +424,7 @@ export default async function QuinceaneraGuidePage() {
               </dl>
 
               <Reveal className="mt-5">
-                <CTAButton href={bucket.cta.href} variant={bi % 2 === 0 ? "primary" : "text"}>
+                <CTAButton href={bucket.cta.href} variant={bi % 2 === 0 ? "primary" : "text"} className="min-h-12 text-base">
                   {bucket.cta.label}
                 </CTAButton>
               </Reveal>
@@ -434,10 +434,10 @@ export default async function QuinceaneraGuidePage() {
       ))}
 
       {/* Collections funnel — the answer to "what does it cost" made actionable */}
-      <section className="border-t border-ink/10 bg-greige">
+      <section className="border-t border-line bg-ivory">
         <div className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
           <Reveal>
-            <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">
+            <p className="text-sm font-medium text-ink-soft">
               Fixed-price collections
             </p>
             <h2
@@ -445,7 +445,7 @@ export default async function QuinceaneraGuidePage() {
             >
               From ${packages[0].price.toLocaleString()} — choose the coverage that fits her day.
             </h2>
-            <p className="mt-4 max-w-xl text-sm leading-relaxed text-ink-soft">
+            <p className="mt-4 max-w-xl text-base leading-7 text-ink-soft">
               Fixed pricing and a clear reservation deposit for each collection.
               A complimentary save-the-date session starts with Essential.
             </p>
@@ -460,11 +460,11 @@ export default async function QuinceaneraGuidePage() {
               >
                 <div className="md:col-span-3">
                   <h3 className="font-display text-2xl text-ink">{p.name}</h3>
-                  <p className="mt-1 font-display text-xl text-wine-deep">{p.priceLabel}</p>
+                  <p className="mt-1 font-display text-xl text-ink">{p.priceLabel}</p>
                 </div>
                 <p className="text-base leading-7 text-ink-soft md:col-span-7">{p.teaser}</p>
                 <div className="md:col-span-2 md:text-right">
-                  <CTAButton href={`/reserve?collection=${p.id}`} variant="text">
+                  <CTAButton href={`/reserve?collection=${p.id}`} variant="text" className="text-base">
                     Reserve
                   </CTAButton>
                 </div>
@@ -472,14 +472,14 @@ export default async function QuinceaneraGuidePage() {
             ))}
           </div>
 
-          <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-            <Link href="/investment" className="text-wine underline underline-offset-2 hover:text-wine-deep">
+          <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-base">
+            <Link href="/investment" className="inline-flex min-h-11 items-center text-ink underline underline-offset-2 hover:text-ink-soft">
               Everything included in each collection →
             </Link>
-            <Link href="/check-your-date" className="text-wine underline underline-offset-2 hover:text-wine-deep">
+            <Link href="/check-your-date" className="inline-flex min-h-11 items-center text-ink underline underline-offset-2 hover:text-ink-soft">
               Check if your date is open →
             </Link>
-            <Link href="/blog" className="text-wine underline underline-offset-2 hover:text-wine-deep">
+            <Link href="/blog" className="inline-flex min-h-11 items-center text-ink underline underline-offset-2 hover:text-ink-soft">
               Browse all planning articles →
             </Link>
           </div>

@@ -40,40 +40,67 @@ const COLUMNS = [
   },
 ];
 
-const socialPill =
-  "flex h-11 w-11 items-center justify-center rounded-full bg-cream/[0.06] text-cream/70 ring-1 ring-cream/15 transition-colors hover:bg-cream/10 hover:text-cream";
+const COLUMNS_ES = [
+  {
+    title: "Explorar",
+    links: [
+      { label: "Inicio", href: "/es" },
+      { label: "Portafolio (EN)", href: "/portfolio" },
+      { label: "Salones", href: "/es/salones" },
+      { label: "Proveedores (EN)", href: "/vendors" },
+      { label: "Guía", href: "/es/blog" },
+      { label: "Paquetes", href: "/es/paquetes" },
+      { label: "Nosotros (EN)", href: "/about" },
+    ],
+  },
+  {
+    title: "Reservar",
+    links: [
+      { label: "Consultar una fecha", href: "/es/consulta" },
+      { label: "Save-the-Date", href: "/es/save-the-date-quinceanera" },
+      { label: "Áreas de servicio", href: "/es/fotografo-de-quinceaneras" },
+    ],
+  },
+  {
+    title: "Conectar",
+    links: [
+      { label: "Instagram", href: site.social.instagram, external: true },
+      { label: "YouTube", href: site.social.youtube, external: true },
+      { label: "Facebook", href: site.social.facebook, external: true },
+      { label: site.contact.email, href: `mailto:${site.contact.email}` },
+    ],
+  },
+  {
+    title: "Legal",
+    links: [{ label: "Privacidad (EN)", href: "/privacy" }],
+  },
+];
 
-export function Footer() {
+const socialPill =
+  "flex h-11 w-11 items-center justify-center rounded-md border border-line text-ink-soft transition-colors hover:border-ink hover:text-ink";
+
+export function Footer({ locale = "en" }: { locale?: "en" | "es" }) {
   const year = new Date().getFullYear();
+  const isSpanish = locale === "es";
 
   return (
-    <footer className="relative overflow-hidden bg-ink text-cream">
-      {/* A quiet accent seam marks the page's close. */}
-      <div
-        aria-hidden
-        className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-wine to-transparent opacity-70"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-28 left-1/2 h-56 w-[130%] -translate-x-1/2 opacity-[0.07]"
-        style={{ background: "radial-gradient(60% 100% at 50% 0%, var(--color-wine), transparent)" }}
-      />
-
-      <div className="relative mx-auto max-w-[90rem] px-5 md:px-10 lg:px-16">
-        {/* Masthead — brand left, the closing CTA + socials right. */}
-        <div className="flex flex-col gap-10 pt-16 md:flex-row md:items-end md:justify-between md:pt-24">
+    <footer className="border-t border-line bg-white text-ink">
+      <div className="mx-auto max-w-[90rem] px-5 md:px-10 lg:px-16">
+        <div className="flex flex-col gap-8 pt-14 md:flex-row md:items-center md:justify-between md:pt-16">
           <div>
-            <Wordmark size="masthead" tone="dark" />
-            <p className="mt-6 max-w-sm text-base leading-7 text-cream/75">{site.tagline}</p>
+            <Wordmark size="masthead" />
+            <p className="mt-4 max-w-sm text-base leading-7 text-ink-soft">
+              {isSpanish ? "Fotografía y video de quinceañeras en Dallas–Fort Worth." : site.tagline}
+            </p>
           </div>
 
-          <div className="flex flex-col gap-6 md:items-end">
+          <div className="flex flex-col gap-5 md:items-end">
             <Link
-              href="/check-your-date"
-              className="group inline-flex min-h-12 items-center gap-3 font-display text-[clamp(1.5rem,2.5vw,2.25rem)] leading-tight text-cream transition-colors hover:text-wine-tint"
+              href={isSpanish ? "/es/consulta" : "/check-your-date"}
+              className="inline-flex min-h-12 items-center justify-center gap-2 self-start whitespace-nowrap rounded-md bg-ink px-6 text-sm font-medium text-white transition-colors hover:bg-accent-strong md:self-auto"
             >
-              Check her date
-              <span aria-hidden className="text-wine-tint transition-transform duration-300 group-hover:translate-x-1">→</span>
+              {isSpanish ? "Consulta su fecha" : "Check her date"}
+              <span aria-hidden>→</span>
             </Link>
             <div className="flex items-center gap-3">
               <a
@@ -111,12 +138,11 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Navigation and service links. */}
-        <div className="mt-16 grid grid-cols-2 gap-x-8 gap-y-10 border-t border-cream/10 pt-12 sm:grid-cols-4 md:mt-20">
-          {COLUMNS.map((col) => (
+        <div className="mt-12 grid grid-cols-2 gap-x-8 gap-y-8 border-t border-line pt-9 sm:grid-cols-4 md:mt-14">
+          {(isSpanish ? COLUMNS_ES : COLUMNS).map((col) => (
             <div key={col.title}>
-              <p className="text-sm font-semibold text-cream">{col.title}</p>
-              <ul className="mt-3">
+              <p className="text-sm font-semibold text-ink">{col.title}</p>
+              <ul className="mt-2">
                 {col.links.filter((l) => l.href).map((l) => (
                   <li key={l.label}>
                     {"external" in l && l.external ? (
@@ -124,14 +150,14 @@ export function Footer() {
                         href={l.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex min-h-11 items-center text-base text-cream/75 transition-colors hover:text-cream"
+                        className="inline-flex min-h-11 items-center text-base text-ink-soft transition-colors hover:text-ink"
                       >
                         {l.label}
                       </a>
                     ) : (
                       <Link
                         href={l.href}
-                        className="inline-flex min-h-11 items-center text-base text-cream/75 transition-colors hover:text-cream"
+                        className="inline-flex min-h-11 items-center text-base text-ink-soft transition-colors hover:text-ink"
                       >
                         {l.label}
                       </Link>
@@ -143,17 +169,16 @@ export function Footer() {
           ))}
         </div>
 
-        {/* Areas served — internal links to the local landing pages (SEO). */}
-        <div className="mt-14 border-t border-cream/10 pt-7">
-          <p className="text-sm font-semibold text-cream/80">
-            Quinceañera photographer serving
+        <div className="mt-10 border-t border-line pt-7">
+          <p className="text-sm font-semibold text-ink">
+            {isSpanish ? "Fotografía de quinceañeras en" : "Quinceañera photographer serving"}
           </p>
-          <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-base text-cream/75">
+          <div className="mt-3 flex flex-wrap gap-x-5 text-base text-ink-soft">
             {locations.map((l) => (
               <Link
                 key={l.slug}
-                href={`/quinceanera-photographer/${l.slug}`}
-                className="inline-flex min-h-11 items-center transition-colors hover:text-cream"
+                href={`${isSpanish ? "/es/fotografo-de-quinceaneras" : "/quinceanera-photographer"}/${l.slug}`}
+                className="inline-flex min-h-11 items-center transition-colors hover:text-ink"
               >
                 {l.city}
               </Link>
@@ -161,12 +186,11 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="mt-12 flex flex-col gap-3 border-t border-cream/10 py-8 text-sm text-cream/70 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-8 flex flex-col gap-3 border-t border-line py-6 text-sm text-ink-soft sm:flex-row sm:items-center sm:justify-between">
           <p>
             © {year} {site.brand} · {site.serviceArea}
           </p>
-          <Link href="/admin/login" className="transition-colors hover:text-cream/70">
+          <Link href="/admin/login" className="inline-flex min-h-11 items-center transition-colors hover:text-ink">
             Studio
           </Link>
         </div>

@@ -230,9 +230,9 @@ export default async function CityPage({
       {/* Breadcrumb — visible trail, mirrors the BreadcrumbList schema */}
       <nav
         aria-label="Breadcrumb"
-        className="mx-auto max-w-4xl px-5 pt-10 text-xs text-ink-faint md:px-10 lg:px-16"
+        className="mx-auto flex max-w-[90rem] items-center px-5 pt-6 text-sm text-ink-faint md:px-10 lg:px-16"
       >
-        <Link href="/" className="transition-colors hover:text-ink">
+        <Link href="/" className="inline-flex min-h-11 items-center transition-colors hover:text-ink">
           Home
         </Link>
         <span className="mx-1.5" aria-hidden>
@@ -240,7 +240,7 @@ export default async function CityPage({
         </span>
         <Link
           href="/quinceanera-photographer"
-          className="transition-colors hover:text-ink"
+          className="inline-flex min-h-11 items-center transition-colors hover:text-ink"
         >
           Quinceañera Photographer
         </Link>
@@ -250,62 +250,53 @@ export default async function CityPage({
         <span className="text-ink-soft">{loc.city}, TX</span>
       </nav>
 
-      {/* Hero — cinematic image, type low-left (the city's own work when tagged) */}
-      <section className="relative mt-6 overflow-hidden bg-ink md:mt-8">
-        <div className="relative h-[66svh] min-h-[440px] w-full md:h-[76svh]">
+      <section className="mx-auto max-w-[90rem] px-5 pb-14 pt-8 md:px-10 md:pb-20 md:pt-10 lg:px-16">
+        <Reveal className="mx-auto max-w-2xl text-center">
+          <p className="text-sm font-medium text-ink-soft">
+            Quinceañera Photography &amp; Film · {loc.city}, TX
+          </p>
+          <h1 className="mt-4 font-display text-[clamp(2rem,3.5vw,3rem)] leading-[1.14] text-ink text-balance">
+            {loc.city} Quinceañera Photographer
+          </h1>
+          <p className="mx-auto mt-5 max-w-xl text-base leading-7 text-ink-soft">
+            {loc.lead}
+          </p>
+          <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href={site.cta.href}
+              className="inline-flex min-h-12 items-center justify-center rounded-md bg-ink px-6 text-base font-medium text-white transition-colors hover:bg-accent-strong"
+            >
+              {site.cta.label}
+            </Link>
+            <Link
+              href={site.secondaryCta.href}
+              className="inline-flex min-h-12 items-center justify-center rounded-md border border-line px-6 text-base font-medium text-ink transition-colors hover:border-ink"
+            >
+              {site.secondaryCta.label}
+            </Link>
+            <Link
+              href={`/es/fotografo-de-quinceaneras/${loc.slug}`}
+              hrefLang="es"
+              className="inline-flex min-h-12 items-center px-3 text-base font-medium text-ink underline decoration-ink/30 underline-offset-4 hover:decoration-ink"
+            >
+              Español →
+            </Link>
+          </div>
+        </Reveal>
+        <div className="relative mt-10 aspect-[4/3] overflow-hidden rounded-lg bg-greige sm:mt-12 sm:aspect-[16/8] lg:aspect-[16/7]">
           {hero?.url ? (
             <Image
               src={hero.url}
               alt={hero.alt || `Quinceañera photography in ${loc.city}, TX`}
               fill
               priority
-              sizes="100vw"
+              sizes="(max-width: 1024px) 100vw, 1440px"
               className="object-cover"
               style={{
                 objectPosition: `${hero.focus_x != null ? Math.round(hero.focus_x * 100) : 50}% ${hero.focus_y != null ? Math.round(hero.focus_y * 100) : 32}%`,
               }}
             />
           ) : null}
-          <div className="absolute inset-0 bg-gradient-to-t from-ink/92 via-ink/45 to-ink/10" />
-          <div className="absolute inset-x-0 bottom-0">
-            <div className="mx-auto max-w-[90rem] px-5 pb-12 md:px-10 lg:px-16 md:pb-16">
-              <Reveal>
-                <p className="text-[0.62rem] uppercase tracking-[0.3em] text-cream/85">
-                  Quinceañera Photography &amp; Film · {loc.city}, TX
-                </p>
-                <h1
-                  className="mt-4 max-w-3xl font-display text-cream text-balance"
-                  style={{ fontSize: "clamp(2.125rem,4.6vw,4.375rem)", lineHeight: 1.1, letterSpacing: "-0.02em" }}
-                >
-                  {loc.city} Quinceañera Photographer
-                </h1>
-                <p className="mt-5 max-w-xl text-sm leading-relaxed text-cream/80 md:text-base">
-                  {loc.lead}
-                </p>
-                <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
-                  <Link
-                    href={site.cta.href}
-                    className="inline-flex rounded-full bg-cream px-7 py-3 text-[0.7rem] font-medium uppercase tracking-[0.16em] text-ink transition-colors hover:bg-white"
-                  >
-                    {site.cta.label}
-                  </Link>
-                  <Link
-                    href={site.secondaryCta.href}
-                    className="text-[0.7rem] uppercase tracking-[0.18em] text-cream/85 underline decoration-cream/30 underline-offset-[6px] transition-colors hover:text-cream"
-                  >
-                    {site.secondaryCta.label}
-                  </Link>
-                  <Link
-                    href={`/es/fotografo-de-quinceaneras/${loc.slug}`}
-                    hrefLang="es"
-                    className="text-[0.7rem] uppercase tracking-[0.18em] text-cream/65 underline decoration-cream/20 underline-offset-[6px] transition-colors hover:text-cream"
-                  >
-                    Español →
-                  </Link>
-                </div>
-              </Reveal>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -317,7 +308,7 @@ export default async function CityPage({
               {para}
             </p>
           ))}
-          <p className="text-sm text-ink-faint">
+          <p className="text-base leading-7 text-ink-soft">
             Serving {loc.areas.slice(0, -1).join(", ")}
             {loc.areas.length > 1 ? `, and ${loc.areas[loc.areas.length - 1]}` : loc.areas[0]}
             {nearby.length
@@ -335,7 +326,7 @@ export default async function CityPage({
             <p className="eyebrow">Where to shoot in {loc.city}</p>
             <h2
               className="mt-4 font-display text-ink"
-              style={{ fontSize: "clamp(1.9rem,3.6vw,2.8rem)", lineHeight: 1.06, letterSpacing: "-0.02em" }}
+              style={{ fontSize: "clamp(1.75rem,3vw,2.5rem)", lineHeight: 1.14, letterSpacing: "-0.02em" }}
             >
               The {loc.city} spots that photograph beautifully.
             </h2>
@@ -347,7 +338,7 @@ export default async function CityPage({
                 className="grid gap-1.5 border-b border-ink/10 py-6 md:grid-cols-12 md:gap-x-8"
               >
                 <h3 className="font-display text-xl text-ink md:col-span-4">{s.name}</h3>
-                <p className="text-sm leading-relaxed text-ink-soft md:col-span-8">{s.why}</p>
+                <p className="text-base leading-7 text-ink-soft md:col-span-8">{s.why}</p>
               </Reveal>
             ))}
           </div>
@@ -355,13 +346,13 @@ export default async function CityPage({
       ) : null}
 
       {/* Compact collections — full detail lives on /investment */}
-      <section className="bg-greige">
+      <section className="bg-ivory">
         <div className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
           <Reveal>
             <h2 className="display-2 text-ink text-balance">
               Fixed-price collections from {packages[0].priceLabel}
             </h2>
-            <p className="mt-5 max-w-xl text-sm leading-relaxed text-ink-soft">
+            <p className="mt-5 max-w-xl text-base leading-7 text-ink-soft">
               Fixed pricing, held for your {site.scarcity.bookedThrough.split(" ")[1]} or{" "}
               {site.scarcity.reservingYear} {loc.city} date — every quinceañera covered
               church-to-reception. Most families choose Signature: two storytellers,
@@ -378,18 +369,18 @@ export default async function CityPage({
               >
                 <div className="md:col-span-4">
                   <div className="flex items-baseline gap-3">
-                    <h3 className="font-display text-3xl text-ink">{p.name}</h3>
+                    <h3 className="font-display text-2xl text-ink">{p.name}</h3>
                     {p.badge ? (
-                      <span className="text-[0.6rem] uppercase tracking-[0.18em] text-accent-strong">
+                      <span className="text-sm font-medium text-ink-soft">
                         {p.badge}
                       </span>
                     ) : null}
                   </div>
-                  <p className="mt-2 max-w-xs text-sm text-ink-soft">{p.tagline}</p>
-                  <p className="mt-4 font-display text-3xl text-ink">{p.priceLabel}</p>
+                  <p className="mt-2 max-w-xs text-base leading-7 text-ink-soft">{p.tagline}</p>
+                  <p className="mt-4 font-display text-2xl text-ink">{p.priceLabel}</p>
                 </div>
                 <div className="md:col-span-7 md:col-start-6">
-                  <ul className="grid gap-x-8 gap-y-2 text-sm leading-relaxed text-ink-soft sm:grid-cols-2">
+                  <ul className="grid gap-x-8 gap-y-2 text-base leading-7 text-ink-soft sm:grid-cols-2">
                     {p.includes.slice(0, 4).map((item) => (
                       <li key={item} className="border-b border-line/70 pb-2">
                         {item}
@@ -399,7 +390,7 @@ export default async function CityPage({
                   <CTAButton
                     href={`/reserve?collection=${p.id}`}
                     variant="text"
-                    className="mt-5"
+                    className="mt-5 text-base"
                   >
                     Reserve {p.name}
                   </CTAButton>
@@ -408,18 +399,18 @@ export default async function CityPage({
             ))}
           </div>
 
-          <p className="mt-8 text-sm">
+          <p className="mt-8 text-base">
             <Link
               href="/investment"
-              className="text-accent underline underline-offset-2 hover:text-accent-strong"
+              className="inline-flex min-h-11 items-center text-ink underline underline-offset-2 hover:text-ink-soft"
             >
               See everything included in each collection →
             </Link>
           </p>
-          <p className="mt-3 text-sm">
+          <p className="mt-3 text-base">
             <Link
               href="/quinceanera-save-the-date"
-              className="text-accent underline underline-offset-2 hover:text-accent-strong"
+              className="inline-flex min-h-11 items-center text-ink underline underline-offset-2 hover:text-ink-soft"
             >
               Your Save-the-Date session is included free →
             </Link>
@@ -427,31 +418,30 @@ export default async function CityPage({
         </div>
       </section>
 
-      {/* Sample quinceañera day — DARK editorial spread (the contrast moment) */}
-      <section className="bg-dark">
+      <section className="bg-white">
         <div className="mx-auto max-w-3xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
           <Reveal>
-            <p className="mb-5 text-[0.66rem] uppercase tracking-[0.24em] text-cream/85">
+            <p className="mb-4 text-sm font-medium text-ink-soft">
               A {loc.city} quinceañera, hour by hour
             </p>
-            <h2 className="display-2 text-cream text-balance">
+            <h2 className="display-2 text-ink text-balance">
               The whole day, church to reception.
             </h2>
-            <p className="mt-5 max-w-xl text-base leading-relaxed text-cream/70">
+            <p className="mt-5 max-w-xl text-base leading-7 text-ink-soft">
               Every collection is built around the full celebration — not a two-hour
               window. Whether you call it a quinceañera or just her quince, here&apos;s
               how the day unfolds for most {loc.city} families, and how I cover each part of it.
             </p>
           </Reveal>
-          <ol className="mt-10 divide-y divide-cream/15 border-y border-cream/15">
+          <ol className="mt-10 divide-y divide-line border-y border-line">
             {DAY_TIMELINE.map((t) => (
               <li key={t.title} className="grid grid-cols-12 gap-4 py-6">
-                <p className="col-span-3 font-display text-xs uppercase tracking-[0.16em] text-cream/45 sm:col-span-2">
+                <p className="col-span-3 text-sm font-medium text-ink-soft sm:col-span-2">
                   {t.when}
                 </p>
                 <div className="col-span-9 sm:col-span-10">
-                  <h3 className="font-display text-xl text-cream">{t.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-cream/70">{t.body}</p>
+                  <h3 className="font-display text-xl text-ink">{t.title}</h3>
+                  <p className="mt-2 text-base leading-7 text-ink-soft">{t.body}</p>
                 </div>
               </li>
             ))}
@@ -481,7 +471,7 @@ export default async function CityPage({
               >
                 <Link href="/portfolio" className="group block">
                   <div
-                    className={`relative overflow-hidden ${i === 0 ? "aspect-[16/10]" : "aspect-[4/5]"}`}
+                    className={`relative overflow-hidden rounded-lg ${i === 0 ? "aspect-[16/10]" : "aspect-[4/5]"}`}
                   >
                     <Image
                       src={img.url}
@@ -498,24 +488,24 @@ export default async function CityPage({
               </Reveal>
             ))}
           </div>
-          <p className="mt-4 text-[0.66rem] uppercase tracking-[0.18em] text-ink-faint">
+          <p className="mt-4 text-sm text-ink-soft">
             {isCityWork ? `${loc.city}, TX` : "Dallas–Fort Worth, TX"}
           </p>
         </section>
       ) : null}
 
       {/* Portfolio CTA */}
-      <section className="bg-ink text-cream">
+      <section className="border-y border-line bg-ivory">
         <div className="mx-auto max-w-3xl px-5 py-section text-center md:px-10 lg:px-16 md:py-section-lg">
-          <h2 className="display-2 text-cream text-balance">
+          <h2 className="display-2 text-ink text-balance">
             See full {loc.city} quinceañeras, start to finish.
           </h2>
-          <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-cream/75">
+          <p className="mx-auto mt-5 max-w-md text-base leading-7 text-ink-soft">
             Not a highlight reel — complete galleries and films from real DFW
             celebrations, so you know exactly what you&apos;re reserving.
           </p>
           <div className="mt-9 flex justify-center">
-            <CTAButton href="/portfolio" variant="onDark">
+            <CTAButton href="/portfolio" className="min-h-12 rounded-md px-6 text-base font-medium">
               View the galleries
             </CTAButton>
           </div>
@@ -531,7 +521,7 @@ export default async function CityPage({
           {faqs.map((f) => (
             <div key={f.q} className="py-7">
               <dt className="font-display text-xl text-ink">{f.q}</dt>
-              <dd className="mt-3 text-sm leading-relaxed text-ink-soft">{f.a}</dd>
+              <dd className="mt-3 text-base leading-7 text-ink-soft">{f.a}</dd>
             </div>
           ))}
         </dl>
@@ -546,17 +536,17 @@ export default async function CityPage({
               <Link
                 key={g.slug}
                 href={`/blog/${g.slug}`}
-                className="group border border-line bg-white p-5 transition-colors hover:border-accent"
+                className="group rounded-lg border border-line bg-white p-5 transition-colors hover:border-ink"
               >
                 <h3 className="font-display text-lg leading-tight text-ink group-hover:text-accent">
                   {g.title}
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed text-ink-soft">{g.excerpt}</p>
+                <p className="mt-2 text-base leading-7 text-ink-soft">{g.excerpt}</p>
               </Link>
             ))}
           </div>
-          <p className="mt-6 text-sm">
-            <Link href="/blog" className="text-accent underline underline-offset-2 hover:text-accent-strong">
+          <p className="mt-6 text-base">
+            <Link href="/blog" className="inline-flex min-h-11 items-center text-ink underline underline-offset-2 hover:text-ink-soft">
               See the full quinceañera guide →
             </Link>
           </p>
@@ -572,14 +562,14 @@ export default async function CityPage({
               <Link
                 key={v.slug}
                 href={`/venues/${v.slug}`}
-                className="border border-line bg-white px-4 py-2 text-sm text-ink transition-colors hover:border-accent hover:text-accent"
+                className="inline-flex min-h-11 items-center rounded-md border border-line bg-white px-4 py-2 text-base text-ink transition-colors hover:border-ink"
               >
                 {v.venue}
               </Link>
             ))}
             <Link
               href="/venues"
-              className="border border-accent/40 px-4 py-2 text-sm text-accent transition-colors hover:bg-accent hover:text-cream"
+              className="inline-flex min-h-11 items-center rounded-md border border-line px-4 py-2 text-base text-ink transition-colors hover:border-ink hover:bg-white"
             >
               All venues →
             </Link>
@@ -588,7 +578,7 @@ export default async function CityPage({
       ) : null}
 
       {/* Nearby cities — internal link graph */}
-      <section className="bg-greige">
+      <section className="bg-ivory">
         <div className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
           <p className="eyebrow mb-5">Also serving across DFW</p>
           <div className="flex flex-wrap gap-3">
@@ -596,7 +586,7 @@ export default async function CityPage({
               <Link
                 key={n.slug}
                 href={`/quinceanera-photographer/${n.slug}`}
-                className="border border-line bg-ivory px-4 py-2 text-sm text-ink transition-colors hover:border-accent hover:text-accent"
+                className="inline-flex min-h-11 items-center rounded-md border border-line bg-white px-4 py-2 text-base text-ink transition-colors hover:border-ink"
               >
                 Quinceañera photographer in {n.city}
               </Link>

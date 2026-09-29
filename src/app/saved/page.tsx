@@ -36,14 +36,16 @@ export default async function SavedPage() {
     .map((id) => ({ id, title: categoryLabel(id) }));
 
   return (
-    <div className="mx-auto max-w-[90rem] px-5 pb-24 pt-12 md:px-10 md:pt-20 lg:px-16">
-      <Link href="/portfolio" className="text-sm font-medium text-accent hover:underline">← Back to portfolio</Link>
-      <p className="mt-12 text-xs font-semibold uppercase tracking-[0.22em] text-accent">Your collection</p>
-      <h1 className="mt-3 font-display text-[clamp(2rem,4vw,4rem)] text-ink">Saved photographs</h1>
-      <p className="mt-5 mb-10 max-w-xl text-base leading-relaxed text-ink-soft">
-        Keep inspiration close as you imagine her day. Saved photographs stay in this browser on this device.
-      </p>
+    <div className="mx-auto max-w-[90rem] px-5 pb-24 pt-14 md:px-10 md:pt-20 lg:px-16">
+      <div className="mx-auto max-w-2xl text-center">
+        <p className="text-xs font-medium uppercase tracking-[0.14em] text-ink-soft">Your collection</p>
+        <h1 className="mt-5 font-display text-[clamp(2rem,3.4vw,3rem)] leading-[1.14] text-ink">Saved photographs</h1>
+        <p className="mt-5 text-base leading-7 text-ink-soft sm:text-lg">Keep inspiration close as you imagine her day. Saved photographs stay in this browser on this device.</p>
+        <Link href="/portfolio" className="mt-5 inline-flex min-h-11 items-center text-base font-medium text-ink underline underline-offset-4 hover:text-ink-soft">← Back to portfolio</Link>
+      </div>
+      <div className="mt-10 border-t border-line pt-8">
       <PortfolioGallery images={items} sections={sections} savedOnly />
+      </div>
     </div>
   );
 }

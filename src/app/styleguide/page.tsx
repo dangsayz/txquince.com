@@ -4,11 +4,11 @@ import { useState } from "react";
 import { Avatar, Badge, Button, ButtonLink, Chip, Divider, Drawer, IconButton, Input, Lightbox, Modal, Select, Skeleton, Tag, Tabs, Textarea, Toast, Tooltip } from "@/components/ui";
 
 const swatches = [
-  { name: "Canvas", className: "bg-cream", hex: "#FFFFFF" },
+  { name: "Canvas", className: "bg-cream", hex: "#FAFAFA" },
   { name: "Surface", className: "bg-ivory", hex: "#F5F5F5" },
-  { name: "Ink", className: "bg-ink", hex: "#191919" },
-  { name: "Action", className: "bg-accent", hex: "#0057FF" },
-  { name: "Border", className: "bg-line", hex: "#DEDEDE" },
+  { name: "Ink", className: "bg-ink", hex: "#1D1D1F" },
+  { name: "Action", className: "bg-accent", hex: "#303033" },
+  { name: "Border", className: "bg-line", hex: "#D7D7D9" },
   { name: "Error", className: "bg-danger", hex: "#B42318" },
 ] as const;
 
@@ -24,7 +24,7 @@ export default function StyleguidePage() {
     <div className="mx-auto max-w-6xl px-5 py-12 sm:px-6 md:py-20">
       <div className="border-b border-line pb-10">
         <Badge>TX Quince design system</Badge>
-        <h1 className="mt-4 font-display text-5xl font-semibold leading-none text-ink md:text-6xl">The visual language</h1>
+        <h1 className="mt-4 font-display text-[clamp(2rem,3.4vw,3rem)] leading-[1.14] text-ink">The visual language</h1>
         <p className="mt-4 max-w-2xl text-base leading-7 text-ink-soft">A clear frame for real quinceañera photography, planning, and date requests.</p>
       </div>
 
@@ -45,8 +45,8 @@ export default function StyleguidePage() {
 
       <section className="border-t border-line py-12" aria-labelledby="type-heading">
         <h2 id="type-heading" className="text-xl font-semibold text-ink">Typography</h2>
-        <p className="mt-6 font-display text-5xl font-semibold text-ink md:text-6xl">A day worth remembering.</p>
-        <p className="mt-4 max-w-xl text-base leading-7 text-ink-soft">Inter carries headlines and body copy. Strong weight and tight spacing make headings direct and easy to scan.</p>
+        <p className="mt-6 font-display text-[clamp(2rem,3.4vw,3rem)] leading-[1.14] text-ink">A day worth remembering.</p>
+        <p className="mt-4 max-w-xl text-base leading-7 text-ink-soft">Inter carries headlines and body copy. Moderate weight and restrained spacing keep the photography in focus.</p>
         <p className="mt-5 text-xs font-bold tracking-[0.02em] text-accent-strong">Section label and metadata</p>
       </section>
 

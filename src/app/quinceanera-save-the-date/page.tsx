@@ -3,7 +3,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { site } from "@/content/site";
 import { packages } from "@/content/packages";
-import { getFeaturedImages } from "@/lib/content-db";
+import { getImagesBySection } from "@/lib/content-db";
+import { portfolioFallback } from "@/content/portfolio-fallback";
 import { Reveal } from "@/components/Reveal";
 import { CTAButton } from "@/components/CTAButton";
 import { FinalCTA } from "@/components/FinalCTA";
@@ -14,7 +15,7 @@ export const revalidate = 3600;
  * SAVE-THE-DATE landing page — a competitive wedge, not filler.
  *
  * The session every DFW studio sells as a $150–$475 add-on is included FREE in
- * every TX Quince collection. This page targets "quinceañera save the date
+ * Essential, Signature, and Legacy. This page targets "quinceañera save the date
  * dallas" / "pre-quince photoshoot" and folds in the honest "your own dress,
  * no restrictions" answer to the "dress included" demand. Content-as-code; no
  * fabricated offers (no gown rental — we don't do that).
@@ -23,7 +24,7 @@ export const revalidate = 3600;
 const STD_FAQS = [
   {
     q: "How much does the Save-the-Date session cost?",
-    a: "Nothing extra — it's included free in every collection: Essential, Signature, and Legacy. Most Dallas–Fort Worth studios sell the same session as a $150–$475 add-on. Here it's part of the booking.",
+    a: "Nothing extra with Essential, Signature, or Legacy. The Moments collection does not include this session. Most Dallas–Fort Worth studios sell the same session as a $150–$475 add-on. Here it's part of those three collections.",
   },
   {
     q: "Can she wear her own quince dress?",
@@ -39,7 +40,7 @@ const STD_FAQS = [
   },
   {
     q: "Do we have to book the full quinceañera to get it?",
-    a: "The Save-the-Date session is included with any collection. Reserve your date and it's already part of what you booked — there's nothing else to add or pay for.",
+    a: "The Save-the-Date session is included with Essential, Signature, and Legacy. Moments does not include it. Reserve one of the eligible collections and there is nothing extra to add or pay for.",
   },
   {
     q: "Are you insured?",
@@ -50,7 +51,7 @@ const STD_FAQS = [
 export const metadata: Metadata = {
   title: "Quinceañera Save-the-Date Session — Dallas–Fort Worth",
   description:
-    "Your quinceañera Save-the-Date photoshoot is included free in every TX Quince collection — most DFW studios charge $150–$475. A relaxed pre-quince portrait session in her own dress, across Dallas–Fort Worth.",
+    "Your quinceañera Save-the-Date photoshoot is included with Essential, Signature, and Legacy — most DFW studios charge $150–$475. A relaxed pre-quince portrait session in her own dress, across Dallas–Fort Worth.",
   alternates: {
     canonical: "/quinceanera-save-the-date",
     languages: {
@@ -62,7 +63,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `Quinceañera Save-the-Date Session — Dallas–Fort Worth · ${site.brand}`,
     description:
-      "Included free in every collection — others charge $150–$475. A pre-quince portrait session in her own dress, across DFW.",
+      "Included with Essential, Signature, and Legacy — others charge $150–$475. A pre-quince portrait session in her own dress, across DFW.",
     url: `${site.url}/quinceanera-save-the-date`,
   },
 };
@@ -74,9 +75,11 @@ function focal(fx?: number | null, fy?: number | null): string {
 export default async function SaveTheDatePage() {
   const url = `${site.url}/quinceanera-save-the-date`;
 
-  // Cinematic opener — a landscape frame crops cleanest for the wide hero.
-  const imgs = await getFeaturedImages(12);
-  const hero = imgs.find((i) => (i.width ?? 0) >= (i.height ?? 0)) ?? imgs[0] ?? null;
+  const imgs = await getImagesBySection("save-the-date");
+  const fallback = portfolioFallback.find((image) => image.section === "save-the-date");
+  const hero = imgs.find((i) => (i.width ?? 0) >= (i.height ?? 0)) ?? imgs[0] ?? (fallback ? { url: fallback.url, alt: fallback.alt, focus_x: null, focus_y: null } : null);
+  const supporting = imgs.filter((image) => image.url !== hero?.url).slice(0, 2);
+  const includedPackages = packages.filter((collection) => collection.id !== "moments");
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -87,7 +90,7 @@ export default async function SaveTheDatePage() {
         name: "Quinceañera Save-the-Date Photoshoot",
         serviceType: "Quinceañera Save-the-Date Portrait Session",
         description:
-          "A pre-quinceañera portrait session, included free in every TX Quince collection across Dallas–Fort Worth.",
+          "A pre-quinceañera portrait session, included with Essential, Signature, and Legacy across Dallas–Fort Worth.",
         provider: { "@type": "Organization", name: site.brand, "@id": `${site.url}/#business` },
         areaServed: { "@type": "City", name: "Dallas–Fort Worth, TX" },
         url,
@@ -124,9 +127,32 @@ export default async function SaveTheDatePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* ===== Cinematic hero — image with type low-left ===== */}
-      <section className="relative overflow-hidden bg-ink">
-        <div className="relative h-[66svh] min-h-[440px] w-full md:h-[76svh]">
+      <section className="border-b border-line bg-white px-5 pb-14 pt-14 md:px-10 md:pb-20 md:pt-20 lg:px-16">
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="text-xs font-medium uppercase tracking-[0.16em] text-ink-soft">
+            Save-the-Date · Dallas–Fort Worth
+          </p>
+          <h1 className="mx-auto mt-5 max-w-[22ch] font-display text-[clamp(2rem,3.4vw,3rem)] leading-[1.15] tracking-[-0.03em] text-ink">
+            Her Save-the-Date session, included from Essential.
+          </h1>
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-ink-soft">
+            A relaxed portrait session before the big day — for the invitations,
+            the guest board, and meeting your photographer first. Most Dallas–Fort
+            Worth studios charge $150–$475 for it. It&apos;s included from Essential upward. Moments does not include it.
+          </p>
+          <div className="mt-7 flex flex-wrap items-center justify-center gap-4">
+            <Link href={site.cta.href} className="inline-flex min-h-12 items-center whitespace-nowrap rounded-lg bg-ink px-6 text-base font-medium text-white hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">
+              {site.cta.label}
+            </Link>
+            <Link href={site.secondaryCta.href} className="inline-flex min-h-11 items-center text-base font-medium text-ink underline underline-offset-4">
+              {site.secondaryCta.label}
+            </Link>
+            <Link href="/es/save-the-date-quinceanera" hrefLang="es" className="inline-flex min-h-11 items-center text-base text-ink-soft underline underline-offset-4">
+              Ver esta página en español →
+            </Link>
+          </div>
+        </div>
+        <div className="relative mx-auto mt-12 aspect-[4/3] max-w-[90rem] overflow-hidden rounded-lg bg-accent-soft sm:aspect-[16/8]">
           {hero?.url ? (
             <Image
               src={hero.url}
@@ -138,56 +164,13 @@ export default async function SaveTheDatePage() {
               style={{ objectPosition: focal(hero.focus_x, hero.focus_y) }}
             />
           ) : null}
-          <div className="absolute inset-0 bg-gradient-to-t from-ink/92 via-ink/45 to-ink/10" />
-          <div className="absolute inset-x-0 bottom-0">
-            <div className="mx-auto max-w-[90rem] px-5 pb-12 md:px-10 lg:px-16 md:pb-16">
-              <Reveal>
-                <p className="text-[0.62rem] uppercase tracking-[0.32em] text-cream/85">
-                  Save-the-Date · Dallas–Fort Worth
-                </p>
-                <h1
-                  className="mt-4 max-w-3xl font-display text-cream text-balance"
-                  style={{ fontSize: "clamp(2.3rem,5.6vw,4.8rem)", lineHeight: 1.0, letterSpacing: "-0.025em" }}
-                >
-                  Her Save-the-Date session, included.
-                </h1>
-                <p className="mt-5 max-w-xl text-sm leading-relaxed text-cream/80 md:text-base">
-                  A relaxed portrait session before the big day — for the invitations,
-                  the guest board, and meeting your photographer first. Most Dallas–Fort
-                  Worth studios charge {/* market range from live competitor pricing */}
-                  $150–$475 for it. Here it&apos;s in every collection, free.
-                </p>
-                <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
-                  <Link
-                    href={site.cta.href}
-                    className="inline-flex whitespace-nowrap rounded-full bg-cream px-7 py-3 text-[0.7rem] font-medium uppercase tracking-[0.16em] text-ink transition-colors hover:bg-white"
-                  >
-                    {site.cta.label}
-                  </Link>
-                  <Link
-                    href={site.secondaryCta.href}
-                    className="whitespace-nowrap text-[0.7rem] uppercase tracking-[0.18em] text-cream/85 underline decoration-cream/30 underline-offset-[6px] transition-colors hover:text-cream"
-                  >
-                    {site.secondaryCta.label}
-                  </Link>
-                  <Link
-                    href="/es/save-the-date-quinceanera"
-                    hrefLang="es"
-                    className="whitespace-nowrap text-[0.7rem] uppercase tracking-[0.18em] text-cream/65 underline decoration-cream/20 underline-offset-[6px] transition-colors hover:text-cream"
-                  >
-                    Ver esta página en español →
-                  </Link>
-                </div>
-              </Reveal>
-            </div>
-          </div>
         </div>
       </section>
 
       {/* What it is */}
-      <section className="mx-auto max-w-3xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
+      <section className="mx-auto max-w-3xl px-5 py-16 md:px-10 lg:px-16 md:py-20">
         <Reveal className="flex flex-col gap-6">
-          <h2 className="display-2 text-ink text-balance">
+          <h2 className="font-display text-[clamp(1.75rem,2.8vw,2.5rem)] leading-tight text-ink text-balance">
             What the Save-the-Date session is.
           </h2>
           <p className="text-base leading-relaxed text-ink-soft">
@@ -205,17 +188,29 @@ export default async function SaveTheDatePage() {
         </Reveal>
       </section>
 
+      {supporting.length > 0 ? (
+        <section className="mx-auto max-w-[90rem] px-5 pb-16 md:px-10 md:pb-20 lg:px-16" aria-label="Save-the-Date photographs">
+          <div className="grid grid-cols-2 gap-3 sm:gap-5">
+            {supporting.map((image) => (
+              <div key={image.id ?? image.url} className="relative aspect-[4/5] overflow-hidden rounded-lg bg-greige sm:aspect-[3/4]">
+                <Image src={image.url} alt={image.alt || "Quinceañera Save-the-Date portrait"} fill sizes="(max-width: 640px) 50vw, 50vw" className="object-cover" style={{ objectPosition: focal(image.focus_x, image.focus_y) }} />
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       {/* Her own dress — DARK contrast band (the honest answer to "dress included") */}
-      <section className="bg-ink text-cream">
-        <div className="mx-auto max-w-3xl px-5 py-section text-center md:px-10 lg:px-16 md:py-section-lg">
+      <section className="bg-accent-soft">
+        <div className="mx-auto max-w-3xl px-5 py-16 text-center md:px-10 lg:px-16 md:py-20">
           <Reveal>
-            <p className="mb-5 text-[0.66rem] uppercase tracking-[0.24em] text-wine-tint">
+            <p className="mb-5 text-xs font-medium uppercase tracking-[0.16em] text-ink-soft">
               Her dress, her session
             </p>
-            <h2 className="display-2 text-cream text-balance">
+            <h2 className="font-display text-[clamp(1.75rem,2.8vw,2.5rem)] leading-tight text-ink text-balance">
               No rental. No restrictions.
             </h2>
-            <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-cream/75">
+            <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-ink-soft">
               Some studios cap the Save-the-Date with a borrowed gown or limit which
               dress she can wear. Here she wears her own — the real quince dress, a
               casual look, or both in one session. It&apos;s her milestone; nothing
@@ -226,55 +221,55 @@ export default async function SaveTheDatePage() {
       </section>
 
       {/* Included free vs the add-on — grounded in live competitor pricing */}
-      <section className="mx-auto max-w-3xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
+      <section className="mx-auto max-w-[90rem] px-5 py-16 md:px-10 md:py-20 lg:px-16">
         <Reveal>
-          <h2 className="display-2 text-ink text-balance">
+          <h2 className="font-display text-[clamp(1.75rem,2.8vw,2.5rem)] leading-tight text-ink text-balance">
             Included, not an add-on.
           </h2>
           <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-soft">
             Across DFW, the Save-the-Date is usually sold separately — a $150 to
-            $475 line item on top of the day-of coverage. Every TX Quince collection
-            already includes it, start to finish.
+            $475 line item on top of the day-of coverage. Essential, Signature, and Legacy
+            include it, start to finish. Moments does not.
           </p>
         </Reveal>
-        <div className="mt-10 grid gap-5 sm:grid-cols-3">
-          {packages.map((p, i) => (
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {includedPackages.map((p, i) => (
             <Reveal
               key={p.id}
               delay={i * 80}
               className={`flex h-full flex-col border p-7 ${
-                p.highlight ? "border-wine bg-ivory" : "border-line bg-ivory"
+                p.highlight ? "border-ink bg-accent-soft" : "border-line bg-white"
               }`}
             >
               <div className="flex items-center justify-between">
                 <h3 className="font-display text-2xl text-ink">{p.name}</h3>
                 {p.highlight ? (
-                  <span className="text-[0.6rem] uppercase tracking-[0.18em] text-wine-deep">
+                  <span className="text-xs font-medium uppercase tracking-[0.12em] text-ink-soft">
                     Most Popular
                   </span>
                 ) : null}
               </div>
-              <p className="mt-5 font-display text-4xl text-ink">{p.priceLabel}</p>
-              <p className="mt-2 text-[0.7rem] uppercase tracking-[0.18em] text-wine-deep">
+              <p className="mt-5 font-display text-[2rem] text-ink">{p.priceLabel}</p>
+              <p className="mt-2 text-base text-ink-soft">
                 Save-the-Date included
               </p>
-              <p className="mt-4 flex-1 text-sm leading-relaxed text-ink-soft">
+              <p className="mt-4 flex-1 text-base leading-7 text-ink-soft">
                 {p.teaser}
               </p>
               <CTAButton
                 href={`/reserve?collection=${p.id}`}
                 variant="ink"
-                className="mt-6 w-full"
+                className="mt-6 min-h-12 w-full text-base"
               >
                 Reserve {p.name}
               </CTAButton>
             </Reveal>
           ))}
         </div>
-        <p className="mt-8 text-sm">
+        <p className="mt-8 text-base">
           <Link
             href="/investment"
-            className="text-wine underline underline-offset-2 hover:text-wine-deep"
+            className="text-ink underline underline-offset-2 hover:text-ink-soft"
           >
             See everything included in each collection →
           </Link>
@@ -282,40 +277,40 @@ export default async function SaveTheDatePage() {
       </section>
 
       {/* FAQ */}
-      <section className="mx-auto max-w-3xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
-        <h2 className="display-2 text-ink">
+      <section className="mx-auto max-w-3xl px-5 py-16 md:px-10 lg:px-16 md:py-20">
+        <h2 className="font-display text-[clamp(1.75rem,2.8vw,2.5rem)] leading-tight text-ink">
           Save-the-Date — questions, answered.
         </h2>
         <dl className="mt-10 divide-y divide-line border-y border-line">
           {STD_FAQS.map((f) => (
             <div key={f.q} className="py-7">
               <dt className="font-display text-xl text-ink">{f.q}</dt>
-              <dd className="mt-3 text-sm leading-relaxed text-ink-soft">{f.a}</dd>
+              <dd className="mt-3 text-base leading-7 text-ink-soft">{f.a}</dd>
             </div>
           ))}
         </dl>
       </section>
 
       {/* City links — pass weight to the money pages */}
-      <section className="bg-greige">
-        <div className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
+      <section className="bg-accent-soft">
+        <div className="mx-auto max-w-5xl px-5 py-16 md:px-10 lg:px-16 md:py-20">
           <p className="eyebrow mb-5">Across Dallas–Fort Worth</p>
           <div className="flex flex-wrap gap-3">
             <Link
               href="/quinceanera-photographer/dallas"
-              className="border border-line bg-ivory px-4 py-2 text-sm text-ink transition-colors hover:border-wine hover:text-wine"
+              className="inline-flex min-h-11 items-center rounded-lg border border-line bg-white px-4 text-base text-ink transition-colors hover:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
             >
               Quinceañera photographer in Dallas
             </Link>
             <Link
               href="/quinceanera-photographer/fort-worth"
-              className="border border-line bg-ivory px-4 py-2 text-sm text-ink transition-colors hover:border-wine hover:text-wine"
+              className="inline-flex min-h-11 items-center rounded-lg border border-line bg-white px-4 text-base text-ink transition-colors hover:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
             >
               Quinceañera photographer in Fort Worth
             </Link>
             <Link
               href="/quinceanera-photographer"
-              className="border border-line bg-ivory px-4 py-2 text-sm text-ink transition-colors hover:border-wine hover:text-wine"
+              className="inline-flex min-h-11 items-center rounded-lg border border-line bg-white px-4 text-base text-ink transition-colors hover:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
             >
               All DFW areas →
             </Link>

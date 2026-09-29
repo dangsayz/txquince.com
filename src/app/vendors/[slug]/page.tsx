@@ -107,31 +107,28 @@ export default async function VendorPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <section className="mx-auto max-w-[90rem] px-5 pb-10 pt-20 md:px-10 lg:px-16 md:pb-14 md:pt-28">
-        <Reveal>
-          <p className="text-[0.62rem] uppercase tracking-[0.28em] text-ink-faint">
+      <section className="mx-auto max-w-[90rem] px-5 pb-12 pt-12 md:px-10 md:pb-16 md:pt-16 lg:px-16 lg:pt-20">
+        <Reveal className="mx-auto max-w-3xl text-center">
+          <p className="text-sm font-medium text-ink-soft">
             <Link href="/vendors" className="transition-colors hover:text-ink">
               Vendors
             </Link>
             <span aria-hidden> — </span>
             {kind}
           </p>
-          <h1
-            className="mt-5 max-w-4xl font-display text-ink"
-            style={{ fontSize: "clamp(2.4rem,6vw,4.8rem)", lineHeight: 1, letterSpacing: "-0.025em" }}
-          >
+          <h1 className="mt-4 font-display text-[clamp(2rem,3.5vw,3rem)] leading-[1.14] text-ink text-balance">
             {name}
           </h1>
-          <p className="accent mt-4 text-xl text-wine-deep">{credit} for quinceañeras in DFW</p>
+          <p className="mt-4 text-base font-medium text-ink-soft">{credit} for quinceañeras in DFW</p>
           {/* Public links only — email & phone stay private. */}
           {ig || web ? (
-            <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-base">
               {ig ? (
                 <a
                   href={ig}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex min-h-[44px] items-center text-ink underline decoration-ink/30 underline-offset-[6px] transition-colors hover:text-wine hover:decoration-wine"
+                  className="inline-flex min-h-11 items-center text-ink underline decoration-ink/30 underline-offset-[6px] transition-colors hover:decoration-ink"
                 >
                   @{vendor.ig_handle}
                 </a>
@@ -141,7 +138,7 @@ export default async function VendorPage({
                   href={web}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex min-h-[44px] items-center text-ink underline decoration-ink/30 underline-offset-[6px] transition-colors hover:text-wine hover:decoration-wine"
+                  className="inline-flex min-h-11 items-center text-ink underline decoration-ink/30 underline-offset-[6px] transition-colors hover:decoration-ink"
                 >
                   {websiteLabel(vendor.website)}
                 </a>
@@ -151,16 +148,13 @@ export default async function VendorPage({
         </Reveal>
       </section>
 
-      <section className="mt-4 border-t border-ink/10 bg-white">
+      <section className="border-t border-line bg-white">
         <div className="mx-auto max-w-[90rem] px-5 py-14 md:px-10 lg:px-16 md:py-20">
           <Reveal className="mb-10">
-            <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">
+            <p className="text-sm font-medium text-ink-soft">
               Work together
             </p>
-            <h2
-              className="mt-3 font-display text-ink"
-              style={{ fontSize: "clamp(1.8rem,3.6vw,2.8rem)", lineHeight: 1.05, letterSpacing: "-0.02em" }}
-            >
+            <h2 className="mt-3 font-display text-[clamp(1.75rem,3vw,2.5rem)] leading-tight text-ink">
               {photos.length
                 ? `Photographed with ${name}`
                 : `We'd love to work with ${name}`}
@@ -169,7 +163,7 @@ export default async function VendorPage({
           {items.length ? (
             <PortfolioGallery images={items} />
           ) : (
-            <p className="accent text-xl text-ink-faint">
+            <p className="rounded-lg border border-line bg-ivory p-6 text-base leading-7 text-ink-soft">
               No tagged photos yet — check back soon.
             </p>
           )}

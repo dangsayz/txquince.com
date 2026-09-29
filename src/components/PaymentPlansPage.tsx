@@ -52,33 +52,33 @@ export function PaymentPlansPage({ locale }: { locale: "en" | "es" }) {
   return (
     <>
       <section className="border-b border-line bg-white">
-        <div className="mx-auto max-w-[90rem] px-5 py-20 md:px-10 md:py-28 lg:px-16">
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-wine-deep">{c.eyebrow}</p>
-          <h1 className="mt-6 max-w-[12ch] font-serif text-[clamp(3.4rem,7vw,7rem)] leading-[0.94] tracking-[-0.045em] text-ink">{c.title}</h1>
-          <p className="mt-8 max-w-2xl text-lg leading-8 text-ink-soft">{c.intro}</p>
-          <Link href={inquiry} className="mt-9 inline-flex min-h-12 items-center rounded-full bg-ink px-7 text-sm font-semibold text-white hover:bg-ink/85">{c.cta} <span aria-hidden className="ml-3">→</span></Link>
+        <div className="mx-auto max-w-[90rem] px-5 py-14 text-center md:px-10 md:py-20 lg:px-16">
+          <p className="text-xs font-medium uppercase tracking-[0.14em] text-ink-soft">{c.eyebrow}</p>
+          <h1 className="mx-auto mt-5 max-w-[22ch] font-display text-[clamp(2rem,3.4vw,3rem)] leading-[1.14] tracking-[-0.03em] text-ink">{c.title}</h1>
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-ink-soft sm:text-lg">{c.intro}</p>
+          <Link href={inquiry} className="mt-7 inline-flex min-h-12 items-center rounded-md bg-ink px-6 text-base font-medium text-white hover:bg-accent-strong">{c.cta} <span aria-hidden className="ml-3">→</span></Link>
           <p className="mt-3 text-sm text-ink-soft">{c.small}</p>
         </div>
       </section>
-      <section className="mx-auto max-w-[90rem] px-5 py-20 md:px-10 md:py-28 lg:px-16">
-        <ol className="grid gap-10 md:grid-cols-3 md:gap-8">
-          {c.steps.map(([title, body], i) => <li key={title} className="border-t border-line pt-6"><span className="font-serif text-4xl text-ink/35">0{i + 1}</span><h2 className="mt-5 font-serif text-3xl text-ink">{title}</h2><p className="mt-4 text-base leading-7 text-ink-soft">{body}</p></li>)}
+      <section className="mx-auto max-w-[90rem] px-5 py-16 md:px-10 md:py-20 lg:px-16">
+        <ol className="grid gap-4 md:grid-cols-3">
+          {c.steps.map(([title, body], i) => <li key={title} className="rounded-xl border border-line bg-white p-6 sm:p-8"><span className="text-xs font-medium text-ink-soft">0{i + 1}</span><h2 className="mt-6 font-display text-xl font-normal text-ink">{title}</h2><p className="mt-3 text-base leading-7 text-ink-soft">{body}</p></li>)}
         </ol>
       </section>
-      <section className="bg-greige">
-        <div className="mx-auto max-w-[90rem] px-5 py-20 md:px-10 md:py-28 lg:px-16">
-          <h2 className="font-serif text-[clamp(2.6rem,5vw,4rem)] leading-none text-ink">{c.deposits}</h2>
+      <section className="bg-accent-soft">
+        <div className="mx-auto max-w-[90rem] px-5 py-16 md:px-10 md:py-20 lg:px-16">
+          <h2 className="font-display text-[clamp(1.75rem,2.8vw,2.5rem)] leading-tight text-ink">{c.deposits}</h2>
           <p className="mt-4 text-base text-ink-soft">{c.depositNote}</p>
           <div className="mt-9 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {packages.map((p) => <div key={p.id} className="border border-line bg-white p-6"><h3 className="font-serif text-2xl text-ink">{p.name}</h3><p className="mt-5 text-sm text-ink-soft">{p.priceLabel}</p><p className="mt-1 font-serif text-4xl text-ink">{p.depositLabel}</p></div>)}
+            {packages.map((p) => <div key={p.id} className="rounded-xl border border-line bg-white p-6"><h3 className="font-display text-xl text-ink">{p.name}</h3><p className="mt-5 text-sm text-ink-soft">{p.priceLabel}</p><p className="mt-1 font-display text-[2rem] text-ink">{p.depositLabel}</p></div>)}
           </div>
           <p className="mt-6 text-sm text-ink-soft">{c.detail}</p>
         </div>
       </section>
-      <section className="mx-auto max-w-[90rem] px-5 py-20 md:px-10 md:py-28 lg:px-16">
-        <h2 className="font-serif text-[clamp(2.6rem,5vw,4rem)] leading-none text-ink">{c.faqTitle}</h2>
+      <section className="mx-auto max-w-[90rem] px-5 py-16 md:px-10 md:py-20 lg:px-16">
+        <h2 className="font-display text-[clamp(1.75rem,2.8vw,2.5rem)] leading-tight text-ink">{c.faqTitle}</h2>
         <div className="mt-8 max-w-3xl border-t border-line">{c.faqs.map(([q, a]) => <details key={q} className="group border-b border-line py-6"><summary className="cursor-pointer list-none font-medium text-ink marker:hidden">{q} <span aria-hidden className="float-right">+</span></summary><p className="mt-4 leading-7 text-ink-soft">{a}</p></details>)}</div>
-        <Link href={inquiry} className="mt-10 inline-flex min-h-12 items-center rounded-full bg-ink px-7 text-sm font-semibold text-white hover:bg-ink/85">{c.cta} <span aria-hidden className="ml-3">→</span></Link>
+        <Link href={inquiry} className="mt-10 inline-flex min-h-12 items-center rounded-md bg-ink px-6 text-base font-medium text-white hover:bg-accent-strong">{c.cta} <span aria-hidden className="ml-3">→</span></Link>
       </section>
     </>
   );

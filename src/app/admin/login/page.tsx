@@ -111,18 +111,18 @@ function LoginForm() {
   }
 
   const inputBase =
-    "mt-2 min-h-12 w-full rounded-lg border border-line bg-white px-3.5 py-2.5 text-base text-ink outline-none focus:border-accent focus:ring-2 focus:ring-accent/20";
+    "mt-2 min-h-12 w-full rounded-lg border border-line bg-white px-3.5 py-2.5 text-base text-ink outline-none focus:border-ink focus:ring-2 focus:ring-ink/15";
 
   return (
-    <div className="flex min-h-svh items-center justify-center bg-ivory px-4 py-12 sm:px-6">
-      <div className="w-full max-w-md rounded-xl border border-line bg-white p-6 shadow-[0_20px_60px_-32px_rgba(0,0,0,0.2)] sm:p-9">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent-strong">TX Quince · Studio</p>
-        <h1 className="mt-3 font-display text-3xl text-ink">{mode === "signin" ? "Welcome back." : "Reset your password."}</h1>
-        <p className="mt-2 text-sm text-ink-soft">{mode === "signin" ? "Sign in to manage your studio." : "We will send a secure reset link to your email."}</p>
+    <div className="flex min-h-svh items-center justify-center bg-cream px-4 py-12 sm:px-6">
+      <div className="w-full max-w-md rounded-lg border border-line bg-white p-6 sm:p-9">
+        <p className="text-xs font-medium uppercase tracking-[0.16em] text-ink-soft">TX Quince · Studio</p>
+        <h1 className="mt-4 font-display text-[clamp(2rem,3.4vw,2.5rem)] font-medium leading-tight tracking-[-0.03em] text-ink">{mode === "signin" ? "Welcome back." : "Reset your password."}</h1>
+        <p className="mt-3 text-base leading-7 text-ink-soft">{mode === "signin" ? "Sign in to manage your studio." : "We will send a secure reset link to your email."}</p>
 
         {mode === "signin" ? (
           <form onSubmit={onSignIn}>
-            <label className="mt-8 block text-sm font-medium text-ink">
+            <label className="mt-8 block text-base font-medium text-ink">
               Email
               <input
                 type="email"
@@ -133,7 +133,7 @@ function LoginForm() {
               />
             </label>
 
-            <label className="mt-5 block text-sm font-medium text-ink">
+            <label className="mt-5 block text-base font-medium text-ink">
               Password
               <div className="relative">
                 <input
@@ -146,7 +146,7 @@ function LoginForm() {
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-1 top-1/2 inline-flex min-h-11 -translate-y-1/2 items-center rounded-md px-3 text-xs font-medium text-ink-soft hover:text-accent"
+                  className="absolute right-1 top-1/2 inline-flex min-h-11 -translate-y-1/2 items-center rounded-md px-3 text-base font-medium text-ink-soft hover:text-ink"
                   aria-pressed={showPassword}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
@@ -156,7 +156,7 @@ function LoginForm() {
             </label>
 
             <div className="mt-5 flex items-center justify-between">
-              <label className="flex min-h-11 cursor-pointer items-center gap-2 text-sm text-ink-soft">
+              <label className="flex min-h-11 cursor-pointer items-center gap-2 text-base text-ink-soft">
                 <input
                   type="checkbox"
                   checked={remember}
@@ -172,21 +172,21 @@ function LoginForm() {
                   setError(null);
                   setNotice(null);
                 }}
-                className="min-h-11 rounded-md px-1 text-sm text-accent-strong hover:text-accent"
+                className="min-h-11 rounded-md px-1 text-base text-ink-soft hover:text-ink"
               >
                 Forgot password?
               </button>
             </div>
 
-            {error ? <p role="alert" className="mt-4 text-sm text-danger">{error}</p> : null}
+            {error ? <p role="alert" className="mt-4 text-base text-danger">{error}</p> : null}
 
-            <button type="submit" disabled={busy} className="mt-8 inline-flex min-h-12 w-full items-center justify-center rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-white hover:bg-accent-strong disabled:opacity-50">
+            <button type="submit" disabled={busy} className="mt-8 inline-flex min-h-12 w-full items-center justify-center rounded-lg bg-ink px-5 py-2.5 text-base font-medium text-white hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:opacity-50">
               {busy ? "Signing in…" : "Sign in"}
             </button>
           </form>
         ) : (
           <form onSubmit={onReset}>
-            <label className="mt-8 block text-sm font-medium text-ink">
+            <label className="mt-8 block text-base font-medium text-ink">
               Email
               <input
                 type="email"
@@ -196,14 +196,14 @@ function LoginForm() {
                 className={inputBase}
               />
             </label>
-            <p className="mt-3 text-xs leading-relaxed text-ink-faint">
+            <p className="mt-3 text-base leading-7 text-ink-soft">
               We&apos;ll email you a secure link to set a new password.
             </p>
 
-            {error ? <p role="alert" className="mt-4 text-sm text-danger">{error}</p> : null}
-            {notice ? <p role="status" className="mt-4 text-sm text-ink">{notice}</p> : null}
+            {error ? <p role="alert" className="mt-4 text-base text-danger">{error}</p> : null}
+            {notice ? <p role="status" className="mt-4 text-base text-ink">{notice}</p> : null}
 
-            <button type="submit" disabled={busy} className="mt-8 inline-flex min-h-12 w-full items-center justify-center rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-white hover:bg-accent-strong disabled:opacity-50">
+            <button type="submit" disabled={busy} className="mt-8 inline-flex min-h-12 w-full items-center justify-center rounded-lg bg-ink px-5 py-2.5 text-base font-medium text-white hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:opacity-50">
               {busy ? "Sending…" : "Send reset link"}
             </button>
             <button
@@ -213,7 +213,7 @@ function LoginForm() {
                 setError(null);
                 setNotice(null);
               }}
-              className="mt-4 min-h-11 w-full text-center text-sm text-ink-soft hover:text-ink"
+              className="mt-4 min-h-11 w-full text-center text-base text-ink-soft hover:text-ink"
             >
               ← Back to sign in
             </button>

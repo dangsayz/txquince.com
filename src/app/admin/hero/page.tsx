@@ -44,25 +44,25 @@ export default async function AdminHero() {
   });
 
   return (
-    <main className="mx-auto max-w-3xl px-5 py-12">
+    <main className="mx-auto max-w-5xl px-5 py-10 md:px-10 md:py-14">
       <Link
         href="/admin"
-        className="text-[0.72rem] uppercase tracking-[0.18em] text-ink-faint hover:text-accent"
+        className="inline-flex min-h-11 items-center text-sm font-medium text-ink-soft hover:text-ink"
       >
         ← Studio
       </Link>
-      <h1 className="mt-3 font-display text-3xl text-ink">Homepage hero</h1>
-      <p className="mt-2 text-sm text-ink-soft">
+      <h1 className="mt-4 font-display text-[clamp(1.75rem,2.8vw,2.25rem)] leading-tight text-ink">Homepage hero</h1>
+      <p className="mt-3 text-base leading-7 text-ink-soft">
         The big visual at the top of your homepage. Drop in a photo or a video
         link (YouTube, Vimeo, or a direct .mp4) and it goes live within a minute.
       </p>
-      <div className="mt-10">
+      <div className="mt-8">
         <HeroManager initial={media} />
       </div>
 
-      <div className="mt-16 border-t border-line pt-12">
-        <h2 className="font-display text-3xl text-ink">Page heroes</h2>
-        <p className="mt-2 text-sm text-ink-soft">
+      <div className="mt-14 border-t border-line pt-10">
+        <h2 className="font-display text-[clamp(1.75rem,2.8vw,2.25rem)] leading-tight text-ink">Page heroes</h2>
+        <p className="mt-3 text-base leading-7 text-ink-soft">
           The cinematic photo at the top of your other tabs. Choose the exact
           frame for each — picked from photos already in your portfolio — or
           leave it on Automatic to use your top featured shot.

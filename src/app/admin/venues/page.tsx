@@ -20,15 +20,15 @@ export default async function AdminVenuesPage() {
   }));
 
   return (
-    <main className="mx-auto max-w-4xl px-5 py-12">
-      <h1 className="font-display text-3xl text-ink">Venues</h1>
-      <p className="mt-2 max-w-2xl text-sm text-ink-soft">
+    <main className="mx-auto max-w-5xl px-5 py-10 md:px-10 md:py-14">
+      <h1 className="font-display text-[clamp(1.75rem,2.8vw,2.25rem)] leading-tight text-ink">Venues</h1>
+      <p className="mt-3 max-w-2xl text-base leading-7 text-ink-soft">
         Each venue you shoot at gets its own landing page at{" "}
         <code className="text-ink">/venues/&hellip;</code> — built to rank when families search
         that venue&apos;s name. Photos fill in automatically from the weekly ingest. Write (or
         AI-draft) a short intro + a few FAQs so Google has unique text to rank, then Save.
       </p>
-      <p className="mt-2 max-w-2xl text-xs text-ink-faint">
+      <p className="mt-3 max-w-2xl text-sm leading-6 text-ink-soft">
         To add a venue, add it to <code>src/content/venues.json</code> (same list the photo
         ingest uses) — it appears here automatically.
       </p>

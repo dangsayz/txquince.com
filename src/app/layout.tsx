@@ -44,7 +44,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#faf8f4",
+  themeColor: "#fafafa",
   width: "device-width",
   initialScale: 1,
 };
@@ -58,7 +58,7 @@ export default function RootLayout({
       data-scroll-behavior="smooth"
       className={`${inter.variable} h-full`}
     >
-      <body className="flex min-h-screen flex-col bg-cream">
+      <body className="flex min-h-dvh flex-col bg-cream">
         <PublicSiteFrame>{children}</PublicSiteFrame>
         <StickyMobileCTA />
         <Suspense fallback={null}>

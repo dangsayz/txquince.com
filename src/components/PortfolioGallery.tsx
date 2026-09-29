@@ -19,7 +19,7 @@ export function PortfolioGallery({
   initialQuery = "",
   savedOnly = false,
   columns,
-  imageSizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw",
+  imageSizes = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw",
 }: {
   images: GalleryItem[];
   sections?: GallerySection[];
@@ -39,6 +39,16 @@ export function PortfolioGallery({
   const { saved } = useSavedPhotos();
 
   const filtered = useMemo(() => selectGalleryItems(images, sections, { query, category, sort, savedOnly, saved }), [images, saved, savedOnly, category, query, sections, sort]);
+
+  useEffect(() => {
+    function selectLinkedCategory() {
+      const linkedCategory = window.location.hash.slice(1);
+      if (sections.some((section) => section.id === linkedCategory)) setCategory(linkedCategory);
+    }
+    selectLinkedCategory();
+    window.addEventListener("hashchange", selectLinkedCategory);
+    return () => window.removeEventListener("hashchange", selectLinkedCategory);
+  }, [sections]);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -68,70 +78,90 @@ export function PortfolioGallery({
 
   return (
     <>
-      {!savedOnly || images.length ? (
-        <div className="border-b border-line pb-6">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-            <label className="block w-full max-w-lg text-xs font-semibold text-ink-soft">
-              Search the portfolio
-              <input
-                type="search"
-                value={query}
-                onChange={(event) => { setQuery(event.target.value); setActiveIndex(null); }}
-                placeholder="Try portraits, church, or Dallas"
-                className="mt-2 min-h-12 w-full rounded-xl border border-line bg-white px-4 text-sm font-normal normal-case tracking-normal text-ink placeholder:text-ink-faint focus:border-accent focus:outline-2 focus:outline-offset-2 focus:outline-accent"
-              />
-            </label>
-            <label className="block text-xs font-semibold text-ink-soft">
-              Sort by
-              <select
-                value={sort}
-                onChange={(event) => setSort(event.target.value === "title" ? "title" : "curated")}
-                className="mt-2 min-h-12 w-full rounded-xl border border-line bg-white px-4 text-sm font-normal normal-case tracking-normal text-ink focus:outline-2 focus:outline-offset-2 focus:outline-accent lg:min-w-40"
-              >
-                <option value="curated">Curated order</option>
-                <option value="title">Title A–Z</option>
-              </select>
-            </label>
-          </div>
-          {sections.length > 1 ? (
-            <div className="mt-5 flex flex-wrap gap-2" aria-label="Filter by moment">
+      {sections.map((section) => <span key={section.id} id={section.id} className="block h-0 scroll-mt-28" aria-hidden="true" />)}
+      <div className={sections.length > 1 && (!savedOnly || images.length) ? "grid items-start gap-8 lg:grid-cols-[minmax(0,13rem)_minmax(0,1fr)] lg:gap-10" : ""}>
+        {sections.length > 1 && (!savedOnly || images.length) ? (
+          <aside className="hidden lg:sticky lg:top-28 lg:block" aria-label="Portfolio categories">
+            <p className="mb-4 text-xs font-medium uppercase tracking-[0.16em] text-ink-soft">Browse moments</p>
+            <nav className="flex flex-col gap-1" aria-label="Filter by moment">
               {[{ id: "all", title: "All moments" }, ...sections].map((section) => (
                 <button
                   key={section.id}
-                  id={section.id === "all" ? undefined : section.id}
                   type="button"
                   aria-pressed={category === section.id}
                   onClick={() => { setCategory(section.id); setActiveIndex(null); }}
-                  className={`min-h-11 rounded-full border px-4 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${category === section.id ? "border-accent bg-accent text-white" : "border-line bg-white text-ink hover:border-accent"}`}
+                  className={`min-h-11 rounded-lg px-3 text-left text-base transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${category === section.id ? "bg-accent-soft font-medium text-ink" : "text-ink-soft hover:bg-greige hover:text-ink"}`}
                 >
                   {section.title}
                 </button>
               ))}
+            </nav>
+          </aside>
+        ) : null}
+        <div className="min-w-0">
+          {!savedOnly || images.length ? (
+            <div className="border-b border-line pb-6">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
+                <label className="block min-w-0 flex-1 text-sm font-medium text-ink">
+                  Search photographs
+                  <input
+                    type="search"
+                    value={query}
+                    onChange={(event) => { setQuery(event.target.value); setActiveIndex(null); }}
+                    placeholder="Search moments or places"
+                    className="mt-2 min-h-12 w-full rounded-lg border border-line bg-white px-4 text-base font-normal text-ink placeholder:text-ink-faint focus:border-accent focus:outline-2 focus:outline-offset-2 focus:outline-accent"
+                  />
+                </label>
+                <label className="block text-sm font-medium text-ink">
+                  Sort by
+                  <select
+                    value={sort}
+                    onChange={(event) => setSort(event.target.value === "title" ? "title" : "curated")}
+                    className="mt-2 min-h-12 w-full rounded-lg border border-line bg-white px-4 text-base font-normal text-ink focus:outline-2 focus:outline-offset-2 focus:outline-accent sm:min-w-44"
+                  >
+                    <option value="curated">Curated order</option>
+                    <option value="title">Title A–Z</option>
+                  </select>
+                </label>
+              </div>
+              {sections.length > 1 ? (
+                <nav className="mt-5 flex max-w-full gap-2 overflow-x-auto pb-1 lg:hidden" aria-label="Filter by moment">
+                  {[{ id: "all", title: "All moments" }, ...sections].map((section) => (
+                    <button
+                      key={section.id}
+                      type="button"
+                      aria-pressed={category === section.id}
+                      onClick={() => { setCategory(section.id); setActiveIndex(null); }}
+                      className={`min-h-11 shrink-0 whitespace-nowrap rounded-lg border px-4 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${category === section.id ? "border-accent bg-accent text-white" : "border-line bg-white text-ink hover:border-accent"}`}
+                    >
+                      {section.title}
+                    </button>
+                  ))}
+                </nav>
+              ) : null}
             </div>
           ) : null}
-        </div>
-      ) : null}
 
-      <div className="flex items-center justify-between gap-4 py-5 text-sm text-ink-soft" aria-live="polite">
-        <span>{filtered.length} {filtered.length === 1 ? "photograph" : "photographs"}</span>
-        {savedOnly ? <span>Saved in this browser</span> : <Link href="/saved" className="font-medium text-accent underline underline-offset-4 hover:text-ink">View saved photos</Link>}
-      </div>
+          <div className="flex flex-wrap items-center justify-between gap-2 py-5 text-sm text-ink-soft" aria-live="polite">
+            <span>{filtered.length} {filtered.length === 1 ? "photograph" : "photographs"}</span>
+            {savedOnly ? <span>Saved in this browser</span> : <Link href="/saved" className="inline-flex min-h-11 items-center font-medium text-ink underline underline-offset-4 hover:text-ink-soft">View saved photos</Link>}
+          </div>
 
       {filtered.length ? (
-        <div className={columns ?? "grid grid-cols-2 items-start gap-x-3 gap-y-8 sm:gap-x-5 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-6"}>
+        <div className={columns ?? "grid grid-cols-1 items-start gap-x-5 gap-y-9 sm:grid-cols-2 xl:grid-cols-3 xl:gap-x-6"}>
           {filtered.map((item, index) => (
             <article key={item.id || `${item.section}-${item.slug}-${index}`} className="min-w-0">
-              <div className="group relative overflow-hidden rounded-xl bg-greige">
+              <div className="group relative overflow-hidden rounded-lg border border-line bg-greige">
                 <button
                   type="button"
                   onClick={() => { setZoomed(false); setActiveIndex(index); }}
-                  className="block w-full cursor-zoom-in focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-accent"
+                  className={`block w-full cursor-zoom-in focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-accent ${columns ? "" : "aspect-[4/5]"}`}
                   aria-label={`View ${labelFor(item)}`}
                 >
                   {item.width && item.height ? (
-                    <Image src={item.url} alt={copyFor(item).alt} width={item.width} height={item.height} sizes={imageSizes} unoptimized={item.url.startsWith("/portfolio/")} className="block h-auto w-full transition-transform duration-300 group-hover:scale-[1.025]" />
+                    <Image src={item.url} alt={copyFor(item).alt} width={item.width} height={item.height} sizes={imageSizes} unoptimized={item.url.startsWith("/portfolio/")} className={`block w-full transition-transform duration-300 motion-reduce:transition-none group-hover:scale-[1.025] ${columns ? "h-auto" : "h-full object-cover"}`} style={columns ? undefined : { objectPosition: `${Math.round((item.fx ?? 0.5) * 100)}% ${Math.round((item.fy ?? 0.4) * 100)}%` }} />
                   ) : (
-                    <ProtectedImg src={item.url} alt={copyFor(item).alt} loading="lazy" className="block h-auto w-full transition-transform duration-300 group-hover:scale-[1.025]" />
+                    <ProtectedImg src={item.url} alt={copyFor(item).alt} loading="lazy" className={`block w-full transition-transform duration-300 motion-reduce:transition-none group-hover:scale-[1.025] ${columns ? "h-auto" : "h-full object-cover"}`} />
                   )}
                 </button>
                 <EditOverlay image={{ id: item.id, slug: item.slug, alt: item.alt, fx: item.fx, fy: item.fy }} />
@@ -139,19 +169,19 @@ export function PortfolioGallery({
               <div className="mt-3 flex items-start justify-between gap-2">
                 <div className="min-w-0">
                   {item.slug && item.section ? (
-                    <Link href={pathFor(item)} className="line-clamp-2 text-sm font-semibold leading-snug text-ink hover:text-accent">{labelFor(item)}</Link>
-                  ) : <p className="line-clamp-2 text-sm font-semibold leading-snug text-ink">{labelFor(item)}</p>}
-                  <p className="mt-1 text-xs text-ink-soft">{sections.find((section) => section.id === item.section)?.title || item.city || "TX Quince"}</p>
+                    <Link href={pathFor(item)} className="inline-flex min-h-11 items-center text-base font-medium leading-snug text-ink hover:underline hover:underline-offset-4">{labelFor(item)}</Link>
+                  ) : <p className="text-base font-medium leading-snug text-ink">{labelFor(item)}</p>}
+                  <p className="text-sm text-ink-soft">{sections.find((section) => section.id === item.section)?.title || item.city || "TX Quince"}</p>
                 </div>
                 {item.slug && item.section ? <FavoriteButton section={item.section} slug={item.slug} className="!min-h-11 !w-11 shrink-0 !px-0 [&]:text-[0]" /> : null}
               </div>
               {item.vendors?.length ? (
-                <p className="mt-2 text-xs leading-relaxed text-ink-soft">
+                <p className="mt-2 text-sm leading-relaxed text-ink-soft">
                   {item.vendors.map((vendor, vendorIndex) => (
                     <span key={`${vendor.slug}-${vendorIndex}`}>
                       {vendorIndex > 0 ? <span aria-hidden="true"> · </span> : null}
                       {vendor.role || vendorCreditLabel(vendor.category)}:{" "}
-                      <Link href={`/vendors/${vendor.slug}`} className="text-ink underline decoration-ink/30 underline-offset-2 hover:text-accent">
+                      <Link href={`/vendors/${vendor.slug}`} className="inline-flex min-h-11 items-center text-ink underline decoration-ink/30 underline-offset-2 hover:text-accent">
                         {vendor.business || vendor.name}
                       </Link>
                     </span>
@@ -162,14 +192,16 @@ export function PortfolioGallery({
           ))}
         </div>
       ) : (
-        <div className="rounded-2xl border border-line bg-white px-6 py-16 text-center">
+        <div className="rounded-lg border border-line bg-white px-6 py-16 text-center">
           <h2 className="font-display text-2xl text-ink">{images.length === 0 ? "Portfolio photos are unavailable." : savedOnly && !query && category === "all" ? "Your inspiration starts here." : "No photographs found."}</h2>
           <p className="mx-auto mt-3 max-w-md text-base leading-relaxed text-ink-soft">
             {images.length === 0 ? "Please check back soon, or ask us about photography and film for your date." : savedOnly && !query && category === "all" ? "Save photographs you love while browsing. They’ll appear here on this device." : "Try a different search or moment to see more of the collection."}
           </p>
-          {images.length === 0 ? <Link href="/check-your-date" className="mt-6 inline-flex min-h-12 items-center rounded-full bg-accent px-5 text-sm font-medium text-white hover:bg-accent-strong">Ask about your date</Link> : savedOnly ? <Link href="/portfolio" className="mt-6 inline-flex min-h-11 items-center rounded-full bg-accent px-5 text-sm font-medium text-white hover:bg-accent-strong">Explore the portfolio</Link> : query || category !== "all" ? <button type="button" onClick={() => { setQuery(""); setCategory("all"); }} className="mt-6 min-h-11 rounded-full border border-ink px-5 text-sm font-medium text-ink">Clear filters</button> : null}
+          {images.length === 0 ? <Link href="/check-your-date" className="mt-6 inline-flex min-h-12 items-center rounded-lg bg-accent px-5 text-base font-medium text-white hover:bg-accent-strong">Ask about your date</Link> : query || category !== "all" ? <button type="button" onClick={() => { setQuery(""); setCategory("all"); }} className="mt-6 min-h-11 rounded-lg border border-ink px-5 text-base font-medium text-ink">Clear filters</button> : savedOnly ? <Link href="/portfolio" className="mt-6 inline-flex min-h-12 items-center rounded-lg bg-accent px-5 text-base font-medium text-white hover:bg-accent-strong">Explore the portfolio</Link> : null}
         </div>
       )}
+        </div>
+      </div>
 
       <dialog
         ref={dialogRef}

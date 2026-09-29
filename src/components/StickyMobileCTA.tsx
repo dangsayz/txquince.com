@@ -23,7 +23,7 @@ export function StickyMobileCTA() {
     <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-white/95 px-4 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pt-3 backdrop-blur-md md:hidden">
       <Link
         href={isSpanish ? "/es/consulta" : site.secondaryCta.href}
-        className="flex min-h-12 w-full items-center justify-center rounded-lg bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-accent-strong"
+        className="flex min-h-12 w-full items-center justify-center whitespace-nowrap rounded-md bg-ink px-5 py-3 text-base font-medium text-white transition-colors hover:bg-accent-strong"
       >
         {isSpanish ? "Consulta su fecha" : "Check her date"} <span aria-hidden className="ml-2">→</span>
       </Link>

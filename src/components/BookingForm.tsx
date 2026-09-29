@@ -20,11 +20,9 @@ const SHOW_TURNSTILE =
 const DRAFT_KEY = "txq_reserve_draft";
 
 const inputBase =
-  "w-full border-b border-line bg-transparent px-0 py-3 text-ink placeholder:text-ink-faint transition-colors focus:border-wine focus:outline-none";
-// Editorial label: tiny tracked caps, quiet. No asterisks, no inline hints.
-// ink-soft (not ink-faint) so the small caps clear WCAG 4.5:1 on cream.
+  "min-h-12 w-full rounded-md border border-line bg-white px-4 py-3 text-base text-ink placeholder:text-ink-faint transition-colors focus:border-ink focus:outline-none focus:ring-2 focus:ring-ink/15";
 const labelBase =
-  "block text-[0.66rem] font-medium uppercase tracking-[0.18em] text-ink-soft";
+  "block text-base font-medium text-ink";
 
 type Draft = {
   name: string;
@@ -216,14 +214,14 @@ export function BookingForm({
   // ---- Success state ----
   if (status === "done") {
     return (
-      <div className="rounded-[1.5rem] border border-line bg-ivory p-8 text-center md:p-10">
+      <div className="rounded-xl border border-line bg-white p-8 text-center md:p-10">
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-cream ring-1 ring-line">
           <svg width="20" height="16" viewBox="0 0 20 16" fill="none" aria-hidden="true">
             <path d="M1 8.5L7 14.5L19 1.5" stroke="var(--color-wine)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
         <h3 className="mt-5 font-display text-2xl text-ink">Your date request is in.</h3>
-        <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-ink-soft">
+        <p className="mx-auto mt-3 max-w-md text-base leading-7 text-ink-soft">
           Thank you, {name.split(" ")[0] || "there"}. I&apos;ll personally confirm your
           date is open and reach out — usually within 24 hours — to talk through the
           day and send you a secure link to place your {selectedCollection.depositLabel}{" "}
@@ -240,7 +238,7 @@ export function BookingForm({
     <form
       onSubmit={handleSubmit}
       noValidate
-      className="flex flex-col gap-10"
+      className="flex flex-col gap-8"
       onFocusCapture={(e) => {
         const f = e.currentTarget;
         if (f.dataset.started) return;
@@ -254,7 +252,7 @@ export function BookingForm({
         <input ref={honeypotRef} id={HONEYPOT_FIELD} name={HONEYPOT_FIELD} type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
-      <div className="grid gap-x-10 gap-y-9 sm:grid-cols-2">
+      <div className="grid gap-x-5 gap-y-6 sm:grid-cols-2">
         <Field label="Your name" required error={errors.name}>
           <input value={name} onChange={(e) => setName(e.target.value)} type="text" autoComplete="name" className={inputBase} placeholder="First and last" />
         </Field>
@@ -347,7 +345,7 @@ export function BookingForm({
         </div>
       ) : null}
 
-      <p className="text-xs leading-relaxed text-ink-soft">
+      <p className="text-sm leading-relaxed text-ink-soft">
         No payment now — I&apos;ll confirm your date and send a secure deposit link,
         applied to your final balance. By requesting you agree to be contacted.{" "}
         <a href="/privacy" className="underline underline-offset-2 hover:text-ink">Privacy</a>.
@@ -360,7 +358,7 @@ export function BookingForm({
       <button
         type="submit"
         disabled={busy}
-        className="inline-flex items-center justify-center gap-3 self-start rounded-full bg-accent px-8 py-4 text-[0.95rem] font-medium text-white transition-colors hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-70"
+        className="inline-flex min-h-12 items-center justify-center gap-3 self-start rounded-md bg-ink px-8 py-3 text-base font-medium text-white transition-colors hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:cursor-not-allowed disabled:opacity-70"
       >
         {busy ? (
           <>
@@ -390,10 +388,10 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <label className={`flex flex-col gap-2.5 ${className}`}>
+    <label className={`flex flex-col gap-1.5 ${className}`}>
       <span className={labelBase}>{label}</span>
       {children}
-      {error?.length ? <span className="text-xs normal-case tracking-normal text-red-700">{error[0]}</span> : null}
+      {error?.length ? <span className="text-sm text-red-700">{error[0]}</span> : null}
     </label>
   );
 }
