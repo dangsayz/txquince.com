@@ -201,7 +201,7 @@ function LocationCombobox({
           }
         }}
         onBlur={() => commit(draft)}
-        className="w-full border-b border-line bg-transparent pb-1 text-xs focus:border-wine focus:outline-none"
+        className="w-full border-b border-line bg-transparent pb-1 text-xs focus:border-accent focus:outline-none"
       />
       {open && matches.length > 0 ? (
         <ul className="absolute left-0 right-0 z-20 mt-1 max-h-44 overflow-auto border border-line bg-ivory shadow-[0_12px_30px_-12px_rgba(28,26,23,0.4)]">
@@ -320,7 +320,7 @@ function VendorTagger({
   }
 
   const fieldCls =
-    "w-full border-b border-line bg-transparent pb-1 text-xs focus:border-wine focus:outline-none";
+    "w-full border-b border-line bg-transparent pb-1 text-xs focus:border-accent focus:outline-none";
 
   return (
     <div ref={wrapRef} className="rounded-md border border-line bg-greige/30 p-2">
@@ -341,7 +341,7 @@ function VendorTagger({
                 type="button"
                 onClick={() => remove(t.vendor_id)}
                 aria-label={`Remove ${t.name}`}
-                className="ml-0.5 grid h-4 w-4 place-items-center rounded-full text-ink-faint hover:bg-wine hover:text-cream"
+                className="ml-0.5 grid h-4 w-4 place-items-center rounded-full text-ink-faint hover:bg-accent hover:text-cream"
               >
                 ✕
               </button>
@@ -398,7 +398,7 @@ function VendorTagger({
               type="button"
               onClick={submitCreate}
               disabled={busy || !form.name.trim()}
-              className="rounded-full bg-wine px-3 py-1.5 text-[0.6rem] uppercase tracking-[0.12em] text-cream disabled:opacity-50"
+              className="rounded-full bg-accent px-3 py-1.5 text-[0.6rem] uppercase tracking-[0.12em] text-cream disabled:opacity-50"
             >
               {busy ? "Saving…" : "Save & tag"}
             </button>
@@ -451,7 +451,7 @@ function VendorTagger({
                       e.preventDefault();
                       openCreate();
                     }}
-                    className="block w-full px-2.5 py-2 text-left text-xs text-wine transition-colors hover:bg-wine hover:text-cream"
+                    className="block w-full px-2.5 py-2 text-left text-xs text-accent transition-colors hover:bg-accent hover:text-cream"
                   >
                     + Add new vendor “{draft.trim()}”
                   </button>
@@ -849,12 +849,12 @@ export function PortfolioManager({
           <CategorySelect
             value={section}
             onChange={setSection}
-            className="border-b border-line bg-transparent py-1 focus:border-wine focus:outline-none"
+            className="border-b border-line bg-transparent py-1 focus:border-accent focus:outline-none"
           />
           {uploadGroup ? (
             <span className="ml-2 whitespace-nowrap text-xs text-ink-faint">
               → appears publicly under{" "}
-              <span className="text-wine">{uploadGroup.label}</span>
+              <span className="text-accent">{uploadGroup.label}</span>
             </span>
           ) : null}
         </label>
@@ -875,14 +875,14 @@ export function PortfolioManager({
           multiple
           disabled={busy}
           onChange={(e) => handleFiles(e.target.files)}
-          className="text-sm text-ink-soft file:mr-3 file:rounded-full file:border file:border-wine file:bg-transparent file:px-5 file:py-2 file:text-[0.66rem] file:uppercase file:tracking-[0.16em] file:text-wine"
+          className="text-sm text-ink-soft file:mr-3 file:rounded-full file:border file:border-accent file:bg-transparent file:px-5 file:py-2 file:text-[0.66rem] file:uppercase file:tracking-[0.16em] file:text-accent"
         />
         {images.some((i) => !i.width || !i.height) ? (
           <button
             type="button"
             onClick={backfillDimensions}
             disabled={busy}
-            className="rounded-full border border-line px-4 py-2 text-[0.66rem] uppercase tracking-[0.16em] text-ink-soft transition-colors hover:border-wine hover:text-wine disabled:opacity-50"
+            className="rounded-full border border-line px-4 py-2 text-[0.66rem] uppercase tracking-[0.16em] text-ink-soft transition-colors hover:border-accent hover:text-accent disabled:opacity-50"
             title="Read sizes for older images so the public grid loads without shifting"
           >
             Fix image sizes
@@ -893,7 +893,7 @@ export function PortfolioManager({
             type="button"
             onClick={describeBlankAlts}
             disabled={busy}
-            className="rounded-full border border-line px-4 py-2 text-[0.66rem] uppercase tracking-[0.16em] text-ink-soft transition-colors hover:border-wine hover:text-wine disabled:opacity-50"
+            className="rounded-full border border-line px-4 py-2 text-[0.66rem] uppercase tracking-[0.16em] text-ink-soft transition-colors hover:border-accent hover:text-accent disabled:opacity-50"
             title="Draft alt text with AI for every image still missing it (you can edit after)"
           >
             Write blank alt text
@@ -904,7 +904,7 @@ export function PortfolioManager({
             type="button"
             onClick={aiWriteAll}
             disabled={busy}
-            className="rounded-full border border-wine/40 px-4 py-2 text-[0.66rem] uppercase tracking-[0.16em] text-wine transition-colors hover:border-wine hover:bg-wine hover:text-cream disabled:opacity-50"
+            className="rounded-full border border-accent/40 px-4 py-2 text-[0.66rem] uppercase tracking-[0.16em] text-accent transition-colors hover:border-accent hover:bg-accent hover:text-cream disabled:opacity-50"
             title="Use AI to (re)write alt, SEO description, hook, and tags for every image — maximum image SEO"
           >
             AI: full SEO (all)
@@ -961,7 +961,7 @@ export function PortfolioManager({
                     setDragId(null);
                   }}
                   className={`border bg-ivory transition-colors ${
-                    dragId === img.id ? "border-wine opacity-50" : "border-line"
+                    dragId === img.id ? "border-accent opacity-50" : "border-line"
                   }`}
                 >
                   {/* Click the photo to set its focal anchor — cropped renders
@@ -991,14 +991,14 @@ export function PortfolioManager({
                     {/* current anchor marker */}
                     <span
                       aria-hidden
-                      className="absolute h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-cream bg-wine/80 shadow"
+                      className="absolute h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-cream bg-accent/80 shadow"
                       style={{
                         left: `${(img.focus_x ?? 0.5) * 100}%`,
                         top: `${(img.focus_y ?? 0.5) * 100}%`,
                       }}
                     />
                     {img.is_feature ? (
-                      <span className="absolute left-2 top-2 bg-wine px-2 py-0.5 text-[0.55rem] uppercase tracking-[0.14em] text-cream">
+                      <span className="absolute left-2 top-2 bg-accent px-2 py-0.5 text-[0.55rem] uppercase tracking-[0.14em] text-cream">
                         Featured
                       </span>
                     ) : null}
@@ -1012,14 +1012,14 @@ export function PortfolioManager({
                         onBlur={(e) =>
                           e.target.value !== img.alt && patch(img.id, { alt: e.target.value })
                         }
-                        className="w-full border-b border-line bg-transparent pb-1 text-xs focus:border-wine focus:outline-none"
+                        className="w-full border-b border-line bg-transparent pb-1 text-xs focus:border-accent focus:outline-none"
                       />
                       <button
                         type="button"
                         onClick={() => aiWrite(img, "alt")}
                         disabled={describing.has(img.id)}
                         title="Draft alt text with AI (you can edit it)"
-                        className="shrink-0 rounded-full border border-line px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.12em] text-ink-soft transition-colors hover:border-wine hover:text-wine disabled:opacity-40"
+                        className="shrink-0 rounded-full border border-line px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.12em] text-ink-soft transition-colors hover:border-accent hover:text-accent disabled:opacity-40"
                       >
                         {describing.has(img.id) ? "…" : "AI"}
                       </button>
@@ -1036,14 +1036,14 @@ export function PortfolioManager({
                           e.target.value !== (img.caption ?? "") &&
                           patch(img.id, { caption: e.target.value })
                         }
-                        className="w-full resize-none border-b border-line bg-transparent pb-1 text-xs leading-snug focus:border-wine focus:outline-none"
+                        className="w-full resize-none border-b border-line bg-transparent pb-1 text-xs leading-snug focus:border-accent focus:outline-none"
                       />
                       <button
                         type="button"
                         onClick={() => aiWrite(img, "caption")}
                         disabled={describing.has(img.id)}
                         title="Draft an SEO description with AI (you can edit it)"
-                        className="shrink-0 rounded-full border border-line px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.12em] text-ink-soft transition-colors hover:border-wine hover:text-wine disabled:opacity-40"
+                        className="shrink-0 rounded-full border border-line px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.12em] text-ink-soft transition-colors hover:border-accent hover:text-accent disabled:opacity-40"
                       >
                         {describing.has(img.id) ? "…" : "AI"}
                       </button>
@@ -1058,14 +1058,14 @@ export function PortfolioManager({
                           e.target.value !== (img.hook ?? "") &&
                           patch(img.id, { hook: e.target.value })
                         }
-                        className="w-full border-b border-line bg-transparent pb-1 text-xs focus:border-wine focus:outline-none"
+                        className="w-full border-b border-line bg-transparent pb-1 text-xs focus:border-accent focus:outline-none"
                       />
                       <button
                         type="button"
                         onClick={() => aiWrite(img, "hook")}
                         disabled={describing.has(img.id)}
                         title="Draft a hook with AI (you can edit it)"
-                        className="shrink-0 rounded-full border border-line px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.12em] text-ink-soft transition-colors hover:border-wine hover:text-wine disabled:opacity-40"
+                        className="shrink-0 rounded-full border border-line px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.12em] text-ink-soft transition-colors hover:border-accent hover:text-accent disabled:opacity-40"
                       >
                         {describing.has(img.id) ? "…" : "AI"}
                       </button>
@@ -1080,14 +1080,14 @@ export function PortfolioManager({
                           e.target.value !== (img.tags ?? "") &&
                           patch(img.id, { tags: e.target.value })
                         }
-                        className="w-full border-b border-line bg-transparent pb-1 text-xs focus:border-wine focus:outline-none"
+                        className="w-full border-b border-line bg-transparent pb-1 text-xs focus:border-accent focus:outline-none"
                       />
                       <button
                         type="button"
                         onClick={() => aiWrite(img, "tags")}
                         disabled={describing.has(img.id)}
                         title="Draft keyword tags with AI (you can edit them)"
-                        className="shrink-0 rounded-full border border-line px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.12em] text-ink-soft transition-colors hover:border-wine hover:text-wine disabled:opacity-40"
+                        className="shrink-0 rounded-full border border-line px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.12em] text-ink-soft transition-colors hover:border-accent hover:text-accent disabled:opacity-40"
                       >
                         {describing.has(img.id) ? "…" : "AI"}
                       </button>
@@ -1095,7 +1095,7 @@ export function PortfolioManager({
                     <CategorySelect
                       value={img.section}
                       onChange={(next) => patch(img.id, { section: next })}
-                      className="w-full border-b border-line bg-transparent pb-1 text-xs focus:border-wine focus:outline-none"
+                      className="w-full border-b border-line bg-transparent pb-1 text-xs focus:border-accent focus:outline-none"
                     />
                     <LocationCombobox
                       value={img.location}
@@ -1107,7 +1107,7 @@ export function PortfolioManager({
                       value={img.city ?? ""}
                       onChange={(e) => patch(img.id, { city: e.target.value || null })}
                       title="Tag the city so this photo shows on that city's page"
-                      className="w-full border-b border-line bg-transparent pb-1 text-xs text-ink-soft focus:border-wine focus:outline-none"
+                      className="w-full border-b border-line bg-transparent pb-1 text-xs text-ink-soft focus:border-accent focus:outline-none"
                     >
                       <option value="">— City (for its page) —</option>
                       {cities.map((c) => (
@@ -1163,7 +1163,7 @@ export function PortfolioManager({
                         </button>
                         <button
                           onClick={() => remove(img.id)}
-                          className="px-1.5 text-wine"
+                          className="px-1.5 text-accent"
                           aria-label="Delete"
                         >
                           ✕

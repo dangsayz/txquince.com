@@ -103,13 +103,13 @@ function BookingCard({ b }: { b: BookingRow }) {
             Contact
           </dt>
           <dd className="text-ink">
-            <a className="underline decoration-line hover:text-wine" href={`mailto:${b.email}`}>
+            <a className="underline decoration-line hover:text-accent" href={`mailto:${b.email}`}>
               {b.email}
             </a>
             {b.phone && (
               <>
                 {" · "}
-                <a className="underline decoration-line hover:text-wine" href={`tel:${b.phone}`}>
+                <a className="underline decoration-line hover:text-accent" href={`tel:${b.phone}`}>
                   {b.phone}
                 </a>
               </>
@@ -144,11 +144,11 @@ export default async function AdminBookings() {
     <main className="mx-auto max-w-[92rem] px-5 pb-20 pt-8 sm:px-8 lg:px-12 lg:pt-12">
       <Link
         href="/admin"
-        className="text-[0.72rem] uppercase tracking-[0.18em] text-ink-faint hover:text-wine"
+        className="text-[0.72rem] uppercase tracking-[0.18em] text-ink-faint hover:text-accent"
       >
         ← Today
       </Link>
-      <h1 className="mt-3 font-display text-4xl text-ink sm:text-5xl">Bookings</h1>
+      <h1 className="mt-3 font-display text-3xl text-ink sm:text-4xl">Bookings</h1>
       <p className="mt-2 text-sm text-ink-soft">
         {bookings.length === 0
           ? "Reservations will appear here the moment a deposit is started."

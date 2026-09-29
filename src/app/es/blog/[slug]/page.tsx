@@ -139,12 +139,12 @@ export default async function EsBlogPostPage({
       <article className="mx-auto max-w-3xl px-5 pt-section md:px-10 lg:px-16 md:pt-section-lg">
         <div className="flex items-center justify-between gap-4">
           <nav className="text-xs text-ink-faint" aria-label="Ruta">
-            <Link href="/" className="hover:text-wine">Inicio</Link>
+            <Link href="/" className="hover:text-accent">Inicio</Link>
             <span className="mx-1.5">/</span>
-            <Link href="/es/blog" className="hover:text-wine">Guía</Link>
+            <Link href="/es/blog" className="hover:text-accent">Guía</Link>
           </nav>
           {enSlug ? (
-            <Link href={`/blog/${enSlug}`} hrefLang="en" className="text-xs text-wine underline underline-offset-2 hover:text-wine-deep">
+            <Link href={`/blog/${enSlug}`} hrefLang="en" className="text-xs text-accent underline underline-offset-2 hover:text-accent-strong">
               Read in English
             </Link>
           ) : null}
@@ -167,7 +167,7 @@ export default async function EsBlogPostPage({
                 <li key={h.text}>
                   <a
                     href={`#${slugifyHeading(h.text)}`}
-                    className="group inline-flex items-baseline gap-3 text-[0.95rem] text-ink-soft transition-colors hover:text-wine"
+                    className="group inline-flex items-baseline gap-3 text-[0.95rem] text-ink-soft transition-colors hover:text-accent"
                   >
                     <span className="font-display text-xs tabular-nums text-ink-faint">
                       {String(idx + 1).padStart(2, "0")}
@@ -209,7 +209,7 @@ export default async function EsBlogPostPage({
                   className={`group block py-5 ${idx > 0 ? "border-t border-ink/10" : ""}`}
                 >
                   <p className="text-[0.6rem] uppercase tracking-[0.2em] text-ink-faint">{CATEGORY_ES[r.category]}</p>
-                  <h3 className="mt-1.5 font-display text-lg leading-tight text-ink transition-colors group-hover:text-wine md:text-xl">
+                  <h3 className="mt-1.5 font-display text-lg leading-tight text-ink transition-colors group-hover:text-accent md:text-xl">
                     {r.title}
                   </h3>
                 </Link>

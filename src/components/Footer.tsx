@@ -48,7 +48,7 @@ export function Footer() {
 
   return (
     <footer className="relative overflow-hidden bg-ink text-cream">
-      {/* Champagne seam — a hairline + faint glow marks the page's close. */}
+      {/* A quiet accent seam marks the page's close. */}
       <div
         aria-hidden
         className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-wine to-transparent opacity-70"
@@ -70,7 +70,7 @@ export function Footer() {
           <div className="flex flex-col gap-6 md:items-end">
             <Link
               href="/check-your-date"
-              className="group inline-flex min-h-12 items-center gap-3 font-serif text-[clamp(2rem,3.5vw,3rem)] leading-none text-cream transition-colors hover:text-wine-tint"
+              className="group inline-flex min-h-12 items-center gap-3 font-display text-[clamp(1.5rem,2.5vw,2.25rem)] leading-tight text-cream transition-colors hover:text-wine-tint"
             >
               Check her date
               <span aria-hidden className="text-wine-tint transition-transform duration-300 group-hover:translate-x-1">→</span>
@@ -111,7 +111,7 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Link columns — gold eyebrow heads, quiet cream links. */}
+        {/* Navigation and service links. */}
         <div className="mt-16 grid grid-cols-2 gap-x-8 gap-y-10 border-t border-cream/10 pt-12 sm:grid-cols-4 md:mt-20">
           {COLUMNS.map((col) => (
             <div key={col.title}>

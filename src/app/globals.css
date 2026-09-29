@@ -2,34 +2,33 @@
 
 /*
   TX QUINCE — DESIGN SYSTEM
-  Editorial, elegant, cinematic. The photos are the design; the UI is restraint.
-  Base warm ivory · charcoal ink · soft greige sections · ONE muted accent (deep wine).
+  Quiet editorial system. Photography carries the color; interface accents use muted eucalyptus.
   Fonts are injected as CSS variables by next/font in layout.tsx.
 */
 
 @theme {
-  /* ---- Color: editorial warm system — cream page, warm near-black ink, champagne-gold accent ----
-     Warm ivory page floating on a sand frame; warm near-black text + dark pill
-     buttons (Apple-clean); ONE champagne-gold accent (Vogue gold-foil) for the
-     wordmark, links, and meta. No maroon — the photographs carry the color. */
-  --color-sand: #ece4d8; /* outer page frame — lightened toward white */
-  --color-cream: #f8f5f0; /* base background — near-white warm (Vogue: more white) */
-  --color-ivory: #ffffff; /* cards / inset — true white for crisp contrast */
-  --color-greige: #fdfbf7; /* alternating section band — whisper-warm near-white */
+  /* Neutral surfaces, readable ink, and one muted green accent. */
+  --color-sand: #e9e9e9;
+  --color-cream: #ffffff;
+  --color-ivory: #f5f5f5;
+  --color-greige: #eeeeee;
   --color-white: #ffffff; /* true white — clean section bands + cards */
-  --color-ink: #1c1a17; /* primary text / dark pill buttons — warm near-black */
-  --color-dark: #121110; /* deepest near-black — full-bleed DARK spreads (the contrast engine) */
-  --color-ink-soft: #6a635b; /* secondary text — warm neutral gray */
-  --color-ink-faint: #746e65; /* labels / meta — soft warm gray (darkened to clear WCAG AA 4.5:1 on cream) */
-  --color-line: #eae3d6; /* hairline borders on near-white */
-  --color-wine: #85683e; /* champagne-gold accent (links / wordmark / small touches) — darkened to clear WCAG AA 4.5:1 for small text on cream */
-  --color-wine-deep: #6f5832; /* gold accent hover — deeper */
-  --color-wine-tint: #f0e9da; /* faint champagne wash for bands */
+  --color-ink: #191919;
+  --color-dark: #191919;
+  --color-ink-soft: #4d4d4d;
+  --color-ink-faint: #616161;
+  --color-line: #dedede;
+  --color-accent: #566e60;
+  --color-accent-strong: #405447;
+  --color-accent-soft: #f1f4f1;
+  --color-wine: var(--color-accent);
+  --color-wine-deep: var(--color-accent-strong);
+  --color-wine-tint: var(--color-accent-soft);
 
   /* ---- Type ---- */
-  --font-display: var(--font-jost), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-cormorant), Georgia, "Times New Roman", serif;
-  --font-didone: var(--font-bodoni), Didot, "Bodoni MT", "Times New Roman", serif;
+  --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: Georgia, "Times New Roman", serif;
+  --font-didone: Georgia, Didot, "Bodoni MT", "Times New Roman", serif;
   --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
   /* ---- Spacing scale: one rhythm everywhere ---- */
@@ -61,35 +60,34 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Display serif: tight tracking, refined leading — used for oversized headings */
+/* Smaller, lighter display text. */
 .font-display {
   font-family: var(--font-display);
-  letter-spacing: -0.005em;
-  font-weight: 500;
+  letter-spacing: -0.03em;
+  font-weight: 550;
 }
 
-/* Oversized editorial type — exaggerated minimalism, dramatic scale contrast.
-   clamp() carries it from phone to large desktop without breakpoints. */
+/* Responsive display sizes stay restrained across screen widths. */
 .display-1 {
   font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(2rem, 4.2vw, 2.625rem); /* 32→42px — editorial restraint (Jost) */
-  line-height: 1.08;
-  letter-spacing: -0.01em;
+  font-weight: 550;
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  line-height: 1.12;
+  letter-spacing: -0.03em;
 }
 .display-2 {
   font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(1.6rem, 3vw, 1.95rem); /* 26→31px */
+  font-weight: 550;
+  font-size: clamp(1.75rem, 3vw, 2.75rem);
   line-height: 1.14;
-  letter-spacing: -0.005em;
+  letter-spacing: -0.03em;
 }
 .display-3 {
   font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(1.3rem, 2.2vw, 1.5rem); /* 21→24px */
+  font-weight: 550;
+  font-size: clamp(1.5rem, 2.6vw, 2.15rem);
   line-height: 1.2;
-  letter-spacing: 0;
+  letter-spacing: -0.025em;
 }
 
 /* Apple-clean white card — crisp white, generous radius, layered soft shadow.
@@ -104,7 +102,7 @@ body {
 
 /* Couture script accent — used sparingly for emotional/section flourishes. */
 .script {
-  font-family: var(--font-script), cursive;
+  font-family: var(--font-script, cursive);
   font-weight: 400;
   letter-spacing: 0;
   line-height: 1.05;
@@ -112,10 +110,10 @@ body {
 
 /* Refined serif italic — editorial sub-labels and pull quotes. */
 .accent {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 400;
-  letter-spacing: 0;
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: -0.025em;
 }
 
 /* Thin outlined pill — the couture button language (replaces heavy blocks). */
@@ -125,11 +123,10 @@ body {
   justify-content: center;
   gap: 0.6rem;
   border: 1px solid currentColor;
-  border-radius: 9999px;
-  padding: 0.95rem 2.4rem;
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
+  border-radius: 0.5rem;
+  padding: 0.8rem 1.4rem;
+  font-size: 0.875rem;
+  letter-spacing: 0;
   line-height: 1;
   transition: all 0.4s var(--ease-out-soft);
 }
@@ -193,7 +190,7 @@ body {
 
 /* Focus visibility for keyboard users */
 :focus-visible {
-  outline: 2px solid var(--color-wine);
+  outline: 2px solid var(--color-accent);
   outline-offset: 3px;
   border-radius: 2px;
 }
@@ -208,7 +205,36 @@ body {
 
 /* yet-another-react-lightbox: tone its chrome to the brand */
 .yarl__root {
-  --yarl__color_backdrop: rgba(20, 16, 14, 0.94);
+  --yarl__color_backdrop: rgba(25, 25, 25, 0.94);
+}
+
+.card-surface {
+  background: var(--color-white);
+  border: 1px solid var(--color-line);
+  border-radius: 0.875rem;
+  box-shadow: 0 8px 28px -24px rgba(25, 25, 25, 0.22);
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
+  background: var(--color-accent);
+  color: #fff;
+  padding: 0.8rem 1.4rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1;
+  transition: background-color 0.2s ease;
+}
+.btn-primary:hover {
+  background: var(--color-accent-strong);
+}
+
+.media-placeholder {
+  background: linear-gradient(135deg, #e9e9e9, #f8f8f8 52%, #e6e6e6);
 }
 
 /* =====================================================================
@@ -222,9 +248,9 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  border-radius: 9999px;
-  background: var(--color-ink);
-  color: var(--color-cream);
+  border-radius: 0.5rem;
+  background: var(--color-accent);
+  color: var(--color-white);
   /* ≥44px tap target (mobile-friendly) */
   min-height: 2.9rem;
   padding: 0.95rem 1.9rem;
@@ -238,7 +264,7 @@ body {
   transition: all 0.3s var(--ease-out-soft);
 }
 .btn-espresso:hover {
-  background: #34302a; /* warm near-black, a hair lifted */
+  background: var(--color-accent-strong);
   transform: translateY(-1px);
   box-shadow:
     0 2px 4px rgba(28, 26, 23, 0.14),

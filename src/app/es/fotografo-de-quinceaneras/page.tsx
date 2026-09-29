@@ -64,7 +64,7 @@ export default async function LocationsHubEs() {
                 <p className="text-[0.62rem] uppercase tracking-[0.32em] text-cream/85">Áreas que cubro</p>
                 <h1
                   className="mt-4 max-w-3xl font-display text-cream text-balance"
-                  style={{ fontSize: "clamp(2.2rem,5.4vw,4.6rem)", lineHeight: 1.02, letterSpacing: "-0.025em" }}
+                  style={{ fontSize: "clamp(2.125rem,4.5vw,4.25rem)", lineHeight: 1.1, letterSpacing: "-0.02em" }}
                 >
                   Fotografía de quinceañeras en todo Dallas–Fort Worth.
                 </h1>
@@ -146,7 +146,7 @@ export default async function LocationsHubEs() {
                       <h3 className="font-display text-2xl leading-none text-cream md:text-3xl">{l.city}</h3>
                       <span className="mt-2 inline-flex items-center gap-1.5 text-[0.56rem] uppercase tracking-[0.2em] text-cream/85">
                         Fotógrafo de quinceañeras
-                        <span aria-hidden className="text-wine-tint transition-transform duration-300 group-hover:translate-x-0.5">→</span>
+                        <span aria-hidden className="text-accent-soft transition-transform duration-300 group-hover:translate-x-0.5">→</span>
                       </span>
                     </div>
                   </div>
@@ -161,7 +161,7 @@ export default async function LocationsHubEs() {
       <section className="bg-dark">
         <div className="mx-auto max-w-3xl px-5 py-section text-center md:px-10 lg:px-16 md:py-section-lg">
           <Reveal>
-            <span className="text-[0.66rem] uppercase tracking-[0.24em] text-wine">
+            <span className="text-[0.66rem] uppercase tracking-[0.24em] text-cream/85">
               Quedan pocas fechas de {site.scarcity.reservingYear}
             </span>
             <h2 className="mx-auto mt-5 max-w-2xl display-2 text-cream text-balance">

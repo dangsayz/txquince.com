@@ -1,10 +1,6 @@
 import type { ReactNode } from "react";
 import { Reveal } from "@/components/Reveal";
 
-/**
- * Editorial heading: small uppercase tracked eyebrow over an oversized serif
- * heading. Dramatic scale contrast is the premium signal (LAYOUT DISCIPLINE).
- */
 export function SectionHeading({
   eyebrow,
   children,

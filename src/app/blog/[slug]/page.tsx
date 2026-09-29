@@ -122,9 +122,9 @@ export default async function BlogPostPage({
       <article className="mx-auto max-w-3xl px-5 pt-section md:px-10 lg:px-16 md:pt-section-lg">
         {/* breadcrumb */}
         <nav className="text-xs text-ink-faint" aria-label="Breadcrumb">
-          <Link href="/" className="hover:text-wine">Home</Link>
+          <Link href="/" className="hover:text-accent">Home</Link>
           <span className="mx-1.5">/</span>
-          <Link href="/blog" className="hover:text-wine">Blog</Link>
+          <Link href="/blog" className="hover:text-accent">Blog</Link>
         </nav>
 
         <Reveal className="mt-5">
@@ -145,7 +145,7 @@ export default async function BlogPostPage({
                 <li key={h.text}>
                   <a
                     href={`#${slugifyHeading(h.text)}`}
-                    className="group inline-flex items-baseline gap-3 text-[0.95rem] text-ink-soft transition-colors hover:text-wine"
+                    className="group inline-flex items-baseline gap-3 text-[0.95rem] text-ink-soft transition-colors hover:text-accent"
                   >
                     <span className="font-display text-xs tabular-nums text-ink-faint">
                       {String(idx + 1).padStart(2, "0")}
@@ -189,7 +189,7 @@ export default async function BlogPostPage({
                   className={`group block py-5 ${idx > 0 ? "border-t border-ink/10" : ""}`}
                 >
                   <p className="text-[0.6rem] uppercase tracking-[0.2em] text-ink-faint">{r.category}</p>
-                  <h3 className="mt-1.5 font-display text-lg leading-tight text-ink transition-colors group-hover:text-wine md:text-xl">
+                  <h3 className="mt-1.5 font-display text-lg leading-tight text-ink transition-colors group-hover:text-accent md:text-xl">
                     {r.title}
                   </h3>
                 </Link>

@@ -46,7 +46,7 @@ export default function EsBlogIndexPage() {
     <>
       <section className="mx-auto max-w-5xl px-5 pt-section md:px-10 lg:px-16 md:pt-section-lg">
         <div className="flex justify-end">
-          <Link href="/blog" hrefLang="en" className="text-xs text-wine underline underline-offset-2 hover:text-wine-deep">
+          <Link href="/blog" hrefLang="en" className="text-xs text-accent underline underline-offset-2 hover:text-accent-strong">
             Read in English
           </Link>
         </div>
@@ -64,11 +64,11 @@ export default function EsBlogIndexPage() {
         <section className="mx-auto mt-14 max-w-5xl border-t border-ink/10 px-5 pt-12 md:mt-20 md:px-10 lg:px-16">
           <Reveal>
             <Link href={`/es/blog/${featured.slug}`} className="group block">
-              <p className="text-[0.62rem] uppercase tracking-[0.28em] text-wine-deep">
+              <p className="text-[0.62rem] uppercase tracking-[0.28em] text-accent-strong">
                 {CATEGORY_ES[featured.category]} · Destacado
               </p>
               <h2
-                className="mt-5 max-w-3xl font-display text-ink transition-colors group-hover:text-wine"
+                className="mt-5 max-w-3xl font-display text-ink transition-colors group-hover:text-accent"
                 style={{ fontSize: "clamp(2rem,4.6vw,3.4rem)", lineHeight: 1.04, letterSpacing: "-0.02em" }}
               >
                 {featured.title}
@@ -78,7 +78,7 @@ export default function EsBlogIndexPage() {
                 {featured.readMinutes} min de lectura
                 <span
                   aria-hidden
-                  className="text-wine transition-transform duration-300 group-hover:translate-x-0.5"
+                  className="text-accent transition-transform duration-300 group-hover:translate-x-0.5"
                 >
                   →
                 </span>
@@ -107,7 +107,7 @@ export default function EsBlogIndexPage() {
                     className={`group block py-7 md:py-8 ${i > 0 ? "border-t border-ink/10" : ""}`}
                   >
                     <div className="flex items-baseline justify-between gap-6">
-                      <h3 className="font-display text-xl text-ink transition-colors group-hover:text-wine md:text-2xl">
+                      <h3 className="font-display text-xl text-ink transition-colors group-hover:text-accent md:text-2xl">
                         {p.title}
                       </h3>
                       <span className="shrink-0 whitespace-nowrap text-[0.6rem] uppercase tracking-[0.18em] text-ink-faint">

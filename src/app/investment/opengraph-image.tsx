@@ -7,6 +7,6 @@ export const contentType = ogContentType;
 export default function Image() {
   return renderOg({
     eyebrow: "Investment",
-    title: "Collections built around one unrepeatable day.",
+    title: "Photo and film collections.",
   });
 }

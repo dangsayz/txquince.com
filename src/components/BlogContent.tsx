@@ -21,7 +21,7 @@ export type BlogImage = {
  */
 const LINK_RE = /\[([^\]]+)\]\(([^)]+)\)/g;
 const linkClass =
-  "text-wine underline decoration-wine/40 underline-offset-[3px] transition-colors hover:text-wine-deep hover:decoration-wine-deep";
+  "text-accent underline decoration-accent/40 underline-offset-[3px] transition-colors hover:text-accent-strong hover:decoration-accent-strong";
 
 function renderInline(text: string): ReactNode[] {
   const nodes: ReactNode[] = [];
@@ -92,7 +92,7 @@ export function BlogContent({
               <ul key={i} className="flex flex-col gap-3">
                 {b.items.map((it, j) => (
                   <li key={j} className={`flex gap-3.5 ${proseText}`}>
-                    <span aria-hidden className="mt-[0.7em] h-1 w-1 shrink-0 rounded-full bg-wine" />
+                    <span aria-hidden className="mt-[0.7em] h-1 w-1 shrink-0 rounded-full bg-accent" />
                     <span>{renderInline(it)}</span>
                   </li>
                 ))}
@@ -103,7 +103,7 @@ export function BlogContent({
               <ol key={i} className="flex flex-col gap-3">
                 {b.items.map((it, j) => (
                   <li key={j} className={`flex gap-3.5 ${proseText}`}>
-                    <span className="shrink-0 font-display text-lg leading-[1.4] text-wine tabular-nums">
+                    <span className="shrink-0 font-display text-lg leading-[1.4] text-accent tabular-nums">
                       {j + 1}.
                     </span>
                     <span>{renderInline(it)}</span>
@@ -115,7 +115,7 @@ export function BlogContent({
             return (
               <blockquote
                 key={i}
-                className="my-2 border-l-2 border-wine pl-6 font-display italic leading-snug text-ink"
+                className="my-2 border-l-2 border-accent pl-6 font-display italic leading-snug text-ink"
                 style={{ fontSize: "clamp(1.4rem,2.6vw,1.9rem)", letterSpacing: "-0.01em" }}
               >
                 {renderInline(b.text)}
@@ -125,7 +125,7 @@ export function BlogContent({
             return (
               <aside
                 key={i}
-                className="my-2 border-l-2 border-wine/40 py-1 pl-6 text-[1.0625rem] leading-[1.75] text-ink"
+                className="my-2 border-l-2 border-accent/40 py-1 pl-6 text-[1.0625rem] leading-[1.75] text-ink"
               >
                 {renderInline(b.text)}
               </aside>

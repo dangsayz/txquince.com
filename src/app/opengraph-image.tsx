@@ -6,6 +6,6 @@ export const contentType = ogContentType;
 
 export default function Image() {
   return renderOg({
-    title: "Her quinceañera, remembered exactly as it felt.",
+    title: "Quinceañera photo & film for her day.",
   });
 }

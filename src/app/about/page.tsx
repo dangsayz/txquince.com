@@ -83,7 +83,7 @@ export default async function AboutPage() {
                 </p>
                 <h1
                   className="mt-4 max-w-3xl font-display text-cream text-balance"
-                  style={{ fontSize: "clamp(2.4rem,5.4vw,4.4rem)", lineHeight: 1.02, letterSpacing: "-0.024em" }}
+                  style={{ fontSize: "clamp(2.125rem,4.4vw,4rem)", lineHeight: 1.1, letterSpacing: "-0.02em" }}
                 >
                   {about.heading}
                 </h1>
@@ -143,7 +143,7 @@ export default async function AboutPage() {
       <section className="bg-ink text-cream">
         <div className="mx-auto grid max-w-[90rem] gap-14 px-5 py-20 md:grid-cols-2 md:gap-20 md:px-10 lg:px-16 md:py-28">
           <Reveal>
-            <p className="text-[0.64rem] uppercase tracking-[0.32em] text-wine">La cultura</p>
+            <p className="text-[0.64rem] uppercase tracking-[0.32em] text-cream/85">La cultura</p>
             <h2 className="mt-4 font-display text-3xl text-cream md:text-4xl">
               {about.culture.heading}
             </h2>
@@ -152,7 +152,7 @@ export default async function AboutPage() {
             </p>
           </Reveal>
           <Reveal delay={90}>
-            <p className="text-[0.64rem] uppercase tracking-[0.32em] text-wine">The approach</p>
+            <p className="text-[0.64rem] uppercase tracking-[0.32em] text-cream/85">The approach</p>
             <h2 className="mt-4 font-display text-3xl text-cream md:text-4xl">
               {about.approach.heading}
             </h2>
@@ -175,15 +175,15 @@ export default async function AboutPage() {
         </Reveal>
         <p className="mt-8 max-w-prose text-sm leading-relaxed text-ink-soft">
           I photograph quinceañeras across Dallas–Fort Worth — see{" "}
-          <Link href="/quinceanera-photographer/dallas" className="text-wine underline underline-offset-2 hover:text-wine-deep">
+          <Link href="/quinceanera-photographer/dallas" className="text-accent underline underline-offset-2 hover:text-accent-strong">
             Dallas
           </Link>
           ,{" "}
-          <Link href="/quinceanera-photographer/fort-worth" className="text-wine underline underline-offset-2 hover:text-wine-deep">
+          <Link href="/quinceanera-photographer/fort-worth" className="text-accent underline underline-offset-2 hover:text-accent-strong">
             Fort Worth
           </Link>
           , or{" "}
-          <Link href="/quinceanera-photographer" className="text-wine underline underline-offset-2 hover:text-wine-deep">
+          <Link href="/quinceanera-photographer" className="text-accent underline underline-offset-2 hover:text-accent-strong">
             every area I serve
           </Link>
           .

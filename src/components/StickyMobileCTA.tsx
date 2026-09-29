@@ -4,30 +4,27 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { site } from "@/content/site";
 
-/**
- * Thumb-reachable sticky CTA on every page (CONVERSION MECHANICS LAW), mobile
- * only. Hidden on the conversion pages themselves (reserve / inquiry) and on
- * their confirmation pages — you're already there or just finished.
- */
 const HIDE_ON = new Set([
-  site.cta.href, // /reserve
-  site.secondaryCta.href, // /check-your-date
+  site.cta.href,
+  site.secondaryCta.href,
   "/reserve/success",
   "/thank-you",
   "/es/consulta",
   "/es/gracias",
+  "/styleguide",
 ]);
 
 export function StickyMobileCTA() {
   const pathname = usePathname();
   const isSpanish = pathname === "/es" || pathname.startsWith("/es/");
-  // Never show on conversion pages, or anywhere in the admin dashboard (the
-  // bar would overlap admin controls at the bottom of the screen on mobile).
   if (HIDE_ON.has(pathname) || pathname.startsWith("/admin")) return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-white/95 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur-md md:hidden">
-      <Link href={isSpanish ? "/es/consulta" : site.secondaryCta.href} className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-ink px-5 text-base font-semibold text-white">
+    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-white/95 px-4 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pt-3 backdrop-blur-md md:hidden">
+      <Link
+        href={isSpanish ? "/es/consulta" : site.secondaryCta.href}
+        className="flex min-h-12 w-full items-center justify-center rounded-lg bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-accent-strong"
+      >
         {isSpanish ? "Consulta su fecha" : "Check her date"} <span aria-hidden className="ml-2">→</span>
       </Link>
     </div>

@@ -107,7 +107,7 @@ export function PageHeroManager({
                   type="button"
                   onClick={() => setOpenKey(open ? null : row.key)}
                   disabled={busy}
-                  className="min-h-11 rounded-full border border-wine/40 px-5 py-2 text-[0.66rem] uppercase tracking-[0.16em] text-wine transition-colors hover:bg-wine hover:text-cream disabled:opacity-50"
+                  className="min-h-11 rounded-full border border-accent/40 px-5 py-2 text-[0.66rem] uppercase tracking-[0.16em] text-accent transition-colors hover:bg-accent hover:text-cream disabled:opacity-50"
                 >
                   {open ? "Close" : "Choose photo"}
                 </button>
@@ -116,7 +116,7 @@ export function PageHeroManager({
                     type="button"
                     onClick={() => reset(row.key)}
                     disabled={busy}
-                    className="min-h-11 px-3 text-[0.66rem] uppercase tracking-[0.16em] text-ink-faint transition-colors hover:text-wine disabled:opacity-50"
+                    className="min-h-11 px-3 text-[0.66rem] uppercase tracking-[0.16em] text-ink-faint transition-colors hover:text-accent disabled:opacity-50"
                   >
                     Reset
                   </button>
@@ -146,7 +146,7 @@ export function PageHeroManager({
                             disabled={busy}
                             title={item.alt}
                             className={`group relative aspect-[4/3] overflow-hidden rounded-md ring-2 transition disabled:opacity-50 ${
-                              selected ? "ring-wine" : "ring-transparent hover:ring-wine/40"
+                              selected ? "ring-accent" : "ring-transparent hover:ring-accent/40"
                             }`}
                           >
                             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -172,7 +172,7 @@ export function PageHeroManager({
           </div>
         );
       })}
-      {error ? <p className="text-sm text-wine">{error}</p> : null}
+      {error ? <p className="text-sm text-danger" role="alert">{error}</p> : null}
     </div>
   );
 }

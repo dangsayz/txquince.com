@@ -271,7 +271,7 @@ export default async function CityPageEs({
                 </p>
                 <h1
                   className="mt-4 max-w-3xl font-display text-cream text-balance"
-                  style={{ fontSize: "clamp(2.3rem,5.6vw,4.8rem)", lineHeight: 1.0, letterSpacing: "-0.025em" }}
+                  style={{ fontSize: "clamp(2.125rem,4.6vw,4.375rem)", lineHeight: 1.1, letterSpacing: "-0.02em" }}
                 >
                   Fotógrafo de Quinceañeras en {loc.city}
                 </h1>
@@ -372,7 +372,7 @@ export default async function CityPageEs({
                   <div className="flex items-baseline gap-3">
                     <h3 className="font-display text-3xl text-ink">{p.name}</h3>
                     {p.highlight ? (
-                      <span className="text-[0.6rem] uppercase tracking-[0.18em] text-wine-deep">
+                      <span className="text-[0.6rem] uppercase tracking-[0.18em] text-accent-strong">
                         Más popular
                       </span>
                     ) : null}
@@ -403,7 +403,7 @@ export default async function CityPageEs({
           <p className="mt-8 text-sm">
             <Link
               href="/investment"
-              className="text-wine underline underline-offset-2 hover:text-wine-deep"
+              className="text-accent underline underline-offset-2 hover:text-accent-strong"
             >
               Ver todo lo que incluye cada colección →
             </Link>
@@ -411,7 +411,7 @@ export default async function CityPageEs({
           <p className="mt-3 text-sm">
             <Link
               href="/es/save-the-date-quinceanera"
-              className="text-wine underline underline-offset-2 hover:text-wine-deep"
+              className="text-accent underline underline-offset-2 hover:text-accent-strong"
             >
               Tu sesión Save-the-Date está incluida gratis →
             </Link>
@@ -440,7 +440,7 @@ export default async function CityPageEs({
             },
           ].map((step, i) => (
             <li key={step.t} className="flex flex-col gap-3">
-              <span className="font-display text-3xl text-wine">{i + 1}</span>
+              <span className="font-display text-3xl text-cream">{i + 1}</span>
               <span className="font-display text-xl text-ink">{step.t}</span>
               <span className="text-sm leading-relaxed text-ink-soft">{step.b}</span>
             </li>
@@ -532,9 +532,9 @@ export default async function CityPageEs({
               <Link
                 key={g.slug}
                 href={`/es/blog/${g.slug}`}
-                className="group border border-line bg-white p-5 transition-colors hover:border-wine"
+                className="group border border-line bg-white p-5 transition-colors hover:border-accent"
               >
-                <h3 className="font-display text-lg leading-tight text-ink group-hover:text-wine">
+                <h3 className="font-display text-lg leading-tight text-ink group-hover:text-accent">
                   {g.title}
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-soft">{g.excerpt}</p>
@@ -542,7 +542,7 @@ export default async function CityPageEs({
             ))}
           </div>
           <p className="mt-6 text-sm">
-            <Link href="/es/blog" className="text-wine underline underline-offset-2 hover:text-wine-deep">
+            <Link href="/es/blog" className="text-accent underline underline-offset-2 hover:text-accent-strong">
               Ver toda la guía de quinceañera →
             </Link>
           </p>
@@ -558,14 +558,14 @@ export default async function CityPageEs({
               <Link
                 key={v.slug}
                 href={`/venues/${v.slug}`}
-                className="border border-line bg-white px-4 py-2 text-sm text-ink transition-colors hover:border-wine hover:text-wine"
+                className="border border-line bg-white px-4 py-2 text-sm text-ink transition-colors hover:border-accent hover:text-accent"
               >
                 {v.venue}
               </Link>
             ))}
             <Link
               href="/venues"
-              className="border border-wine/40 px-4 py-2 text-sm text-wine transition-colors hover:bg-wine hover:text-cream"
+              className="border border-accent/40 px-4 py-2 text-sm text-accent transition-colors hover:bg-accent hover:text-cream"
             >
               Todas las sedes →
             </Link>
@@ -582,7 +582,7 @@ export default async function CityPageEs({
               <Link
                 key={n.slug}
                 href={`/es/fotografo-de-quinceaneras/${n.slug}`}
-                className="border border-line bg-ivory px-4 py-2 text-sm text-ink transition-colors hover:border-wine hover:text-wine"
+                className="border border-line bg-ivory px-4 py-2 text-sm text-ink transition-colors hover:border-accent hover:text-accent"
               >
                 Fotógrafo de quinceañeras en {n.city}
               </Link>
@@ -594,7 +594,7 @@ export default async function CityPageEs({
       {/* CTA final — banda oscura (cierre de alto contraste) */}
       <section className="bg-dark">
         <div className="mx-auto max-w-3xl px-5 py-section text-center md:px-10 lg:px-16 md:py-section-lg">
-          <span className="text-[0.66rem] uppercase tracking-[0.24em] text-wine">
+          <span className="text-[0.66rem] uppercase tracking-[0.24em] text-cream/85">
             Quedan pocas fechas de {site.scarcity.reservingYear}
           </span>
           <h2 className="mt-5 display-2 text-cream text-balance">Aparta su fecha hoy.</h2>

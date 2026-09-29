@@ -61,7 +61,7 @@ export default async function LocationsHub() {
                 <p className="text-[0.62rem] uppercase tracking-[0.32em] text-cream/85">Areas Served</p>
                 <h1
                   className="mt-4 max-w-3xl font-display text-cream text-balance"
-                  style={{ fontSize: "clamp(2.2rem,5.4vw,4.6rem)", lineHeight: 1.02, letterSpacing: "-0.025em" }}
+                  style={{ fontSize: "clamp(2.125rem,4.5vw,4.25rem)", lineHeight: 1.1, letterSpacing: "-0.02em" }}
                 >
                   Quinceañera photography across Dallas–Fort Worth.
                 </h1>
@@ -136,7 +136,7 @@ export default async function LocationsHub() {
                       <h3 className="font-display text-2xl leading-none text-cream md:text-3xl">{l.city}</h3>
                       <span className="mt-2 inline-flex items-center gap-1.5 text-[0.56rem] uppercase tracking-[0.2em] text-cream/85">
                         Quinceañera photographer
-                        <span aria-hidden className="text-wine-tint transition-transform duration-300 group-hover:translate-x-0.5">→</span>
+                        <span aria-hidden className="text-accent-soft transition-transform duration-300 group-hover:translate-x-0.5">→</span>
                       </span>
                     </div>
                   </div>

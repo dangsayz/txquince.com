@@ -87,7 +87,7 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
     <div className="flex min-h-dvh bg-cream text-ink">
       <aside className="sticky top-0 hidden h-dvh w-60 shrink-0 flex-col overflow-y-auto border-r border-line bg-white px-4 py-7 lg:flex xl:w-64">
         <Link href="/admin" className="mb-12 block px-3" aria-label="TX Quince Studio, Today">
-          <span className="block font-serif text-4xl leading-none">TX</span>
+          <span className="block font-display text-3xl leading-none">TX</span>
           <span className="mt-1 block text-xs font-semibold uppercase tracking-[0.22em]">Quince Studio</span>
         </Link>
         <nav aria-label="Studio navigation"><WorkspaceLinks pathname={pathname} /></nav>

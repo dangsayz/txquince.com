@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 export default async function AdminVideosPage() {
   const videos = await getVideos();
   return (
-    <main className="mx-auto max-w-6xl px-5 py-12">
+    <div className="mx-auto max-w-6xl px-5 py-12">
       <h1 className="font-display text-3xl text-ink">Videos</h1>
       <p className="mt-2 max-w-2xl text-sm text-ink-soft">
         Paste a link from YouTube, Vimeo, a direct video file, or QuinceNetwork.
@@ -16,6 +16,6 @@ export default async function AdminVideosPage() {
       <div className="mt-8">
         <VideosManager initial={videos} />
       </div>
-    </main>
+    </div>
   );
 }

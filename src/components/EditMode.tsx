@@ -143,7 +143,7 @@ export function EditOverlay({ image, editHref = "/admin", label }: { image: Edit
           if (e.key === "Enter" || e.key === " ") activate(e);
         }}
         title={editable ? "Set the focal anchor or replace this photo" : label ?? "Edit in admin"}
-        className="absolute bottom-2 left-2 z-20 inline-flex cursor-pointer items-center gap-1.5 bg-ink/80 px-2.5 py-1.5 text-[0.58rem] uppercase tracking-[0.18em] text-cream backdrop-blur-sm transition-colors hover:bg-wine"
+        className="absolute bottom-2 left-2 z-20 inline-flex cursor-pointer items-center gap-1.5 bg-ink/80 px-2.5 py-1.5 text-[0.58rem] uppercase tracking-[0.18em] text-cream backdrop-blur-sm transition-colors hover:bg-accent"
       >
         <span aria-hidden>⌖</span> {editable ? "Frame" : label ?? "Edit"}
       </span>
@@ -267,7 +267,7 @@ function FrameDialog({
           </p>
           <button
             onClick={onClose}
-            className="text-[0.62rem] uppercase tracking-[0.2em] text-ink-soft hover:text-wine"
+            className="text-[0.62rem] uppercase tracking-[0.2em] text-ink-soft hover:text-accent"
           >
             Close ✕
           </button>
@@ -287,7 +287,7 @@ function FrameDialog({
             className="pointer-events-none absolute"
             style={{ left: `${fx * 100}%`, top: `${fy * 100}%`, transform: "translate(-50%, -50%)" }}
           >
-            <span className="block h-7 w-7 rounded-full border-2 border-cream shadow-[0_0_0_2px_rgba(108,31,49,0.9)]" />
+            <span className="block h-7 w-7 rounded-full border-2 border-cream shadow-[0_0_0_2px_rgba(86,110,96,0.9)]" />
           </span>
         </div>
 
@@ -295,14 +295,14 @@ function FrameDialog({
           <button
             onClick={saveAnchor}
             disabled={!!busy || !dirty}
-            className="bg-ink px-6 py-2.5 text-[0.66rem] uppercase tracking-[0.18em] text-cream transition-colors hover:bg-wine disabled:opacity-40"
+            className="bg-ink px-6 py-2.5 text-[0.66rem] uppercase tracking-[0.18em] text-cream transition-colors hover:bg-accent disabled:opacity-40"
           >
             Save anchor
           </button>
           <button
             onClick={() => fileRef.current?.click()}
             disabled={!!busy}
-            className="text-[0.66rem] uppercase tracking-[0.18em] text-ink underline decoration-ink/30 underline-offset-4 hover:text-wine hover:decoration-wine disabled:opacity-40"
+            className="text-[0.66rem] uppercase tracking-[0.18em] text-ink underline decoration-ink/30 underline-offset-4 hover:text-accent hover:decoration-accent disabled:opacity-40"
           >
             Replace photo
           </button>
@@ -321,7 +321,7 @@ function FrameDialog({
           />
         </div>
         {busy ? <p className="mt-3 text-sm text-ink-soft">{busy}</p> : null}
-        {error ? <p className="mt-3 text-sm text-wine">{error}</p> : null}
+        {error ? <p role="alert" className="mt-3 text-sm text-danger">{error}</p> : null}
       </div>
     </div>,
     document.body,

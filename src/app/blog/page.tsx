@@ -71,7 +71,7 @@ export default async function BlogIndexPage() {
                 </p>
                 <h1
                   className="mt-4 max-w-3xl font-display text-cream text-balance"
-                  style={{ fontSize: "clamp(2.4rem,5.8vw,5rem)", lineHeight: 1.0, letterSpacing: "-0.026em" }}
+                  style={{ fontSize: "clamp(2.125rem,4.7vw,4.5rem)", lineHeight: 1.1, letterSpacing: "-0.02em" }}
                 >
                   Plan her quinceañera with no guesswork.
                 </h1>
@@ -114,7 +114,7 @@ export default async function BlogIndexPage() {
                 ) : null}
               </div>
               <div>
-                <p className="text-[0.62rem] uppercase tracking-[0.28em] text-wine-deep">
+                <p className="text-[0.62rem] uppercase tracking-[0.28em] text-accent-strong">
                   {featured.category} · Featured
                 </p>
                 <h2
@@ -126,9 +126,9 @@ export default async function BlogIndexPage() {
                 <p className="mt-4 max-w-md text-sm leading-relaxed text-ink-soft md:text-base">
                   {featured.excerpt}
                 </p>
-                <span className="mt-6 inline-flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.2em] text-ink transition-colors group-hover:text-wine">
+                <span className="mt-6 inline-flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.2em] text-ink transition-colors group-hover:text-accent">
                   Read the guide
-                  <span aria-hidden className="text-wine transition-transform duration-300 group-hover:translate-x-1">
+                  <span aria-hidden className="text-accent transition-transform duration-300 group-hover:translate-x-1">
                     →
                   </span>
                 </span>
@@ -170,10 +170,10 @@ export default async function BlogIndexPage() {
                           ) : null}
                           <div className="absolute inset-0 bg-ink/5 transition-colors group-hover:bg-ink/0" />
                         </div>
-                        <p className="mt-4 text-[0.6rem] uppercase tracking-[0.2em] text-wine-deep">
+                        <p className="mt-4 text-[0.6rem] uppercase tracking-[0.2em] text-accent-strong">
                           {cat} · {p.readMinutes} min read
                         </p>
-                        <h3 className="mt-2 font-display text-xl leading-snug text-ink transition-colors group-hover:text-wine">
+                        <h3 className="mt-2 font-display text-xl leading-snug text-ink transition-colors group-hover:text-accent">
                           {p.title}
                         </h3>
                         <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-ink-soft">

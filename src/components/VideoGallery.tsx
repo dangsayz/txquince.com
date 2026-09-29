@@ -148,7 +148,7 @@ function VideoCard({
         )}
       </div>
       {video.title || admin ? (
-        <figcaption className="mt-3 text-[0.62rem] uppercase tracking-[0.24em] text-ink-faint">
+        <figcaption className="mt-3 text-sm leading-relaxed text-ink-soft">
           <InlineCaption
             value={video.title}
             placeholder="Add caption"

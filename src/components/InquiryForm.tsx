@@ -275,7 +275,7 @@ export function InquiryForm({ initialDate = "", locale = "en" }: { initialDate?:
       <button
         type="submit"
         disabled={submitting}
-        className="inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-full bg-ink px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-ink/85 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
+        className="inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-full bg-accent px-8 py-3 text-base font-medium text-white transition-colors hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
       >
         {submitting ? (
           <>

@@ -55,7 +55,7 @@ function RankedList({ title, items, empty }: { title: string; items: { label: st
                 <span className="shrink-0 tabular-nums text-ink-soft">{i.count}</span>
               </div>
               <div className="mt-1 h-1 overflow-hidden rounded-full bg-greige">
-                <div className="h-full rounded-full bg-wine/60" style={{ width: `${(i.count / max) * 100}%` }} />
+                <div className="h-full rounded-full bg-accent/60" style={{ width: `${(i.count / max) * 100}%` }} />
               </div>
             </div>
           ))
@@ -155,16 +155,16 @@ export default async function AdminDashboard({
           champagne-tinted card (not a loud 2px gold frame) keeps it the
           priority without shouting over the rest of the dashboard. */}
       {s.bottleneck ? (
-        <section className="mt-6 rounded-2xl border border-line bg-wine-tint/40 p-5">
+        <section className="mt-6 rounded-2xl border border-line bg-accent-soft/40 p-5">
           <div className="flex items-center gap-2">
-            <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-wine" />
+            <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
             <p className="text-[0.62rem] uppercase tracking-[0.2em] text-ink-faint">
               Fix this first — your weakest funnel edge
             </p>
           </div>
           <p className="mt-3 font-display text-xl text-ink">
             {s.bottleneck.edge}:{" "}
-            <span className="text-wine-deep">{s.bottleneck.rate}%</span>
+            <span className="text-accent-strong">{s.bottleneck.rate}%</span>
             <span className="ml-1.5 text-sm text-ink-faint">healthy ≈ {s.bottleneck.baseline}%</span>
           </p>
           <p className="mt-2 text-sm leading-relaxed text-ink-soft">{s.bottleneck.action}</p>
@@ -224,7 +224,7 @@ export default async function AdminDashboard({
               return (
                 <div key={d.date} className="group flex h-full flex-1 flex-col justify-end" title={`${d.date}: ${d.count}`}>
                   <div
-                    className={`w-full rounded-t-sm ${isToday ? "bg-ink" : "bg-wine/30 group-hover:bg-wine/55"}`}
+                    className={`w-full rounded-t-sm ${isToday ? "bg-ink" : "bg-accent/30 group-hover:bg-accent/55"}`}
                     style={{ height: `${Math.max((d.count / maxDaily) * 100, d.count > 0 ? 6 : 1)}%` }}
                   />
                 </div>
@@ -283,7 +283,7 @@ export default async function AdminDashboard({
                   <td className="py-2 text-right tabular-nums text-ink-soft">
                     {p.avgSeconds ? mins(p.avgSeconds) : "—"}
                   </td>
-                  <td className={`py-2 text-right tabular-nums ${p.exitRate >= 70 ? "font-medium text-wine-deep" : "text-ink-soft"}`}>
+                  <td className={`py-2 text-right tabular-nums ${p.exitRate >= 70 ? "font-medium text-accent-strong" : "text-ink-soft"}`}>
                     {p.exitRate}%
                   </td>
                 </tr>
@@ -308,7 +308,7 @@ export default async function AdminDashboard({
               <span
                 aria-hidden
                 className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[0.7rem] ${
-                  f.done ? "bg-emerald-600 text-white" : "border border-wine text-wine"
+                  f.done ? "bg-emerald-600 text-white" : "border border-accent text-accent"
                 }`}
               >
                 {f.done ? "✓" : "!"}

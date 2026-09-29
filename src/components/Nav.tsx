@@ -34,7 +34,7 @@ export function Nav() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-white/95 backdrop-blur-md">
-      <nav aria-label="Main navigation" className="mx-auto flex min-h-[76px] max-w-[90rem] items-center justify-between gap-3 px-5 md:px-10 lg:px-16">
+      <nav aria-label="Main navigation" className="mx-auto flex min-h-[68px] max-w-[90rem] items-center justify-between gap-3 px-5 md:px-10 lg:px-16">
         <Link href={isSpanish ? "/es" : "/"} aria-label={`${site.brand} — ${isSpanish ? "inicio" : "home"}`} className="inline-flex min-h-12 shrink-0 items-center whitespace-nowrap">
           <Wordmark />
         </Link>
@@ -45,7 +45,7 @@ export function Nav() {
               key={item.href}
               href={item.href}
               aria-current={pathname === item.href ? "page" : undefined}
-              className={`inline-flex min-h-11 items-center whitespace-nowrap px-2.5 text-sm transition-colors hover:text-ink ${pathname === item.href ? "font-semibold text-ink" : "text-ink-soft"}`}
+              className={`inline-flex min-h-11 items-center whitespace-nowrap px-2.5 text-sm transition-colors hover:text-accent-strong ${pathname === item.href ? "font-medium text-ink" : "text-ink-soft"}`}
             >
               {item.label}
             </Link>
@@ -53,13 +53,13 @@ export function Nav() {
           <Link href={isSpanish ? "/" : "/es"} hrefLang={isSpanish ? "en" : "es"} className="inline-flex min-h-11 items-center px-2 text-xs font-medium text-ink-soft hover:text-ink">
             {isSpanish ? "EN" : "ES"}
           </Link>
-          <Link href={action.href} className="ml-2 inline-flex min-h-12 items-center justify-center whitespace-nowrap rounded-full bg-ink px-6 text-sm font-semibold text-white transition-colors hover:bg-ink/85">
+          <Link href={action.href} className="ml-2 inline-flex min-h-11 items-center justify-center whitespace-nowrap rounded-full bg-accent px-6 text-sm font-medium text-white transition-colors hover:bg-accent-strong">
             {action.label} <span aria-hidden className="ml-2">→</span>
           </Link>
         </div>
 
         <div className="flex items-center gap-2 lg:hidden">
-          <Link href={action.href} className="inline-flex min-h-11 items-center justify-center whitespace-nowrap rounded-full bg-ink px-4 text-[clamp(0.8rem,3.3vw,0.9rem)] font-semibold text-white sm:px-5">
+          <Link href={action.href} className="inline-flex min-h-11 items-center justify-center whitespace-nowrap rounded-full bg-accent px-4 text-[clamp(0.8rem,3.3vw,0.9rem)] font-medium text-white transition-colors hover:bg-accent-strong sm:px-5">
             {isSpanish ? "Consultar fecha" : "Check date"}
           </Link>
           <button

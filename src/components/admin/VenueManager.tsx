@@ -24,7 +24,7 @@ type Copy = {
 };
 
 const field =
-  "w-full border-b border-line bg-transparent pb-1 text-sm focus:border-wine focus:outline-none";
+  "w-full border-b border-line bg-transparent pb-1 text-sm focus:border-accent focus:outline-none";
 
 function VenueCard({ venue, initial }: { venue: VenueRow; initial: Copy }) {
   const [about, setAbout] = useState(initial.about ?? "");
@@ -103,7 +103,7 @@ function VenueCard({ venue, initial }: { venue: VenueRow; initial: Copy }) {
         <Link
           href={`/venues/${venue.slug}`}
           target="_blank"
-          className="text-[0.66rem] uppercase tracking-[0.14em] text-wine underline-offset-4 hover:underline"
+          className="text-[0.66rem] uppercase tracking-[0.14em] text-accent underline-offset-4 hover:underline"
         >
           View page ↗
         </Link>
@@ -132,7 +132,7 @@ function VenueCard({ venue, initial }: { venue: VenueRow; initial: Copy }) {
             <button
               type="button"
               onClick={() => setFaq((f) => [...f, { q: "", a: "" }])}
-              className="text-[0.66rem] uppercase tracking-[0.14em] text-wine hover:underline"
+              className="text-[0.66rem] uppercase tracking-[0.14em] text-accent hover:underline"
             >
               + Add Q&amp;A
             </button>
@@ -167,7 +167,7 @@ function VenueCard({ venue, initial }: { venue: VenueRow; initial: Copy }) {
                       type="button"
                       onClick={() => setFaq((prev) => prev.filter((_, j) => j !== i))}
                       aria-label="Remove question"
-                      className="mt-1 grid h-7 w-7 shrink-0 place-items-center rounded-full text-ink-faint hover:bg-wine hover:text-cream"
+                      className="mt-1 grid h-7 w-7 shrink-0 place-items-center rounded-full text-ink-faint hover:bg-accent hover:text-cream"
                     >
                       ✕
                     </button>
@@ -203,7 +203,7 @@ function VenueCard({ venue, initial }: { venue: VenueRow; initial: Copy }) {
             type="button"
             onClick={save}
             disabled={busy}
-            className="min-h-[44px] rounded-full bg-wine px-6 text-[0.7rem] uppercase tracking-[0.16em] text-cream transition-opacity hover:opacity-90 disabled:opacity-50"
+            className="min-h-[44px] rounded-full bg-accent px-6 text-[0.7rem] uppercase tracking-[0.16em] text-cream transition-opacity hover:opacity-90 disabled:opacity-50"
           >
             Save
           </button>
@@ -211,7 +211,7 @@ function VenueCard({ venue, initial }: { venue: VenueRow; initial: Copy }) {
             type="button"
             onClick={aiDraft}
             disabled={busy}
-            className="min-h-[44px] rounded-full border border-wine/40 px-5 text-[0.7rem] uppercase tracking-[0.16em] text-wine transition-colors hover:border-wine hover:bg-wine hover:text-cream disabled:opacity-50"
+            className="min-h-[44px] rounded-full border border-accent/40 px-5 text-[0.7rem] uppercase tracking-[0.16em] text-accent transition-colors hover:border-accent hover:bg-accent hover:text-cream disabled:opacity-50"
             title="Draft the about paragraph + FAQ with AI (you edit, then Save)"
           >
             AI: write venue copy

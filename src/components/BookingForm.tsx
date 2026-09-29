@@ -67,27 +67,28 @@ export function BookingForm({
   // Restore any saved draft on mount, so pressing back / reloading never loses
   // what they typed. defaultCollection only wins if there's no saved draft.
   useEffect(() => {
+    let active = true;
+    let draft: Partial<Draft> = {};
     try {
       const raw = localStorage.getItem(DRAFT_KEY);
-      if (raw) {
-        const d = JSON.parse(raw) as Partial<Draft>;
-        if (d.name) setName(d.name);
-        if (d.email) setEmail(d.email);
-        if (d.phone) setPhone(d.phone);
-        if (d.eventDate) setEventDate(d.eventDate);
-        if (d.collection) setCollection(d.collection);
-        if (d.essentialService) setEssentialService(d.essentialService);
-        if (d.notes) setNotes(d.notes);
-      }
+      if (raw) draft = JSON.parse(raw) as Partial<Draft>;
     } catch {
       /* ignore */
     }
-    // A date arriving via URL is explicit intent (they just checked it) — it
-    // beats whatever date a stale draft remembered.
-    if (defaultDate && /^\d{4}-\d{2}-\d{2}$/.test(defaultDate)) {
-      setEventDate(defaultDate);
-    }
-    restored.current = true;
+    queueMicrotask(() => {
+      if (!active) return;
+      if (draft.name) setName(draft.name);
+      if (draft.email) setEmail(draft.email);
+      if (draft.phone) setPhone(draft.phone);
+      if (draft.collection && packages.some((item) => item.id === draft.collection)) setCollection(draft.collection);
+      if (draft.essentialService === "photo" || draft.essentialService === "video") setEssentialService(draft.essentialService);
+      if (draft.notes) setNotes(draft.notes);
+      // An explicit URL date takes precedence over a saved draft.
+      const nextDate = defaultDate && /^\d{4}-\d{2}-\d{2}$/.test(defaultDate) ? defaultDate : draft.eventDate;
+      if (nextDate && /^\d{4}-\d{2}-\d{2}$/.test(nextDate)) setEventDate(nextDate);
+      restored.current = true;
+    });
+    return () => { active = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -274,10 +275,10 @@ export function BookingForm({
           />
           <span id="date-availability" aria-live="polite" className="block">
             {dateTaken ? (
-              <span className="mt-1.5 inline-flex items-center gap-1.5 text-xs text-wine">
+              <span className="mt-1.5 inline-flex items-center gap-1.5 text-xs text-red-700">
                 <span aria-hidden>●</span>
                 That date is already requested — pick another, or{" "}
-                <a href="/check-your-date" className="underline hover:text-wine-deep">join the waitlist</a>.
+                <a href="/check-your-date" className="underline hover:text-red-800">join the waitlist</a>.
               </span>
             ) : dateOpen ? (
               <span className="mt-1.5 inline-flex items-center gap-1.5 text-xs text-green-700">
@@ -348,13 +349,13 @@ export function BookingForm({
       </p>
 
       {formError ? (
-        <p role="alert" className="text-sm text-wine">{formError}</p>
+        <p role="alert" className="text-sm text-red-700">{formError}</p>
       ) : null}
 
       <button
         type="submit"
         disabled={busy}
-        className="inline-flex items-center justify-center gap-3 self-start rounded-full bg-ink px-8 py-4 text-[0.95rem] font-medium text-cream transition-all duration-300 hover:bg-[#34302a] disabled:cursor-not-allowed disabled:opacity-70"
+        className="inline-flex items-center justify-center gap-3 self-start rounded-full bg-accent px-8 py-4 text-[0.95rem] font-medium text-white transition-colors hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-70"
       >
         {busy ? (
           <>
@@ -387,7 +388,7 @@ function Field({
     <label className={`flex flex-col gap-2.5 ${className}`}>
       <span className={labelBase}>{label}</span>
       {children}
-      {error?.length ? <span className="text-xs normal-case tracking-normal text-wine">{error[0]}</span> : null}
+      {error?.length ? <span className="text-xs normal-case tracking-normal text-red-700">{error[0]}</span> : null}
     </label>
   );
 }
