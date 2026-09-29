@@ -8,7 +8,8 @@ import { ProtectedImg } from "@/components/ProtectedImg";
 import { ShareModal } from "@/components/ShareModal";
 import { FavoriteButton, useSavedPhotos } from "@/components/gallery/Favorites";
 import { selectGalleryItems, type GalleryItem, type GallerySection } from "@/components/gallery/gallery-model";
-import { vendorCreditLabel } from "@/content/portfolio-taxonomy";
+import { altPhraseFor, vendorCreditLabel } from "@/content/portfolio-taxonomy";
+import { publicPhotoCopy } from "@/lib/public-photo-copy";
 
 export type { GalleryItem } from "@/components/gallery/gallery-model";
 
@@ -57,7 +58,8 @@ export function PortfolioGallery({
   }, [activeIndex, filtered.length]);
 
   const active = activeIndex === null ? null : filtered[activeIndex] ?? null;
-  const labelFor = (item: GalleryItem) => item.title || item.alt;
+  const copyFor = (item: GalleryItem) => publicPhotoCopy(item, altPhraseFor(item.section || ""));
+  const labelFor = (item: GalleryItem) => copyFor(item).title;
   const pathFor = (item: GalleryItem) => item.slug && item.section ? `/photos/${item.section}/${item.slug}` : "/portfolio";
   const shareItem = (item: GalleryItem) => {
     setActiveIndex(null);
@@ -127,9 +129,9 @@ export function PortfolioGallery({
                   aria-label={`View ${labelFor(item)}`}
                 >
                   {item.width && item.height ? (
-                    <Image src={item.url} alt={item.alt} width={item.width} height={item.height} sizes={imageSizes} unoptimized={item.url.startsWith("/portfolio/")} className="block h-auto w-full transition-transform duration-300 group-hover:scale-[1.025]" />
+                    <Image src={item.url} alt={copyFor(item).alt} width={item.width} height={item.height} sizes={imageSizes} unoptimized={item.url.startsWith("/portfolio/")} className="block h-auto w-full transition-transform duration-300 group-hover:scale-[1.025]" />
                   ) : (
-                    <ProtectedImg src={item.url} alt={item.alt} loading="lazy" className="block h-auto w-full transition-transform duration-300 group-hover:scale-[1.025]" />
+                    <ProtectedImg src={item.url} alt={copyFor(item).alt} loading="lazy" className="block h-auto w-full transition-transform duration-300 group-hover:scale-[1.025]" />
                   )}
                 </button>
                 <EditOverlay image={{ id: item.id, slug: item.slug, alt: item.alt, fx: item.fx, fy: item.fy }} />
@@ -194,7 +196,7 @@ export function PortfolioGallery({
                 setActiveIndex((index) => index === null ? null : (index + (distance < 0 ? 1 : -1) + filtered.length) % filtered.length);
               }}
             >
-              <ProtectedImg src={active.url} alt={active.alt} width={active.width} height={active.height} className={zoomed ? "mx-auto block h-auto w-[160vw] max-w-[1440px] object-contain" : "mx-auto block max-h-[68dvh] w-auto max-w-full object-contain"} />
+              <ProtectedImg src={active.url} alt={copyFor(active).alt} width={active.width} height={active.height} className={zoomed ? "mx-auto block h-auto w-[160vw] max-w-[1440px] object-contain" : "mx-auto block max-h-[68dvh] w-auto max-w-full object-contain"} />
             </div>
             <div className="flex flex-wrap items-center gap-2 border-t border-line p-3 sm:p-5">
               {filtered.length > 1 ? <>

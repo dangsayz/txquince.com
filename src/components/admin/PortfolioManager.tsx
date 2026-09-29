@@ -54,24 +54,8 @@ function CategorySelect({
   );
 }
 
-/**
- * Free, no-AI starting alt text built from what the upload already knows:
- * the file name (if it's a real name, not a camera serial like IMG_4821),
- * the category, and the tagged location. Always editable afterward.
- */
-function defaultAlt(fileName: string, section: string, location: string): string {
-  const base = fileName
-    .replace(/\.[^.]+$/, "")
-    .replace(/[-_.]+/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-  // Camera/phone serial names (IMG_4821, DSC0042, PXL_2026...) say nothing —
-  // fall back to the category phrase instead.
-  const isCameraName =
-    /^(img|dsc|dscf|dcim|pxl|gopr|mvimg|p|photo|image|untitled|screenshot|edit|export|final)?[\s\d()]*$/i.test(
-      base,
-    );
-  const subject = isCameraName || !base ? altPhraseFor(section) : base;
+function defaultAlt(section: string, location: string): string {
+  const subject = altPhraseFor(section);
   const loc = location.trim();
   return (loc ? `${subject} at ${loc}` : subject).slice(0, 300);
 }
@@ -583,7 +567,7 @@ export function PortfolioManager({
           body: JSON.stringify({
             storage_path: path,
             section,
-            alt: defaultAlt(file.name, section, uploadLocation),
+            alt: defaultAlt(section, uploadLocation),
             width,
             height,
             location: uploadLocation.trim() || undefined,
@@ -1004,6 +988,20 @@ export function PortfolioManager({
                     ) : null}
                   </button>
                   <div className="flex flex-col gap-2 p-2.5">
+                    <label className="text-xs text-ink-soft">
+                      Photo title
+                      <input
+                        key={`title-${img.id}-${img.title ?? ""}`}
+                        defaultValue={img.title ?? ""}
+                        maxLength={200}
+                        placeholder="Give this photo a title"
+                        onBlur={(e) => {
+                          const title = e.target.value.trim() || null;
+                          if (title !== (img.title ?? null)) void patch(img.id, { title });
+                        }}
+                        className="mt-1 w-full border-b border-line bg-transparent pb-1 text-xs text-ink focus:border-accent focus:outline-none"
+                      />
+                    </label>
                     <div className="flex items-end gap-1.5">
                       <input
                         key={`alt-${img.id}-${img.alt}`}

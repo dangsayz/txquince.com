@@ -9,10 +9,12 @@ import { home } from "@/content/home";
 import { about } from "@/content/about";
 import { packages } from "@/content/packages";
 import { portfolioFallback } from "@/content/portfolio-fallback";
+import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { site } from "@/content/site";
 import { releasedTestimonials } from "@/content/testimonials";
 import { getFeaturedImages, getHeroMedia, getVideos } from "@/lib/content-db";
 import { heroObjectPosition } from "@/lib/hero-focus";
+import { publicPhotoCopy } from "@/lib/public-photo-copy";
 
 export const revalidate = 60;
 
@@ -31,7 +33,7 @@ export default async function HomePage() {
     ? featured.map((image) => ({
         id: image.id,
         url: image.url,
-        alt: image.alt,
+        alt: publicPhotoCopy(image, altPhraseFor(image.section)).alt,
         section: image.section,
         slug: image.slug ?? null,
         focusX: image.focus_x ?? null,
@@ -53,7 +55,7 @@ export default async function HomePage() {
     : heroMedia?.kind === "video" && heroMedia.posterUrl
       ? { url: heroMedia.posterUrl, alt: "Quinceañera film still", focusX: null, focusY: null, id: null, slug: null }
       : topImage
-        ? { url: topImage.url, alt: topImage.alt, focusX: topImage.focus_x, focusY: topImage.focus_y, id: topImage.id, slug: topImage.slug }
+        ? { url: topImage.url, alt: publicPhotoCopy(topImage, altPhraseFor(topImage.section)).alt, focusX: topImage.focus_x, focusY: topImage.focus_y, id: topImage.id, slug: topImage.slug }
         : fallbackHero
           ? { url: "/portfolio/hero-960.webp", alt: fallbackHero.alt, focusX: null, focusY: 0.75, id: null, slug: null }
           : null;

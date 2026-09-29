@@ -4,7 +4,9 @@
  * Submit alongside /sitemap.xml in Search Console.
  */
 import { site } from "@/content/site";
+import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { getPortfolioImages } from "@/lib/content-db";
+import { publicPhotoCopy } from "@/lib/public-photo-copy";
 
 export const revalidate = 3600;
 
@@ -20,16 +22,17 @@ export async function GET() {
   const images = (await getPortfolioImages()).filter((i) => i.slug);
 
   const entries = images
-    .map(
-      (i) => `  <url>
+    .map((i) => {
+      const copy = publicPhotoCopy(i, altPhraseFor(i.section));
+      return `  <url>
     <loc>${site.url}/photos/${i.section}/${i.slug}</loc>
     <image:image>
       <image:loc>${site.url}/api/img/${i.slug}</image:loc>
-      <image:title>${esc(i.title || i.alt)}</image:title>
-      <image:caption>${esc(i.caption || i.alt)}</image:caption>
+      <image:title>${esc(copy.title)}</image:title>
+      <image:caption>${esc(copy.description)}</image:caption>
     </image:image>
-  </url>`,
-    )
+  </url>`;
+    })
     .join("\n");
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>

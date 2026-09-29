@@ -7,16 +7,10 @@ import { PortfolioGallery, type GalleryItem } from "@/components/PortfolioGaller
 import { VideoGallery } from "@/components/VideoGallery";
 import { FinalCTA } from "@/components/FinalCTA";
 import { altPhraseFor, categoryLabel } from "@/content/portfolio-taxonomy";
+import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import PortfolioLoading from "./loading";
 
 export const dynamic = "force-dynamic";
-
-function cleanAlt(raw: string | null | undefined, section: string): string {
-  const alt = (raw || "").trim();
-  return !alt || /\b(jpe?g|png|webp|heic|avif|12img)\b/i.test(alt) || /\d{1,2}[\s\-_]\d{1,2}[\s\-_]\d{2,4}/.test(alt)
-    ? altPhraseFor(section)
-    : alt;
-}
 
 export const metadata: Metadata = {
   title: "Portfolio",
@@ -61,30 +55,33 @@ async function PortfolioContent({ searchParams }: {
   const initialQuery = typeof params.q === "string" ? params.q.slice(0, 120) : "";
   const sections = [...new Set(dbImages.map((image) => image.section))]
     .map((id) => ({ id, title: categoryLabel(id) }));
-  const items: GalleryItem[] = dbImages.map((image) => ({
-    url: image.url,
-    alt: cleanAlt(image.alt, image.section),
-    width: image.width,
-    height: image.height,
-    slug: image.slug,
-    section: image.section,
-    id: image.id,
-    fx: image.focus_x,
-    fy: image.focus_y,
-    title: image.title,
-    caption: image.caption,
-    city: image.city,
-    feature: image.is_feature,
-    vendors: image.vendors?.map((vendor) => ({
-      name: vendor.name,
-      business: vendor.business,
-      slug: vendor.slug,
-      category: vendor.category,
-      ig_handle: vendor.ig_handle,
-      website: vendor.website,
-      role: vendor.role,
-    })),
-  }));
+  const items: GalleryItem[] = dbImages.map((image) => {
+    const copy = publicPhotoCopy(image, altPhraseFor(image.section));
+    return {
+      url: image.url,
+      alt: copy.alt,
+      width: image.width,
+      height: image.height,
+      slug: image.slug,
+      section: image.section,
+      id: image.id,
+      fx: image.focus_x,
+      fy: image.focus_y,
+      title: copy.title,
+      caption: copy.description,
+      city: image.city,
+      feature: image.is_feature,
+      vendors: image.vendors?.map((vendor) => ({
+        name: vendor.name,
+        business: vendor.business,
+        slug: vendor.slug,
+        category: vendor.category,
+        ig_handle: vendor.ig_handle,
+        website: vendor.website,
+        role: vendor.role,
+      })),
+    };
+  });
 
   const videoJsonLd = videos.length > 0 ? {
     "@context": "https://schema.org",
@@ -113,22 +110,25 @@ async function PortfolioContent({ searchParams }: {
     "@type": "ImageGallery",
     name: `Portfolio · ${site.brand}`,
     url: `${site.url}/portfolio`,
-    associatedMedia: dbImages.slice(0, 60).map((image) => ({
-      "@type": ["ImageObject", "Photograph"],
-      contentUrl: image.url.startsWith("http") ? image.url.split("?")[0] : `${site.url}${image.url.split("?")[0]}`,
-      name: image.title || cleanAlt(image.alt, image.section),
-      description: image.caption || cleanAlt(image.alt, image.section),
-      ...(image.width && image.height ? { width: image.width, height: image.height } : {}),
-      creator: { "@type": "Organization", name: site.brand, url: site.url },
-      copyrightHolder: { "@type": "Organization", name: site.brand },
-      copyrightNotice: `© ${site.brand}`,
-      creditText: site.brand,
-      license: `${site.url}/privacy`,
-      acquireLicensePage: `${site.url}/investment`,
-      contentLocation: image.city
-        ? { "@type": "City", name: `${image.city}, TX` }
-        : { "@type": "Place", name: "Dallas–Fort Worth, TX" },
-    })),
+    associatedMedia: dbImages.slice(0, 60).map((image) => {
+      const copy = publicPhotoCopy(image, altPhraseFor(image.section));
+      return {
+        "@type": ["ImageObject", "Photograph"],
+        contentUrl: image.url.startsWith("http") ? image.url.split("?")[0] : `${site.url}${image.url.split("?")[0]}`,
+        name: copy.title,
+        description: copy.description,
+        ...(image.width && image.height ? { width: image.width, height: image.height } : {}),
+        creator: { "@type": "Organization", name: site.brand, url: site.url },
+        copyrightHolder: { "@type": "Organization", name: site.brand },
+        copyrightNotice: `© ${site.brand}`,
+        creditText: site.brand,
+        license: `${site.url}/privacy`,
+        acquireLicensePage: `${site.url}/investment`,
+        contentLocation: image.city
+          ? { "@type": "City", name: `${image.city}, TX` }
+          : { "@type": "Place", name: "Dallas–Fort Worth, TX" },
+      };
+    }),
   } : null;
 
   return (

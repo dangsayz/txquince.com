@@ -68,7 +68,7 @@ export async function POST(request: Request) {
 
   const { data, error } = await supabase
     .from("portfolio_images")
-    .insert({ storage_path, alt, section, sort_order, width: width ?? null, height: height ?? null, location: location || null, hook: hook || null, tags: tags || null, slug, title: alt || null })
+    .insert({ storage_path, alt, section, sort_order, width: width ?? null, height: height ?? null, location: location || null, hook: hook || null, tags: tags || null, slug, title: null })
     .select()
     .single();
 
