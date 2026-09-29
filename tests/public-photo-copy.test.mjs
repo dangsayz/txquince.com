@@ -18,7 +18,7 @@ test("replaces filename metadata without treating a filename location as a city"
 
 test("uses only structured city for a fallback", () => {
   assert.equal(
-    publicPhotoCopy({ title: "DSC_0482.JPG", alt: "IMG 0482", city: "Irving" }, fallback).title,
+    publicPhotoCopy({ title: "DSC_0482.JPG", alt: "IMG 0482", city: "irving" }, fallback).title,
     `${fallback} in Irving`,
   );
 });

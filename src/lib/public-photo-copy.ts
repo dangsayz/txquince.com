@@ -22,7 +22,7 @@ function writtenCopy(value: string | null | undefined): string | null {
 }
 
 export function publicPhotoCopy(image: PhotoCopyInput, categoryDescription: string) {
-  const city = image.city?.trim();
+  const city = image.city?.trim().replace(/\b[a-z]/g, (letter) => letter.toUpperCase());
   const fallback = city ? `${categoryDescription} in ${city}` : categoryDescription;
   const alt = writtenCopy(image.alt) || fallback;
   return {
