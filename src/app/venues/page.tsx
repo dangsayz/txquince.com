@@ -5,6 +5,7 @@
  */
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { site } from "@/content/site";
 import { venues } from "@/content/venues";
 import { getImagesByVenue } from "@/lib/content-db";
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
 
 export default async function VenuesPage() {
   const counts = await Promise.all(venues.map((v) => getImagesByVenue(v.slug)));
-  const withCounts = venues.map((v, i) => ({ ...v, count: counts[i].length }));
+  const withCounts = venues.map((v, i) => ({ ...v, count: counts[i].length, image: counts[i][0] ?? null }));
 
   // Group by city, cities ordered by total photos (busiest first).
   const byCity = new Map<string, typeof withCounts>();
@@ -64,16 +65,11 @@ export default async function VenuesPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <section className="mx-auto max-w-[90rem] px-5 pb-10 pt-20 md:px-10 lg:px-16 md:pb-14 md:pt-32">
-        <Reveal>
-          <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">Venues</p>
-          <h1
-            className="mt-5 max-w-4xl font-display text-ink"
-            style={{ fontSize: "clamp(2.6rem,6.5vw,5.2rem)", lineHeight: 0.98, letterSpacing: "-0.028em" }}
-          >
-            Quinceañera venues across DFW.
-          </h1>
-          <p className="mt-7 max-w-md text-[0.95rem] leading-relaxed text-ink-soft">
+      <section className="mx-auto max-w-[90rem] px-5 pb-14 pt-14 text-center md:px-10 md:pb-20 md:pt-20 lg:px-16">
+        <Reveal className="mx-auto max-w-2xl">
+          <p className="text-xs font-medium uppercase tracking-[0.14em] text-ink-soft">Venues</p>
+          <h1 className="mt-5 font-display text-[clamp(2rem,3.4vw,3rem)] leading-[1.14] text-ink">Quinceañera venues across DFW.</h1>
+          <p className="mx-auto mt-5 max-w-xl text-base leading-7 text-ink-soft sm:text-lg">
             Ballrooms, gardens, and event centers we&apos;ve photographed quinceañeras at
             across Dallas–Fort Worth. Tap a venue to see real work there — and if your
             daughter&apos;s day is booked at one, we already know the room.
@@ -82,26 +78,24 @@ export default async function VenuesPage() {
       </section>
 
       {cities.map(({ city, list }) => (
-        <section key={city} className="mt-12 border-t border-ink/10 bg-white">
+        <section key={city} className="border-t border-line bg-white">
           <div className="mx-auto max-w-[90rem] px-5 py-12 md:px-10 lg:px-16 md:py-16">
             <Reveal>
-              <h2
-                className="font-display text-ink"
-                style={{ fontSize: "clamp(1.6rem,3vw,2.4rem)", lineHeight: 1.05, letterSpacing: "-0.015em" }}
-              >
-                {city}, TX
-              </h2>
+              <h2 className="font-display text-[clamp(1.5rem,2.6vw,2.2rem)] text-ink">{city}, TX</h2>
             </Reveal>
-            <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {list.map((v) => (
                 <li key={v.slug}>
                   <Link
                     href={`/venues/${v.slug}`}
-                    className="flex min-h-[44px] items-center justify-between gap-3 rounded-xl border border-line bg-ivory px-4 py-3 transition-colors hover:border-wine"
+                    className="group block h-full overflow-hidden rounded-xl border border-line bg-white transition-colors hover:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
                   >
-                    <span className="min-w-0 truncate text-ink">{v.venue}</span>
-                    <span className="shrink-0 text-xs text-ink-faint">
-                      {v.count} photo{v.count === 1 ? "" : "s"}
+                    <span className="relative block aspect-[16/10] overflow-hidden bg-greige">
+                      {v.image?.url ? <Image src={v.image.url} alt={v.image.alt || `Quinceañera celebration at ${v.venue}`} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover transition-transform duration-300 motion-reduce:transition-none group-hover:scale-[1.025]" /> : null}
+                    </span>
+                    <span className="flex min-h-16 items-center justify-between gap-3 px-5 py-4">
+                      <span className="min-w-0 text-base font-medium text-ink">{v.venue}</span>
+                      <span className="shrink-0 text-sm text-ink-soft">{v.count} photo{v.count === 1 ? "" : "s"} ↗</span>
                     </span>
                   </Link>
                 </li>

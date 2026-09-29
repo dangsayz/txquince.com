@@ -3,7 +3,7 @@ import { AdminWorkspace } from "@/components/admin/AdminWorkspace";
 import { AdminHint } from "@/components/EditMode";
 
 export const metadata: Metadata = {
-  title: "Admin",
+  title: "TX Quince Studio",
   robots: { index: false, follow: false },
 };
 

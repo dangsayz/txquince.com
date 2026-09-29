@@ -6,6 +6,7 @@ import { BookingActions } from "@/components/admin/BookingActions";
 export const dynamic = "force-dynamic";
 
 const COLLECTION_LABEL: Record<string, string> = {
+  moments: "Moments",
   essential: "Essential",
   signature: "Signature",
   legacy: "Legacy",
@@ -62,11 +63,11 @@ function BookingCard({ b }: { b: BookingRow }) {
   const pill = statusPill(b.status);
   const collection = b.collection ? COLLECTION_LABEL[b.collection] : null;
   return (
-    <div className="rounded-2xl border border-line bg-white p-6">
+    <div className="rounded-lg border border-line bg-white p-6">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h3 className="font-display text-xl text-ink">{b.name}</h3>
-          <p className="mt-0.5 text-sm text-ink-soft">
+          <p className="mt-1 text-base text-ink-soft">
             {formatEventDate(b.event_date)}
           </p>
         </div>
@@ -77,7 +78,7 @@ function BookingCard({ b }: { b: BookingRow }) {
         </span>
       </div>
 
-      <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+      <dl className="mt-5 grid grid-cols-1 gap-x-5 gap-y-4 text-base sm:grid-cols-2">
         <div>
           <dt className="text-[0.7rem] uppercase tracking-[0.14em] text-ink-faint">
             Collection
@@ -98,11 +99,11 @@ function BookingCard({ b }: { b: BookingRow }) {
             )}
           </dd>
         </div>
-        <div className="col-span-2">
+        <div className="sm:col-span-2">
           <dt className="text-[0.7rem] uppercase tracking-[0.14em] text-ink-faint">
             Contact
           </dt>
-          <dd className="text-ink">
+          <dd className="break-words text-ink">
             <a className="underline decoration-line hover:text-accent" href={`mailto:${b.email}`}>
               {b.email}
             </a>
@@ -117,7 +118,7 @@ function BookingCard({ b }: { b: BookingRow }) {
           </dd>
         </div>
         {b.notes && (
-          <div className="col-span-2">
+          <div className="sm:col-span-2">
             <dt className="text-[0.7rem] uppercase tracking-[0.14em] text-ink-faint">
               Notes
             </dt>
@@ -144,26 +145,26 @@ export default async function AdminBookings() {
     <main className="mx-auto max-w-[92rem] px-5 pb-20 pt-8 sm:px-8 lg:px-12 lg:pt-12">
       <Link
         href="/admin"
-        className="text-[0.72rem] uppercase tracking-[0.18em] text-ink-faint hover:text-accent"
+        className="inline-flex min-h-11 items-center text-base text-ink-soft hover:text-ink"
       >
         ← Today
       </Link>
-      <h1 className="mt-3 font-display text-3xl text-ink sm:text-4xl">Bookings</h1>
-      <p className="mt-2 text-sm text-ink-soft">
+      <h1 className="mt-2 font-display text-[clamp(1.875rem,2.8vw,2.5rem)] text-ink">Bookings</h1>
+      <p className="mt-2 text-base text-ink-soft">
         {bookings.length === 0
           ? "Reservations will appear here the moment a deposit is started."
           : `${paid} paid · ${pending} pending · ${bookings.length} total`}
       </p>
 
       {bookings.length === 0 ? (
-        <div className="mt-10 border border-dashed border-line bg-ivory p-10 text-center">
-          <p className="text-sm text-ink-soft">
+        <div className="mt-10 rounded-lg border border-line bg-white p-10 text-center">
+          <p className="text-base leading-7 text-ink-soft">
             No bookings yet. When a client reserves their date, you&apos;ll see
             their name, collection, date, payment status, and contact here.
           </p>
         </div>
       ) : (
-        <div className="mt-8 grid gap-5 xl:grid-cols-2">
+        <div className="mt-8 grid gap-4 xl:grid-cols-2">
           {bookings.map((b) => (
             <BookingCard key={b.id} b={b} />
           ))}

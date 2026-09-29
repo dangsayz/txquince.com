@@ -78,7 +78,7 @@ export function VideosManager({ initial }: { initial: VideoRow[] }) {
     <div>
       <form
         onSubmit={add}
-        className="flex flex-col gap-3 border border-line bg-ivory p-5 sm:flex-row sm:items-end"
+        className="flex flex-col gap-3 border border-line bg-white p-5 sm:flex-row sm:items-end"
       >
         <label className="flex-1 text-sm text-ink">
           Video link
@@ -86,7 +86,7 @@ export function VideosManager({ initial }: { initial: VideoRow[] }) {
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             placeholder="Paste a YouTube, Vimeo, or QuinceNetwork link…"
-            className="mt-1 w-full border-b border-line bg-transparent py-1.5 text-sm focus:border-accent focus:outline-none"
+            className="mt-1 w-full min-h-11 rounded-lg border border-line bg-white px-3 py-2 text-base focus:border-accent focus:outline-2 focus:outline-offset-2 focus:outline-accent"
           />
         </label>
         <label className="text-sm text-ink sm:w-56">
@@ -95,13 +95,13 @@ export function VideosManager({ initial }: { initial: VideoRow[] }) {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Sofia's Quinceañera"
-            className="mt-1 w-full border-b border-line bg-transparent py-1.5 text-sm focus:border-accent focus:outline-none"
+            className="mt-1 w-full min-h-11 rounded-lg border border-line bg-white px-3 py-2 text-base focus:border-accent focus:outline-2 focus:outline-offset-2 focus:outline-accent"
           />
         </label>
         <button
           type="submit"
           disabled={busy || !url}
-          className="rounded-full bg-accent px-6 py-2.5 text-[0.66rem] uppercase tracking-[0.16em] text-cream hover:bg-accent-strong disabled:opacity-50"
+          className="min-h-12 rounded-lg bg-accent px-6 py-2.5 text-base font-medium text-cream hover:bg-accent-strong disabled:opacity-50"
         >
           {busy ? "Adding…" : "Add"}
         </button>
@@ -117,26 +117,26 @@ export function VideosManager({ initial }: { initial: VideoRow[] }) {
             return (
               <div
                 key={v.id}
-                className="flex items-center gap-4 border border-line bg-ivory p-3"
+                className="flex flex-wrap items-center gap-4 rounded-lg border border-line bg-white p-4"
               >
                 <div className="relative h-16 w-28 shrink-0 overflow-hidden bg-greige">
                   {p ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={p} alt="" className="h-full w-full object-cover" />
                   ) : (
-                    <span className="flex h-full w-full items-center justify-center text-[0.6rem] uppercase tracking-wider text-ink-faint">
+                    <span className="flex h-full w-full items-center justify-center text-sm uppercase tracking-wider text-ink-faint">
                       {v.provider}
                     </span>
                   )}
                 </div>
-                <div className="flex-1">
+                <div className="min-w-0 flex-1 basis-full sm:basis-52">
                   <input
                     defaultValue={v.title}
                     placeholder="Title"
                     onBlur={(e) =>
                       e.target.value !== v.title && patch(v.id, { title: e.target.value })
                     }
-                    className="w-full border-b border-line bg-transparent pb-1 text-sm focus:border-accent focus:outline-none"
+                    className="w-full rounded-lg border border-line bg-white px-3 py-2 text-base focus:border-accent focus:outline-2 focus:outline-offset-2 focus:outline-accent"
                   />
                   <a
                     href={v.url}
@@ -154,11 +154,11 @@ export function VideosManager({ initial }: { initial: VideoRow[] }) {
                         e.target.value !== (v.poster_url ?? "") &&
                         patch(v.id, { poster_url: e.target.value })
                       }
-                      className="mt-1 w-full border-b border-line bg-transparent pb-1 text-xs focus:border-accent focus:outline-none"
+                      className="mt-1 min-h-11 w-full rounded-lg border border-line bg-white px-3 py-2 text-base focus:border-accent focus:outline-2 focus:outline-offset-2 focus:outline-accent"
                     />
                   ) : null}
                 </div>
-                <label className="flex items-center gap-1.5 text-xs text-ink-soft">
+                <label className="flex min-h-11 items-center gap-1.5 text-base text-ink-soft">
                   <input
                     type="checkbox"
                     checked={v.is_feature}
@@ -166,7 +166,7 @@ export function VideosManager({ initial }: { initial: VideoRow[] }) {
                   />
                   Feature
                 </label>
-                <label className="flex items-center gap-1.5 text-xs text-ink-soft">
+                <label className="flex min-h-11 items-center gap-1.5 text-base text-ink-soft">
                   Shorts
                   <input
                     type="checkbox"
@@ -176,10 +176,10 @@ export function VideosManager({ initial }: { initial: VideoRow[] }) {
                     }
                   />
                 </label>
-                <div className="flex items-center gap-1 text-ink-soft">
-                  <button onClick={() => move(i, -1)} disabled={i === 0} className="px-1.5 disabled:opacity-30" aria-label="Up">↑</button>
-                  <button onClick={() => move(i, 1)} disabled={i === videos.length - 1} className="px-1.5 disabled:opacity-30" aria-label="Down">↓</button>
-                  <button onClick={() => remove(v.id)} className="px-1.5 text-danger" aria-label="Delete">✕</button>
+                <div className="flex items-center gap-2 text-ink-soft">
+                  <button onClick={() => move(i, -1)} disabled={i === 0} className="min-h-11 min-w-11 rounded-lg border border-line disabled:opacity-30" aria-label="Up">↑</button>
+                  <button onClick={() => move(i, 1)} disabled={i === videos.length - 1} className="min-h-11 min-w-11 rounded-lg border border-line disabled:opacity-30" aria-label="Down">↓</button>
+                  <button onClick={() => remove(v.id)} className="min-h-11 min-w-11 rounded-lg border border-line text-danger" aria-label="Delete">✕</button>
                 </div>
               </div>
             );

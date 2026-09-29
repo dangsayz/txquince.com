@@ -84,14 +84,14 @@ export function PageHeroManager({
         const open = openKey === row.key;
         const busy = busyKey === row.key;
         return (
-          <div key={row.key} className="border border-line bg-ivory p-5">
+          <div key={row.key} className="rounded-lg border border-line bg-white p-5">
             <div className="flex flex-wrap items-center gap-4">
               <div className="h-20 w-28 shrink-0 overflow-hidden rounded-lg bg-greige">
                 {row.current?.url ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={row.current.url} alt="" className="h-full w-full object-cover" />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center text-[0.6rem] uppercase tracking-[0.16em] text-ink-faint">
+                  <div className="flex h-full w-full items-center justify-center text-sm uppercase tracking-[0.16em] text-ink-faint">
                     Automatic
                   </div>
                 )}
@@ -107,7 +107,7 @@ export function PageHeroManager({
                   type="button"
                   onClick={() => setOpenKey(open ? null : row.key)}
                   disabled={busy}
-                  className="min-h-11 rounded-full border border-accent/40 px-5 py-2 text-[0.66rem] uppercase tracking-[0.16em] text-accent transition-colors hover:bg-accent hover:text-cream disabled:opacity-50"
+                  className="min-h-11 rounded-lg border border-accent/40 px-5 py-2 text-base font-medium text-accent transition-colors hover:bg-accent hover:text-cream disabled:opacity-50"
                 >
                   {open ? "Close" : "Choose photo"}
                 </button>
@@ -116,7 +116,7 @@ export function PageHeroManager({
                     type="button"
                     onClick={() => reset(row.key)}
                     disabled={busy}
-                    className="min-h-11 px-3 text-[0.66rem] uppercase tracking-[0.16em] text-ink-faint transition-colors hover:text-accent disabled:opacity-50"
+                    className="min-h-11 px-3 text-base font-medium text-ink-faint transition-colors hover:text-accent disabled:opacity-50"
                   >
                     Reset
                   </button>
@@ -152,12 +152,12 @@ export function PageHeroManager({
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img src={item.url} alt={item.alt} className="h-full w-full object-cover" />
                             {item.landscape ? (
-                              <span className="absolute left-1 top-1 rounded bg-ink/70 px-1 text-[0.55rem] text-cream">
+                              <span className="absolute left-1 top-1 rounded bg-ink/70 px-1 text-xs text-cream">
                                 ▭
                               </span>
                             ) : null}
                             {selected ? (
-                              <span className="absolute inset-0 flex items-center justify-center bg-ink/35 text-[0.6rem] uppercase tracking-[0.16em] text-cream">
+                              <span className="absolute inset-0 flex items-center justify-center bg-ink/35 text-sm uppercase tracking-[0.16em] text-cream">
                                 In use
                               </span>
                             ) : null}

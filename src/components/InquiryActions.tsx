@@ -85,7 +85,7 @@ export function InquiryActions({
   return (
     <div className="mt-4 border-t border-line pt-4">
       <div className="flex flex-wrap items-center gap-3">
-        <span className="text-[0.7rem] uppercase tracking-[0.14em] text-ink-faint">
+        <span className="text-sm uppercase tracking-[0.14em] text-ink-soft">
           Status
         </span>
         <div className="flex flex-wrap gap-2">
@@ -97,7 +97,7 @@ export function InquiryActions({
                 type="button"
                 disabled={pending}
                 onClick={() => choose(s.value)}
-                className={`min-h-11 rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wider ring-1 transition-colors disabled:opacity-50 ${
+                className={`min-h-11 rounded-md px-4 py-2 text-base font-medium ring-1 transition-colors disabled:opacity-50 ${
                   active
                     ? "bg-ink text-cream ring-ink"
                     : "bg-ivory text-ink-soft ring-line hover:text-ink"
@@ -117,7 +117,7 @@ export function InquiryActions({
             onChange={(e) => setReason(e.target.value)}
             disabled={pending}
             aria-label="Reason lost"
-            className="min-h-11 rounded border border-line bg-white px-3 py-2 text-base text-ink"
+            className="min-h-12 rounded-md border border-line bg-white px-3 py-2 text-base text-ink"
           >
             <option value="">Why lost…</option>
             {LOST_REASONS.map((r) => (
@@ -135,7 +135,7 @@ export function InquiryActions({
               disabled={pending}
               placeholder="Competitor (optional)"
               maxLength={120}
-              className="min-h-11 rounded border border-line bg-white px-3 py-2 text-base text-ink placeholder:text-ink-faint"
+              className="min-h-12 rounded-md border border-line bg-white px-3 py-2 text-base text-ink placeholder:text-ink-faint"
             />
           )}
 
@@ -143,14 +143,14 @@ export function InquiryActions({
             type="button"
             disabled={pending || !reason}
             onClick={saveLost}
-            className="min-h-11 rounded-full bg-wine px-4 py-2 text-xs font-semibold uppercase tracking-wider text-cream transition-colors hover:bg-wine-deep disabled:opacity-50"
+            className="min-h-12 rounded-md bg-ink px-5 py-2 text-base font-medium text-cream transition-colors hover:bg-ink/85 disabled:opacity-50"
           >
             Save
           </button>
         </div>
       )}
 
-      {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
+      {error && <p role="alert" className="mt-3 text-base text-red-700">{error}</p>}
     </div>
   );
 }

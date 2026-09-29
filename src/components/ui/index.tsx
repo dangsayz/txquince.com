@@ -15,7 +15,7 @@ const buttonTone: Record<Tone, string> = {
 };
 
 function buttonClass(tone: Tone, className: string) {
-  return `inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-semibold transition-colors hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transform-none ${buttonTone[tone]} ${className}`;
+  return `inline-flex min-h-12 items-center justify-center gap-2 rounded-md border px-5 py-2.5 text-base font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transform-none ${buttonTone[tone]} ${className}`;
 }
 
 export function Button({ tone = "primary", className = "", type = "button", loading = false, disabled, children, ...props }: ComponentProps<"button"> & { tone?: Tone; loading?: boolean }) {
@@ -40,7 +40,7 @@ export function Chip({ active = false, className = "", ...props }: ComponentProp
     <button
       type="button"
       aria-pressed={active}
-      className={`inline-flex min-h-11 items-center rounded-lg border px-3.5 py-2 text-sm font-medium transition-colors hover:border-accent hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50 ${active ? "border-accent bg-accent-soft text-accent-strong" : "border-line bg-white text-ink-soft"} ${className}`}
+      className={`inline-flex min-h-11 items-center rounded-md border px-3.5 py-2 text-base font-medium transition-colors hover:border-accent hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50 ${active ? "border-accent bg-accent-soft text-accent-strong" : "border-line bg-white text-ink-soft"} ${className}`}
       {...props}
     />
   );
@@ -64,7 +64,7 @@ export function Field({ label, hint, error, id, className = "", ...props }: Omit
         id={id}
         aria-invalid={Boolean(error)}
         aria-describedby={[hintId, errorId].filter(Boolean).join(" ") || undefined}
-        className={`min-h-11 w-full rounded-lg border border-line bg-white px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none disabled:cursor-not-allowed disabled:bg-ivory ${error ? "border-danger focus:border-danger" : ""} ${className}`}
+        className={`min-h-12 w-full rounded-md border border-line bg-white px-3.5 py-2.5 text-base text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none disabled:cursor-not-allowed disabled:bg-ivory ${error ? "border-danger focus:border-danger" : ""} ${className}`}
         {...props}
       />
       {hint && <p id={hintId} className="text-xs text-ink-soft">{hint}</p>}
@@ -91,7 +91,7 @@ export function Textarea({ label, hint, error, id, className = "", ...props }: O
         id={id}
         aria-invalid={Boolean(error)}
         aria-describedby={[hintId, errorId].filter(Boolean).join(" ") || undefined}
-        className={`min-h-28 w-full resize-y rounded-lg border border-line bg-white px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none disabled:cursor-not-allowed disabled:bg-ivory ${error ? "border-danger focus:border-danger" : ""} ${className}`}
+        className={`min-h-28 w-full resize-y rounded-md border border-line bg-white px-3.5 py-2.5 text-base text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none disabled:cursor-not-allowed disabled:bg-ivory ${error ? "border-danger focus:border-danger" : ""} ${className}`}
         {...props}
       />
       {hint && <p id={hintId} className="text-xs text-ink-soft">{hint}</p>}

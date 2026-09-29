@@ -136,38 +136,38 @@ export default async function EsBlogPostPage({
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <article className="mx-auto max-w-3xl px-5 pt-section md:px-10 lg:px-16 md:pt-section-lg">
+      <article className="mx-auto max-w-3xl px-5 pt-10 md:px-10 md:pt-14 lg:px-16">
         <div className="flex items-center justify-between gap-4">
-          <nav className="text-xs text-ink-faint" aria-label="Ruta">
-            <Link href="/" className="hover:text-accent">Inicio</Link>
+          <nav className="flex items-center gap-1 text-sm text-ink-faint" aria-label="Ruta">
+            <Link href="/" className="inline-flex min-h-11 items-center hover:text-ink">Inicio</Link>
             <span className="mx-1.5">/</span>
-            <Link href="/es/blog" className="hover:text-accent">Guía</Link>
+            <Link href="/es/blog" className="inline-flex min-h-11 items-center hover:text-ink">Guía</Link>
           </nav>
           {enSlug ? (
-            <Link href={`/blog/${enSlug}`} hrefLang="en" className="text-xs text-accent underline underline-offset-2 hover:text-accent-strong">
+            <Link href={`/blog/${enSlug}`} hrefLang="en" className="inline-flex min-h-11 items-center text-sm text-ink-soft underline underline-offset-4 hover:text-ink">
               Read in English
             </Link>
           ) : null}
         </div>
 
-        <Reveal className="mt-5">
-          <p className="eyebrow mb-4">{CATEGORY_ES[post.category]}</p>
-          <h1 className="display-2 text-ink text-balance">{post.title}</h1>
+        <Reveal className="mx-auto mt-8 max-w-2xl text-center">
+          <p className="mb-4 text-sm font-medium text-ink-soft">{CATEGORY_ES[post.category]}</p>
+          <h1 className="font-display text-[clamp(2rem,3.5vw,3rem)] leading-[1.14] text-ink text-balance">{post.title}</h1>
           <p className="mt-4 text-sm text-ink-faint">
             {formatDateEs(post.publishedAt)} · {post.readMinutes} min de lectura
           </p>
-          <p className="mt-6 text-lg leading-relaxed text-ink-soft">{post.lead}</p>
+          <p className="mt-6 text-base leading-7 text-ink-soft">{post.lead}</p>
         </Reveal>
 
         {toc.length >= 4 ? (
-          <nav aria-label="En esta guía" className="mt-10 border-y border-ink/10 py-6">
-            <p className="text-[0.6rem] uppercase tracking-[0.24em] text-ink-faint">En esta guía</p>
-            <ul className="mt-4 flex flex-col gap-2.5">
+          <nav aria-label="En esta guía" className="mt-10 rounded-lg border border-line bg-white p-6">
+            <p className="text-sm font-medium text-ink-soft">En esta guía</p>
+            <ul className="mt-3 flex flex-col gap-1">
               {toc.map((h, idx) => (
                 <li key={h.text}>
                   <a
                     href={`#${slugifyHeading(h.text)}`}
-                    className="group inline-flex items-baseline gap-3 text-[0.95rem] text-ink-soft transition-colors hover:text-accent"
+                    className="group inline-flex min-h-11 items-center gap-3 text-base text-ink-soft transition-colors hover:text-ink"
                   >
                     <span className="font-display text-xs tabular-nums text-ink-faint">
                       {String(idx + 1).padStart(2, "0")}
@@ -186,12 +186,12 @@ export default async function EsBlogPostPage({
 
         {post.faqs && post.faqs.length ? (
           <section className="mt-14">
-            <h2 className="font-display text-3xl text-ink">Preguntas frecuentes</h2>
+            <h2 className="font-display text-[clamp(1.875rem,2.8vw,2.625rem)] text-ink">Preguntas frecuentes</h2>
             <dl className="mt-6 divide-y divide-line border-y border-line">
               {post.faqs.map((f) => (
                 <div key={f.q} className="py-6">
                   <dt className="font-display text-xl text-ink">{f.q}</dt>
-                  <dd className="mt-2 text-sm leading-relaxed text-ink-soft">{f.a}</dd>
+                  <dd className="mt-2 text-base leading-7 text-ink-soft">{f.a}</dd>
                 </div>
               ))}
             </dl>
@@ -199,16 +199,16 @@ export default async function EsBlogPostPage({
         ) : null}
 
         {related.length ? (
-          <section className="mt-16 border-t border-ink/10 pt-10">
-            <p className="eyebrow mb-2">Sigue leyendo</p>
+          <section className="mt-16 border-t border-line pt-10">
+            <p className="mb-2 text-sm font-medium text-ink-soft">Sigue leyendo</p>
             <div>
               {related.map((r, idx) => (
                 <Link
                   key={r.slug}
                   href={`/es/blog/${r.slug}`}
-                  className={`group block py-5 ${idx > 0 ? "border-t border-ink/10" : ""}`}
+                  className={`group block py-5 ${idx > 0 ? "border-t border-line" : ""}`}
                 >
-                  <p className="text-[0.6rem] uppercase tracking-[0.2em] text-ink-faint">{CATEGORY_ES[r.category]}</p>
+                  <p className="text-sm text-ink-soft">{CATEGORY_ES[r.category]}</p>
                   <h3 className="mt-1.5 font-display text-lg leading-tight text-ink transition-colors group-hover:text-accent md:text-xl">
                     {r.title}
                   </h3>
@@ -219,18 +219,17 @@ export default async function EsBlogPostPage({
         ) : null}
       </article>
 
-      {/* Spanish closing CTA */}
-      <section className="mt-section bg-ink text-cream">
-        <div className="mx-auto max-w-3xl px-5 py-section text-center md:px-10 lg:px-16">
-          <h2 className="display-2 text-cream text-balance">Reserva la fecha de su quinceañera</h2>
-          <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-cream/75">
+      <section className="mt-16 bg-ivory px-5 py-16 md:px-10 md:py-20 lg:px-16">
+        <div className="mx-auto max-w-3xl rounded-lg border border-line bg-white px-6 py-12 text-center sm:px-10 sm:py-16">
+          <h2 className="font-display text-[clamp(1.875rem,2.8vw,2.625rem)] leading-tight text-ink text-balance">Reserva la fecha de su quinceañera</h2>
+          <p className="mx-auto mt-4 max-w-md text-base leading-7 text-ink-soft">
             Le confirmo que su fecha está disponible y le envío un enlace seguro para el depósito. Sin pago ahora mismo.
           </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link href="/reserve" className="rounded-full bg-cream px-6 py-3 text-sm font-medium text-ink transition-colors hover:bg-white">
+          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+            <Link href="/reserve" className="inline-flex min-h-12 items-center justify-center whitespace-nowrap rounded-md bg-ink px-6 text-base font-medium text-white transition-colors hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
               Reservar mi fecha
             </Link>
-            <Link href="/check-your-date" className="rounded-full border border-cream/40 px-6 py-3 text-sm text-cream transition-colors hover:border-cream">
+            <Link href="/check-your-date" className="inline-flex min-h-12 items-center justify-center whitespace-nowrap rounded-md border border-line px-6 text-base font-medium text-ink transition-colors hover:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
               Ver si mi fecha está libre
             </Link>
           </div>

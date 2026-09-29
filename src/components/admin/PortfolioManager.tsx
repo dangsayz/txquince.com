@@ -30,15 +30,18 @@ function CategorySelect({
   value,
   onChange,
   className,
+  label = "Photo category",
 }: {
   value: string;
   onChange: (next: string) => void;
   className?: string;
+  label?: string;
 }) {
   return (
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
+      aria-label={label}
       className={className}
     >
       {CATEGORIES_BY_GROUP.map(({ group, categories }) => (
@@ -161,6 +164,7 @@ function LocationCombobox({
       <input
         value={draft}
         placeholder="Location (where it was shot)"
+        aria-label="Location (where it was shot)"
         onChange={(e) => {
           setDraft(e.target.value);
           setOpen(true);
@@ -185,10 +189,10 @@ function LocationCombobox({
           }
         }}
         onBlur={() => commit(draft)}
-        className="w-full border-b border-line bg-transparent pb-1 text-xs focus:border-accent focus:outline-none"
+        className="min-h-11 w-full rounded-lg border border-line bg-white px-3 py-2 text-base focus:border-accent focus:outline-2 focus:outline-offset-2 focus:outline-accent"
       />
       {open && matches.length > 0 ? (
-        <ul className="absolute left-0 right-0 z-20 mt-1 max-h-44 overflow-auto border border-line bg-ivory shadow-[0_12px_30px_-12px_rgba(28,26,23,0.4)]">
+        <ul className="absolute left-0 right-0 z-20 mt-1 max-h-44 overflow-auto rounded-lg border border-line bg-white shadow-[0_12px_30px_-12px_rgba(28,26,23,0.4)]">
           {matches.map((s, i) => (
             <li key={s}>
               <button
@@ -200,7 +204,7 @@ function LocationCombobox({
                   commit(s);
                 }}
                 onMouseEnter={() => setActive(i)}
-                className={`block w-full px-2.5 py-1.5 text-left text-xs transition-colors ${
+                className={`block min-h-11 w-full px-3 py-2 text-left text-base transition-colors ${
                   i === active ? "bg-greige text-ink" : "text-ink-soft"
                 }`}
               >
@@ -304,11 +308,11 @@ function VendorTagger({
   }
 
   const fieldCls =
-    "w-full border-b border-line bg-transparent pb-1 text-xs focus:border-accent focus:outline-none";
+    "min-h-11 w-full rounded-lg border border-line bg-white px-3 py-2 text-base focus:border-accent focus:outline-2 focus:outline-offset-2 focus:outline-accent";
 
   return (
-    <div ref={wrapRef} className="rounded-md border border-line bg-greige/30 p-2">
-      <p className="mb-1.5 text-[0.58rem] uppercase tracking-[0.14em] text-ink-faint">
+    <div ref={wrapRef} className="rounded-lg border border-line bg-white p-4">
+      <p className="mb-2 text-sm font-medium text-ink-soft">
         Vendors credited
       </p>
       {/* Tagged chips */}
@@ -317,7 +321,7 @@ function VendorTagger({
           {tagged.map((t) => (
             <span
               key={t.vendor_id}
-              className="inline-flex items-center gap-1 rounded-full border border-line bg-ivory px-2 py-1 text-[0.66rem] text-ink"
+              className="inline-flex items-center gap-1 rounded-full border border-line bg-white px-3 py-2 text-sm text-ink"
             >
               <span className="text-ink-faint">{t.role || vendorCreditLabel(t.category)}:</span>
               {t.business || t.name}
@@ -325,7 +329,7 @@ function VendorTagger({
                 type="button"
                 onClick={() => remove(t.vendor_id)}
                 aria-label={`Remove ${t.name}`}
-                className="ml-0.5 grid h-4 w-4 place-items-center rounded-full text-ink-faint hover:bg-accent hover:text-cream"
+                className="ml-0.5 grid h-11 w-11 place-items-center rounded-lg text-ink-faint hover:bg-accent hover:text-cream"
               >
                 ✕
               </button>
@@ -382,14 +386,14 @@ function VendorTagger({
               type="button"
               onClick={submitCreate}
               disabled={busy || !form.name.trim()}
-              className="rounded-full bg-accent px-3 py-1.5 text-[0.6rem] uppercase tracking-[0.12em] text-cream disabled:opacity-50"
+              className="min-h-11 rounded-lg bg-accent px-4 py-2 text-base font-medium text-cream disabled:opacity-50"
             >
               {busy ? "Saving…" : "Save & tag"}
             </button>
             <button
               type="button"
               onClick={() => setCreating(false)}
-              className="text-[0.6rem] uppercase tracking-[0.12em] text-ink-soft hover:text-ink"
+              className="min-h-11 rounded-lg px-4 text-base text-ink-soft hover:text-ink"
             >
               Cancel
             </button>
@@ -408,7 +412,7 @@ function VendorTagger({
             className={fieldCls}
           />
           {open && (matches.length > 0 || draft.trim()) ? (
-            <ul className="absolute left-0 right-0 z-20 mt-1 max-h-52 overflow-auto border border-line bg-ivory shadow-[0_12px_30px_-12px_rgba(28,26,23,0.4)]">
+            <ul className="absolute left-0 right-0 z-20 mt-1 max-h-52 overflow-auto rounded-lg border border-line bg-white shadow-[0_12px_30px_-12px_rgba(28,26,23,0.4)]">
               {matches.map((v) => (
                 <li key={v.id}>
                   <button
@@ -417,7 +421,7 @@ function VendorTagger({
                       e.preventDefault();
                       add(v.id);
                     }}
-                    className="block w-full px-2.5 py-2 text-left text-xs text-ink-soft transition-colors hover:bg-greige hover:text-ink"
+                    className="block min-h-11 w-full px-3 py-2 text-left text-base text-ink-soft transition-colors hover:bg-greige hover:text-ink"
                   >
                     <span className="text-ink">{v.business || v.name}</span>
                     <span className="ml-1.5 text-ink-faint">
@@ -435,7 +439,7 @@ function VendorTagger({
                       e.preventDefault();
                       openCreate();
                     }}
-                    className="block w-full px-2.5 py-2 text-left text-xs text-accent transition-colors hover:bg-accent hover:text-cream"
+                    className="block min-h-11 w-full px-3 py-2 text-left text-base text-accent transition-colors hover:bg-accent hover:text-cream"
                   >
                     + Add new vendor “{draft.trim()}”
                   </button>
@@ -827,46 +831,48 @@ export function PortfolioManager({
   return (
     <div>
       {/* Upload bar */}
-      <div className="flex flex-wrap items-center gap-4 border border-line bg-ivory p-5">
-        <label className="text-sm text-ink">
+      <div className="flex flex-wrap items-center gap-4 rounded-xl border border-line bg-white p-5">
+        <label className="text-base text-ink">
           Upload into{" "}
           <CategorySelect
             value={section}
             onChange={setSection}
-            className="border-b border-line bg-transparent py-1 focus:border-accent focus:outline-none"
+            label="Upload category"
+            className="min-h-11 rounded-lg border border-line bg-white px-3 py-2 text-base focus:border-accent focus:outline-2 focus:outline-offset-2 focus:outline-accent"
           />
           {uploadGroup ? (
-            <span className="ml-2 whitespace-nowrap text-xs text-ink-faint">
+            <span className="ml-2 text-sm text-ink-faint">
               → appears publicly under{" "}
               <span className="text-accent">{uploadGroup.label}</span>
             </span>
           ) : null}
         </label>
-        <label className="flex items-center gap-2 text-sm text-ink">
-          at
-          <div className="w-52">
+        <div className="flex flex-wrap items-center gap-2 text-base text-ink">
+          <span>at</span>
+          <div className="min-w-52 flex-1">
             <LocationCombobox
               value={uploadLocation || null}
               suggestions={locationSuggestions}
               onCommit={(loc) => setUploadLocation(loc ?? "")}
             />
           </div>
-        </label>
+        </div>
         <input
           ref={fileRef}
           type="file"
           accept="image/jpeg,image/png,image/webp,image/avif"
+          aria-label="Upload portfolio photos"
           multiple
           disabled={busy}
           onChange={(e) => handleFiles(e.target.files)}
-          className="text-sm text-ink-soft file:mr-3 file:rounded-full file:border file:border-accent file:bg-transparent file:px-5 file:py-2 file:text-[0.66rem] file:uppercase file:tracking-[0.16em] file:text-accent"
+          className="min-h-11 text-base text-ink-soft file:mr-3 file:min-h-11 file:rounded-lg file:border file:border-accent file:bg-white file:px-5 file:py-2 file:text-base file:font-medium file:text-accent"
         />
         {images.some((i) => !i.width || !i.height) ? (
           <button
             type="button"
             onClick={backfillDimensions}
             disabled={busy}
-            className="rounded-full border border-line px-4 py-2 text-[0.66rem] uppercase tracking-[0.16em] text-ink-soft transition-colors hover:border-accent hover:text-accent disabled:opacity-50"
+            className="min-h-11 rounded-lg border border-line px-4 py-2 text-base font-medium text-ink-soft transition-colors hover:border-accent hover:text-accent disabled:opacity-50"
             title="Read sizes for older images so the public grid loads without shifting"
           >
             Fix image sizes
@@ -877,7 +883,7 @@ export function PortfolioManager({
             type="button"
             onClick={describeBlankAlts}
             disabled={busy}
-            className="rounded-full border border-line px-4 py-2 text-[0.66rem] uppercase tracking-[0.16em] text-ink-soft transition-colors hover:border-accent hover:text-accent disabled:opacity-50"
+            className="min-h-11 rounded-lg border border-line px-4 py-2 text-base font-medium text-ink-soft transition-colors hover:border-accent hover:text-accent disabled:opacity-50"
             title="Draft alt text with AI for every image still missing it (you can edit after)"
           >
             Write blank alt text
@@ -888,7 +894,7 @@ export function PortfolioManager({
             type="button"
             onClick={aiWriteAll}
             disabled={busy}
-            className="rounded-full border border-accent/40 px-4 py-2 text-[0.66rem] uppercase tracking-[0.16em] text-accent transition-colors hover:border-accent hover:bg-accent hover:text-cream disabled:opacity-50"
+            className="min-h-11 rounded-lg border border-accent/40 px-4 py-2 text-base font-medium text-accent transition-colors hover:border-accent hover:bg-accent hover:text-cream disabled:opacity-50"
             title="Use AI to (re)write alt, SEO description, hook, and tags for every image — maximum image SEO"
           >
             AI: full SEO (all)
@@ -896,12 +902,12 @@ export function PortfolioManager({
         ) : null}
         {status ? <span className="text-xs text-ink-faint">{status}</span> : null}
       </div>
-      <p className="mt-2 text-xs text-ink-faint">
+      <p className="mt-2 text-base text-ink-soft">
         Select as many as you like — images are automatically resized and
         optimized in your browser before upload (originals stay on your computer).
         Then curate ruthlessly: a few stunning frames beat a hundred good ones.
       </p>
-      <p className="mt-1 text-xs text-ink-faint">
+      <p className="mt-1 text-base text-ink-soft">
         Folders roll up into the public tabs — e.g. Crowning, El Vals, and the
         Cake all show under <span className="text-ink-soft">The Celebration</span>.
         A tab only appears on the site once it has its first photo, so empty
@@ -932,7 +938,7 @@ export function PortfolioManager({
           {(grouped[s.value]?.length ?? 0) === 0 ? (
             <p className="mt-4 text-sm text-ink-faint">Upload target — no images yet.</p>
           ) : (
-            <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            <div className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {grouped[s.value].map((img, i) => (
                 <div
                   key={img.id}
@@ -944,7 +950,7 @@ export function PortfolioManager({
                     void dropOnto(s.value, img.id);
                     setDragId(null);
                   }}
-                  className={`border bg-ivory transition-colors ${
+                  className={`overflow-hidden rounded-xl border bg-white transition-colors ${
                     dragId === img.id ? "border-accent opacity-50" : "border-line"
                   }`}
                 >
@@ -962,7 +968,7 @@ export function PortfolioManager({
                         focus_y: Math.round(fy * 100) / 100,
                       });
                     }}
-                    className="relative block aspect-[3/4] w-full cursor-crosshair bg-greige"
+                    className="relative block aspect-[4/3] w-full cursor-crosshair bg-greige focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                   >
                     <Image
                       src={img.url}
@@ -982,13 +988,13 @@ export function PortfolioManager({
                       }}
                     />
                     {img.is_feature ? (
-                      <span className="absolute left-2 top-2 bg-accent px-2 py-0.5 text-[0.55rem] uppercase tracking-[0.14em] text-cream">
+                      <span className="absolute left-2 top-2 rounded bg-accent px-2 py-1 text-xs uppercase tracking-[0.12em] text-cream">
                         Featured
                       </span>
                     ) : null}
                   </button>
-                  <div className="flex flex-col gap-2 p-2.5">
-                    <label className="text-xs text-ink-soft">
+                  <div className="flex flex-col gap-3 p-4">
+                    <label className="text-base text-ink-soft">
                       Photo title
                       <input
                         key={`title-${img.id}-${img.title ?? ""}`}
@@ -999,7 +1005,7 @@ export function PortfolioManager({
                           const title = e.target.value.trim() || null;
                           if (title !== (img.title ?? null)) void patch(img.id, { title });
                         }}
-                        className="mt-1 w-full border-b border-line bg-transparent pb-1 text-xs text-ink focus:border-accent focus:outline-none"
+                        className="mt-1 min-h-11 w-full rounded-lg border border-line bg-white px-3 py-2 text-base text-ink focus:border-accent focus:outline-2 focus:outline-offset-2 focus:outline-accent"
                       />
                     </label>
                     <div className="flex items-end gap-1.5">
@@ -1007,17 +1013,19 @@ export function PortfolioManager({
                         key={`alt-${img.id}-${img.alt}`}
                         defaultValue={img.alt}
                         placeholder="Alt text (describe the photo)"
+                        aria-label="Photo alt text"
                         onBlur={(e) =>
                           e.target.value !== img.alt && patch(img.id, { alt: e.target.value })
                         }
-                        className="w-full border-b border-line bg-transparent pb-1 text-xs focus:border-accent focus:outline-none"
+                        className="min-h-11 w-full rounded-lg border border-line bg-white px-3 py-2 text-base focus:border-accent focus:outline-2 focus:outline-offset-2 focus:outline-accent"
                       />
                       <button
                         type="button"
                         onClick={() => aiWrite(img, "alt")}
                         disabled={describing.has(img.id)}
                         title="Draft alt text with AI (you can edit it)"
-                        className="shrink-0 rounded-full border border-line px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.12em] text-ink-soft transition-colors hover:border-accent hover:text-accent disabled:opacity-40"
+                        aria-label="Draft alt text with AI"
+                        className="min-h-11 min-w-11 shrink-0 rounded-lg border border-line px-2 py-1 text-sm font-medium text-ink-soft transition-colors hover:border-accent hover:text-accent disabled:opacity-40"
                       >
                         {describing.has(img.id) ? "…" : "AI"}
                       </button>
@@ -1030,18 +1038,20 @@ export function PortfolioManager({
                         defaultValue={img.caption ?? ""}
                         rows={2}
                         placeholder="SEO description (1–2 sentences)"
+                        aria-label="Photo SEO description"
                         onBlur={(e) =>
                           e.target.value !== (img.caption ?? "") &&
                           patch(img.id, { caption: e.target.value })
                         }
-                        className="w-full resize-none border-b border-line bg-transparent pb-1 text-xs leading-snug focus:border-accent focus:outline-none"
+                        className="min-h-11 w-full resize-y rounded-lg border border-line bg-white px-3 py-2 text-base leading-snug focus:border-accent focus:outline-2 focus:outline-offset-2 focus:outline-accent"
                       />
                       <button
                         type="button"
                         onClick={() => aiWrite(img, "caption")}
                         disabled={describing.has(img.id)}
                         title="Draft an SEO description with AI (you can edit it)"
-                        className="shrink-0 rounded-full border border-line px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.12em] text-ink-soft transition-colors hover:border-accent hover:text-accent disabled:opacity-40"
+                        aria-label="Draft SEO description with AI"
+                        className="min-h-11 min-w-11 shrink-0 rounded-lg border border-line px-2 py-1 text-sm font-medium text-ink-soft transition-colors hover:border-accent hover:text-accent disabled:opacity-40"
                       >
                         {describing.has(img.id) ? "…" : "AI"}
                       </button>
@@ -1052,18 +1062,20 @@ export function PortfolioManager({
                         key={`hook-${img.id}-${img.hook ?? ""}`}
                         defaultValue={img.hook ?? ""}
                         placeholder="Hook (one punchy line)"
+                        aria-label="Photo hook"
                         onBlur={(e) =>
                           e.target.value !== (img.hook ?? "") &&
                           patch(img.id, { hook: e.target.value })
                         }
-                        className="w-full border-b border-line bg-transparent pb-1 text-xs focus:border-accent focus:outline-none"
+                        className="min-h-11 w-full rounded-lg border border-line bg-white px-3 py-2 text-base focus:border-accent focus:outline-2 focus:outline-offset-2 focus:outline-accent"
                       />
                       <button
                         type="button"
                         onClick={() => aiWrite(img, "hook")}
                         disabled={describing.has(img.id)}
                         title="Draft a hook with AI (you can edit it)"
-                        className="shrink-0 rounded-full border border-line px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.12em] text-ink-soft transition-colors hover:border-accent hover:text-accent disabled:opacity-40"
+                        aria-label="Draft hook with AI"
+                        className="min-h-11 min-w-11 shrink-0 rounded-lg border border-line px-2 py-1 text-sm font-medium text-ink-soft transition-colors hover:border-accent hover:text-accent disabled:opacity-40"
                       >
                         {describing.has(img.id) ? "…" : "AI"}
                       </button>
@@ -1074,18 +1086,20 @@ export function PortfolioManager({
                         key={`tags-${img.id}-${img.tags ?? ""}`}
                         defaultValue={img.tags ?? ""}
                         placeholder="Tags / meta (comma-separated)"
+                        aria-label="Photo tags"
                         onBlur={(e) =>
                           e.target.value !== (img.tags ?? "") &&
                           patch(img.id, { tags: e.target.value })
                         }
-                        className="w-full border-b border-line bg-transparent pb-1 text-xs focus:border-accent focus:outline-none"
+                        className="min-h-11 w-full rounded-lg border border-line bg-white px-3 py-2 text-base focus:border-accent focus:outline-2 focus:outline-offset-2 focus:outline-accent"
                       />
                       <button
                         type="button"
                         onClick={() => aiWrite(img, "tags")}
                         disabled={describing.has(img.id)}
                         title="Draft keyword tags with AI (you can edit them)"
-                        className="shrink-0 rounded-full border border-line px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.12em] text-ink-soft transition-colors hover:border-accent hover:text-accent disabled:opacity-40"
+                        aria-label="Draft keyword tags with AI"
+                        className="min-h-11 min-w-11 shrink-0 rounded-lg border border-line px-2 py-1 text-sm font-medium text-ink-soft transition-colors hover:border-accent hover:text-accent disabled:opacity-40"
                       >
                         {describing.has(img.id) ? "…" : "AI"}
                       </button>
@@ -1093,7 +1107,7 @@ export function PortfolioManager({
                     <CategorySelect
                       value={img.section}
                       onChange={(next) => patch(img.id, { section: next })}
-                      className="w-full border-b border-line bg-transparent pb-1 text-xs focus:border-accent focus:outline-none"
+                      className="min-h-11 w-full rounded-lg border border-line bg-white px-3 py-2 text-base focus:border-accent focus:outline-2 focus:outline-offset-2 focus:outline-accent"
                     />
                     <LocationCombobox
                       value={img.location}
@@ -1105,7 +1119,7 @@ export function PortfolioManager({
                       value={img.city ?? ""}
                       onChange={(e) => patch(img.id, { city: e.target.value || null })}
                       title="Tag the city so this photo shows on that city's page"
-                      className="w-full border-b border-line bg-transparent pb-1 text-xs text-ink-soft focus:border-accent focus:outline-none"
+                      className="min-h-11 w-full rounded-lg border border-line bg-white px-3 py-2 text-base text-ink-soft focus:border-accent focus:outline-2 focus:outline-offset-2 focus:outline-accent"
                     >
                       <option value="">— City (for its page) —</option>
                       {cities.map((c) => (
@@ -1120,8 +1134,8 @@ export function PortfolioManager({
                       onChange={(ids) => setImageVendors(img.id, ids)}
                       onCreate={createVendor}
                     />
-                    <div className="flex items-center justify-between text-xs">
-                      <label className="flex items-center gap-1.5 text-ink-soft">
+                    <div className="flex flex-wrap items-center justify-between gap-2 text-base">
+                      <label className="flex min-h-11 items-center gap-1.5 text-ink-soft">
                         <input
                           type="checkbox"
                           checked={img.is_feature}
@@ -1139,14 +1153,14 @@ export function PortfolioManager({
                           onDragEnd={() => setDragId(null)}
                           title="Drag to reorder"
                           aria-label="Drag to reorder"
-                          className="cursor-grab select-none px-1 text-ink-faint active:cursor-grabbing"
+                          className="grid h-11 w-11 cursor-grab select-none place-items-center text-ink-faint active:cursor-grabbing"
                         >
                           ⠿
                         </span>
                         <button
                           onClick={() => move(s.value, i, -1)}
                           disabled={i === 0}
-                          className="px-1.5 text-ink-soft disabled:opacity-30"
+                          className="grid h-11 w-11 place-items-center rounded-lg border border-line text-ink-soft disabled:opacity-30"
                           aria-label="Move up"
                         >
                           ↑
@@ -1154,14 +1168,14 @@ export function PortfolioManager({
                         <button
                           onClick={() => move(s.value, i, 1)}
                           disabled={i === grouped[s.value].length - 1}
-                          className="px-1.5 text-ink-soft disabled:opacity-30"
+                          className="grid h-11 w-11 place-items-center rounded-lg border border-line text-ink-soft disabled:opacity-30"
                           aria-label="Move down"
                         >
                           ↓
                         </button>
                         <button
                           onClick={() => remove(img.id)}
-                          className="px-1.5 text-accent"
+                          className="grid h-11 w-11 place-items-center rounded-lg border border-line text-accent"
                           aria-label="Delete"
                         >
                           ✕

@@ -119,33 +119,31 @@ export default async function BlogPostPage({
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <article className="mx-auto max-w-3xl px-5 pt-section md:px-10 lg:px-16 md:pt-section-lg">
-        {/* breadcrumb */}
-        <nav className="text-xs text-ink-faint" aria-label="Breadcrumb">
-          <Link href="/" className="hover:text-accent">Home</Link>
+      <article className="mx-auto max-w-3xl px-5 pt-10 md:px-10 md:pt-14 lg:px-16">
+        <nav className="flex items-center gap-1 text-sm text-ink-faint" aria-label="Breadcrumb">
+          <Link href="/" className="inline-flex min-h-11 items-center hover:text-ink">Home</Link>
           <span className="mx-1.5">/</span>
-          <Link href="/blog" className="hover:text-accent">Blog</Link>
+          <Link href="/blog" className="inline-flex min-h-11 items-center hover:text-ink">Blog</Link>
         </nav>
 
-        <Reveal className="mt-5">
+        <Reveal className="mx-auto mt-8 max-w-2xl text-center">
           <p className="eyebrow mb-4">{post.category}</p>
-          <h1 className="display-2 text-ink text-balance">{post.title}</h1>
+          <h1 className="font-display text-[clamp(2rem,3.5vw,3rem)] leading-[1.14] text-ink text-balance">{post.title}</h1>
           <p className="mt-4 text-sm text-ink-faint">
             {formatDate(post.publishedAt)} · {post.readMinutes} min read
           </p>
-          <p className="mt-6 text-lg leading-relaxed text-ink-soft">{post.lead}</p>
+          <p className="mt-6 text-base leading-7 text-ink-soft">{post.lead}</p>
         </Reveal>
 
-        {/* TOC for longer posts — hairline-bounded, no filled box */}
         {toc.length >= 4 ? (
-          <nav aria-label="In this guide" className="mt-10 border-y border-ink/10 py-6">
-            <p className="text-[0.6rem] uppercase tracking-[0.24em] text-ink-faint">In this guide</p>
-            <ul className="mt-4 flex flex-col gap-2.5">
+          <nav aria-label="In this guide" className="mt-10 rounded-lg border border-line bg-white p-6">
+            <p className="text-sm font-medium text-ink-soft">In this guide</p>
+            <ul className="mt-3 flex flex-col gap-1">
               {toc.map((h, idx) => (
                 <li key={h.text}>
                   <a
                     href={`#${slugifyHeading(h.text)}`}
-                    className="group inline-flex items-baseline gap-3 text-[0.95rem] text-ink-soft transition-colors hover:text-accent"
+                    className="group inline-flex min-h-11 items-center gap-3 text-base text-ink-soft transition-colors hover:text-ink"
                   >
                     <span className="font-display text-xs tabular-nums text-ink-faint">
                       {String(idx + 1).padStart(2, "0")}
@@ -170,7 +168,7 @@ export default async function BlogPostPage({
               {post.faqs.map((f) => (
                 <div key={f.q} className="py-6">
                   <dt className="font-display text-xl text-ink">{f.q}</dt>
-                  <dd className="mt-2 text-sm leading-relaxed text-ink-soft">{f.a}</dd>
+                  <dd className="mt-2 text-base leading-7 text-ink-soft">{f.a}</dd>
                 </div>
               ))}
             </dl>
@@ -188,7 +186,7 @@ export default async function BlogPostPage({
                   href={`/blog/${r.slug}`}
                   className={`group block py-5 ${idx > 0 ? "border-t border-ink/10" : ""}`}
                 >
-                  <p className="text-[0.6rem] uppercase tracking-[0.2em] text-ink-faint">{r.category}</p>
+                  <p className="text-sm text-ink-soft">{r.category}</p>
                   <h3 className="mt-1.5 font-display text-lg leading-tight text-ink transition-colors group-hover:text-accent md:text-xl">
                     {r.title}
                   </h3>

@@ -51,10 +51,45 @@ export async function VideographerPage({ locale }: { locale: "en" | "es" }) {
   const videos = await getVideos();
   const films = videos.filter((v) => v.orientation !== "vertical");
   const shorts = videos.filter((v) => v.orientation === "vertical");
-  return <>
-    <section className="border-b border-line bg-white"><div className="mx-auto max-w-[90rem] px-5 py-20 md:px-10 md:py-28 lg:px-16"><p className="text-xs font-medium uppercase tracking-[0.2em] text-wine-deep">{c.eyebrow}</p><h1 className="mt-6 max-w-[11ch] font-serif text-[clamp(4rem,8vw,8rem)] leading-[0.9] tracking-[-0.05em] text-ink">{c.title}</h1><p className="mt-8 max-w-2xl text-lg leading-8 text-ink-soft">{c.intro}</p><Link href={inquiry} className="mt-9 inline-flex min-h-12 items-center rounded-full bg-ink px-7 text-sm font-semibold text-white hover:bg-ink/85">{c.cta} <span aria-hidden className="ml-3">→</span></Link></div></section>
-    <section className="mx-auto max-w-[90rem] px-5 py-20 md:px-10 md:py-28 lg:px-16"><h2 className="font-serif text-[clamp(2.8rem,5vw,4.5rem)] leading-none text-ink">{c.films}</h2><p className="mt-4 mb-10 text-base text-ink-soft">{c.filmsIntro}</p><VideoGallery videos={films} />{shorts.length > 0 ? <div className="mt-14"><VideoGallery videos={shorts} variant="vertical" /></div> : null}</section>
-    <section className="bg-greige"><div className="mx-auto max-w-[90rem] px-5 py-20 md:px-10 md:py-28 lg:px-16"><h2 className="font-serif text-[clamp(2.8rem,5vw,4.5rem)] leading-none text-ink">{c.collections}</h2><p className="mt-5 max-w-2xl text-base leading-7 text-ink-soft">{c.one}</p><div className="mt-10 grid gap-4 md:grid-cols-2">{packages.map((p) => <article key={p.id} className="border border-line bg-white p-7 sm:p-9"><div className="flex items-baseline justify-between gap-4"><h3 className="font-serif text-3xl text-ink">{p.name}</h3><span className="text-lg font-semibold text-ink">{p.priceLabel}</span></div><p className="mt-4 text-base leading-7 text-ink-soft">{locale === "es" ? spanishTeasers[p.id] : p.teaser}</p><p className="mt-5 text-sm text-ink-soft">{p.depositLabel} {locale === "es" ? "para apartar" : "deposit to reserve"}</p></article>)}</div></div></section>
-    <section className="mx-auto max-w-[90rem] px-5 py-20 md:px-10 md:py-28 lg:px-16"><h2 className="font-serif text-[clamp(2.8rem,5vw,4.5rem)] leading-none text-ink">{c.faq}</h2><div className="mt-8 max-w-3xl border-t border-line">{c.questions.map(([q,a]) => <details key={q} className="border-b border-line py-6"><summary className="cursor-pointer list-none font-medium text-ink">{q} <span aria-hidden className="float-right">+</span></summary><p className="mt-4 leading-7 text-ink-soft">{a}</p></details>)}</div><Link href={inquiry} className="mt-10 inline-flex min-h-12 items-center rounded-full bg-ink px-7 text-sm font-semibold text-white hover:bg-ink/85">{c.cta} <span aria-hidden className="ml-3">→</span></Link></section>
-  </>;
+  return (
+    <>
+      <section className="border-b border-line bg-white">
+        <div className="mx-auto max-w-[90rem] px-5 py-14 text-center md:px-10 md:py-20 lg:px-16">
+          <p className="text-xs font-medium uppercase tracking-[0.14em] text-ink-soft">{c.eyebrow}</p>
+          <h1 className="mx-auto mt-5 max-w-[22ch] font-display text-[clamp(2rem,3.4vw,3rem)] leading-[1.14] tracking-[-0.03em] text-ink">{c.title}</h1>
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-ink-soft sm:text-lg">{c.intro}</p>
+          <Link href={inquiry} className="mt-7 inline-flex min-h-12 items-center rounded-md bg-ink px-6 text-base font-medium text-white hover:bg-accent-strong">{c.cta} <span aria-hidden className="ml-3">→</span></Link>
+        </div>
+      </section>
+      <section className="mx-auto max-w-[90rem] px-5 py-16 md:px-10 md:py-20 lg:px-16">
+        <h2 className="font-display text-[clamp(1.75rem,2.8vw,2.5rem)] leading-tight text-ink">{c.films}</h2>
+        <p className="mb-10 mt-4 text-base text-ink-soft">{c.filmsIntro}</p>
+        <VideoGallery videos={films} />
+        {shorts.length > 0 ? <div className="mt-14"><VideoGallery videos={shorts} variant="vertical" /></div> : null}
+      </section>
+      <section className="bg-accent-soft">
+        <div className="mx-auto max-w-[90rem] px-5 py-16 md:px-10 md:py-20 lg:px-16">
+          <h2 className="font-display text-[clamp(1.75rem,2.8vw,2.5rem)] leading-tight text-ink">{c.collections}</h2>
+          <p className="mt-5 max-w-2xl text-base leading-7 text-ink-soft">{c.one}</p>
+          <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {packages.map((p) => (
+              <article key={p.id} className="flex flex-col rounded-xl border border-line bg-white p-6 sm:p-7">
+                <h3 className="font-display text-xl text-ink">{p.name}</h3>
+                <p className="mt-5 font-display text-[2rem] text-ink">{p.priceLabel}</p>
+                <p className="mt-4 flex-1 text-base leading-7 text-ink-soft">{locale === "es" ? spanishTeasers[p.id] : p.teaser}</p>
+                <p className="mt-5 text-base text-ink-soft">{p.depositLabel} {locale === "es" ? "para apartar" : "deposit to reserve"}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="mx-auto max-w-[90rem] px-5 py-16 md:px-10 md:py-20 lg:px-16">
+        <h2 className="font-display text-[clamp(1.75rem,2.8vw,2.5rem)] leading-tight text-ink">{c.faq}</h2>
+        <div className="mt-8 max-w-3xl border-t border-line">
+          {c.questions.map(([q, a]) => <details key={q} className="border-b border-line py-6"><summary className="cursor-pointer list-none font-medium text-ink">{q} <span aria-hidden className="float-right">+</span></summary><p className="mt-4 leading-7 text-ink-soft">{a}</p></details>)}
+        </div>
+        <Link href={inquiry} className="mt-10 inline-flex min-h-12 items-center rounded-md bg-ink px-6 text-base font-medium text-white hover:bg-accent-strong">{c.cta} <span aria-hidden className="ml-3">→</span></Link>
+      </section>
+    </>
+  );
 }

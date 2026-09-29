@@ -178,40 +178,37 @@ export default async function VenuePage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <section className="mx-auto max-w-[90rem] px-5 pb-10 pt-20 md:px-10 lg:px-16 md:pb-14 md:pt-28">
-        <Reveal>
-          <p className="text-[0.62rem] uppercase tracking-[0.28em] text-ink-faint">
+      <section className="mx-auto max-w-[90rem] px-5 pb-12 pt-12 md:px-10 md:pb-16 md:pt-16 lg:px-16 lg:pt-20">
+        <Reveal className="mx-auto max-w-3xl text-center">
+          <p className="text-sm font-medium text-ink-soft">
             <Link href="/venues" className="transition-colors hover:text-ink">
               Venues
             </Link>
             <span aria-hidden> — </span>
             {venue.city}, TX
           </p>
-          <h1
-            className="mt-5 max-w-4xl font-display text-ink"
-            style={{ fontSize: "clamp(2.3rem,5.5vw,4.6rem)", lineHeight: 1, letterSpacing: "-0.025em" }}
-          >
+          <h1 className="mt-4 font-display text-[clamp(2rem,3.5vw,3rem)] leading-[1.14] text-ink text-balance">
             Quinceañera Photographer at {venue.venue}
           </h1>
-          <p className="accent mt-4 text-xl text-wine-deep">{venue.city}, Texas</p>
-          <p className="mt-6 max-w-2xl text-[0.98rem] leading-relaxed text-ink-soft">{about}</p>
+          <p className="mt-4 text-base font-medium text-ink">{venue.city}, Texas</p>
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-ink-soft">{about}</p>
 
           {/* Facts + outbound links */}
           {copy?.address || copy?.area || ig || web || cityLoc ? (
-            <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-ink-soft">
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-base text-ink-soft">
               {copy?.address ? <span>{copy.address}</span> : copy?.area ? <span>{copy.area}, {venue.city}</span> : null}
               {ig ? (
-                <a href={ig} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[44px] items-center text-ink underline decoration-ink/30 underline-offset-[6px] hover:text-wine hover:decoration-wine">
+                <a href={ig} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center text-ink underline decoration-ink/30 underline-offset-[6px] hover:decoration-ink">
                   @{copy?.ig_handle}
                 </a>
               ) : null}
               {web ? (
-                <a href={web} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[44px] items-center text-ink underline decoration-ink/30 underline-offset-[6px] hover:text-wine hover:decoration-wine">
+                <a href={web} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center text-ink underline decoration-ink/30 underline-offset-[6px] hover:decoration-ink">
                   {websiteLabel(copy?.website)}
                 </a>
               ) : null}
               {cityLoc ? (
-                <Link href={`/quinceanera-photographer/${cityLoc.slug}`} className="inline-flex min-h-[44px] items-center text-ink underline decoration-ink/30 underline-offset-[6px] hover:text-wine hover:decoration-wine">
+                <Link href={`/quinceanera-photographer/${cityLoc.slug}`} className="inline-flex min-h-11 items-center text-ink underline decoration-ink/30 underline-offset-[6px] hover:decoration-ink">
                   Quinceañera photographer in {cityLoc.city} →
                 </Link>
               ) : null}
@@ -219,28 +216,25 @@ export default async function VenuePage({
           ) : null}
 
           <div className="mt-8">
-            <CTAButton href={site.cta.href}>Reserve your date at {venue.venue}</CTAButton>
+            <CTAButton href={site.cta.href} className="min-h-12 max-w-full rounded-md px-6 text-center text-base font-medium">Reserve your date at {venue.venue}</CTAButton>
           </div>
         </Reveal>
       </section>
 
       {/* Photos shot here */}
-      <section className="mt-4 border-t border-ink/10 bg-white">
+      <section className="border-t border-line bg-white">
         <div className="mx-auto max-w-[90rem] px-5 py-14 md:px-10 lg:px-16 md:py-20">
           <Reveal className="mb-10">
-            <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">The work</p>
-            <h2
-              className="mt-3 font-display text-ink"
-              style={{ fontSize: "clamp(1.8rem,3.6vw,2.8rem)", lineHeight: 1.05, letterSpacing: "-0.02em" }}
-            >
+            <p className="text-sm font-medium text-ink-soft">The work</p>
+            <h2 className="mt-3 font-display text-[clamp(1.75rem,3vw,2.5rem)] leading-tight text-ink">
               {items.length ? `Quinceañeras at ${venue.venue}` : `We'd love to shoot at ${venue.venue}`}
             </h2>
           </Reveal>
           {items.length ? (
             <PortfolioGallery images={items} />
           ) : (
-            <p className="accent text-xl text-ink-faint">
-              New work from {venue.venue} coming soon — <Link href={site.cta.href} className="underline decoration-wine/40 underline-offset-4 hover:text-wine">reserve your date</Link>.
+            <p className="rounded-lg border border-line bg-ivory p-6 text-base leading-7 text-ink-soft">
+              New work from {venue.venue} coming soon — <Link href={site.cta.href} className="font-medium text-ink underline decoration-ink/40 underline-offset-4 hover:decoration-ink">reserve your date</Link>.
             </p>
           )}
         </div>
@@ -248,22 +242,19 @@ export default async function VenuePage({
 
       {/* FAQ */}
       {copy?.faq?.length ? (
-        <section className="border-t border-ink/10">
+        <section className="border-t border-line">
           <div className="mx-auto max-w-3xl px-5 py-14 md:px-10 md:py-20">
             <Reveal>
-              <p className="text-[0.64rem] uppercase tracking-[0.32em] text-ink-faint">Good to know</p>
-              <h2
-                className="mt-3 font-display text-ink"
-                style={{ fontSize: "clamp(1.7rem,3.2vw,2.6rem)", lineHeight: 1.05, letterSpacing: "-0.02em" }}
-              >
+              <p className="text-sm font-medium text-ink-soft">Good to know</p>
+              <h2 className="mt-3 font-display text-[clamp(1.75rem,3vw,2.5rem)] leading-tight text-ink">
                 Quinceañeras at {venue.venue}
               </h2>
             </Reveal>
-            <dl className="mt-8 divide-y divide-ink/10 border-t border-ink/10">
+            <dl className="mt-8 divide-y divide-line border-t border-line">
               {copy.faq.map((f, i) => (
                 <div key={i} className="py-5">
                   <dt className="font-display text-lg text-ink">{f.q}</dt>
-                  <dd className="mt-2 text-sm leading-relaxed text-ink-soft">{f.a}</dd>
+                  <dd className="mt-2 text-base leading-7 text-ink-soft">{f.a}</dd>
                 </div>
               ))}
             </dl>

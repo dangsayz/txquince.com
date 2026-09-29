@@ -14,7 +14,7 @@ export default function AppleIcon() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "#566e60",
+          background: "#1d1d1f",
           color: "#ffffff",
         }}
       >
