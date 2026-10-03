@@ -65,7 +65,7 @@ export default async function AdminHome() {
       )}
 
       <div className="mt-10 grid items-start gap-8 xl:grid-cols-[minmax(0,1.8fr)_minmax(18rem,0.8fr)]">
-        <section aria-labelledby="queue-title" className="border border-[#e6e6e4] bg-white">
+        <section aria-labelledby="queue-title" className="min-w-0 border border-[#e6e6e4] bg-white">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e6e6e4] px-5 py-5 sm:px-6">
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#62625f]">Client work</p>
@@ -103,7 +103,7 @@ export default async function AdminHome() {
           )}
         </section>
 
-        <aside className="space-y-8">
+        <aside className="min-w-0 space-y-8">
           <section aria-labelledby="upcoming-title" className="border border-[#e6e6e4] bg-white px-5 py-5 sm:px-6">
             <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#62625f]">On the calendar</p>
             <h2 id="upcoming-title" className="mt-1 text-xl font-normal tracking-[-0.03em]">Upcoming dates</h2>

@@ -36,7 +36,7 @@ function MetricCard({
 function RankedList({ title, items, empty }: { title: string; items: { label: string; count: number }[]; empty: string }) {
   const max = Math.max(...items.map((i) => i.count), 1);
   return (
-    <div className="border border-line bg-white p-5">
+    <div className="min-w-0 border border-line bg-white p-5">
       <p className="text-sm font-medium text-ink">{title}</p>
       <div className="mt-4 space-y-2.5">
         {items.length === 0 ? (
@@ -45,7 +45,7 @@ function RankedList({ title, items, empty }: { title: string; items: { label: st
           items.map((i) => (
             <div key={i.label} className="relative">
               <div className="flex items-center justify-between gap-3 text-base">
-                <span className="truncate text-ink">{i.label}</span>
+                <span className="min-w-0 truncate text-ink">{i.label}</span>
                 <span className="shrink-0 tabular-nums text-ink-soft">{i.count}</span>
               </div>
               <div className="mt-1 h-0.5 overflow-hidden bg-greige">
