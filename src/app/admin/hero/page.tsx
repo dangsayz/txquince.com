@@ -50,7 +50,15 @@ export default async function AdminHero() {
         <p className="mt-2 text-sm text-neutral-600">Choose the opening image or film for each page.</p>
       </div>
       <div className="mt-8">
-        <HeroManager initial={media} />
+        <HeroManager initial={media} library={allImages.flatMap((image) => image.slug ? [{
+          slug: image.slug,
+          url: image.url,
+          alt: image.alt || "Quinceañera portrait",
+          width: image.width,
+          height: image.height,
+          focusX: image.focus_x ?? null,
+          focusY: image.focus_y ?? null,
+        }] : [])} />
       </div>
 
       <div className="mt-14 border-t border-neutral-200 pt-10">
