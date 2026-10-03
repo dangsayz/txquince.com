@@ -7,11 +7,11 @@ export function Wordmark({
 }) {
   return (
     <span className="inline-flex flex-col whitespace-nowrap">
-      <span className={`${size === "masthead" ? "text-[clamp(2.5rem,4vw,3.75rem)]" : "text-[1.25rem] md:text-[1.4rem]"} font-serif font-normal leading-none tracking-[-0.055em] text-[#252522]`}>
+      <span className={`${size === "masthead" ? "text-[clamp(2rem,4vw,3.25rem)]" : "text-[1rem] md:text-[1.15rem]"} font-display font-light uppercase leading-none tracking-[0.12em]`}>
         TX Quince
       </span>
       {subline && (
-        <span className="mt-1.5 text-[0.625rem] font-medium uppercase leading-none tracking-[0.13em] text-[#62625c]">
+        <span className="mt-2 text-[0.625rem] font-normal uppercase leading-none tracking-[0.15em] opacity-70">
           Photography &amp; Film
         </span>
       )}

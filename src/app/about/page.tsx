@@ -40,20 +40,21 @@ export default async function AboutPage() {
 
   return (
     <>
-      <section aria-labelledby="about-title" className="mx-auto max-w-[88rem] px-5 pb-16 pt-8 sm:px-8 sm:pt-12 lg:px-12 lg:pb-24">
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-end lg:gap-16">
-          <figure className="min-w-0">
-            <div className="relative aspect-[4/3] overflow-hidden bg-greige sm:aspect-[5/4] lg:aspect-[4/5]">
-              <Image src={hero?.url ?? "/portfolio/hero.webp"} alt={hero?.alt || "Quinceañera portrait in Dallas–Fort Worth"} fill priority sizes="(max-width: 1024px) 100vw, 56vw" className="object-cover" style={hero ? { objectPosition: focal(hero.focus_x, hero.focus_y) } : { objectPosition: "center 58%" }} />
+      <section aria-labelledby="about-title" className="bg-white px-4 pb-16 pt-5 sm:px-8 sm:pb-24 sm:pt-8 lg:px-12">
+        <div className="mx-auto grid max-w-[96rem] bg-[#f2efe7] lg:min-h-[44rem] lg:grid-cols-[minmax(0,0.54fr)_minmax(0,0.46fr)]">
+          <div className="flex flex-col justify-between px-6 pb-10 pt-12 sm:px-12 sm:pb-14 sm:pt-16 lg:px-16 lg:py-20">
+            <p className="text-xs uppercase tracking-[0.23em] text-ink-soft">01 / The studio</p>
+            <div className="mt-24 max-w-[36rem] lg:mt-12">
+              <h1 id="about-title" className="font-display text-[clamp(2.3rem,4.2vw,4.25rem)] font-light leading-[1.08] tracking-[-0.025em] text-ink">About TX Quince.</h1>
+              <p className="mt-6 max-w-md text-base leading-[1.8] text-ink-soft">Quinceañera photography and film across Dallas–Fort Worth, centered on the people and traditions that make each celebration her own.</p>
+              <Link href="/portfolio" className="mt-9 inline-flex min-h-12 items-center gap-7 border-b border-ink text-xs font-medium uppercase tracking-[0.14em] text-ink transition-colors hover:text-ink-soft">View the work <span aria-hidden="true">↗</span></Link>
             </div>
-            <figcaption className="mt-3 text-xs uppercase tracking-[0.16em] text-ink-soft">Portraits / traditions / celebration</figcaption>
-          </figure>
-          <div className="max-w-xl lg:pb-8">
-            <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">{about.eyebrow} / Dallas–Fort Worth</p>
-            <h1 id="about-title" className="mt-5 max-w-[16ch] font-display text-[clamp(2rem,3.2vw,3rem)] font-normal leading-[1.14] text-ink">A day worth remembering in full.</h1>
-            <p className="mt-5 max-w-lg text-base leading-7 text-ink-soft">TX Quince photographs the moments that make her celebration hers, from the quiet portrait to the last dance.</p>
-            <Link href="/portfolio" className="mt-8 inline-flex min-h-12 items-center gap-8 whitespace-nowrap border-b border-ink text-base text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">Explore the work <span aria-hidden="true">↗</span></Link>
+            <p className="mt-14 text-xs uppercase tracking-[0.2em] text-ink-soft">Photography / film / family</p>
           </div>
+          <figure className="relative min-h-[28rem] bg-greige sm:min-h-[36rem] lg:min-h-full">
+            <Image src={hero?.url ?? "/portfolio/hero.webp"} alt={hero?.alt || "Quinceañera portrait in Dallas–Fort Worth"} fill unoptimized={!hero} priority sizes="(max-width: 1023px) 100vw, 46vw" className="object-cover" style={{ objectPosition: hero ? focal(hero.focus_x, hero.focus_y) : "center 58%" }} />
+            <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/45 to-transparent px-6 pb-5 pt-16 text-xs uppercase tracking-[0.2em] text-white sm:px-10">Dallas–Fort Worth / TX Quince</figcaption>
+          </figure>
         </div>
       </section>
 
@@ -74,7 +75,7 @@ export default async function AboutPage() {
             ) : about.portraitKey ? (
               <div className="relative"><Figure imageKey={about.portraitKey} alt={about.portraitAlt} ratio="portrait" sizes="(max-width: 1024px) 100vw, 50vw" /><EditOverlay image={{}} /></div>
             ) : (
-              <div className="relative aspect-[4/5] overflow-hidden bg-greige"><Image src="/portfolio/red-garden.webp" alt="Quinceañera in a red gown holding flowers" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" /><EditOverlay image={{}} /></div>
+              <div className="relative aspect-[4/5] overflow-hidden bg-greige"><Image src="/portfolio/red-garden.webp" alt="Quinceañera in a red gown holding flowers" fill unoptimized sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" /><EditOverlay image={{}} /></div>
             )}
             <figcaption className="mt-3 text-xs uppercase tracking-[0.16em] text-ink-soft">{aboutImg ? "Behind the camera" : "From the TX Quince portfolio"}</figcaption>
           </figure>
@@ -92,12 +93,6 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      <section aria-labelledby="about-next-title" className="bg-ink text-white">
-        <div className="mx-auto grid max-w-[88rem] gap-8 px-5 py-14 sm:px-8 md:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)] md:items-end lg:px-12">
-          <div><p className="text-xs uppercase tracking-[0.18em] text-white/70">Your celebration</p><h2 id="about-next-title" className="mt-4 max-w-xl font-display text-[clamp(1.75rem,2.7vw,2.5rem)] font-normal leading-tight">{about.closing}</h2></div>
-          <div className="flex flex-col gap-5 md:items-start"><Link href="/check-your-date" className="inline-flex min-h-12 items-center justify-between gap-8 self-start whitespace-nowrap border border-white px-6 text-base text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Check her date <span aria-hidden="true">↗</span></Link><Link href="/quinceanera-photographer" className="inline-flex min-h-11 items-center border-b border-white/70 text-base text-white">See the areas we serve ↗</Link></div>
-        </div>
-      </section>
     </>
   );
 }

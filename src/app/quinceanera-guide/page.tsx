@@ -321,30 +321,26 @@ export default async function QuinceaneraGuidePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replaceAll("<", "\\u003c") }}
       />
 
-      <header className="relative isolate min-h-[38rem] overflow-hidden bg-ink text-white sm:min-h-[46rem]" aria-labelledby="guide-title">
-        <Image
-          src={hero?.url ?? "/portfolio/hero.webp"}
-          alt={hero ? publicPhotoCopy(hero, altPhraseFor(hero.section)).alt : "Quinceañera portrait in Dallas–Fort Worth"}
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-          style={{ objectPosition: `${(hero?.focus_x ?? 0.5) * 100}% ${(hero?.focus_y ?? 0.5) * 100}%` }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/10" aria-hidden="true" />
-        <div className="relative mx-auto flex min-h-[38rem] max-w-[90rem] flex-col justify-between px-5 pb-10 pt-8 sm:min-h-[46rem] sm:px-10 sm:pb-14 lg:px-16">
-          <div className="flex items-center justify-between gap-4 text-xs uppercase tracking-[0.18em]">
-            <span>TX Quince / Journal 01</span>
-            <span>Dallas–Fort Worth</span>
-          </div>
-          <div className="max-w-2xl">
-            <p className="text-xs uppercase tracking-[0.2em] text-white/80">The quinceañera guide</p>
-            <h1 id="guide-title" className="mt-4 max-w-[18ch] font-display text-[clamp(2.25rem,4.5vw,4.25rem)] font-normal leading-[1.06] tracking-[-0.035em]">Plan the day. Keep the feeling.</h1>
-            <p className="mt-5 max-w-xl text-base leading-7 text-white/85 sm:text-lg">Clear answers on timing, traditions, photography, film, and the investment.</p>
-            <a href="#guide-topics" className="mt-8 inline-flex min-h-12 items-center gap-4 border-b border-white pb-1 text-sm font-medium">Explore the guide <span aria-hidden="true">↓</span></a>
-          </div>
+      <header className="bg-white px-4 pb-5 pt-16 text-center text-ink sm:px-8 sm:pb-8 sm:pt-24 lg:px-12" aria-labelledby="guide-title">
+        <div className="mx-auto max-w-[46rem] pb-16 sm:pb-24">
+          <p className="text-xs uppercase tracking-[0.24em] text-ink-soft">The quinceañera guide / Dallas–Fort Worth</p>
+          <h1 id="guide-title" className="mt-7 font-display text-[clamp(2.5rem,5vw,4.75rem)] font-light leading-[1.12] tracking-[-0.035em]">The guide.</h1>
+          <p className="mx-auto mt-6 max-w-[34rem] text-base leading-[1.8] text-ink-soft">Clear answers on timing, traditions, photography, film, and the investment.</p>
+          <a href="#guide-topics" className="mt-8 inline-flex min-h-12 items-center gap-4 border-b border-ink text-xs font-medium uppercase tracking-[0.16em]">Explore the guide <span aria-hidden="true">↓</span></a>
         </div>
-        {hero ? <EditOverlay image={{ id: hero.id, slug: hero.slug, alt: hero.alt, fx: hero.focus_x, fy: hero.focus_y }} /> : null}
+        <figure className="relative mx-auto aspect-[4/5] max-w-[96rem] overflow-hidden bg-greige sm:aspect-[16/9] lg:aspect-[2.1/1]">
+          <Image
+            src={hero?.url ?? "/portfolio/hero.webp"}
+            alt={hero ? publicPhotoCopy(hero, altPhraseFor(hero.section)).alt : "Quinceañera portrait in Dallas–Fort Worth"}
+            fill
+            unoptimized={!hero}
+            priority
+            sizes="(max-width: 639px) 100vw, 95vw"
+            className="object-cover"
+            style={{ objectPosition: `${(hero?.focus_x ?? 0.5) * 100}% ${(hero?.focus_y ?? 0.5) * 100}%` }}
+          />
+          {hero ? <EditOverlay image={{ id: hero.id, slug: hero.slug, alt: hero.alt, fx: hero.focus_x, fy: hero.focus_y }} /> : null}
+        </figure>
       </header>
 
       <nav id="guide-topics" aria-label="Guide topics" className="scroll-mt-24 border-b border-line bg-white">

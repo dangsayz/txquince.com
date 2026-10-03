@@ -1,17 +1,26 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Lora, Montserrat, Public_Sans } from "next/font/google";
 import "./globals.css";
 import { site } from "@/content/site";
 import { PublicSiteFrame } from "@/components/PublicSiteFrame";
-import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { JsonLd } from "@/components/JsonLd";
 import { WebAnalytics } from "@/components/WebAnalytics";
 import { Tracker } from "@/components/Tracker";
 import { Suspense } from "react";
 
-const inter = Inter({
+const montserrat = Montserrat({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-montserrat",
+  display: "swap",
+});
+const publicSans = Public_Sans({
+  subsets: ["latin"],
+  variable: "--font-public-sans",
+  display: "swap",
+});
+const lora = Lora({
+  subsets: ["latin"],
+  variable: "--font-lora",
   display: "swap",
 });
 
@@ -44,7 +53,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#fafafa",
+  themeColor: "#f8f5ed",
   width: "device-width",
   initialScale: 1,
 };
@@ -56,11 +65,10 @@ export default function RootLayout({
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`${inter.variable} h-full`}
+      className={`${montserrat.variable} ${publicSans.variable} ${lora.variable} h-full`}
     >
       <body className="flex min-h-dvh flex-col bg-cream">
         <PublicSiteFrame>{children}</PublicSiteFrame>
-        <StickyMobileCTA />
         <Suspense fallback={null}>
           <Tracker />
         </Suspense>

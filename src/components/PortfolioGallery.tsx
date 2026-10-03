@@ -40,7 +40,7 @@ export function PortfolioGallery({
   const touchStart = useRef<number | null>(null);
   const { saved } = useSavedPhotos();
   const showRail = !editorial && sections.length > 1 && (!savedOnly || images.length > 0);
-  const useNaturalRatio = editorial || Boolean(columns);
+  const useNaturalRatio = Boolean(columns);
 
   const filtered = useMemo(() => selectGalleryItems(images, sections, { query, category, sort, savedOnly, saved }), [images, saved, savedOnly, category, query, sections, sort]);
 
@@ -104,7 +104,42 @@ export function PortfolioGallery({
         ) : null}
         <div className="min-w-0">
           {!savedOnly || images.length ? (
-            <div className={editorial ? "border-b border-line pb-8" : "border-b border-line pb-6"}>
+            <div className={editorial ? "border-b border-line" : "border-b border-line pb-6"}>
+              {editorial && sections.length > 1 ? (
+                <nav className="flex max-w-full items-center gap-x-8 overflow-x-auto border-b border-line [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Filter by moment">
+                  {[{ id: "all", title: "All photographs" }, ...sections].map((section) => (
+                    <button
+                      key={section.id}
+                      type="button"
+                      aria-pressed={category === section.id}
+                      onClick={() => { setCategory(section.id); setActiveIndex(null); }}
+                      className={`min-h-12 shrink-0 whitespace-nowrap border-b-2 pt-1 font-body text-sm font-medium uppercase tracking-[0.12em] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink ${category === section.id ? "border-ink text-ink" : "border-transparent text-ink-soft hover:text-ink"}`}
+                    >
+                      {section.title}
+                    </button>
+                  ))}
+                </nav>
+              ) : null}
+              {editorial ? (
+                <details open={Boolean(initialQuery)} className="group py-2 text-ink">
+                  <summary className="inline-flex min-h-11 cursor-pointer list-none items-center gap-3 text-sm font-medium underline decoration-line underline-offset-4 transition-colors hover:decoration-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink [&::-webkit-details-marker]:hidden">
+                    Search & sort <span aria-hidden="true" className="text-lg font-light group-open:rotate-45">+</span>
+                  </summary>
+                  <div className="grid gap-4 pb-5 pt-2 sm:grid-cols-[minmax(0,1fr)_minmax(10rem,14rem)] sm:items-end">
+                    <label className="block min-w-0 text-sm text-ink">
+                      Search photographs
+                      <input type="search" value={query} onChange={(event) => { setQuery(event.target.value); setActiveIndex(null); }} placeholder="Search moments or places" className="mt-2 min-h-12 w-full border border-line bg-white px-4 text-base text-ink placeholder:text-ink-faint focus:border-ink focus:outline-2 focus:outline-offset-2 focus:outline-ink" />
+                    </label>
+                    <label className="block text-sm text-ink">
+                      Sort by
+                      <select value={sort} onChange={(event) => setSort(event.target.value === "title" ? "title" : "curated")} className="mt-2 min-h-12 w-full border border-line bg-white px-4 text-base text-ink focus:outline-2 focus:outline-offset-2 focus:outline-ink">
+                        <option value="curated">Curated order</option>
+                        <option value="title">Title A–Z</option>
+                      </select>
+                    </label>
+                  </div>
+                </details>
+              ) : (
               <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:gap-8">
                 <label className="block min-w-0 flex-1 text-sm font-medium text-ink">
                   Search photographs
@@ -113,7 +148,7 @@ export function PortfolioGallery({
                     value={query}
                     onChange={(event) => { setQuery(event.target.value); setActiveIndex(null); }}
                     placeholder="Search moments or places"
-                    className={`mt-2 min-h-12 w-full border border-line bg-white px-4 text-base font-normal text-ink placeholder:text-ink-faint focus:border-accent focus:outline-2 focus:outline-offset-2 focus:outline-accent ${editorial ? "rounded-none" : "rounded-lg"}`}
+                    className="mt-2 min-h-12 w-full rounded-lg border border-line bg-white px-4 text-base font-normal text-ink placeholder:text-ink-faint focus:border-accent focus:outline-2 focus:outline-offset-2 focus:outline-accent"
                   />
                 </label>
                 <label className="block text-sm font-medium text-ink">
@@ -121,22 +156,23 @@ export function PortfolioGallery({
                   <select
                     value={sort}
                     onChange={(event) => setSort(event.target.value === "title" ? "title" : "curated")}
-                    className={`mt-2 min-h-12 w-full border border-line bg-white px-4 text-base font-normal text-ink focus:outline-2 focus:outline-offset-2 focus:outline-accent sm:min-w-44 ${editorial ? "rounded-none" : "rounded-lg"}`}
+                    className="mt-2 min-h-12 w-full rounded-lg border border-line bg-white px-4 text-base font-normal text-ink focus:outline-2 focus:outline-offset-2 focus:outline-accent sm:min-w-44"
                   >
                     <option value="curated">Curated order</option>
                     <option value="title">Title A–Z</option>
                   </select>
                 </label>
               </div>
-              {sections.length > 1 ? (
-                <nav className={`mt-6 flex max-w-full gap-2 overflow-x-auto pb-1 ${editorial ? "" : "lg:hidden"}`} aria-label="Filter by moment">
+              )}
+              {!editorial && sections.length > 1 ? (
+                <nav className="mt-6 flex max-w-full gap-2 overflow-x-auto pb-1 lg:hidden" aria-label="Filter by moment">
                   {[{ id: "all", title: "All moments" }, ...sections].map((section) => (
                     <button
                       key={section.id}
                       type="button"
                       aria-pressed={category === section.id}
                       onClick={() => { setCategory(section.id); setActiveIndex(null); }}
-                      className={`min-h-11 shrink-0 whitespace-nowrap border px-4 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${editorial ? "rounded-full" : "rounded-lg"} ${category === section.id ? "border-accent bg-accent text-white" : "border-line bg-white text-ink hover:border-accent"}`}
+                      className={`min-h-11 shrink-0 whitespace-nowrap rounded-lg border px-4 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${category === section.id ? "border-accent bg-accent text-white" : "border-line bg-white text-ink hover:border-accent"}`}
                     >
                       {section.title}
                     </button>
@@ -146,15 +182,15 @@ export function PortfolioGallery({
             </div>
           ) : null}
 
-          <div className="flex flex-wrap items-center justify-between gap-2 py-5 text-sm text-ink-soft" aria-live="polite">
+          <div className={`flex flex-wrap items-center justify-between gap-2 text-sm text-ink-soft ${editorial ? "py-7" : "py-5"}`} aria-live="polite">
             <span>{filtered.length} {filtered.length === 1 ? "photograph" : "photographs"}</span>
-            {savedOnly ? <span>Saved in this browser</span> : <Link href="/saved" className="inline-flex min-h-11 items-center font-medium text-ink underline underline-offset-4 hover:text-ink-soft">View saved photos</Link>}
+            {savedOnly ? <span>Saved in this browser</span> : <Link href="/saved" className="inline-flex min-h-11 items-center font-medium text-ink underline underline-offset-4 hover:text-ink-soft">Saved photographs ↗</Link>}
           </div>
 
       {filtered.length ? (
-        <div className={columns ?? (editorial ? "columns-1 gap-5 sm:columns-2 sm:gap-6 xl:columns-3 xl:gap-8" : "grid grid-cols-1 items-start gap-x-5 gap-y-9 sm:grid-cols-2 xl:grid-cols-3 xl:gap-x-6")}>
+        <div className={columns ?? (editorial ? "grid grid-cols-1 items-start gap-x-3 gap-y-12 sm:grid-cols-2 md:gap-x-4 md:gap-y-16" : "grid grid-cols-1 items-start gap-x-5 gap-y-9 sm:grid-cols-2 xl:grid-cols-3 xl:gap-x-6")}>
           {filtered.map((item, index) => (
-            <article key={item.id || `${item.section}-${item.slug}-${index}`} className={editorial ? "mb-7 min-w-0 break-inside-avoid sm:mb-9" : "min-w-0"}>
+            <article key={item.id || `${item.section}-${item.slug}-${index}`} className="min-w-0">
               <div className={`group relative overflow-hidden bg-greige ${editorial ? "" : "rounded-lg border border-line"}`}>
                 <button
                   type="button"
@@ -165,7 +201,7 @@ export function PortfolioGallery({
                   {item.width && item.height ? (
                     <Image src={item.url} alt={copyFor(item).alt} width={item.width} height={item.height} sizes={imageSizes} unoptimized={item.url.startsWith("/portfolio/")} className={`block w-full transition-transform duration-300 motion-reduce:transition-none group-hover:scale-[1.025] ${useNaturalRatio ? "h-auto" : "h-full object-cover"}`} style={useNaturalRatio ? undefined : { objectPosition: `${Math.round((item.fx ?? 0.5) * 100)}% ${Math.round((item.fy ?? 0.4) * 100)}%` }} />
                   ) : (
-                    <ProtectedImg src={item.url} alt={copyFor(item).alt} loading="lazy" className={`block w-full transition-transform duration-300 motion-reduce:transition-none group-hover:scale-[1.025] ${editorial ? "aspect-[4/5] object-cover" : useNaturalRatio ? "h-auto" : "h-full object-cover"}`} />
+                    <ProtectedImg src={item.url} alt={copyFor(item).alt} loading="lazy" className={`block w-full transition-transform duration-300 motion-reduce:transition-none group-hover:scale-[1.025] ${useNaturalRatio ? "h-auto" : "aspect-[4/5] object-cover"}`} />
                   )}
                 </button>
                 <EditOverlay image={{ id: item.id, slug: item.slug, alt: item.alt, fx: item.fx, fy: item.fy }} />
@@ -173,7 +209,7 @@ export function PortfolioGallery({
               <div className="mt-3 flex items-start justify-between gap-2">
                 <div className="min-w-0">
                   {editorial ? (
-                    item.detailAvailable !== false && item.slug && item.section ? <Link href={pathFor(item)} className="inline-flex min-h-11 items-center text-base font-normal leading-snug text-ink hover:underline hover:underline-offset-4">{sections.find((section) => section.id === item.section)?.title || "Photograph"}{item.city ? ` · ${item.city}` : ""} <span className="ml-2" aria-hidden="true">↗</span></Link> : <p className="text-base text-ink">{sections.find((section) => section.id === item.section)?.title || "Photograph"}</p>
+                    item.detailAvailable !== false && item.slug && item.section ? <Link href={pathFor(item)} aria-label={`View ${labelFor(item)}`} className="inline-flex min-h-11 items-center text-[0.6875rem] font-medium uppercase leading-snug tracking-[0.14em] text-ink hover:underline hover:underline-offset-4">{sections.find((section) => section.id === item.section)?.title || "Photograph"}{item.city ? ` / ${item.city}` : ""} <span className="ml-2 text-base" aria-hidden="true">↗</span></Link> : <p className="flex min-h-11 items-center text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-ink">{sections.find((section) => section.id === item.section)?.title || "Photograph"}{item.city ? ` / ${item.city}` : ""}</p>
                   ) : (
                     <>
                       {item.detailAvailable !== false && item.slug && item.section ? (

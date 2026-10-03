@@ -120,71 +120,76 @@ export default async function PhotoPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replaceAll("<", "\\u003c") }}
       />
-      <article className="bg-cream">
-        <div className="mx-auto flex max-w-[100rem] flex-wrap items-center justify-between gap-3 px-5 py-5 text-sm text-ink-soft md:px-10 lg:px-16">
+      <article className="bg-white">
+        <div className="mx-auto flex max-w-[92rem] flex-wrap items-center justify-between gap-3 px-4 py-5 text-xs uppercase tracking-[0.12em] text-ink-soft sm:px-6 md:px-10 lg:px-14">
           <Link href={`/portfolio#${img.section}`} className="inline-flex min-h-11 items-center gap-3 text-ink transition-colors hover:text-ink-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">
-            <span aria-hidden="true">←</span> Back to the photographs
+            <span aria-hidden="true">←</span> Portfolio
           </Link>
           <span>{label} <span aria-hidden="true">/</span> TX Quince</span>
         </div>
 
-        <figure className="border-y border-line bg-greige">
-          <div className="relative mx-auto flex min-h-[45svh] max-w-[100rem] items-center justify-center p-3 sm:p-8 lg:min-h-[68svh] lg:p-12">
+        <header className="mx-4 bg-cream px-5 py-16 text-center sm:mx-6 md:mx-10 md:py-20 lg:mx-auto lg:max-w-[92rem]">
+          <p className="text-[0.6875rem] font-medium uppercase tracking-[0.28em] text-ink-soft">{label}</p>
+          <h1 className="mx-auto mt-5 max-w-[50rem] font-body text-[clamp(2.25rem,4.5vw,3.75rem)] font-light leading-[1.12] tracking-[-0.04em] text-ink">{copy.title}</h1>
+          <p className="mt-5 text-[0.6875rem] font-medium uppercase tracking-[0.18em] text-ink-soft">Photography by {site.brand}</p>
+        </header>
+
+        <figure className="mx-auto max-w-[92rem] bg-white px-4 pt-6 sm:px-6 md:px-10 md:pt-10 lg:px-14">
+          <div className="relative flex min-h-[40svh] items-center justify-center bg-cream p-3 sm:p-8 lg:min-h-[65svh] lg:p-12">
             <ProtectedImg
               src={at(img.url, 1920)}
               alt={copy.alt}
               width={img.width}
               height={img.height}
               loading="eager"
-              className="block h-auto max-h-[78svh] max-w-full object-contain"
+              className="block h-auto max-h-[82svh] max-w-full object-contain"
             />
             <EditOverlay image={{ id: img.id, slug: img.slug, alt: img.alt, fx: img.focus_x, fy: img.focus_y }} />
           </div>
-          <figcaption className="mx-auto flex max-w-[100rem] justify-between gap-4 px-5 pb-4 text-xs uppercase tracking-[0.15em] text-ink-soft md:px-10 lg:px-16">
+          <figcaption className="flex justify-between gap-4 py-4 text-[0.6875rem] uppercase tracking-[0.15em] text-ink-soft">
             <span>{label}</span>
             <span>Photography by {site.brand}</span>
           </figcaption>
         </figure>
 
-        <div className="mx-auto grid max-w-[100rem] gap-10 px-5 pb-20 pt-12 md:grid-cols-[minmax(0,1fr)_minmax(16rem,0.55fr)] md:gap-16 md:px-10 md:pb-28 md:pt-20 lg:px-16">
+        <div className="mx-auto grid max-w-[92rem] gap-12 px-4 pb-24 pt-14 sm:px-6 md:grid-cols-[minmax(0,1fr)_minmax(16rem,0.7fr)] md:gap-20 md:px-10 md:pb-32 md:pt-20 lg:px-14">
           <div className="max-w-2xl">
-            <p className="text-xs font-medium uppercase tracking-[0.18em] text-ink-soft">From the collection</p>
-            <h1 className="mt-4 font-body text-[clamp(1.875rem,3vw,2.75rem)] font-normal leading-[1.12] tracking-[-0.035em] text-ink">{copy.title}</h1>
-            {img.hook ? <p className="mt-5 text-lg leading-relaxed text-ink-soft">{img.hook}</p> : null}
-            {img.caption && copy.description !== copy.alt ? <p className="mt-5 text-base leading-7 text-ink-soft">{copy.description}</p> : null}
+            <p className="text-[0.6875rem] font-medium uppercase tracking-[0.2em] text-ink-soft">The photograph</p>
+            {img.hook ? <p className="mt-5 font-serif text-[clamp(1.375rem,2.25vw,2rem)] leading-[1.5] text-ink">{img.hook}</p> : null}
+            {img.caption && copy.description !== copy.alt ? <p className="mt-5 text-base leading-8 text-ink-soft">{copy.description}</p> : null}
             <div className="mt-8">
               <PhotoActions section={img.section} slug={slug} title={copy.title} pageUrl={pageUrl} bookingHref={site.cta.href} />
             </div>
           </div>
 
-          <div className="border-t border-line pt-6 md:pt-0">
-            <p className="text-xs font-medium uppercase tracking-[0.18em] text-ink-soft">The details</p>
-            <dl className="mt-5 divide-y divide-line text-base">
-              <div className="flex flex-wrap justify-between gap-x-5 gap-y-1 py-3">
-                <dt className="text-ink-soft">Photographer</dt>
-                <dd className="text-ink">{site.brand}</dd>
+          <div className="border-t border-line pt-7 md:pt-0">
+            <p className="text-[0.6875rem] font-medium uppercase tracking-[0.2em] text-ink-soft">The details</p>
+            <dl className="mt-5 grid gap-x-8 gap-y-6 text-base sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
+              <div>
+                <dt className="text-[0.6875rem] uppercase tracking-[0.15em] text-ink-soft">Photographer</dt>
+                <dd className="mt-1 text-ink">{site.brand}</dd>
               </div>
               {venue ? (
-                <div className="flex flex-wrap justify-between gap-x-5 gap-y-1 py-3">
-                  <dt className="text-ink-soft">Venue</dt>
-                  <dd><Link href={`/venues/${venue.slug}`} className="text-ink underline decoration-line underline-offset-4 hover:decoration-ink">{venue.venue}</Link></dd>
+                <div>
+                  <dt className="text-[0.6875rem] uppercase tracking-[0.15em] text-ink-soft">Venue</dt>
+                  <dd className="mt-1"><Link href={`/venues/${venue.slug}`} className="text-ink underline decoration-line underline-offset-4 hover:decoration-ink">{venue.venue}</Link></dd>
                 </div>
               ) : null}
-              <div className="flex flex-wrap justify-between gap-x-5 gap-y-1 py-3">
-                <dt className="text-ink-soft">Location</dt>
-                <dd className="text-ink">{img.city ? `${img.city}, TX` : "Dallas–Fort Worth, TX"}</dd>
+              <div>
+                <dt className="text-[0.6875rem] uppercase tracking-[0.15em] text-ink-soft">Location</dt>
+                <dd className="mt-1 text-ink">{img.city ? `${img.city}, TX` : "Dallas–Fort Worth, TX"}</dd>
               </div>
-              <div className="flex flex-wrap justify-between gap-x-5 gap-y-1 py-3">
-                <dt className="text-ink-soft">Series</dt>
-                <dd><Link href={`/portfolio#${img.section}`} className="text-ink underline decoration-line underline-offset-4 hover:decoration-ink">{label}</Link></dd>
+              <div>
+                <dt className="text-[0.6875rem] uppercase tracking-[0.15em] text-ink-soft">Series</dt>
+                <dd className="mt-1"><Link href={`/portfolio#${img.section}`} className="text-ink underline decoration-line underline-offset-4 hover:decoration-ink">{label}</Link></dd>
               </div>
               {(img.vendors ?? []).map((v) => {
                 const ig = igUrl(v.ig_handle);
                 const out = ig || websiteUrl(v.website);
                 return (
-                  <div key={v.vendor_id} className="flex flex-wrap justify-between gap-x-5 gap-y-1 py-3">
-                    <dt className="text-ink-soft">{v.role || vendorCreditLabel(v.category)}</dt>
-                    <dd className="flex items-center gap-2 text-right">
+                  <div key={v.vendor_id}>
+                    <dt className="text-[0.6875rem] uppercase tracking-[0.15em] text-ink-soft">{v.role || vendorCreditLabel(v.category)}</dt>
+                    <dd className="mt-1 flex items-center gap-2">
                       <Link href={`/vendors/${v.slug}`} className="text-ink underline decoration-line underline-offset-4 hover:decoration-ink">{v.business || v.name}</Link>
                       {out ? <a href={out} target="_blank" rel="noopener noreferrer" aria-label={`Open ${v.business || v.name} ${ig ? "Instagram" : "website"}`} className="inline-flex min-h-11 min-w-11 items-center justify-center text-ink-soft hover:text-ink">↗</a> : null}
                     </dd>
@@ -197,11 +202,11 @@ export default async function PhotoPage({
 
         {related.length ? (
           <section className="border-t border-line bg-white" aria-labelledby="more-from-series">
-            <div className="mx-auto max-w-[100rem] px-5 py-16 md:px-10 md:py-24 lg:px-16">
+            <div className="mx-auto max-w-[92rem] px-4 py-20 sm:px-6 md:px-10 md:py-28 lg:px-14">
               <div className="flex flex-wrap items-end justify-between gap-4">
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-[0.18em] text-ink-soft">Continue looking</p>
-                  <h2 id="more-from-series" className="mt-3 font-body text-[clamp(1.75rem,2.6vw,2.5rem)] font-normal text-ink">More from {label}</h2>
+                  <p className="text-[0.6875rem] font-medium uppercase tracking-[0.2em] text-ink-soft">Continue looking</p>
+                  <h2 id="more-from-series" className="mt-3 font-body text-[clamp(2rem,3vw,3rem)] font-light text-ink">More from {label}</h2>
                 </div>
                 <Link href={`/portfolio#${img.section}`} className="inline-flex min-h-11 items-center text-base text-ink underline underline-offset-4 hover:text-ink-soft">View the collection ↗</Link>
               </div>

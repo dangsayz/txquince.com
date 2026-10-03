@@ -49,17 +49,14 @@ export default async function BlogIndexPage() {
 
   return (
     <>
-      <header className="relative isolate min-h-[34rem] overflow-hidden bg-ink text-white sm:min-h-[42rem]" aria-labelledby="journal-title">
-        <Image src={hero?.url ?? "/portfolio/hero.webp"} alt={hero ? photoAlt(hero) : "Quinceañera portrait in Dallas–Fort Worth"} fill priority sizes="100vw" className="object-cover" style={hero ? { objectPosition: focal(hero.focus_x, hero.focus_y) } : undefined} />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-black/10" aria-hidden="true" />
-        <div className="relative mx-auto flex min-h-[34rem] max-w-[90rem] flex-col justify-between px-5 pb-10 pt-8 sm:min-h-[42rem] sm:px-10 sm:pb-14 lg:px-16">
-          <p className="text-xs uppercase tracking-[0.18em] text-white/80">TX Quince / The journal</p>
-          <div className="max-w-2xl">
-            <p className="text-xs uppercase tracking-[0.18em] text-white/80">Planning, traditions, and the people beside her</p>
-            <h1 id="journal-title" className="mt-4 max-w-[20ch] font-display text-[clamp(2.25rem,4.5vw,4.25rem)] font-normal leading-[1.06] tracking-[-0.035em]">A thoughtful guide to her quinceañera.</h1>
-            <p className="mt-5 max-w-xl text-base leading-7 text-white/85">Costs, timelines, photography, film, and the traditions that shape the day.</p>
-            <Link href="/quinceanera-guide" className="mt-8 inline-flex min-h-12 items-center gap-4 border-b border-white pb-1 text-sm font-medium">Begin with the guide <span aria-hidden="true">↗</span></Link>
-          </div>
+      <header className="relative isolate flex min-h-[42rem] items-center justify-center overflow-hidden bg-ink px-5 py-20 text-center text-white sm:min-h-[min(82svh,56rem)]" aria-labelledby="journal-title">
+        <Image src={hero?.url ?? "/portfolio/hero.webp"} alt={hero ? photoAlt(hero) : "Quinceañera portrait in Dallas–Fort Worth"} fill unoptimized={!hero} priority sizes="100vw" className="object-cover" style={hero ? { objectPosition: focal(hero.focus_x, hero.focus_y) } : undefined} />
+        <div className="absolute inset-0 bg-black/55" aria-hidden="true" />
+        <div className="relative mx-auto max-w-[48rem]">
+          <p className="text-xs uppercase tracking-[0.24em] text-white/85">TX Quince / The journal</p>
+          <h1 id="journal-title" className="mt-8 font-display text-[clamp(2.5rem,5.5vw,5.5rem)] font-light leading-[1.1] tracking-[0.005em]">Stories around her day.</h1>
+          <p className="mx-auto mt-6 max-w-[35rem] text-base leading-[1.8] text-white/90">Costs, timelines, photography, film, and the traditions that shape the celebration.</p>
+          <Link href="/quinceanera-guide" className="mt-10 inline-flex min-h-12 items-center gap-4 border-b border-white text-xs font-medium uppercase tracking-[0.16em]">Begin with the guide <span aria-hidden="true">↗</span></Link>
         </div>
       </header>
 
