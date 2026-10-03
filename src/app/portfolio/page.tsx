@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import Image from "next/image";
 import { Suspense } from "react";
 import { site } from "@/content/site";
 import { getPortfolioImages, getVideos } from "@/lib/content-db";
@@ -10,7 +8,6 @@ import { FinalCTA } from "@/components/FinalCTA";
 import { altPhraseFor, categoryLabel } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import { portfolioFallback } from "@/content/portfolio-fallback";
-import { ProtectedImg } from "@/components/ProtectedImg";
 import PortfolioLoading from "./loading";
 
 export const dynamic = "force-dynamic";
@@ -85,9 +82,6 @@ async function PortfolioContent({ searchParams }: {
     caption: image.caption ?? null,
     city: image.city ?? null,
   }));
-  const featured = dbImages.find((image) => image.is_feature) ?? dbImages[0];
-  const featuredCopy = featured ? publicPhotoCopy(featured, altPhraseFor(featured.section)) : null;
-
   const videoJsonLd = videos.length > 0 ? {
     "@context": "https://schema.org",
     "@graph": videos.map((video) => {
@@ -140,70 +134,26 @@ async function PortfolioContent({ searchParams }: {
     <>
       {videoJsonLd ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(videoJsonLd).replaceAll("<", "\\u003c") }} /> : null}
       {imageGalleryJsonLd ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(imageGalleryJsonLd).replaceAll("<", "\\u003c") }} /> : null}
-      <header className="bg-cream">
-        <div className="mx-auto grid max-w-[100rem] lg:min-h-[min(48rem,80svh)] lg:grid-cols-[minmax(0,0.42fr)_minmax(0,0.58fr)]">
-          <div className="order-2 flex flex-col justify-between px-5 pb-14 pt-9 md:px-10 md:pb-20 lg:order-1 lg:px-16 lg:py-16">
-            <p className="text-xs font-medium uppercase tracking-[0.18em] text-ink-soft">TX Quince <span className="mx-2 text-ink-faint" aria-hidden="true">/</span> The work</p>
-            <div className="mt-14 max-w-lg lg:mt-10">
-              <h1 className="font-body text-[clamp(2.125rem,3.6vw,3.375rem)] font-normal leading-[1.08] tracking-[-0.045em] text-ink">
-                A quinceañera, through our eyes.
-              </h1>
-              <p className="mt-6 max-w-md text-base leading-7 text-ink-soft">
-                Portraits, traditions, and celebrations photographed across Dallas–Fort Worth. Explore the moments that make each day her own.
-              </p>
-              <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-3">
-                <Link href="#photographs" className="inline-flex min-h-12 items-center whitespace-nowrap border-b border-ink text-base text-ink transition-colors hover:text-ink-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">
-                  Explore the photographs <span className="ml-3" aria-hidden="true">↓</span>
-                </Link>
-                <Link href="/check-your-date" className="inline-flex min-h-12 items-center whitespace-nowrap text-base text-ink-soft transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">
-                  Check her date <span className="ml-3" aria-hidden="true">↗</span>
-                </Link>
-              </div>
-            </div>
-            <p className="mt-12 hidden text-xs uppercase tracking-[0.16em] text-ink-faint lg:block">Photography & film · Dallas–Fort Worth</p>
-          </div>
-          {featured && featuredCopy ? (
-            <div className="order-1 relative aspect-[4/5] min-h-0 overflow-hidden bg-greige sm:aspect-[5/4] lg:order-2 lg:aspect-auto">
-              <ProtectedImg
-                src={featured.url}
-                alt={featuredCopy.alt}
-                width={featured.width}
-                height={featured.height}
-                loading="eager"
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-between gap-4 bg-gradient-to-t from-ink/50 to-transparent px-5 pb-5 pt-14 text-xs font-medium uppercase tracking-[0.14em] text-white md:px-10">
-                <span>{categoryLabel(featured.section)}</span>
-                <span>01 / The portfolio</span>
-              </div>
-            </div>
-          ) : (
-            <div className="order-1 relative aspect-[4/5] min-h-0 overflow-hidden bg-greige sm:aspect-[5/4] lg:order-2 lg:aspect-auto">
-              <Image src={portfolioFallback[0].url} alt={portfolioFallback[0].alt} fill priority sizes="(max-width: 1023px) 100vw, 58vw" className="object-cover" style={{ objectPosition: "50% 76%" }} />
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/50 to-transparent px-5 pb-5 pt-14 text-xs uppercase tracking-[0.14em] text-white md:px-10">The portfolio</div>
-            </div>
-          )}
+      <header className="bg-white px-4 pt-5 sm:px-6 md:px-10 md:pt-8">
+        <div className="mx-auto flex max-w-[92rem] flex-col items-center bg-cream px-6 pb-12 pt-12 text-center md:pb-28 md:pt-28 lg:pb-32 lg:pt-32">
+          <p className="text-[0.6875rem] font-medium uppercase tracking-[0.28em] text-ink-soft">The photographs</p>
+          <h1 className="mt-3 font-body text-[clamp(2.75rem,5vw,4rem)] font-light leading-[1.1] tracking-[-0.045em] text-ink md:mt-5">Portfolio</h1>
+          <p className="mt-3 max-w-[37rem] text-[0.6875rem] font-medium uppercase leading-5 tracking-[0.2em] text-ink-soft md:mt-5">Quinceañera portraits, traditions & celebration in Dallas–Fort Worth</p>
+          <p className="mt-7 hidden max-w-[34rem] font-serif text-lg font-normal leading-[1.6] text-ink-soft sm:block md:text-xl">The dress, the quiet moments before, the room when everyone is together. Every photograph belongs to her story.</p>
         </div>
       </header>
-      <section id="photographs" className="scroll-mt-24 border-t border-line bg-white" aria-label="Photograph gallery">
-        <div className="mx-auto max-w-[100rem] px-5 py-14 md:px-10 md:py-20 lg:px-16">
-          <div className="mb-10 flex flex-col justify-between gap-4 border-b border-line pb-7 md:mb-12 md:flex-row md:items-end">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-ink-soft">The collection</p>
-              <h2 className="mt-3 font-body text-[clamp(1.75rem,2.7vw,2.5rem)] font-normal leading-tight text-ink">The moments, one by one.</h2>
-            </div>
-            <p className="max-w-sm text-base leading-7 text-ink-soft">Move through the day at your own pace. Save the frames you love.</p>
-          </div>
-          <PortfolioGallery key={initialQuery} images={items} sections={sections} initialQuery={initialQuery} editorial />
+      <section id="photographs" className="scroll-mt-24 bg-white" aria-label="Photograph gallery">
+        <div className="mx-auto max-w-[92rem] px-4 pb-24 pt-5 sm:px-6 md:px-10 md:pb-32 md:pt-16 lg:px-14">
+          <PortfolioGallery key={initialQuery} images={items} sections={sections} initialQuery={initialQuery} editorial imageSizes="(max-width: 639px) calc(100vw - 2rem), (max-width: 1023px) 45vw, 42vw" />
         </div>
       </section>
 
       {videos.length ? (
-        <section id="films" className="scroll-mt-24 border-t border-line bg-cream">
-          <div className="mx-auto max-w-[100rem] px-5 py-16 md:px-10 md:py-24 lg:px-16">
-            <p className="text-xs font-medium uppercase tracking-[0.2em] text-ink-soft">Films</p>
-            <h2 className="mt-3 font-body text-[clamp(1.75rem,2.5vw,2.5rem)] font-normal tracking-[-0.025em] text-ink">Her day in motion</h2>
-            <p className="mb-10 mt-4 max-w-lg text-base leading-relaxed text-ink-soft">Watch highlights from quinceañera celebrations.</p>
+        <section id="films" className="scroll-mt-24 bg-cream">
+          <div className="mx-auto max-w-[92rem] px-4 py-20 sm:px-6 md:px-10 md:py-28 lg:px-14">
+            <p className="text-center text-[0.6875rem] font-medium uppercase tracking-[0.28em] text-ink-soft">Photography & film</p>
+            <h2 className="mt-4 text-center font-body text-[clamp(2.25rem,4vw,3.25rem)] font-light tracking-[-0.04em] text-ink">Her day in motion</h2>
+            <p className="mx-auto mb-12 mt-4 max-w-lg text-center font-serif text-lg leading-relaxed text-ink-soft">Watch the joy unfold in a film to return to for years.</p>
             <VideoGallery videos={videos} />
           </div>
         </section>

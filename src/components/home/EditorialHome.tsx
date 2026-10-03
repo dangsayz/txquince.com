@@ -12,6 +12,7 @@ import { releasedTestimonials } from "@/content/testimonials";
 import { getFeaturedImages, getHeroMedia, getVideos } from "@/lib/content-db";
 import { heroObjectPosition } from "@/lib/hero-focus";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
+import { HeroCarousel, type HeroSlide } from "@/components/home/HeroCarousel";
 
 type EditorialImage = {
   id: string | null;
@@ -25,13 +26,13 @@ type EditorialImage = {
 
 const words = {
   en: {
-    title: "Her quinceañera, in every frame.",
-    heroKicker: "Dallas–Fort Worth · Quinceañera photography & film",
-    heroBody: "From the first portrait to the last dance. See how her day could be remembered.",
+    title: "TX QUINCE",
+    heroKicker: "Quinceañera photography & film · Dallas–Fort Worth",
+    heroBody: "For the portraits, traditions, and people she will always remember.",
     date: "Check her date",
     browse: "Explore the photographs",
     workKicker: "The work / 01",
-    workTitle: "A day told in photographs.",
+    workTitle: "Every celebration has a story.",
     workBody: "The portraits, the people, the little in-between moments. Browse real celebrations photographed across Dallas–Fort Worth.",
     allWork: "See the complete portfolio",
     filmKicker: "In motion / 02",
@@ -68,13 +69,13 @@ const words = {
     lastBody: "Send the date, location, and what you are imagining. We will reply personally with availability and a clear next step.",
   },
   es: {
-    title: "Su quinceañera, en cada imagen.",
-    heroKicker: "Dallas–Fort Worth · Fotografía y video de quinceañeras",
-    heroBody: "Desde el primer retrato hasta el último baile. Mira cómo podemos recordar su día.",
+    title: "TX QUINCE",
+    heroKicker: "Fotografía y video de quinceañeras · Dallas–Fort Worth",
+    heroBody: "Para recordar sus retratos, tradiciones y a quienes la acompañaron.",
     date: "Consulta su fecha",
     browse: "Explora las fotografías",
     workKicker: "El trabajo / 01",
-    workTitle: "Un día contado en fotografías.",
+    workTitle: "Cada celebración tiene su historia.",
     workBody: "Los retratos, las personas y los momentos entre ellos. Conoce celebraciones reales en Dallas–Fort Worth.",
     allWork: "Ver todo el portafolio",
     filmKicker: "En movimiento / 02",
@@ -174,15 +175,30 @@ export async function EditorialHome({ locale }: { locale: "en" | "es" }) {
       ? { url: heroMedia.posterUrl, alt: isSpanish ? "Escena de un video de quinceañera" : "Quinceañera film still", id: null, slug: null, focusX: null, focusY: null }
       : images[0] ?? null;
   const heroPosition = heroMedia?.kind === "image" ? heroObjectPosition(heroMedia) : selectedHero ? photoPosition(selectedHero) : "center";
+  const carouselCandidates: HeroSlide[] = [
+    ...portfolioFallback.filter((image) => image.url === "/portfolio/red-garden.webp" || image.url === "/portfolio/lilac-arch.webp"),
+    ...portfolioFallback,
+    ...images,
+  ].map((image) => ({ url: image.url, alt: image.alt, position: "50% 45%" }));
+  const initialSlide = selectedHero
+    ? { url: selectedHero.url, alt: isSpanish ? "Retrato de una quinceañera en su celebración" : "Portrait of a quinceañera on her celebration day", position: heroPosition }
+    : carouselCandidates[0];
+  const remainingSlides = carouselCandidates.filter((image, index, all) =>
+    image.url !== initialSlide?.url && all.findIndex((candidate) => candidate.url === image.url) === index,
+  ).slice(0, 2);
+  const heroSlides: HeroSlide[] = initialSlide
+    ? [{ ...initialSlide, mobileUrl: "/portfolio/stockyards.webp" }, ...remainingSlides]
+    : remainingSlides;
   const workImages = images.filter((image) => image.url !== selectedHero?.url).slice(0, 5);
   const testimonials = releasedTestimonials().slice(0, 1);
 
   return (
     <div className="editorial-home">
       <section className="editorial-hero" aria-labelledby="editorial-home-title">
-        {selectedHero ? (
-          <Image src={selectedHero.url} alt={selectedHero.alt} fill priority fetchPriority="high" sizes="100vw" className="editorial-hero-image" style={{ objectPosition: heroPosition }} unoptimized={selectedHero.url.startsWith("/portfolio/")} />
-        ) : <div className="editorial-hero-empty">{isSpanish ? "Fotografía de quinceañera" : "Quinceañera photography"}</div>}
+        {heroSlides.length > 0 ? <HeroCarousel slides={heroSlides} locale={locale} firstSlideOverlay={selectedHero && (heroMedia?.kind === "image"
+          ? <EditOverlay image={{ alt: selectedHero.alt }} editHref="/admin/hero#framing" label="Set focal point" />
+          : selectedHero.id && <EditOverlay image={{ id: selectedHero.id, slug: selectedHero.slug, alt: selectedHero.alt, fx: selectedHero.focusX, fy: selectedHero.focusY }} />)} />
+          : <div className="editorial-hero-empty">{isSpanish ? "Fotografía de quinceañera" : "Quinceañera photography"}</div>}
         <div className="editorial-hero-shade" aria-hidden="true" />
         <div className="editorial-hero-content">
           <p className="editorial-overline">{copy.heroKicker}</p>
@@ -190,16 +206,9 @@ export async function EditorialHome({ locale }: { locale: "en" | "es" }) {
           <p className="editorial-hero-body">{copy.heroBody}</p>
           <Link href={dateHref} className="editorial-hero-action">{copy.date} <span aria-hidden="true">↗</span></Link>
         </div>
-        {selectedHero && (heroMedia?.kind === "image"
-          ? <EditOverlay image={{ alt: selectedHero.alt }} editHref="/admin/hero#framing" label="Set focal point" />
-          : selectedHero.id && <EditOverlay image={{ id: selectedHero.id, slug: selectedHero.slug, alt: selectedHero.alt, fx: selectedHero.focusX, fy: selectedHero.focusY }} />)}
       </section>
 
-      <div className="editorial-index">
-        <span>TX Quince</span>
-        <span>{isSpanish ? "Fotografía + video" : "Photography + film"}</span>
-        <a href="#editorial-work">{copy.browse} ↓</a>
-      </div>
+      <div className="editorial-index"><span>TX Quince / Dallas–Fort Worth</span><p>{isSpanish ? "La imagen, la música y las personas que hicieron suyo el día." : "The dress, the music, and everyone who made the day hers."}</p><span>01 / 06</span></div>
 
       <section id="editorial-work" className="editorial-section editorial-work" aria-labelledby="editorial-work-title">
         <div className="editorial-intro">

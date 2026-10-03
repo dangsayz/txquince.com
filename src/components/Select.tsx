@@ -107,7 +107,7 @@ export function Select({
         aria-label={ariaLabel ?? (selected?.label ? undefined : placeholder)}
         onClick={() => (open ? setOpen(false) : openList())}
         onKeyDown={onKeyDown}
-        className="flex min-h-12 w-full items-center justify-between gap-3 rounded-md border border-line bg-white px-4 py-3 text-left text-base transition-colors hover:border-ink focus:border-ink focus:outline-none focus:ring-2 focus:ring-ink/15"
+        className="flex min-h-12 w-full items-center justify-between gap-3 rounded-none border border-line bg-white px-4 py-3 text-left text-base font-normal transition-colors hover:border-accent-strong focus:border-accent-strong focus:outline-none focus:ring-2 focus:ring-accent/20"
       >
         <span className={selected ? "text-ink" : "text-ink-faint"}>
           {selected?.label ?? placeholder}
@@ -135,7 +135,7 @@ export function Select({
           id={listboxId}
           role="listbox"
           aria-label={ariaLabel}
-          className="absolute left-0 right-0 z-30 mt-2 overflow-hidden rounded-xl border border-line bg-white p-1 shadow-[0_20px_50px_-18px_rgba(0,0,0,0.2)]"
+          className="absolute left-0 right-0 z-30 mt-1 overflow-hidden rounded-none border border-line bg-white p-1 shadow-[0_20px_50px_-18px_rgba(0,0,0,0.15)]"
         >
           {options.map((o, i) => {
             const isSelected = o.value === value;
@@ -150,8 +150,8 @@ export function Select({
                     e.preventDefault(); // keep focus on the combobox
                     commit(i);
                   }}
-                  className={`flex min-h-11 w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-left text-base transition-colors ${
-                    isSelected ? "bg-ivory font-medium text-ink" : "text-ink-soft"
+                  className={`flex min-h-11 w-full items-center justify-between gap-3 rounded-none px-3 py-2.5 text-left text-base font-normal transition-colors ${
+                    isSelected ? "bg-accent-soft text-ink" : "text-ink-soft"
                   } ${isActive && !isSelected ? "bg-ivory" : ""}`}
                 >
                   <span>{o.label}</span>

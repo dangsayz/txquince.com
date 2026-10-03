@@ -1,14 +1,15 @@
 export default function PortfolioLoading() {
   return (
-    <div role="status" aria-label="Loading portfolio" className="bg-cream">
-      <div className="mx-auto grid max-w-[100rem] lg:min-h-[min(48rem,80svh)] lg:grid-cols-[minmax(0,0.42fr)_minmax(0,0.58fr)]">
-        <div className="order-2 flex flex-col justify-center gap-5 px-5 py-16 md:px-10 lg:order-1 lg:px-16" aria-hidden="true">
-          <div className="h-3 w-28 animate-pulse bg-greige motion-reduce:animate-none" />
-          <div className="mt-8 h-12 w-4/5 animate-pulse bg-greige motion-reduce:animate-none" />
-          <div className="h-5 w-3/4 animate-pulse bg-greige motion-reduce:animate-none" />
-          <div className="h-5 w-2/3 animate-pulse bg-greige motion-reduce:animate-none" />
-        </div>
-        <div className="order-1 aspect-[4/5] animate-pulse bg-greige motion-reduce:animate-none sm:aspect-[5/4] lg:order-2 lg:aspect-auto" aria-hidden="true" />
+    <div role="status" aria-label="Loading portfolio" className="bg-white px-4 pt-5 sm:px-6 md:px-10 md:pt-8">
+      <div className="mx-auto max-w-[92rem] bg-cream px-6 py-12 md:py-28" aria-hidden="true">
+        <div className="mx-auto h-3 w-36 animate-pulse bg-greige motion-reduce:animate-none" />
+        <div className="mx-auto mt-6 h-14 w-56 animate-pulse bg-greige motion-reduce:animate-none" />
+        <div className="mx-auto mt-7 h-4 w-full max-w-md animate-pulse bg-greige motion-reduce:animate-none" />
+        <div className="mx-auto mt-3 h-4 w-3/4 max-w-sm animate-pulse bg-greige motion-reduce:animate-none" />
+      </div>
+      <div className="mx-auto grid max-w-[92rem] gap-3 pb-24 pt-12 sm:grid-cols-2 md:pt-20" aria-hidden="true">
+        <div className="aspect-[4/5] animate-pulse bg-greige motion-reduce:animate-none" />
+        <div className="aspect-[4/5] animate-pulse bg-greige motion-reduce:animate-none" />
       </div>
       <span className="sr-only">Loading photographs</span>
     </div>

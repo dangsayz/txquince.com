@@ -20,9 +20,9 @@ const SHOW_TURNSTILE =
 const DRAFT_KEY = "txq_reserve_draft";
 
 const inputBase =
-  "min-h-12 w-full rounded-md border border-line bg-white px-4 py-3 text-base text-ink placeholder:text-ink-faint transition-colors focus:border-ink focus:outline-none focus:ring-2 focus:ring-ink/15";
+  "min-h-12 w-full rounded-none border-0 border-b border-line bg-transparent px-0 py-3 text-base text-ink placeholder:text-ink-faint transition-colors focus:border-ink focus:outline-none focus:ring-0";
 const labelBase =
-  "block text-base font-medium text-ink";
+  "block text-base font-normal text-ink";
 
 type Draft = {
   name: string;
@@ -214,13 +214,13 @@ export function BookingForm({
   // ---- Success state ----
   if (status === "done") {
     return (
-      <div className="rounded-xl border border-line bg-white p-8 text-center md:p-10">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-cream ring-1 ring-line">
+      <div className="border border-line bg-white p-8 text-center md:p-12">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-ivory ring-1 ring-line">
           <svg width="20" height="16" viewBox="0 0 20 16" fill="none" aria-hidden="true">
-            <path d="M1 8.5L7 14.5L19 1.5" stroke="var(--color-wine)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M1 8.5L7 14.5L19 1.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
-        <h3 className="mt-5 font-display text-2xl text-ink">Your date request is in.</h3>
+        <h3 className="mt-5 font-display text-3xl font-light text-ink">Your date request is in.</h3>
         <p className="mx-auto mt-3 max-w-md text-base leading-7 text-ink-soft">
           Thank you, {name.split(" ")[0] || "there"}. I&apos;ll personally confirm your
           date is open and reach out — usually within 24 hours — to talk through the
@@ -238,7 +238,7 @@ export function BookingForm({
     <form
       onSubmit={handleSubmit}
       noValidate
-      className="flex flex-col gap-8"
+      className="flex flex-col gap-10"
       onFocusCapture={(e) => {
         const f = e.currentTarget;
         if (f.dataset.started) return;
@@ -252,10 +252,10 @@ export function BookingForm({
         <input ref={honeypotRef} id={HONEYPOT_FIELD} name={HONEYPOT_FIELD} type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
-      <div className="grid gap-x-5 gap-y-6 sm:grid-cols-2">
+      <div className="grid gap-x-8 gap-y-8 sm:grid-cols-2">
         <div className="border-t border-line pt-5 sm:col-span-2">
           <p className="text-xs uppercase tracking-[0.16em] text-ink-soft">01 / Your details</p>
-          <h3 className="mt-2 text-lg font-medium text-ink">How we can reach you</h3>
+          <h3 className="mt-3 font-display text-2xl font-light text-ink">How we can reach you</h3>
         </div>
         <Field label="Your name" required error={errors.name}>
           <input value={name} onChange={(e) => setName(e.target.value)} type="text" autoComplete="name" className={inputBase} placeholder="First and last" />
@@ -268,7 +268,7 @@ export function BookingForm({
         </Field>
         <div className="border-t border-line pt-5 sm:col-span-2">
           <p className="text-xs uppercase tracking-[0.16em] text-ink-soft">02 / Her celebration</p>
-          <h3 className="mt-2 text-lg font-medium text-ink">Date and coverage</h3>
+          <h3 className="mt-3 font-display text-2xl font-light text-ink">Date and coverage</h3>
         </div>
         <Field label="Event date" required error={errors.event_date} hint="The day to reserve">
           <input
@@ -330,13 +330,13 @@ export function BookingForm({
           </Field>
         )}
 
-        <div className="grid gap-3 border-y border-line bg-ivory px-5 py-5 sm:col-span-2 sm:grid-cols-2">
+        <div className="grid gap-5 border-y border-line py-6 sm:col-span-2 sm:grid-cols-2">
           <div><p className="text-xs uppercase tracking-[0.14em] text-ink-soft">Selected collection</p><p className="mt-1 text-lg text-ink">{selectedCollection.name} · {selectedCollection.priceLabel}</p></div>
           <div><p className="text-xs uppercase tracking-[0.14em] text-ink-soft">After we confirm the date</p><p className="mt-1 text-lg text-ink">{selectedCollection.depositLabel} deposit</p></div>
         </div>
         <div className="border-t border-line pt-5 sm:col-span-2">
           <p className="text-xs uppercase tracking-[0.16em] text-ink-soft">03 / One more thing</p>
-          <h3 className="mt-2 text-lg font-medium text-ink">Tell us what matters most</h3>
+          <h3 className="mt-3 font-display text-2xl font-light text-ink">Tell us what matters most</h3>
         </div>
         <Field label="Anything you'd like me to know?" error={errors.notes} className="sm:col-span-2">
           <textarea
@@ -374,7 +374,7 @@ export function BookingForm({
       <button
         type="submit"
         disabled={busy}
-        className="inline-flex min-h-12 w-full items-center justify-center gap-3 bg-ink px-8 py-3 text-base font-medium text-white transition-colors hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
+        className="inline-flex min-h-12 w-full items-center justify-center gap-3 bg-ink px-8 py-3 text-sm uppercase tracking-[0.14em] text-white transition-colors hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
       >
         {busy ? (
           <>

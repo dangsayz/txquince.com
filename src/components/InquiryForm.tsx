@@ -23,8 +23,8 @@ const SHOW_TURNSTILE =
   Boolean(SITE_KEY) && process.env.NODE_ENV === "production";
 
 const inputBase =
-  "min-h-12 w-full rounded-md border border-line bg-white px-4 py-3 text-base text-ink placeholder:text-ink-faint focus:border-ink focus:outline-none focus:ring-2 focus:ring-ink/15";
-const labelBase = "block text-base font-medium text-ink";
+  "min-h-12 w-full rounded-none border-0 border-b border-line bg-transparent px-0 py-3 text-base text-ink placeholder:text-ink-faint focus:border-ink focus:outline-none focus:ring-0";
+const labelBase = "block text-base font-normal text-ink";
 
 const spanish = {
   validation: "Revisa los campos señalados.",
@@ -161,7 +161,7 @@ export function InquiryForm({ initialDate = "", locale = "en" }: { initialDate?:
     <form
       onSubmit={handleSubmit}
       noValidate
-      className="flex flex-col gap-7"
+      className="flex flex-col gap-10"
       onFocusCapture={(e) => {
         const f = e.currentTarget;
         if (f.dataset.started) return;
@@ -182,10 +182,10 @@ export function InquiryForm({ initialDate = "", locale = "en" }: { initialDate?:
         />
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-2">
+      <div className="grid gap-x-8 gap-y-8 sm:grid-cols-2">
         <div className="border-t border-line pt-5 sm:col-span-2">
           <p className="text-xs uppercase tracking-[0.16em] text-ink-soft">01 / {es ? "Contacto" : "Contact"}</p>
-          <h3 className="mt-2 text-lg font-medium text-ink">{es ? "Cómo podemos contactarte" : "How we can reach you"}</h3>
+          <h3 className="mt-3 font-display text-2xl font-light text-ink">{es ? "Cómo podemos contactarte" : "How we can reach you"}</h3>
         </div>
         <Field label={es ? spanish.name : "Your name"} required error={errors.name}>
           <input name="name" type="text" autoComplete="name" className={inputBase} placeholder={es ? spanish.namePlaceholder : "First and last"} />
@@ -198,7 +198,7 @@ export function InquiryForm({ initialDate = "", locale = "en" }: { initialDate?:
         </Field>
         <div className="border-t border-line pt-5 sm:col-span-2">
           <p className="text-xs uppercase tracking-[0.16em] text-ink-soft">02 / {es ? "Celebración" : "Celebration"}</p>
-          <h3 className="mt-2 text-lg font-medium text-ink">{es ? "Cuéntanos sobre su día" : "Tell us about her day"}</h3>
+          <h3 className="mt-3 font-display text-2xl font-light text-ink">{es ? "Cuéntanos sobre su día" : "Tell us about her day"}</h3>
         </div>
         <Field label={es ? spanish.date : "Event date"} error={errors.event_date} hint={es ? spanish.future : "Future dates only"}>
           <input name="event_date" type="date" min={todayStr} max={maxStr} defaultValue={initialDate} className={inputBase} />
@@ -234,7 +234,7 @@ export function InquiryForm({ initialDate = "", locale = "en" }: { initialDate?:
 
         <div className="border-t border-line pt-5 sm:col-span-2">
           <p className="text-xs uppercase tracking-[0.16em] text-ink-soft">03 / {es ? "Detalles" : "Details"}</p>
-          <h3 className="mt-2 text-lg font-medium text-ink">{es ? "Algo más que debamos saber" : "Anything else we should know"}</h3>
+          <h3 className="mt-3 font-display text-2xl font-light text-ink">{es ? "Algo más que debamos saber" : "Anything else we should know"}</h3>
         </div>
         <Field label={es ? spanish.referral : "How did you hear about us?"} error={errors.referral} className="sm:col-span-2">
           <select name="referral" defaultValue="" className={`${inputBase} appearance-none`}>
@@ -287,7 +287,7 @@ export function InquiryForm({ initialDate = "", locale = "en" }: { initialDate?:
       <button
         type="submit"
         disabled={submitting}
-        className="inline-flex min-h-12 w-full items-center justify-center gap-3 bg-ink px-8 py-3 text-base font-medium text-white transition-colors hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
+        className="inline-flex min-h-12 w-full items-center justify-center gap-3 bg-ink px-8 py-3 text-sm uppercase tracking-[0.14em] text-white transition-colors hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
       >
         {submitting ? (
           <>
@@ -324,7 +324,7 @@ function Field({
     <label className={`flex flex-col gap-1.5 ${className}`}>
       <span className={labelBase}>
         {label}
-        {required ? <span className="text-wine"> *</span> : null}
+        {required ? <span className="text-ink"> *</span> : null}
         {hint ? <span className="ml-2 text-sm font-normal text-ink-soft">{hint}</span> : null}
       </span>
       {children}
