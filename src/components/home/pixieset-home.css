@@ -73,7 +73,9 @@
   z-index: 1;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(180deg, rgb(13 13 13 / 56%) 0%, transparent 30%, rgb(13 13 13 / 8%) 48%, rgb(13 13 13 / 70%) 100%);
+  background:
+    linear-gradient(90deg, rgb(13 13 13 / 60%) 0%, rgb(13 13 13 / 38%) 42%, transparent 78%),
+    linear-gradient(180deg, rgb(13 13 13 / 56%) 0%, transparent 30%, rgb(13 13 13 / 8%) 48%, rgb(13 13 13 / 70%) 100%);
 }
 
 .pix-home-hero-content {
