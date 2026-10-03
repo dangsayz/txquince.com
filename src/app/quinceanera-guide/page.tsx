@@ -18,9 +18,9 @@ import { EditOverlay } from "@/components/EditMode";
 import { site } from "@/content/site";
 import { packages } from "@/content/packages";
 import { getPageHero, getPortfolioImages, type PortfolioImage } from "@/lib/content-db";
-import { Reveal } from "@/components/Reveal";
-import { CTAButton } from "@/components/CTAButton";
 import { FinalCTA } from "@/components/FinalCTA";
+import { altPhraseFor } from "@/content/portfolio-taxonomy";
+import { publicPhotoCopy } from "@/lib/public-photo-copy";
 
 export const revalidate = 3600;
 
@@ -318,174 +318,117 @@ export default async function QuinceaneraGuidePage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replaceAll("<", "\\u003c") }}
       />
 
-      <section className="border-b border-line bg-cream">
-        <div className="mx-auto max-w-[90rem] px-5 pb-14 pt-12 md:px-10 md:pb-20 md:pt-16 lg:px-16 lg:pt-20">
-          <Reveal className="mx-auto max-w-2xl text-center">
-            <p className="text-sm font-medium text-ink-soft">The Quinceañera Guide</p>
-            <h1 className="mt-4 font-display text-[clamp(2rem,3.5vw,3rem)] leading-[1.14] text-ink">
-              Plan her day with confidence.
-            </h1>
-            <p className="mx-auto mt-5 max-w-xl text-base leading-7 text-ink-soft">
-              Clear answers on costs, timelines, photography, film, and the traditions that make her quinceañera hers.
-            </p>
-            <Link href="#guide-topics" className="mt-7 inline-flex min-h-12 items-center whitespace-nowrap rounded-md bg-ink px-6 text-base font-medium text-white hover:bg-accent-strong">
-              Explore the guide <span aria-hidden="true" className="ml-3">↗</span>
-            </Link>
-            <p className="mt-4 text-sm text-ink-soft">Dallas–Fort Worth · Collections from $1,800</p>
-          </Reveal>
-          <div className="relative mt-10 aspect-[4/3] overflow-hidden rounded-lg bg-greige md:mt-12 md:aspect-[16/8] lg:aspect-[16/7]">
-            <Image
-              src={hero?.url ?? "/portfolio/hero.webp"}
-              alt={hero?.alt || "Quinceañera photographed across Dallas–Fort Worth"}
-              fill
-              sizes="(max-width: 1024px) 100vw, 1440px"
-              className="object-cover"
-              style={{ objectPosition: `${(hero?.focus_x ?? 0.5) * 100}% ${(hero?.focus_y ?? 0.55) * 100}%` }}
-              priority
-            />
-            {hero ? <EditOverlay image={{ id: hero.id, slug: hero.slug, alt: hero.alt, fx: hero.focus_x, fy: hero.focus_y }} /> : null}
+      <header className="relative isolate min-h-[38rem] overflow-hidden bg-ink text-white sm:min-h-[46rem]" aria-labelledby="guide-title">
+        <Image
+          src={hero?.url ?? "/portfolio/hero.webp"}
+          alt={hero ? publicPhotoCopy(hero, altPhraseFor(hero.section)).alt : "Quinceañera portrait in Dallas–Fort Worth"}
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+          style={{ objectPosition: `${(hero?.focus_x ?? 0.5) * 100}% ${(hero?.focus_y ?? 0.5) * 100}%` }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/10" aria-hidden="true" />
+        <div className="relative mx-auto flex min-h-[38rem] max-w-[90rem] flex-col justify-between px-5 pb-10 pt-8 sm:min-h-[46rem] sm:px-10 sm:pb-14 lg:px-16">
+          <div className="flex items-center justify-between gap-4 text-xs uppercase tracking-[0.18em]">
+            <span>TX Quince / Journal 01</span>
+            <span>Dallas–Fort Worth</span>
+          </div>
+          <div className="max-w-2xl">
+            <p className="text-xs uppercase tracking-[0.2em] text-white/80">The quinceañera guide</p>
+            <h1 id="guide-title" className="mt-4 max-w-[18ch] font-display text-[clamp(2.25rem,4.5vw,4.25rem)] font-normal leading-[1.06] tracking-[-0.035em]">Plan the day. Keep the feeling.</h1>
+            <p className="mt-5 max-w-xl text-base leading-7 text-white/85 sm:text-lg">Clear answers on timing, traditions, photography, film, and the investment.</p>
+            <a href="#guide-topics" className="mt-8 inline-flex min-h-12 items-center gap-4 border-b border-white pb-1 text-sm font-medium">Explore the guide <span aria-hidden="true">↓</span></a>
           </div>
         </div>
-      </section>
+        {hero ? <EditOverlay image={{ id: hero.id, slug: hero.slug, alt: hero.alt, fx: hero.focus_x, fy: hero.focus_y }} /> : null}
+      </header>
 
       <nav id="guide-topics" aria-label="Guide topics" className="scroll-mt-24 border-b border-line bg-white">
-        <div className="mx-auto max-w-[90rem] px-5 py-12 md:px-10 lg:px-16">
-          <p className="text-sm font-medium text-ink-soft">Explore by topic</p>
-          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {BUCKETS.map((bucket, index) => (
-              <a key={bucket.id} href={`#${bucket.id}`} className="group flex min-h-16 items-center justify-between gap-3 rounded-lg border border-line bg-ivory px-4 py-3 text-base text-ink transition-colors hover:border-ink hover:bg-white">
-                <span><span className="mr-3 text-sm text-ink-faint">0{index + 1}</span>{bucket.title}</span>
-                <span aria-hidden="true" className="text-ink transition-transform group-hover:translate-x-1">↗</span>
-              </a>
-            ))}
+        <div className="mx-auto grid max-w-[90rem] gap-8 px-5 py-12 sm:px-10 lg:grid-cols-[minmax(0,0.42fr)_minmax(0,1fr)] lg:gap-16 lg:px-16 lg:py-16">
+          <div>
+            <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">Contents</p>
+            <h2 className="mt-3 max-w-[18ch] font-display text-[clamp(1.5rem,2.5vw,2.25rem)] font-normal leading-tight">Everything before, during, and after the day.</h2>
           </div>
+          <ol className="border-t border-line">
+            {BUCKETS.map((bucket, index) => (
+              <li key={bucket.id}>
+                <a href={`#${bucket.id}`} className="group grid min-h-16 grid-cols-[2.5rem_minmax(0,1fr)_1.5rem] items-center gap-4 border-b border-line py-3 text-base text-ink hover:text-ink-soft sm:min-h-20 sm:text-lg">
+                  <span className="text-xs text-ink-faint">0{index + 1}</span>
+                  <span>{bucket.title}</span>
+                  <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">↗</span>
+                </a>
+              </li>
+            ))}
+          </ol>
         </div>
       </nav>
 
-      {/* Buckets */}
-      {BUCKETS.map((bucket, bi) => (
-        <section
-          key={bucket.id}
-          id={bucket.id}
-          className={`scroll-mt-24 border-b border-line ${bi % 2 === 0 ? "bg-white" : "bg-cream"}`}
-        >
-          <div className="mx-auto grid max-w-[90rem] gap-8 px-5 py-14 md:px-10 md:py-20 lg:grid-cols-[minmax(0,.65fr)_minmax(0,1fr)] lg:gap-14 lg:px-16">
-            <div>
-              <Reveal>
-                <p className="text-sm font-medium text-ink-soft">
-                  {bucket.eyebrow}
-                </p>
-                <h2 className="mt-3 font-display text-[clamp(1.75rem,2.8vw,2.5rem)] leading-tight text-ink">
-                  {bucket.title}
-                </h2>
-                <p className="mt-3 max-w-md text-base leading-7 text-ink-soft">{bucket.intro}</p>
-              </Reveal>
+      {BUCKETS.map((bucket, index) => {
+        const image = bucketImg[bucket.id];
+        return (
+          <section key={bucket.id} id={bucket.id} className={`scroll-mt-24 ${index % 2 === 0 ? "bg-[#f4f2ee]" : "bg-white"}`} aria-labelledby={`${bucket.id}-title`}>
+            <div className="mx-auto max-w-[90rem] px-5 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-28">
+              <div className="grid gap-8 border-t border-ink/20 pt-6 lg:grid-cols-[minmax(0,0.25fr)_minmax(0,0.75fr)] lg:gap-14">
+                <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">0{index + 1} / {bucket.eyebrow}</p>
+                <div>
+                  <h2 id={`${bucket.id}-title`} className="font-display text-[clamp(1.875rem,3vw,3rem)] font-normal leading-[1.12] tracking-[-0.03em] text-ink">{bucket.title}</h2>
+                  <p className="mt-4 max-w-xl text-base leading-7 text-ink-soft">{bucket.intro}</p>
+                </div>
+              </div>
 
-              <Reveal className="mt-7">
-                <figure className="relative aspect-[4/5] overflow-hidden rounded-lg bg-greige">
+              <div className={`mt-10 grid gap-10 lg:mt-16 lg:grid-cols-[minmax(0,0.46fr)_minmax(0,0.54fr)] lg:items-start lg:gap-16 ${index % 2 === 1 ? "lg:[&>figure]:order-2" : ""}`}>
+                <figure className="relative min-h-[23rem] overflow-hidden bg-greige sm:min-h-[36rem] lg:sticky lg:top-24 lg:min-h-[43rem]">
                   <Image
-                    src={bucketImg[bucket.id]?.url ?? fallbackImages[bucket.id].src}
-                    alt={bucketImg[bucket.id]?.alt || fallbackImages[bucket.id].alt}
+                    src={image?.url ?? fallbackImages[bucket.id].src}
+                    alt={image ? publicPhotoCopy(image, altPhraseFor(image.section)).alt : fallbackImages[bucket.id].alt}
                     fill
-                    sizes="(max-width: 1024px) 100vw, 40vw"
+                    sizes="(max-width: 1023px) 100vw, 42vw"
                     className="object-cover"
-                    style={{ objectPosition: `${(bucketImg[bucket.id]?.focus_x ?? 0.5) * 100}% ${(bucketImg[bucket.id]?.focus_y ?? 0.5) * 100}%` }}
+                    style={{ objectPosition: `${(image?.focus_x ?? 0.5) * 100}% ${(image?.focus_y ?? 0.5) * 100}%` }}
                   />
                 </figure>
-              </Reveal>
+                <div className="border-t border-line">
+                  {bucket.qas.map((qa, qaIndex) => (
+                    <article key={qa.q} className="grid gap-3 border-b border-line py-7 sm:grid-cols-[2.5rem_minmax(0,1fr)] sm:gap-5 sm:py-9">
+                      <span className="text-xs text-ink-faint">{String(qaIndex + 1).padStart(2, "0")}</span>
+                      <div>
+                        <h3 className="max-w-[30ch] font-display text-[clamp(1.125rem,1.8vw,1.5rem)] font-normal leading-snug text-ink">{qa.q}</h3>
+                        <p className="guide-answer mt-4 max-w-prose text-base leading-7 text-ink-soft">{qa.a}</p>
+                        {qa.href && <Link href={qa.href} className="mt-4 inline-flex min-h-11 items-center gap-3 border-b border-ink text-sm font-medium text-ink">{qa.hrefLabel ?? "Read more"}<span aria-hidden="true">↗</span></Link>}
+                      </div>
+                    </article>
+                  ))}
+                  <Link href={bucket.cta.href} className="mt-7 inline-flex min-h-12 items-center gap-4 bg-ink px-6 text-sm font-medium text-white hover:bg-ink-soft">{bucket.cta.label}<span aria-hidden="true">↗</span></Link>
+                </div>
+              </div>
             </div>
+          </section>
+        );
+      })}
 
-            <div>
-              <dl className="divide-y divide-line border-t border-line">
-                {bucket.qas.map((qa) => (
-                  <div key={qa.q} className="py-6 first:pt-0">
-                    <dt className="font-display text-xl leading-snug text-ink">
-                      {qa.q}
-                    </dt>
-                    <dd className="guide-answer mt-3 text-base leading-7 text-ink-soft">
-                      {qa.a}
-                    </dd>
-                    {qa.href ? (
-                      <dd className="mt-3">
-                        <Link
-                          href={qa.href}
-                          className="group inline-flex min-h-11 items-center gap-2 text-base font-medium text-ink underline decoration-ink/30 underline-offset-[5px] hover:decoration-ink"
-                        >
-                          {qa.hrefLabel ?? "Full guide"}
-                          <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
-                        </Link>
-                      </dd>
-                    ) : null}
-                  </div>
-                ))}
-              </dl>
-
-              <Reveal className="mt-5">
-                <CTAButton href={bucket.cta.href} variant={bi % 2 === 0 ? "primary" : "text"} className="min-h-12 text-base">
-                  {bucket.cta.label}
-                </CTAButton>
-              </Reveal>
-            </div>
+      <section className="bg-ink text-white" aria-labelledby="guide-collections-title">
+        <div className="mx-auto grid max-w-[90rem] gap-10 px-5 py-16 sm:px-10 sm:py-20 lg:grid-cols-[minmax(0,0.55fr)_minmax(0,0.45fr)] lg:gap-20 lg:px-16 lg:py-24">
+          <div>
+            <p className="text-xs uppercase tracking-[0.18em] text-white/65">Four collections</p>
+            <h2 id="guide-collections-title" className="mt-4 max-w-[20ch] font-display text-[clamp(1.875rem,3vw,3rem)] font-normal leading-tight">Coverage for the day you have in mind.</h2>
+            <p className="mt-5 max-w-md text-base leading-7 text-white/75">Published prices begin at {packages[0].priceLabel}. Your date and collection are confirmed before a deposit is due.</p>
+            <Link href="/investment" className="mt-8 inline-flex min-h-12 items-center gap-4 border-b border-white pb-1 text-sm font-medium">Compare collections <span aria-hidden="true">↗</span></Link>
           </div>
-        </section>
-      ))}
-
-      {/* Collections funnel — the answer to "what does it cost" made actionable */}
-      <section className="border-t border-line bg-ivory">
-        <div className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
-          <Reveal>
-            <p className="text-sm font-medium text-ink-soft">
-              Fixed-price collections
-            </p>
-            <h2
-              className="mt-3 max-w-2xl font-display text-[clamp(1.75rem,2.8vw,2.5rem)] leading-tight text-ink"
-            >
-              From ${packages[0].price.toLocaleString()} — choose the coverage that fits her day.
-            </h2>
-            <p className="mt-4 max-w-xl text-base leading-7 text-ink-soft">
-              Fixed pricing and a clear reservation deposit for each collection.
-              A complimentary save-the-date session starts with Essential.
-            </p>
-          </Reveal>
-
-          <div className="mt-10 border-t border-line">
-            {packages.map((p, i) => (
-              <Reveal
-                key={p.id}
-                delay={i * 60}
-                className="grid gap-y-3 border-b border-line py-7 md:grid-cols-12 md:items-baseline md:gap-x-8"
-              >
-                <div className="md:col-span-3">
-                  <h3 className="font-display text-2xl text-ink">{p.name}</h3>
-                  <p className="mt-1 font-display text-xl text-ink">{p.priceLabel}</p>
-                </div>
-                <p className="text-base leading-7 text-ink-soft md:col-span-7">{p.teaser}</p>
-                <div className="md:col-span-2 md:text-right">
-                  <CTAButton href={`/reserve?collection=${p.id}`} variant="text" className="text-base">
-                    Reserve
-                  </CTAButton>
-                </div>
-              </Reveal>
+          <ol className="border-t border-white/30">
+            {packages.map((collection, index) => (
+              <li key={collection.id} className="grid grid-cols-[2rem_minmax(0,1fr)_auto] items-baseline gap-3 border-b border-white/30 py-5 sm:gap-6">
+                <span className="text-xs text-white/55">0{index + 1}</span>
+                <Link href={`/reserve?collection=${collection.id}`} className="min-h-11 text-lg hover:underline">{collection.name}</Link>
+                <span className="text-base text-white/85">{collection.priceLabel}</span>
+              </li>
             ))}
-          </div>
-
-          <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-base">
-            <Link href="/investment" className="inline-flex min-h-11 items-center text-ink underline underline-offset-2 hover:text-ink-soft">
-              Everything included in each collection →
-            </Link>
-            <Link href="/check-your-date" className="inline-flex min-h-11 items-center text-ink underline underline-offset-2 hover:text-ink-soft">
-              Check if your date is open →
-            </Link>
-            <Link href="/blog" className="inline-flex min-h-11 items-center text-ink underline underline-offset-2 hover:text-ink-soft">
-              Browse all planning articles →
-            </Link>
-          </div>
+          </ol>
         </div>
       </section>
-
       <FinalCTA />
     </>
   );

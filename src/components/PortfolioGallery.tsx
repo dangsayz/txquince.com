@@ -18,6 +18,7 @@ export function PortfolioGallery({
   sections = [],
   initialQuery = "",
   savedOnly = false,
+  editorial = false,
   columns,
   imageSizes = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw",
 }: {
@@ -25,6 +26,7 @@ export function PortfolioGallery({
   sections?: GallerySection[];
   initialQuery?: string;
   savedOnly?: boolean;
+  editorial?: boolean;
   columns?: string;
   imageSizes?: string;
 }) {
@@ -37,6 +39,8 @@ export function PortfolioGallery({
   const dialogRef = useRef<HTMLDialogElement>(null);
   const touchStart = useRef<number | null>(null);
   const { saved } = useSavedPhotos();
+  const showRail = !editorial && sections.length > 1 && (!savedOnly || images.length > 0);
+  const useNaturalRatio = editorial || Boolean(columns);
 
   const filtered = useMemo(() => selectGalleryItems(images, sections, { query, category, sort, savedOnly, saved }), [images, saved, savedOnly, category, query, sections, sort]);
 
@@ -70,7 +74,7 @@ export function PortfolioGallery({
   const active = activeIndex === null ? null : filtered[activeIndex] ?? null;
   const copyFor = (item: GalleryItem) => publicPhotoCopy(item, altPhraseFor(item.section || ""));
   const labelFor = (item: GalleryItem) => copyFor(item).title;
-  const pathFor = (item: GalleryItem) => item.slug && item.section ? `/photos/${item.section}/${item.slug}` : "/portfolio";
+  const pathFor = (item: GalleryItem) => item.detailAvailable !== false && item.slug && item.section ? `/photos/${item.section}/${item.slug}` : "/portfolio";
   const shareItem = (item: GalleryItem) => {
     setActiveIndex(null);
     setShare({ url: `${window.location.origin}${pathFor(item)}`, title: `${labelFor(item)} · TX Quince` });
@@ -79,8 +83,8 @@ export function PortfolioGallery({
   return (
     <>
       {sections.map((section) => <span key={section.id} id={section.id} className="block h-0 scroll-mt-28" aria-hidden="true" />)}
-      <div className={sections.length > 1 && (!savedOnly || images.length) ? "grid items-start gap-8 lg:grid-cols-[minmax(0,13rem)_minmax(0,1fr)] lg:gap-10" : ""}>
-        {sections.length > 1 && (!savedOnly || images.length) ? (
+      <div className={showRail ? "grid items-start gap-8 lg:grid-cols-[minmax(0,13rem)_minmax(0,1fr)] lg:gap-10" : ""}>
+        {showRail ? (
           <aside className="hidden lg:sticky lg:top-28 lg:block" aria-label="Portfolio categories">
             <p className="mb-4 text-xs font-medium uppercase tracking-[0.16em] text-ink-soft">Browse moments</p>
             <nav className="flex flex-col gap-1" aria-label="Filter by moment">
@@ -100,8 +104,8 @@ export function PortfolioGallery({
         ) : null}
         <div className="min-w-0">
           {!savedOnly || images.length ? (
-            <div className="border-b border-line pb-6">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
+            <div className={editorial ? "border-b border-line pb-8" : "border-b border-line pb-6"}>
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:gap-8">
                 <label className="block min-w-0 flex-1 text-sm font-medium text-ink">
                   Search photographs
                   <input
@@ -109,7 +113,7 @@ export function PortfolioGallery({
                     value={query}
                     onChange={(event) => { setQuery(event.target.value); setActiveIndex(null); }}
                     placeholder="Search moments or places"
-                    className="mt-2 min-h-12 w-full rounded-lg border border-line bg-white px-4 text-base font-normal text-ink placeholder:text-ink-faint focus:border-accent focus:outline-2 focus:outline-offset-2 focus:outline-accent"
+                    className={`mt-2 min-h-12 w-full border border-line bg-white px-4 text-base font-normal text-ink placeholder:text-ink-faint focus:border-accent focus:outline-2 focus:outline-offset-2 focus:outline-accent ${editorial ? "rounded-none" : "rounded-lg"}`}
                   />
                 </label>
                 <label className="block text-sm font-medium text-ink">
@@ -117,7 +121,7 @@ export function PortfolioGallery({
                   <select
                     value={sort}
                     onChange={(event) => setSort(event.target.value === "title" ? "title" : "curated")}
-                    className="mt-2 min-h-12 w-full rounded-lg border border-line bg-white px-4 text-base font-normal text-ink focus:outline-2 focus:outline-offset-2 focus:outline-accent sm:min-w-44"
+                    className={`mt-2 min-h-12 w-full border border-line bg-white px-4 text-base font-normal text-ink focus:outline-2 focus:outline-offset-2 focus:outline-accent sm:min-w-44 ${editorial ? "rounded-none" : "rounded-lg"}`}
                   >
                     <option value="curated">Curated order</option>
                     <option value="title">Title A–Z</option>
@@ -125,14 +129,14 @@ export function PortfolioGallery({
                 </label>
               </div>
               {sections.length > 1 ? (
-                <nav className="mt-5 flex max-w-full gap-2 overflow-x-auto pb-1 lg:hidden" aria-label="Filter by moment">
+                <nav className={`mt-6 flex max-w-full gap-2 overflow-x-auto pb-1 ${editorial ? "" : "lg:hidden"}`} aria-label="Filter by moment">
                   {[{ id: "all", title: "All moments" }, ...sections].map((section) => (
                     <button
                       key={section.id}
                       type="button"
                       aria-pressed={category === section.id}
                       onClick={() => { setCategory(section.id); setActiveIndex(null); }}
-                      className={`min-h-11 shrink-0 whitespace-nowrap rounded-lg border px-4 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${category === section.id ? "border-accent bg-accent text-white" : "border-line bg-white text-ink hover:border-accent"}`}
+                      className={`min-h-11 shrink-0 whitespace-nowrap border px-4 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${editorial ? "rounded-full" : "rounded-lg"} ${category === section.id ? "border-accent bg-accent text-white" : "border-line bg-white text-ink hover:border-accent"}`}
                     >
                       {section.title}
                     </button>
@@ -148,30 +152,36 @@ export function PortfolioGallery({
           </div>
 
       {filtered.length ? (
-        <div className={columns ?? "grid grid-cols-1 items-start gap-x-5 gap-y-9 sm:grid-cols-2 xl:grid-cols-3 xl:gap-x-6"}>
+        <div className={columns ?? (editorial ? "columns-1 gap-5 sm:columns-2 sm:gap-6 xl:columns-3 xl:gap-8" : "grid grid-cols-1 items-start gap-x-5 gap-y-9 sm:grid-cols-2 xl:grid-cols-3 xl:gap-x-6")}>
           {filtered.map((item, index) => (
-            <article key={item.id || `${item.section}-${item.slug}-${index}`} className="min-w-0">
-              <div className="group relative overflow-hidden rounded-lg border border-line bg-greige">
+            <article key={item.id || `${item.section}-${item.slug}-${index}`} className={editorial ? "mb-7 min-w-0 break-inside-avoid sm:mb-9" : "min-w-0"}>
+              <div className={`group relative overflow-hidden bg-greige ${editorial ? "" : "rounded-lg border border-line"}`}>
                 <button
                   type="button"
                   onClick={() => { setZoomed(false); setActiveIndex(index); }}
-                  className={`block w-full cursor-zoom-in focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-accent ${columns ? "" : "aspect-[4/5]"}`}
+                  className={`block w-full cursor-zoom-in focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-accent ${useNaturalRatio ? "" : "aspect-[4/5]"}`}
                   aria-label={`View ${labelFor(item)}`}
                 >
                   {item.width && item.height ? (
-                    <Image src={item.url} alt={copyFor(item).alt} width={item.width} height={item.height} sizes={imageSizes} unoptimized={item.url.startsWith("/portfolio/")} className={`block w-full transition-transform duration-300 motion-reduce:transition-none group-hover:scale-[1.025] ${columns ? "h-auto" : "h-full object-cover"}`} style={columns ? undefined : { objectPosition: `${Math.round((item.fx ?? 0.5) * 100)}% ${Math.round((item.fy ?? 0.4) * 100)}%` }} />
+                    <Image src={item.url} alt={copyFor(item).alt} width={item.width} height={item.height} sizes={imageSizes} unoptimized={item.url.startsWith("/portfolio/")} className={`block w-full transition-transform duration-300 motion-reduce:transition-none group-hover:scale-[1.025] ${useNaturalRatio ? "h-auto" : "h-full object-cover"}`} style={useNaturalRatio ? undefined : { objectPosition: `${Math.round((item.fx ?? 0.5) * 100)}% ${Math.round((item.fy ?? 0.4) * 100)}%` }} />
                   ) : (
-                    <ProtectedImg src={item.url} alt={copyFor(item).alt} loading="lazy" className={`block w-full transition-transform duration-300 motion-reduce:transition-none group-hover:scale-[1.025] ${columns ? "h-auto" : "h-full object-cover"}`} />
+                    <ProtectedImg src={item.url} alt={copyFor(item).alt} loading="lazy" className={`block w-full transition-transform duration-300 motion-reduce:transition-none group-hover:scale-[1.025] ${editorial ? "aspect-[4/5] object-cover" : useNaturalRatio ? "h-auto" : "h-full object-cover"}`} />
                   )}
                 </button>
                 <EditOverlay image={{ id: item.id, slug: item.slug, alt: item.alt, fx: item.fx, fy: item.fy }} />
               </div>
               <div className="mt-3 flex items-start justify-between gap-2">
                 <div className="min-w-0">
-                  {item.slug && item.section ? (
-                    <Link href={pathFor(item)} className="inline-flex min-h-11 items-center text-base font-medium leading-snug text-ink hover:underline hover:underline-offset-4">{labelFor(item)}</Link>
-                  ) : <p className="text-base font-medium leading-snug text-ink">{labelFor(item)}</p>}
-                  <p className="text-sm text-ink-soft">{sections.find((section) => section.id === item.section)?.title || item.city || "TX Quince"}</p>
+                  {editorial ? (
+                    item.detailAvailable !== false && item.slug && item.section ? <Link href={pathFor(item)} className="inline-flex min-h-11 items-center text-base font-normal leading-snug text-ink hover:underline hover:underline-offset-4">{sections.find((section) => section.id === item.section)?.title || "Photograph"}{item.city ? ` · ${item.city}` : ""} <span className="ml-2" aria-hidden="true">↗</span></Link> : <p className="text-base text-ink">{sections.find((section) => section.id === item.section)?.title || "Photograph"}</p>
+                  ) : (
+                    <>
+                      {item.detailAvailable !== false && item.slug && item.section ? (
+                        <Link href={pathFor(item)} className="inline-flex min-h-11 items-center text-base font-medium leading-snug text-ink hover:underline hover:underline-offset-4">{labelFor(item)}</Link>
+                      ) : <p className="text-base font-medium leading-snug text-ink">{labelFor(item)}</p>}
+                      <p className="text-sm text-ink-soft">{sections.find((section) => section.id === item.section)?.title || item.city || "TX Quince"}</p>
+                    </>
+                  )}
                 </div>
                 {item.slug && item.section ? <FavoriteButton section={item.section} slug={item.slug} className="!min-h-11 !w-11 shrink-0 !px-0 [&]:text-[0]" /> : null}
               </div>
@@ -213,7 +223,7 @@ export function PortfolioGallery({
         {active ? (
           <div className="relative">
             <div className="flex items-center justify-between gap-3 border-b border-line px-4 py-3 sm:px-6">
-              <p className="min-w-0 truncate text-sm font-semibold">{labelFor(active)}</p>
+              <p className="min-w-0 truncate text-sm font-medium">{editorial ? sections.find((section) => section.id === active.section)?.title || "Photograph" : labelFor(active)}</p>
               <button type="button" onClick={() => { setActiveIndex(null); setZoomed(false); }} className="min-h-11 rounded-full px-4 text-sm hover:bg-greige" aria-label="Close photograph viewer">Close ×</button>
             </div>
             <div
@@ -238,8 +248,8 @@ export function PortfolioGallery({
               </> : <span className="mr-auto" />}
               <button type="button" aria-pressed={zoomed} onClick={() => setZoomed((value) => !value)} className="min-h-11 rounded-full border border-line px-4 text-sm font-medium hover:border-ink">{zoomed ? "Fit image" : "Zoom in"}</button>
               {active.slug && active.section ? <FavoriteButton section={active.section} slug={active.slug} onToggle={savedOnly ? () => setActiveIndex(null) : undefined} /> : null}
-              <button type="button" onClick={() => shareItem(active)} className="min-h-11 rounded-full border border-line px-4 text-sm font-medium hover:border-ink">Share</button>
-              {active.slug && active.section ? <Link href={pathFor(active)} className="inline-flex min-h-11 items-center rounded-full bg-accent px-4 text-sm font-medium text-white hover:bg-accent-strong">View photo</Link> : null}
+              {active.detailAvailable !== false ? <button type="button" onClick={() => shareItem(active)} className="min-h-11 rounded-full border border-line px-4 text-sm font-medium hover:border-ink">Share</button> : null}
+              {active.detailAvailable !== false && active.slug && active.section ? <Link href={pathFor(active)} className="inline-flex min-h-11 items-center rounded-full bg-accent px-4 text-sm font-medium text-white hover:bg-accent-strong">View photo</Link> : null}
             </div>
           </div>
         ) : null}

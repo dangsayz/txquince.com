@@ -3,22 +3,15 @@ import Link from "next/link";
 import Image from "next/image";
 import { site } from "@/content/site";
 import { packages } from "@/content/packages";
-import { getImagesBySection } from "@/lib/content-db";
+import { getImagesBySection, imagePagePath } from "@/lib/content-db";
 import { portfolioFallback } from "@/content/portfolio-fallback";
 import { Reveal } from "@/components/Reveal";
-import { CTAButton } from "@/components/CTAButton";
-import { FinalCTA } from "@/components/FinalCTA";
-
-/**
- * SAVE-THE-DATE (ES) — la sesión que otros estudios cobran $150–$475, incluida
- * gratis desde Essential. Español natural, no traducción literal. Espejo de
- * la versión en inglés en /quinceanera-save-the-date.
- */
+import { publicPhotoCopy } from "@/lib/public-photo-copy";
 
 const STD_FAQS_ES = [
   {
     q: "¿Cuánto cuesta la sesión Save-the-Date?",
-    a: "Nada extra con Essential, Signature o Legacy. Moments no incluye esta sesión. La mayoría de los estudios en Dallas–Fort Worth la venden aparte por $150–$475. Aquí ya viene con esas tres colecciones.",
+    a: "La sesión está incluida sin cargo adicional con Essential, Signature o Legacy. Moments no la incluye. Consulta los detalles de cada colección antes de elegir la tuya.",
   },
   {
     q: "¿Puede usar su propio vestido de quince?",
@@ -45,7 +38,7 @@ const STD_FAQS_ES = [
 export const metadata: Metadata = {
   title: "Sesión Save-the-Date de Quinceañera — Dallas–Fort Worth",
   description:
-    "Tu sesión Save-the-Date de quinceañera está incluida desde la colección Essential de TX Quince — otros estudios cobran $150–$475. Una sesión de fotos pre-quince con su propio vestido, en todo Dallas–Fort Worth.",
+    "Sesión Save-the-Date de quinceañera incluida con Essential, Signature y Legacy de TX Quince. Retratos pre-quince con su propio vestido en Dallas–Fort Worth.",
   alternates: {
     canonical: "/es/save-the-date-quinceanera",
     languages: {
@@ -57,7 +50,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `Sesión Save-the-Date de Quinceañera — Dallas–Fort Worth · ${site.brand}`,
     description:
-      "Incluida desde Essential — otros cobran $150–$475. Sesión pre-quince con su propio vestido, en todo DFW.",
+      "Sesión pre-quince con su propio vestido, incluida con Essential, Signature y Legacy en Dallas–Fort Worth.",
     url: `${site.url}/es/save-the-date-quinceanera`,
     locale: "es_MX",
   },
@@ -114,52 +107,28 @@ export default async function SaveTheDatePageEs() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replaceAll("<", "\\u003c") }}
       />
 
-      <section className="border-b border-line bg-white px-5 pb-14 pt-14 md:px-10 md:pb-20 md:pt-20 lg:px-16">
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="text-xs font-medium uppercase tracking-[0.16em] text-ink-soft">Save-the-Date · Dallas–Fort Worth</p>
-          <h1 className="mx-auto mt-5 max-w-[22ch] font-display text-[clamp(2rem,3.4vw,3rem)] leading-[1.15] tracking-[-0.03em] text-ink">
-            Su sesión Save-the-Date, incluida desde Essential.
-          </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-ink-soft">
-            Una sesión de fotos tranquila antes del gran día — para las
-            invitaciones, el cuadro de firmas y para conocer a tu fotógrafo primero.
-            La mayoría de los estudios en Dallas–Fort Worth la cobran de $150 a
-            $475. Aquí viene incluida desde Essential. Moments no la incluye.
-          </p>
-          <div className="mt-7 flex flex-wrap items-center justify-center gap-4">
-            <Link href={site.cta.href} className="inline-flex min-h-12 items-center whitespace-nowrap rounded-lg bg-ink px-6 text-base font-medium text-white hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">
-              Reserva tu fecha
-            </Link>
-            <Link href={site.secondaryCta.href} className="inline-flex min-h-11 items-center text-base font-medium text-ink underline underline-offset-4">
-              ¿Preguntas primero? Escríbeme
-            </Link>
-            <Link href="/quinceanera-save-the-date" hrefLang="en" className="inline-flex min-h-11 items-center text-base text-ink-soft underline underline-offset-4">
-              View this page in English →
-            </Link>
-          </div>
+      <header className="relative isolate flex min-h-[38rem] items-end overflow-hidden bg-ink text-white sm:min-h-[44rem]" aria-labelledby="save-date-title-es">
+        {hero?.url ? <Image src={hero.url} alt={publicPhotoCopy(hero, "Retrato Save-the-Date de quinceañera").alt} fill priority sizes="100vw" className="object-cover" style={{ objectPosition: focal(hero.focus_x, hero.focus_y) }} /> : null}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/10" aria-hidden="true" />
+        <div className="relative mx-auto w-full max-w-[90rem] px-5 pb-12 pt-36 sm:px-10 sm:pb-16 lg:px-16">
+          <p className="text-xs font-medium uppercase tracking-[0.16em] text-white/85">Save-the-Date / Dallas–Fort Worth</p>
+          <h1 id="save-date-title-es" className="mt-5 max-w-[23ch] font-body text-[clamp(2rem,3.8vw,3.5rem)] font-normal leading-[1.12] tracking-[-0.035em]">Sus primeros retratos antes de la celebración.</h1>
+          <p className="mt-5 max-w-xl text-base leading-7 text-white/90">Una sesión tranquila para las invitaciones, el cuadro de firmas y para conocer a tu fotógrafo. Incluida con Essential, Signature y Legacy.</p>
+          <Link href="/es/consulta" className="mt-7 inline-flex min-h-12 items-center justify-between gap-6 whitespace-nowrap bg-white px-5 text-base font-medium text-ink transition-colors hover:bg-greige focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Consultar su fecha <span aria-hidden="true">↗</span></Link>
         </div>
-        <div className="relative mx-auto mt-12 aspect-[4/3] max-w-[90rem] overflow-hidden rounded-lg bg-accent-soft sm:aspect-[16/8]">
-          {hero?.url ? (
-            <Image
-              src={hero.url}
-              alt={hero.alt || "Sesión Save-the-Date de quinceañera en Dallas–Fort Worth"}
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover"
-              style={{ objectPosition: focal(hero.focus_x, hero.focus_y) }}
-            />
-          ) : null}
-        </div>
-      </section>
+      </header>
+      <div className="mx-auto flex max-w-[90rem] flex-wrap items-center justify-between gap-4 px-5 py-5 text-sm text-ink-soft sm:px-10 lg:px-16">
+        <span>Sesión Save-the-Date · Dallas–Fort Worth</span>
+        <Link href="/quinceanera-save-the-date" hrefLang="en" className="inline-flex min-h-11 items-center underline underline-offset-4">View this page in English ↗</Link>
+      </div>
 
-      {/* Qué es */}
-      <section className="mx-auto max-w-3xl px-5 py-16 md:px-10 lg:px-16 md:py-20">
-        <Reveal className="flex flex-col gap-6">
-          <h2 className="font-display text-[clamp(1.75rem,2.8vw,2.5rem)] leading-tight text-ink text-balance">
+      <section className="mx-auto grid max-w-[90rem] gap-8 px-5 py-16 md:px-10 md:py-20 lg:grid-cols-[minmax(0,0.3fr)_minmax(0,0.7fr)] lg:gap-16 lg:px-16">
+        <p className="text-xs font-medium uppercase tracking-[0.14em] text-ink-soft">La sesión / 01</p>
+        <Reveal className="flex max-w-3xl flex-col gap-6">
+          <h2 className="font-body text-[clamp(1.75rem,2.8vw,2.5rem)] font-normal leading-tight text-ink text-balance">
             Qué es la sesión Save-the-Date.
           </h2>
           <p className="text-base leading-relaxed text-ink-soft">
@@ -181,23 +150,22 @@ export default async function SaveTheDatePageEs() {
         <section className="mx-auto max-w-[90rem] px-5 pb-16 md:px-10 md:pb-20 lg:px-16" aria-label="Fotografías de Save-the-Date">
           <div className="grid grid-cols-2 gap-3 sm:gap-5">
             {supporting.map((image) => (
-              <div key={image.id ?? image.url} className="relative aspect-[4/5] overflow-hidden rounded-lg bg-greige sm:aspect-[3/4]">
-                <Image src={image.url} alt={image.alt || "Retrato Save-the-Date de quinceañera"} fill sizes="(max-width: 640px) 50vw, 50vw" className="object-cover" style={{ objectPosition: focal(image.focus_x, image.focus_y) }} />
-              </div>
+              <Link key={image.id ?? image.url} href={image.slug ? imagePagePath(image.section, image.slug) : "/portfolio#save-the-date"} aria-label={`Ver ${publicPhotoCopy(image, "Retrato Save-the-Date de quinceañera").title}`} className="relative aspect-[4/5] overflow-hidden bg-greige sm:aspect-[3/4] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">
+                <Image src={image.url} alt={publicPhotoCopy(image, "Retrato Save-the-Date de quinceañera").alt} fill sizes="(max-width: 640px) 50vw, 50vw" className="object-cover" style={{ objectPosition: focal(image.focus_x, image.focus_y) }} />
+              </Link>
             ))}
           </div>
         </section>
       ) : null}
 
-      {/* Su vestido — la respuesta honesta a "vestido incluido" */}
-      <section className="bg-accent-soft">
-        <div className="mx-auto max-w-3xl px-5 py-16 text-center md:px-10 lg:px-16 md:py-20">
+      <section className="bg-greige">
+        <div className="mx-auto grid max-w-[90rem] gap-8 px-5 py-16 md:px-10 md:py-20 lg:grid-cols-[minmax(0,0.3fr)_minmax(0,0.7fr)] lg:gap-16 lg:px-16">
+          <p className="text-xs font-medium uppercase tracking-[0.14em] text-ink-soft">A su manera / 02</p>
           <Reveal>
-            <p className="eyebrow mb-5">Su vestido, su sesión</p>
-            <h2 className="font-display text-[clamp(1.75rem,2.8vw,2.5rem)] leading-tight text-ink text-balance">
+            <h2 className="font-body text-[clamp(1.75rem,2.8vw,2.5rem)] font-normal leading-tight text-ink text-balance">
               Sin renta. Sin restricciones.
             </h2>
-            <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-ink-soft">
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-soft">
               Algunos estudios limitan el Save-the-Date con un vestido prestado o
               restringen cuál puede usar. Aquí usa el suyo — el vestido de quince de
               verdad, un look casual, o los dos en una sola sesión. Es su momento;
@@ -207,52 +175,32 @@ export default async function SaveTheDatePageEs() {
         </div>
       </section>
 
-      {/* Incluida, no un extra */}
       <section className="mx-auto max-w-[90rem] px-5 py-16 md:px-10 md:py-20 lg:px-16">
         <Reveal>
-          <h2 className="font-display text-[clamp(1.75rem,2.8vw,2.5rem)] leading-tight text-ink text-balance">
+          <h2 className="font-body text-[clamp(1.75rem,2.8vw,2.5rem)] font-normal leading-tight text-ink text-balance">
             Incluida, no un extra.
           </h2>
           <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-soft">
-            En todo DFW, el Save-the-Date casi siempre se vende aparte — un cargo de
-            $150 a $475 encima de la cobertura del día. Essential, Signature y Legacy
-            ya lo incluyen, de principio a fin. Moments no.
+            Essential, Signature y Legacy incluyen la sesión Save-the-Date.
+            Moments no la incluye. Compara las cuatro colecciones antes de consultar tu fecha.
           </p>
         </Reveal>
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 border-t border-line">
           {includedPackages.map((p, i) => (
             <Reveal
               key={p.id}
               delay={i * 80}
-              className={`flex h-full flex-col border p-7 ${
-                p.highlight ? "border-ink bg-accent-soft" : "border-line bg-white"
-              }`}
+              className="grid gap-4 border-b border-line py-7 sm:grid-cols-[minmax(0,0.7fr)_auto] lg:grid-cols-[minmax(0,0.4fr)_minmax(0,0.4fr)_auto] lg:items-center lg:gap-8"
             >
-              <div className="flex items-center justify-between">
-                <h3 className="font-display text-2xl text-ink">{p.name}</h3>
-                {p.highlight ? (
-                  <span className="text-xs font-medium uppercase tracking-[0.12em] text-ink-soft">
-                    Más popular
-                  </span>
-                ) : null}
-              </div>
-              <p className="mt-5 font-display text-[2rem] text-ink">{p.priceLabel}</p>
-              <p className="mt-2 text-base text-ink-soft">
-                Save-the-Date incluido
-              </p>
-              <CTAButton
-                href={`/reserve?collection=${p.id}`}
-                variant="ink"
-                className="mt-6 min-h-12 w-full text-base"
-              >
-                Reservar {p.name}
-              </CTAButton>
+              <div><h3 className="font-body text-[clamp(1.5rem,2.3vw,2.25rem)] font-normal text-ink">{p.name}</h3><p className="mt-2 text-base text-ink-soft">{p.id === "essential" ? "Foto o video, un artista." : p.id === "signature" ? "Foto y video durante el día completo." : "Foto, video y recuerdos impresos."}</p></div>
+              <div><p className="font-body text-[1.5rem] font-normal text-ink">{p.priceLabel}</p><p className="mt-1 text-base text-ink-soft">Save-the-Date incluido</p></div>
+              <Link href={`/es/paquetes#${p.id}`} className="inline-flex min-h-12 items-center justify-between gap-5 whitespace-nowrap border-b border-ink text-base font-medium text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">Ver colección <span aria-hidden="true">↗</span></Link>
             </Reveal>
           ))}
         </div>
         <p className="mt-8 text-base">
           <Link
-            href="/investment"
+            href="/es/paquetes"
             className="text-ink underline underline-offset-2 hover:text-ink-soft"
           >
             Ver todo lo que incluye cada colección →
@@ -260,41 +208,39 @@ export default async function SaveTheDatePageEs() {
         </p>
       </section>
 
-      {/* Preguntas */}
       <section className="mx-auto max-w-3xl px-5 py-16 md:px-10 lg:px-16 md:py-20">
-        <h2 className="font-display text-[clamp(1.75rem,2.8vw,2.5rem)] leading-tight text-ink">
+        <h2 className="font-body text-[clamp(1.75rem,2.8vw,2.5rem)] font-normal leading-tight text-ink">
           Save-the-Date — preguntas, respondidas.
         </h2>
         <dl className="mt-10 divide-y divide-line border-y border-line">
           {STD_FAQS_ES.map((f) => (
             <div key={f.q} className="py-7">
-              <dt className="font-display text-xl text-ink">{f.q}</dt>
+              <dt className="text-xl font-normal text-ink">{f.q}</dt>
               <dd className="mt-3 text-base leading-7 text-ink-soft">{f.a}</dd>
             </div>
           ))}
         </dl>
       </section>
 
-      {/* Ciudades */}
-      <section className="bg-accent-soft">
+      <section className="bg-greige">
         <div className="mx-auto max-w-5xl px-5 py-16 md:px-10 lg:px-16 md:py-20">
-          <p className="eyebrow mb-5">En todo Dallas–Fort Worth</p>
+          <p className="mb-5 text-xs font-medium uppercase tracking-[0.16em] text-ink-soft">En todo Dallas–Fort Worth</p>
           <div className="flex flex-wrap gap-3">
             <Link
               href="/es/fotografo-de-quinceaneras/dallas"
-              className="inline-flex min-h-11 items-center rounded-lg border border-line bg-white px-4 text-base text-ink transition-colors hover:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+              className="inline-flex min-h-11 items-center border-b border-ink text-base text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
             >
               Fotógrafo de quinceañeras en Dallas
             </Link>
             <Link
               href="/es/fotografo-de-quinceaneras/fort-worth"
-              className="inline-flex min-h-11 items-center rounded-lg border border-line bg-white px-4 text-base text-ink transition-colors hover:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+              className="inline-flex min-h-11 items-center border-b border-ink text-base text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
             >
               Fotógrafo de quinceañeras en Fort Worth
             </Link>
             <Link
               href="/es/fotografo-de-quinceaneras"
-              className="inline-flex min-h-11 items-center rounded-lg border border-line bg-white px-4 text-base text-ink transition-colors hover:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+              className="inline-flex min-h-11 items-center border-b border-ink text-base text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
             >
               Todas las áreas de DFW →
             </Link>
@@ -302,7 +248,16 @@ export default async function SaveTheDatePageEs() {
         </div>
       </section>
 
-      <FinalCTA />
+      <section className="bg-ink text-white">
+        <div className="mx-auto flex max-w-[90rem] flex-col gap-8 px-5 py-14 sm:px-10 md:flex-row md:items-end md:justify-between lg:px-16">
+          <div>
+            <p className="text-xs uppercase tracking-[0.18em] text-white/70">El siguiente paso</p>
+            <h2 className="mt-3 max-w-2xl font-body text-[clamp(1.75rem,2.7vw,2.5rem)] font-normal leading-tight">Todo empieza con su fecha.</h2>
+            <p className="mt-3 max-w-xl text-base leading-7 text-white/80">Cuéntanos cuándo será la celebración. Confirmaremos la disponibilidad antes de pedir un depósito.</p>
+          </div>
+          <Link href="/es/consulta" className="inline-flex min-h-12 shrink-0 items-center justify-between gap-8 self-start whitespace-nowrap border border-white px-6 text-base text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Consultar fecha <span aria-hidden="true">↗</span></Link>
+        </div>
+      </section>
     </>
   );
 }

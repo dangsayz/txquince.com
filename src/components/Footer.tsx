@@ -1,232 +1,75 @@
 import Link from "next/link";
-import { site } from "@/content/site";
 import { locations } from "@/content/locations";
+import { site } from "@/content/site";
 import { Wordmark } from "@/components/Wordmark";
 
-const COLUMNS = [
-  {
-    title: "Navigate",
-    links: [
-      { label: "Home", href: "/" },
-      { label: "Portfolio", href: "/portfolio" },
-      { label: "Venues", href: "/venues" },
-      { label: "Vendors", href: "/vendors" },
-      { label: "Guide", href: "/quinceanera-guide" },
-      { label: "Investment", href: "/investment" },
-      { label: "About", href: "/about" },
-    ],
-  },
-  {
-    title: "Book",
-    links: [
-      { label: "Reserve your date", href: "/reserve" },
-      { label: "Check your date", href: "/check-your-date" },
-      { label: "Save-the-Date", href: "/quinceanera-save-the-date" },
-      { label: "Areas served", href: "/quinceanera-photographer" },
-    ],
-  },
-  {
-    title: "Connect",
-    links: [
-      { label: "Instagram", href: site.social.instagram, external: true },
-      { label: "YouTube", href: site.social.youtube, external: true },
-      { label: "Facebook", href: site.social.facebook, external: true },
-      { label: site.contact.email, href: `mailto:${site.contact.email}` },
-    ],
-  },
-  {
-    title: "Legal",
-    links: [{ label: "Privacy", href: "/privacy" }],
-  },
-];
-
-const COLUMNS_ES = [
-  {
-    title: "Explorar",
-    links: [
-      { label: "Inicio", href: "/es" },
-      { label: "Portafolio (EN)", href: "/portfolio" },
-      { label: "Salones", href: "/es/salones" },
-      { label: "Proveedores (EN)", href: "/vendors" },
-      { label: "Guía", href: "/es/blog" },
-      { label: "Paquetes", href: "/es/paquetes" },
-      { label: "Nosotros (EN)", href: "/about" },
-    ],
-  },
-  {
-    title: "Reservar",
-    links: [
-      { label: "Consultar una fecha", href: "/es/consulta" },
-      { label: "Save-the-Date", href: "/es/save-the-date-quinceanera" },
-      { label: "Áreas de servicio", href: "/es/fotografo-de-quinceaneras" },
-    ],
-  },
-  {
-    title: "Conectar",
-    links: [
-      { label: "Instagram", href: site.social.instagram, external: true },
-      { label: "YouTube", href: site.social.youtube, external: true },
-      { label: "Facebook", href: site.social.facebook, external: true },
-      { label: site.contact.email, href: `mailto:${site.contact.email}` },
-    ],
-  },
-  {
-    title: "Legal",
-    links: [{ label: "Privacidad (EN)", href: "/privacy" }],
-  },
-];
-
-const socialPill =
-  "flex h-11 w-11 items-center justify-center rounded-md border border-line text-ink-soft transition-colors hover:border-ink hover:text-ink";
-
 export function Footer({ locale = "en" }: { locale?: "en" | "es" }) {
-  const year = new Date().getFullYear();
   const isSpanish = locale === "es";
+  const explore = isSpanish
+    ? [
+        { label: "Portafolio", href: "/portfolio" },
+        { label: "Colecciones", href: "/es/paquetes" },
+        { label: "Video", href: "/es/videografo-de-quinceaneras" },
+        { label: "Guía", href: "/es/blog" },
+        { label: "Salones", href: "/es/salones" },
+      ]
+    : [
+        { label: "The work", href: "/portfolio" },
+        { label: "Collections", href: "/investment" },
+        { label: "Film", href: "/quinceanera-videographer" },
+        { label: "The guide", href: "/quinceanera-guide" },
+        { label: "Venues", href: "/venues" },
+      ];
+  const studio = isSpanish
+    ? [
+        { label: "Nosotros", href: "/about" },
+        { label: "Áreas de servicio", href: "/es/fotografo-de-quinceaneras" },
+        { label: "Consulta una fecha", href: "/es/consulta" },
+        { label: "Privacidad", href: "/privacy" },
+      ]
+    : [
+        { label: "About", href: "/about" },
+        { label: "Areas served", href: "/quinceanera-photographer" },
+        { label: "Check your date", href: "/check-your-date" },
+        { label: "Privacy", href: "/privacy" },
+      ];
 
   return (
-    <footer className="border-t border-line bg-white text-ink">
-      <div className="mx-auto max-w-[90rem] px-5 md:px-10 lg:px-16">
-        <div className="flex flex-col gap-8 pt-14 md:flex-row md:items-center md:justify-between md:pt-16">
+    <footer className="border-t border-[#d3d2cc] bg-[#f7f6f3] text-[#252522]">
+      <div className="mx-auto max-w-[88rem] px-5 pb-28 pt-16 sm:px-8 md:pb-7 lg:px-12 lg:pt-20">
+        <div className="grid gap-12 border-b border-[#c6c5c0] pb-14 lg:grid-cols-[minmax(0,1.4fr)_repeat(3,minmax(0,0.6fr))] lg:gap-10">
           <div>
-            <Wordmark size="masthead" />
-            <p className="mt-4 max-w-sm text-base leading-7 text-ink-soft">
-              {isSpanish ? "Fotografía y video de quinceañeras en Dallas–Fort Worth." : site.tagline}
-            </p>
+            <Link href={isSpanish ? "/es" : "/"} className="inline-flex min-h-12 items-center"><Wordmark size="masthead" subline={false} /></Link>
+            <p className="mt-5 max-w-sm text-base leading-7 text-[#51514d]">{isSpanish ? "Fotografía y video de quinceañeras en Dallas–Fort Worth." : "Quinceañera photography and film across Dallas–Fort Worth."}</p>
+            <Link href={isSpanish ? "/es/consulta" : "/check-your-date"} className="mt-7 inline-flex min-h-12 items-center gap-5 border-b border-[#252522] text-base font-medium">{isSpanish ? "Consulta su fecha" : "Check her date"}<span aria-hidden="true">↗</span></Link>
           </div>
-
-          <div className="flex flex-col gap-5 md:items-end">
-            <Link
-              href={isSpanish ? "/es/consulta" : "/check-your-date"}
-              className="inline-flex min-h-12 items-center justify-center gap-2 self-start whitespace-nowrap rounded-md bg-ink px-6 text-sm font-medium text-white transition-colors hover:bg-accent-strong md:self-auto"
-            >
-              {isSpanish ? "Consulta su fecha" : "Check her date"}
-              <span aria-hidden>→</span>
-            </Link>
-            <div className="flex items-center gap-3">
-              <a
-                href={site.social.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram"
-                className={socialPill}
-              >
-                <IgIcon />
-              </a>
-              {site.social.youtube ? (
-                <a
-                  href={site.social.youtube}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="YouTube"
-                  className={socialPill}
-                >
-                  <YtIcon />
-                </a>
-              ) : null}
-              {site.social.facebook ? (
-                <a
-                  href={site.social.facebook}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Facebook"
-                  className={socialPill}
-                >
-                  <FbIcon />
-                </a>
-              ) : null}
-            </div>
+          <div>
+            <h2 className="text-xs font-medium uppercase tracking-[0.14em] text-[#666660]">{isSpanish ? "Explorar" : "Explore"}</h2>
+            <ul className="mt-4">{explore.map((item) => <li key={item.href}><Link href={item.href} className="inline-flex min-h-11 items-center text-base hover:underline hover:underline-offset-4">{item.label}</Link></li>)}</ul>
+          </div>
+          <div>
+            <h2 className="text-xs font-medium uppercase tracking-[0.14em] text-[#666660]">{isSpanish ? "Estudio" : "Studio"}</h2>
+            <ul className="mt-4">{studio.map((item) => <li key={item.href}><Link href={item.href} className="inline-flex min-h-11 items-center text-base hover:underline hover:underline-offset-4">{item.label}</Link></li>)}</ul>
+          </div>
+          <div>
+            <h2 className="text-xs font-medium uppercase tracking-[0.14em] text-[#666660]">{isSpanish ? "Conectar" : "Connect"}</h2>
+            <ul className="mt-4">
+              {site.social.instagram && <li><a href={site.social.instagram} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center text-base hover:underline hover:underline-offset-4">Instagram ↗</a></li>}
+              {site.social.youtube && <li><a href={site.social.youtube} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center text-base hover:underline hover:underline-offset-4">YouTube ↗</a></li>}
+              {site.social.facebook && <li><a href={site.social.facebook} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center text-base hover:underline hover:underline-offset-4">Facebook ↗</a></li>}
+              <li><a href={`mailto:${site.contact.email}`} className="inline-flex min-h-11 items-center break-all text-base hover:underline hover:underline-offset-4">Email ↗</a></li>
+            </ul>
           </div>
         </div>
-
-        <div className="mt-12 grid grid-cols-2 gap-x-8 gap-y-8 border-t border-line pt-9 sm:grid-cols-4 md:mt-14">
-          {(isSpanish ? COLUMNS_ES : COLUMNS).map((col) => (
-            <div key={col.title}>
-              <p className="text-sm font-semibold text-ink">{col.title}</p>
-              <ul className="mt-2">
-                {col.links.filter((l) => l.href).map((l) => (
-                  <li key={l.label}>
-                    {"external" in l && l.external ? (
-                      <a
-                        href={l.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex min-h-11 items-center text-base text-ink-soft transition-colors hover:text-ink"
-                      >
-                        {l.label}
-                      </a>
-                    ) : (
-                      <Link
-                        href={l.href}
-                        className="inline-flex min-h-11 items-center text-base text-ink-soft transition-colors hover:text-ink"
-                      >
-                        {l.label}
-                      </Link>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+        <div className="grid gap-4 border-b border-[#d3d2cc] py-7 md:grid-cols-[minmax(0,1fr)_minmax(0,3fr)]">
+          <p className="text-xs font-medium uppercase tracking-[0.14em] text-[#666660]">{isSpanish ? "En Dallas–Fort Worth" : "Serving Dallas–Fort Worth"}</p>
+          <div className="flex flex-wrap gap-x-5 gap-y-1">{locations.map((location) => <Link key={location.slug} href={`${isSpanish ? "/es/fotografo-de-quinceaneras" : "/quinceanera-photographer"}/${location.slug}`} className="inline-flex min-h-11 items-center text-sm text-[#51514d] hover:text-[#252522] hover:underline hover:underline-offset-4">{location.city}</Link>)}</div>
         </div>
-
-        <div className="mt-10 border-t border-line pt-7">
-          <p className="text-sm font-semibold text-ink">
-            {isSpanish ? "Fotografía de quinceañeras en" : "Quinceañera photographer serving"}
-          </p>
-          <div className="mt-3 flex flex-wrap gap-x-5 text-base text-ink-soft">
-            {locations.map((l) => (
-              <Link
-                key={l.slug}
-                href={`${isSpanish ? "/es/fotografo-de-quinceaneras" : "/quinceanera-photographer"}/${l.slug}`}
-                className="inline-flex min-h-11 items-center transition-colors hover:text-ink"
-              >
-                {l.city}
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-8 flex flex-col gap-3 border-t border-line py-6 text-sm text-ink-soft sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            © {year} {site.brand} · {site.serviceArea}
-          </p>
-          <Link href="/admin/login" className="inline-flex min-h-11 items-center transition-colors hover:text-ink">
-            Studio
-          </Link>
+        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 pt-5 text-sm text-[#666660]">
+          <p>© {new Date().getFullYear()} {site.brand} · {site.serviceArea}</p>
+          <div className="flex items-center gap-5"><Link href={isSpanish ? "/" : "/es"} hrefLang={isSpanish ? "en" : "es"} className="inline-flex min-h-11 items-center hover:text-[#252522]">{isSpanish ? "English" : "Español"}</Link><Link href="/admin/login" className="inline-flex min-h-11 items-center hover:text-[#252522]">Studio</Link></div>
         </div>
       </div>
     </footer>
-  );
-}
-
-function IgIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth="1.6" />
-      <circle cx="12" cy="12" r="3.6" stroke="currentColor" strokeWidth="1.6" />
-      <circle cx="17.2" cy="6.8" r="1" fill="currentColor" />
-    </svg>
-  );
-}
-
-function FbIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M14 8.5V7c0-.7.3-1 1-1h1.5V3.2H14c-2 0-3.3 1.3-3.3 3.4V8.5H8.5v2.9h2.2V21h3.3v-9.6h2.3l.4-2.9H14Z"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function YtIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <rect x="2.5" y="5.5" width="19" height="13" rx="3.5" stroke="currentColor" strokeWidth="1.6" />
-      <path d="M10.2 9.2v5.6l4.8-2.8-4.8-2.8Z" fill="currentColor" />
-    </svg>
   );
 }

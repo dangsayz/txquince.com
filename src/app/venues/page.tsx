@@ -9,8 +9,9 @@ import Image from "next/image";
 import { site } from "@/content/site";
 import { venues } from "@/content/venues";
 import { getImagesByVenue } from "@/lib/content-db";
-import { Reveal } from "@/components/Reveal";
 import { FinalCTA } from "@/components/FinalCTA";
+import { altPhraseFor } from "@/content/portfolio-taxonomy";
+import { publicPhotoCopy } from "@/lib/public-photo-copy";
 
 export const revalidate = 3600;
 
@@ -60,51 +61,43 @@ export default async function VenuesPage() {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replaceAll("<", "\\u003c") }} />
+      <header className="bg-[#f4f2ee]">
+        <div className="mx-auto grid max-w-[90rem] gap-8 px-5 py-16 sm:px-10 sm:py-20 lg:grid-cols-[minmax(0,0.35fr)_minmax(0,0.65fr)] lg:gap-14 lg:px-16 lg:py-24">
+          <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">TX Quince / Places</p>
+          <div>
+            <h1 className="max-w-[20ch] font-display text-[clamp(2.125rem,3.6vw,3.5rem)] font-normal leading-[1.1] tracking-[-0.03em] text-ink">The places where her day unfolds.</h1>
+            <p className="mt-5 max-w-xl text-base leading-7 text-ink-soft">Explore venues across Dallas–Fort Worth through the celebrations photographed there.</p>
+            <a href="#venues-list" className="mt-7 inline-flex min-h-11 items-center gap-4 border-b border-ink text-sm font-medium text-ink">Browse by city <span aria-hidden="true">↓</span></a>
+          </div>
+        </div>
+      </header>
 
-      <section className="mx-auto max-w-[90rem] px-5 pb-14 pt-14 text-center md:px-10 md:pb-20 md:pt-20 lg:px-16">
-        <Reveal className="mx-auto max-w-2xl">
-          <p className="text-xs font-medium uppercase tracking-[0.14em] text-ink-soft">Venues</p>
-          <h1 className="mt-5 font-display text-[clamp(2rem,3.4vw,3rem)] leading-[1.14] text-ink">Quinceañera venues across DFW.</h1>
-          <p className="mx-auto mt-5 max-w-xl text-base leading-7 text-ink-soft sm:text-lg">
-            Ballrooms, gardens, and event centers we&apos;ve photographed quinceañeras at
-            across Dallas–Fort Worth. Tap a venue to see real work there — and if your
-            daughter&apos;s day is booked at one, we already know the room.
-          </p>
-        </Reveal>
-      </section>
-
-      {cities.map(({ city, list }) => (
-        <section key={city} className="border-t border-line bg-white">
-          <div className="mx-auto max-w-[90rem] px-5 py-12 md:px-10 lg:px-16 md:py-16">
-            <Reveal>
-              <h2 className="font-display text-[clamp(1.5rem,2.6vw,2.2rem)] text-ink">{city}, TX</h2>
-            </Reveal>
-            <ul className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {list.map((v) => (
-                <li key={v.slug}>
-                  <Link
-                    href={`/venues/${v.slug}`}
-                    className="group block h-full overflow-hidden rounded-xl border border-line bg-white transition-colors hover:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
-                  >
-                    <span className="relative block aspect-[16/10] overflow-hidden bg-greige">
-                      {v.image?.url ? <Image src={v.image.url} alt={v.image.alt || `Quinceañera celebration at ${v.venue}`} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover transition-transform duration-300 motion-reduce:transition-none group-hover:scale-[1.025]" /> : null}
+      <div id="venues-list" className="scroll-mt-24 bg-white">
+        {cities.map(({ city, list }, cityIndex) => (
+          <section key={city} className="border-t border-line" aria-labelledby={`venue-city-${cityIndex}`}>
+            <div className="mx-auto grid max-w-[90rem] gap-8 px-5 py-14 sm:px-10 sm:py-16 lg:grid-cols-[minmax(0,0.32fr)_minmax(0,0.68fr)] lg:gap-14 lg:px-16">
+              <div>
+                <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">0{cityIndex + 1} / Dallas–Fort Worth</p>
+                <h2 id={`venue-city-${cityIndex}`} className="mt-3 font-display text-[clamp(1.75rem,2.7vw,2.5rem)] font-normal leading-tight text-ink">{city}, TX</h2>
+              </div>
+              <ul className="border-t border-line">
+                {list.map((venue) => <li key={venue.slug} className="border-b border-line">
+                  <Link href={`/venues/${venue.slug}`} className="group grid min-h-28 grid-cols-[minmax(0,1fr)_6rem] items-center gap-5 py-4 text-ink sm:grid-cols-[minmax(0,1fr)_8rem]">
+                    <span>
+                      <span className="block font-display text-[clamp(1.25rem,2vw,1.75rem)] font-normal leading-tight group-hover:underline group-hover:underline-offset-4">{venue.venue}</span>
+                      <span className="mt-2 block text-sm text-ink-soft">{venue.count > 0 ? `${venue.count} ${venue.count === 1 ? "photograph" : "photographs"}` : "Explore venue"} <span aria-hidden="true">↗</span></span>
                     </span>
-                    <span className="flex min-h-16 items-center justify-between gap-3 px-5 py-4">
-                      <span className="min-w-0 text-base font-medium text-ink">{v.venue}</span>
-                      <span className="shrink-0 text-sm text-ink-soft">{v.count} photo{v.count === 1 ? "" : "s"} ↗</span>
+                    <span className="relative block aspect-[4/3] overflow-hidden bg-greige">
+                      {venue.image?.url && <Image src={venue.image.url} alt={publicPhotoCopy(venue.image, altPhraseFor(venue.image.section)).alt} fill sizes="(max-width: 639px) 96px, 128px" className="object-cover transition-transform duration-500 group-hover:scale-[1.025] motion-reduce:transition-none" />}
                     </span>
                   </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-      ))}
-
+                </li>)}
+              </ul>
+            </div>
+          </section>
+        ))}
+      </div>
       <FinalCTA />
     </>
   );

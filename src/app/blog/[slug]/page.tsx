@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { site } from "@/content/site";
 import { getAllPosts, getPost, relatedPosts, slugifyHeading, esSlugForEn } from "@/content/blog";
@@ -69,6 +70,7 @@ export default async function BlogPostPage({
   const toc = post.content.filter((b) => b.type === "h2") as { type: "h2"; text: string }[];
   const related = relatedPosts(post);
   const images = await getBlogImages(post.content);
+  const cover = Object.values(images)[0];
   const imageUrls = Object.values(images).map((im) =>
     im.url.startsWith("http") ? im.url : `${site.url}${im.url}`,
   );
@@ -119,26 +121,35 @@ export default async function BlogPostPage({
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <article className="mx-auto max-w-3xl px-5 pt-10 md:px-10 md:pt-14 lg:px-16">
-        <nav className="flex items-center gap-1 text-sm text-ink-faint" aria-label="Breadcrumb">
-          <Link href="/" className="inline-flex min-h-11 items-center hover:text-ink">Home</Link>
-          <span className="mx-1.5">/</span>
-          <Link href="/blog" className="inline-flex min-h-11 items-center hover:text-ink">Blog</Link>
-        </nav>
+      <div className="relative aspect-[4/5] max-h-[45rem] min-h-[22rem] overflow-hidden bg-greige sm:aspect-[16/9]">
+        <Image src={cover?.url ?? "/portfolio/hero.webp"} alt={cover?.alt ?? "Quinceañera portrait in Dallas–Fort Worth"} fill priority sizes="100vw" className="object-cover" />
+      </div>
 
-        <Reveal className="mx-auto mt-8 max-w-2xl text-center">
-          <p className="eyebrow mb-4">{post.category}</p>
-          <h1 className="font-display text-[clamp(2rem,3.5vw,3rem)] leading-[1.14] text-ink text-balance">{post.title}</h1>
-          <p className="mt-4 text-sm text-ink-faint">
-            {formatDate(post.publishedAt)} · {post.readMinutes} min read
-          </p>
-          <p className="mt-6 text-base leading-7 text-ink-soft">{post.lead}</p>
-        </Reveal>
+      <article className="bg-[#f7f6f3] px-5 pb-20 pt-7 md:px-10 md:pt-10 lg:px-16">
+        <div className="mx-auto max-w-[82rem]">
+          <nav className="flex items-center gap-2 text-sm text-ink-faint" aria-label="Breadcrumb">
+            <Link href="/" className="inline-flex min-h-11 items-center hover:text-ink">Home</Link>
+            <span aria-hidden="true">/</span>
+            <Link href="/blog" className="inline-flex min-h-11 items-center hover:text-ink">The journal</Link>
+          </nav>
+
+          <Reveal className="grid gap-5 border-b border-line pb-12 pt-12 md:grid-cols-[minmax(0,0.3fr)_minmax(0,0.7fr)] md:gap-12 md:pt-16">
+            <div className="text-xs uppercase tracking-[0.14em] text-ink-soft">
+              <p>{post.category}</p>
+              <p className="mt-3 normal-case tracking-normal">{formatDate(post.publishedAt)} · {post.readMinutes} min read</p>
+            </div>
+            <div>
+              <h1 className="max-w-[24ch] font-display text-[clamp(2rem,3.5vw,3.25rem)] font-normal leading-[1.13] tracking-[-0.035em] text-ink text-balance">{post.title}</h1>
+              <p className="mt-6 max-w-2xl text-[1.0625rem] leading-8 text-ink-soft">{post.lead}</p>
+            </div>
+          </Reveal>
+
+          <div className="mx-auto max-w-[48rem]">
 
         {toc.length >= 4 ? (
-          <nav aria-label="In this guide" className="mt-10 rounded-lg border border-line bg-white p-6">
-            <p className="text-sm font-medium text-ink-soft">In this guide</p>
-            <ul className="mt-3 flex flex-col gap-1">
+          <nav aria-label="In this guide" className="mt-12 border-y border-line py-5">
+            <p className="text-xs font-medium uppercase tracking-[0.14em] text-ink-soft">In this guide</p>
+            <ul className="mt-3 grid gap-x-8 md:grid-cols-2">
               {toc.map((h, idx) => (
                 <li key={h.text}>
                   <a
@@ -160,7 +171,6 @@ export default async function BlogPostPage({
           <BlogContent blocks={post.content} images={images} />
         </div>
 
-        {/* FAQ */}
         {post.faqs && post.faqs.length ? (
           <section className="mt-14">
             <h2 className="font-display text-3xl text-ink">Frequently asked questions</h2>
@@ -175,10 +185,9 @@ export default async function BlogPostPage({
           </section>
         ) : null}
 
-        {/* related — hairline rows, no cards */}
         {related.length ? (
           <section className="mt-16 border-t border-ink/10 pt-10">
-            <p className="eyebrow mb-2">Keep reading</p>
+            <p className="mb-2 text-xs uppercase tracking-[0.14em] text-ink-soft">Keep reading</p>
             <div>
               {related.map((r, idx) => (
                 <Link
@@ -195,6 +204,8 @@ export default async function BlogPostPage({
             </div>
           </section>
         ) : null}
+          </div>
+        </div>
       </article>
 
       <div className="mt-section">

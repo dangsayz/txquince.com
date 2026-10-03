@@ -183,6 +183,10 @@ export function InquiryForm({ initialDate = "", locale = "en" }: { initialDate?:
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2">
+        <div className="border-t border-line pt-5 sm:col-span-2">
+          <p className="text-xs uppercase tracking-[0.16em] text-ink-soft">01 / {es ? "Contacto" : "Contact"}</p>
+          <h3 className="mt-2 text-lg font-medium text-ink">{es ? "Cómo podemos contactarte" : "How we can reach you"}</h3>
+        </div>
         <Field label={es ? spanish.name : "Your name"} required error={errors.name}>
           <input name="name" type="text" autoComplete="name" className={inputBase} placeholder={es ? spanish.namePlaceholder : "First and last"} />
         </Field>
@@ -192,6 +196,10 @@ export function InquiryForm({ initialDate = "", locale = "en" }: { initialDate?:
         <Field label={es ? spanish.phone : "Phone"} error={errors.phone}>
           <input name="phone" type="tel" autoComplete="tel" className={inputBase} placeholder={es ? spanish.optional : "(optional)"} />
         </Field>
+        <div className="border-t border-line pt-5 sm:col-span-2">
+          <p className="text-xs uppercase tracking-[0.16em] text-ink-soft">02 / {es ? "Celebración" : "Celebration"}</p>
+          <h3 className="mt-2 text-lg font-medium text-ink">{es ? "Cuéntanos sobre su día" : "Tell us about her day"}</h3>
+        </div>
         <Field label={es ? spanish.date : "Event date"} error={errors.event_date} hint={es ? spanish.future : "Future dates only"}>
           <input name="event_date" type="date" min={todayStr} max={maxStr} defaultValue={initialDate} className={inputBase} />
         </Field>
@@ -224,6 +232,10 @@ export function InquiryForm({ initialDate = "", locale = "en" }: { initialDate?:
           </select>
         </Field>
 
+        <div className="border-t border-line pt-5 sm:col-span-2">
+          <p className="text-xs uppercase tracking-[0.16em] text-ink-soft">03 / {es ? "Detalles" : "Details"}</p>
+          <h3 className="mt-2 text-lg font-medium text-ink">{es ? "Algo más que debamos saber" : "Anything else we should know"}</h3>
+        </div>
         <Field label={es ? spanish.referral : "How did you hear about us?"} error={errors.referral} className="sm:col-span-2">
           <select name="referral" defaultValue="" className={`${inputBase} appearance-none`}>
             <option value="">{es ? spanish.optional : "Optional"}</option>
@@ -275,7 +287,7 @@ export function InquiryForm({ initialDate = "", locale = "en" }: { initialDate?:
       <button
         type="submit"
         disabled={submitting}
-        className="inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-md bg-ink px-8 py-3 text-base font-medium text-white transition-colors hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
+        className="inline-flex min-h-12 w-full items-center justify-center gap-3 bg-ink px-8 py-3 text-base font-medium text-white transition-colors hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
       >
         {submitting ? (
           <>

@@ -7,6 +7,7 @@
  */
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { site } from "@/content/site";
 import { packages } from "@/content/packages";
@@ -16,7 +17,6 @@ import { getImagesByVenue, getVenueCopy } from "@/lib/content-db";
 import { igUrl, websiteUrl, websiteLabel } from "@/lib/vendor-links";
 import { PortfolioGallery, type GalleryItem } from "@/components/PortfolioGallery";
 import { Reveal } from "@/components/Reveal";
-import { CTAButton } from "@/components/CTAButton";
 import { FinalCTA } from "@/components/FinalCTA";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
@@ -39,7 +39,7 @@ export async function generateMetadata({
   const title = `${venue.venue} Quinceañera Photographer — ${venue.city}, TX`;
   const description =
     copy?.about?.slice(0, 200) ||
-    `Quinceañera photography at ${venue.venue} in ${venue.city}, Texas. See real quinceañeras photographed at ${venue.venue} by ${site.brand} — collections from ${packages[0].priceLabel}; reserve your date.`;
+    `Quinceañera photography at ${venue.venue} in ${venue.city}, Texas. Explore ${site.brand} collections from ${packages[0].priceLabel} and ask about your date.`;
   return {
     title,
     description,
@@ -63,6 +63,7 @@ export default async function VenuePage({
   if (!venue) notFound();
 
   const [copy, photos] = await Promise.all([getVenueCopy(slug), getImagesByVenue(slug)]);
+  const heroPhoto = photos[0] ?? null;
   const cityLoc = venue.citySlug ? getLocation(venue.citySlug) : undefined;
   const ig = igUrl(copy?.ig_handle);
   const web = websiteUrl(copy?.website);
@@ -90,7 +91,7 @@ export default async function VenuePage({
 
   const about =
     copy?.about ||
-    `${venue.venue} is one of the quinceañera venues we love photographing in ${venue.city}. Below is real work from ${venue.venue} — and if your daughter's day is here, we'd love to capture it.`;
+    `Planning a quinceañera at ${venue.venue} in ${venue.city}? Explore our photography and film, then tell us about your date and the moments your family wants documented.`;
   const prices = packages.map((p) => p.price);
 
   const sameAs = [ig, web].filter(Boolean) as string[];
@@ -178,24 +179,22 @@ export default async function VenuePage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <section className="mx-auto max-w-[90rem] px-5 pb-12 pt-12 md:px-10 md:pb-16 md:pt-16 lg:px-16 lg:pt-20">
-        <Reveal className="mx-auto max-w-3xl text-center">
-          <p className="text-sm font-medium text-ink-soft">
-            <Link href="/venues" className="transition-colors hover:text-ink">
-              Venues
-            </Link>
-            <span aria-hidden> — </span>
-            {venue.city}, TX
-          </p>
-          <h1 className="mt-4 font-display text-[clamp(2rem,3.5vw,3rem)] leading-[1.14] text-ink text-balance">
-            Quinceañera Photographer at {venue.venue}
-          </h1>
-          <p className="mt-4 text-base font-medium text-ink">{venue.city}, Texas</p>
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-ink-soft">{about}</p>
-
-          {/* Facts + outbound links */}
-          {copy?.address || copy?.area || ig || web || cityLoc ? (
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-base text-ink-soft">
+      {heroPhoto && (
+        <div className="relative aspect-[4/5] min-h-80 max-h-[45rem] overflow-hidden bg-greige sm:aspect-[16/8]">
+          <Image src={heroPhoto.url} alt={publicPhotoCopy(heroPhoto, altPhraseFor(heroPhoto.section)).alt} fill priority sizes="100vw" className="object-cover" style={{ objectPosition: `${Math.round((heroPhoto.focus_x ?? 0.5) * 100)}% ${Math.round((heroPhoto.focus_y ?? 0.5) * 100)}%` }} />
+        </div>
+      )}
+      <section className="bg-[#f7f6f3] px-5 py-14 md:px-10 md:py-20 lg:px-16">
+        <Reveal className="mx-auto grid max-w-[82rem] gap-8 lg:grid-cols-[minmax(0,0.3fr)_minmax(0,0.7fr)] lg:gap-16">
+          <div>
+            <Link href="/venues" className="inline-flex min-h-11 items-center text-xs uppercase tracking-[0.14em] text-ink-soft hover:text-ink">← Venues</Link>
+            <p className="mt-2 text-xs uppercase tracking-[0.14em] text-ink-soft">{venue.city}, TX</p>
+          </div>
+          <div>
+            <h1 className="max-w-[25ch] font-display text-[clamp(2rem,3.5vw,3.25rem)] font-normal leading-[1.13] tracking-[-0.035em] text-ink text-balance">Quinceañera photography at {venue.venue}.</h1>
+            <p className="mt-6 max-w-2xl text-base leading-8 text-ink-soft">{about}</p>
+            {copy?.address || copy?.area || ig || web || cityLoc ? (
+            <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-2 border-t border-line pt-4 text-base text-ink-soft">
               {copy?.address ? <span>{copy.address}</span> : copy?.area ? <span>{copy.area}, {venue.city}</span> : null}
               {ig ? (
                 <a href={ig} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center text-ink underline decoration-ink/30 underline-offset-[6px] hover:decoration-ink">
@@ -213,28 +212,23 @@ export default async function VenuePage({
                 </Link>
               ) : null}
             </div>
-          ) : null}
-
-          <div className="mt-8">
-            <CTAButton href={site.cta.href} className="min-h-12 max-w-full rounded-md px-6 text-center text-base font-medium">Reserve your date at {venue.venue}</CTAButton>
+            ) : null}
+            <Link href="/check-your-date" className="mt-8 inline-flex min-h-12 items-center justify-between gap-6 whitespace-nowrap bg-ink px-5 text-base font-medium text-white hover:bg-[#42423d]">Ask about a date at {venue.venue} <span aria-hidden="true">↗</span></Link>
           </div>
         </Reveal>
       </section>
 
-      {/* Photos shot here */}
       <section className="border-t border-line bg-white">
         <div className="mx-auto max-w-[90rem] px-5 py-14 md:px-10 lg:px-16 md:py-20">
-          <Reveal className="mb-10">
-            <p className="text-sm font-medium text-ink-soft">The work</p>
-            <h2 className="mt-3 font-display text-[clamp(1.75rem,3vw,2.5rem)] leading-tight text-ink">
-              {items.length ? `Quinceañeras at ${venue.venue}` : `We'd love to shoot at ${venue.venue}`}
-            </h2>
+          <Reveal className="mb-10 grid gap-5 border-t border-line pt-6 lg:grid-cols-[minmax(0,0.3fr)_minmax(0,0.7fr)]">
+            <p className="text-xs uppercase tracking-[0.14em] text-ink-soft">The work / {venue.city}</p>
+            <h2 className="font-display text-[clamp(1.75rem,3vw,2.5rem)] font-normal leading-tight text-ink">{items.length ? `Quinceañeras at ${venue.venue}` : `Explore the work before your day at ${venue.venue}`}</h2>
           </Reveal>
           {items.length ? (
             <PortfolioGallery images={items} />
           ) : (
-            <p className="rounded-lg border border-line bg-ivory p-6 text-base leading-7 text-ink-soft">
-              New work from {venue.venue} coming soon — <Link href={site.cta.href} className="font-medium text-ink underline decoration-ink/40 underline-offset-4 hover:decoration-ink">reserve your date</Link>.
+            <p className="border-t border-line py-8 text-base leading-7 text-ink-soft">
+              No photographs from this venue are published yet. <Link href="/portfolio" className="font-medium text-ink underline underline-offset-4">Explore the portfolio</Link> to see our work elsewhere.
             </p>
           )}
         </div>

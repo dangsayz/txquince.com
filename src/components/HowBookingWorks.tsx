@@ -1,5 +1,4 @@
 import { depositFloorLabel } from "@/content/packages";
-import { Reveal } from "@/components/Reveal";
 
 /**
  * "How booking works" — a 4-step visual that removes the "what happens next?"
@@ -28,23 +27,22 @@ export const BOOKING_STEPS = [
 
 export function HowBookingWorks({ className = "" }: { className?: string }) {
   return (
-    <section className={className}>
-      <div className="mx-auto max-w-2xl text-center">
-        <p className="eyebrow mb-5">How booking works</p>
-        <h2 className="display-2 text-ink text-balance">
-          Four simple steps, no guesswork.
-        </h2>
+    <section className={className} aria-labelledby="booking-steps-title">
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,0.35fr)_minmax(0,0.65fr)] lg:gap-14">
+        <div>
+          <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">How booking works</p>
+          <h2 id="booking-steps-title" className="mt-4 max-w-[18ch] font-display text-[clamp(1.875rem,3vw,3rem)] font-normal leading-tight text-ink">From first look to her day.</h2>
+        </div>
+        <ol className="border-t border-line">
+          {BOOKING_STEPS.map((step, index) => (
+            <li key={step.title} className="grid gap-4 border-b border-line py-6 sm:grid-cols-[2.5rem_minmax(0,0.4fr)_minmax(0,0.6fr)] sm:gap-6 sm:py-8">
+              <span className="text-xs text-ink-faint">0{index + 1}</span>
+              <h3 className="font-display text-xl font-normal leading-tight text-ink">{step.title}</h3>
+              <p className="max-w-md text-base leading-7 text-ink-soft">{step.body}</p>
+            </li>
+          ))}
+        </ol>
       </div>
-
-      <ol className="mt-12 grid gap-px overflow-hidden border border-line bg-line md:mt-14 md:grid-cols-4">
-        {BOOKING_STEPS.map((step, i) => (
-          <Reveal key={step.title} delay={i * 80} className="bg-cream p-8 md:p-9">
-            <span className="font-display text-2xl text-wine">0{i + 1}</span>
-            <h3 className="mt-5 font-display text-xl text-ink">{step.title}</h3>
-            <p className="mt-3 text-base leading-7 text-ink-soft">{step.body}</p>
-          </Reveal>
-        ))}
-      </ol>
     </section>
   );
 }

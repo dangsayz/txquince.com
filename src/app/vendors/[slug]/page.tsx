@@ -6,14 +6,16 @@
  */
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { site } from "@/content/site";
 import { getVendorBySlug, getImagesByVendor, type PortfolioImage } from "@/lib/content-db";
-import { vendorCategoryLabel, vendorCreditLabel } from "@/content/portfolio-taxonomy";
+import { altPhraseFor, vendorCategoryLabel, vendorCreditLabel } from "@/content/portfolio-taxonomy";
 import { igUrl, websiteUrl, websiteLabel } from "@/lib/vendor-links";
 import { PortfolioGallery, type GalleryItem } from "@/components/PortfolioGallery";
 import { Reveal } from "@/components/Reveal";
 import { FinalCTA } from "@/components/FinalCTA";
+import { publicPhotoCopy } from "@/lib/public-photo-copy";
 
 export const revalidate = 3600;
 
@@ -32,7 +34,7 @@ export async function generateMetadata({
   const name = displayName(vendor);
   const kind = vendorCategoryLabel(vendor.category);
   const title = `${name} · ${kind}`;
-  const description = `${name} — ${kind.toLowerCase()} for quinceañeras in Dallas–Fort Worth. See the work we've photographed together, and reserve ${site.brand} for your daughter's day.`;
+  const description = `${name} — ${kind.toLowerCase()} for quinceañeras in Dallas–Fort Worth. Explore vendor credits and ${site.brand} photography.`;
   return {
     title,
     description,
@@ -60,11 +62,12 @@ export default async function VendorPage({
   const ig = igUrl(vendor.ig_handle);
   const web = websiteUrl(vendor.website);
   const photos = await getImagesByVendor(slug);
+  const heroPhoto = photos[0] ?? null;
 
   // Tiles WITHOUT vendor credits (we're already on this vendor's page).
   const items: GalleryItem[] = photos.map((i: PortfolioImage) => ({
     url: i.url,
-    alt: i.alt,
+    alt: publicPhotoCopy(i, altPhraseFor(i.section)).alt,
     ratio: i.is_feature ? "landscape" : "portrait",
     feature: i.is_feature,
     width: i.width,
@@ -107,22 +110,22 @@ export default async function VendorPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <section className="mx-auto max-w-[90rem] px-5 pb-12 pt-12 md:px-10 md:pb-16 md:pt-16 lg:px-16 lg:pt-20">
-        <Reveal className="mx-auto max-w-3xl text-center">
-          <p className="text-sm font-medium text-ink-soft">
-            <Link href="/vendors" className="transition-colors hover:text-ink">
-              Vendors
-            </Link>
-            <span aria-hidden> — </span>
-            {kind}
-          </p>
-          <h1 className="mt-4 font-display text-[clamp(2rem,3.5vw,3rem)] leading-[1.14] text-ink text-balance">
-            {name}
-          </h1>
-          <p className="mt-4 text-base font-medium text-ink-soft">{credit} for quinceañeras in DFW</p>
-          {/* Public links only — email & phone stay private. */}
+      {heroPhoto && (
+        <div className="relative aspect-[4/5] min-h-80 max-h-[45rem] overflow-hidden bg-greige sm:aspect-[16/8]">
+          <Image src={heroPhoto.url} alt={publicPhotoCopy(heroPhoto, altPhraseFor(heroPhoto.section)).alt} fill priority sizes="100vw" className="object-cover" style={{ objectPosition: `${Math.round((heroPhoto.focus_x ?? 0.5) * 100)}% ${Math.round((heroPhoto.focus_y ?? 0.5) * 100)}%` }} />
+        </div>
+      )}
+      <section className="bg-[#f7f6f3] px-5 py-14 md:px-10 md:py-20 lg:px-16">
+        <Reveal className="mx-auto grid max-w-[82rem] gap-8 lg:grid-cols-[minmax(0,0.3fr)_minmax(0,0.7fr)] lg:gap-16">
+          <div>
+            <Link href="/vendors" className="inline-flex min-h-11 items-center text-xs uppercase tracking-[0.14em] text-ink-soft hover:text-ink">← Vendors</Link>
+            <p className="mt-2 text-xs uppercase tracking-[0.14em] text-ink-soft">{kind} / Dallas–Fort Worth</p>
+          </div>
+          <div>
+            <h1 className="max-w-[25ch] font-display text-[clamp(2rem,3.5vw,3.25rem)] font-normal leading-[1.13] tracking-[-0.035em] text-ink text-balance">{name}</h1>
+            <p className="mt-6 max-w-2xl text-base leading-8 text-ink-soft">{credit} for quinceañeras in Dallas–Fort Worth.</p>
           {ig || web ? (
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-base">
+            <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-2 border-t border-line pt-4 text-base">
               {ig ? (
                 <a
                   href={ig}
@@ -145,26 +148,25 @@ export default async function VendorPage({
               ) : null}
             </div>
           ) : null}
+          </div>
         </Reveal>
       </section>
 
       <section className="border-t border-line bg-white">
         <div className="mx-auto max-w-[90rem] px-5 py-14 md:px-10 lg:px-16 md:py-20">
-          <Reveal className="mb-10">
-            <p className="text-sm font-medium text-ink-soft">
-              Work together
-            </p>
-            <h2 className="mt-3 font-display text-[clamp(1.75rem,3vw,2.5rem)] leading-tight text-ink">
+          <Reveal className="mb-10 grid gap-5 border-t border-line pt-6 lg:grid-cols-[minmax(0,0.3fr)_minmax(0,0.7fr)]">
+            <p className="text-xs uppercase tracking-[0.14em] text-ink-soft">The collaboration</p>
+            <h2 className="font-display text-[clamp(1.75rem,3vw,2.5rem)] font-normal leading-tight text-ink">
               {photos.length
                 ? `Photographed with ${name}`
-                : `We'd love to work with ${name}`}
+                : `Explore the work of TX Quince`}
             </h2>
           </Reveal>
           {items.length ? (
             <PortfolioGallery images={items} />
           ) : (
-            <p className="rounded-lg border border-line bg-ivory p-6 text-base leading-7 text-ink-soft">
-              No tagged photos yet — check back soon.
+            <p className="border-t border-line py-8 text-base leading-7 text-ink-soft">
+              No photographs crediting {name} are published yet. <Link href="/portfolio" className="font-medium text-ink underline underline-offset-4">Explore the portfolio</Link>.
             </p>
           )}
         </div>

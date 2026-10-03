@@ -51,34 +51,57 @@ export function PaymentPlansPage({ locale }: { locale: "en" | "es" }) {
   const inquiry = locale === "es" ? "/es/consulta" : "/check-your-date";
   return (
     <>
-      <section className="border-b border-line bg-white">
-        <div className="mx-auto max-w-[90rem] px-5 py-14 text-center md:px-10 md:py-20 lg:px-16">
-          <p className="text-xs font-medium uppercase tracking-[0.14em] text-ink-soft">{c.eyebrow}</p>
-          <h1 className="mx-auto mt-5 max-w-[22ch] font-display text-[clamp(2rem,3.4vw,3rem)] leading-[1.14] tracking-[-0.03em] text-ink">{c.title}</h1>
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-ink-soft sm:text-lg">{c.intro}</p>
-          <Link href={inquiry} className="mt-7 inline-flex min-h-12 items-center rounded-md bg-ink px-6 text-base font-medium text-white hover:bg-accent-strong">{c.cta} <span aria-hidden className="ml-3">→</span></Link>
-          <p className="mt-3 text-sm text-ink-soft">{c.small}</p>
-        </div>
-      </section>
-      <section className="mx-auto max-w-[90rem] px-5 py-16 md:px-10 md:py-20 lg:px-16">
-        <ol className="grid gap-4 md:grid-cols-3">
-          {c.steps.map(([title, body], i) => <li key={title} className="rounded-xl border border-line bg-white p-6 sm:p-8"><span className="text-xs font-medium text-ink-soft">0{i + 1}</span><h2 className="mt-6 font-display text-xl font-normal text-ink">{title}</h2><p className="mt-3 text-base leading-7 text-ink-soft">{body}</p></li>)}
-        </ol>
-      </section>
-      <section className="bg-accent-soft">
-        <div className="mx-auto max-w-[90rem] px-5 py-16 md:px-10 md:py-20 lg:px-16">
-          <h2 className="font-display text-[clamp(1.75rem,2.8vw,2.5rem)] leading-tight text-ink">{c.deposits}</h2>
-          <p className="mt-4 text-base text-ink-soft">{c.depositNote}</p>
-          <div className="mt-9 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {packages.map((p) => <div key={p.id} className="rounded-xl border border-line bg-white p-6"><h3 className="font-display text-xl text-ink">{p.name}</h3><p className="mt-5 text-sm text-ink-soft">{p.priceLabel}</p><p className="mt-1 font-display text-[2rem] text-ink">{p.depositLabel}</p></div>)}
+      <header className="bg-[#f4f2ee]">
+        <div className="mx-auto grid max-w-[90rem] gap-8 px-5 py-16 sm:px-10 sm:py-20 lg:grid-cols-[minmax(0,0.35fr)_minmax(0,0.65fr)] lg:gap-14 lg:px-16 lg:py-24">
+          <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">{c.eyebrow}</p>
+          <div>
+            <h1 className="max-w-[20ch] font-display text-[clamp(2.125rem,3.6vw,3.5rem)] font-normal leading-[1.1] tracking-[-0.03em] text-ink">{c.title}</h1>
+            <p className="mt-5 max-w-xl text-base leading-7 text-ink-soft">{c.intro}</p>
+            <Link href={inquiry} className="mt-7 inline-flex min-h-12 items-center gap-5 bg-ink px-6 text-sm font-medium text-white hover:bg-ink-soft">{c.cta}<span aria-hidden="true">↗</span></Link>
+            <p className="mt-3 text-sm text-ink-soft">{c.small}</p>
           </div>
-          <p className="mt-6 text-sm text-ink-soft">{c.detail}</p>
+        </div>
+      </header>
+
+      <section className="bg-white" aria-label={locale === "es" ? "Cómo funcionan los pagos" : "How payments work"}>
+        <div className="mx-auto grid max-w-[90rem] gap-8 px-5 py-16 sm:px-10 sm:py-20 lg:grid-cols-[minmax(0,0.35fr)_minmax(0,0.65fr)] lg:gap-14 lg:px-16">
+          <div>
+            <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">01 / {locale === "es" ? "El proceso" : "The process"}</p>
+            <h2 className="mt-3 max-w-[18ch] font-display text-[clamp(1.75rem,2.7vw,2.5rem)] font-normal leading-tight text-ink">{locale === "es" ? "De la consulta a su celebración." : "From your question to her day."}</h2>
+          </div>
+          <ol className="border-t border-line">
+            {c.steps.map(([title, body], index) => <li key={title} className="grid gap-3 border-b border-line py-6 sm:grid-cols-[2.5rem_minmax(0,0.36fr)_minmax(0,0.64fr)] sm:gap-6"><span className="text-xs text-ink-faint">0{index + 1}</span><h3 className="font-display text-xl font-normal text-ink">{title}</h3><p className="text-base leading-7 text-ink-soft">{body}</p></li>)}
+          </ol>
         </div>
       </section>
-      <section className="mx-auto max-w-[90rem] px-5 py-16 md:px-10 md:py-20 lg:px-16">
-        <h2 className="font-display text-[clamp(1.75rem,2.8vw,2.5rem)] leading-tight text-ink">{c.faqTitle}</h2>
-        <div className="mt-8 max-w-3xl border-t border-line">{c.faqs.map(([q, a]) => <details key={q} className="group border-b border-line py-6"><summary className="cursor-pointer list-none font-medium text-ink marker:hidden">{q} <span aria-hidden className="float-right">+</span></summary><p className="mt-4 leading-7 text-ink-soft">{a}</p></details>)}</div>
-        <Link href={inquiry} className="mt-10 inline-flex min-h-12 items-center rounded-md bg-ink px-6 text-base font-medium text-white hover:bg-accent-strong">{c.cta} <span aria-hidden className="ml-3">→</span></Link>
+
+      <section className="bg-[#f4f2ee]" aria-labelledby="deposits-heading">
+        <div className="mx-auto grid max-w-[90rem] gap-8 px-5 py-16 sm:px-10 sm:py-20 lg:grid-cols-[minmax(0,0.35fr)_minmax(0,0.65fr)] lg:gap-14 lg:px-16">
+          <div>
+            <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">02 / {locale === "es" ? "Las colecciones" : "The collections"}</p>
+            <h2 id="deposits-heading" className="mt-3 max-w-[18ch] font-display text-[clamp(1.75rem,2.7vw,2.5rem)] font-normal leading-tight text-ink">{c.deposits}</h2>
+            <p className="mt-4 max-w-md text-base leading-7 text-ink-soft">{c.depositNote}</p>
+          </div>
+          <div>
+            <ol className="border-t border-line">
+              {packages.map((collection, index) => <li key={collection.id} className="grid grid-cols-[2rem_minmax(0,1fr)_auto] items-baseline gap-3 border-b border-line py-5 sm:gap-6"><span className="text-xs text-ink-faint">0{index + 1}</span><span className="font-display text-xl font-normal text-ink">{collection.name}<small className="mt-1 block text-sm font-normal text-ink-soft">{collection.priceLabel}</small></span><span className="text-lg text-ink">{collection.depositLabel}</span></li>)}
+            </ol>
+            <p className="mt-6 text-sm text-ink-soft">{c.detail}</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white" aria-labelledby="payment-faq-heading">
+        <div className="mx-auto grid max-w-[90rem] gap-8 px-5 py-16 sm:px-10 sm:py-20 lg:grid-cols-[minmax(0,0.35fr)_minmax(0,0.65fr)] lg:gap-14 lg:px-16">
+          <div>
+            <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">03 / FAQ</p>
+            <h2 id="payment-faq-heading" className="mt-3 max-w-[18ch] font-display text-[clamp(1.75rem,2.7vw,2.5rem)] font-normal leading-tight text-ink">{c.faqTitle}</h2>
+          </div>
+          <div className="border-t border-line">
+            {c.faqs.map(([question, answer]) => <details key={question} className="group border-b border-line py-5"><summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-5 text-base font-medium text-ink [&::-webkit-details-marker]:hidden">{question}<span aria-hidden="true" className="text-xl font-light group-open:rotate-45">+</span></summary><p className="mt-2 max-w-prose text-base leading-7 text-ink-soft">{answer}</p></details>)}
+            <Link href={inquiry} className="mt-8 inline-flex min-h-12 items-center gap-5 bg-ink px-6 text-sm font-medium text-white hover:bg-ink-soft">{c.cta}<span aria-hidden="true">↗</span></Link>
+          </div>
+        </div>
       </section>
     </>
   );
