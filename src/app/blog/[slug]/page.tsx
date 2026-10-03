@@ -7,7 +7,6 @@ import { getAllPosts, getPost, relatedPosts, slugifyHeading, esSlugForEn } from 
 import { getBlogImages } from "@/lib/content-db";
 import { BlogContent } from "@/components/BlogContent";
 import { Reveal } from "@/components/Reveal";
-import { FinalCTA } from "@/components/FinalCTA";
 
 export const revalidate = 3600;
 
@@ -121,11 +120,11 @@ export default async function BlogPostPage({
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <div className="relative aspect-[4/5] max-h-[45rem] min-h-[22rem] overflow-hidden bg-greige sm:aspect-[16/9]">
-        <Image src={cover?.url ?? "/portfolio/hero.webp"} alt={cover?.alt ?? "Quinceañera portrait in Dallas–Fort Worth"} fill priority sizes="100vw" className="object-cover" />
+      <div className="relative mx-4 mt-5 aspect-[4/5] max-h-[48rem] min-h-[22rem] overflow-hidden bg-cream sm:mx-6 sm:aspect-[16/9] md:mx-10 lg:mx-auto lg:max-w-[92rem]">
+        <Image src={cover?.url ?? "/portfolio/save-date.webp"} alt={cover?.alt ?? "Quinceañera portrait in Dallas–Fort Worth"} fill priority unoptimized={!cover || cover.url.startsWith("/portfolio/")} sizes="(max-width: 1472px) 100vw, 1472px" className="object-cover" />
       </div>
 
-      <article className="bg-[#f7f6f3] px-5 pb-20 pt-7 md:px-10 md:pt-10 lg:px-16">
+      <article className="bg-white px-5 pb-20 pt-7 md:px-10 md:pt-10 lg:px-16">
         <div className="mx-auto max-w-[82rem]">
           <nav className="flex items-center gap-2 text-sm text-ink-faint" aria-label="Breadcrumb">
             <Link href="/" className="inline-flex min-h-11 items-center hover:text-ink">Home</Link>
@@ -139,8 +138,8 @@ export default async function BlogPostPage({
               <p className="mt-3 normal-case tracking-normal">{formatDate(post.publishedAt)} · {post.readMinutes} min read</p>
             </div>
             <div>
-              <h1 className="max-w-[24ch] font-display text-[clamp(2rem,3.5vw,3.25rem)] font-normal leading-[1.13] tracking-[-0.035em] text-ink text-balance">{post.title}</h1>
-              <p className="mt-6 max-w-2xl text-[1.0625rem] leading-8 text-ink-soft">{post.lead}</p>
+              <h1 className="max-w-[24ch] font-body text-[clamp(2rem,3.5vw,3.25rem)] font-light leading-[1.13] tracking-[-0.035em] text-ink text-balance">{post.title}</h1>
+              <p className="mt-6 max-w-2xl font-serif text-lg leading-8 text-ink-soft">{post.lead}</p>
             </div>
           </Reveal>
 
@@ -196,7 +195,7 @@ export default async function BlogPostPage({
                   className={`group block py-5 ${idx > 0 ? "border-t border-ink/10" : ""}`}
                 >
                   <p className="text-sm text-ink-soft">{r.category}</p>
-                  <h3 className="mt-1.5 font-display text-lg leading-tight text-ink transition-colors group-hover:text-accent md:text-xl">
+                  <h3 className="mt-1.5 font-body text-lg font-light leading-tight text-ink transition-colors group-hover:underline group-hover:underline-offset-4 md:text-xl">
                     {r.title}
                   </h3>
                 </Link>
@@ -208,9 +207,6 @@ export default async function BlogPostPage({
         </div>
       </article>
 
-      <div className="mt-section">
-        <FinalCTA />
-      </div>
     </>
   );
 }

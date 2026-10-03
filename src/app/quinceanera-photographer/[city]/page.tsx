@@ -19,7 +19,6 @@ const CITY_GUIDES = [
   "when-to-book-quinceanera-photographer-dfw",
 ];
 import { CTAButton } from "@/components/CTAButton";
-import { FinalCTA } from "@/components/FinalCTA";
 import { HowBookingWorks } from "@/components/HowBookingWorks";
 import { Testimonials } from "@/components/Testimonials";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
@@ -229,18 +228,19 @@ export default async function CityPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <header className="relative isolate min-h-[35rem] overflow-hidden bg-ink text-white sm:min-h-[43rem]" aria-labelledby="city-title">
-        {hero?.url && <Image
-          src={hero.url}
-          alt={publicPhotoCopy(hero, altPhraseFor(hero.section)).alt}
+      <header className="relative isolate min-h-[70svh] overflow-hidden bg-ink text-white sm:min-h-[80svh]" aria-labelledby="city-title">
+        <Image
+          src={hero?.url ?? "/portfolio/kimberly-reception.webp"}
+          alt={hero ? publicPhotoCopy(hero, altPhraseFor(hero.section)).alt : "Quinceañera celebration photographed by TX Quince"}
           fill
+          unoptimized={!hero}
           priority
           sizes="100vw"
           className="object-cover"
-          style={{ objectPosition: `${hero.focus_x != null ? Math.round(hero.focus_x * 100) : 50}% ${hero.focus_y != null ? Math.round(hero.focus_y * 100) : 38}%` }}
-        />}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/30" aria-hidden="true" />
-        <div className="relative mx-auto flex min-h-[35rem] max-w-[90rem] flex-col justify-between px-5 pb-10 pt-6 sm:min-h-[43rem] sm:px-10 sm:pb-14 lg:px-16">
+          style={{ objectPosition: `${hero?.focus_x != null ? Math.round(hero.focus_x * 100) : 50}% ${hero?.focus_y != null ? Math.round(hero.focus_y * 100) : 38}%` }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-black/10" aria-hidden="true" />
+        <div className="relative mx-auto flex min-h-[70svh] max-w-[90rem] flex-col justify-between px-5 pb-12 pt-5 sm:min-h-[80svh] sm:px-10 sm:pb-16 lg:px-16 lg:pb-20">
           <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 text-xs text-white/85">
             <Link href="/" className="inline-flex min-h-11 items-center underline underline-offset-4">Home</Link>
             <span aria-hidden="true">/</span>
@@ -248,23 +248,20 @@ export default async function CityPage({
             <span aria-hidden="true">/</span>
             <span>{loc.city}</span>
           </nav>
-          <div className="max-w-2xl">
-            <p className="text-xs uppercase tracking-[0.18em] text-white/80">Quinceañera photography &amp; film / {loc.city}, TX</p>
-            <h1 id="city-title" className="mt-4 max-w-[20ch] font-display text-[clamp(2.25rem,4.5vw,4.25rem)] font-normal leading-[1.06] tracking-[-0.035em]">Her day in {loc.city}.</h1>
-            <p className="mt-5 max-w-xl text-base leading-7 text-white/85">{loc.lead}</p>
-            <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3">
-              <Link href={site.cta.href} className="inline-flex min-h-12 items-center gap-4 bg-white px-6 text-sm font-medium text-ink hover:bg-ivory">{site.cta.label}<span aria-hidden="true">↗</span></Link>
-              <Link href={`/es/fotografo-de-quinceaneras/${loc.slug}`} hrefLang="es" className="inline-flex min-h-11 items-center border-b border-white text-sm font-medium">Español ↗</Link>
-            </div>
+          <div className="max-w-3xl">
+            <p className="text-xs uppercase tracking-[0.22em] text-white/85">Quinceañera photography &amp; film / {loc.city}, TX</p>
+            <h1 id="city-title" className="mt-5 max-w-[20ch] font-display text-[clamp(2.15rem,4vw,4rem)] font-light leading-[1.14]">Her day in {loc.city}</h1>
           </div>
         </div>
       </header>
 
-      {/* Local intro */}
-      <section className="mx-auto max-w-3xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
-        <Reveal className="flex flex-col gap-6">
+      <section className="bg-ivory px-5 py-20 sm:px-10 sm:py-28" aria-labelledby="city-intro-title">
+        <div className="mx-auto grid max-w-[78rem] gap-8 lg:grid-cols-[minmax(0,0.4fr)_minmax(0,0.6fr)] lg:gap-20">
+        <div><p className="text-xs uppercase tracking-[0.2em] text-ink-soft">In {loc.city}</p><h2 id="city-intro-title" className="mt-5 max-w-[19ch] font-display text-[clamp(1.85rem,3vw,3rem)] font-light leading-[1.2] text-ink">A place for her story.</h2></div>
+        <Reveal className="flex max-w-2xl flex-col gap-6">
+          <p className="text-base leading-8 text-ink-soft">{loc.lead}</p>
           {(content?.intro ?? loc.intro).map((para) => (
-            <p key={para.slice(0, 24)} className="text-base leading-relaxed text-ink-soft">
+            <p key={para.slice(0, 24)} className="text-base leading-8 text-ink-soft">
               {para}
             </p>
           ))}
@@ -275,7 +272,9 @@ export default async function CityPage({
               ? ` — plus nearby DFW cities like ${nearby.slice(0, 3).map((n) => n.city).join(", ")}.`
               : "."}
           </p>
+          <div className="flex flex-wrap items-center gap-x-8 gap-y-3"><Link href={site.cta.href} className="inline-flex min-h-12 items-center gap-4 border-b border-ink text-xs uppercase tracking-[0.15em] text-ink">{site.cta.label}<span aria-hidden="true">↗</span></Link><Link href={`/es/fotografo-de-quinceaneras/${loc.slug}`} hrefLang="es" className="inline-flex min-h-12 items-center border-b border-ink text-xs uppercase tracking-[0.15em] text-ink">Español ↗</Link></div>
         </Reveal>
+        </div>
       </section>
 
       {/* Where to shoot — real local photo spots (unique per city; answers
@@ -430,7 +429,7 @@ export default async function CityPage({
               >
                 <Link href="/portfolio" className="group block">
                   <div
-                    className={`relative overflow-hidden rounded-lg ${i === 0 ? "aspect-[16/10]" : "aspect-[4/5]"}`}
+                    className={`relative overflow-hidden ${i === 0 ? "aspect-[16/10]" : "aspect-[4/5]"}`}
                   >
                     <Image
                       src={img.url}
@@ -453,21 +452,16 @@ export default async function CityPage({
         </section>
       ) : null}
 
-      {/* Portfolio CTA */}
-      <section className="border-y border-line bg-ivory">
-        <div className="mx-auto max-w-3xl px-5 py-section text-center md:px-10 lg:px-16 md:py-section-lg">
-          <h2 className="display-2 text-ink text-balance">
+      <section className="bg-ivory">
+        <div className="mx-auto grid max-w-[78rem] gap-8 px-5 py-20 sm:px-10 sm:py-28 lg:grid-cols-[minmax(0,0.42fr)_minmax(0,0.58fr)] lg:gap-20">
+          <h2 className="font-display text-[clamp(1.85rem,3vw,3rem)] font-light leading-[1.2] text-ink">
             See full {loc.city} quinceañeras, start to finish.
           </h2>
-          <p className="mx-auto mt-5 max-w-md text-base leading-7 text-ink-soft">
+          <div><p className="max-w-xl text-base leading-8 text-ink-soft">
             Not a highlight reel — complete galleries and films from real DFW
             celebrations, so you know exactly what you&apos;re reserving.
           </p>
-          <div className="mt-9 flex justify-center">
-            <CTAButton href="/portfolio" className="min-h-12 rounded-md px-6 text-base font-medium">
-              View the galleries
-            </CTAButton>
-          </div>
+          <Link href="/portfolio" className="mt-7 inline-flex min-h-12 items-center gap-5 border-b border-ink text-xs uppercase tracking-[0.16em] text-ink">View the galleries <span aria-hidden="true">↗</span></Link></div>
         </div>
       </section>
 
@@ -490,12 +484,12 @@ export default async function CityPage({
       {guides.length ? (
         <section className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
           <p className="eyebrow mb-5">Planning your {loc.city} quinceañera</p>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-x-12 border-t border-line sm:grid-cols-2">
             {guides.map((g) => (
               <Link
                 key={g.slug}
                 href={`/blog/${g.slug}`}
-                className="group rounded-lg border border-line bg-white p-5 transition-colors hover:border-ink"
+                className="group block border-b border-line py-7"
               >
                 <h3 className="font-display text-lg leading-tight text-ink group-hover:text-accent">
                   {g.title}
@@ -521,14 +515,14 @@ export default async function CityPage({
               <Link
                 key={v.slug}
                 href={`/venues/${v.slug}`}
-                className="inline-flex min-h-11 items-center rounded-md border border-line bg-white px-4 py-2 text-base text-ink transition-colors hover:border-ink"
+                className="inline-flex min-h-11 items-center border-b border-line text-base text-ink transition-colors hover:border-ink"
               >
                 {v.venue}
               </Link>
             ))}
             <Link
               href="/venues"
-              className="inline-flex min-h-11 items-center rounded-md border border-line px-4 py-2 text-base text-ink transition-colors hover:border-ink hover:bg-white"
+              className="inline-flex min-h-11 items-center border-b border-line text-base text-ink transition-colors hover:border-ink"
             >
               All venues →
             </Link>
@@ -545,7 +539,7 @@ export default async function CityPage({
               <Link
                 key={n.slug}
                 href={`/quinceanera-photographer/${n.slug}`}
-                className="inline-flex min-h-11 items-center rounded-md border border-line bg-white px-4 py-2 text-base text-ink transition-colors hover:border-ink"
+                className="inline-flex min-h-11 items-center border-b border-line text-base text-ink transition-colors hover:border-ink"
               >
                 Quinceañera photographer in {n.city}
               </Link>
@@ -557,7 +551,6 @@ export default async function CityPage({
       {/* Testimonials — renders only when release-cleared ones exist. */}
       <Testimonials className="mx-auto max-w-7xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg" />
 
-      <FinalCTA />
     </>
   );
 }

@@ -33,36 +33,42 @@ export default async function ReservePage({
 
   return (
     <>
-      <section aria-labelledby="reserve-title" className="bg-white px-5 pb-16 pt-20 text-center sm:px-8 sm:pb-24 sm:pt-28 lg:pt-36">
-        <p className="text-xs uppercase tracking-[0.26em] text-ink-soft">Quinceañera photo &amp; film / Date request</p>
-        <h1 id="reserve-title" className="mx-auto mt-7 max-w-[20ch] font-display text-[clamp(2.25rem,4vw,3.75rem)] font-light leading-[1.13] text-ink">Tell us when she&apos;s celebrating.</h1>
-        <p className="mx-auto mt-8 max-w-2xl text-base leading-8 text-ink-soft">Choose a collection and tell us the date. We will confirm availability with you personally before any deposit is due.</p>
-      </section>
-
-      <section aria-labelledby="reserve-form-title" className="grid bg-ivory lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
-        <div className="order-2 min-w-0 px-5 py-14 sm:px-10 sm:py-20 lg:order-1 lg:px-[clamp(3rem,7vw,8rem)] lg:py-24">
-          <p className="text-xs uppercase tracking-[0.24em] text-ink-soft">The first step</p>
-          <h2 id="reserve-form-title" className="mt-5 font-display text-[clamp(2rem,3vw,3rem)] font-light leading-tight text-ink">Tell us about her celebration.</h2>
-          <p className="mt-5 max-w-2xl text-base leading-8 text-ink-soft">Your request starts the conversation. It does not charge you or hold the date.</p>
-          {canceled ? <p role="status" className="mt-8 border-l-2 border-ink bg-white px-5 py-4 text-base leading-7 text-ink">The previous checkout was canceled, and no payment was taken. Send your request below and we will confirm availability before sending a payment link.</p> : null}
-          <div className="mt-10 border-t border-line pt-8"><BookingForm key={(defaultCollection ?? "") + ":" + (defaultDate ?? "")} defaultCollection={defaultCollection} defaultDate={defaultDate} /></div>
+      <header aria-labelledby="reserve-title" className="relative flex min-h-[23rem] items-end overflow-hidden bg-ink text-white sm:min-h-[30rem]">
+        <Image src="/portfolio/lilac-arch.webp" alt="Quinceañera in a lilac gown outside her venue" fill priority unoptimized sizes="100vw" className="object-cover object-[center_53%]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" aria-hidden="true" />
+        <div className="relative mx-auto w-full max-w-[90rem] px-5 pb-10 pt-24 sm:px-10 sm:pb-14 lg:px-16">
+          <p className="text-[.7rem] uppercase tracking-[.23em] text-white/85">A date worth remembering</p>
+          <h1 id="reserve-title" className="mt-5 max-w-[23ch] font-display text-[clamp(2.1rem,3.4vw,3.4rem)] font-light leading-[1.13] tracking-[-.03em]">Start with her date.</h1>
         </div>
-        <figure className="order-1 min-w-0 lg:order-2 lg:sticky lg:top-0 lg:self-start">
-          <div className="relative aspect-[5/4] overflow-hidden bg-greige lg:min-h-[calc(100svh-5rem)] lg:aspect-auto">
-            <Image src="/portfolio/lilac-arch.webp" alt="Quinceañera in a lilac gown outside her venue" fill priority sizes="(max-width: 1024px) 100vw, 43vw" className="object-cover object-[center_55%]" />
+      </header>
+
+      <section aria-labelledby="reserve-form-title" className="bg-white px-5 py-20 sm:px-10 sm:py-28 lg:px-16">
+        <div className="mx-auto grid max-w-[90rem] gap-14 lg:grid-cols-[minmax(0,.4fr)_minmax(0,.6fr)] lg:gap-24">
+          <div className="lg:sticky lg:top-28 lg:self-start">
+            <p className="text-[.7rem] uppercase tracking-[.2em] text-ink-soft">The first step</p>
+            <h2 id="reserve-form-title" className="mt-5 max-w-[16ch] font-display text-[clamp(1.9rem,2.8vw,2.8rem)] font-light leading-tight text-ink">Tell us about her celebration.</h2>
+            <p className="mt-6 max-w-md font-serif text-lg leading-8 text-ink-soft">Choose a collection and share the date you have in mind. We will check availability personally.</p>
+            <p className="mt-8 max-w-md border-t border-line pt-6 text-sm leading-7 text-ink-soft">Your request does not charge you or hold the date. We confirm availability before any deposit is due.</p>
+            <Link href="/investment" className="mt-6 inline-flex min-h-12 items-center gap-6 border-b border-ink text-xs uppercase tracking-[.14em] text-ink">Compare collections <span aria-hidden="true">↗</span></Link>
           </div>
-          <figcaption className="bg-white px-5 py-4 text-xs uppercase tracking-[0.18em] text-ink-soft sm:px-10">A day to remember / Dallas–Fort Worth</figcaption>
-        </figure>
+          <div className="min-w-0">
+            {canceled ? <p role="status" className="mb-8 border-l-2 border-ink bg-ivory px-5 py-4 text-base leading-7 text-ink">The previous checkout was canceled, and no payment was taken. Send your request below and we will confirm availability before sending a payment link.</p> : null}
+            <BookingForm key={(defaultCollection ?? "") + ":" + (defaultDate ?? "")} defaultCollection={defaultCollection} defaultDate={defaultDate} />
+          </div>
+        </div>
       </section>
 
-      <section aria-labelledby="reserve-steps-title" className="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28 lg:px-12">
-        <div className="text-center"><p className="text-xs uppercase tracking-[0.24em] text-ink-soft">From here to her day</p><h2 id="reserve-steps-title" className="mt-5 font-display text-[clamp(2rem,3.5vw,3.25rem)] font-light text-ink">What happens next</h2></div>
-        <ol className="mt-14 grid gap-10 border-t border-line pt-10 md:grid-cols-3 md:gap-12">{steps.map((step, index) => <li key={step.title}><span className="font-display text-3xl font-light text-ink-soft">0{index + 1}</span><h3 className="mt-6 text-lg font-normal text-ink">{step.title}</h3><p className="mt-3 max-w-sm text-base leading-7 text-ink-soft">{step.body}</p></li>)}</ol>
-        <div className="mt-14 grid gap-6 border-t border-line pt-8 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
-          <p className="text-xs uppercase tracking-[0.2em] text-ink-soft">Four collections</p>
-          <div className="grid grid-cols-2 gap-x-7 gap-y-6 sm:grid-cols-4">{packages.map((item) => <div key={item.id}><p className="text-base text-ink">{item.name}</p><p className="mt-1 font-display text-xl font-light text-ink">{item.priceLabel}</p></div>)}</div>
+      <section aria-labelledby="reserve-steps-title" className="bg-ivory px-5 py-20 sm:px-10 sm:py-28 lg:px-16">
+        <div className="mx-auto max-w-[90rem]">
+          <p className="text-[.7rem] uppercase tracking-[.2em] text-ink-soft">From here to her day</p>
+          <h2 id="reserve-steps-title" className="mt-4 font-display text-[clamp(1.9rem,2.8vw,2.8rem)] font-light text-ink">What happens next</h2>
+          <ol className="mt-12 grid gap-8 border-t border-line pt-9 md:grid-cols-3 md:gap-12">{steps.map((step, index) => <li key={step.title}><span className="text-xs tracking-[.14em] text-ink-faint">0{index + 1}</span><h3 className="mt-6 font-display text-xl font-light text-ink">{step.title}</h3><p className="mt-3 max-w-sm text-base leading-7 text-ink-soft">{step.body}</p></li>)}</ol>
+          <div className="mt-14 grid gap-6 border-t border-line pt-8 sm:grid-cols-[minmax(0,.4fr)_minmax(0,.6fr)]">
+            <p className="text-[.7rem] uppercase tracking-[.2em] text-ink-soft">Four collections</p>
+            <div className="grid grid-cols-2 gap-x-7 gap-y-6 sm:grid-cols-4">{packages.map((item) => <div key={item.id}><p className="text-base text-ink">{item.name}</p><p className="mt-1 font-display text-xl font-light text-ink">{item.priceLabel}</p></div>)}</div>
+          </div>
+          <p className="mt-8 max-w-2xl text-sm leading-7 text-ink-soft">A date is reserved only after we confirm availability and you complete the collection deposit.</p>
         </div>
-        <p className="mt-8 max-w-2xl text-base leading-7 text-ink-soft">A date is reserved only after we confirm availability and you complete the collection deposit. <Link href="/investment" className="text-ink underline underline-offset-4">Compare what is included ↗</Link></p>
       </section>
     </>
   );

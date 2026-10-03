@@ -238,7 +238,7 @@ export function PortfolioGallery({
           ))}
         </div>
       ) : (
-        <div className="rounded-lg border border-line bg-white px-6 py-16 text-center">
+        <div className={`${editorial ? "border-y border-line" : "rounded-lg border border-line"} bg-white px-6 py-16 text-center`}>
           <h2 className="font-display text-2xl text-ink">{images.length === 0 ? "Portfolio photos are unavailable." : savedOnly && !query && category === "all" ? "Your inspiration starts here." : "No photographs found."}</h2>
           <p className="mx-auto mt-3 max-w-md text-base leading-relaxed text-ink-soft">
             {images.length === 0 ? "Please check back soon, or ask us about photography and film for your date." : savedOnly && !query && category === "all" ? "Save photographs you love while browsing. They’ll appear here on this device." : "Try a different search or moment to see more of the collection."}
@@ -254,7 +254,7 @@ export function PortfolioGallery({
         onClose={() => { setActiveIndex(null); setZoomed(false); }}
         onCancel={() => { setActiveIndex(null); setZoomed(false); }}
         aria-label="Photograph viewer"
-        className="fixed inset-0 m-auto max-h-[96dvh] w-[min(96vw,1100px)] max-w-none rounded-2xl border border-line bg-white p-0 text-ink shadow-2xl backdrop:bg-ink/85"
+        className="fixed inset-0 m-auto max-h-[96dvh] w-[min(96vw,1100px)] max-w-none border border-line bg-white p-0 text-ink shadow-2xl backdrop:bg-ink/85"
       >
         {active ? (
           <div className="relative">

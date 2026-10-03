@@ -57,19 +57,21 @@ export async function VideographerPage({ locale }: { locale: "en" | "es" }) {
   const shorts = videos.filter((v) => v.orientation === "vertical");
   return (
     <>
-      <header className="relative isolate min-h-[35rem] overflow-hidden bg-ink text-white sm:min-h-[43rem]" aria-labelledby="film-page-title">
-        {hero?.url && <Image src={hero.url} alt={publicPhotoCopy(hero, altPhraseFor(hero.section)).alt} fill priority sizes="100vw" className="object-cover" style={{ objectPosition: `${Math.round((hero.focus_x ?? 0.5) * 100)}% ${Math.round((hero.focus_y ?? 0.4) * 100)}%` }} />}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/10" aria-hidden="true" />
-        <div className="relative mx-auto flex min-h-[35rem] max-w-[90rem] flex-col justify-between px-5 pb-10 pt-8 sm:min-h-[43rem] sm:px-10 sm:pb-14 lg:px-16">
-          <span className="text-xs uppercase tracking-[0.18em] text-white/80">TX Quince / Film</span>
-          <div className="max-w-2xl">
-            <p className="text-xs uppercase tracking-[0.18em] text-white/80">{c.eyebrow}</p>
-            <h1 id="film-page-title" className="mt-4 font-display text-[clamp(2.25rem,4.5vw,4.25rem)] font-normal leading-[1.06] tracking-[-0.035em]">{c.title}</h1>
-            <p className="mt-5 max-w-xl text-base leading-7 text-white/85">{c.intro}</p>
-            <a href="#films" className="mt-8 inline-flex min-h-12 items-center gap-4 border-b border-white pb-1 text-sm font-medium">{locale === "es" ? "Ver los videos" : "Watch the films"}<span aria-hidden="true">↓</span></a>
-          </div>
+      <header className="relative isolate flex min-h-[70svh] items-end overflow-hidden bg-ink text-white sm:min-h-[80svh]" aria-labelledby="film-page-title">
+        <Image src={hero?.url ?? "/portfolio/kimberly-reception.webp"} alt={hero ? publicPhotoCopy(hero, altPhraseFor(hero.section)).alt : "Quinceañera celebration photographed by TX Quince"} fill unoptimized={!hero} priority sizes="100vw" className="object-cover" style={{ objectPosition: `${Math.round((hero?.focus_x ?? 0.5) * 100)}% ${Math.round((hero?.focus_y ?? 0.4) * 100)}%` }} />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-black/10" aria-hidden="true" />
+        <div className="relative mx-auto w-full max-w-[90rem] px-5 pb-12 sm:px-10 sm:pb-16 lg:px-16 lg:pb-20">
+          <p className="text-xs uppercase tracking-[0.24em] text-white/85">{c.eyebrow}</p>
+          <h1 id="film-page-title" className="mt-5 font-display text-[clamp(2.15rem,4vw,4rem)] font-light leading-[1.14]">{c.title}</h1>
         </div>
       </header>
+
+      <section className="bg-ivory px-5 py-20 sm:px-10 sm:py-28">
+        <div className="mx-auto grid max-w-[78rem] gap-8 lg:grid-cols-[minmax(0,0.42fr)_minmax(0,0.58fr)] lg:gap-20">
+          <p className="text-xs uppercase tracking-[0.2em] text-ink-soft">{locale === "es" ? "La experiencia" : "The experience"}</p>
+          <div><p className="max-w-[29ch] font-display text-[clamp(1.85rem,3vw,3rem)] font-light leading-[1.24] text-ink">{locale === "es" ? "Hay recuerdos que también se escuchan." : "Some memories are meant to be heard, too."}</p><p className="mt-6 max-w-xl text-base leading-8 text-ink-soft">{c.intro}</p><a href="#films" className="mt-7 inline-flex min-h-12 items-center gap-4 border-b border-ink text-xs uppercase tracking-[0.16em] text-ink">{locale === "es" ? "Ver los videos" : "Watch the films"}<span aria-hidden="true">↓</span></a></div>
+        </div>
+      </section>
 
       <section id="films" className="scroll-mt-24 bg-white" aria-labelledby="films-heading">
         <div className="mx-auto max-w-[90rem] px-5 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-24">

@@ -4,7 +4,6 @@ import Image from "next/image";
 import { site } from "@/content/site";
 import { getAllPosts, BLOG_CATEGORIES } from "@/content/blog";
 import { getFeaturedImages, getPageHero } from "@/lib/content-db";
-import { FinalCTA } from "@/components/FinalCTA";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 
@@ -49,12 +48,12 @@ export default async function BlogIndexPage() {
 
   return (
     <>
-      <header className="relative isolate flex min-h-[42rem] items-center justify-center overflow-hidden bg-ink px-5 py-20 text-center text-white sm:min-h-[min(82svh,56rem)]" aria-labelledby="journal-title">
-        <Image src={hero?.url ?? "/portfolio/hero.webp"} alt={hero ? photoAlt(hero) : "Quinceañera portrait in Dallas–Fort Worth"} fill unoptimized={!hero} priority sizes="100vw" className="object-cover" style={hero ? { objectPosition: focal(hero.focus_x, hero.focus_y) } : undefined} />
+      <header className="relative isolate mx-4 mt-5 flex min-h-[55svh] items-center justify-center overflow-hidden bg-ink px-5 py-20 text-center text-white sm:mx-6 sm:min-h-[70svh] md:mx-10 lg:mx-auto lg:max-w-[92rem]" aria-labelledby="journal-title">
+        <Image src={hero?.url ?? "/portfolio/save-date.webp"} alt={hero ? photoAlt(hero) : "Quinceañera portrait in Dallas–Fort Worth"} fill unoptimized={!hero} priority sizes="100vw" className="object-cover" style={hero ? { objectPosition: focal(hero.focus_x, hero.focus_y) } : undefined} />
         <div className="absolute inset-0 bg-black/55" aria-hidden="true" />
         <div className="relative mx-auto max-w-[48rem]">
           <p className="text-xs uppercase tracking-[0.24em] text-white/85">TX Quince / The journal</p>
-          <h1 id="journal-title" className="mt-8 font-display text-[clamp(2.5rem,5.5vw,5.5rem)] font-light leading-[1.1] tracking-[0.005em]">Stories around her day.</h1>
+          <h1 id="journal-title" className="mt-6 font-body text-[clamp(2.25rem,4.4vw,4rem)] font-light leading-[1.14] tracking-[-0.035em]">Stories around her day.</h1>
           <p className="mx-auto mt-6 max-w-[35rem] text-base leading-[1.8] text-white/90">Costs, timelines, photography, film, and the traditions that shape the celebration.</p>
           <Link href="/quinceanera-guide" className="mt-10 inline-flex min-h-12 items-center gap-4 border-b border-white text-xs font-medium uppercase tracking-[0.16em]">Begin with the guide <span aria-hidden="true">↗</span></Link>
         </div>
@@ -65,7 +64,7 @@ export default async function BlogIndexPage() {
           <div className="mx-auto max-w-[90rem] px-5 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-24">
             <div className="grid gap-8 border-t border-ink/25 pt-6 lg:grid-cols-[minmax(0,0.33fr)_minmax(0,0.67fr)] lg:gap-14">
               <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">01 / Featured guide</p>
-              <h2 id="featured-guide-title" className="max-w-[24ch] font-display text-[clamp(1.875rem,3vw,3rem)] font-normal leading-tight text-ink">Start with what matters most.</h2>
+              <h2 id="featured-guide-title" className="max-w-[24ch] font-body text-[clamp(1.875rem,3vw,3rem)] font-light leading-tight text-ink">Start with what matters most.</h2>
             </div>
             <Link href={`/blog/${featured.slug}`} className="group mt-10 grid gap-7 lg:mt-14 lg:grid-cols-[minmax(0,0.57fr)_minmax(0,0.43fr)] lg:items-end lg:gap-14">
               <div className="relative aspect-[4/3] overflow-hidden bg-greige sm:aspect-[3/2]">
@@ -73,7 +72,7 @@ export default async function BlogIndexPage() {
               </div>
               <div className="border-t border-line pt-6">
                 <p className="text-xs uppercase tracking-[0.16em] text-ink-soft">{featured.category} · {featured.readMinutes} min read</p>
-                <h3 className="mt-4 max-w-[25ch] font-display text-[clamp(1.5rem,2.5vw,2.5rem)] font-normal leading-tight text-ink">{featured.title}</h3>
+                <h3 className="mt-4 max-w-[25ch] font-body text-[clamp(1.5rem,2.5vw,2.5rem)] font-light leading-tight text-ink">{featured.title}</h3>
                 <p className="mt-4 max-w-lg text-base leading-7 text-ink-soft">{featured.excerpt}</p>
                 <span className="mt-6 inline-flex min-h-11 items-center gap-4 border-b border-ink text-sm font-medium text-ink">Read the story <span aria-hidden="true">↗</span></span>
               </div>
@@ -92,7 +91,7 @@ export default async function BlogIndexPage() {
                 <div className="grid gap-5 lg:grid-cols-[minmax(0,0.3fr)_minmax(0,0.7fr)] lg:gap-12">
                   <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">0{categoryIndex + 2} / The journal</p>
                   <div className="flex flex-wrap items-baseline justify-between gap-4">
-                    <h2 id={`journal-${categoryIndex}`} className="font-display text-[clamp(1.75rem,2.8vw,2.5rem)] font-normal leading-tight text-ink">{category}</h2>
+                    <h2 id={`journal-${categoryIndex}`} className="font-body text-[clamp(1.75rem,2.8vw,2.5rem)] font-light leading-tight text-ink">{category}</h2>
                     <span className="text-sm text-ink-soft">{articles.length} {articles.length === 1 ? "guide" : "guides"}</span>
                   </div>
                 </div>
@@ -105,7 +104,7 @@ export default async function BlogIndexPage() {
                           {image?.url && <Image src={image.url} alt={photoAlt(image)} fill sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw" className="object-cover transition-transform duration-500 group-hover:scale-[1.025] motion-reduce:transition-none" style={{ objectPosition: focal(image.focus_x, image.focus_y) }} />}
                         </span>
                         <span className="mt-4 block text-xs uppercase tracking-[0.12em] text-ink-soft">{post.readMinutes} min read</span>
-                        <span className="mt-2 block font-display text-[1.375rem] font-normal leading-snug text-ink group-hover:underline group-hover:underline-offset-4">{post.title}</span>
+                        <span className="mt-2 block font-body text-[1.375rem] font-light leading-snug text-ink group-hover:underline group-hover:underline-offset-4">{post.title}</span>
                         <span className="mt-2 block line-clamp-2 text-base leading-7 text-ink-soft">{post.excerpt}</span>
                         <span className="mt-3 inline-flex min-h-11 items-center gap-3 text-sm font-medium text-ink">Read guide <span aria-hidden="true">↗</span></span>
                       </Link>
@@ -117,7 +116,6 @@ export default async function BlogIndexPage() {
           );
         })}
       </div>
-      <FinalCTA />
     </>
   );
 }

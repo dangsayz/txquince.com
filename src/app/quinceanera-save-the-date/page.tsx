@@ -6,7 +6,6 @@ import { packages } from "@/content/packages";
 import { getImagesBySection } from "@/lib/content-db";
 import { portfolioFallback } from "@/content/portfolio-fallback";
 import { Reveal } from "@/components/Reveal";
-import { FinalCTA } from "@/components/FinalCTA";
 
 export const revalidate = 3600;
 
@@ -126,20 +125,21 @@ export default async function SaveTheDatePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <header className="relative flex min-h-[38rem] items-end overflow-hidden bg-[#55524d] text-white sm:min-h-[42rem]" aria-labelledby="save-date-title">
-        {hero?.url && <Image src={hero.url} alt={hero.alt || "Quinceañera Save-the-Date portrait session in Dallas–Fort Worth"} fill priority sizes="100vw" className="object-cover" style={{ objectPosition: focal(hero.focus_x, hero.focus_y) }} />}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-black/5" aria-hidden="true" />
-        <div className="relative mx-auto w-full max-w-[90rem] px-5 pb-12 pt-36 sm:px-10 sm:pb-16 lg:px-16">
-          <p className="text-xs font-medium uppercase tracking-[0.14em] text-white/85">Save-the-Date / Dallas–Fort Worth</p>
-          <h1 id="save-date-title" className="mt-5 max-w-[23ch] font-display text-[clamp(2rem,3.8vw,3.5rem)] font-normal leading-[1.12] tracking-[-0.035em] text-balance">Her first portraits before the celebration.</h1>
-          <p className="mt-5 max-w-xl text-base leading-7 text-white/90">A relaxed portrait session for invitations, the guest board, and getting comfortable with the camera. Included with Essential, Signature, and Legacy.</p>
-          <Link href="/check-your-date" className="mt-7 inline-flex min-h-12 items-center justify-between gap-6 whitespace-nowrap bg-white px-5 text-base font-medium text-ink hover:bg-[#e9e8e4]">Check her date <span aria-hidden="true">↗</span></Link>
+      <header className="relative isolate flex min-h-[70svh] items-end overflow-hidden bg-ink text-white sm:min-h-[80svh]" aria-labelledby="save-date-title">
+        <Image src={hero?.url ?? "/portfolio/save-date.webp"} alt={hero?.alt || "Quinceañera Save-the-Date portrait session in Dallas–Fort Worth"} fill unoptimized={!hero} priority sizes="100vw" className="object-cover" style={{ objectPosition: focal(hero?.focus_x, hero?.focus_y) }} />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-black/10" aria-hidden="true" />
+        <div className="relative mx-auto w-full max-w-[90rem] px-5 pb-12 sm:px-10 sm:pb-16 lg:px-16 lg:pb-20">
+          <p className="text-xs uppercase tracking-[0.24em] text-white/85">Save-the-Date / Dallas–Fort Worth</p>
+          <h1 id="save-date-title" className="mt-5 max-w-[23ch] font-display text-[clamp(2.15rem,4vw,4rem)] font-light leading-[1.14]">Her first portraits before the celebration</h1>
         </div>
       </header>
-      <div className="mx-auto flex max-w-[90rem] flex-wrap items-center justify-between gap-4 px-5 py-5 text-sm text-ink-soft sm:px-10 lg:px-16">
-        <span>Save-the-Date portrait session · Dallas–Fort Worth</span>
-        <Link href="/es/save-the-date-quinceanera" hrefLang="es" className="inline-flex min-h-11 items-center underline underline-offset-4">Ver en español ↗</Link>
-      </div>
+
+      <section className="bg-ivory px-5 py-20 sm:px-10 sm:py-28">
+        <div className="mx-auto grid max-w-[78rem] gap-8 lg:grid-cols-[minmax(0,0.42fr)_minmax(0,0.58fr)] lg:gap-20">
+          <p className="text-xs uppercase tracking-[0.2em] text-ink-soft">The portrait session</p>
+          <div><p className="max-w-[29ch] font-display text-[clamp(1.85rem,3vw,3rem)] font-light leading-[1.24] text-ink">A little time for just her, before the day begins.</p><p className="mt-6 max-w-xl text-base leading-8 text-ink-soft">A relaxed portrait session for invitations, the guest board, and getting comfortable with the camera. Included with Essential, Signature, and Legacy.</p><div className="mt-7 flex flex-wrap gap-x-8 gap-y-3"><Link href="/check-your-date" className="inline-flex min-h-12 items-center gap-4 border-b border-ink text-xs uppercase tracking-[0.16em] text-ink">Check her date <span aria-hidden="true">↗</span></Link><Link href="/es/save-the-date-quinceanera" hrefLang="es" className="inline-flex min-h-12 items-center border-b border-ink text-xs uppercase tracking-[0.16em] text-ink">Ver en español ↗</Link></div></div>
+        </div>
+      </section>
 
       <section className="mx-auto grid max-w-[90rem] gap-8 px-5 py-16 md:px-10 md:py-20 lg:grid-cols-[minmax(0,0.3fr)_minmax(0,0.7fr)] lg:gap-16 lg:px-16">
         <p className="text-xs font-medium uppercase tracking-[0.14em] text-ink-soft">The session / 01</p>
@@ -268,7 +268,6 @@ export default async function SaveTheDatePage() {
         </div>
       </section>
 
-      <FinalCTA />
     </>
   );
 }

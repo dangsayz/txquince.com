@@ -23,19 +23,17 @@ export default async function SalonesPage() {
 
   return (
     <>
-      <header className="mx-auto grid max-w-[88rem] gap-8 px-5 pb-16 pt-8 sm:px-8 sm:pt-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-end lg:gap-16 lg:px-12">
-        <figure className="min-w-0">
-          <div className="relative aspect-[4/3] overflow-hidden bg-greige sm:aspect-[5/4] lg:aspect-[4/5]">
-            <Image src={heroPhoto?.url ?? "/portfolio/canal.webp"} alt={heroPhoto?.alt || "Retrato de quinceañera en Dallas–Fort Worth"} fill priority sizes="(max-width: 1024px) 100vw, 55vw" className="object-cover" />
+      <header className="bg-white px-4 pt-5 sm:px-6 md:px-10 md:pt-8">
+        <div className="relative mx-auto min-h-[50svh] max-w-[92rem] overflow-hidden bg-ink sm:min-h-[65svh]">
+          <Image src={heroPhoto?.url ?? "/portfolio/canal.webp"} alt={heroPhoto?.alt || "Retrato de quinceañera en Dallas–Fort Worth"} fill priority unoptimized={!heroPhoto} sizes="(max-width: 1472px) 100vw, 1472px" className="object-cover" />
+          <div className="absolute inset-0 bg-black/35" aria-hidden="true" />
+          <div className="relative flex min-h-[50svh] flex-col items-center justify-center px-6 py-20 text-center text-white sm:min-h-[65svh]">
+            <p className="text-[0.6875rem] uppercase tracking-[0.28em]">Salones / Dallas–Fort Worth</p>
+            <h1 className="mt-5 max-w-[19ch] font-body text-[clamp(2.25rem,4.4vw,4rem)] font-light leading-[1.14] tracking-[-0.035em]">El lugar también cuenta su historia.</h1>
+            <a href="#lugares" className="mt-8 inline-flex min-h-11 items-center border-b border-white/80 text-xs uppercase tracking-[0.18em]">Explorar lugares <span className="ml-3" aria-hidden="true">↓</span></a>
           </div>
-          <figcaption className="mt-3 text-xs uppercase tracking-[0.16em] text-ink-soft">Celebraciones en Dallas–Fort Worth</figcaption>
-        </figure>
-        <div className="max-w-xl lg:pb-8">
-          <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">Salones / Dallas–Fort Worth</p>
-          <h1 className="mt-5 max-w-[19ch] font-display text-[clamp(2rem,3.2vw,3rem)] font-normal leading-[1.14] text-ink">El lugar también cuenta su historia.</h1>
-          <p className="mt-5 max-w-lg text-base leading-7 text-ink-soft">Explora salones, jardines y espacios de celebración. Mira las fotografías disponibles de cada lugar y encuentra ideas para su día.</p>
-          <a href="#lugares" className="mt-8 inline-flex min-h-12 items-center gap-8 whitespace-nowrap border-b border-ink text-base text-ink">Explorar lugares <span aria-hidden="true">↓</span></a>
         </div>
+        <p className="mx-auto max-w-[92rem] px-2 py-9 text-center font-serif text-lg leading-relaxed text-ink-soft sm:py-12 sm:text-xl">Explora salones, jardines y espacios de celebración. Mira las fotografías disponibles de cada lugar y encuentra ideas para su día.</p>
       </header>
       <div id="lugares" className="scroll-mt-24" />
       {[...groups.entries()].map(([city, list]) => (
@@ -47,7 +45,7 @@ export default async function SalonesPage() {
                 <li key={venue.slug}>
                   <Link href={`/venues/${venue.slug}`} hrefLang="en" className="group block focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">
                     <div className="relative aspect-[4/3] bg-greige">
-                      {venue.image ? <Image src={venue.image} alt={venue.alt || `Quinceañera en ${venue.venue}`} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover" /> : null}
+                      {venue.image ? <Image src={venue.image} alt={venue.alt || `Quinceañera en ${venue.venue}`} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover" /> : <span className="absolute inset-0 flex items-end p-5 font-serif text-lg italic text-ink-soft">Fotografías próximamente</span>}
                     </div>
                     <div className="flex min-h-16 items-start justify-between gap-4 border-b border-line py-4">
                       <span className="text-base font-medium text-ink group-hover:underline group-hover:underline-offset-4">{venue.venue}</span>
@@ -60,12 +58,6 @@ export default async function SalonesPage() {
           </div>
         </section>
       ))}
-      <section className="bg-ink py-14 text-white">
-        <div className="mx-auto flex max-w-[88rem] flex-col gap-8 px-5 sm:px-8 md:flex-row md:items-end md:justify-between lg:px-12">
-          <div><p className="text-xs uppercase tracking-[0.18em] text-white/70">El siguiente paso</p><h2 className="mt-3 font-display text-[clamp(1.75rem,2.7vw,2.5rem)] font-normal leading-tight">¿Ya elegiste el salón?</h2><p className="mt-3 text-base leading-7 text-white/80">Cuéntanos dónde será y revisamos tu fecha.</p></div>
-          <Link href="/es/consulta" className="inline-flex min-h-12 items-center justify-between gap-8 self-start whitespace-nowrap border border-white px-6 text-base text-white">Consultar fecha <span aria-hidden="true">↗</span></Link>
-        </div>
-      </section>
     </>
   );
 }

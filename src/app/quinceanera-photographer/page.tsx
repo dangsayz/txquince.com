@@ -55,7 +55,7 @@ export default async function LocationsHub() {
 
   return (
     <>
-      <header className="relative isolate flex min-h-[42rem] items-center justify-center overflow-hidden bg-ink px-5 py-20 text-center text-white sm:min-h-[min(82svh,56rem)]" aria-labelledby="areas-title">
+      <header className="relative isolate flex min-h-[70svh] items-end overflow-hidden bg-ink text-white sm:min-h-[80svh]" aria-labelledby="areas-title">
         <Image
           src={hero?.url ?? "/portfolio/kimberly-reception.webp"}
           alt={hero ? publicPhotoCopy(hero, altPhraseFor(hero.section)).alt : "Quinceañera celebration in Dallas–Fort Worth"}
@@ -66,16 +66,21 @@ export default async function LocationsHub() {
           className="object-cover"
           style={hero ? { objectPosition: focal(hero.focus_x, hero.focus_y) } : { objectPosition: "center 60%" }}
         />
-        <div className="absolute inset-0 bg-black/50" aria-hidden="true" />
-        <div className="relative mx-auto max-w-[52rem]">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-black/10" aria-hidden="true" />
+        <div className="relative mx-auto w-full max-w-[90rem] px-5 pb-12 sm:px-10 sm:pb-16 lg:px-16 lg:pb-20">
           <p className="text-xs uppercase tracking-[0.24em] text-white/85">TX Quince / Where we work</p>
-          <h1 id="areas-title" className="mt-8 font-display text-[clamp(2.5rem,5.5vw,5.5rem)] font-light leading-[1.12] tracking-[0.005em]">Across Dallas–Fort Worth.</h1>
-          <p className="mx-auto mt-6 max-w-[37rem] text-base leading-[1.8] text-white/90">From the church to the reception, we photograph and film quinceañeras across the metroplex.</p>
-          <a href="#cities" className="mt-10 inline-flex min-h-12 items-center gap-4 border-b border-white text-xs font-medium uppercase tracking-[0.16em]">Find your city <span aria-hidden="true">↓</span></a>
+          <h1 id="areas-title" className="mt-5 max-w-3xl font-display text-[clamp(2.15rem,4vw,4rem)] font-light leading-[1.14]">Across Dallas–Fort Worth</h1>
         </div>
       </header>
 
-      <section id="cities" className="scroll-mt-24 bg-[#f4f2ee]" aria-labelledby="cities-title">
+      <section className="bg-ivory px-5 py-20 sm:px-10 sm:py-28">
+        <div className="mx-auto grid max-w-[78rem] gap-8 lg:grid-cols-[minmax(0,0.42fr)_minmax(0,0.58fr)] lg:gap-20">
+          <p className="text-xs uppercase tracking-[0.2em] text-ink-soft">Photographing her day</p>
+          <div><p className="max-w-[29ch] font-display text-[clamp(1.85rem,3vw,3rem)] font-light leading-[1.24] text-ink">From the church to the last dance, wherever the celebration takes you.</p><p className="mt-6 max-w-xl text-base leading-8 text-ink-soft">We photograph and film quinceañeras across Dallas–Fort Worth. Explore the cities where we work and the real celebrations behind the photographs.</p><a href="#cities" className="mt-7 inline-flex min-h-12 items-center gap-4 border-b border-ink text-xs uppercase tracking-[0.16em] text-ink">Find your city <span aria-hidden="true">↓</span></a></div>
+        </div>
+      </section>
+
+      <section id="cities" className="scroll-mt-24 bg-white" aria-labelledby="cities-title">
         <div className="mx-auto max-w-[90rem] px-5 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-24">
           <div className="grid gap-8 lg:grid-cols-[minmax(0,0.48fr)_minmax(0,0.52fr)] lg:items-end lg:gap-16">
             <div>

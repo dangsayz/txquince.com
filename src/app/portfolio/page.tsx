@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Suspense } from "react";
 import { site } from "@/content/site";
 import { getPortfolioImages, getVideos } from "@/lib/content-db";
 import { PortfolioGallery, type GalleryItem } from "@/components/PortfolioGallery";
 import { VideoGallery } from "@/components/VideoGallery";
-import { FinalCTA } from "@/components/FinalCTA";
 import { altPhraseFor, categoryLabel } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import { portfolioFallback } from "@/content/portfolio-fallback";
@@ -31,7 +31,6 @@ export default function PortfolioPage({ searchParams }: {
       <Suspense fallback={<PortfolioLoading />}>
         <PortfolioContent searchParams={searchParams} />
       </Suspense>
-      <FinalCTA />
     </>
   );
 }
@@ -82,6 +81,9 @@ async function PortfolioContent({ searchParams }: {
     caption: image.caption ?? null,
     city: image.city ?? null,
   }));
+  const heroPhoto = dbImages.length
+    ? items[0]
+    : items.find((item) => item.url === "/portfolio/red-garden.webp") ?? items[0] ?? null;
   const videoJsonLd = videos.length > 0 ? {
     "@context": "https://schema.org",
     "@graph": videos.map((video) => {
@@ -135,12 +137,16 @@ async function PortfolioContent({ searchParams }: {
       {videoJsonLd ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(videoJsonLd).replaceAll("<", "\\u003c") }} /> : null}
       {imageGalleryJsonLd ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(imageGalleryJsonLd).replaceAll("<", "\\u003c") }} /> : null}
       <header className="bg-white px-4 pt-5 sm:px-6 md:px-10 md:pt-8">
-        <div className="mx-auto flex max-w-[92rem] flex-col items-center bg-cream px-6 pb-12 pt-12 text-center md:pb-28 md:pt-28 lg:pb-32 lg:pt-32">
-          <p className="text-[0.6875rem] font-medium uppercase tracking-[0.28em] text-ink-soft">The photographs</p>
-          <h1 className="mt-3 font-body text-[clamp(2.75rem,5vw,4rem)] font-light leading-[1.1] tracking-[-0.045em] text-ink md:mt-5">Portfolio</h1>
-          <p className="mt-3 max-w-[37rem] text-[0.6875rem] font-medium uppercase leading-5 tracking-[0.2em] text-ink-soft md:mt-5">Quinceañera portraits, traditions & celebration in Dallas–Fort Worth</p>
-          <p className="mt-7 hidden max-w-[34rem] font-serif text-lg font-normal leading-[1.6] text-ink-soft sm:block md:text-xl">The dress, the quiet moments before, the room when everyone is together. Every photograph belongs to her story.</p>
+        <div className="relative mx-auto min-h-[55svh] max-w-[92rem] overflow-hidden bg-ink sm:min-h-[70svh]">
+          <Image src={heroPhoto?.url ?? "/portfolio/hero.webp"} alt={heroPhoto?.alt ?? "Quinceañera portrait in Dallas–Fort Worth"} fill priority unoptimized={!heroPhoto?.url || heroPhoto.url.startsWith("/portfolio/")} sizes="(max-width: 1472px) 100vw, 1472px" className="object-cover" style={heroPhoto ? { objectPosition: `${Math.round((heroPhoto.fx ?? 0.5) * 100)}% ${Math.round((heroPhoto.fy ?? 0.4) * 100)}%` } : undefined} />
+          <div className="absolute inset-0 bg-black/30" aria-hidden="true" />
+          <div className="relative flex min-h-[55svh] flex-col items-center justify-center px-6 py-20 text-center text-white sm:min-h-[70svh]">
+            <p className="text-[0.6875rem] uppercase tracking-[0.28em]">The photographs</p>
+            <h1 className="mt-5 font-body text-[clamp(2.5rem,5vw,4.25rem)] font-light leading-[1.1] tracking-[-0.035em]">Portfolio</h1>
+            <p className="mt-5 max-w-[37rem] text-[0.6875rem] uppercase leading-5 tracking-[0.2em]">Quinceañera portraits, traditions & celebration in Dallas–Fort Worth</p>
+          </div>
         </div>
+        <p className="mx-auto max-w-2xl px-2 py-9 text-center font-serif text-lg leading-relaxed text-ink-soft sm:py-12 sm:text-xl">The dress, the quiet moments before, the room when everyone is together. Every photograph belongs to her story.</p>
       </header>
       <section id="photographs" className="scroll-mt-24 bg-white" aria-label="Photograph gallery">
         <div className="mx-auto max-w-[92rem] px-4 pb-24 pt-5 sm:px-6 md:px-10 md:pb-32 md:pt-16 lg:px-14">

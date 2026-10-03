@@ -39,8 +39,8 @@ export function HeroCarousel({
   const label = locale === "es" ? "Fotografías destacadas" : "Featured photographs";
 
   return (
-    <div className="editorial-hero-carousel" role="region" aria-roledescription={locale === "es" ? "carrusel" : "carousel"} aria-label={label}>
-      <div className="editorial-hero-media">
+    <div className="pix-home-carousel" role="region" aria-roledescription={locale === "es" ? "carrusel" : "carousel"} aria-label={label}>
+      <div className="pix-home-carousel-media">
         <picture>
           {mobile && <source media="(max-width: 767px)" srcSet={mobile.srcSet ?? mobile.src} />}
           <img
@@ -48,13 +48,13 @@ export function HeroCarousel({
             alt={slide.alt}
             loading={isFirst ? "eager" : "lazy"}
             fetchPriority={isFirst ? "high" : undefined}
-            className="editorial-hero-image"
+            className="pix-home-carousel-image"
             style={{ ...desktop.style, objectPosition: slide.position }}
           />
         </picture>
         {isFirst && firstSlideOverlay}
       </div>
-      <div className="editorial-hero-controls">
+      <div className="pix-home-carousel-controls">
         <button type="button" onClick={() => move(-1)} aria-label={locale === "es" ? "Fotografía anterior" : "Previous photograph"}>
           <span aria-hidden="true">←</span>
         </button>

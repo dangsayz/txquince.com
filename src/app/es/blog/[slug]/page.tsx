@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { site } from "@/content/site";
 import {
@@ -85,6 +86,7 @@ export default async function EsBlogPostPage({
   const toc = post.content.filter((b) => b.type === "h2") as { type: "h2"; text: string }[];
   const related = relatedEsPosts(post);
   const images = await getBlogImages(post.content);
+  const cover = Object.values(images)[0];
   const imageUrls = Object.values(images).map((im) =>
     im.url.startsWith("http") ? im.url : `${site.url}${im.url}`,
   );
@@ -136,105 +138,99 @@ export default async function EsBlogPostPage({
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <article className="mx-auto max-w-3xl px-5 pt-10 md:px-10 md:pt-14 lg:px-16">
-        <div className="flex items-center justify-between gap-4">
-          <nav className="flex items-center gap-1 text-sm text-ink-faint" aria-label="Ruta">
-            <Link href="/" className="inline-flex min-h-11 items-center hover:text-ink">Inicio</Link>
-            <span className="mx-1.5">/</span>
-            <Link href="/es/blog" className="inline-flex min-h-11 items-center hover:text-ink">Guía</Link>
-          </nav>
-          {enSlug ? (
-            <Link href={`/blog/${enSlug}`} hrefLang="en" className="inline-flex min-h-11 items-center text-sm text-ink-soft underline underline-offset-4 hover:text-ink">
-              Read in English
-            </Link>
-          ) : null}
-        </div>
+      <div className="relative mx-4 mt-5 aspect-[4/5] max-h-[48rem] min-h-[22rem] overflow-hidden bg-cream sm:mx-6 sm:aspect-[16/9] md:mx-10 lg:mx-auto lg:max-w-[92rem]">
+        <Image src={cover?.url ?? "/portfolio/save-date.webp"} alt={cover?.alt ?? "Fotografía de quinceañera en Dallas–Fort Worth"} fill priority unoptimized={!cover || cover.url.startsWith("/portfolio/")} sizes="(max-width: 1472px) 100vw, 1472px" className="object-cover" />
+      </div>
 
-        <Reveal className="mx-auto mt-8 max-w-2xl text-center">
-          <p className="mb-4 text-sm font-medium text-ink-soft">{CATEGORY_ES[post.category]}</p>
-          <h1 className="font-display text-[clamp(2rem,3.5vw,3rem)] leading-[1.14] text-ink text-balance">{post.title}</h1>
-          <p className="mt-4 text-sm text-ink-faint">
-            {formatDateEs(post.publishedAt)} · {post.readMinutes} min de lectura
-          </p>
-          <p className="mt-6 text-base leading-7 text-ink-soft">{post.lead}</p>
-        </Reveal>
+      <article className="bg-white px-5 pb-20 pt-7 md:px-10 md:pt-10 lg:px-16">
+        <div className="mx-auto max-w-[82rem]">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <nav className="flex items-center gap-1 text-sm text-ink-faint" aria-label="Ruta">
+              <Link href="/" className="inline-flex min-h-11 items-center hover:text-ink">Inicio</Link>
+              <span className="mx-1.5">/</span>
+              <Link href="/es/blog" className="inline-flex min-h-11 items-center hover:text-ink">Guía</Link>
+            </nav>
+            {enSlug ? (
+              <Link href={`/blog/${enSlug}`} hrefLang="en" className="inline-flex min-h-11 items-center text-sm text-ink-soft underline underline-offset-4 hover:text-ink">
+                Read in English
+              </Link>
+            ) : null}
+          </div>
 
-        {toc.length >= 4 ? (
-          <nav aria-label="En esta guía" className="mt-10 rounded-lg border border-line bg-white p-6">
-            <p className="text-sm font-medium text-ink-soft">En esta guía</p>
-            <ul className="mt-3 flex flex-col gap-1">
-              {toc.map((h, idx) => (
-                <li key={h.text}>
-                  <a
-                    href={`#${slugifyHeading(h.text)}`}
-                    className="group inline-flex min-h-11 items-center gap-3 text-base text-ink-soft transition-colors hover:text-ink"
-                  >
-                    <span className="font-display text-xs tabular-nums text-ink-faint">
-                      {String(idx + 1).padStart(2, "0")}
-                    </span>
-                    <span className="underline-offset-4 group-hover:underline">{h.text}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        ) : null}
-
-        <div className="mt-10">
-          <BlogContent blocks={post.content} images={images} />
-        </div>
-
-        {post.faqs && post.faqs.length ? (
-          <section className="mt-14">
-            <h2 className="font-display text-[clamp(1.875rem,2.8vw,2.625rem)] text-ink">Preguntas frecuentes</h2>
-            <dl className="mt-6 divide-y divide-line border-y border-line">
-              {post.faqs.map((f) => (
-                <div key={f.q} className="py-6">
-                  <dt className="font-display text-xl text-ink">{f.q}</dt>
-                  <dd className="mt-2 text-base leading-7 text-ink-soft">{f.a}</dd>
-                </div>
-              ))}
-            </dl>
-          </section>
-        ) : null}
-
-        {related.length ? (
-          <section className="mt-16 border-t border-line pt-10">
-            <p className="mb-2 text-sm font-medium text-ink-soft">Sigue leyendo</p>
-            <div>
-              {related.map((r, idx) => (
-                <Link
-                  key={r.slug}
-                  href={`/es/blog/${r.slug}`}
-                  className={`group block py-5 ${idx > 0 ? "border-t border-line" : ""}`}
-                >
-                  <p className="text-sm text-ink-soft">{CATEGORY_ES[r.category]}</p>
-                  <h3 className="mt-1.5 font-display text-lg leading-tight text-ink transition-colors group-hover:text-accent md:text-xl">
-                    {r.title}
-                  </h3>
-                </Link>
-              ))}
+          <Reveal className="grid gap-5 border-b border-line pb-12 pt-12 md:grid-cols-[minmax(0,0.3fr)_minmax(0,0.7fr)] md:gap-12 md:pt-16">
+            <div className="text-xs uppercase tracking-[0.14em] text-ink-soft">
+              <p>{CATEGORY_ES[post.category]}</p>
+              <p className="mt-3 normal-case tracking-normal">{formatDateEs(post.publishedAt)} · {post.readMinutes} min de lectura</p>
             </div>
-          </section>
-        ) : null}
-      </article>
+            <div>
+              <h1 className="max-w-[24ch] font-body text-[clamp(2rem,3.5vw,3.25rem)] font-light leading-[1.13] tracking-[-0.035em] text-ink text-balance">{post.title}</h1>
+              <p className="mt-6 max-w-2xl font-serif text-lg leading-8 text-ink-soft">{post.lead}</p>
+            </div>
+          </Reveal>
 
-      <section className="mt-16 bg-ivory px-5 py-16 md:px-10 md:py-20 lg:px-16">
-        <div className="mx-auto max-w-3xl rounded-lg border border-line bg-white px-6 py-12 text-center sm:px-10 sm:py-16">
-          <h2 className="font-display text-[clamp(1.875rem,2.8vw,2.625rem)] leading-tight text-ink text-balance">Reserva la fecha de su quinceañera</h2>
-          <p className="mx-auto mt-4 max-w-md text-base leading-7 text-ink-soft">
-            Le confirmo que su fecha está disponible y le envío un enlace seguro para el depósito. Sin pago ahora mismo.
-          </p>
-          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-            <Link href="/es/consulta" className="inline-flex min-h-12 items-center justify-center whitespace-nowrap rounded-md bg-ink px-6 text-base font-medium text-white transition-colors hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
-              Reservar mi fecha
-            </Link>
-            <Link href="/es/paquetes" className="inline-flex min-h-12 items-center justify-center whitespace-nowrap rounded-md border border-line px-6 text-base font-medium text-ink transition-colors hover:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
-              Ver colecciones
-            </Link>
+          <div className="mx-auto max-w-[48rem]">
+          {toc.length >= 4 ? (
+            <nav aria-label="En esta guía" className="mt-12 border-y border-line py-5">
+              <p className="text-xs uppercase tracking-[0.14em] text-ink-soft">En esta guía</p>
+              <ul className="mt-3 grid gap-x-8 md:grid-cols-2">
+                {toc.map((h, idx) => (
+                  <li key={h.text}>
+                    <a
+                      href={`#${slugifyHeading(h.text)}`}
+                      className="group inline-flex min-h-11 items-center gap-3 text-base text-ink-soft transition-colors hover:text-ink"
+                    >
+                      <span className="font-display text-xs tabular-nums text-ink-faint">
+                        {String(idx + 1).padStart(2, "0")}
+                      </span>
+                      <span className="underline-offset-4 group-hover:underline">{h.text}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          ) : null}
+
+          <div className="mt-10">
+            <BlogContent blocks={post.content} images={images} />
+          </div>
+
+          {post.faqs && post.faqs.length ? (
+            <section className="mt-14">
+              <h2 className="font-display text-[clamp(1.875rem,2.8vw,2.625rem)] text-ink">Preguntas frecuentes</h2>
+              <dl className="mt-6 divide-y divide-line border-y border-line">
+                {post.faqs.map((f) => (
+                  <div key={f.q} className="py-6">
+                    <dt className="font-display text-xl text-ink">{f.q}</dt>
+                    <dd className="mt-2 text-base leading-7 text-ink-soft">{f.a}</dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          ) : null}
+
+          {related.length ? (
+            <section className="mt-16 border-t border-line pt-10">
+              <p className="mb-2 text-sm font-medium text-ink-soft">Sigue leyendo</p>
+              <div>
+                {related.map((r, idx) => (
+                  <Link
+                    key={r.slug}
+                    href={`/es/blog/${r.slug}`}
+                    className={`group block py-5 ${idx > 0 ? "border-t border-line" : ""}`}
+                  >
+                    <p className="text-sm text-ink-soft">{CATEGORY_ES[r.category]}</p>
+                    <h3 className="mt-1.5 font-body text-lg font-light leading-tight text-ink transition-colors group-hover:underline group-hover:underline-offset-4 md:text-xl">
+                      {r.title}
+                    </h3>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          ) : null}
           </div>
         </div>
-      </section>
+      </article>
+
     </>
   );
 }

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { site } from "@/content/site";
-import { Badge } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Privacy",
@@ -12,13 +11,13 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <article className="bg-ivory px-5 py-12 sm:px-6 md:py-20">
-      <div className="mx-auto max-w-3xl rounded-xl border border-line bg-white p-7 sm:p-12">
-        <Badge>Privacy</Badge>
-        <h1 className="mt-5 font-display text-[clamp(2rem,3.4vw,3rem)] leading-[1.14] text-ink">Privacy policy</h1>
-        <p className="mt-3 text-sm text-ink-faint">Last updated June 2026.</p>
+    <article className="bg-white px-5 pb-20 pt-20 sm:px-8 sm:pb-28 sm:pt-28">
+      <div className="mx-auto max-w-3xl">
+        <p className="text-xs uppercase tracking-[0.22em] text-ink-soft">TX Quince / Your information</p>
+        <h1 className="mt-5 font-body text-[clamp(2.5rem,5vw,4rem)] font-light leading-[1.1] tracking-[-0.04em] text-ink">Privacy policy</h1>
+        <p className="mt-5 font-serif text-lg text-ink-soft">Last updated June 2026.</p>
 
-        <div className="mt-10 divide-y divide-line border-t border-line text-base leading-7 text-ink-soft">
+        <div className="mt-14 divide-y divide-line border-t border-line text-base leading-8 text-ink-soft">
           <section className="py-7">
             <h2 className="text-lg font-semibold text-ink">What we collect</h2>
             <p className="mt-3">
