@@ -49,7 +49,7 @@ function findElement(node, type) {
   return findElement(node.props?.children, type);
 }
 
-function homeWith(featured, heroMedia) {
+function homeWith(featured, heroMedia, locale = "en") {
   function HeroCarousel() {}
   const { EditorialHome } = loadComponent("../src/components/home/EditorialHome.tsx", {
     "next/image": () => null,
@@ -69,8 +69,29 @@ function homeWith(featured, heroMedia) {
     "@/components/home/HeroCarousel": { HeroCarousel },
     "./pixieset-home.css": {},
   });
-  return EditorialHome({ locale: "en" }).then((tree) => findElement(tree, HeroCarousel).props.slides);
+  return EditorialHome({ locale }).then((tree) => findElement(tree, HeroCarousel).props.slides);
 }
+
+test("publishes the administrator's photo description to the homepage carousel in both languages", async () => {
+  const description = "Clarissa in a rose gown beside a sunlit window";
+  for (const locale of ["en", "es"]) {
+    const slides = await homeWith([highPhoto], {
+      kind: "image", imageUrl: "/api/img/hero?v=selected", imageAlt: description, focusX: 0.54, focusY: 0.8,
+    }, locale);
+    assert.equal(slides[0].alt, description);
+  }
+});
+
+test("keeps the selected portfolio description and uses a localized fallback only for a blank description", async () => {
+  const portfolio = await homeWith([highPhoto], null);
+  assert.equal(portfolio[0].alt, highPhoto.alt);
+  for (const [locale, expected] of [["en", "Portrait of a quinceañera on her celebration day"], ["es", "Retrato de una quinceañera en su celebración"]]) {
+    const slides = await homeWith([], {
+      kind: "image", imageUrl: "/api/img/hero", imageAlt: "  ", focusX: 0.5, focusY: 0.8,
+    }, locale);
+    assert.equal(slides[0].alt, expected);
+  }
+});
 
 test("preserves the selected hero and adds only full-size featured photos", async () => {
   const slides = await homeWith([lowPhoto, highPhoto], {
