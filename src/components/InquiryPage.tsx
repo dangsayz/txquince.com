@@ -2,6 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { InquiryForm } from "@/components/InquiryForm";
 import { site } from "@/content/site";
+import { getFeaturedImages } from "@/lib/content-db";
+import { publicPhotoCopy } from "@/lib/public-photo-copy";
+import { selectFullBleedPhoto } from "@/lib/quality-photo";
 
 const copy = {
   en: {
@@ -42,21 +45,22 @@ const copy = {
   },
 } as const;
 
-export function InquiryPage({ locale, initialDate = "" }: { locale: "en" | "es"; initialDate?: string }) {
+export async function InquiryPage({ locale, initialDate = "" }: { locale: "en" | "es"; initialDate?: string }) {
   const c = copy[locale];
   const isSpanish = locale === "es";
   const formId = isSpanish ? "formulario" : "inquiry-form";
+  const photo = selectFullBleedPhoto(await getFeaturedImages(12), 0);
 
   return (
     <>
       <header className="grid bg-white lg:grid-cols-[minmax(0,1.1fr)_minmax(0,.9fr)]" aria-labelledby="inquiry-title">
         <div className="relative min-h-[60svh] bg-greige sm:min-h-[42rem] lg:min-h-[min(84svh,55rem)]">
           <Image
-            src="/portfolio/red-garden.webp"
-            alt={isSpanish ? "Quinceañera con flores en un jardín" : "Quinceañera holding flowers in a garden"}
+            src={photo?.url ?? "/portfolio/hero.webp"}
+            alt={photo ? publicPhotoCopy(photo, isSpanish ? "Retrato de quinceañera" : "Quinceañera portrait").alt : isSpanish ? "Retrato de quinceañera" : "Quinceañera portrait"}
             fill
             priority
-            unoptimized
+            unoptimized={!photo}
             sizes="(max-width: 1023px) 100vw, 55vw"
             className="object-cover object-[center_39%]"
           />

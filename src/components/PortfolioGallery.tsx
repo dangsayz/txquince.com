@@ -10,6 +10,7 @@ import { FavoriteButton, useSavedPhotos } from "@/components/gallery/Favorites";
 import { selectGalleryItems, type GalleryItem, type GallerySection } from "@/components/gallery/gallery-model";
 import { altPhraseFor, vendorCreditLabel } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
+import brandedImageLoader from "@/lib/image-loader";
 
 export type { GalleryItem } from "@/components/gallery/gallery-model";
 
@@ -274,7 +275,7 @@ export function PortfolioGallery({
                 setActiveIndex((index) => index === null ? null : (index + (distance < 0 ? 1 : -1) + filtered.length) % filtered.length);
               }}
             >
-              <ProtectedImg src={active.url} alt={copyFor(active).alt} width={active.width} height={active.height} className={zoomed ? "mx-auto block h-auto w-[160vw] max-w-[1440px] object-contain" : "mx-auto block max-h-[68dvh] w-auto max-w-full object-contain"} />
+              <ProtectedImg src={brandedImageLoader({ src: active.url, width: 2400 })} alt={copyFor(active).alt} width={active.width} height={active.height} className={zoomed ? "mx-auto block h-auto w-[160vw] max-w-[1440px] object-contain" : "mx-auto block max-h-[68dvh] w-auto max-w-full object-contain"} />
             </div>
             <div className="flex flex-wrap items-center gap-2 border-t border-line p-3 sm:p-5">
               {filtered.length > 1 ? <>

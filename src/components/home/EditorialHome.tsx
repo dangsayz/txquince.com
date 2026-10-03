@@ -11,6 +11,7 @@ import { releasedTestimonials } from "@/content/testimonials";
 import { getFeaturedImages, getHeroMedia, getVideos } from "@/lib/content-db";
 import { heroObjectPosition } from "@/lib/hero-focus";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
+import { hasFullBleedResolution } from "@/lib/quality-photo";
 import { HeroCarousel, type HeroSlide } from "@/components/home/HeroCarousel";
 import "./pixieset-home.css";
 
@@ -186,19 +187,25 @@ export async function EditorialHome({ locale }: { locale: "en" | "es" }) {
         focusY: image.focus_y ?? null,
       }))
     : fallbackImages;
+  const heroReadyIds = new Set(featured.filter(hasFullBleedResolution).map((image) => image.id));
+  const heroReadyImages = images.filter((image) => image.id && heroReadyIds.has(image.id));
   const selectedHero = heroMedia?.kind === "image" && heroMedia.imageUrl
     ? { url: heroMedia.imageUrl, alt: heroMedia.imageAlt, id: null, slug: null, focusX: null, focusY: null }
     : heroMedia?.kind === "video" && heroMedia.posterUrl
       ? { url: heroMedia.posterUrl, alt: isSpanish ? "Escena de un video de quinceañera" : "Quinceañera film still", id: null, slug: null, focusX: null, focusY: null }
-      : images[0] ?? null;
+      : heroReadyImages[0] ?? fallbackImages[0] ?? images[0] ?? null;
   const heroPosition = heroMedia?.kind === "image" ? heroObjectPosition(heroMedia) : selectedHero ? photoPosition(selectedHero) : "center";
-  const carouselCandidates: HeroSlide[] = [
-    ...portfolioFallback.filter((image) => image.url === "/portfolio/red-garden.webp" || image.url === "/portfolio/lilac-arch.webp"),
-    ...portfolioFallback,
-    ...images,
-  ].map((image) => ({ url: image.url, alt: image.alt, position: "50% 45%" }));
+  const carouselCandidates: HeroSlide[] = heroReadyImages.map((image) => ({
+    url: image.url,
+    alt: image.alt,
+    position: photoPosition(image),
+  }));
   const initialSlide = selectedHero
-    ? { url: selectedHero.url, alt: isSpanish ? "Retrato de una quinceañera en su celebración" : "Portrait of a quinceañera on her celebration day", position: heroPosition }
+    ? {
+        url: selectedHero.url,
+        alt: isSpanish ? "Retrato de una quinceañera en su celebración" : "Portrait of a quinceañera on her celebration day",
+        position: heroPosition,
+      }
     : carouselCandidates[0];
   const remainingSlides = carouselCandidates.filter((image, index, all) =>
     image.url !== initialSlide?.url && all.findIndex((candidate) => candidate.url === image.url) === index,

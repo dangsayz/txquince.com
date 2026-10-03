@@ -1,6 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { packages } from "@/content/packages";
+import { getFeaturedImages } from "@/lib/content-db";
+import { publicPhotoCopy } from "@/lib/public-photo-copy";
+import { selectFullBleedPhoto } from "@/lib/quality-photo";
 
 const copy = {
   en: {
@@ -47,14 +50,15 @@ const copy = {
   },
 } as const;
 
-export function PaymentPlansPage({ locale }: { locale: "en" | "es" }) {
+export async function PaymentPlansPage({ locale }: { locale: "en" | "es" }) {
   const c = copy[locale];
   const inquiry = locale === "es" ? "/es/consulta" : "/check-your-date";
+  const photo = selectFullBleedPhoto(await getFeaturedImages(12), 6);
   return (
     <>
       <header className="bg-white">
         <div className="relative min-h-[25rem] overflow-hidden bg-ink sm:min-h-[36rem]">
-          <Image src="/portfolio/shoe-ceremony.webp" alt={locale === "es" ? "Quinceañera en el salón de su celebración" : "Quinceañera portrait inside her celebration venue"} fill priority unoptimized sizes="100vw" className="object-cover object-[center_53%]" />
+          <Image src={photo?.url ?? "/portfolio/hero.webp"} alt={photo ? publicPhotoCopy(photo, locale === "es" ? "Celebración de quinceañera" : "Quinceañera celebration").alt : locale === "es" ? "Retrato de quinceañera" : "Quinceañera portrait"} fill priority unoptimized={!photo} sizes="100vw" className="object-cover object-[center_53%]" />
           <div className="absolute inset-0 bg-black/25" aria-hidden="true" />
         </div>
         <div className="mx-auto grid max-w-[90rem] gap-8 px-5 py-16 sm:px-10 sm:py-20 lg:grid-cols-[minmax(0,.38fr)_minmax(0,.62fr)] lg:gap-14 lg:px-16">

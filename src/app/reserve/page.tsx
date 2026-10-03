@@ -4,6 +4,9 @@ import Link from "next/link";
 import { BookingForm } from "@/components/BookingForm";
 import { isCollectionId, packages } from "@/content/packages";
 import { site } from "@/content/site";
+import { getFeaturedImages } from "@/lib/content-db";
+import { publicPhotoCopy } from "@/lib/public-photo-copy";
+import { selectFullBleedPhoto } from "@/lib/quality-photo";
 
 export const metadata: Metadata = {
   title: "Request Your Date",
@@ -30,11 +33,12 @@ export default async function ReservePage({
   const { canceled, collection, date } = await searchParams;
   const defaultCollection = isCollectionId(collection) ? collection : undefined;
   const defaultDate = date && /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : undefined;
+  const photo = selectFullBleedPhoto(await getFeaturedImages(12), 1);
 
   return (
     <>
       <header aria-labelledby="reserve-title" className="relative flex min-h-[23rem] items-end overflow-hidden bg-ink text-white sm:min-h-[30rem]">
-        <Image src="/portfolio/lilac-arch.webp" alt="Quinceañera in a lilac gown outside her venue" fill priority unoptimized sizes="100vw" className="object-cover object-[center_53%]" />
+        <Image src={photo?.url ?? "/portfolio/hero.webp"} alt={photo ? publicPhotoCopy(photo, "Quinceañera celebration").alt : "Quinceañera portrait"} fill priority unoptimized={!photo} sizes="100vw" className="object-cover object-[center_53%]" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" aria-hidden="true" />
         <div className="relative mx-auto w-full max-w-[90rem] px-5 pb-10 pt-24 sm:px-10 sm:pb-14 lg:px-16">
           <p className="text-[.7rem] uppercase tracking-[.23em] text-white/85">A date worth remembering</p>

@@ -3,8 +3,7 @@
  *
  * Resolves a permanent slug → storage object, then serves a protected
  * derivative via the Cloudflare Images binding:
- *   · responsive widths via ?w= (snapped to fixed steps, capped at 2400px —
- *     originals never leave storage)
+ *   · responsive widths via ?w= (snapped to fixed steps, capped at 2400px wide)
  *   · WebP, quality-tuned; EXIF stripped by the transform pipeline
  *   · hotlink-checked (empty referer allowed — iMessage/OG fetchers send none)
  *   · immutable edge cache (slugs are permanent)
@@ -16,6 +15,7 @@
 import { NextResponse } from "next/server";
 import { getImageBySlug, getHeroRawImageUrl, getCoverRawImageUrl, storageUrl } from "@/lib/content-db";
 import { getPortfolioBucket, storageKeyFromUrl } from "@/lib/r2-portfolio";
+import { imageTransformForWidth } from "@/lib/image-derivative";
 import { site } from "@/content/site";
 
 export const dynamic = "force-dynamic";
@@ -26,7 +26,7 @@ export const dynamic = "force-dynamic";
  * and srcset entries are pixel-true. No param → 1600 (OG fetchers, old links).
  */
 const WIDTHS = [256, 384, 512, 640, 828, 1080, 1440, 1920, 2400];
-const MAX_EDGE = 2400;
+const MAX_WIDTH = 2400;
 const QUALITY = 86;
 
 /** Minimal structural types for the Images binding (no generated env types). */
@@ -65,7 +65,7 @@ function pickWidth(request: Request): number {
     /* default */
   }
   if (!Number.isFinite(w) || w <= 0) return 1600;
-  return WIDTHS.find((step) => step >= w) ?? MAX_EDGE;
+  return WIDTHS.find((step) => step >= w) ?? MAX_WIDTH;
 }
 
 /** Header-safe note: strip newlines/control chars (illegal in header values). */
@@ -168,7 +168,7 @@ async function serve(
   }
 
   try {
-    const chain = images.input(upstream.body).transform({ width, height: width, fit: "scale-down" });
+    const chain = images.input(upstream.body).transform(imageTransformForWidth(width));
 
     const out = await chain.output({ format: "image/webp", quality: QUALITY });
     const res = out.response();

@@ -5,6 +5,7 @@ import type { VideoProvider } from "@/lib/video";
 import type { BlogBlock } from "@/content/blog";
 import { getVenue, venueSlugify } from "@/content/venues";
 import { resolveHeroFocus } from "@/lib/hero-focus";
+import { IMAGE_PIPELINE_EPOCH } from "@/lib/image-derivative";
 
 /**
  * INTERNAL storage URL — only ever fetched server-side (by /api/img). Raw
@@ -19,12 +20,11 @@ export function storageUrl(path: string): string {
 /** Tiny stable hash → cache-busting version tag derived from the storage path,
  *  so replacing a photo in place (same permanent slug) busts the immutable
  *  browser cache without breaking shared links.
- *  PIPELINE_EPOCH salts the tag — bump it whenever the serve pipeline's output
+ *  IMAGE_PIPELINE_EPOCH salts the tag — bump it whenever the serve pipeline's output
  *  changes for every image (e.g. watermark removed), so year-long immutable
  *  caches refresh without touching storage paths. */
-const PIPELINE_EPOCH = "2";
 function versionTag(s: string): string {
-  const input = `${PIPELINE_EPOCH}:${s}`;
+  const input = `${IMAGE_PIPELINE_EPOCH}:${s}`;
   let h = 5381;
   for (let i = 0; i < input.length; i++) h = ((h << 5) + h + input.charCodeAt(i)) | 0;
   return (h >>> 0).toString(36);
@@ -419,7 +419,7 @@ export const getHeroMedia = cache(async (): Promise<HeroMedia | null> => {
       kind: v.kind,
       // Raw bucket URL stays server-side; the client gets the branded route
       // (capped) — /api/img/hero resolves the source itself.
-      imageUrl: v.kind === "image" && v.imageUrl ? "/api/img/hero" : null,
+      imageUrl: v.kind === "image" && v.imageUrl ? `/api/img/hero?v=${IMAGE_PIPELINE_EPOCH}` : null,
       imageAlt: v.imageAlt ?? "Quinceañera portrait",
       videoUrl: v.videoUrl ?? null,
       provider: (v.provider as VideoProvider) ?? null,
@@ -521,7 +521,7 @@ export async function getCoverImage(
       .maybeSingle();
     const v = data?.value as Partial<CoverValue> | undefined;
     if (v?.storage_path && v.width && v.height) {
-      return { src: `/api/img/cover-${slot}`, width: v.width, height: v.height };
+      return { src: `/api/img/cover-${slot}?v=${IMAGE_PIPELINE_EPOCH}`, width: v.width, height: v.height };
     }
   } catch {
     /* fall back to the static default */

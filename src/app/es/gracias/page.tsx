@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { ConfirmationPage } from "@/components/ConfirmationPage";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Gracias por tu Consulta",
   description: "Recibimos tu consulta sobre su quinceañera.",

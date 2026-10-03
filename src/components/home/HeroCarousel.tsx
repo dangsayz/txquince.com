@@ -39,7 +39,7 @@ export function HeroCarousel({
   const label = locale === "es" ? "Fotografías destacadas" : "Featured photographs";
 
   return (
-    <div className="pix-home-carousel" role="region" aria-roledescription={locale === "es" ? "carrusel" : "carousel"} aria-label={label}>
+    <div className="pix-home-carousel" role="region" aria-roledescription={slides.length > 1 ? (locale === "es" ? "carrusel" : "carousel") : undefined} aria-label={label}>
       <div className="pix-home-carousel-media">
         <picture>
           {mobile && <source media="(max-width: 767px)" srcSet={mobile.srcSet ?? mobile.src} />}
@@ -54,7 +54,7 @@ export function HeroCarousel({
         </picture>
         {isFirst && firstSlideOverlay}
       </div>
-      <div className="pix-home-carousel-controls">
+      {slides.length > 1 && <div className="pix-home-carousel-controls">
         <button type="button" onClick={() => move(-1)} aria-label={locale === "es" ? "Fotografía anterior" : "Previous photograph"}>
           <span aria-hidden="true">←</span>
         </button>
@@ -64,7 +64,7 @@ export function HeroCarousel({
         <button type="button" onClick={() => move(1)} aria-label={locale === "es" ? "Fotografía siguiente" : "Next photograph"}>
           <span aria-hidden="true">→</span>
         </button>
-      </div>
+      </div>}
     </div>
   );
 }
