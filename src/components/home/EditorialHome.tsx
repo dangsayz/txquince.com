@@ -203,7 +203,7 @@ export async function EditorialHome({ locale }: { locale: "en" | "es" }) {
   const initialSlide = selectedHero
     ? {
         url: selectedHero.url,
-        alt: isSpanish ? "Retrato de una quinceañera en su celebración" : "Portrait of a quinceañera on her celebration day",
+        alt: selectedHero.alt.trim() || (isSpanish ? "Retrato de una quinceañera en su celebración" : "Portrait of a quinceañera on her celebration day"),
         position: heroPosition,
       }
     : carouselCandidates[0];
