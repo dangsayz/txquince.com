@@ -31,6 +31,11 @@ function focal(fx?: number | null, fy?: number | null): string {
   return String(Math.round((fx ?? 0.5) * 100)) + "% " + String(Math.round((fy ?? 0.32) * 100)) + "%";
 }
 
+const fallbackCityPhotos = [
+  "/portfolio/hero.webp", "/portfolio/reception.webp", "/portfolio/red-garden.webp", "/portfolio/lilac-arch.webp",
+  "/portfolio/save-date.webp", "/portfolio/kimberly-reception.webp", "/portfolio/dance.webp", "/portfolio/shoe-ceremony.webp",
+];
+
 export default async function LocationsHubEs() {
   const [imgs, assignedHero, cityPhotoSets] = await Promise.all([
     getFeaturedImages(24),
@@ -45,34 +50,36 @@ export default async function LocationsHubEs() {
 
   return (
     <>
-      <header className="relative isolate min-h-[34rem] overflow-hidden bg-ink text-white sm:min-h-[42rem]" aria-labelledby="areas-title">
+      <header className="relative isolate flex min-h-[70svh] items-end overflow-hidden bg-ink text-white sm:min-h-[80svh]" aria-labelledby="areas-title">
         <Image src={hero?.url ?? "/portfolio/kimberly-reception.webp"} alt={hero ? publicPhotoCopy(hero, "Retrato de quinceañera").alt : "Celebración de quinceañera en Dallas–Fort Worth"} fill priority sizes="100vw" className="object-cover" style={hero ? { objectPosition: focal(hero.focus_x, hero.focus_y) } : { objectPosition: "center 60%" }} />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-black/10" aria-hidden="true" />
-        <div className="relative mx-auto flex min-h-[34rem] max-w-[88rem] flex-col justify-between px-5 pb-10 pt-8 sm:min-h-[42rem] sm:px-8 sm:pb-14 lg:px-12">
-          <p className="text-xs uppercase tracking-[0.2em] text-white/90">TX Quince / Dónde trabajamos</p>
-          <div className="max-w-2xl">
-            <p className="text-xs uppercase tracking-[0.2em] text-white/75">Dallas–Fort Worth, Texas</p>
-            <h1 id="areas-title" className="mt-4 max-w-[19ch] font-display text-[clamp(2.25rem,4.5vw,4.25rem)] font-normal leading-[1.06] tracking-[-0.035em]">Su historia, en cualquier lugar del día.</h1>
-            <p className="mt-5 max-w-xl text-base leading-7 text-white/85 sm:text-lg">De la iglesia al salón, fotografiamos y filmamos quinceañeras por todo el metroplex.</p>
-            <a href="#ciudades" className="mt-8 inline-flex min-h-12 items-center gap-4 border-b border-white pb-1 text-base">Encuentra tu ciudad <span aria-hidden="true">↓</span></a>
-          </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-black/10" aria-hidden="true" />
+        <div className="relative mx-auto w-full max-w-[90rem] px-5 pb-12 sm:px-10 sm:pb-16 lg:px-16 lg:pb-20">
+          <p className="text-xs uppercase tracking-[0.24em] text-white/85">TX Quince / Dónde trabajamos</p>
+          <h1 id="areas-title" className="mt-5 max-w-3xl font-display text-[clamp(2.15rem,4vw,4rem)] font-light leading-[1.14]">Por todo Dallas–Fort Worth</h1>
         </div>
       </header>
 
-      <section id="ciudades" className="scroll-mt-24 bg-[#f4f2ee]" aria-labelledby="ciudades-title">
+      <section className="bg-ivory px-5 py-20 sm:px-10 sm:py-28">
+        <div className="mx-auto grid max-w-[78rem] gap-8 lg:grid-cols-[minmax(0,0.42fr)_minmax(0,0.58fr)] lg:gap-20">
+          <p className="text-xs uppercase tracking-[0.2em] text-ink-soft">Fotografiando su día</p>
+          <div><p className="max-w-[29ch] font-display text-[clamp(1.85rem,3vw,3rem)] font-light leading-[1.24] text-ink">De la iglesia al último baile, dondequiera que celebres.</p><p className="mt-6 max-w-xl text-base leading-8 text-ink-soft">Fotografiamos y filmamos quinceañeras por todo Dallas–Fort Worth. Descubre las ciudades donde trabajamos y las celebraciones reales detrás de las imágenes.</p><a href="#ciudades" className="mt-7 inline-flex min-h-12 items-center gap-4 border-b border-ink text-xs uppercase tracking-[0.16em] text-ink">Encuentra tu ciudad <span aria-hidden="true">↓</span></a></div>
+        </div>
+      </section>
+
+      <section id="ciudades" className="scroll-mt-24 bg-white" aria-labelledby="ciudades-title">
         <div className="mx-auto max-w-[88rem] px-5 py-16 sm:px-8 sm:py-20 lg:px-12 lg:py-24">
           <div className="grid gap-8 lg:grid-cols-[minmax(0,0.48fr)_minmax(0,0.52fr)] lg:items-end lg:gap-16">
             <div><p className="text-xs uppercase tracking-[0.18em] text-ink-soft">Explora la zona</p><h2 id="ciudades-title" className="mt-4 max-w-[18ch] font-display text-[clamp(1.875rem,3vw,3rem)] font-normal leading-tight text-ink">Cada ciudad tiene su propia historia.</h2></div>
             <p className="max-w-lg text-base leading-7 text-ink-soft">Elige tu ciudad para ver ideas de retratos, lugares y detalles de la cobertura. La planeación está disponible en español e inglés.</p>
           </div>
-          <ol className="mt-12 grid border-t border-ink/25 lg:mt-16 lg:grid-cols-2 lg:gap-x-14">
+          <ol className="mt-12 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4 lg:gap-x-7">
             {locations.map((location, index) => {
               const image = imageFor(index);
-              return <li key={location.slug} className="min-w-0 border-b border-ink/25">
-                <Link href={"/es/fotografo-de-quinceaneras/" + location.slug} className="group grid min-h-28 grid-cols-[2rem_minmax(0,1fr)_5.5rem] items-center gap-3 py-4 text-ink sm:grid-cols-[2.5rem_minmax(0,1fr)_7rem] sm:gap-5" aria-label={"Ver fotografía de quinceañera en " + location.city}>
-                  <span className="self-start pt-2 text-xs text-ink-faint">0{index + 1}</span>
-                  <span className="min-w-0"><span className="block font-display text-[clamp(1.375rem,2.3vw,2rem)] font-normal leading-tight">{location.city}</span><span className="mt-2 block text-sm leading-5 text-ink-soft">{location.county}</span></span>
-                  <span className="relative block aspect-[4/3] overflow-hidden bg-greige">{image?.url ? <Image src={image.url} alt={publicPhotoCopy(image, "Retrato de quinceañera").alt} fill sizes="(max-width: 640px) 88px, 112px" className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none" style={{ objectPosition: focal(image.focus_x, image.focus_y) }} /> : <span aria-hidden="true" className="flex h-full items-center justify-center text-2xl">↗</span>}</span>
+              return <li key={location.slug} className="min-w-0">
+                <Link href={"/es/fotografo-de-quinceaneras/" + location.slug} className="group block text-ink" aria-label={"Ver fotografía de quinceañera en " + location.city}>
+                  <span className="relative block aspect-[4/5] overflow-hidden bg-greige"><Image src={image?.url ?? fallbackCityPhotos[index]} alt={image ? publicPhotoCopy(image, "Retrato de quinceañera").alt : "Quinceañera fotografiada por TX Quince"} fill unoptimized={!image} sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 25vw" className="object-cover transition-transform duration-700 group-hover:scale-[1.03] motion-reduce:transition-none" style={image ? { objectPosition: focal(image.focus_x, image.focus_y) } : { objectPosition: "center 35%" }} /></span>
+                  <span className="mt-4 flex items-baseline justify-between gap-3 border-b border-ink/25 pb-4"><span className="font-display text-[clamp(1.5rem,2vw,2rem)] font-light leading-tight">{location.city}</span><span className="shrink-0 text-xs uppercase tracking-[0.12em] text-ink-soft">0{index + 1} ↗</span></span>
+                  <span className="mt-2 block text-sm leading-5 text-ink-soft">{location.county}</span>
                 </Link>
               </li>;
             })}

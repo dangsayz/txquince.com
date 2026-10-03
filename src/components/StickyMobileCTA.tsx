@@ -22,12 +22,12 @@ export function StickyMobileCTA() {
   if (HIDE_ON.has(pathname) || pathname.startsWith("/admin")) return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#d8d0c1] bg-[#f8f5ed]/95 px-4 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pt-3 backdrop-blur-md md:hidden">
+    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-white/95 px-5 pb-[calc(env(safe-area-inset-bottom)+0.35rem)] backdrop-blur-md md:hidden">
       <Link
         href={isSpanish ? "/es/consulta" : "/check-your-date"}
-        className="flex min-h-12 w-full items-center justify-between whitespace-nowrap bg-[#29251f] px-5 py-3 text-base font-normal text-white transition-colors hover:bg-[#494033]"
+        className="flex min-h-14 w-full items-center justify-between whitespace-nowrap text-xs font-medium uppercase tracking-[.15em] text-ink"
       >
-        {isSpanish ? "Consulta su fecha" : "Check her date"} <span aria-hidden className="ml-2">↗</span>
+        {isSpanish ? "Consulta su fecha" : "Check her date"} <span aria-hidden className="ml-2 text-lg font-light">↗</span>
       </Link>
     </div>
   );

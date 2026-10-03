@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { site } from "@/content/site";
-import { Badge } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Links",
@@ -20,21 +20,24 @@ const links = [
 
 export default function LinksPage() {
   return (
-    <section className="bg-ivory px-5 py-12 sm:px-6 md:py-20">
-      <div className="mx-auto max-w-lg rounded-xl border border-line bg-white px-5 py-10 text-center shadow-[0_12px_40px_-32px_rgba(0,0,0,.2)] sm:px-10">
-        <Badge>Para siempre</Badge>
-        <h1 className="mt-5 font-display text-[clamp(2rem,5vw,2.75rem)] leading-tight text-ink">{site.brand}</h1>
-        <p className="mx-auto mt-4 max-w-xs text-base leading-7 text-ink-soft">{site.tagline}</p>
-        <nav aria-label="Quick links" className="mt-9 grid gap-3">
-          {links.map((link, index) => (
-            <Link key={link.href} href={link.href} className={`flex min-h-12 items-center justify-between rounded-md border px-4 py-3 text-left text-base font-medium transition-colors ${index === 0 ? "border-ink bg-ink text-white hover:bg-accent-strong" : "border-line bg-white text-ink hover:border-ink"}`}>
+    <section className="bg-white px-5 pb-24 pt-10 sm:px-8 sm:pt-16">
+      <div className="mx-auto max-w-xl">
+        <div className="relative aspect-[4/3] overflow-hidden bg-ink sm:aspect-[16/9]">
+          <Image src="/portfolio/red-garden.webp" alt="Quinceañera in a red gown among garden greenery" fill priority unoptimized sizes="(max-width: 640px) 100vw, 576px" className="object-cover object-[center_35%]" />
+        </div>
+        <p className="mt-10 text-xs uppercase tracking-[0.22em] text-ink-soft">Photography & film / Dallas–Fort Worth</p>
+        <h1 className="mt-4 font-body text-[clamp(2.5rem,5vw,3.5rem)] font-light leading-[1.1] tracking-[-0.04em] text-ink">{site.brand}</h1>
+        <p className="mt-4 font-serif text-lg leading-7 text-ink-soft">{site.tagline}</p>
+        <nav aria-label="Quick links" className="mt-9 border-t border-line">
+          {links.map((link) => (
+            <Link key={link.href} href={link.href} className="flex min-h-16 items-center justify-between border-b border-line py-3 text-left text-base text-ink transition-colors hover:text-ink-soft">
               {link.label}<span aria-hidden="true">↗</span>
             </Link>
           ))}
-          <a href={site.social.instagram} target="_blank" rel="noopener noreferrer" className="flex min-h-12 items-center justify-between rounded-md border border-line px-4 py-3 text-left text-base font-medium text-ink transition-colors hover:border-ink">Follow on Instagram<span aria-hidden="true">↗</span></a>
-          <a href={`mailto:${site.contact.email}`} className="flex min-h-12 items-center justify-between rounded-md border border-line px-4 py-3 text-left text-base font-medium text-ink transition-colors hover:border-ink">Email me<span aria-hidden="true">↗</span></a>
+          <a href={site.social.instagram} target="_blank" rel="noopener noreferrer" className="flex min-h-16 items-center justify-between border-b border-line py-3 text-base text-ink transition-colors hover:text-ink-soft">Follow on Instagram<span aria-hidden="true">↗</span></a>
+          <a href={`mailto:${site.contact.email}`} className="flex min-h-16 items-center justify-between border-b border-line py-3 text-base text-ink transition-colors hover:text-ink-soft">Email us<span aria-hidden="true">↗</span></a>
         </nav>
-        <p className="mt-9 text-xs text-ink-faint">Dallas–Fort Worth, Texas</p>
+        <p className="mt-9 text-xs uppercase tracking-[0.16em] text-ink-soft">Dallas–Fort Worth, Texas</p>
       </div>
     </section>
   );

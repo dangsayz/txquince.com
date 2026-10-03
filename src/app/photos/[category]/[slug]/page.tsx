@@ -128,14 +128,14 @@ export default async function PhotoPage({
           <span>{label} <span aria-hidden="true">/</span> TX Quince</span>
         </div>
 
-        <header className="mx-4 bg-cream px-5 py-16 text-center sm:mx-6 md:mx-10 md:py-20 lg:mx-auto lg:max-w-[92rem]">
+        <header className="mx-4 border-t border-line bg-white px-5 py-12 text-center sm:mx-6 md:mx-10 md:py-16 lg:mx-auto lg:max-w-[92rem]">
           <p className="text-[0.6875rem] font-medium uppercase tracking-[0.28em] text-ink-soft">{label}</p>
-          <h1 className="mx-auto mt-5 max-w-[50rem] font-body text-[clamp(2.25rem,4.5vw,3.75rem)] font-light leading-[1.12] tracking-[-0.04em] text-ink">{copy.title}</h1>
+          <h1 className="mx-auto mt-5 max-w-[50rem] font-body text-[clamp(2rem,4vw,3.25rem)] font-light leading-[1.12] tracking-[-0.03em] text-ink">{copy.title}</h1>
           <p className="mt-5 text-[0.6875rem] font-medium uppercase tracking-[0.18em] text-ink-soft">Photography by {site.brand}</p>
         </header>
 
         <figure className="mx-auto max-w-[92rem] bg-white px-4 pt-6 sm:px-6 md:px-10 md:pt-10 lg:px-14">
-          <div className="relative flex min-h-[40svh] items-center justify-center bg-cream p-3 sm:p-8 lg:min-h-[65svh] lg:p-12">
+          <div className="relative flex min-h-[40svh] items-center justify-center bg-[#f5f4f0] p-3 sm:p-8 lg:min-h-[65svh] lg:p-12">
             <ProtectedImg
               src={at(img.url, 1920)}
               alt={copy.alt}

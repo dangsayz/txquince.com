@@ -21,7 +21,7 @@ export type BlogImage = {
  */
 const LINK_RE = /\[([^\]]+)\]\(([^)]+)\)/g;
 const linkClass =
-  "text-accent underline decoration-accent/40 underline-offset-[3px] transition-colors hover:text-accent-strong hover:decoration-accent-strong";
+  "text-ink underline decoration-ink/40 underline-offset-[3px] transition-colors hover:decoration-ink";
 
 function renderInline(text: string): ReactNode[] {
   const nodes: ReactNode[] = [];
@@ -69,7 +69,7 @@ export function BlogContent({
               <h2
                 key={i}
                 id={slugifyHeading(b.text)}
-                className="mt-8 scroll-mt-28 font-display text-ink"
+                className="mt-8 scroll-mt-28 font-body font-light text-ink"
                 style={{ fontSize: "clamp(1.9rem,3.4vw,2.5rem)", lineHeight: 1.08, letterSpacing: "-0.015em" }}
               >
                 {b.text}
@@ -77,7 +77,7 @@ export function BlogContent({
             );
           case "h3":
             return (
-              <h3 key={i} className="mt-3 font-display text-2xl leading-snug text-ink">
+              <h3 key={i} className="mt-3 font-body text-2xl font-light leading-snug text-ink">
                 {b.text}
               </h3>
             );
@@ -92,7 +92,7 @@ export function BlogContent({
               <ul key={i} className="flex flex-col gap-3">
                 {b.items.map((it, j) => (
                   <li key={j} className={`flex gap-3.5 ${proseText}`}>
-                    <span aria-hidden className="mt-[0.7em] h-1 w-1 shrink-0 rounded-full bg-accent" />
+                    <span aria-hidden className="mt-[0.7em] h-1 w-1 shrink-0 rounded-full bg-ink" />
                     <span>{renderInline(it)}</span>
                   </li>
                 ))}
@@ -103,7 +103,7 @@ export function BlogContent({
               <ol key={i} className="flex flex-col gap-3">
                 {b.items.map((it, j) => (
                   <li key={j} className={`flex gap-3.5 ${proseText}`}>
-                    <span className="shrink-0 font-display text-lg leading-[1.4] text-accent tabular-nums">
+                    <span className="shrink-0 font-body text-lg font-light leading-[1.4] text-ink-soft tabular-nums">
                       {j + 1}.
                     </span>
                     <span>{renderInline(it)}</span>
@@ -115,7 +115,7 @@ export function BlogContent({
             return (
               <blockquote
                 key={i}
-                className="my-2 border-l-2 border-accent pl-6 font-display italic leading-snug text-ink"
+                className="my-2 border-l border-ink/40 pl-6 font-serif italic leading-snug text-ink"
                 style={{ fontSize: "clamp(1.4rem,2.6vw,1.9rem)", letterSpacing: "-0.01em" }}
               >
                 {renderInline(b.text)}
@@ -125,7 +125,7 @@ export function BlogContent({
             return (
               <aside
                 key={i}
-                className="my-2 border-l-2 border-accent/40 py-1 pl-6 text-[1.0625rem] leading-[1.75] text-ink"
+                className="my-2 border-l border-ink/25 py-1 pl-6 text-[1.0625rem] leading-[1.75] text-ink"
               >
                 {renderInline(b.text)}
               </aside>
@@ -160,13 +160,13 @@ export function BlogContent({
                 key={i}
                 className="my-6 border-y border-ink/10 py-10 text-center md:py-12"
               >
-                <p className="mx-auto max-w-lg font-display text-2xl text-ink text-balance md:text-[1.8rem]">
+                <p className="mx-auto max-w-lg font-body text-2xl font-light text-ink text-balance md:text-[1.8rem]">
                   {b.heading}
                 </p>
                 {b.body ? (
                   <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-ink-soft">{b.body}</p>
                 ) : null}
-                <Link href={b.href} className="btn-espresso mt-6 inline-flex">
+                <Link href={b.href} className="mt-6 inline-flex min-h-12 items-center justify-center bg-ink px-6 text-base text-white hover:bg-ink/85">
                   {b.label}
                 </Link>
               </div>

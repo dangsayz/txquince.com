@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { packages } from "@/content/packages";
 
 const copy = {
@@ -51,13 +52,17 @@ export function PaymentPlansPage({ locale }: { locale: "en" | "es" }) {
   const inquiry = locale === "es" ? "/es/consulta" : "/check-your-date";
   return (
     <>
-      <header className="bg-[#f4f2ee]">
-        <div className="mx-auto grid max-w-[90rem] gap-8 px-5 py-16 sm:px-10 sm:py-20 lg:grid-cols-[minmax(0,0.35fr)_minmax(0,0.65fr)] lg:gap-14 lg:px-16 lg:py-24">
-          <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">{c.eyebrow}</p>
+      <header className="bg-white">
+        <div className="relative min-h-[25rem] overflow-hidden bg-ink sm:min-h-[36rem]">
+          <Image src="/portfolio/shoe-ceremony.webp" alt={locale === "es" ? "Quinceañera en el salón de su celebración" : "Quinceañera portrait inside her celebration venue"} fill priority unoptimized sizes="100vw" className="object-cover object-[center_53%]" />
+          <div className="absolute inset-0 bg-black/25" aria-hidden="true" />
+        </div>
+        <div className="mx-auto grid max-w-[90rem] gap-8 px-5 py-16 sm:px-10 sm:py-20 lg:grid-cols-[minmax(0,.38fr)_minmax(0,.62fr)] lg:gap-14 lg:px-16">
+          <p className="text-[.7rem] uppercase tracking-[.2em] text-ink-soft">{c.eyebrow}</p>
           <div>
-            <h1 className="max-w-[20ch] font-display text-[clamp(2.125rem,3.6vw,3.5rem)] font-normal leading-[1.1] tracking-[-0.03em] text-ink">{c.title}</h1>
-            <p className="mt-5 max-w-xl text-base leading-7 text-ink-soft">{c.intro}</p>
-            <Link href={inquiry} className="mt-7 inline-flex min-h-12 items-center gap-5 bg-ink px-6 text-sm font-medium text-white hover:bg-ink-soft">{c.cta}<span aria-hidden="true">↗</span></Link>
+            <h1 className="max-w-[20ch] font-display text-[clamp(2.1rem,3.2vw,3.2rem)] font-light leading-[1.15] tracking-[-.03em] text-ink">{c.title}</h1>
+            <p className="mt-6 max-w-xl font-serif text-lg leading-8 text-ink-soft">{c.intro}</p>
+            <Link href={inquiry} className="mt-8 inline-flex min-h-12 items-center gap-8 border-b border-ink text-xs uppercase tracking-[.14em] text-ink">{c.cta}<span aria-hidden="true">↗</span></Link>
             <p className="mt-3 text-sm text-ink-soft">{c.small}</p>
           </div>
         </div>
@@ -75,7 +80,7 @@ export function PaymentPlansPage({ locale }: { locale: "en" | "es" }) {
         </div>
       </section>
 
-      <section className="bg-[#f4f2ee]" aria-labelledby="deposits-heading">
+      <section className="bg-ivory" aria-labelledby="deposits-heading">
         <div className="mx-auto grid max-w-[90rem] gap-8 px-5 py-16 sm:px-10 sm:py-20 lg:grid-cols-[minmax(0,0.35fr)_minmax(0,0.65fr)] lg:gap-14 lg:px-16">
           <div>
             <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">02 / {locale === "es" ? "Las colecciones" : "The collections"}</p>

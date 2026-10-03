@@ -225,33 +225,31 @@ export default async function CityPageEs({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <header className="relative isolate min-h-[35rem] overflow-hidden bg-ink text-white sm:min-h-[43rem]" aria-labelledby="city-title">
+      <header className="relative isolate min-h-[70svh] overflow-hidden bg-ink text-white sm:min-h-[80svh]" aria-labelledby="city-title">
         <Image src={hero?.url ?? "/portfolio/kimberly-reception.webp"} alt={isCityWork ? `Fotografía de quinceañera en ${loc.city}, TX` : "Celebración de quinceañera en Dallas–Fort Worth"} fill priority sizes="100vw" unoptimized={(hero?.url ?? "").startsWith("/portfolio/")} className="object-cover" style={{ objectPosition: `${hero?.focus_x != null ? Math.round(hero.focus_x * 100) : 50}% ${hero?.focus_y != null ? Math.round(hero.focus_y * 100) : 38}%` }} />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/30" aria-hidden="true" />
-        <div className="relative mx-auto flex min-h-[35rem] max-w-[88rem] flex-col justify-between px-5 pb-10 pt-6 sm:min-h-[43rem] sm:px-8 sm:pb-14 lg:px-12">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-black/10" aria-hidden="true" />
+        <div className="relative mx-auto flex min-h-[70svh] max-w-[90rem] flex-col justify-between px-5 pb-12 pt-5 sm:min-h-[80svh] sm:px-10 sm:pb-16 lg:px-16 lg:pb-20">
           <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 text-xs text-white/85">
             <Link href="/es" className="inline-flex min-h-11 items-center underline underline-offset-4">Inicio</Link><span aria-hidden="true">/</span>
             <Link href="/es/fotografo-de-quinceaneras" className="inline-flex min-h-11 items-center underline underline-offset-4">Áreas</Link><span aria-hidden="true">/</span>
             <span>{loc.city}</span>
           </nav>
-          <div className="max-w-2xl">
-            <p className="text-xs uppercase tracking-[0.18em] text-white/80">Fotografía y video de quinceañeras / {loc.city}, TX</p>
-            <h1 id="city-title" className="mt-4 max-w-[20ch] font-display text-[clamp(2.25rem,4.5vw,4.25rem)] font-normal leading-[1.06] tracking-[-0.035em]">Fotografía de quinceañeras en {loc.city}.</h1>
-            <p className="mt-5 max-w-xl text-base leading-7 text-white/85">{loc.leadEs}</p>
-            <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3">
-              <Link href="/es/consulta" className="inline-flex min-h-12 items-center gap-4 bg-white px-6 text-base font-medium text-ink">Consultar su fecha <span aria-hidden="true">↗</span></Link>
-              <Link href={`/quinceanera-photographer/${loc.slug}`} hrefLang="en" className="inline-flex min-h-11 items-center border-b border-white text-base">Read in English ↗</Link>
-            </div>
+          <div className="max-w-3xl">
+            <p className="text-xs uppercase tracking-[0.22em] text-white/85">Fotografía y video de quinceañeras / {loc.city}, TX</p>
+            <h1 id="city-title" className="mt-5 max-w-[22ch] font-display text-[clamp(2.15rem,4vw,4rem)] font-light leading-[1.14]">Fotografía de quinceañeras en {loc.city}</h1>
           </div>
         </div>
       </header>
 
-      {/* Intro local */}
-      <section className="mx-auto grid max-w-[88rem] gap-8 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-[minmax(0,0.38fr)_minmax(0,0.62fr)] lg:gap-16 lg:px-12" aria-labelledby="city-story-title">
-        <div><p className="text-xs uppercase tracking-[0.18em] text-ink-soft">En {loc.city}</p><h2 id="city-story-title" className="mt-4 font-display text-[clamp(1.75rem,2.6vw,2.4rem)] font-normal leading-tight text-ink">Un lugar para su historia.</h2></div>
-        <div className="space-y-5 text-base leading-7 text-ink-soft">
+      <section className="bg-ivory px-5 py-20 sm:px-10 sm:py-28" aria-labelledby="city-story-title">
+        <div className="mx-auto grid max-w-[78rem] gap-8 lg:grid-cols-[minmax(0,0.4fr)_minmax(0,0.6fr)] lg:gap-20">
+        <div><p className="text-xs uppercase tracking-[0.2em] text-ink-soft">En {loc.city}</p><h2 id="city-story-title" className="mt-5 max-w-[19ch] font-display text-[clamp(1.85rem,3vw,3rem)] font-light leading-[1.2] text-ink">Un lugar para su historia.</h2></div>
+        <div className="max-w-2xl space-y-6 text-base leading-8 text-ink-soft">
+          <p>{loc.leadEs}</p>
           {(content?.introEs.slice(0, 2) ?? loc.introEs.slice(0, 1)).map((para) => <p key={para.slice(0, 24)}>{para}</p>)}
           <p>Cubrimos {loc.areas.slice(0, -1).join(", ")}{loc.areas.length > 1 ? ` y ${loc.areas[loc.areas.length - 1]}` : loc.areas[0]}.</p>
+          <div className="flex flex-wrap items-center gap-x-8 gap-y-3"><Link href="/es/consulta" className="inline-flex min-h-12 items-center gap-4 border-b border-ink text-xs uppercase tracking-[0.15em] text-ink">Consultar su fecha <span aria-hidden="true">↗</span></Link><Link href={`/quinceanera-photographer/${loc.slug}`} hrefLang="en" className="inline-flex min-h-12 items-center border-b border-ink text-xs uppercase tracking-[0.15em] text-ink">Read in English ↗</Link></div>
+        </div>
         </div>
       </section>
 
@@ -418,14 +416,14 @@ export default async function CityPageEs({
               <Link
                 key={v.slug}
                 href={`/venues/${v.slug}`}
-                className="inline-flex min-h-11 items-center rounded-md border border-line bg-white px-4 text-base text-ink transition-colors hover:border-ink"
+                className="inline-flex min-h-11 items-center border-b border-line text-base text-ink transition-colors hover:border-ink"
               >
                 {v.venue}
               </Link>
             ))}
             <Link
               href="/venues"
-              className="inline-flex min-h-11 items-center rounded-md border border-ink px-4 text-base text-ink transition-colors hover:bg-ink hover:text-white"
+              className="inline-flex min-h-11 items-center border-b border-line text-base text-ink transition-colors hover:border-ink"
             >
               Todas las sedes →
             </Link>
@@ -442,7 +440,7 @@ export default async function CityPageEs({
               <Link
                 key={n.slug}
                 href={`/es/fotografo-de-quinceaneras/${n.slug}`}
-                className="inline-flex min-h-11 items-center rounded-md border border-line bg-white px-4 text-base text-ink transition-colors hover:border-ink"
+                className="inline-flex min-h-11 items-center border-b border-line text-base text-ink transition-colors hover:border-ink"
               >
                 Fotógrafo de quinceañeras en {n.city}
               </Link>
@@ -451,12 +449,6 @@ export default async function CityPageEs({
         </div>
       </section>
 
-      <section className="bg-ink text-white" aria-labelledby="city-next-title">
-        <div className="mx-auto flex max-w-[88rem] flex-col gap-8 px-5 py-14 sm:px-8 md:flex-row md:items-end md:justify-between lg:px-12">
-          <div><p className="text-xs uppercase tracking-[0.18em] text-white/70">El siguiente paso</p><h2 id="city-next-title" className="mt-3 max-w-2xl font-display text-[clamp(1.75rem,2.7vw,2.5rem)] font-normal leading-tight">¿Ya tienes una fecha en mente?</h2><p className="mt-3 max-w-xl text-base leading-7 text-white/80">Dinos cuándo y dónde será. Confirmaremos disponibilidad antes de pedir un depósito.</p></div>
-          <Link href="/es/consulta" className="inline-flex min-h-12 items-center justify-between gap-8 self-start whitespace-nowrap border border-white px-6 text-base text-white">Consultar fecha <span aria-hidden="true">↗</span></Link>
-        </div>
-      </section>
     </>
   );
 }

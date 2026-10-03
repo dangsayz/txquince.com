@@ -110,20 +110,21 @@ export default async function SaveTheDatePageEs() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replaceAll("<", "\\u003c") }}
       />
 
-      <header className="relative isolate flex min-h-[38rem] items-end overflow-hidden bg-ink text-white sm:min-h-[44rem]" aria-labelledby="save-date-title-es">
-        {hero?.url ? <Image src={hero.url} alt={publicPhotoCopy(hero, "Retrato Save-the-Date de quinceañera").alt} fill priority sizes="100vw" className="object-cover" style={{ objectPosition: focal(hero.focus_x, hero.focus_y) }} /> : null}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/10" aria-hidden="true" />
-        <div className="relative mx-auto w-full max-w-[90rem] px-5 pb-12 pt-36 sm:px-10 sm:pb-16 lg:px-16">
-          <p className="text-xs font-medium uppercase tracking-[0.16em] text-white/85">Save-the-Date / Dallas–Fort Worth</p>
-          <h1 id="save-date-title-es" className="mt-5 max-w-[23ch] font-body text-[clamp(2rem,3.8vw,3.5rem)] font-normal leading-[1.12] tracking-[-0.035em]">Sus primeros retratos antes de la celebración.</h1>
-          <p className="mt-5 max-w-xl text-base leading-7 text-white/90">Una sesión tranquila para las invitaciones, el cuadro de firmas y para conocer a tu fotógrafo. Incluida con Essential, Signature y Legacy.</p>
-          <Link href="/es/consulta" className="mt-7 inline-flex min-h-12 items-center justify-between gap-6 whitespace-nowrap bg-white px-5 text-base font-medium text-ink transition-colors hover:bg-greige focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Consultar su fecha <span aria-hidden="true">↗</span></Link>
+      <header className="relative isolate flex min-h-[70svh] items-end overflow-hidden bg-ink text-white sm:min-h-[80svh]" aria-labelledby="save-date-title-es">
+        <Image src={hero?.url ?? "/portfolio/save-date.webp"} alt={hero ? publicPhotoCopy(hero, "Retrato Save-the-Date de quinceañera").alt : "Retrato Save-the-Date de quinceañera"} fill unoptimized={!hero} priority sizes="100vw" className="object-cover" style={{ objectPosition: focal(hero?.focus_x, hero?.focus_y) }} />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-black/10" aria-hidden="true" />
+        <div className="relative mx-auto w-full max-w-[90rem] px-5 pb-12 sm:px-10 sm:pb-16 lg:px-16 lg:pb-20">
+          <p className="text-xs uppercase tracking-[0.24em] text-white/85">Save-the-Date / Dallas–Fort Worth</p>
+          <h1 id="save-date-title-es" className="mt-5 max-w-[23ch] font-display text-[clamp(2.15rem,4vw,4rem)] font-light leading-[1.14]">Sus primeros retratos antes de la celebración</h1>
         </div>
       </header>
-      <div className="mx-auto flex max-w-[90rem] flex-wrap items-center justify-between gap-4 px-5 py-5 text-sm text-ink-soft sm:px-10 lg:px-16">
-        <span>Sesión Save-the-Date · Dallas–Fort Worth</span>
-        <Link href="/quinceanera-save-the-date" hrefLang="en" className="inline-flex min-h-11 items-center underline underline-offset-4">View this page in English ↗</Link>
-      </div>
+
+      <section className="bg-ivory px-5 py-20 sm:px-10 sm:py-28">
+        <div className="mx-auto grid max-w-[78rem] gap-8 lg:grid-cols-[minmax(0,0.42fr)_minmax(0,0.58fr)] lg:gap-20">
+          <p className="text-xs uppercase tracking-[0.2em] text-ink-soft">La sesión de retratos</p>
+          <div><p className="max-w-[29ch] font-display text-[clamp(1.85rem,3vw,3rem)] font-light leading-[1.24] text-ink">Un momento solo para ella, antes de la celebración.</p><p className="mt-6 max-w-xl text-base leading-8 text-ink-soft">Una sesión tranquila para las invitaciones, el cuadro de firmas y para conocer a tu fotógrafo. Incluida con Essential, Signature y Legacy.</p><div className="mt-7 flex flex-wrap gap-x-8 gap-y-3"><Link href="/es/consulta" className="inline-flex min-h-12 items-center gap-4 border-b border-ink text-xs uppercase tracking-[0.16em] text-ink">Consultar su fecha <span aria-hidden="true">↗</span></Link><Link href="/quinceanera-save-the-date" hrefLang="en" className="inline-flex min-h-12 items-center border-b border-ink text-xs uppercase tracking-[0.16em] text-ink">View in English ↗</Link></div></div>
+        </div>
+      </section>
 
       <section className="mx-auto grid max-w-[90rem] gap-8 px-5 py-16 md:px-10 md:py-20 lg:grid-cols-[minmax(0,0.3fr)_minmax(0,0.7fr)] lg:gap-16 lg:px-16">
         <p className="text-xs font-medium uppercase tracking-[0.14em] text-ink-soft">La sesión / 01</p>

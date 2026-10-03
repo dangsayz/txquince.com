@@ -39,39 +39,48 @@ export default async function PaquetesPage() {
   const hero = await getPageHero("investment");
   return (
     <>
-      <section aria-labelledby="paquetes-heading" className="bg-white px-5 pb-20 pt-20 text-center sm:px-8 sm:pb-28 sm:pt-28 lg:pb-36 lg:pt-36">
-        <p className="text-xs uppercase tracking-[0.26em] text-ink-soft">Fotografía y video de quinceañera · Dallas–Fort Worth</p>
-        <h1 id="paquetes-heading" className="mx-auto mt-7 max-w-[20ch] font-display text-[clamp(2.25rem,4vw,3.75rem)] font-light leading-[1.13] text-ink">Su quinceañera, en foto y video.</h1>
-        <p className="mx-auto mt-8 max-w-2xl text-base leading-8 text-ink-soft">Cuatro formas de recordar los retratos, las tradiciones y a todas las personas que celebraron con ella. Aquí puedes ver precios y detalles antes de escribirnos.</p>
-        <Link href="#colecciones" className="mt-9 inline-flex min-h-12 items-center justify-center gap-4 whitespace-nowrap border-b border-ink px-1 text-sm uppercase tracking-[0.15em] text-ink">Ver colecciones <span aria-hidden="true">↓</span></Link>
+      <header aria-labelledby="paquetes-heading" className="relative isolate flex min-h-[70svh] items-end overflow-hidden bg-ink text-white sm:min-h-[80svh]">
+        <Image src={hero?.url ?? "/portfolio/red-garden.webp"} alt={hero?.alt || "Retrato de quinceañera en Dallas–Fort Worth"} fill priority unoptimized={!hero} sizes="100vw" className="object-cover" style={{ objectPosition: hero ? `${Math.round((hero.focus_x ?? 0.5) * 100)}% ${Math.round((hero.focus_y ?? 0.5) * 100)}%` : "center 36%" }} />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/5 to-black/10" aria-hidden="true" />
+        <div className="relative mx-auto w-full max-w-[90rem] px-5 pb-12 sm:px-10 sm:pb-16 lg:px-16 lg:pb-20">
+          <p className="text-xs uppercase tracking-[0.25em] text-white/85">Fotografía y video · Dallas–Fort Worth</p>
+          <h1 id="paquetes-heading" className="mt-5 max-w-[24ch] font-display text-[clamp(2.15rem,4vw,4rem)] font-light leading-[1.14]">Servicios e inversión</h1>
+        </div>
+      </header>
+
+      <section className="bg-ivory px-5 py-20 sm:px-10 sm:py-28">
+        <div className="mx-auto grid max-w-[78rem] gap-9 lg:grid-cols-[minmax(0,0.43fr)_minmax(0,0.57fr)] lg:gap-20">
+          <p className="text-xs uppercase tracking-[0.2em] text-ink-soft">Las colecciones</p>
+          <div><p className="max-w-[27ch] font-display text-[clamp(1.8rem,3vw,3rem)] font-light leading-[1.25] text-ink">Su quinceañera, en foto y video.</p><p className="mt-6 max-w-xl text-base leading-8 text-ink-soft">Cuatro formas de recordar los retratos, las tradiciones y a todas las personas que celebraron con ella. Aquí puedes ver precios y detalles antes de escribirnos.</p><Link href="#colecciones" className="mt-7 inline-flex min-h-12 items-center gap-4 border-b border-ink text-xs uppercase tracking-[0.16em] text-ink">Ver colecciones <span aria-hidden="true">↓</span></Link></div>
+        </div>
       </section>
 
-      <section id="colecciones" aria-label="Colecciones de fotografía y video" className="scroll-mt-20">
+      <section id="colecciones" aria-label="Colecciones de fotografía y video" className="scroll-mt-20 bg-white px-5 py-20 sm:px-10 sm:py-28">
+        <div className="mx-auto max-w-[84rem] space-y-24 lg:space-y-36">
         {packages.map((collection, index) => {
           const photo = photographs[index];
           const reversed = index % 2 === 1;
-          const src = index === 0 ? (hero?.url ?? photo.src) : photo.src;
-          const position = index === 0 && hero
-            ? String(Math.round((hero.focus_x ?? 0.5) * 100)) + "% " + String(Math.round((hero.focus_y ?? 0.5) * 100)) + "%"
-            : photo.position;
+          const src = photo.src;
+          const position = photo.position;
           return (
-            <article key={collection.id} id={collection.id} className="scroll-mt-20 grid bg-ivory lg:min-h-[42rem] lg:grid-cols-2">
-              <div className={"relative min-h-0 aspect-[4/5] overflow-hidden bg-greige sm:aspect-[6/5] lg:aspect-auto " + (reversed ? "lg:order-2" : "")}>
-                <Image src={src} alt={index === 0 ? (hero?.alt || photo.alt) : photo.alt} fill unoptimized={src.startsWith("/portfolio/")} sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" style={{ objectPosition: position }} priority={index === 0} />
+            <article key={collection.id} id={collection.id} className="scroll-mt-20 grid gap-9 lg:grid-cols-[minmax(0,0.47fr)_minmax(0,0.53fr)] lg:items-center lg:gap-[clamp(3rem,8vw,9rem)]">
+              <div className={"relative aspect-[4/5] overflow-hidden bg-greige " + (reversed ? "lg:order-2" : "")}>
+                <Image src={src} alt={photo.alt} fill unoptimized sizes="(max-width: 1024px) 100vw, 45vw" className="object-cover" style={{ objectPosition: position }} />
               </div>
-              <div className={"flex min-w-0 flex-col justify-center px-6 py-14 sm:px-12 sm:py-20 lg:px-[clamp(3rem,6vw,7rem)] " + (reversed ? "lg:order-1" : "")}>
+              <div className={"flex min-w-0 flex-col justify-center " + (reversed ? "lg:order-1" : "")}>
                 <p className="text-xs uppercase tracking-[0.24em] text-ink-soft">Colección 0{index + 1} / 04</p>
-                <h2 className="mt-6 font-display text-[clamp(2.25rem,3.4vw,3.5rem)] font-light leading-[1.1] text-ink">{collection.name}</h2>
+                <div className="mt-5 flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2"><h2 className="font-display text-[clamp(2rem,3vw,3rem)] font-light leading-[1.15] text-ink">{collection.name}</h2><p className="text-xl text-ink">{collection.priceLabel}</p></div>
                 <p className="mt-6 max-w-xl text-base leading-8 text-ink-soft">{descriptions[collection.id]}</p>
-                <div className="mt-10 grid gap-8 border-t border-line pt-8 sm:grid-cols-2">
+                <div className="mt-9 grid gap-8 border-t border-line pt-7 sm:grid-cols-2">
                   <div><p className="text-xs uppercase tracking-[0.2em] text-ink-soft">Incluye</p><ul className="mt-5 space-y-3">{inclusions[collection.id].map((item) => <li key={item} className="text-sm leading-6 text-ink">{item}</li>)}</ul></div>
-                  <div><p className="text-xs uppercase tracking-[0.2em] text-ink-soft">Precio de la colección</p><p className="mt-5 font-display text-[clamp(1.75rem,2.2vw,2.5rem)] font-light leading-none text-ink">{collection.priceLabel}</p><p className="mt-4 text-sm leading-6 text-ink-soft">Depósito de {collection.depositLabel} después de confirmar su fecha. Se descuenta del total.</p></div>
+                  <div><p className="text-xs uppercase tracking-[0.2em] text-ink-soft">Depósito</p><p className="mt-5 text-sm leading-6 text-ink-soft">{collection.depositLabel} después de confirmar su fecha. Se descuenta del total.</p></div>
                 </div>
-                <Link href="/es/consulta" className="mt-10 inline-flex min-h-12 w-fit items-center justify-center gap-6 whitespace-nowrap bg-ink px-6 text-xs uppercase tracking-[0.17em] text-white transition-colors hover:bg-accent-strong">Consultar {collection.name} <span aria-hidden="true">↗</span></Link>
+                <Link href="/es/consulta" className="mt-9 inline-flex min-h-12 w-fit items-center gap-6 border-b border-ink text-xs uppercase tracking-[0.17em] text-ink">Consultar {collection.name} <span aria-hidden="true">↗</span></Link>
               </div>
             </article>
           );
         })}
+        </div>
       </section>
 
       <section aria-labelledby="proceso-heading" className="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28 lg:px-12 lg:py-36">
@@ -80,12 +89,6 @@ export default async function PaquetesPage() {
         <p className="mt-14 border-t border-line pt-6 text-base leading-7 text-ink-soft">Puedes pagar el saldo por etapas. <Link href="/es/planes-de-pago" className="text-ink underline underline-offset-4">Conoce los planes de pago ↗</Link></p>
       </section>
 
-      <section aria-labelledby="paquetes-next-heading" className="bg-ink px-5 py-20 text-center text-white sm:px-8 sm:py-28">
-        <p className="text-xs uppercase tracking-[0.24em] text-white/70">El siguiente paso</p>
-        <h2 id="paquetes-next-heading" className="mx-auto mt-5 max-w-3xl font-display text-[clamp(2rem,3.5vw,3.25rem)] font-light leading-tight">Todo empieza con su fecha.</h2>
-        <p className="mx-auto mt-6 max-w-xl text-base leading-8 text-white/80">Cuéntanos cuándo y dónde será la celebración. Confirmamos la disponibilidad antes de pedir un depósito.</p>
-        <Link href="/es/consulta" className="mt-8 inline-flex min-h-12 items-center justify-center gap-6 whitespace-nowrap border border-white px-6 text-xs uppercase tracking-[0.17em] text-white">Consultar fecha <span aria-hidden="true">↗</span></Link>
-      </section>
     </>
   );
 }

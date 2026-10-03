@@ -40,31 +40,25 @@ export default async function AboutPage() {
 
   return (
     <>
-      <section aria-labelledby="about-title" className="bg-white px-4 pb-16 pt-5 sm:px-8 sm:pb-24 sm:pt-8 lg:px-12">
-        <div className="mx-auto grid max-w-[96rem] bg-[#f2efe7] lg:min-h-[44rem] lg:grid-cols-[minmax(0,0.54fr)_minmax(0,0.46fr)]">
-          <div className="flex flex-col justify-between px-6 pb-10 pt-12 sm:px-12 sm:pb-14 sm:pt-16 lg:px-16 lg:py-20">
-            <p className="text-xs uppercase tracking-[0.23em] text-ink-soft">01 / The studio</p>
-            <div className="mt-24 max-w-[36rem] lg:mt-12">
-              <h1 id="about-title" className="font-display text-[clamp(2.3rem,4.2vw,4.25rem)] font-light leading-[1.08] tracking-[-0.025em] text-ink">About TX Quince.</h1>
-              <p className="mt-6 max-w-md text-base leading-[1.8] text-ink-soft">Quinceañera photography and film across Dallas–Fort Worth, centered on the people and traditions that make each celebration her own.</p>
-              <Link href="/portfolio" className="mt-9 inline-flex min-h-12 items-center gap-7 border-b border-ink text-xs font-medium uppercase tracking-[0.14em] text-ink transition-colors hover:text-ink-soft">View the work <span aria-hidden="true">↗</span></Link>
-            </div>
-            <p className="mt-14 text-xs uppercase tracking-[0.2em] text-ink-soft">Photography / film / family</p>
-          </div>
-          <figure className="relative min-h-[28rem] bg-greige sm:min-h-[36rem] lg:min-h-full">
-            <Image src={hero?.url ?? "/portfolio/hero.webp"} alt={hero?.alt || "Quinceañera portrait in Dallas–Fort Worth"} fill unoptimized={!hero} priority sizes="(max-width: 1023px) 100vw, 46vw" className="object-cover" style={{ objectPosition: hero ? focal(hero.focus_x, hero.focus_y) : "center 58%" }} />
-            <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/45 to-transparent px-6 pb-5 pt-16 text-xs uppercase tracking-[0.2em] text-white sm:px-10">Dallas–Fort Worth / TX Quince</figcaption>
-          </figure>
+      <header aria-labelledby="about-title" className="relative isolate flex min-h-[72svh] items-end overflow-hidden bg-ink text-white sm:min-h-[82svh]">
+        <Image src={hero?.url ?? "/portfolio/stockyards.webp"} alt={hero?.alt || "Quinceañera portrait in Dallas–Fort Worth"} fill unoptimized={!hero} priority sizes="100vw" className="object-cover" style={{ objectPosition: hero ? focal(hero.focus_x, hero.focus_y) : "center 58%" }} />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/5 to-black/10" aria-hidden="true" />
+        <div className="relative mx-auto w-full max-w-[96rem] px-5 pb-12 sm:px-10 sm:pb-16 lg:px-16 lg:pb-20">
+          <p className="text-[0.68rem] uppercase tracking-[0.26em] text-white/85">The studio · Dallas–Fort Worth</p>
+          <h1 id="about-title" className="mt-5 max-w-3xl font-display text-[clamp(2.2rem,4vw,4rem)] font-light leading-[1.13] tracking-[0.01em]">About TX Quince</h1>
+          <p className="mt-5 max-w-lg text-base leading-7 text-white/90">Quinceañera photography and film centered on the people and traditions that make each celebration her own.</p>
+        </div>
+      </header>
+
+      <section className="bg-ivory px-5 py-20 sm:px-10 sm:py-28 lg:py-36">
+        <div className="mx-auto grid max-w-[78rem] gap-10 lg:grid-cols-[minmax(0,0.4fr)_minmax(0,0.6fr)] lg:gap-24">
+          <p className="text-xs uppercase tracking-[0.22em] text-ink-soft">What stays with you</p>
+          <div><p className="max-w-[26ch] font-display text-[clamp(1.9rem,3vw,3rem)] font-light leading-[1.25] text-ink">A celebration has a rhythm of its own. We make room for every part of it.</p><Link href="/portfolio" className="mt-8 inline-flex min-h-12 items-center gap-5 border-b border-ink text-xs uppercase tracking-[0.17em] text-ink">View the work <span aria-hidden="true">↗</span></Link></div>
         </div>
       </section>
 
-      <section aria-labelledby="story-title" className="border-t border-line bg-white">
-        <div className="mx-auto grid max-w-[88rem] gap-10 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-center lg:gap-20 lg:px-12">
-          <div className="max-w-xl">
-            <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">What guides the work</p>
-            <h2 id="story-title" className="mt-4 max-w-[18ch] font-display text-[clamp(1.75rem,2.7vw,2.5rem)] font-normal leading-tight text-ink">Present for the moments you planned. Ready for the ones you didn&apos;t.</h2>
-            <div className="mt-6 space-y-5 text-base leading-7 text-ink-soft">{about.story.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>
-          </div>
+      <section aria-labelledby="story-title" className="bg-white">
+        <div className="mx-auto grid max-w-[88rem] gap-12 px-5 py-20 sm:px-10 sm:py-28 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center lg:gap-24 lg:py-36">
           <figure className="min-w-0">
             {aboutImg ? (
               <div className="relative aspect-[4/5] overflow-hidden bg-greige">
@@ -77,20 +71,26 @@ export default async function AboutPage() {
             ) : (
               <div className="relative aspect-[4/5] overflow-hidden bg-greige"><Image src="/portfolio/red-garden.webp" alt="Quinceañera in a red gown holding flowers" fill unoptimized sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" /><EditOverlay image={{}} /></div>
             )}
-            <figcaption className="mt-3 text-xs uppercase tracking-[0.16em] text-ink-soft">{aboutImg ? "Behind the camera" : "From the TX Quince portfolio"}</figcaption>
+            <figcaption className="mt-4 text-xs uppercase tracking-[0.16em] text-ink-soft">{aboutImg ? "Behind the camera" : "From the TX Quince portfolio"}</figcaption>
           </figure>
+          <div className="max-w-xl lg:py-14">
+            <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">What guides the work</p>
+            <h2 id="story-title" className="mt-6 max-w-[20ch] font-display text-[clamp(1.85rem,2.8vw,2.75rem)] font-light leading-[1.2] text-ink">Present for the moments you planned. Ready for the ones you didn&apos;t.</h2>
+            <div className="mt-8 space-y-6 text-base leading-8 text-ink-soft">{about.story.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>
+          </div>
         </div>
       </section>
 
-      <section aria-labelledby="approach-title" className="mx-auto max-w-[88rem] px-5 py-16 sm:px-8 sm:py-20 lg:px-12">
-        <div className="grid gap-8 border-b border-line pb-8 md:grid-cols-[minmax(0,0.45fr)_minmax(0,1fr)]">
+      <section aria-labelledby="approach-title" className="bg-ivory px-5 py-20 sm:px-10 sm:py-28 lg:py-36">
+        <div className="mx-auto max-w-[78rem]"><div className="grid gap-8 border-b border-line pb-10 md:grid-cols-[minmax(0,0.35fr)_minmax(0,1fr)] md:gap-20">
           <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">The approach / 01</p>
-          <div><h2 id="approach-title" className="font-display text-[clamp(1.65rem,2.4vw,2.25rem)] font-normal leading-tight text-ink">{about.culture.heading}</h2><p className="mt-3 max-w-2xl text-base leading-7 text-ink-soft">{about.culture.body}</p></div>
+          <div><h2 id="approach-title" className="font-display text-[clamp(1.7rem,2.5vw,2.5rem)] font-light leading-tight text-ink">{about.culture.heading}</h2><p className="mt-5 max-w-2xl text-base leading-8 text-ink-soft">{about.culture.body}</p></div>
         </div>
-        <div className="grid gap-8 py-8 md:grid-cols-[minmax(0,0.45fr)_minmax(0,1fr)]">
+        <div className="grid gap-8 pt-10 md:grid-cols-[minmax(0,0.35fr)_minmax(0,1fr)] md:gap-20">
           <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">The approach / 02</p>
-          <div><h3 className="font-display text-[clamp(1.65rem,2.4vw,2.25rem)] font-normal leading-tight text-ink">{about.approach.heading}</h3><p className="mt-3 max-w-2xl text-base leading-7 text-ink-soft">{about.approach.body}</p></div>
+          <div><h3 className="font-display text-[clamp(1.7rem,2.5vw,2.5rem)] font-light leading-tight text-ink">{about.approach.heading}</h3><p className="mt-5 max-w-2xl text-base leading-8 text-ink-soft">{about.approach.body}</p></div>
         </div>
+        <Link href="/check-your-date" className="mt-12 inline-flex min-h-12 items-center gap-5 border-b border-ink text-xs uppercase tracking-[0.17em] text-ink">Tell us about her day <span aria-hidden="true">↗</span></Link></div>
       </section>
 
     </>

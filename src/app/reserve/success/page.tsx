@@ -1,17 +1,15 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { site } from "@/content/site";
-import { CTAButton } from "@/components/CTAButton";
+import { ConfirmationPage } from "@/components/ConfirmationPage";
 import {
   retrieveStripeCheckoutSession,
   isStripeConfigured,
 } from "@/lib/stripe";
 import { formatEventDate, formatMoney } from "@/lib/booking";
-import { Badge } from "@/components/ui";
+import { reservationConfirmation } from "@/lib/reservation-confirmation";
 
 export const metadata: Metadata = {
-  title: "Your Date Is Reserved",
-  description: "Your deposit was received and your date is reserved.",
+  title: "Reservation Status",
+  description: "Check the status of your TX Quince date request and deposit.",
   alternates: { canonical: "/reserve/success" },
   robots: { index: false, follow: false },
 };
@@ -28,10 +26,12 @@ export default async function ReserveSuccessPage({
   let eventDate: string | null = null;
   let depositLabel: string | null = null;
   let paid = false;
+  let checkoutFound = false;
 
   if (session_id && isStripeConfigured()) {
     try {
       const session = await retrieveStripeCheckoutSession(session_id);
+      checkoutFound = true;
       paid = session.payment_status === "paid";
       if (session.amount_total != null) {
         depositLabel = formatMoney(session.amount_total, session.currency ?? "usd");
@@ -43,58 +43,18 @@ export default async function ReserveSuccessPage({
     }
   }
 
+  const confirmation = reservationConfirmation({ paid, checkoutFound, eventDate, depositLabel });
+
   return (
-    <section className="bg-ivory px-5 py-12 sm:px-6 md:py-20">
-      <div className="mx-auto max-w-2xl rounded-xl border border-line bg-white p-7 text-center sm:p-12">
-        <Badge>{paid ? "Reserved" : "Almost there"}</Badge>
-
-        <h1 className="mt-5 font-display text-[clamp(2rem,3.4vw,3rem)] leading-[1.14] text-ink text-balance">
-          {eventDate ? (
-            <>Your date is reserved — {eventDate}.</>
-          ) : paid ? (
-            <>Your date is reserved.</>
-          ) : (
-            <>Thank you — we&apos;re confirming your deposit.</>
-          )}
-        </h1>
-
-        <p className="mx-auto mt-6 max-w-md text-base leading-7 text-ink-soft">
-          {paid ? (
-            <>
-              {depositLabel ? `Your ${depositLabel} deposit is in` : "Your deposit is in"}
-              {" "}and applied to your final balance. I won&apos;t take another
-              celebration on your day. Watch your inbox — a confirmation is on its
-              way, and I&apos;ll reach out personally to start planning the details.
-            </>
-          ) : (
-            <>
-              Your payment is processing. The moment it clears, your date is locked
-              and a confirmation email goes out. This can take a minute — no need to
-              pay again.
-            </>
-          )}
-        </p>
-
-        <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <CTAButton href="/portfolio" variant="primary">
-            See the galleries
-          </CTAButton>
-          <Link
-            href="/"
-            className="inline-flex min-h-11 items-center text-base text-ink-soft underline underline-offset-4 hover:text-ink"
-          >
-            Back home
-          </Link>
-        </div>
-
-        <p className="mt-12 text-xs text-ink-faint">
-          Questions about your reservation? Write me at{" "}
-          <a href={`mailto:${site.contact.email}`} className="underline underline-offset-2">
-            {site.contact.email}
-          </a>
-          .
-        </p>
-      </div>
-    </section>
+    <ConfirmationPage
+      eyebrow={confirmation.eyebrow}
+      title={confirmation.title}
+      primaryLabel="See the galleries"
+      homeLabel="Back home"
+      homeHref="/"
+      contactLabel="Questions about your reservation? Write us at"
+    >
+      <p>{confirmation.message}</p>
+    </ConfirmationPage>
   );
 }
