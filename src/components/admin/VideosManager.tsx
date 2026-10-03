@@ -76,10 +76,11 @@ export function VideosManager({ initial }: { initial: VideoRow[] }) {
 
   return (
     <div>
-      <form
-        onSubmit={add}
-        className="flex flex-col gap-3 border border-line bg-white p-5 sm:flex-row sm:items-end"
-      >
+      <form onSubmit={add} className="flex flex-col gap-3 border border-line bg-white p-5 sm:flex-row sm:items-end">
+        <div className="w-full border-b border-line pb-3 sm:basis-full">
+          <h2 className="text-base font-medium text-ink">Add a film</h2>
+          <p className="mt-1 text-sm text-ink-soft">Paste a video link and give it a title for the film library.</p>
+        </div>
         <label className="flex-1 text-sm text-ink">
           Video link
           <input
@@ -101,25 +102,25 @@ export function VideosManager({ initial }: { initial: VideoRow[] }) {
         <button
           type="submit"
           disabled={busy || !url}
-          className="min-h-12 rounded-lg bg-accent px-6 py-2.5 text-base font-medium text-cream hover:bg-accent-strong disabled:opacity-50"
+          className="min-h-11 bg-ink px-6 py-2.5 text-sm font-medium text-white hover:bg-ink/85 disabled:opacity-50"
         >
           {busy ? "Adding…" : "Add"}
         </button>
       </form>
       {error ? <p className="mt-3 text-sm text-danger">{error}</p> : null}
 
-      <div className="mt-8 flex flex-col gap-3">
+      <div className="mt-8 border border-line bg-white">
         {videos.length === 0 ? (
-          <p className="text-sm text-ink-faint">No videos yet. Paste a link above.</p>
+          <p className="p-8 text-sm text-ink-faint">No films yet. Paste a link above.</p>
         ) : (
           videos.map((v, i) => {
             const p = poster(v);
             return (
               <div
                 key={v.id}
-                className="flex flex-wrap items-center gap-4 rounded-lg border border-line bg-white p-4"
+                className="flex flex-wrap items-center gap-4 border-b border-line p-4 last:border-b-0 hover:bg-ivory/50"
               >
-                <div className="relative h-16 w-28 shrink-0 overflow-hidden bg-greige">
+                <div className="relative h-20 w-32 shrink-0 overflow-hidden bg-greige">
                   {p ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={p} alt="" className="h-full w-full object-cover" />

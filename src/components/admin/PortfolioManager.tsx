@@ -830,8 +830,11 @@ export function PortfolioManager({
 
   return (
     <div>
-      {/* Upload bar */}
-      <div className="flex flex-wrap items-center gap-4 rounded-xl border border-line bg-white p-5">
+      <div className="flex flex-wrap items-center gap-4 border border-line bg-white p-5">
+        <div className="w-full border-b border-line pb-3">
+          <h2 className="text-base font-medium text-ink">Add photographs</h2>
+          <p className="mt-1 text-sm text-ink-soft">Choose a category and location, then select the files to upload.</p>
+        </div>
         <label className="text-base text-ink">
           Upload into{" "}
           <CategorySelect
@@ -902,18 +905,10 @@ export function PortfolioManager({
         ) : null}
         {status ? <span className="text-xs text-ink-faint">{status}</span> : null}
       </div>
-      <p className="mt-2 text-base text-ink-soft">
-        Select as many as you like — images are automatically resized and
-        optimized in your browser before upload (originals stay on your computer).
-        Then curate ruthlessly: a few stunning frames beat a hundred good ones.
-      </p>
-      <p className="mt-1 text-base text-ink-soft">
-        Folders roll up into the public tabs — e.g. Crowning, El Vals, and the
-        Cake all show under <span className="text-ink-soft">The Celebration</span>.
-        A tab only appears on the site once it has its first photo, so empty
-        sections (La Misa, Details &amp; Décor, Vendors) stay hidden until you
-        add one.
-      </p>
+      <details className="mt-3 text-sm text-ink-soft">
+        <summary className="inline-flex min-h-11 cursor-pointer items-center text-ink underline underline-offset-4">How the library works</summary>
+        <p className="max-w-3xl pb-3 leading-6">Photos are optimized in your browser before upload. Categories roll up into the public portfolio tabs, and empty categories stay hidden. Open a photograph below to edit its title, description, tags, and placement.</p>
+      </details>
 
       {/* Library — grouped by public tab, then by category. Empty categories
           stay hidden unless they're the current upload target. */}
@@ -923,13 +918,13 @@ export function PortfolioManager({
       {visibleSections.map((s) => (
         <div key={s.value}>
           {s.firstInGroup ? (
-            <h2 className="mt-12 border-b-2 border-ink/15 pb-2 font-display text-2xl text-ink">
+            <h2 className="mt-12 border-b border-line pb-3 text-xl font-medium tracking-[-0.03em] text-ink">
               {s.groupLabel}
             </h2>
           ) : null}
           <section className="mt-6">
           <div className="flex items-baseline justify-between border-b border-line pb-1.5">
-            <h3 className="font-display text-lg text-ink">{s.label}</h3>
+            <h3 className="text-base font-medium text-ink">{s.label}</h3>
             <span className="text-xs text-ink-faint">
               {grouped[s.value]?.length ?? 0} image{(grouped[s.value]?.length ?? 0) === 1 ? "" : "s"}
             </span>
@@ -938,7 +933,7 @@ export function PortfolioManager({
           {(grouped[s.value]?.length ?? 0) === 0 ? (
             <p className="mt-4 text-sm text-ink-faint">Upload target — no images yet.</p>
           ) : (
-            <div className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {grouped[s.value].map((img, i) => (
                 <div
                   key={img.id}
@@ -950,7 +945,7 @@ export function PortfolioManager({
                     void dropOnto(s.value, img.id);
                     setDragId(null);
                   }}
-                  className={`overflow-hidden rounded-xl border bg-white transition-colors ${
+                  className={`overflow-hidden border bg-white transition-colors ${
                     dragId === img.id ? "border-accent opacity-50" : "border-line"
                   }`}
                 >
@@ -993,7 +988,14 @@ export function PortfolioManager({
                       </span>
                     ) : null}
                   </button>
-                  <div className="flex flex-col gap-3 p-4">
+                  <details className="group border-t border-line">
+                    <summary className="flex min-h-16 cursor-pointer list-none items-center gap-3 px-4 py-3 text-left marker:hidden focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ink">
+                      <span className="min-w-0 flex-1 truncate text-sm font-medium text-ink">{img.title?.trim() || "Untitled photograph"}</span>
+                      {img.is_feature && <span className="border border-line px-2 py-1 text-[11px] text-ink-soft">Featured</span>}
+                      <span className="text-xs text-ink-soft group-open:hidden">Edit ↓</span>
+                      <span className="hidden text-xs text-ink-soft group-open:inline">Close ↑</span>
+                    </summary>
+                  <div className="flex flex-col gap-3 border-t border-line p-4">
                     <label className="text-base text-ink-soft">
                       Photo title
                       <input
@@ -1183,6 +1185,7 @@ export function PortfolioManager({
                       </div>
                     </div>
                   </div>
+                  </details>
                 </div>
               ))}
             </div>

@@ -91,15 +91,17 @@ function VenueCard({ venue, initial }: { venue: VenueRow; initial: Copy }) {
   }
 
   return (
-    <section className="rounded-2xl border border-line bg-white p-5">
-      <div className="flex flex-wrap items-baseline justify-between gap-3 border-b border-line pb-3">
-        <div>
-          <h2 className="font-display text-xl text-ink">{venue.name}</h2>
-          <p className="mt-0.5 text-xs text-ink-faint">
-            {venue.city}, TX · {venue.count} photo{venue.count === 1 ? "" : "s"}
-            {venue.count === 0 ? " · drop a shoot in media-inbox to populate" : ""}
-          </p>
-        </div>
+    <details className="group border border-line bg-white">
+      <summary className="flex min-h-20 cursor-pointer list-none flex-wrap items-center justify-between gap-3 px-5 py-3 marker:hidden focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ink">
+        <span className="min-w-0">
+          <span className="block text-base font-medium text-ink">{venue.name}</span>
+          <span className="mt-0.5 block text-xs text-ink-faint">{venue.city}, TX · {venue.count} photo{venue.count === 1 ? "" : "s"}</span>
+        </span>
+        <span className="text-sm text-ink-soft group-open:hidden">Edit details ↓</span>
+        <span className="hidden text-sm text-ink-soft group-open:inline">Close ↑</span>
+      </summary>
+      <div className="border-t border-line px-5 pb-6 pt-4">
+      <div className="flex justify-end">
         <Link
           href={`/venues/${venue.slug}`}
           target="_blank"
@@ -219,7 +221,8 @@ function VenueCard({ venue, initial }: { venue: VenueRow; initial: Copy }) {
           {status ? <span className="text-xs text-ink-faint">{status}</span> : null}
         </div>
       </div>
-    </section>
+      </div>
+    </details>
   );
 }
 
@@ -232,7 +235,7 @@ export function VenueManager({
 }) {
   const empty: Copy = { about: null, faq: [], address: null, area: null, ig_handle: null, website: null };
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-3">
       {venues.map((v) => (
         <VenueCard key={v.slug} venue={v} initial={copy[v.slug] ?? empty} />
       ))}
