@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { site } from "@/content/site";
+import { getFeaturedImages } from "@/lib/content-db";
+import { selectFullBleedPhoto } from "@/lib/quality-photo";
 
 type ConfirmationPageProps = {
   eyebrow: string;
@@ -13,7 +15,7 @@ type ConfirmationPageProps = {
   contactLabel: string;
 };
 
-export function ConfirmationPage({
+export async function ConfirmationPage({
   eyebrow,
   title,
   children,
@@ -22,10 +24,11 @@ export function ConfirmationPage({
   homeHref,
   contactLabel,
 }: ConfirmationPageProps) {
+  const photo = selectFullBleedPhoto(await getFeaturedImages(12), 2);
   return (
     <section className="bg-white">
       <div className="relative h-[32svh] min-h-64 overflow-hidden bg-greige sm:h-[40svh]">
-        <Image src="/portfolio/save-date.webp" alt="" fill priority unoptimized sizes="100vw" className="object-cover object-[center_46%]" />
+        <Image src={photo?.url ?? "/portfolio/hero.webp"} alt="" fill priority unoptimized={!photo} sizes="100vw" className="object-cover object-[center_46%]" />
       </div>
       <div className="mx-auto max-w-[55rem] px-5 py-20 sm:px-10 sm:py-28">
         <p className="text-[.7rem] uppercase tracking-[.2em] text-ink-soft">{eyebrow}</p>

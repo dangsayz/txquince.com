@@ -39,14 +39,16 @@ export function Footer({ locale = "en" }: { locale?: "en" | "es" }) {
   return (
     <footer className="site-footer">
       <div className="site-footer-invitation">
-        <Image
-          src="/portfolio/lilac-arch.webp"
-          alt=""
-          fill
-          unoptimized
-          sizes="100vw"
-          className="site-footer-image"
-        />
+        <div className="site-footer-photo">
+          <Image
+            src="/portfolio/lilac-arch.webp"
+            alt=""
+            fill
+            unoptimized
+            sizes="(max-width: 767px) 100vw, 405px"
+            className="site-footer-image"
+          />
+        </div>
         <div className="site-footer-shade" aria-hidden="true" />
         <div className="site-footer-invitation-inner">
           <p className="site-footer-kicker">{isSpanish ? "El siguiente capítulo" : "The next chapter"}</p>
