@@ -1,4 +1,3 @@
-import Link from "next/link";
 import {
   getHeroMedia,
   getPageHero,
@@ -44,29 +43,19 @@ export default async function AdminHero() {
   });
 
   return (
-    <main className="mx-auto max-w-5xl px-5 py-10 md:px-10 md:py-14">
-      <Link
-        href="/admin"
-        className="inline-flex min-h-11 items-center text-sm font-medium text-ink-soft hover:text-ink"
-      >
-        ← Studio
-      </Link>
-      <h1 className="mt-4 font-display text-[clamp(1.75rem,2.8vw,2.25rem)] leading-tight text-ink">Homepage hero</h1>
-      <p className="mt-3 text-base leading-7 text-ink-soft">
-        The big visual at the top of your homepage. Drop in a photo or a video
-        link (YouTube, Vimeo, or a direct .mp4) and it goes live within a minute.
-      </p>
+    <main className="mx-auto max-w-[90rem] px-5 pb-20 pt-8 md:px-10 md:pt-12 lg:px-16">
+      <div className="border-b border-neutral-200 pb-7">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-neutral-500">Website / Art direction</p>
+        <h1 className="mt-3 text-[clamp(1.7rem,2.4vw,2.15rem)] font-medium tracking-[-0.04em] text-neutral-950">Page imagery</h1>
+        <p className="mt-2 text-sm text-neutral-600">Choose the opening image or film for each page.</p>
+      </div>
       <div className="mt-8">
         <HeroManager initial={media} />
       </div>
 
-      <div className="mt-14 border-t border-line pt-10">
-        <h2 className="font-display text-[clamp(1.75rem,2.8vw,2.25rem)] leading-tight text-ink">Page heroes</h2>
-        <p className="mt-3 text-base leading-7 text-ink-soft">
-          The cinematic photo at the top of your other tabs. Choose the exact
-          frame for each — picked from photos already in your portfolio — or
-          leave it on Automatic to use your top featured shot.
-        </p>
+      <div className="mt-14 border-t border-neutral-200 pt-10">
+        <h2 className="text-xl font-medium tracking-[-0.03em] text-neutral-950">Other pages</h2>
+        <p className="mt-2 text-sm text-neutral-600">Select a portfolio photograph or use the featured image automatically.</p>
         <div className="mt-8">
           <PageHeroManager pages={pages} library={library} />
         </div>

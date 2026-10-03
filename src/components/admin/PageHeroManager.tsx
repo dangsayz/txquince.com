@@ -79,14 +79,14 @@ export function PageHeroManager({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="border border-line bg-white">
       {rows.map((row) => {
         const open = openKey === row.key;
         const busy = busyKey === row.key;
         return (
-          <div key={row.key} className="rounded-lg border border-line bg-white p-5">
+          <div key={row.key} className="border-b border-line p-5 last:border-b-0">
             <div className="flex flex-wrap items-center gap-4">
-              <div className="h-20 w-28 shrink-0 overflow-hidden rounded-lg bg-greige">
+              <div className="h-20 w-32 shrink-0 overflow-hidden bg-greige">
                 {row.current?.url ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={row.current.url} alt="" className="h-full w-full object-cover" />
@@ -97,7 +97,7 @@ export function PageHeroManager({
                 )}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="font-display text-lg text-ink">{row.label}</p>
+                <p className="text-base font-medium text-ink">{row.label}</p>
                 <p className="mt-0.5 text-xs text-ink-faint">
                   {row.current ? "A photo you chose." : "Your top featured photo (default)."}
                 </p>
@@ -107,7 +107,7 @@ export function PageHeroManager({
                   type="button"
                   onClick={() => setOpenKey(open ? null : row.key)}
                   disabled={busy}
-                  className="min-h-11 rounded-lg border border-accent/40 px-5 py-2 text-base font-medium text-accent transition-colors hover:bg-accent hover:text-cream disabled:opacity-50"
+                  className="min-h-11 border border-line px-5 py-2 text-sm font-medium text-ink transition-colors hover:border-ink disabled:opacity-50"
                 >
                   {open ? "Close" : "Choose photo"}
                 </button>

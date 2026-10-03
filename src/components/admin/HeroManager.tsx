@@ -159,29 +159,31 @@ export function HeroManager({ initial }: { initial: HeroMedia | null }) {
   }
 
   return (
-    <div className="space-y-8">
-      {/* Current */}
-      <div className="rounded-lg border border-line bg-white p-5">
-        <p className="text-sm uppercase tracking-[0.16em] text-ink-faint">Showing now</p>
-        <div className="mt-3 flex items-center gap-4">
+    <div className="space-y-7">
+      <div className="border border-line bg-white p-5 sm:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-4">
+          <h2 className="text-base font-medium text-ink">Homepage cover</h2>
+          <span className="text-xs text-ink-soft">Showing now</span>
+        </div>
+        <div className="mt-5 flex flex-wrap items-center gap-5">
           {media?.kind === "image" && media.imageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={media.imageUrl} alt="" className="h-24 w-20 rounded-lg object-cover" />
+            <img src={media.imageUrl} alt="" className="h-28 w-24 object-cover" />
           ) : media?.kind === "video" ? (
-            <div className="flex h-24 w-36 items-center justify-center rounded-lg bg-greige text-xs uppercase tracking-wider text-ink-soft">
+            <div className="flex h-28 w-36 items-center justify-center bg-greige text-xs uppercase tracking-wider text-ink-soft">
               {media.provider} video
             </div>
           ) : (
-            <div className="claura-art h-24 w-20 rounded-lg" />
+            <div className="claura-art h-28 w-24" />
           )}
           <div className="text-sm text-ink-soft">
-            {media?.kind === "image" && "A photo you uploaded."}
+            {media?.kind === "image" && "Selected photograph"}
             {media?.kind === "video" && (
               <a href={media.videoUrl ?? "#"} target="_blank" rel="noopener noreferrer" className="text-accent underline">
                 {media.videoUrl}
               </a>
             )}
-            {!media && "Your top featured portfolio photo (default)."}
+            {!media && "Automatic selection from your featured portfolio photographs."}
           </div>
         </div>
         {media ? (
@@ -192,9 +194,9 @@ export function HeroManager({ initial }: { initial: HeroMedia | null }) {
       </div>
 
       {media?.kind === "image" && media.imageUrl ? (
-        <section id="framing" className="scroll-mt-8 rounded-lg border border-line bg-white p-5 sm:p-8" aria-labelledby="framing-heading">
-          <p className="text-sm uppercase tracking-[0.16em] text-accent">Homepage framing</p>
-          <h2 id="framing-heading" className="mt-2 font-display text-2xl text-ink">Choose the focal point</h2>
+        <section id="framing" className="scroll-mt-8 border border-line bg-white p-5 sm:p-7" aria-labelledby="framing-heading">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-faint">Framing</p>
+          <h2 id="framing-heading" className="mt-2 text-lg font-medium text-ink">Choose the focal point</h2>
           <p className="mt-2 max-w-xl text-sm leading-6 text-ink-soft">
             Tap the subject in the full photo. The previews show how the homepage will crop around that point on different screens.
           </p>
@@ -216,7 +218,7 @@ export function HeroManager({ initial }: { initial: HeroMedia | null }) {
           <div className="mt-6 grid gap-6 sm:grid-cols-2">
             {([ ["Wide screen crop", "aspect-video"], ["Tall screen crop", "aspect-[4/5]"] ] as const).map(([name, aspect]) => (
               <div key={name}>
-                <p className="mb-2 text-sm uppercase tracking-[0.16em] text-ink-faint">{name}</p>
+                <p className="mb-2 text-sm font-medium text-ink-soft">{name}</p>
                 <div className={`relative w-full overflow-hidden bg-greige ${aspect}`}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={`${media.imageUrl}?w=1080`} alt="" className="absolute inset-0 size-full object-cover" style={{ objectPosition: heroObjectPosition(focus) }} />
@@ -248,7 +250,7 @@ export function HeroManager({ initial }: { initial: HeroMedia | null }) {
             type="button"
             onClick={saveFocus}
             disabled={busy || !focusDirty}
-            className="mt-6 min-h-12 rounded-lg bg-ink px-6 text-base font-medium text-white transition-colors hover:bg-accent disabled:opacity-40"
+            className="mt-6 min-h-11 bg-ink px-5 text-sm font-medium text-white transition-colors hover:bg-ink/85 disabled:opacity-40"
           >
             {busy ? "Saving…" : "Save focal point"}
           </button>
@@ -258,14 +260,14 @@ export function HeroManager({ initial }: { initial: HeroMedia | null }) {
       {status ? <p role="status" className="text-sm text-emerald-700">{status}</p> : null}
       {error ? <p role="alert" className="text-sm text-danger">{error}</p> : null}
 
-      {/* Tabs */}
-      <div className="inline-flex rounded-lg border border-line bg-white p-1 text-sm">
+      <div role="group" aria-label="Cover format" className="flex gap-7 border-b border-line">
         {(["photo", "video"] as Tab[]).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`min-h-11 rounded-md px-5 py-2 text-base capitalize transition-colors ${
-              tab === t ? "bg-ink text-cream" : "text-ink-soft hover:text-ink"
+            aria-pressed={tab === t}
+            className={`min-h-11 border-b-2 px-1 py-2 text-sm capitalize transition-colors ${
+              tab === t ? "border-ink font-medium text-ink" : "border-transparent text-ink-soft hover:text-ink"
             }`}
           >
             {t === "photo" ? "Photo" : "Video link"}
@@ -274,29 +276,28 @@ export function HeroManager({ initial }: { initial: HeroMedia | null }) {
       </div>
 
       {tab === "photo" ? (
-        <div className="rounded-lg border border-line bg-white p-5">
-          <p className="text-sm text-ink-soft">
-            Upload a vertical (portrait) photo for the sharpest hero. It&apos;s
-            optimized automatically before upload.
-          </p>
+        <div className="border border-line bg-white p-5 sm:p-6">
+          <h2 className="text-base font-medium text-ink">Use a photograph</h2>
+          <p className="mt-1 text-sm text-ink-soft">A portrait image gives the homepage more room to crop on mobile.</p>
           <input
             ref={fileRef}
             type="file"
             accept="image/*"
             onChange={(e) => handleFile(e.target.files)}
             disabled={busy}
-            className="mt-4 block min-h-11 text-base text-ink file:mr-4 file:min-h-11 file:rounded-lg file:border-0 file:bg-accent file:px-5 file:py-2 file:text-base file:font-medium file:text-cream hover:file:bg-accent-strong"
+            className="mt-4 block min-h-11 text-base text-ink file:mr-4 file:min-h-11 file:border-0 file:bg-ink file:px-5 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-ink/85"
           />
         </div>
       ) : (
-        <form onSubmit={saveVideo} className="rounded-lg border border-line bg-white p-5">
+        <form onSubmit={saveVideo} className="border border-line bg-white p-5 sm:p-6">
+          <h2 className="mb-4 text-base font-medium text-ink">Use a film</h2>
           <label className="block text-sm text-ink">
             Video link
             <input
               value={videoUrl}
               onChange={(e) => setVideoUrl(e.target.value)}
               placeholder="Paste a YouTube, Vimeo, or direct .mp4 link…"
-              className="mt-1 w-full min-h-11 rounded-lg border border-line bg-white px-3 py-2 text-base focus:border-accent focus:outline-2 focus:outline-offset-2 focus:outline-accent"
+              className="mt-1 w-full min-h-11 border border-line bg-white px-3 py-2 text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
             />
           </label>
           {videoUrl ? (
@@ -309,7 +310,7 @@ export function HeroManager({ initial }: { initial: HeroMedia | null }) {
           <button
             type="submit"
             disabled={busy || !preview.embedUrl}
-            className="mt-4 min-h-12 rounded-lg bg-accent px-6 py-2.5 text-base font-medium text-white hover:bg-accent-strong disabled:opacity-50"
+            className="mt-4 min-h-11 bg-ink px-5 py-2.5 text-sm font-medium text-white hover:bg-ink/85 disabled:opacity-50"
           >
             {busy ? "Saving…" : "Use this video"}
           </button>
