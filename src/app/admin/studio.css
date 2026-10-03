@@ -1,0 +1,24 @@
+.studio-skin {
+  --color-cream: #ffffff;
+  --color-ivory: #f7f7f5;
+  --color-greige: #f1f1ef;
+  --color-ink: #202124;
+  --color-ink-soft: #5e6062;
+  --color-ink-faint: #62656a;
+  --color-line: #e2e3e1;
+  --color-accent: #202124;
+  --color-accent-strong: #111214;
+  --color-accent-soft: #f0f0ee;
+  --color-clay: #a6a8a8;
+  color: var(--color-ink);
+  background: var(--color-cream);
+}
+
+.studio-skin .font-display {
+  font-family: var(--font-body);
+  font-weight: 400;
+}
+
+.studio-skin summary::-webkit-details-marker {
+  display: none;
+}
