@@ -6,6 +6,7 @@ import type { BlogBlock } from "@/content/blog";
 import { getVenue, venueSlugify } from "@/content/venues";
 import { resolveHeroFocus } from "@/lib/hero-focus";
 import { IMAGE_PIPELINE_EPOCH } from "@/lib/image-derivative";
+import { heroImageSource, HeroStoredSchema } from "@/lib/hero-cover";
 
 /**
  * INTERNAL storage URL — only ever fetched server-side (by /api/img). Raw
@@ -377,8 +378,11 @@ export async function getHeroRawImageUrl(): Promise<string | null> {
       .select("value")
       .eq("key", "hero_media")
       .maybeSingle();
-    const v = data?.value as Partial<HeroMedia> | undefined;
-    return v?.kind === "image" && v.imageUrl ? v.imageUrl : null;
+    const parsed = HeroStoredSchema.safeParse(data?.value);
+    if (!parsed.success) return null;
+    const source = heroImageSource(parsed.data);
+    if (!source) return null;
+    return parsed.data.storage_path ? storageUrl(source) : source;
   } catch {
     return null;
   }
@@ -397,6 +401,26 @@ export type HeroMedia = {
   updatedAt: string;
 };
 
+export function heroMediaFromSetting(value: unknown, updatedAt: string): HeroMedia | null {
+  const parsed = HeroStoredSchema.safeParse(value);
+  if (!parsed.success) return null;
+  const v = parsed.data;
+  const source = heroImageSource(v);
+  if (v.kind === "image" && !source) return null;
+  if (v.kind === "video" && !v.videoUrl) return null;
+  return {
+    kind: v.kind,
+    imageUrl: v.kind === "image" && source ? imageServeUrl("hero", source) : null,
+    imageAlt: v.imageAlt || "Quinceañera portrait",
+    videoUrl: v.videoUrl ?? null,
+    provider: v.provider ?? null,
+    videoId: v.videoId ?? null,
+    posterUrl: v.posterUrl ?? null,
+    ...resolveHeroFocus(v),
+    updatedAt,
+  };
+}
+
 /**
  * The hero showcase media set in /admin/hero — a photo or a video link
  * (YouTube/Vimeo/MP4). Null means "fall back to the top featured photo."
@@ -411,23 +435,7 @@ export const getHeroMedia = cache(async (): Promise<HeroMedia | null> => {
       .eq("key", "hero_media")
       .maybeSingle();
     if (error || !data?.value) return null;
-    const v = data.value as Partial<HeroMedia>;
-    if (v.kind !== "image" && v.kind !== "video") return null;
-    if (v.kind === "image" && !v.imageUrl) return null;
-    if (v.kind === "video" && !v.videoUrl) return null;
-    return {
-      kind: v.kind,
-      // Raw bucket URL stays server-side; the client gets the branded route
-      // (capped) — /api/img/hero resolves the source itself.
-      imageUrl: v.kind === "image" && v.imageUrl ? `/api/img/hero?v=${IMAGE_PIPELINE_EPOCH}` : null,
-      imageAlt: v.imageAlt ?? "Quinceañera portrait",
-      videoUrl: v.videoUrl ?? null,
-      provider: (v.provider as VideoProvider) ?? null,
-      videoId: v.videoId ?? null,
-      posterUrl: v.posterUrl ?? null,
-      ...resolveHeroFocus(v),
-      updatedAt: data.updated_at as string,
-    };
+    return heroMediaFromSetting(data.value, data.updated_at as string);
   } catch {
     return null;
   }
