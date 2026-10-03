@@ -41,9 +41,58 @@ export function InquiryActivityPanel({ inquiryId, activity, canSchedule }: { inq
     finally { setPending(false); }
   }
 
-  return <div className="space-y-6">
-    <section className="rounded-lg border border-line bg-white p-5 sm:p-7"><p className="text-xs font-medium uppercase tracking-[0.14em] text-ink-faint">Next action</p><h2 className="mt-1 font-display text-2xl font-normal text-ink">Follow-ups</h2>{openReminders.length ? <ul className="mt-5 space-y-3">{openReminders.map((row) => <li key={row.id} className="flex flex-wrap items-center justify-between gap-4 rounded-md border border-line bg-ivory p-4"><div><p className="font-medium text-ink">{row.note || "Follow up with client"}</p><p className="mt-1 text-base text-ink-soft">Due {new Date(row.due_at!).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short", timeZone: "America/Chicago" })}</p></div><button type="button" disabled={pending} onClick={() => void complete(row.id)} className="min-h-11 rounded-md border border-line bg-white px-4 text-base font-medium text-ink hover:border-ink disabled:opacity-50">Mark complete</button></li>)}</ul> : <p className="mt-5 text-base text-ink-soft">No follow-up planned yet.</p>}</section>
-    <section className="rounded-lg border border-line bg-white p-5 sm:p-7"><p className="text-xs font-medium uppercase tracking-[0.14em] text-ink-faint">Keep the relationship moving</p><h2 className="mt-1 font-display text-2xl font-normal text-ink">Record a touchpoint</h2><p className="mt-2 text-base text-ink-soft">This is an internal record. It does not send a message to the client.</p><form onSubmit={(event) => void save(event)} className="mt-6 space-y-4"><div className="flex flex-wrap gap-2">{(["note", "contact", "reminder"] as Kind[]).filter((value) => value !== "reminder" || canSchedule).map((value) => <button key={value} type="button" onClick={() => setKind(value)} className={`min-h-11 rounded-md border px-4 text-base ${kind === value ? "border-ink bg-ink text-cream" : "border-line bg-white text-ink hover:border-ink"}`}>{labels[value]}</button>)}</div><label htmlFor="activity-note" className="block text-base font-medium text-ink">{kind === "contact" ? "What happened? (optional)" : kind === "reminder" ? "What should happen next? (optional)" : "Note"}</label><textarea id="activity-note" value={note} onChange={(event) => setNote(event.target.value)} required={kind === "note"} maxLength={2000} rows={4} className="w-full rounded-md border border-line bg-white p-4 text-base text-ink" placeholder={kind === "contact" ? "Called, emailed, or spoke in person…" : "Add helpful context for next time…"}/>{kind === "reminder" && <div><label htmlFor="activity-due" className="mb-2 block text-base font-medium text-ink">Follow-up date and time</label><input id="activity-due" type="datetime-local" value={due} onChange={(event) => setDue(event.target.value)} required className="min-h-12 w-full rounded-md border border-line bg-white px-4 text-base text-ink sm:w-auto"/></div>}<button type="submit" disabled={pending || (kind === "reminder" && !due) || (kind === "note" && !note.trim())} className="min-h-12 rounded-md bg-ink px-6 text-base font-medium text-cream hover:bg-ink/85 disabled:opacity-50">{pending ? "Saving…" : "Save touchpoint"}</button>{error && <p role="alert" className="text-base text-red-700">{error}</p>}</form></section>
-    <section className="rounded-lg border border-line bg-white p-5 sm:p-7"><p className="text-xs font-medium uppercase tracking-[0.14em] text-ink-faint">Relationship history</p><h2 className="mt-1 font-display text-2xl font-normal text-ink">Activity</h2>{history.length ? <ol className="mt-5 space-y-4">{history.map((row) => <li key={row.id} className="border-t border-line pt-4"><div className="flex flex-wrap justify-between gap-2"><p className="text-base font-medium text-ink">{row.kind === "contact" ? "Client contacted" : row.kind === "reminder" ? "Follow-up completed" : "Internal note"}</p><time dateTime={row.created_at} className="text-base text-ink-soft">{new Date(row.created_at).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short", timeZone: "America/Chicago" })}</time></div>{row.note && <p className="mt-2 whitespace-pre-wrap text-base leading-relaxed text-ink-soft">{row.note}</p>}</li>)}</ol> : <p className="mt-5 text-base text-ink-soft">No activity recorded yet.</p>}</section>
-  </div>;
+  return (
+    <div className="space-y-7">
+      {error && <p role="alert" className="border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{error}</p>}
+      <section className="border border-line bg-white" aria-labelledby="follow-ups-title">
+        <div className="flex items-center justify-between border-b border-line px-5 py-4 sm:px-6">
+          <h2 id="follow-ups-title" className="text-base font-medium text-ink">Follow-ups</h2>
+          <span className="text-xs tabular-nums text-ink-faint">{openReminders.length} planned</span>
+        </div>
+        {openReminders.length ? (
+          <ul className="divide-y divide-line">
+            {openReminders.map((row) => (
+              <li key={row.id} className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 sm:px-6">
+                <div>
+                  <p className="text-sm font-medium text-ink">{row.note || "Follow up with client"}</p>
+                  <p className="mt-1 text-xs text-ink-soft">{row.due_at ? `Due ${new Date(row.due_at).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short", timeZone: "America/Chicago" })}` : "Date to set"}</p>
+                </div>
+                <button type="button" disabled={pending} onClick={() => void complete(row.id)} className="min-h-11 border border-line px-4 text-sm font-medium text-ink hover:border-ink disabled:opacity-50">Mark complete</button>
+              </li>
+            ))}
+          </ul>
+        ) : <p className="px-5 py-5 text-sm text-ink-soft sm:px-6">No follow-up planned yet.</p>}
+      </section>
+
+      <section className="border border-line bg-white px-5 py-5 sm:px-6" aria-labelledby="record-title">
+        <h2 id="record-title" className="text-base font-medium text-ink">Record activity</h2>
+        <p className="mt-1 text-sm text-ink-soft">This is an internal record. It does not send a message to the client.</p>
+        <form onSubmit={(event) => void save(event)} className="mt-5 space-y-4">
+          <div className="flex flex-wrap gap-5 border-b border-line">
+            {(["note", "contact", "reminder"] as Kind[]).filter((value) => value !== "reminder" || canSchedule).map((value) => (
+              <button key={value} type="button" onClick={() => setKind(value)} aria-pressed={kind === value} className={`min-h-11 border-b-2 text-sm ${kind === value ? "border-ink font-medium text-ink" : "border-transparent text-ink-soft hover:text-ink"}`}>{labels[value]}</button>
+            ))}
+          </div>
+          <div>
+            <label htmlFor="activity-note" className="block text-sm font-medium text-ink">{kind === "contact" ? "What happened? (optional)" : kind === "reminder" ? "What should happen next? (optional)" : "Note"}</label>
+            <textarea id="activity-note" value={note} onChange={(event) => setNote(event.target.value)} required={kind === "note"} maxLength={2000} rows={4} className="mt-2 w-full border border-line bg-white p-3 text-base text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink" placeholder={kind === "contact" ? "Called, emailed, or spoke in person…" : "Add helpful context for next time…"} />
+          </div>
+          {kind === "reminder" && <div><label htmlFor="activity-due" className="block text-sm font-medium text-ink">Follow-up date and time</label><input id="activity-due" type="datetime-local" value={due} onChange={(event) => setDue(event.target.value)} required className="mt-2 min-h-11 w-full border border-line bg-white px-3 text-base text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink sm:w-auto" /></div>}
+          <button type="submit" disabled={pending || (kind === "reminder" && !due) || (kind === "note" && !note.trim())} className="min-h-11 bg-ink px-5 text-sm font-medium text-white hover:bg-ink/85 disabled:opacity-50">{pending ? "Saving…" : "Save activity"}</button>
+        </form>
+      </section>
+
+      <section className="border border-line bg-white px-5 py-5 sm:px-6" aria-labelledby="activity-title">
+        <div className="flex items-center justify-between">
+          <h2 id="activity-title" className="text-base font-medium text-ink">Activity</h2>
+          <span className="text-xs tabular-nums text-ink-faint">{history.length} entries</span>
+        </div>
+        {history.length ? (
+          <ol className="mt-5 divide-y divide-line border-t border-line">
+            {history.map((row) => <li key={row.id} className="py-4"><div className="flex flex-wrap justify-between gap-2"><p className="text-sm font-medium text-ink">{row.kind === "contact" ? "Client contacted" : row.kind === "reminder" ? "Follow-up completed" : "Internal note"}</p><time dateTime={row.created_at} className="text-xs text-ink-soft">{new Date(row.created_at).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short", timeZone: "America/Chicago" })}</time></div>{row.note && <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-ink-soft">{row.note}</p>}</li>)}
+          </ol>
+        ) : <p className="mt-5 border-t border-line pt-5 text-sm text-ink-soft">No activity recorded yet.</p>}
+      </section>
+    </div>
+  );
 }
