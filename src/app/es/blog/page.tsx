@@ -5,23 +5,18 @@ import { site } from "@/content/site";
 import { getAllEsPosts, type BlogCategory } from "@/content/blog";
 import { portfolioFallback } from "@/content/portfolio-fallback";
 import { getFeaturedImages, getPageHero } from "@/lib/content-db";
-import { Reveal } from "@/components/Reveal";
 
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Guía de Quinceañera (Dallas–Fort Worth)",
-  description:
-    "Guías honestas y sin adivinanzas para planear una quinceañera en Dallas–Fort Worth: costos reales, fechas, tradiciones y cómo elegir a tu fotógrafo y equipo de video.",
-  alternates: {
-    canonical: "/es/blog",
-    languages: { "es-MX": "/es/blog", "en-US": "/blog" },
-  },
+  description: "Guías honestas para planear una quinceañera en Dallas–Fort Worth: costos reales, fechas, tradiciones y cómo elegir a tu fotógrafo y equipo de video.",
+  alternates: { canonical: "/es/blog", languages: { "es-MX": "/es/blog", "en-US": "/blog" } },
   openGraph: {
     locale: "es_MX",
     title: "Guía de Quinceañera · TX Quince",
     description: "Costos reales, fechas, tradiciones y cómo elegir a tu fotógrafo en Dallas–Fort Worth.",
-    url: `${site.url}/es/blog`,
+    url: site.url + "/es/blog",
   },
 };
 
@@ -32,16 +27,10 @@ const CATEGORY_ES: Record<BlogCategory, string> = {
   "Photography & Film": "Foto y video",
   Locations: "Lugares",
 };
-const CATEGORY_ORDER: BlogCategory[] = [
-  "Cost & Budget",
-  "Planning",
-  "Traditions",
-  "Photography & Film",
-  "Locations",
-];
+const CATEGORY_ORDER: BlogCategory[] = ["Cost & Budget", "Planning", "Traditions", "Photography & Film", "Locations"];
 
 function focal(fx?: number | null, fy?: number | null): string {
-  return `${Math.round((fx ?? 0.5) * 100)}% ${Math.round((fy ?? 0.35) * 100)}%`;
+  return String(Math.round((fx ?? 0.5) * 100)) + "% " + String(Math.round((fy ?? 0.35) * 100)) + "%";
 }
 
 export default async function EsBlogIndexPage() {
@@ -58,75 +47,50 @@ export default async function EsBlogIndexPage() {
 
   return (
     <>
-      <section className="mx-auto max-w-[90rem] px-5 pb-14 pt-12 md:px-10 md:pb-20 md:pt-16 lg:px-16 lg:pt-20">
-        <Reveal className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-medium text-ink-soft">La Guía del Quince</p>
-          <h1 className="mt-4 font-display text-[clamp(2rem,3.5vw,3rem)] leading-[1.14] text-ink text-balance">Planea su quinceañera sin adivinar.</h1>
-          <p className="mx-auto mt-5 max-w-xl text-base leading-7 text-ink-soft">
-            Costos reales, fechas reales y las tradiciones que hacen el día — escrito para las familias
-            de Dallas–Fort Worth, para que sepa exactamente qué esperar antes de gastar un solo dólar.
-          </p>
-          <Link href="#guias" className="mt-7 inline-flex min-h-12 items-center justify-center rounded-md bg-ink px-6 text-base font-medium text-white transition-colors hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
-            Explora las guías <span aria-hidden className="ml-3">→</span>
-          </Link>
-        </Reveal>
-        <div className="mt-6 flex justify-center">
-          <Link href="/blog" hrefLang="en" className="inline-flex min-h-11 items-center text-base text-ink-soft underline underline-offset-4 hover:text-ink">
-            Read in English
-          </Link>
-        </div>
-        <div className="relative mt-10 aspect-[4/3] overflow-hidden rounded-lg bg-greige sm:mt-12 sm:aspect-[16/8] lg:aspect-[16/7]">
-          {hero?.url ? <Image src={hero.url} alt={hero.alt || "Quinceañera en Dallas–Fort Worth"} fill priority sizes="(max-width: 1024px) 100vw, 1440px" unoptimized={hero.url.startsWith("/portfolio/")} className="object-cover" style={{ objectPosition: focal(hero.focus_x, hero.focus_y) }} /> : null}
+      <section aria-labelledby="blog-title" className="mx-auto max-w-[88rem] px-5 pb-14 pt-8 sm:px-8 sm:pt-12 lg:px-12">
+        <figure>
+          <div className="relative aspect-[4/3] overflow-hidden bg-greige sm:aspect-[16/8] lg:aspect-[16/7]">
+            <Image src={hero?.url ?? "/portfolio/hero.webp"} alt={hero?.alt || "Fotografía de quinceañera en Dallas–Fort Worth"} fill priority sizes="(max-width: 1408px) 100vw, 1408px" unoptimized={(hero?.url ?? "").startsWith("/portfolio/")} className="object-cover" style={{ objectPosition: focal(hero?.focus_x, hero?.focus_y) }} />
+          </div>
+          <figcaption className="mt-3 text-xs uppercase tracking-[0.16em] text-ink-soft">Historias y consejos / Dallas–Fort Worth</figcaption>
+        </figure>
+        <div className="mt-10 grid gap-5 md:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)] md:items-end md:gap-16">
+          <div><p className="text-xs uppercase tracking-[0.18em] text-ink-soft">La Guía del Quince</p><h1 id="blog-title" className="mt-4 max-w-[18ch] font-display text-[clamp(2rem,3.2vw,3rem)] font-normal leading-[1.14] text-ink">Planea su quinceañera con claridad.</h1></div>
+          <div><p className="max-w-xl text-base leading-7 text-ink-soft">Costos, fechas y tradiciones para las familias de Dallas–Fort Worth. Respuestas concretas para preparar el día antes de tomar decisiones.</p><div className="mt-5 flex flex-wrap items-center gap-x-7 gap-y-2"><a href="#guias" className="inline-flex min-h-11 items-center gap-4 whitespace-nowrap border-b border-ink text-base text-ink">Explorar guías ↓</a><Link href="/blog" hrefLang="en" className="inline-flex min-h-11 items-center text-base text-ink-soft underline underline-offset-4">Read in English</Link></div></div>
         </div>
       </section>
 
       {featured ? (
-        <section className="mx-auto mt-12 max-w-[90rem] px-5 md:mt-16 md:px-10 lg:px-16">
-          <Reveal>
-            <Link href={`/es/blog/${featured.slug}`} className="group grid overflow-hidden rounded-lg border border-line bg-white md:grid-cols-[1.15fr_1fr] md:items-center">
-              <div className="relative aspect-[4/3] overflow-hidden bg-greige md:h-full md:min-h-[22rem]">
-                {featuredImg?.url ? <Image src={featuredImg.url} alt={featuredImg.alt || "Quinceañera"} fill sizes="(max-width: 768px) 100vw, 55vw" unoptimized={featuredImg.url.startsWith("/portfolio/")} className="object-cover transition-transform duration-500 group-hover:scale-[1.035] motion-reduce:transition-none" style={{ objectPosition: focal(featuredImg.focus_x, featuredImg.focus_y) }} /> : null}
+        <section aria-labelledby="featured-title" className="border-t border-line bg-white">
+          <div className="mx-auto max-w-[88rem] px-5 py-16 sm:px-8 sm:py-20 lg:px-12">
+            <p className="mb-6 text-xs uppercase tracking-[0.18em] text-ink-soft">Una lectura para empezar</p>
+            <Link href={"/es/blog/" + featured.slug} className="group grid gap-7 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center lg:gap-16">
+              <div className="relative aspect-[4/3] overflow-hidden bg-greige sm:aspect-[5/4] lg:aspect-[4/3]">
+                <Image src={featuredImg?.url ?? "/portfolio/stockyards.webp"} alt={featuredImg?.alt || "Quinceañera"} fill sizes="(max-width: 1024px) 100vw, 55vw" unoptimized={(featuredImg?.url ?? "").startsWith("/portfolio/")} className="object-cover transition-transform duration-500 group-hover:scale-[1.02] motion-reduce:transition-none" style={{ objectPosition: focal(featuredImg?.focus_x, featuredImg?.focus_y) }} />
               </div>
-              <div className="p-6 md:p-8 lg:p-10">
-                <p className="text-sm font-medium text-ink-soft">{CATEGORY_ES[featured.category]} · Destacado</p>
-                <h2 className="mt-3 font-display text-[clamp(1.75rem,3vw,2.5rem)] leading-[1.12] text-ink">{featured.title}</h2>
-                <p className="mt-4 max-w-md text-base leading-7 text-ink-soft">{featured.excerpt}</p>
-                <span className="mt-6 inline-flex min-h-11 items-center gap-2 text-base font-medium text-ink">Leer la guía <span aria-hidden>→</span></span>
-              </div>
+              <div><p className="text-xs uppercase tracking-[0.16em] text-ink-soft">{CATEGORY_ES[featured.category]} / Destacado</p><h2 id="featured-title" className="mt-4 max-w-[18ch] font-display text-[clamp(1.75rem,2.7vw,2.5rem)] font-normal leading-tight text-ink">{featured.title}</h2><p className="mt-4 max-w-xl text-base leading-7 text-ink-soft">{featured.excerpt}</p><span className="mt-6 inline-flex min-h-12 items-center gap-7 border-b border-ink text-base text-ink">Leer la guía <span aria-hidden="true">↗</span></span></div>
             </Link>
-          </Reveal>
+          </div>
         </section>
       ) : null}
 
-      <section id="guias" className="mx-auto mt-16 max-w-[90rem] scroll-mt-24 px-5 pb-section md:mt-24 md:px-10 lg:px-16 md:pb-section-lg">
-        {CATEGORY_ORDER.map((cat) => {
-          const inCat = rest.filter((p) => p.category === cat);
-          if (inCat.length === 0) return null;
+      <section id="guias" aria-label="Todas las guías" className="mx-auto max-w-[88rem] scroll-mt-24 px-5 py-16 sm:px-8 sm:py-20 lg:px-12">
+        {CATEGORY_ORDER.map((category) => {
+          const inCategory = rest.filter((post) => post.category === category);
+          if (!inCategory.length) return null;
           return (
-            <div key={cat} className="mt-16 first:mt-0">
-              <div className="flex items-baseline justify-between gap-4 border-b border-line pb-3">
-                <h2 className="font-display text-2xl text-ink md:text-[1.7rem]">{CATEGORY_ES[cat]}</h2>
-                <span className="shrink-0 text-sm text-ink-faint">
-                  {inCat.length} {inCat.length === 1 ? "guía" : "guías"}
-                </span>
+            <div key={category} className="border-t border-line py-10 first:pt-0">
+              <div className="grid gap-3 pb-7 md:grid-cols-[minmax(0,0.4fr)_minmax(0,1fr)]">
+                <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">{inCategory.length} {inCategory.length === 1 ? "guía" : "guías"}</p>
+                <h2 className="font-display text-[clamp(1.55rem,2.4vw,2.2rem)] font-normal leading-tight text-ink">{CATEGORY_ES[category]}</h2>
               </div>
-              <div className="mt-8 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-                {inCat.map((p, i) => {
-                  const image = imgBySlug.get(p.slug) ?? null;
-                  return (
-                    <Reveal key={p.slug} delay={(i % 3) * 70}>
-                      <Link href={`/es/blog/${p.slug}`} className="group block h-full overflow-hidden rounded-lg border border-line bg-white">
-                        <div className="relative aspect-[4/3] overflow-hidden bg-greige">
-                          {image?.url ? <Image src={image.url} alt={image.alt || "Quinceañera"} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 30vw" unoptimized={image.url.startsWith("/portfolio/")} className="object-cover transition-transform duration-500 group-hover:scale-[1.035] motion-reduce:transition-none" style={{ objectPosition: focal(image.focus_x, image.focus_y) }} /> : null}
-                        </div>
-                        <div className="p-5">
-                          <p className="text-sm text-ink-soft">{CATEGORY_ES[cat]} · {p.readMinutes} min de lectura</p>
-                          <h3 className="mt-2 font-display text-xl leading-snug text-ink group-hover:text-accent">{p.title}</h3>
-                          <p className="mt-2 line-clamp-2 text-base leading-7 text-ink-soft">{p.excerpt}</p>
-                        </div>
-                      </Link>
-                    </Reveal>
-                  );
+              <div className="grid gap-x-10 gap-y-8 md:grid-cols-2">
+                {inCategory.map((post) => {
+                  const image = imgBySlug.get(post.slug);
+                  return <Link key={post.slug} href={"/es/blog/" + post.slug} className="group grid grid-cols-[5.5rem_minmax(0,1fr)] gap-4 border-t border-line pt-5 sm:grid-cols-[8rem_minmax(0,1fr)] sm:gap-5">
+                    <div className="relative aspect-[4/5] overflow-hidden bg-greige"><Image src={image?.url ?? "/portfolio/reception.webp"} alt={image?.alt || "Fotografía de quinceañera"} fill sizes="(max-width: 640px) 88px, 128px" unoptimized={(image?.url ?? "").startsWith("/portfolio/")} className="object-cover" style={{ objectPosition: focal(image?.focus_x, image?.focus_y) }} /></div>
+                    <div className="min-w-0"><p className="text-xs uppercase tracking-[0.12em] text-ink-soft">{post.readMinutes} min de lectura</p><h3 className="mt-2 font-display text-lg font-normal leading-snug text-ink group-hover:underline group-hover:underline-offset-4 sm:text-xl">{post.title}</h3><p className="mt-2 hidden text-base leading-6 text-ink-soft sm:line-clamp-2">{post.excerpt}</p></div>
+                  </Link>;
                 })}
               </div>
             </div>
@@ -134,22 +98,7 @@ export default async function EsBlogIndexPage() {
         })}
       </section>
 
-      <section className="bg-ivory px-5 py-16 md:px-10 md:py-20 lg:px-16">
-        <div className="mx-auto max-w-3xl rounded-lg border border-line bg-white px-6 py-12 text-center sm:px-10 sm:py-16">
-          <h2 className="font-display text-[clamp(1.875rem,2.8vw,2.625rem)] leading-tight text-ink text-balance">Reserva la fecha de su quinceañera</h2>
-          <p className="mx-auto mt-4 max-w-md text-base leading-7 text-ink-soft">
-            Le confirmo que su fecha está disponible y le envío un enlace seguro para el depósito. Sin pago ahora mismo.
-          </p>
-          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-            <Link href="/reserve" className="inline-flex min-h-12 items-center justify-center whitespace-nowrap rounded-md bg-ink px-6 text-base font-medium text-white transition-colors hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
-              Reservar mi fecha
-            </Link>
-            <Link href="/check-your-date" className="inline-flex min-h-12 items-center justify-center whitespace-nowrap rounded-md border border-line px-6 text-base font-medium text-ink transition-colors hover:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
-              Ver si mi fecha está libre
-            </Link>
-          </div>
-        </div>
-      </section>
+      <section aria-labelledby="blog-next-title" className="bg-ink text-white"><div className="mx-auto flex max-w-[88rem] flex-col gap-8 px-5 py-14 sm:px-8 md:flex-row md:items-end md:justify-between lg:px-12"><div><p className="text-xs uppercase tracking-[0.18em] text-white/70">Cuando estés lista</p><h2 id="blog-next-title" className="mt-3 max-w-2xl font-display text-[clamp(1.75rem,2.7vw,2.5rem)] font-normal leading-tight">Hablemos de su fecha.</h2><p className="mt-3 max-w-xl text-base leading-7 text-white/80">Cuéntanos tus planes. Confirmamos la disponibilidad antes de pedir un depósito.</p></div><Link href="/es/consulta" className="inline-flex min-h-12 shrink-0 items-center justify-between gap-8 self-start whitespace-nowrap border border-white px-6 text-base text-white">Consultar fecha <span aria-hidden="true">↗</span></Link></div></section>
     </>
   );
 }

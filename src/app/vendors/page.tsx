@@ -8,9 +8,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { site } from "@/content/site";
 import { getVendors, getPortfolioImages } from "@/lib/content-db";
-import { VENDOR_CATEGORIES, vendorCategoryLabel } from "@/content/portfolio-taxonomy";
-import { Reveal } from "@/components/Reveal";
+import { VENDOR_CATEGORIES, altPhraseFor, vendorCategoryLabel } from "@/content/portfolio-taxonomy";
 import { FinalCTA } from "@/components/FinalCTA";
+import { publicPhotoCopy } from "@/lib/public-photo-copy";
 
 export const revalidate = 3600;
 
@@ -77,62 +77,53 @@ export default async function VendorsPage() {
 
   return (
     <>
-      {jsonLd ? (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      ) : null}
+      {jsonLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replaceAll("<", "\\u003c") }} />}
+      <header className="bg-[#f4f2ee]">
+        <div className="mx-auto grid max-w-[90rem] gap-8 px-5 py-16 sm:px-10 sm:py-20 lg:grid-cols-[minmax(0,0.35fr)_minmax(0,0.65fr)] lg:gap-14 lg:px-16 lg:py-24">
+          <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">TX Quince / Community</p>
+          <div>
+            <h1 className="max-w-[20ch] font-display text-[clamp(2.125rem,3.6vw,3.5rem)] font-normal leading-[1.1] tracking-[-0.03em] text-ink">The people behind the celebration.</h1>
+            <p className="mt-5 max-w-xl text-base leading-7 text-ink-soft">Explore the vendors credited in TX Quince photographs across Dallas–Fort Worth.</p>
+            <a href="#vendor-directory" className="mt-7 inline-flex min-h-11 items-center gap-4 border-b border-ink text-sm font-medium text-ink">Explore the directory <span aria-hidden="true">↓</span></a>
+          </div>
+        </div>
+      </header>
 
-      <section className="mx-auto max-w-[90rem] px-5 pb-14 pt-14 text-center md:px-10 md:pb-20 md:pt-20 lg:px-16">
-        <Reveal className="mx-auto max-w-2xl">
-          <p className="text-xs font-medium uppercase tracking-[0.14em] text-ink-soft">Vendors</p>
-          <h1 className="mt-5 font-display text-[clamp(2rem,3.4vw,3rem)] leading-[1.14] text-ink">The team behind the day.</h1>
-          <p className="mx-auto mt-5 max-w-xl text-base leading-7 text-ink-soft sm:text-lg">
-            The venues, florists, glam artists, bakers, and DJs we love working
-            with across Dallas–Fort Worth. Tap any name to see the work.
-          </p>
-        </Reveal>
-      </section>
-
-      {sections.length === 0 ? (
-        <section className="mx-auto max-w-[90rem] px-5 pb-24 md:px-10 lg:px-16">
-          <p className="accent text-xl text-ink-faint">Vendor directory coming soon.</p>
-        </section>
-      ) : (
-        sections.map((s) => (
-          <section key={s.id} className="border-t border-line bg-white">
-            <div className="mx-auto max-w-[90rem] px-5 py-12 md:px-10 lg:px-16 md:py-16">
-              <Reveal>
-                <h2 className="font-display text-[clamp(1.5rem,2.6vw,2.2rem)] text-ink">{s.label}</h2>
-              </Reveal>
-              <ul className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {s.vendors.map((v) => {
-                  const n = counts.get(v.id) ?? 0;
-                  const cover = covers.get(v.id);
-                  return (
-                    <li key={v.id}>
-                      <Link
-                        href={`/vendors/${v.slug}`}
-                        className="group block h-full overflow-hidden rounded-xl border border-line bg-white transition-colors hover:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
-                      >
-                        <span className="relative block aspect-[16/10] overflow-hidden bg-greige">
-                          {cover?.url ? <Image src={cover.url} alt={cover.alt || `Quinceañera work with ${v.business || v.name}`} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover transition-transform duration-300 motion-reduce:transition-none group-hover:scale-[1.025]" /> : null}
-                        </span>
-                        <span className="flex min-h-16 items-center justify-between gap-3 px-5 py-4">
-                          <span className="min-w-0"><span className="block text-base font-medium text-ink">{v.business || v.name}</span>{v.ig_handle ? <span className="block text-sm text-ink-soft">@{v.ig_handle}</span> : null}</span>
-                          <span className="shrink-0 text-sm text-ink-soft">{n} photo{n === 1 ? "" : "s"} ↗</span>
-                        </span>
-                      </Link>
-                    </li>
-                  );
+      <div id="vendor-directory" className="scroll-mt-24 bg-white">
+        {sections.length === 0 ? (
+          <div className="mx-auto max-w-[90rem] px-5 py-20 sm:px-10 lg:px-16">
+            <h2 className="font-display text-2xl font-normal text-ink">No vendor credits yet.</h2>
+            <p className="mt-3 max-w-md text-base leading-7 text-ink-soft">Explore the photographs while this directory is being curated.</p>
+            <Link href="/portfolio" className="mt-6 inline-flex min-h-11 items-center gap-3 border-b border-ink text-sm font-medium text-ink">View the portfolio <span aria-hidden="true">↗</span></Link>
+          </div>
+        ) : sections.map((section, sectionIndex) => (
+          <section key={section.id} className="border-t border-line" aria-labelledby={`vendor-category-${sectionIndex}`}>
+            <div className="mx-auto grid max-w-[90rem] gap-8 px-5 py-14 sm:px-10 sm:py-16 lg:grid-cols-[minmax(0,0.32fr)_minmax(0,0.68fr)] lg:gap-14 lg:px-16">
+              <div>
+                <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">0{sectionIndex + 1} / Vendor credits</p>
+                <h2 id={`vendor-category-${sectionIndex}`} className="mt-3 font-display text-[clamp(1.75rem,2.7vw,2.5rem)] font-normal leading-tight text-ink">{section.label}</h2>
+              </div>
+              <ul className="border-t border-line">
+                {section.vendors.map((vendor) => {
+                  const count = counts.get(vendor.id) ?? 0;
+                  const image = covers.get(vendor.id);
+                  return <li key={vendor.id} className="border-b border-line">
+                    <Link href={`/vendors/${vendor.slug}`} className="group grid min-h-28 grid-cols-[minmax(0,1fr)_6rem] items-center gap-5 py-4 text-ink sm:grid-cols-[minmax(0,1fr)_8rem]">
+                      <span>
+                        <span className="block font-display text-[clamp(1.25rem,2vw,1.75rem)] font-normal leading-tight group-hover:underline group-hover:underline-offset-4">{vendor.business || vendor.name}</span>
+                        <span className="mt-2 block text-sm text-ink-soft">{count > 0 ? `${count} ${count === 1 ? "photograph" : "photographs"}` : "See vendor"} <span aria-hidden="true">↗</span></span>
+                      </span>
+                      <span className="relative block aspect-[4/3] overflow-hidden bg-greige">
+                        {image?.url && <Image src={image.url} alt={publicPhotoCopy(image, altPhraseFor(image.section)).alt} fill sizes="(max-width: 639px) 96px, 128px" className="object-cover transition-transform duration-500 group-hover:scale-[1.025] motion-reduce:transition-none" />}
+                      </span>
+                    </Link>
+                  </li>;
                 })}
               </ul>
             </div>
           </section>
-        ))
-      )}
-
+        ))}
+      </div>
       <FinalCTA />
     </>
   );

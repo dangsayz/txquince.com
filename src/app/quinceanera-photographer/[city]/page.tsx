@@ -22,6 +22,8 @@ import { CTAButton } from "@/components/CTAButton";
 import { FinalCTA } from "@/components/FinalCTA";
 import { HowBookingWorks } from "@/components/HowBookingWorks";
 import { Testimonials } from "@/components/Testimonials";
+import { altPhraseFor } from "@/content/portfolio-taxonomy";
+import { publicPhotoCopy } from "@/lib/public-photo-copy";
 
 /** A real church-to-reception quinceañera day — the topical depth competitors cover. */
 const DAY_TIMELINE: { when: string; title: string; body: string }[] = [
@@ -103,7 +105,7 @@ function sharedFaqs(city: string) {
   return [
     {
       q: `How much does a quinceañera photographer cost in ${city}?`,
-      a: `My collections are fixed-price — $1,800 to $5,500 in ${city} — with the number shown up front, no inquiry call to get a quote. Every collection includes a complimentary Save-the-Date session, and you can pay in full or split the balance into interest-free installments.`,
+      a: `Our collections are fixed-price — $1,800 to $5,500 in ${city} — with the number shown up front. A complimentary Save-the-Date session is included from Essential upward. Payment plans are available.`,
     },
     {
       q: "Do you offer video too, or only photography?",
@@ -115,7 +117,7 @@ function sharedFaqs(city: string) {
     },
     {
       q: "Do you offer payment plans?",
-      a: "Yes. You reserve your date with a deposit and split the balance into interest-free installments before the day — pay in full or in payments, your choice at checkout.",
+      a: "Yes. After we confirm your date and coverage, a collection deposit reserves it. You can discuss installments for the remaining balance before the celebration.",
     },
   ];
 }
@@ -227,78 +229,36 @@ export default async function CityPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* Breadcrumb — visible trail, mirrors the BreadcrumbList schema */}
-      <nav
-        aria-label="Breadcrumb"
-        className="mx-auto flex max-w-[90rem] items-center px-5 pt-6 text-sm text-ink-faint md:px-10 lg:px-16"
-      >
-        <Link href="/" className="inline-flex min-h-11 items-center transition-colors hover:text-ink">
-          Home
-        </Link>
-        <span className="mx-1.5" aria-hidden>
-          /
-        </span>
-        <Link
-          href="/quinceanera-photographer"
-          className="inline-flex min-h-11 items-center transition-colors hover:text-ink"
-        >
-          Quinceañera Photographer
-        </Link>
-        <span className="mx-1.5" aria-hidden>
-          /
-        </span>
-        <span className="text-ink-soft">{loc.city}, TX</span>
-      </nav>
-
-      <section className="mx-auto max-w-[90rem] px-5 pb-14 pt-8 md:px-10 md:pb-20 md:pt-10 lg:px-16">
-        <Reveal className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-medium text-ink-soft">
-            Quinceañera Photography &amp; Film · {loc.city}, TX
-          </p>
-          <h1 className="mt-4 font-display text-[clamp(2rem,3.5vw,3rem)] leading-[1.14] text-ink text-balance">
-            {loc.city} Quinceañera Photographer
-          </h1>
-          <p className="mx-auto mt-5 max-w-xl text-base leading-7 text-ink-soft">
-            {loc.lead}
-          </p>
-          <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-            <Link
-              href={site.cta.href}
-              className="inline-flex min-h-12 items-center justify-center rounded-md bg-ink px-6 text-base font-medium text-white transition-colors hover:bg-accent-strong"
-            >
-              {site.cta.label}
-            </Link>
-            <Link
-              href={site.secondaryCta.href}
-              className="inline-flex min-h-12 items-center justify-center rounded-md border border-line px-6 text-base font-medium text-ink transition-colors hover:border-ink"
-            >
-              {site.secondaryCta.label}
-            </Link>
-            <Link
-              href={`/es/fotografo-de-quinceaneras/${loc.slug}`}
-              hrefLang="es"
-              className="inline-flex min-h-12 items-center px-3 text-base font-medium text-ink underline decoration-ink/30 underline-offset-4 hover:decoration-ink"
-            >
-              Español →
-            </Link>
+      <header className="relative isolate min-h-[35rem] overflow-hidden bg-ink text-white sm:min-h-[43rem]" aria-labelledby="city-title">
+        {hero?.url && <Image
+          src={hero.url}
+          alt={publicPhotoCopy(hero, altPhraseFor(hero.section)).alt}
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+          style={{ objectPosition: `${hero.focus_x != null ? Math.round(hero.focus_x * 100) : 50}% ${hero.focus_y != null ? Math.round(hero.focus_y * 100) : 38}%` }}
+        />}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/30" aria-hidden="true" />
+        <div className="relative mx-auto flex min-h-[35rem] max-w-[90rem] flex-col justify-between px-5 pb-10 pt-6 sm:min-h-[43rem] sm:px-10 sm:pb-14 lg:px-16">
+          <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 text-xs text-white/85">
+            <Link href="/" className="inline-flex min-h-11 items-center underline underline-offset-4">Home</Link>
+            <span aria-hidden="true">/</span>
+            <Link href="/quinceanera-photographer" className="inline-flex min-h-11 items-center underline underline-offset-4">Areas served</Link>
+            <span aria-hidden="true">/</span>
+            <span>{loc.city}</span>
+          </nav>
+          <div className="max-w-2xl">
+            <p className="text-xs uppercase tracking-[0.18em] text-white/80">Quinceañera photography &amp; film / {loc.city}, TX</p>
+            <h1 id="city-title" className="mt-4 max-w-[20ch] font-display text-[clamp(2.25rem,4.5vw,4.25rem)] font-normal leading-[1.06] tracking-[-0.035em]">Her day in {loc.city}.</h1>
+            <p className="mt-5 max-w-xl text-base leading-7 text-white/85">{loc.lead}</p>
+            <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3">
+              <Link href={site.cta.href} className="inline-flex min-h-12 items-center gap-4 bg-white px-6 text-sm font-medium text-ink hover:bg-ivory">{site.cta.label}<span aria-hidden="true">↗</span></Link>
+              <Link href={`/es/fotografo-de-quinceaneras/${loc.slug}`} hrefLang="es" className="inline-flex min-h-11 items-center border-b border-white text-sm font-medium">Español ↗</Link>
+            </div>
           </div>
-        </Reveal>
-        <div className="relative mt-10 aspect-[4/3] overflow-hidden rounded-lg bg-greige sm:mt-12 sm:aspect-[16/8] lg:aspect-[16/7]">
-          {hero?.url ? (
-            <Image
-              src={hero.url}
-              alt={hero.alt || `Quinceañera photography in ${loc.city}, TX`}
-              fill
-              priority
-              sizes="(max-width: 1024px) 100vw, 1440px"
-              className="object-cover"
-              style={{
-                objectPosition: `${hero.focus_x != null ? Math.round(hero.focus_x * 100) : 50}% ${hero.focus_y != null ? Math.round(hero.focus_y * 100) : 32}%`,
-              }}
-            />
-          ) : null}
         </div>
-      </section>
+      </header>
 
       {/* Local intro */}
       <section className="mx-auto max-w-3xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
@@ -353,10 +313,9 @@ export default async function CityPage({
               Fixed-price collections from {packages[0].priceLabel}
             </h2>
             <p className="mt-5 max-w-xl text-base leading-7 text-ink-soft">
-              Fixed pricing, held for your {site.scarcity.bookedThrough.split(" ")[1]} or{" "}
-              {site.scarcity.reservingYear} {loc.city} date — every quinceañera covered
-              church-to-reception. Most families choose Signature: two storytellers,
-              the full day, film and gallery both.
+              Fixed pricing for your {loc.city} celebration. We confirm availability
+              and coverage before a deposit reserves the date. Signature brings two
+              storytellers together for photo and film across the full day.
             </p>
           </Reveal>
 

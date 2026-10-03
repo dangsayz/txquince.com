@@ -1,25 +1,16 @@
 export default function PortfolioLoading() {
   return (
-    <section className="mx-auto max-w-[90rem] px-5 py-10 md:px-10 md:py-14 lg:px-16" role="status" aria-label="Loading portfolio">
-      <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,13rem)_minmax(0,1fr)] lg:gap-10">
-        <div className="hidden space-y-3 lg:block" aria-hidden="true">
-          <div className="h-4 w-28 animate-pulse rounded bg-greige motion-reduce:animate-none" />
-          {Array.from({ length: 5 }, (_, index) => <div key={index} className="h-11 w-full animate-pulse rounded-lg bg-greige motion-reduce:animate-none" />)}
+    <div role="status" aria-label="Loading portfolio" className="bg-cream">
+      <div className="mx-auto grid max-w-[100rem] lg:min-h-[min(48rem,80svh)] lg:grid-cols-[minmax(0,0.42fr)_minmax(0,0.58fr)]">
+        <div className="order-2 flex flex-col justify-center gap-5 px-5 py-16 md:px-10 lg:order-1 lg:px-16" aria-hidden="true">
+          <div className="h-3 w-28 animate-pulse bg-greige motion-reduce:animate-none" />
+          <div className="mt-8 h-12 w-4/5 animate-pulse bg-greige motion-reduce:animate-none" />
+          <div className="h-5 w-3/4 animate-pulse bg-greige motion-reduce:animate-none" />
+          <div className="h-5 w-2/3 animate-pulse bg-greige motion-reduce:animate-none" />
         </div>
-        <div>
-          <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_11rem]" aria-hidden="true">
-            <div className="h-12 animate-pulse rounded-lg bg-greige motion-reduce:animate-none" />
-            <div className="h-12 animate-pulse rounded-lg bg-greige motion-reduce:animate-none" />
-          </div>
-          <div className="mt-5 flex gap-2 overflow-hidden lg:hidden" aria-hidden="true">
-            {Array.from({ length: 4 }, (_, index) => <div key={index} className="h-11 w-28 shrink-0 animate-pulse rounded-lg bg-greige motion-reduce:animate-none" />)}
-          </div>
-          <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3" aria-hidden="true">
-            {Array.from({ length: 6 }, (_, index) => <div key={index} className="aspect-[4/5] animate-pulse rounded-lg bg-greige motion-reduce:animate-none" />)}
-          </div>
-        </div>
+        <div className="order-1 aspect-[4/5] animate-pulse bg-greige motion-reduce:animate-none sm:aspect-[5/4] lg:order-2 lg:aspect-auto" aria-hidden="true" />
       </div>
       <span className="sr-only">Loading photographs</span>
-    </section>
+    </div>
   );
 }

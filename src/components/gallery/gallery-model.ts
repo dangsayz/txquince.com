@@ -24,6 +24,7 @@ export type GalleryItem = {
   caption?: string | null;
   city?: string | null;
   vendors?: GalleryCredit[];
+  detailAvailable?: boolean;
 };
 
 export type GallerySection = { id: string; title: string };

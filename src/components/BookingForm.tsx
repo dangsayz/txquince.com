@@ -253,6 +253,10 @@ export function BookingForm({
       </div>
 
       <div className="grid gap-x-5 gap-y-6 sm:grid-cols-2">
+        <div className="border-t border-line pt-5 sm:col-span-2">
+          <p className="text-xs uppercase tracking-[0.16em] text-ink-soft">01 / Your details</p>
+          <h3 className="mt-2 text-lg font-medium text-ink">How we can reach you</h3>
+        </div>
         <Field label="Your name" required error={errors.name}>
           <input value={name} onChange={(e) => setName(e.target.value)} type="text" autoComplete="name" className={inputBase} placeholder="First and last" />
         </Field>
@@ -262,6 +266,10 @@ export function BookingForm({
         <Field label="Phone" error={errors.phone}>
           <input value={phone} onChange={(e) => setPhone(e.target.value)} type="tel" autoComplete="tel" className={inputBase} placeholder="(optional)" />
         </Field>
+        <div className="border-t border-line pt-5 sm:col-span-2">
+          <p className="text-xs uppercase tracking-[0.16em] text-ink-soft">02 / Her celebration</p>
+          <h3 className="mt-2 text-lg font-medium text-ink">Date and coverage</h3>
+        </div>
         <Field label="Event date" required error={errors.event_date} hint="The day to reserve">
           <input
             type="date"
@@ -286,7 +294,7 @@ export function BookingForm({
             ) : dateOpen ? (
               <span className="mt-1.5 inline-flex items-center gap-1.5 text-xs text-green-700">
                 <span aria-hidden>●</span>
-                Open — I only book one celebration a day, so request it before it&apos;s claimed.
+                Our calendar currently shows this date as open. We will confirm before reserving it.
               </span>
             ) : null}
           </span>
@@ -322,6 +330,14 @@ export function BookingForm({
           </Field>
         )}
 
+        <div className="grid gap-3 border-y border-line bg-ivory px-5 py-5 sm:col-span-2 sm:grid-cols-2">
+          <div><p className="text-xs uppercase tracking-[0.14em] text-ink-soft">Selected collection</p><p className="mt-1 text-lg text-ink">{selectedCollection.name} · {selectedCollection.priceLabel}</p></div>
+          <div><p className="text-xs uppercase tracking-[0.14em] text-ink-soft">After we confirm the date</p><p className="mt-1 text-lg text-ink">{selectedCollection.depositLabel} deposit</p></div>
+        </div>
+        <div className="border-t border-line pt-5 sm:col-span-2">
+          <p className="text-xs uppercase tracking-[0.16em] text-ink-soft">03 / One more thing</p>
+          <h3 className="mt-2 text-lg font-medium text-ink">Tell us what matters most</h3>
+        </div>
         <Field label="Anything you'd like me to know?" error={errors.notes} className="sm:col-span-2">
           <textarea
             value={notes}
@@ -358,7 +374,7 @@ export function BookingForm({
       <button
         type="submit"
         disabled={busy}
-        className="inline-flex min-h-12 items-center justify-center gap-3 self-start rounded-md bg-ink px-8 py-3 text-base font-medium text-white transition-colors hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:cursor-not-allowed disabled:opacity-70"
+        className="inline-flex min-h-12 w-full items-center justify-center gap-3 bg-ink px-8 py-3 text-base font-medium text-white transition-colors hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
       >
         {busy ? (
           <>
@@ -366,7 +382,7 @@ export function BookingForm({
             Sending request…
           </>
         ) : (
-          "Reserve my date"
+          "Send reservation request"
         )}
       </button>
     </form>

@@ -12,7 +12,6 @@ import {
   getImagesBySection,
   imagePagePath,
 } from "@/lib/content-db";
-import { Reveal } from "@/components/Reveal";
 import { ProtectedImg } from "@/components/ProtectedImg";
 import { EditOverlay } from "@/components/EditMode";
 import { altPhraseFor, categoryLabel, vendorCreditLabel } from "@/content/portfolio-taxonomy";
@@ -80,6 +79,7 @@ export default async function PhotoPage({
   const related = (await getImagesBySection(img.section))
     .filter((r) => r.slug && r.slug !== slug)
     .slice(0, 3);
+  const venue = venueForLocation(img.location);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -120,150 +120,107 @@ export default async function PhotoPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replaceAll("<", "\\u003c") }}
       />
+      <article className="bg-cream">
+        <div className="mx-auto flex max-w-[100rem] flex-wrap items-center justify-between gap-3 px-5 py-5 text-sm text-ink-soft md:px-10 lg:px-16">
+          <Link href={`/portfolio#${img.section}`} className="inline-flex min-h-11 items-center gap-3 text-ink transition-colors hover:text-ink-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">
+            <span aria-hidden="true">←</span> Back to the photographs
+          </Link>
+          <span>{label} <span aria-hidden="true">/</span> TX Quince</span>
+        </div>
 
-      <article className="mx-auto max-w-[90rem] px-5 pb-24 pt-12 md:px-10 lg:px-16 md:pb-36 md:pt-16">
-        {/* Breadcrumb line */}
-        <Reveal>
-          <p className="text-sm text-ink-soft">
-            <Link href="/portfolio" className="transition-colors hover:text-ink">
-              Portfolio
-            </Link>
-            <span aria-hidden> / </span>
-            <Link href={`/portfolio#${img.section}`} className="transition-colors hover:text-ink">
-              {label}
-            </Link>
-          </p>
-        </Reveal>
+        <figure className="border-y border-line bg-greige">
+          <div className="relative mx-auto flex min-h-[45svh] max-w-[100rem] items-center justify-center p-3 sm:p-8 lg:min-h-[68svh] lg:p-12">
+            <ProtectedImg
+              src={at(img.url, 1920)}
+              alt={copy.alt}
+              width={img.width}
+              height={img.height}
+              loading="eager"
+              className="block h-auto max-h-[78svh] max-w-full object-contain"
+            />
+            <EditOverlay image={{ id: img.id, slug: img.slug, alt: img.alt, fx: img.focus_x, fy: img.focus_y }} />
+          </div>
+          <figcaption className="mx-auto flex max-w-[100rem] justify-between gap-4 px-5 pb-4 text-xs uppercase tracking-[0.15em] text-ink-soft md:px-10 lg:px-16">
+            <span>{label}</span>
+            <span>Photography by {site.brand}</span>
+          </figcaption>
+        </figure>
 
-        {/* The photograph — display derivative only; expanding never fetches more. */}
-        <div className="mt-8 grid gap-10 md:grid-cols-12 md:gap-8">
-          <Reveal className="md:col-span-7">
-            <div className="relative">
-              <ProtectedImg
-                src={at(img.url, 1920)}
-                alt={copy.alt}
-                width={img.width}
-                height={img.height}
-                loading="eager"
-                className="h-auto w-full"
-              />
-              <EditOverlay
-                image={{ id: img.id, slug: img.slug, alt: img.alt, fx: img.focus_x, fy: img.focus_y }}
-              />
+        <div className="mx-auto grid max-w-[100rem] gap-10 px-5 pb-20 pt-12 md:grid-cols-[minmax(0,1fr)_minmax(16rem,0.55fr)] md:gap-16 md:px-10 md:pb-28 md:pt-20 lg:px-16">
+          <div className="max-w-2xl">
+            <p className="text-xs font-medium uppercase tracking-[0.18em] text-ink-soft">From the collection</p>
+            <h1 className="mt-4 font-body text-[clamp(1.875rem,3vw,2.75rem)] font-normal leading-[1.12] tracking-[-0.035em] text-ink">{copy.title}</h1>
+            {img.hook ? <p className="mt-5 text-lg leading-relaxed text-ink-soft">{img.hook}</p> : null}
+            {img.caption && copy.description !== copy.alt ? <p className="mt-5 text-base leading-7 text-ink-soft">{copy.description}</p> : null}
+            <div className="mt-8">
+              <PhotoActions section={img.section} slug={slug} title={copy.title} pageUrl={pageUrl} bookingHref={site.cta.href} />
             </div>
-          </Reveal>
+          </div>
 
-          {/* Caption block — pinned low like a plate caption. */}
-          <div className="flex flex-col justify-end md:col-span-4 md:col-start-9">
-            <Reveal>
-              <h1
-                className="font-display text-[clamp(1.75rem,2.8vw,2.5rem)] leading-tight text-ink"
-              >
-                {copy.title}
-              </h1>
-              {img.hook ? (
-                <p className="accent mt-3 text-lg text-accent-strong">{img.hook}</p>
-              ) : null}
-              {img.caption && copy.description !== copy.alt ? (
-                <p className="mt-4 text-base leading-relaxed text-ink-soft">{copy.description}</p>
-              ) : null}
-              <dl className="mt-8 space-y-3 border-t border-ink/10 pt-6 text-sm">
-                <div className="flex justify-between gap-6">
-                  <dt className="text-ink-faint">Photographer</dt>
-                  <dd className="text-ink">{site.brand}</dd>
-                </div>
-                {/* Venue — links to its landing page when this photo was shot at
-                    a known venue (internal link into the venue cluster). */}
-                {(() => {
-                  const v = venueForLocation(img.location);
-                  return v ? (
-                    <div className="flex justify-between gap-6">
-                      <dt className="text-ink-faint">Venue</dt>
-                      <dd className="text-right text-ink">
-                        <Link
-                          href={`/venues/${v.slug}`}
-                          className="underline decoration-ink/20 underline-offset-2 transition-colors hover:text-accent hover:decoration-accent"
-                        >
-                          {v.venue}
-                        </Link>
-                      </dd>
-                    </div>
-                  ) : null;
-                })()}
-                <div className="flex justify-between gap-6">
-                  <dt className="text-ink-faint">Location</dt>
-                  <dd className="text-ink">{img.city ? `${img.city}, TX` : "Dallas–Fort Worth, TX"}</dd>
-                </div>
-                <div className="flex justify-between gap-6">
-                  <dt className="text-ink-faint">Series</dt>
-                  <dd className="text-ink">{label}</dd>
-                </div>
-                {/* Vendor credits — link to each vendor's page; IG opens out.
-                    Email/phone never appear. */}
-                {(img.vendors ?? []).map((v) => {
-                  const ig = igUrl(v.ig_handle);
-                  const web = websiteUrl(v.website);
-                  const out = ig || web;
-                  return (
-                    <div key={v.vendor_id} className="flex justify-between gap-6">
-                      <dt className="text-ink-faint">{v.role || vendorCreditLabel(v.category)}</dt>
-                      <dd className="text-right text-ink">
-                        <Link href={`/vendors/${v.slug}`} className="underline decoration-ink/20 underline-offset-2 transition-colors hover:text-accent hover:decoration-accent">
-                          {v.business || v.name}
-                        </Link>
-                        {out ? (
-                          <a
-                            href={out}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={`Open ${v.business || v.name} ${ig ? "Instagram" : "website"}`}
-                            className="ml-1.5 text-ink-faint transition-colors hover:text-accent"
-                          >
-                            ↗
-                          </a>
-                        ) : null}
-                      </dd>
-                    </div>
-                  );
-                })}
-              </dl>
-              <div className="mt-10 flex flex-col gap-5">
-                <PhotoActions section={img.section} slug={slug} title={copy.title} pageUrl={pageUrl} bookingHref={site.cta.href} />
-                <Link
-                  href={`/portfolio#${img.section}`}
-                  className="text-sm text-accent underline decoration-accent/30 underline-offset-4 transition-colors hover:text-accent-strong"
-                >
-                  More from {label}
-                </Link>
+          <div className="border-t border-line pt-6 md:pt-0">
+            <p className="text-xs font-medium uppercase tracking-[0.18em] text-ink-soft">The details</p>
+            <dl className="mt-5 divide-y divide-line text-base">
+              <div className="flex flex-wrap justify-between gap-x-5 gap-y-1 py-3">
+                <dt className="text-ink-soft">Photographer</dt>
+                <dd className="text-ink">{site.brand}</dd>
               </div>
-              <p className="mt-10 text-xs text-ink-faint">
-                © {site.brand} · {site.domain}
-              </p>
-            </Reveal>
+              {venue ? (
+                <div className="flex flex-wrap justify-between gap-x-5 gap-y-1 py-3">
+                  <dt className="text-ink-soft">Venue</dt>
+                  <dd><Link href={`/venues/${venue.slug}`} className="text-ink underline decoration-line underline-offset-4 hover:decoration-ink">{venue.venue}</Link></dd>
+                </div>
+              ) : null}
+              <div className="flex flex-wrap justify-between gap-x-5 gap-y-1 py-3">
+                <dt className="text-ink-soft">Location</dt>
+                <dd className="text-ink">{img.city ? `${img.city}, TX` : "Dallas–Fort Worth, TX"}</dd>
+              </div>
+              <div className="flex flex-wrap justify-between gap-x-5 gap-y-1 py-3">
+                <dt className="text-ink-soft">Series</dt>
+                <dd><Link href={`/portfolio#${img.section}`} className="text-ink underline decoration-line underline-offset-4 hover:decoration-ink">{label}</Link></dd>
+              </div>
+              {(img.vendors ?? []).map((v) => {
+                const ig = igUrl(v.ig_handle);
+                const out = ig || websiteUrl(v.website);
+                return (
+                  <div key={v.vendor_id} className="flex flex-wrap justify-between gap-x-5 gap-y-1 py-3">
+                    <dt className="text-ink-soft">{v.role || vendorCreditLabel(v.category)}</dt>
+                    <dd className="flex items-center gap-2 text-right">
+                      <Link href={`/vendors/${v.slug}`} className="text-ink underline decoration-line underline-offset-4 hover:decoration-ink">{v.business || v.name}</Link>
+                      {out ? <a href={out} target="_blank" rel="noopener noreferrer" aria-label={`Open ${v.business || v.name} ${ig ? "Instagram" : "website"}`} className="inline-flex min-h-11 min-w-11 items-center justify-center text-ink-soft hover:text-ink">↗</a> : null}
+                    </dd>
+                  </div>
+                );
+              })}
+            </dl>
           </div>
         </div>
 
-        {/* Related — same series. */}
         {related.length ? (
-          <div className="mt-20 border-t border-ink/10 pt-10 md:mt-28">
-            <p className="text-sm font-semibold text-ink">
-              Also from {label}
-            </p>
-            <div className="mt-6 grid grid-cols-3 gap-3 md:gap-5">
-              {related.map((r) => (
-                <Link key={r.id} href={imagePagePath(r.section, r.slug as string)} className="group block overflow-hidden">
-                  <ProtectedImg
-                    src={at(r.url, 640)}
-                    alt={publicPhotoCopy(r, altPhraseFor(r.section)).alt}
-                    loading="lazy"
-                    width={r.width}
-                    height={r.height}
-                    className="h-auto w-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
-                  />
-                </Link>
-              ))}
+          <section className="border-t border-line bg-white" aria-labelledby="more-from-series">
+            <div className="mx-auto max-w-[100rem] px-5 py-16 md:px-10 md:py-24 lg:px-16">
+              <div className="flex flex-wrap items-end justify-between gap-4">
+                <div>
+                  <p className="text-xs font-medium uppercase tracking-[0.18em] text-ink-soft">Continue looking</p>
+                  <h2 id="more-from-series" className="mt-3 font-body text-[clamp(1.75rem,2.6vw,2.5rem)] font-normal text-ink">More from {label}</h2>
+                </div>
+                <Link href={`/portfolio#${img.section}`} className="inline-flex min-h-11 items-center text-base text-ink underline underline-offset-4 hover:text-ink-soft">View the collection ↗</Link>
+              </div>
+              <div className="mt-9 grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3">
+                {related.map((r) => (
+                  <Link key={r.id} href={imagePagePath(r.section, r.slug as string)} aria-label={`View ${publicPhotoCopy(r, altPhraseFor(r.section)).title}`} className="group relative block aspect-[4/5] overflow-hidden bg-greige focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">
+                    <ProtectedImg
+                      src={at(r.url, 640)}
+                      alt={publicPhotoCopy(r, altPhraseFor(r.section)).alt}
+                      loading="lazy"
+                      width={r.width}
+                      height={r.height}
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.025] motion-reduce:transition-none"
+                    />
+                  </Link>
+                ))}
+              </div>
             </div>
-          </div>
+          </section>
         ) : null}
       </article>
     </>

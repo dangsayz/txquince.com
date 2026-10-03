@@ -37,7 +37,7 @@ export async function generateMetadata({
   if (!loc) return {};
 
   const title = `Fotógrafo de Quinceañeras en ${loc.city}, TX`;
-  const description = `Fotógrafo y videógrafo de quinceañeras en ${loc.city}. Colecciones a precio fijo desde $1,800, Save-the-Date sin costo — de la misa a la recepción.`;
+  const description = `Fotografía y video de quinceañeras en ${loc.city}. Cuatro colecciones a precio fijo desde $1,800; sesión Save-the-Date incluida desde Essential.`;
   const esUrl = `${site.url}/es/fotografo-de-quinceaneras/${loc.slug}`;
   const enUrl = `${site.url}/quinceanera-photographer/${loc.slug}`;
 
@@ -87,7 +87,7 @@ const INCLUDES_ES: Record<string, string[]> = {
   ],
   signature: [
     "Foto + video — dos narradores, todo el día",
-    "Hasta 8 horas de cobertura del día completo",
+    "Hasta 7 horas de cobertura del día completo",
     "Video de momentos + galería completa editada",
     "Adelanto la misma semana",
   ],
@@ -95,7 +95,7 @@ const INCLUDES_ES: Record<string, string[]> = {
     "Todo lo de Signature",
     "Video cinematográfico de larga duración (1–3 horas)",
     "Cobertura con dron / aérea",
-    "Horas extra + una segunda sesión de retratos",
+    "Hasta 8 horas de cobertura y una segunda sesión de retratos",
   ],
 };
 
@@ -103,7 +103,7 @@ function sharedFaqsEs(city: string) {
   return [
     {
       q: `¿Cuánto cuesta un fotógrafo de quinceañera en ${city}?`,
-      a: `Mis colecciones son a precio fijo — de $1,800 a $5,500 en ${city} — con el precio a la vista, sin llamada para cotizar. Cada colección incluye una sesión Save-the-Date sin costo, y puedes pagar completo o en mensualidades sin intereses.`,
+      a: `Las cuatro colecciones de foto y video para ${city} tienen precios publicados de $1,800 a $5,500. La sesión Save-the-Date está incluida desde Essential; Moments ofrece cinco horas de foto o video. Puedes consultar tu fecha sin pagar.`,
     },
     {
       q: "¿También ofreces video, o solo fotografía?",
@@ -115,7 +115,7 @@ function sharedFaqsEs(city: string) {
     },
     {
       q: "¿Tienen planes de pago?",
-      a: "Sí. Reservas tu fecha con un depósito y divides el resto en mensualidades sin intereses antes del día — paga completo o en pagos, tú eliges en el checkout.",
+      a: "Sí. Podemos revisar un plan de pagos contigo. Primero confirmamos la fecha y la cobertura; después enviamos el enlace seguro para el depósito, que se aplica al saldo de la colección.",
     },
   ];
 }
@@ -130,7 +130,7 @@ export default async function CityPageEs({
   if (!loc) notFound();
 
   const content = getCityContent(loc.slug);
-  const faqs = content?.faqsEs ?? [...loc.faqsEs, ...sharedFaqsEs(loc.city)];
+  const faqs = sharedFaqsEs(loc.city);
   const nearby = nearbyLocations(loc.slug);
   const cityVenues = venuesByCity(loc.slug);
   const guides = ES_CITY_GUIDES.map(getEsPost).filter((p) => p !== undefined);
@@ -187,7 +187,7 @@ export default async function CityPageEs({
             description: TIER_ES[p.id],
             price: String(p.price),
             priceCurrency: "USD",
-            url: `${site.url}/reserve?collection=${p.id}`,
+            url: `${site.url}/es/consulta`,
           })),
         },
       },
@@ -225,78 +225,34 @@ export default async function CityPageEs({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* Breadcrumb — rastro visible, refleja el BreadcrumbList */}
-      <nav
-        aria-label="Breadcrumb"
-        className="mx-auto max-w-4xl px-5 pt-10 text-xs text-ink-faint md:px-10 lg:px-16"
-      >
-        <Link href="/es/fotografo-de-quinceaneras" className="transition-colors hover:text-ink">
-          Inicio
-        </Link>
-        <span className="mx-1.5" aria-hidden>
-          /
-        </span>
-        <Link
-          href="/es/fotografo-de-quinceaneras"
-          className="transition-colors hover:text-ink"
-        >
-          Fotógrafo de Quinceañeras
-        </Link>
-        <span className="mx-1.5" aria-hidden>
-          /
-        </span>
-        <span className="text-ink-soft">{loc.city}, TX</span>
-      </nav>
-
-      <section className="mx-auto max-w-[90rem] px-5 pb-14 pt-12 md:px-10 md:pb-20 md:pt-16 lg:px-16 lg:pt-20">
-        <Reveal className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-medium text-ink-soft">Fotografía y video de quinceañeras · {loc.city}, TX</p>
-          <h1 className="mt-4 font-display text-[clamp(2rem,3.5vw,3rem)] leading-[1.14] text-ink text-balance">
-            Fotógrafo de Quinceañeras en {loc.city}
-          </h1>
-          <p className="mx-auto mt-5 max-w-xl text-base leading-7 text-ink-soft">{loc.leadEs}</p>
-          <div className="mt-8 flex flex-col items-center justify-center gap-2 sm:flex-row sm:gap-4">
-            <Link href={site.cta.href} className="inline-flex min-h-12 w-full items-center justify-center whitespace-nowrap rounded-md bg-ink px-6 text-base font-medium text-white transition-colors hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:w-auto">
-              Reserva tu fecha
-            </Link>
-            <Link href={site.secondaryCta.href} className="inline-flex min-h-11 w-full items-center justify-center text-base font-medium text-ink underline underline-offset-4 hover:text-accent-strong sm:w-auto">
-              ¿Preguntas primero? Escríbeme
-            </Link>
+      <header className="relative isolate min-h-[35rem] overflow-hidden bg-ink text-white sm:min-h-[43rem]" aria-labelledby="city-title">
+        <Image src={hero?.url ?? "/portfolio/kimberly-reception.webp"} alt={isCityWork ? `Fotografía de quinceañera en ${loc.city}, TX` : "Celebración de quinceañera en Dallas–Fort Worth"} fill priority sizes="100vw" unoptimized={(hero?.url ?? "").startsWith("/portfolio/")} className="object-cover" style={{ objectPosition: `${hero?.focus_x != null ? Math.round(hero.focus_x * 100) : 50}% ${hero?.focus_y != null ? Math.round(hero.focus_y * 100) : 38}%` }} />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/30" aria-hidden="true" />
+        <div className="relative mx-auto flex min-h-[35rem] max-w-[88rem] flex-col justify-between px-5 pb-10 pt-6 sm:min-h-[43rem] sm:px-8 sm:pb-14 lg:px-12">
+          <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 text-xs text-white/85">
+            <Link href="/es" className="inline-flex min-h-11 items-center underline underline-offset-4">Inicio</Link><span aria-hidden="true">/</span>
+            <Link href="/es/fotografo-de-quinceaneras" className="inline-flex min-h-11 items-center underline underline-offset-4">Áreas</Link><span aria-hidden="true">/</span>
+            <span>{loc.city}</span>
+          </nav>
+          <div className="max-w-2xl">
+            <p className="text-xs uppercase tracking-[0.18em] text-white/80">Fotografía y video de quinceañeras / {loc.city}, TX</p>
+            <h1 id="city-title" className="mt-4 max-w-[20ch] font-display text-[clamp(2.25rem,4.5vw,4.25rem)] font-normal leading-[1.06] tracking-[-0.035em]">Fotografía de quinceañeras en {loc.city}.</h1>
+            <p className="mt-5 max-w-xl text-base leading-7 text-white/85">{loc.leadEs}</p>
+            <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3">
+              <Link href="/es/consulta" className="inline-flex min-h-12 items-center gap-4 bg-white px-6 text-base font-medium text-ink">Consultar su fecha <span aria-hidden="true">↗</span></Link>
+              <Link href={`/quinceanera-photographer/${loc.slug}`} hrefLang="en" className="inline-flex min-h-11 items-center border-b border-white text-base">Read in English ↗</Link>
+            </div>
           </div>
-          <Link href={`/quinceanera-photographer/${loc.slug}`} hrefLang="en" className="mt-3 inline-flex min-h-11 items-center text-sm text-ink-soft underline underline-offset-4 hover:text-ink">
-            View this page in English →
-          </Link>
-        </Reveal>
-        {hero?.url ? (
-          <div className="relative mt-10 aspect-[4/3] overflow-hidden rounded-lg bg-greige sm:mt-12 sm:aspect-[16/8] lg:aspect-[16/7]">
-            <Image
-              src={hero.url}
-              alt={hero.alt || `Fotografía de quinceañera en ${loc.city}, TX`}
-              fill
-              priority
-              sizes="(max-width: 1024px) 100vw, 1440px"
-              unoptimized={hero.url.startsWith("/portfolio/")}
-              className="object-cover"
-              style={{ objectPosition: `${hero.focus_x != null ? Math.round(hero.focus_x * 100) : 50}% ${hero.focus_y != null ? Math.round(hero.focus_y * 100) : 32}%` }}
-            />
-          </div>
-        ) : null}
-      </section>
+        </div>
+      </header>
 
       {/* Intro local */}
-      <section className="mx-auto max-w-3xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
-        <Reveal className="flex flex-col gap-6">
-          {(content?.introEs ?? loc.introEs).map((para) => (
-            <p key={para.slice(0, 24)} className="text-base leading-relaxed text-ink-soft">
-              {para}
-            </p>
-          ))}
-          <p className="text-base text-ink-soft">
-            Cubriendo {loc.areas.slice(0, -1).join(", ")}
-            {loc.areas.length > 1 ? ` y ${loc.areas[loc.areas.length - 1]}` : loc.areas[0]}
-            .
-          </p>
-        </Reveal>
+      <section className="mx-auto grid max-w-[88rem] gap-8 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-[minmax(0,0.38fr)_minmax(0,0.62fr)] lg:gap-16 lg:px-12" aria-labelledby="city-story-title">
+        <div><p className="text-xs uppercase tracking-[0.18em] text-ink-soft">En {loc.city}</p><h2 id="city-story-title" className="mt-4 font-display text-[clamp(1.75rem,2.6vw,2.4rem)] font-normal leading-tight text-ink">Un lugar para su historia.</h2></div>
+        <div className="space-y-5 text-base leading-7 text-ink-soft">
+          {(content?.introEs.slice(0, 2) ?? loc.introEs.slice(0, 1)).map((para) => <p key={para.slice(0, 24)}>{para}</p>)}
+          <p>Cubrimos {loc.areas.slice(0, -1).join(", ")}{loc.areas.length > 1 ? ` y ${loc.areas[loc.areas.length - 1]}` : loc.areas[0]}.</p>
+        </div>
       </section>
 
       {/* Dónde tomar las fotos — lugares reales (único por ciudad) */}
@@ -323,97 +279,43 @@ export default async function CityPageEs({
       ) : null}
 
       {/* Colecciones */}
-      <section className="bg-ivory">
-        <div className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
-          <Reveal>
-            <h2 className="display-2 text-ink text-balance">
-              Colecciones a precio fijo desde {packages[0].priceLabel}
-            </h2>
-            <p className="mt-5 max-w-xl text-base leading-7 text-ink-soft">
-              Cada quinceañera en {loc.city} se cubre de la iglesia a la recepción.
-              La mayoría elige Signature — dos narradores, el día completo, foto y
-              video.
-            </p>
-          </Reveal>
-
-          <div className="mt-10 grid gap-4 md:grid-cols-2">
-            {packages.map((p, i) => (
-              <Reveal
-                key={p.id}
-                delay={i * 60}
-                className="flex min-w-0 flex-col rounded-lg border border-line bg-white p-6 sm:p-7"
-              >
-                <div>
-                  <div className="flex flex-wrap items-center gap-3">
-                    <h3 className="font-display text-[clamp(1.5rem,2vw,1.875rem)] text-ink">{p.name}</h3>
-                    {p.highlight ? (
-                      <span className="text-xs font-medium text-ink-soft">
-                        Más popular
-                      </span>
-                    ) : null}
-                  </div>
-                  <p className="mt-2 max-w-lg text-base leading-7 text-ink-soft">{TIER_ES[p.id]}</p>
-                </div>
-                <div className="mt-5 flex flex-1 flex-col">
-                  <ul className="grid gap-2 text-base leading-7 text-ink-soft">
-                    {(INCLUDES_ES[p.id] ?? p.includes).map((item) => (
-                      <li key={item} className="border-b border-line pb-2">
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="mt-auto flex flex-wrap items-center justify-between gap-4 pt-8">
-                    <p className="font-display text-2xl text-ink">{p.priceLabel}</p>
-                    <Link href={`/reserve?collection=${p.id}`} className="inline-flex min-h-12 items-center justify-center whitespace-nowrap rounded-md bg-ink px-5 text-base font-medium text-white transition-colors hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">Reservar {p.name}</Link>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
+      <section className="bg-ivory" aria-labelledby="city-collections-title">
+        <div className="mx-auto max-w-[88rem] px-5 py-16 sm:px-8 sm:py-20 lg:px-12">
+          <div className="grid gap-5 border-b border-line pb-8 md:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)] md:items-end">
+            <div><p className="text-xs uppercase tracking-[0.18em] text-ink-soft">Foto y video / {loc.city}</p><h2 id="city-collections-title" className="mt-3 font-display text-[clamp(1.75rem,2.7vw,2.5rem)] font-normal leading-tight text-ink">Colecciones desde {packages[0].priceLabel}.</h2></div>
+            <p className="max-w-md text-base leading-7 text-ink-soft">Cuatro opciones con precios publicados. Moments cubre cinco horas; Signature reúne foto y video. Confirmamos disponibilidad antes de pedir un depósito.</p>
           </div>
-
-          <p className="mt-8 text-base">
-            <Link
-              href="/investment"
-              className="text-accent underline underline-offset-2 hover:text-accent-strong"
-            >
-              Ver todo lo que incluye cada colección →
-            </Link>
-          </p>
-          <p className="mt-3 text-base">
-            <Link
-              href="/es/save-the-date-quinceanera"
-              className="text-accent underline underline-offset-2 hover:text-accent-strong"
-            >
-              Tu sesión Save-the-Date está incluida gratis →
-            </Link>
-          </p>
+          <div className="divide-y divide-line">
+            {packages.map((p, i) => <article key={p.id} className="grid gap-5 py-8 md:grid-cols-[minmax(0,0.42fr)_minmax(0,0.58fr)] md:gap-10">
+              <div><p className="text-xs uppercase tracking-[0.16em] text-ink-soft">0{i + 1} / 04</p><h3 className="mt-3 font-display text-[clamp(1.55rem,2.3vw,2.1rem)] font-normal text-ink">{p.name}</h3><p className="mt-2 max-w-sm text-base leading-7 text-ink-soft">{TIER_ES[p.id]}</p></div>
+              <div><div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 border-b border-line pb-4"><p className="font-display text-2xl font-normal text-ink">{p.priceLabel}</p><p className="text-base text-ink-soft">Depósito: {p.depositLabel}</p></div><ul className="mt-4 grid gap-x-6 gap-y-2 text-base leading-7 text-ink-soft sm:grid-cols-2">{(INCLUDES_ES[p.id] ?? p.includes).map((item) => <li key={item} className="flex gap-2"><span aria-hidden="true">—</span><span>{item}</span></li>)}</ul><Link href="/es/consulta" className="mt-5 inline-flex min-h-12 items-center gap-5 border-b border-ink text-base text-ink">Consultar {p.name} <span aria-hidden="true">↗</span></Link></div>
+            </article>)}
+          </div>
+          <div className="flex flex-wrap gap-x-8 gap-y-2 border-t border-line pt-6 text-base"><Link href="/es/paquetes" className="inline-flex min-h-11 items-center text-ink underline underline-offset-4">Comparar todas las colecciones ↗</Link><Link href="/es/save-the-date-quinceanera" className="inline-flex min-h-11 items-center text-ink underline underline-offset-4">Sobre la sesión Save-the-Date ↗</Link></div>
         </div>
       </section>
 
       {/* Cómo funciona la reserva */}
-      <section className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
-        <h2 className="display-2 text-ink text-center text-balance">
-          Cómo funciona la reserva
-        </h2>
-        <ol className="mt-12 grid gap-8 md:grid-cols-3">
+      <section className="mx-auto max-w-[88rem] px-5 py-16 sm:px-8 sm:py-20 lg:px-12" aria-labelledby="city-booking-title">
+        <div className="grid gap-5 border-b border-line pb-8 md:grid-cols-[minmax(0,0.38fr)_minmax(0,0.62fr)]"><p className="text-xs uppercase tracking-[0.18em] text-ink-soft">Del primer mensaje al día</p><h2 id="city-booking-title" className="font-display text-[clamp(1.75rem,2.7vw,2.5rem)] font-normal leading-tight text-ink">Cómo funciona la consulta.</h2></div>
+        <ol className="divide-y divide-line">
           {[
             {
-              t: "Reserva tu fecha",
-              b: `Elige tu colección y fecha y paga un depósito desde ${packages[0].depositLabel}. Tu día queda apartado al instante; paga completo o en mensualidades sin intereses.`,
+              t: "Cuéntanos tus planes",
+              b: "Comparte la fecha, la ciudad y la cobertura que tienes en mente. Consultar no requiere pago.",
             },
             {
-              t: "Lo planeamos juntos",
-              b: "Te contacto personalmente en menos de 24 horas para confirmar los detalles: tu itinerario, la iglesia y el salón, y los momentos que más importan.",
+              t: "Confirmamos la disponibilidad",
+              b: "Revisamos los detalles contigo antes de enviarte un enlace para el depósito de la colección elegida.",
             },
             {
-              t: "Tu día, capturado completo",
-              b: "Una sola quinceañera al día. De la misa al último baile, con todo mi enfoque en tu celebración.",
+              t: "Planeamos la cobertura",
+              b: "Organizamos la fotografía y el video alrededor de la ceremonia, los retratos y la recepción.",
             },
           ].map((step, i) => (
-            <li key={step.t} className="flex flex-col gap-3 border-t border-line pt-5">
-              <span className="text-xs font-medium tracking-[0.14em] text-ink-soft">0{i + 1}</span>
-              <span className="font-display text-[1.375rem] text-ink">{step.t}</span>
-              <span className="text-base leading-7 text-ink-soft">{step.b}</span>
+            <li key={step.t} className="grid gap-3 py-6 md:grid-cols-[minmax(0,0.38fr)_minmax(0,0.62fr)] md:gap-8">
+              <span className="text-xs uppercase tracking-[0.16em] text-ink-soft">0{i + 1}</span>
+              <div><h3 className="font-display text-xl font-normal text-ink">{step.t}</h3><p className="mt-2 max-w-xl text-base leading-7 text-ink-soft">{step.b}</p></div>
             </li>
           ))}
         </ol>
@@ -427,19 +329,20 @@ export default async function CityPageEs({
               {isCityWork ? `Trabajo reciente en ${loc.city}` : "Trabajo seleccionado"}
             </p>
           </Reveal>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2">
             {recentWork.map((img, i) => (
               <Reveal
                 key={img.slug ?? i}
                 delay={i * 70}
+                className={i === 0 ? "sm:col-span-2" : ""}
               >
                 <Link href="/portfolio" className="group block">
-                  <div className="relative aspect-[4/5] overflow-hidden rounded-lg bg-greige">
+                  <div className={`relative overflow-hidden bg-greige ${i === 0 ? "aspect-[16/10]" : "aspect-[4/5]"}`}>
                     <Image
                       src={img.url}
-                      alt={img.alt || `Fotografía de quinceañera en ${loc.city}, TX`}
+                      alt={isCityWork ? `Fotografía de quinceañera en ${loc.city}, TX` : "Fotografía de quinceañera en Dallas–Fort Worth"}
                       fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      sizes={i === 0 ? "(max-width: 768px) 100vw, 64rem" : "(max-width: 768px) 100vw, 32rem"}
                       className="object-cover transition-transform duration-500 group-hover:scale-[1.035] motion-reduce:transition-none"
                       style={{
                         objectPosition: `${img.focus_x != null ? Math.round(img.focus_x * 100) : 50}% ${img.focus_y != null ? Math.round(img.focus_y * 100) : 35}%`,
@@ -458,18 +361,10 @@ export default async function CityPageEs({
         </section>
       ) : null}
 
-      <section className="bg-ivory px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
-        <div className="mx-auto max-w-3xl rounded-lg border border-line bg-white px-6 py-12 text-center sm:px-10 sm:py-16">
-          <h2 className="display-2 text-ink text-balance">
-            Mira quinceañeras completas de {loc.city}, de principio a fin.
-          </h2>
-          <p className="mx-auto mt-5 max-w-md text-base leading-7 text-ink-soft">
-            No un reel de momentos — galerías y videos completos de celebraciones
-            reales de DFW, para que sepas exactamente lo que estás reservando.
-          </p>
-          <div className="mt-9 flex justify-center">
-            <Link href="/portfolio" className="inline-flex min-h-12 items-center justify-center rounded-md bg-ink px-6 text-base font-medium text-white transition-colors hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">Ver las galerías</Link>
-          </div>
+      <section className="border-y border-line bg-ivory" aria-labelledby="city-work-title">
+        <div className="mx-auto grid max-w-[88rem] gap-6 px-5 py-16 sm:px-8 sm:py-20 md:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)] md:items-end lg:px-12">
+          <div><p className="text-xs uppercase tracking-[0.18em] text-ink-soft">El trabajo</p><h2 id="city-work-title" className="mt-3 max-w-2xl font-display text-[clamp(1.75rem,2.7vw,2.5rem)] font-normal leading-tight text-ink">Mira los retratos y las celebraciones.</h2></div>
+          <div><p className="max-w-xl text-base leading-7 text-ink-soft">Explora fotografías y videos de quinceañeras de Dallas–Fort Worth antes de elegir tu cobertura.</p><Link href="/portfolio" className="mt-5 inline-flex min-h-12 items-center gap-5 border-b border-ink text-base text-ink">Ver las galerías <span aria-hidden="true">↗</span></Link></div>
         </div>
       </section>
 
@@ -492,14 +387,14 @@ export default async function CityPageEs({
       {guides.length ? (
         <section className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
           <p className="eyebrow mb-5">Para planear su quinceañera en {loc.city}</p>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="divide-y divide-line border-t border-line">
             {guides.map((g) => (
               <Link
                 key={g.slug}
                 href={`/es/blog/${g.slug}`}
-                className="group rounded-lg border border-line bg-white p-6 transition-colors hover:border-ink"
+                className="group block py-6"
               >
-                <h3 className="font-display text-lg leading-tight text-ink group-hover:text-accent">
+                <h3 className="font-display text-lg font-normal leading-tight text-ink group-hover:underline group-hover:underline-offset-4">
                   {g.title}
                 </h3>
                 <p className="mt-2 text-base leading-7 text-ink-soft">{g.excerpt}</p>
@@ -556,20 +451,10 @@ export default async function CityPageEs({
         </div>
       </section>
 
-      {/* CTA final — banda oscura (cierre de alto contraste) */}
-      <section className="bg-dark">
-        <div className="mx-auto max-w-3xl px-5 py-section text-center md:px-10 lg:px-16 md:py-section-lg">
-          <span className="text-sm font-medium text-white/85">
-            Quedan pocas fechas de {site.scarcity.reservingYear}
-          </span>
-          <h2 className="mt-5 display-2 text-cream text-balance">Aparta su fecha hoy.</h2>
-          <p className="mx-auto mt-6 max-w-md text-base leading-7 text-white/80">
-            Solo reservo una quinceañera al día. Asegura la suya con un depósito —
-            checkout seguro, aplicado a tu saldo final.
-          </p>
-          <div className="mt-10 flex justify-center">
-            <Link href={site.cta.href} className="inline-flex min-h-12 items-center justify-center rounded-md border border-white bg-white px-6 text-base font-medium text-ink transition-colors hover:bg-ivory focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Reserva tu fecha</Link>
-          </div>
+      <section className="bg-ink text-white" aria-labelledby="city-next-title">
+        <div className="mx-auto flex max-w-[88rem] flex-col gap-8 px-5 py-14 sm:px-8 md:flex-row md:items-end md:justify-between lg:px-12">
+          <div><p className="text-xs uppercase tracking-[0.18em] text-white/70">El siguiente paso</p><h2 id="city-next-title" className="mt-3 max-w-2xl font-display text-[clamp(1.75rem,2.7vw,2.5rem)] font-normal leading-tight">¿Ya tienes una fecha en mente?</h2><p className="mt-3 max-w-xl text-base leading-7 text-white/80">Dinos cuándo y dónde será. Confirmaremos disponibilidad antes de pedir un depósito.</p></div>
+          <Link href="/es/consulta" className="inline-flex min-h-12 items-center justify-between gap-8 self-start whitespace-nowrap border border-white px-6 text-base text-white">Consultar fecha <span aria-hidden="true">↗</span></Link>
         </div>
       </section>
     </>
