@@ -51,8 +51,6 @@ function LoginForm() {
     setBusy(true);
     setError(null);
     setNotice(null);
-    const supabase = createBrowserSupabaseClient();
-
     // Safety net: never leave the button frozen on "Signing in…".
     const timeout = setTimeout(() => {
       setError("This is taking longer than expected — please try again.");
@@ -60,6 +58,7 @@ function LoginForm() {
     }, 10_000);
 
     try {
+      const supabase = await createBrowserSupabaseClient();
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       clearTimeout(timeout);
       if (error) {
@@ -91,8 +90,8 @@ function LoginForm() {
     setBusy(true);
     setError(null);
     setNotice(null);
-    const supabase = createBrowserSupabaseClient();
     try {
+      const supabase = await createBrowserSupabaseClient();
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/admin/reset-password`,
       });
