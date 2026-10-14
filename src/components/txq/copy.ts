@@ -4,12 +4,15 @@
  * `es` is typed against `en`, so a missing translation fails the build.
  */
 import type { Category } from "./data";
-import { BASE_CREW, BASE_HOURS, CONSULT_HOLD_DAYS, EXTRA_HOUR_USD, MAX_HOURS, RETAINER, TIER_PRICE_USD } from "@/lib/commission";
+import { BASE_CREW } from "@/lib/commission";
+import { PT } from "@/lib/price-text";
 
-// FAQ answers quote the live price book so copy can never drift from checkout.
-const $ = (n: number) => `$${n.toLocaleString("en-US")}`;
-const P = TIER_PRICE_USD;
-const PCT = `${Math.round(RETAINER.rate * 100)}%`;
+// Every price, percent, hour count and day count below is a price TOKEN
+// (src/lib/price-text.ts). SiteProvider fills the whole copy object from the
+// live price book (fillDeep), so copy can never drift from checkout and a
+// change at /admin/prices shows up here without a deploy.
+const P = PT.price;
+const PCT = PT.deposit.percent;
 
 const en = {
   meta: {
@@ -103,7 +106,7 @@ const en = {
     tailor: "Make it yours",
     tailorDek: "Choose your hours and who's on your team, then tap any extra you want. Your total updates as you go.",
     estimate: "Your total",
-    retainer: "25% down to lock in your date (after we approve)",
+    retainer: `${PCT} down to lock in your date (after we approve)`,
     base: "Package",
     begin: "Book this package",
     fine: "Texas sales tax and travel outside Dallas–Fort Worth, Houston, Austin and San Antonio are quoted separately.",
@@ -166,7 +169,7 @@ const en = {
     items: [
       {
         q: "How much does a quinceañera photographer and videographer cost in Dallas–Fort Worth?",
-        a: `Most DFW quinceañera studios charge between about $1,500 and $6,000. Our prices are all shown above: a Portrait Session is ${$(P.study)}, Photo + Video starts at ${$(P.cinema)}, and the Full Celebration, the package we recommend for most families, is ${$(P.production)}.`,
+        a: `Most DFW quinceañera studios charge between about $1,500 and $6,000. Our prices are all shown above: a Portrait Session is ${P.study}, Photo + Video starts at ${P.cinema}, and the Full Celebration, the package we recommend for most families, is ${P.production}.`,
       },
       {
         q: "Is photography and film included together?",
@@ -178,7 +181,7 @@ const en = {
       },
       {
         q: "How many hours of coverage does a quinceañera need?",
-        a: `Most families choose ${MAX_HOURS - 2} to ${MAX_HOURS} hours: getting ready at home, the misa (about an hour), photos between church and the party, then the grand entrance, vals, surprise dance and toasts. Our packages include ${BASE_HOURS.study} to ${BASE_HOURS.archive} hours, and you can add hours up to ${MAX_HOURS} (from ${$(EXTRA_HOUR_USD.study)} an hour).`,
+        a: `Most families choose ${PT.hours.typicalLow} to ${PT.hours.max} hours: getting ready at home, the misa (about an hour), photos between church and the party, then the grand entrance, vals, surprise dance and toasts. Our packages include ${PT.hours.study} to ${PT.hours.archive} hours, and you can add hours up to ${PT.hours.max} (from ${PT.extra.from} an hour).`,
       },
       {
         q: "How far in advance should we book?",
@@ -194,7 +197,7 @@ const en = {
       },
       {
         q: "How does the deposit work?",
-        a: `You pick your package and sign your agreement online. We hold your date for ${CONSULT_HOLD_DAYS} days while we review it, and once we approve it you pay ${PCT} to lock in your date. All of it goes toward your total, and the rest is due ${RETAINER.balanceDueHours} hours before the event.`,
+        a: `You pick your package and sign your agreement online. We hold your date for ${PT.holdDays} days while we review it, and once we approve it you pay ${PCT} to lock in your date. All of it goes toward your total, and the rest is due ${PT.balanceDays} days before the event.`,
       },
       {
         q: "Where do you take pre-quince portraits around Dallas?",
@@ -216,8 +219,8 @@ const en = {
     next: [
       "Pick your date and your package, and tell us about her day.",
       "Read your agreement and sign it with your finger — it takes a minute.",
-      `We review it within one day. Your date is held for ${CONSULT_HOLD_DAYS} days while we do.`,
-      "Once we approve it, pay 25% to lock in your date. The rest is due 48 hours before the event.",
+      `We review it within one day. Your date is held for ${PT.holdDays} days while we do.`,
+      `Once we approve it, pay ${PCT} to lock in your date. The rest is due ${PT.balanceDays} days before the event.`,
     ],
     steps: ["Date & place", "Package", "Your details", "Review & sign"],
     stepOf: (a: number, b: number) => `Step ${a} of ${b}`,
@@ -260,8 +263,8 @@ const en = {
     agree: "I have read this agreement and I agree to it.",
     submit: "Sign & send",
     sending: "Sending…",
-    depositLabel: "25% deposit (after we approve)",
-    balanceLabel: "The rest, 48 hours before",
+    depositLabel: `${PCT} deposit (after we approve)`,
+    balanceLabel: `The rest, ${PT.balanceDays} days before`,
     reference: "Reference",
     summary: "Your booking",
     doneTitle: "Signed and sent!",
@@ -279,6 +282,7 @@ const en = {
       agree: "Please check the box to agree.",
       failed: "Something went wrong. Please try again, or text or email us.",
       taken: "Sorry — another family just booked that date. Please pick another.",
+      pricesChanged: "Our prices were just updated. Please check your new total, then read and sign the agreement again.",
       verify: "Please complete the quick check below.",
     },
   },
@@ -387,7 +391,7 @@ const es: Copy = {
     tailor: "Hazlo a tu manera",
     tailorDek: "Escoge tus horas y tu equipo, y toca cualquier extra para añadirlo. Tu total se actualiza al instante.",
     estimate: "Tu total",
-    retainer: "25% para asegurar tu fecha (después de aprobar)",
+    retainer: `${PCT} para asegurar tu fecha (después de aprobar)`,
     base: "Paquete",
     begin: "Reservar este paquete",
     fine: "El impuesto de Texas y los viajes fuera de Dallas–Fort Worth, Houston, Austin y San Antonio se cotizan aparte.",
@@ -450,7 +454,7 @@ const es: Copy = {
     items: [
       {
         q: "¿Cuánto cuesta un fotógrafo y videógrafo de quinceañera en Dallas–Fort Worth?",
-        a: `La mayoría de los estudios de quinceañera en DFW cobran entre $1,500 y $6,000. Todos nuestros precios están arriba: la Sesión de retratos cuesta ${$(P.study)}, Foto + Video desde ${$(P.cinema)}, y la Celebración completa, el paquete que recomendamos para la mayoría de las familias, ${$(P.production)}.`,
+        a: `La mayoría de los estudios de quinceañera en DFW cobran entre $1,500 y $6,000. Todos nuestros precios están arriba: la Sesión de retratos cuesta ${P.study}, Foto + Video desde ${P.cinema}, y la Celebración completa, el paquete que recomendamos para la mayoría de las familias, ${P.production}.`,
       },
       {
         q: "¿La foto y el video vienen juntos?",
@@ -462,7 +466,7 @@ const es: Copy = {
       },
       {
         q: "¿Cuántas horas de cobertura necesita una quinceañera?",
-        a: `La mayoría de las familias escogen de ${MAX_HOURS - 2} a ${MAX_HOURS} horas: el arreglo en casa, la misa (alrededor de una hora), fotos entre la iglesia y la fiesta, y luego la entrada, el vals, el baile sorpresa y los brindis. Nuestros paquetes incluyen de ${BASE_HOURS.study} a ${BASE_HOURS.archive} horas, y puedes añadir horas hasta ${MAX_HOURS} (desde ${$(EXTRA_HOUR_USD.study)} la hora).`,
+        a: `La mayoría de las familias escogen de ${PT.hours.typicalLow} a ${PT.hours.max} horas: el arreglo en casa, la misa (alrededor de una hora), fotos entre la iglesia y la fiesta, y luego la entrada, el vals, el baile sorpresa y los brindis. Nuestros paquetes incluyen de ${PT.hours.study} a ${PT.hours.archive} horas, y puedes añadir horas hasta ${PT.hours.max} (desde ${PT.extra.from} la hora).`,
       },
       {
         q: "¿Con cuánta anticipación debemos reservar?",
@@ -478,7 +482,7 @@ const es: Copy = {
       },
       {
         q: "¿Cómo funciona el depósito?",
-        a: `Escoges tu paquete y firmas tu contrato en línea. Apartamos tu fecha ${CONSULT_HOLD_DAYS} días mientras lo revisamos, y cuando lo aprobemos pagas el ${PCT} para asegurar tu fecha. Todo se abona a tu total, y el resto se paga ${RETAINER.balanceDueHours} horas antes del evento.`,
+        a: `Escoges tu paquete y firmas tu contrato en línea. Apartamos tu fecha ${PT.holdDays} días mientras lo revisamos, y cuando lo aprobemos pagas el ${PCT} para asegurar tu fecha. Todo se abona a tu total, y el resto se paga ${PT.balanceDays} días antes del evento.`,
       },
       {
         q: "¿Dónde toman los retratos pre-quince en Dallas?",
@@ -500,8 +504,8 @@ const es: Copy = {
     next: [
       "Escoge tu fecha y tu paquete, y cuéntanos de su día.",
       "Lee tu contrato y fírmalo con tu dedo — toma un minuto.",
-      `Lo revisamos en un día. Tu fecha queda apartada ${CONSULT_HOLD_DAYS} días mientras tanto.`,
-      "Cuando lo aprobemos, pagas el 25% para asegurar tu fecha. El resto se paga 48 horas antes del evento.",
+      `Lo revisamos en un día. Tu fecha queda apartada ${PT.holdDays} días mientras tanto.`,
+      `Cuando lo aprobemos, pagas el ${PCT} para asegurar tu fecha. El resto se paga ${PT.balanceDays} días antes del evento.`,
     ],
     steps: ["Fecha y lugar", "Paquete", "Tus datos", "Revisa y firma"],
     stepOf: (a: number, b: number) => `Paso ${a} de ${b}`,
@@ -544,8 +548,8 @@ const es: Copy = {
     agree: "Leí este contrato y estoy de acuerdo.",
     submit: "Firmar y enviar",
     sending: "Enviando…",
-    depositLabel: "Depósito del 25% (después de aprobar)",
-    balanceLabel: "El resto, 48 horas antes",
+    depositLabel: `Depósito del ${PCT} (después de aprobar)`,
+    balanceLabel: `El resto, ${PT.balanceDays} días antes`,
     reference: "Referencia",
     summary: "Tu reservación",
     doneTitle: "¡Firmado y enviado!",
@@ -563,6 +567,7 @@ const es: Copy = {
       agree: "Por favor marca la casilla para aceptar.",
       failed: "Algo salió mal. Inténtalo de nuevo, o escríbenos o mándanos un mensaje.",
       taken: "Lo sentimos — otra familia acaba de reservar esa fecha. Por favor elige otra.",
+      pricesChanged: "Acabamos de actualizar nuestros precios. Revisa tu nuevo total y vuelve a leer y firmar el contrato.",
       verify: "Por favor completa la verificación de abajo.",
     },
   },

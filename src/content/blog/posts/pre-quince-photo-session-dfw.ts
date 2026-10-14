@@ -1,5 +1,5 @@
 import type { BlogPost } from "@/content/blog";
-import { TIER_PRICE_USD, ADD_ON_PRICE_USD, BASE_HOURS, usd } from "@/lib/commission";
+import { PT } from "@/lib/price-text";
 
 const post: BlogPost = {
   slug: "pre-quince-photo-session-dfw",
@@ -89,7 +89,7 @@ const post: BlogPost = {
     {
       type: "cta",
       heading: "Book your pre-quince portrait session",
-      body: `Our Portrait Session (${usd(TIER_PRICE_USD.study)}) is ${BASE_HOURS.study} hours with one photographer — 60 edited photos and a short video for social media. Pick your location and theme, and we'll handle the light.`,
+      body: `Our Portrait Session (${PT.price.study}) is ${PT.hours.study} hours with one photographer — 60 edited photos and a short video for social media. Pick your location and theme, and we'll handle the light.`,
       href: "/#intake",
       label: "Reserve your session",
     },
@@ -160,7 +160,7 @@ const post: BlogPost = {
     },
     {
       q: "Is the pre-quince session included or an add-on?",
-      a: `It depends on the studio and the package. At TX Quince, the Portrait Session (${usd(TIER_PRICE_USD.study)}) is the portrait session on its own; the Full Celebration includes a portrait session at one location and the Two-Day Celebration includes two. A Dress Session, photos in her dress before the big day, can be added for ${usd(ADD_ON_PRICE_USD.destination)}. Compare every package before you reserve.`,
+      a: `It depends on the studio and the package. At TX Quince, the Portrait Session (${PT.price.study}) is the portrait session on its own; the Full Celebration includes a portrait session at one location and the Two-Day Celebration includes two. A Dress Session, photos in her dress before the big day, can be added for ${PT.addon.destination}. Compare every package before you reserve.`,
     },
   ],
   related: [

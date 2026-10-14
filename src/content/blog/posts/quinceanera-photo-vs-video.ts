@@ -1,10 +1,11 @@
 import type { BlogPost } from "@/content/blog";
-import { TIER_PRICE_USD, BASE_CREW, BASE_HOURS, MAX_HOURS, usd } from "@/lib/commission";
+import { BASE_CREW } from "@/lib/commission";
+import { PT } from "@/lib/price-text";
 
-const study = usd(TIER_PRICE_USD.study);
-const cinema = usd(TIER_PRICE_USD.cinema);
-const production = usd(TIER_PRICE_USD.production);
-const archive = usd(TIER_PRICE_USD.archive);
+const study = PT.price.study;
+const cinema = PT.price.cinema;
+const production = PT.price.production;
+const archive = PT.price.archive;
 
 const post: BlogPost = {
   slug: "quinceanera-photo-vs-video",
@@ -105,7 +106,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Anchored to our packages: the Portrait Session is ${study} — photos only, ${BASE_HOURS.study} hours with one photographer. Photo + Video is ${cinema} — ${BASE_HOURS.cinema} hours with one photographer and one videographer, an 8–10 minute full-length video in 4K, a short trailer, and short videos for social media. The Full Celebration, at ${production}, is the one we recommend for most celebrations — ${BASE_HOURS.production} hours, a team of ${BASE_CREW.production} and a day-of coordinator, a portrait session, a 12–15 minute full-length video, and a printed photo album. The Two-Day Celebration, at ${archive}, gives you ${BASE_HOURS.archive} hours plus a second day for portraits, with a team of ${BASE_CREW.archive} and a day-of coordinator. Need more time on the day? You can add hours, one at a time, up to ${MAX_HOURS} in all. For the full breakdown of every inclusion, see [which packages include video](/#commissions), and for a wider look at pricing read our [quinceañera photographer cost guide for DFW](/blog/quinceanera-photographer-cost-dallas-fort-worth).`,
+      text: `Anchored to our packages: the Portrait Session is ${study} — photos only, ${PT.hours.study} hours with one photographer. Photo + Video is ${cinema} — ${PT.hours.cinema} hours with one photographer and one videographer, an 8–10 minute full-length video in 4K, a short trailer, and short videos for social media. The Full Celebration, at ${production}, is the one we recommend for most celebrations — ${PT.hours.production} hours, a team of ${BASE_CREW.production} and a day-of coordinator, a portrait session, a 12–15 minute full-length video, and a printed photo album. The Two-Day Celebration, at ${archive}, gives you ${PT.hours.archive} hours plus a second day for portraits, with a team of ${BASE_CREW.archive} and a day-of coordinator. Need more time on the day? You can add hours, one at a time, up to ${PT.hours.max} in all. For the full breakdown of every inclusion, see [which packages include video](/#commissions), and for a wider look at pricing read our [quinceañera photographer cost guide for DFW](/blog/quinceanera-photographer-cost-dallas-fort-worth).`,
     },
     { type: "h2", text: "If your budget only stretches one way" },
     {

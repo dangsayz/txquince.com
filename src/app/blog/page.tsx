@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { site } from "@/content/site";
 import { getAllPosts } from "@/content/blog";
+import { getPriceBook } from "@/lib/pricing";
+import { fillDeep } from "@/lib/price-text";
 import { portfolioFallback } from "@/content/portfolio-fallback";
 import { getFeaturedImages, getPageHero } from "@/lib/content-db";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
@@ -41,7 +43,7 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogIndexPage() {
-  const posts = getAllPosts();
+  const posts = fillDeep(getAllPosts(), await getPriceBook());
 
   // Real photography carries the contrast a text-only index can't. The featured
   // frame is operator-choosable in /admin/hero (page "blog"), falling back to

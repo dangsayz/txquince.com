@@ -1,20 +1,12 @@
 import type { BlogPost } from "@/content/blog";
-import {
-  TIER_PRICE_USD,
-  ADD_ON_PRICE_USD,
-  RETAINER,
-  CONSULT_HOLD_DAYS,
-  BASE_CREW,
-  BASE_HOURS,
-  EXTRA_HOUR_USD,
-  usd,
-} from "@/lib/commission";
+import { BASE_CREW } from "@/lib/commission";
+import { PT } from "@/lib/price-text";
 
-const study = usd(TIER_PRICE_USD.study);
-const cinema = usd(TIER_PRICE_USD.cinema);
-const production = usd(TIER_PRICE_USD.production);
-const archive = usd(TIER_PRICE_USD.archive);
-const retainerPct = `${Math.round(RETAINER.rate * 100)}%`;
+const study = PT.price.study;
+const cinema = PT.price.cinema;
+const production = PT.price.production;
+const archive = PT.price.archive;
+const retainerPct = PT.deposit.percent;
 
 const post: BlogPost = {
   slug: "quinceanera-photographer-cost-dallas-fort-worth",
@@ -59,12 +51,12 @@ const post: BlogPost = {
     { type: "h2", text: "Photo only, or photo and video?" },
     {
       type: "p",
-      text: `This one choice changes the price more than any other — and it's the most common regret. Families who book photo-only most often wish, afterward, that they had the vals and the surprise dance on video. If the budget only stretches one way, prioritize the moments that move: the [vals and the surprise dance](/portfolio) are made for video. Our ${study} Portrait Session is photo only — ${BASE_HOURS.study} hours with one photographer — while every package from ${cinema} up pairs photos and video. Compare them side by side on the [packages page](/#commissions); most families choose the Full Celebration at ${production}.`,
+      text: `This one choice changes the price more than any other — and it's the most common regret. Families who book photo-only most often wish, afterward, that they had the vals and the surprise dance on video. If the budget only stretches one way, prioritize the moments that move: the [vals and the surprise dance](/portfolio) are made for video. Our ${study} Portrait Session is photo only — ${PT.hours.study} hours with one photographer — while every package from ${cinema} up pairs photos and video. Compare them side by side on the [packages page](/#commissions); most families choose the Full Celebration at ${production}.`,
     },
     { type: "h2", text: "The deposit and the balance" },
     {
       type: "p",
-      text: `You don't pay the full amount up front. You pick a package and sign the agreement online, and we hold your date for ${CONSULT_HOLD_DAYS} days while we review it. Once it's approved (within one day), a deposit of ${retainerPct} of your package locks in your date and goes toward your total; the rest is due ${RETAINER.balanceDueHours} hours before the event. Want to talk first? Ask for a quick call.`,
+      text: `You don't pay the full amount up front. You pick a package and sign the agreement online, and we hold your date for ${PT.holdDays} days while we review it. Once it's approved (within one day), a deposit of ${retainerPct} of your package locks in your date and goes toward your total; the rest is due ${PT.balanceDays} days before the event. Want to talk first? Ask for a quick call.`,
     },
     {
       type: "cta",
@@ -77,7 +69,7 @@ const post: BlogPost = {
     {
       type: "ul",
       items: [
-        `Up: adding video, a larger team, more hours on the day (from ${usd(EXTRA_HOUR_USD.study)} per extra hour with us), a second day, or extras like a Dress Session (${usd(ADD_ON_PRICE_USD.destination)}) or a Same-Day Edit, ready in 24 hours (${usd(ADD_ON_PRICE_USD.sameday)}).`,
+        `Up: adding video, a larger team, more hours on the day (from ${PT.extra.study} per extra hour with us), a second day, or extras like a Dress Session (${PT.addon.destination}) or a Same-Day Edit, ready in 24 hours (${PT.addon.sameday}).`,
         "Up a little: travel far outside the metroplex (inside DFW there's usually no travel fee).",
         "Doesn't change the price with honest studios: your venue, your guest count, or the day of the week — be wary of anyone who quotes by those.",
       ],
@@ -112,7 +104,7 @@ const post: BlogPost = {
     },
     {
       q: "How does the deposit work?",
-      a: `The deposit is ${retainerPct} of your package, paid after we approve your signed agreement. It locks in your date and goes toward your total, and the rest is due ${RETAINER.balanceDueHours} hours before the event. We hold your date for ${CONSULT_HOLD_DAYS} days while we review the agreement. Prefer to talk first? Ask for a quick call.`,
+      a: `The deposit is ${retainerPct} of your package, paid after we approve your signed agreement. It locks in your date and goes toward your total, and the rest is due ${PT.balanceDays} days before the event. We hold your date for ${PT.holdDays} days while we review the agreement. Prefer to talk first? Ask for a quick call.`,
     },
   ],
   related: [

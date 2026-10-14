@@ -1,7 +1,8 @@
 import type { BlogPost } from "@/content/blog";
-import { RETAINER, BASE_CREW } from "@/lib/commission";
+import { BASE_CREW } from "@/lib/commission";
+import { PT } from "@/lib/price-text";
 
-const retainerPct = `${Math.round(RETAINER.rate * 100)}%`;
+const retainerPct = PT.deposit.percent;
 
 const post: BlogPost = {
   slug: "preguntas-para-tu-fotografo-de-quinceanera",
@@ -78,7 +79,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Así suena una buena respuesta: un depósito específico, un calendario de pagos claro con el saldo cubierto antes del evento, y una frase sencilla que confirme que el acuerdo firmado más el depósito apartan la fecha. Con nosotros, usted firma el contrato en línea, lo aprobamos en un día, y luego un depósito del ${retainerPct} de su paquete asegura su fecha y se abona a su total. El resto se paga ${RETAINER.balanceDueHours} horas antes del evento. Puede revisar las cifras en nuestros [paquetes](/es#commissions) y [confirmar si su fecha sigue disponible](/check-your-date) antes de comprometerse.`,
+      text: `Así suena una buena respuesta: un depósito específico, un calendario de pagos claro con el saldo cubierto antes del evento, y una frase sencilla que confirme que el acuerdo firmado más el depósito apartan la fecha. Con nosotros, usted firma el contrato en línea, lo aprobamos en un día, y luego un depósito del ${retainerPct} de su paquete asegura su fecha y se abona a su total. El resto se paga ${PT.balanceDays} días antes del evento. Puede revisar las cifras en nuestros [paquetes](/es#commissions) y [confirmar si su fecha sigue disponible](/check-your-date) antes de comprometerse.`,
     },
     {
       type: "cta",

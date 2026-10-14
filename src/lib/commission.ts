@@ -1,12 +1,12 @@
 /**
  * commission.ts — the commission price book + booking contract (client + server).
  *
- * SINGLE SOURCE OF TRUTH for what a commission costs. The homepage matrix, the
- * live estimate, the intake summary, structured data and /api/commission all
- * read these tables, and the server ALWAYS re-prices from here — a tampered
- * request body can never change what Stripe charges.
- *
- * Operator-editable: change a number below and every surface updates.
+ * SINGLE SOURCE OF TRUTH for how a commission is priced. Every number lives in
+ * a PriceBook (below): the server loads the live one with getPriceBook()
+ * (src/lib/pricing.ts — R2, edited by the owner at /admin/prices) and hands it
+ * to the client; every quote, matrix, FAQ, schema and email is computed from
+ * that book with the pure functions here. The server ALWAYS re-prices with its
+ * own book — a tampered request body can never change what Stripe charges.
  */
 import { z } from "zod";
 
@@ -14,29 +14,6 @@ export const TIER_IDS = ["study", "cinema", "production", "archive"] as const;
 export const ADD_ON_IDS = ["destination", "sameday", "super8", "parents"] as const;
 export type TierId = (typeof TIER_IDS)[number];
 export type AddOnId = (typeof ADD_ON_IDS)[number];
-
-/**
- * Whole US dollars. Priced for what DFW quinceañera families actually spend
- * (research Oct 2026, docs/dfw-pricing-search-booking.md):
- *  - Most DFW quince budgets are $12–25K all-in; photo + film takes 8–15%.
- *  - Published DFW quince packages: photo-only $1.5–3K, photo + video
- *    $3–5.5K, luxury collections $5.5–8K (highest published ~$6K).
- *  - II sits in the photo + video band, III (the intended sale, with 4 crew
- *    and a coordinator included) stays under the highest published package,
- *    IV is the luxury anchor inside the market's top band.
- */
-export const TIER_PRICE_USD: Record<TierId, number> = {
-  study: 1200,
-  cinema: 3500,
-  production: 4900,
-  archive: 6900,
-};
-export const ADD_ON_PRICE_USD: Record<AddOnId, number> = {
-  destination: 400,
-  sameday: 300,
-  super8: 600,
-  parents: 550,
-};
 
 /** English names for Stripe line items, receipts and operator email. */
 export const TIER_NAME_EN: Record<TierId, string> = {
@@ -53,35 +30,190 @@ export const ADD_ON_NAME_EN: Record<AddOnId, string> = {
   parents: "Albums for Mom & Dad",
 };
 
-/* ------------------------------------------------------------------ */
-/* Hours — each package includes a set number of hours on the day;     */
-/* families can add hours, one at a time, up to MAX_HOURS.             */
-/* ------------------------------------------------------------------ */
 
-export const MIN_HOURS = 4;
-export const MAX_HOURS = 8;
-
+/* ------------------------------------------------------------------ */
+/* Defaults — the launch price book                                     */
+/* ------------------------------------------------------------------ */
+/*
+ * Whole US dollars. Priced for what DFW quinceañera families actually spend
+ * (research Oct 2026, docs/dfw-pricing-search-booking.md):
+ *  - Most DFW quince budgets are $12–25K all-in; photo + film takes 8–15%.
+ *  - Published DFW quince packages: photo-only $1.5–3K, photo + video
+ *    $3–5.5K, luxury collections $5.5–8K (highest published ~$6K).
+ *  - II sits in the photo + video band, III (the intended sale, with 4 crew
+ *    and a coordinator included) stays under the highest published package,
+ *    IV is the luxury anchor inside the market's top band.
+ *
+ * These constants are NOT read anywhere else. The live prices are the
+ * runtime price book (src/lib/pricing.ts → R2 config/pricing.json, edited at
+ * /admin/prices); these are only what it falls back to when nothing has been
+ * saved yet or storage is unreachable (local dev, `next build`).
+ */
+const DEFAULT_TIER_PRICE_USD: Record<TierId, number> = {
+  study: 1200,
+  cinema: 3500,
+  production: 4900,
+  archive: 6900,
+};
+const DEFAULT_ADD_ON_PRICE_USD: Record<AddOnId, number> = {
+  destination: 400,
+  sameday: 300,
+  super8: 600,
+  parents: 550,
+};
 /** Hours of coverage included in the package price. */
-export const BASE_HOURS: Record<TierId, number> = {
+const DEFAULT_BASE_HOURS: Record<TierId, number> = {
   study: 4,
   cinema: 6,
   production: 6,
   archive: 8,
 };
-
-/** Price of each hour added beyond the included hours (scales with the team). */
-export const EXTRA_HOUR_USD: Record<TierId, number> = {
+/** Price of each hour added beyond the included hours (0 = hours can't be added). */
+const DEFAULT_EXTRA_HOUR_USD: Record<TierId, number> = {
   study: 150,
   cinema: 300,
   production: 400,
   archive: 0,
 };
+const DEFAULT_MAX_HOURS = 8;
+/** Deposit: 25% down once we approve the signed agreement; the rest 14 days before. */
+const DEFAULT_DEPOSIT_PERCENT = 25;
+const DEFAULT_BALANCE_DUE_DAYS = 14;
+/** Consultation-first courtesy hold while the studio reviews a signed agreement. */
+const DEFAULT_HOLD_DAYS = 7;
 
-/** Fit any requested hours to the package: whole hours, included..MAX_HOURS. */
-export function normalizeHours(tier: TierId, hours?: number | null): number {
-  const base = BASE_HOURS[tier];
+/* ------------------------------------------------------------------ */
+/* The price book — every number the owner can change at /admin/prices */
+/* ------------------------------------------------------------------ */
+
+export type PackagePrice = {
+  /** Package price, whole dollars. */
+  price: number;
+  /** Hours on the day included in the price. */
+  hours: number;
+  /** Price of each added hour, whole dollars. 0 = hours can't be added. */
+  extraHour: number;
+};
+
+export type PriceBook = {
+  packages: Record<TierId, PackagePrice>;
+  addOns: Record<AddOnId, number>;
+  /** Longest day we cover: families can add hours up to this. */
+  maxHours: number;
+  /** Deposit, as a whole percent of the total (25 = 25%). */
+  depositPercent: number;
+  /** The rest is due this many days before the event. */
+  balanceDueDays: number;
+  /** Days we hold a date while we review a signed agreement. */
+  holdDays: number;
+  /** ISO time of the last save (null = never saved; defaults). */
+  updatedAt: string | null;
+  /** Who saved it (admin email). */
+  updatedBy: string | null;
+};
+
+const mapTiers = <T,>(f: (id: TierId) => T) =>
+  Object.fromEntries(TIER_IDS.map((id) => [id, f(id)])) as Record<TierId, T>;
+const mapAddOns = <T,>(f: (id: AddOnId) => T) =>
+  Object.fromEntries(ADD_ON_IDS.map((id) => [id, f(id)])) as Record<AddOnId, T>;
+
+function deepFreeze<T>(o: T): T {
+  if (o && typeof o === "object") {
+    for (const v of Object.values(o)) deepFreeze(v);
+    Object.freeze(o);
+  }
+  return o;
+}
+
+/** The launch price book. Deep-frozen so nothing can mutate the fallback. */
+export const DEFAULT_PRICE_BOOK: PriceBook = deepFreeze({
+  packages: mapTiers((id) => ({
+    price: DEFAULT_TIER_PRICE_USD[id],
+    hours: DEFAULT_BASE_HOURS[id],
+    extraHour: DEFAULT_EXTRA_HOUR_USD[id],
+  })),
+  addOns: mapAddOns((id) => DEFAULT_ADD_ON_PRICE_USD[id]),
+  maxHours: DEFAULT_MAX_HOURS,
+  depositPercent: DEFAULT_DEPOSIT_PERCENT,
+  balanceDueDays: DEFAULT_BALANCE_DUE_DAYS,
+  holdDays: DEFAULT_HOLD_DAYS,
+  updatedAt: null,
+  updatedBy: null,
+});
+
+/** Hard limits for every editable number (the admin form shows the same). */
+export const PRICE_LIMITS = {
+  packagePrice: { min: 50, max: 50_000 },
+  addOnPrice: { min: 1, max: 10_000 },
+  extraHour: { min: 0, max: 5_000 },
+  hours: { min: 1, max: 12 },
+  depositPercent: { min: 5, max: 100 },
+  balanceDueDays: { min: 1, max: 90 },
+  holdDays: { min: 1, max: 30 },
+} as const;
+
+const whole = (min: number, max: number, what: string) =>
+  z
+    .number({ message: `${what} must be a number.` })
+    .int(`${what} must be a whole number.`)
+    .min(min, `${what} must be at least ${min.toLocaleString("en-US")}.`)
+    .max(max, `${what} can be at most ${max.toLocaleString("en-US")}.`);
+
+const L = PRICE_LIMITS;
+const packageSchema = (id: TierId) =>
+  z.object({
+    price: whole(L.packagePrice.min, L.packagePrice.max, `${TIER_NAME_EN[id]} price`),
+    hours: whole(L.hours.min, L.hours.max, `${TIER_NAME_EN[id]} hours`),
+    extraHour: whole(L.extraHour.min, L.extraHour.max, `${TIER_NAME_EN[id]} extra-hour price`),
+  });
+
+/** Strict validation of a whole price book (what the admin form submits). */
+export const priceBookSchema = z
+  .object({
+    packages: z.object(mapTiers(packageSchema)).strict(),
+    addOns: z
+      .object(mapAddOns((id) => whole(L.addOnPrice.min, L.addOnPrice.max, `${ADD_ON_NAME_EN[id]} price`)))
+      .strict(),
+    maxHours: whole(L.hours.min, L.hours.max, "Longest day"),
+    depositPercent: whole(L.depositPercent.min, L.depositPercent.max, "Deposit %"),
+    balanceDueDays: whole(L.balanceDueDays.min, L.balanceDueDays.max, "Days before the event"),
+    holdDays: whole(L.holdDays.min, L.holdDays.max, "Hold days"),
+    updatedAt: z.string().max(40).nullable().default(null),
+    updatedBy: z.string().max(200).nullable().default(null),
+  })
+  .strict()
+  .superRefine((b, ctx) => {
+    for (const id of TIER_IDS) {
+      if (b.packages[id].hours > b.maxHours) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["packages", id, "hours"],
+          message: `${TIER_NAME_EN[id]} includes ${b.packages[id].hours} hours, more than the longest day (${b.maxHours}).`,
+        });
+      }
+    }
+  });
+
+/* ------------------------------------------------------------------ */
+/* ------------------------------------------------------------------ */
+/* Hours — each package includes a set number of hours on the day;     */
+/* families can add hours, one at a time, up to the book's maxHours.   */
+/* ------------------------------------------------------------------ */
+
+/** Most hours this package can have on the day (included hours if hours can't be added). */
+export function maxHoursFor(book: PriceBook, tier: TierId): number {
+  const p = book.packages[tier];
+  return p.extraHour > 0 ? Math.max(p.hours, book.maxHours) : p.hours;
+}
+
+/** Can a family add hours to this package at all? */
+export const canAddHours = (book: PriceBook, tier: TierId) => maxHoursFor(book, tier) > book.packages[tier].hours;
+
+/** Fit any requested hours to the package: whole hours, included..max. */
+export function normalizeHours(book: PriceBook, tier: TierId, hours?: number | null): number {
+  const base = book.packages[tier].hours;
   const want = Number.isFinite(hours) ? Math.round(hours!) : base;
-  return Math.max(base, Math.min(MAX_HOURS, want));
+  return Math.max(base, Math.min(maxHoursFor(book, tier), want));
 }
 
 /* ------------------------------------------------------------------ */
@@ -154,27 +286,15 @@ export const TIER_SERVICE: Record<TierId, "photo" | "both"> = {
   archive: "both",
 };
 
-/**
- * Deposit: every package is 25% down, paid once we approve the signed
- * agreement; it goes toward the total. The rest is due 48 hours before the
- * event. (Named RETAINER for continuity with stored bookings.)
- */
-export const RETAINER = {
-  rate: 0.25,
-  floorUsd: 0,
-  roundToUsd: 1,
-  /** The rest is due this many hours before the event. */
-  balanceDueHours: 48,
-} as const;
-
-/** Unpaid checkout hold, and the consultation-first courtesy hold. */
+/** Unpaid checkout hold (Stripe's own limit; not owner-editable). */
 export const CHECKOUT_HOLD_MINUTES = 30;
-export const CONSULT_HOLD_DAYS = 7;
 
 export type Quote = {
   tierUsd: number;
   /** Hours on the day (included + added). */
   hours: number;
+  /** Hours included in the package. */
+  baseHours: number;
   extraHoursUsd: number;
   addOnsUsd: number;
   /** Directors included on the celebration day. */
@@ -182,30 +302,81 @@ export type Quote = {
   totalUsd: number;
   retainerUsd: number;
   balanceUsd: number;
+  /** Deposit percent this quote was priced with. */
+  depositPercent: number;
 };
 
-export function quoteCommission(tier: TierId, addOns: readonly AddOnId[], hoursWanted?: number | null): Quote {
-  const tierUsd = TIER_PRICE_USD[tier];
-  const hours = normalizeHours(tier, hoursWanted);
-  const extraHoursUsd = (hours - BASE_HOURS[tier]) * EXTRA_HOUR_USD[tier];
+/** Deposit on a total: the book's percent, whole dollars, never more than the total. */
+export function depositFor(book: PriceBook, totalUsd: number): number {
+  return Math.min(totalUsd, Math.max(0, Math.round((totalUsd * book.depositPercent) / 100)));
+}
+
+export function quoteCommission(
+  book: PriceBook,
+  tier: TierId,
+  addOns: readonly AddOnId[],
+  hoursWanted?: number | null,
+): Quote {
+  const pkg = book.packages[tier];
+  const tierUsd = pkg.price;
+  const hours = normalizeHours(book, tier, hoursWanted);
+  const extraHoursUsd = (hours - pkg.hours) * pkg.extraHour;
   const unique = Array.from(new Set(addOns));
-  const addOnsUsd = unique.reduce((sum, a) => sum + ADD_ON_PRICE_USD[a], 0);
+  const addOnsUsd = unique.reduce((sum, a) => sum + book.addOns[a], 0);
   const crewSize = BASE_CREW[tier];
   const totalUsd = tierUsd + extraHoursUsd + addOnsUsd;
-  const raw = Math.max(totalUsd * RETAINER.rate, RETAINER.floorUsd);
-  const retainerUsd = Math.min(
+  const retainerUsd = depositFor(book, totalUsd);
+  return {
+    tierUsd,
+    hours,
+    baseHours: pkg.hours,
+    extraHoursUsd,
+    addOnsUsd,
+    crewSize,
     totalUsd,
-    Math.round(raw / RETAINER.roundToUsd) * RETAINER.roundToUsd,
-  );
-  return { tierUsd, hours, extraHoursUsd, addOnsUsd, crewSize, totalUsd, retainerUsd, balanceUsd: totalUsd - retainerUsd };
+    retainerUsd,
+    balanceUsd: totalUsd - retainerUsd,
+    depositPercent: book.depositPercent,
+  };
 }
+
+/** Test/tooling convenience: a quote from the launch defaults. Never use for a real charge. */
+export const quoteWithDefaults = (tier: TierId, addOns: readonly AddOnId[] = [], hours?: number | null) =>
+  quoteCommission(DEFAULT_PRICE_BOOK, tier, addOns, hours);
 
 /** "$11,500" — use in prose so copy reads straight from the price book. */
 export const usd = (n: number) => `$${n.toLocaleString("en-US")}`;
 
-/** Lowest and highest published commission — for "from $X" copy and schema. */
-export const PRICE_FLOOR_USD = Math.min(...Object.values(TIER_PRICE_USD));
-export const PRICE_CEILING_USD = Math.max(...Object.values(TIER_PRICE_USD));
+/** Lowest and highest published package — for "from $X" copy and schema. */
+export const priceFloor = (book: PriceBook) => Math.min(...TIER_IDS.map((id) => book.packages[id].price));
+export const priceCeiling = (book: PriceBook) => Math.max(...TIER_IDS.map((id) => book.packages[id].price));
+
+/** Cheapest price per added hour across packages that allow it (null = none do). */
+export function extraHourFrom(book: PriceBook): number | null {
+  const rates = TIER_IDS.filter((id) => canAddHours(book, id)).map((id) => book.packages[id].extraHour);
+  return rates.length ? Math.min(...rates) : null;
+}
+
+/** Plain-language list of what changed between two books (admin confirm + history). */
+export function describeChanges(before: PriceBook, after: PriceBook): string[] {
+  const out: string[] = [];
+  const money = (label: string, a: number, b: number) => a !== b && out.push(`${label}: ${usd(a)} → ${usd(b)}`);
+  const num = (label: string, a: number, b: number, unit: string) =>
+    a !== b && out.push(`${label}: ${a} → ${b} ${unit}`);
+  for (const id of TIER_IDS) {
+    const a = before.packages[id];
+    const b = after.packages[id];
+    money(`${TIER_NAME_EN[id]} price`, a.price, b.price);
+    num(`${TIER_NAME_EN[id]} hours included`, a.hours, b.hours, "hours");
+    money(`${TIER_NAME_EN[id]} extra hour`, a.extraHour, b.extraHour);
+  }
+  for (const id of ADD_ON_IDS) money(ADD_ON_NAME_EN[id], before.addOns[id], after.addOns[id]);
+  num("Longest day", before.maxHours, after.maxHours, "hours");
+  if (before.depositPercent !== after.depositPercent) out.push(`Deposit: ${before.depositPercent}% → ${after.depositPercent}%`);
+  num("Rest due before the event", before.balanceDueDays, after.balanceDueDays, "days");
+  num("Date hold while reviewing", before.holdDays, after.holdDays, "days");
+  return out;
+}
 
 /* ------------------------------------------------------------------ */
 /* Request contract                                                    */
@@ -244,8 +415,17 @@ export const commissionSchema = z.object({
       motion: z.number().int().min(0).max(MAX_CREW),
     })
     .optional(),
-  /** Requested hours on the day; normalized to the package's included..MAX_HOURS. */
-  hours: z.number().int().min(MIN_HOURS).max(MAX_HOURS).optional(),
+  /** Requested hours on the day; normalized to the package's included..max hours. */
+  hours: z.number().int().min(PRICE_LIMITS.hours.min).max(PRICE_LIMITS.hours.max).optional(),
+  /**
+   * What the family was shown when they signed (total + deposit). Optional so
+   * an older open tab still works; when present and different from the
+   * server's own re-quote (prices changed while the tab was open), the
+   * booking is refused with `prices_changed` so nobody signs a number they
+   * didn't see. The server's quote is what gets stored and charged either way.
+   */
+  quoted_total_usd: z.number().int().min(0).max(1_000_000).optional(),
+  quoted_deposit_usd: z.number().int().min(0).max(1_000_000).optional(),
   name: z.string().trim().min(2, "Please enter your name.").max(120),
   honoree: z.string().trim().max(80).optional().default(""),
   email: z.string().trim().toLowerCase().email("Please enter a valid email."),
@@ -279,16 +459,15 @@ function crewLine(tier: TierId, mix: Crew): string {
 }
 
 /** Human-readable summary stored on the booking and shown to the operator. */
-export function describeCommission(r: CommissionRequest, q: Quote): string {
-  const usd = (n: number) => `$${n.toLocaleString("en-US")}`;
+export function describeCommission(r: CommissionRequest, q: Quote, book: PriceBook): string {
   const lines = [
-    `Package: ${TIER_NAME_EN[r.tier]} — ${usd(q.tierUsd)} (${BASE_HOURS[r.tier]} hrs included)`,
-    q.extraHoursUsd ? `+ ${q.hours - BASE_HOURS[r.tier]} extra hr(s) — ${usd(q.extraHoursUsd)}` : "",
+    `Package: ${TIER_NAME_EN[r.tier]} — ${usd(q.tierUsd)} (${q.baseHours} hrs included)`,
+    q.extraHoursUsd ? `+ ${q.hours - q.baseHours} extra hr(s) — ${usd(q.extraHoursUsd)}` : "",
     `Hours on the day: ${q.hours}`,
-    ...r.add_ons.map((a) => `+ ${ADD_ON_NAME_EN[a]} — ${usd(ADD_ON_PRICE_USD[a])}`),
+    ...Array.from(new Set(r.add_ons)).map((a) => `+ ${ADD_ON_NAME_EN[a]} — ${usd(book.addOns[a])}`),
     crewLine(r.tier, normalizeCrew(r.tier, r.crew_mix)),
     COORDINATOR_INCLUDED[r.tier] ? "Day-of coordinator: included" : "",
-    `Total: ${usd(q.totalUsd)} · Retainer: ${usd(q.retainerUsd)} · Balance: ${usd(q.balanceUsd)}`,
+    `Total: ${usd(q.totalUsd)} · Deposit (${q.depositPercent}%): ${usd(q.retainerUsd)} · Balance: ${usd(q.balanceUsd)}`,
     `Signed by: ${r.signed_name}`,
     `City: ${CITY_NAME[r.city]}${r.venue ? ` · Venue: ${r.venue}` : ""}${r.start_time ? ` · Starts: ${r.start_time}` : ""}`,
     `Scope: ${r.scope}`,

@@ -1,10 +1,10 @@
 import type { BlogPost } from "@/content/blog";
-import { TIER_PRICE_USD, usd } from "@/lib/commission";
+import { PT } from "@/lib/price-text";
 
-const study = usd(TIER_PRICE_USD.study);
-const cinema = usd(TIER_PRICE_USD.cinema);
-const production = usd(TIER_PRICE_USD.production);
-const archive = usd(TIER_PRICE_USD.archive);
+const study = PT.price.study;
+const cinema = PT.price.cinema;
+const production = PT.price.production;
+const archive = PT.price.archive;
 
 const post: BlogPost = {
   slug: "salones-para-quinceaneras-dfw",

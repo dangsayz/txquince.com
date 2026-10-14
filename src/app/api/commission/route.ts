@@ -4,19 +4,21 @@
  * Sign → approve → pay (src/lib/agreement.ts):
  *   The family picks a package, fills in their details and signs the booking
  *   agreement. We save the signed agreement on a 'requested' booking that
- *   holds the date for CONSULT_HOLD_DAYS while the studio reviews it, and email
- *   both sides. Approving in /admin/bookings emails the family a pay link for
- *   the 25% deposit (/booking/[id]); the Stripe webhook makes it final.
+ *   holds the date for the price book's holdDays while the studio reviews it,
+ *   and email both sides. Approving in /admin/bookings emails the family a pay
+ *   link for the deposit (/booking/[id]); the Stripe webhook makes it final.
  *
  * Same defenses as before: honeypot, rate limit, Turnstile, zod. The price and
- * the agreement text are ALWAYS rebuilt server-side from the price book — the
- * client only says what it picked. The partial unique index on
+ * the agreement text are ALWAYS rebuilt server-side from the server's own live
+ * price book (getPriceBook) — the client only says what it picked. If the
+ * family's tab was priced from an older book (prices changed while it was
+ * open), the request is refused with `prices_changed` and the current book, so
+ * nobody signs a number they weren't shown. The partial unique index on
  * bookings.event_date makes double-booking impossible under concurrency.
  */
 import { NextResponse, type NextRequest } from "next/server";
 import {
   CITY_NAME,
-  CONSULT_HOLD_DAYS,
   TIER_SERVICE,
   commissionSchema,
   describeCommission,
@@ -32,6 +34,7 @@ import { verifyTurnstile } from "@/lib/turnstile";
 import { sendAgreementSignedClient, sendAgreementSignedOperator } from "@/lib/agreement-email";
 import { getSiteUrl } from "@/lib/site-url";
 import { site } from "@/content/site";
+import { getPriceBook } from "@/lib/pricing";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -67,9 +70,10 @@ export async function POST(req: NextRequest) {
   }
 
   // Honeypot — pretend success, don't tip off bots.
+  const book = await getPriceBook();
   const honeypot = body[HONEYPOT_FIELD];
   if (typeof honeypot === "string" && honeypot.trim() !== "") {
-    return NextResponse.json({ ok: true, holdDays: CONSULT_HOLD_DAYS, ref: "TXQ-000000" });
+    return NextResponse.json({ ok: true, holdDays: book.holdDays, ref: "TXQ-000000" });
   }
 
   const ip = clientIp(req);
@@ -93,14 +97,30 @@ export async function POST(req: NextRequest) {
   }
   const r = parsed.data;
 
+  const q = quoteCommission(book, r.tier, r.add_ons, r.hours);
+  // The family must have been shown THIS price. A tab opened before a price
+  // change would otherwise sign one number and be stored at another.
+  if (
+    (r.quoted_total_usd !== undefined && r.quoted_total_usd !== q.totalUsd) ||
+    (r.quoted_deposit_usd !== undefined && r.quoted_deposit_usd !== q.retainerUsd)
+  ) {
+    return NextResponse.json(
+      {
+        ok: false,
+        code: "prices_changed",
+        error: "Our prices were just updated. Please review your new total and sign again.",
+        book,
+      },
+      { status: 409 },
+    );
+  }
   if (!isSupabaseConfigured()) {
     console.error("[commission] Supabase not configured.");
     return fail(503, "unavailable", "Booking is briefly unavailable. Please write to us directly.");
   }
-  const q = quoteCommission(r.tier, r.add_ons, r.hours);
   const crew = normalizeCrew(r.tier, r.crew_mix);
   const service = r.scope === "motion" ? "video" : r.scope === "stills" ? "photo" : TIER_SERVICE[r.tier];
-  const summary = describeCommission(r, q);
+  const summary = describeCommission(r, q, book);
 
   // The agreement is rebuilt here from the re-priced quote — the client's copy
   // is only for review. What we store is exactly what the family saw and signed.
@@ -119,7 +139,7 @@ export async function POST(req: NextRequest) {
     email: r.email,
     phone: r.phone,
     sharePermission: r.share_permission,
-  });
+  }, book);
   const signed: SignedAgreement = {
     ...agreement,
     signedName: r.signed_name,
@@ -141,6 +161,8 @@ export async function POST(req: NextRequest) {
     coordinator_included: COORDINATOR_INCLUDED[r.tier],
     total_usd: q.totalUsd,
     retainer_usd: q.retainerUsd,
+    deposit_percent: q.depositPercent,
+    balance_due_days: book.balanceDueDays,
     city: r.city,
     venue: r.venue,
     start_time: r.start_time,
@@ -160,7 +182,7 @@ export async function POST(req: NextRequest) {
     .eq("email", r.email)
     .in("status", ["pending_payment", "requested"]);
 
-  const expiresAt = new Date(Date.now() + CONSULT_HOLD_DAYS * 24 * 3600 * 1000).toISOString();
+  const expiresAt = new Date(Date.now() + book.holdDays * 24 * 3600 * 1000).toISOString();
   const { data: inserted, error } = await supabase
     .from("bookings")
     .insert({
@@ -194,7 +216,7 @@ export async function POST(req: NextRequest) {
   if (!op.ok) console.error("[commission] operator email:", op.error);
   if (!cl.ok) console.error("[commission] client email:", cl.error);
 
-  return NextResponse.json({ ok: true, holdDays: CONSULT_HOLD_DAYS, ref: refFor(inserted.id) });
+  return NextResponse.json({ ok: true, holdDays: book.holdDays, ref: refFor(inserted.id) });
 }
 
 /** Short, non-guessable-enough display reference derived from the booking id. */

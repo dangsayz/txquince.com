@@ -3,7 +3,7 @@
  *
  *   signed   → operator: a new signed agreement is waiting for approval.
  *   signed   → family:   a copy of what they signed + what happens next.
- *   approved → family:   their pay link for the 25% deposit.
+ *   approved → family:   their pay link for the deposit (percent from the signed agreement).
  *   declined → family:   we can't take the date; nothing was charged.
  *
  * Bilingual by the family's chosen language. Missing Resend env never throws.
@@ -11,7 +11,7 @@
 import "server-only";
 import { Resend } from "resend";
 import { site } from "@/content/site";
-import { agreementToText, type SignedAgreement } from "@/lib/agreement";
+import { agreementToText, signedDepositPercent, type SignedAgreement } from "@/lib/agreement";
 import { usd } from "@/lib/commission";
 
 type Result = { ok: boolean; error?: string };
@@ -131,8 +131,8 @@ export async function sendAgreementSignedClient(b: BookingLite, a: SignedAgreeme
   const date = prettyDate(b.event_date, a.lang);
   const subject = es ? `Recibimos tu contrato firmado — ${date}` : `We got your signed agreement — ${date}`;
   const lead = es
-    ? `¡Gracias, ${name}! Recibimos tu contrato firmado. Apartamos el ${date} para ti mientras lo revisamos — te escribimos en un día. Cuando lo aprobemos, te llegará un enlace para pagar tu depósito del 25% (${usd(a.depositUsd)}).`
-    : `Thank you, ${name}! We got your signed agreement. ${date} is held for you while we review it — we'll write within one day. Once we approve it, you'll get a link to pay your 25% deposit (${usd(a.depositUsd)}).`;
+    ? `¡Gracias, ${name}! Recibimos tu contrato firmado. Apartamos el ${date} para ti mientras lo revisamos — te escribimos en un día. Cuando lo aprobemos, te llegará un enlace para pagar tu depósito del ${signedDepositPercent(a)}% (${usd(a.depositUsd)}).`
+    : `Thank you, ${name}! We got your signed agreement. ${date} is held for you while we review it — we'll write within one day. Once we approve it, you'll get a link to pay your ${signedDepositPercent(a)}% deposit (${usd(a.depositUsd)}).`;
   const text = [lead, "", agreementToText(a)].join("\n");
   const html = shell(es ? "Recibimos tu contrato" : "We got your agreement", `<p style="margin:0">${esc(lead)}</p>${agreementHtml(a)}`);
   return send(b.email, subject, text, html);
@@ -144,14 +144,16 @@ export async function sendAgreementApprovedClient(
   lang: Lang,
   payUrl: string,
   depositUsd: number,
+  /** The percent in the SIGNED agreement (not the current price book). */
+  depositPercent: number,
 ): Promise<Result> {
   const es = lang === "es";
   const name = first(b.name);
   const date = prettyDate(b.event_date, lang);
   const subject = es ? `¡Aprobado! Aparta el ${date} con tu depósito` : `Approved! Lock in ${date} with your deposit`;
   const lead = es
-    ? `¡Buenas noticias, ${name}! Aprobamos tu reservación para el ${date}. Paga tu depósito del 25% (${usd(depositUsd)}) para confirmarla. Tu fecha sigue apartada mientras tanto.`
-    : `Great news, ${name}! We approved your booking for ${date}. Pay your 25% deposit (${usd(depositUsd)}) to make it final. Your date stays held until then.`;
+    ? `¡Buenas noticias, ${name}! Aprobamos tu reservación para el ${date}. Paga tu depósito del ${depositPercent}% (${usd(depositUsd)}) para confirmarla. Tu fecha sigue apartada mientras tanto.`
+    : `Great news, ${name}! We approved your booking for ${date}. Pay your ${depositPercent}% deposit (${usd(depositUsd)}) to make it final. Your date stays held until then.`;
   const text = [lead, "", payUrl].join("\n");
   const html = shell(es ? "Tu reservación fue aprobada" : "Your booking is approved", `<p style="margin:0">${esc(lead)}</p>`, {
     url: payUrl,

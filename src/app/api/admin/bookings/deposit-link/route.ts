@@ -2,7 +2,7 @@
  * /api/admin/bookings/deposit-link — operator one-click "send deposit link".
  *
  * For a signed homepage agreement this is APPROVE: it emails the family a pay
- * link for their 25% deposit (see the agreement branch below).
+ * link for their deposit (see the agreement branch below).
  *
  * Step-two of the request-first flow: after confirming a date, the operator
  * fires this. It creates a Stripe Checkout session for the booking's deposit,
@@ -23,8 +23,7 @@ import { formatEventDate, packageLabel, type BookingRecord } from "@/lib/booking
 import { getSiteUrl } from "@/lib/site-url";
 import { site } from "@/content/site";
 import { randomBytes } from "crypto";
-import { CONSULT_HOLD_DAYS } from "@/lib/commission";
-import { isSignedAgreement } from "@/lib/agreement";
+import { isSignedAgreement, signedDepositPercent } from "@/lib/agreement";
 import { sendAgreementApprovedClient } from "@/lib/agreement-email";
 
 export const runtime = "nodejs";
@@ -76,7 +75,10 @@ export async function POST(request: Request) {
   if (meta.flow === "agreement" && isSignedAgreement(meta.agreement)) {
     const payToken = meta.agreement.payToken || randomBytes(18).toString("base64url");
     const approvedAt = meta.agreement.approvedAt || new Date().toISOString();
-    const expiresAt = new Date(Date.now() + CONSULT_HOLD_DAYS * 24 * 3600 * 1000);
+    // Hold length and deposit come from the SIGNED agreement, never the current
+    // price book: a price change after signing must not touch this booking.
+    const holdDays = typeof meta.agreement.holdDays === "number" ? meta.agreement.holdDays : 7;
+    const expiresAt = new Date(Date.now() + holdDays * 24 * 3600 * 1000);
     const { error: upErr } = await supabase
       .from("bookings")
       .update({
@@ -95,7 +97,13 @@ export async function POST(request: Request) {
     }
     const payUrl = `${siteUrl}/booking/${b.id}?t=${payToken}`;
     const lang = meta.language === "es" ? "es" : "en";
-    const mail = await sendAgreementApprovedClient(b, lang, payUrl, b.deposit_amount_cents / 100);
+    const mail = await sendAgreementApprovedClient(
+      b,
+      lang,
+      payUrl,
+      b.deposit_amount_cents / 100,
+      signedDepositPercent(meta.agreement),
+    );
     revalidatePath("/admin/bookings");
     return NextResponse.json({ ok: true, url: payUrl, emailed: mail.ok, approved: true });
   }
