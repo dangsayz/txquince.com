@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { BOOKED_STATUSES } from "@/lib/journey/state";
 import { AutoRefresh } from "@/components/admin/AutoRefresh";
 import { buildLeadWork, countDue } from "@/lib/admin-workflow";
 import { getBookings, getInquiries, getInquiryActivity } from "@/lib/clients-db";
@@ -22,7 +21,7 @@ export default async function AdminHome() {
   const work = buildLeadWork(inquiries, activity);
   const due = countDue(work);
   const unreplied = work.filter((item) => item.priority === "unreplied").length;
-  const paid = bookings.filter((booking) => BOOKED_STATUSES.has(booking.status));
+  const paid = bookings.filter((booking) => booking.status === "paid");
   const review = bookings.filter((booking) => booking.status === "payment_review");
   const upcoming = paid
     .filter((booking) => booking.event_date >= new Date().toISOString().slice(0, 10))

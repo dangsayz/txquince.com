@@ -1,5 +1,4 @@
 import "server-only";
-import { BOOKED_STATUSES } from "@/lib/journey/state";
 import { cache } from "react";
 import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
 
@@ -138,7 +137,7 @@ export const getTakenEventDates = cache(async (): Promise<string[]> => {
     const { data, error } = await supabase
       .from("bookings")
       .select("event_date")
-      .in("status", ["requested", "approved", "confirmed", "paid_in_full", "completed"])
+      .in("status", ["requested", "pending_payment", "paid"])
       .gte("event_date", today);
     if (error || !data) return [];
     // De-dupe (a date can have one active row, but be defensive).
@@ -150,7 +149,7 @@ export const getTakenEventDates = cache(async (): Promise<string[]> => {
 
 /** Count of bookings whose deposit actually cleared. Drives the dashboard tile. */
 export function countPaid(bookings: BookingRow[]): number {
-  return bookings.filter((b) => BOOKED_STATUSES.has(b.status)).length;
+  return bookings.filter((b) => b.status === "paid").length;
 }
 
 /** Leads not yet turned into a paid booking — the active follow-up pile. */

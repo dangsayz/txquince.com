@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { InboxBadge } from "@/components/admin/journey/InboxBadge";
 
 const mainLinks = [
   { href: "/admin", label: "Today" },
@@ -25,11 +24,7 @@ const websiteLinks = [
 ] as const;
 
 function isActive(pathname: string, href: string) {
-  return (
-    pathname === href ||
-    (href === "/admin/inquiries" && pathname.startsWith("/admin/inquiries/")) ||
-    (href === "/admin/bookings" && pathname.startsWith("/admin/bookings/"))
-  );
+  return pathname === href || (href === "/admin/inquiries" && pathname.startsWith("/admin/inquiries/"));
 }
 
 function MainNavigation({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
@@ -46,7 +41,6 @@ function MainNavigation({ pathname, onNavigate }: { pathname: string; onNavigate
         className={`inline-flex min-h-12 items-center border-b-2 px-1 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black ${active ? "border-[#222] font-semibold text-[#222]" : "border-transparent text-[#62625f] hover:text-[#222]"}`}
       >
         {link.label}
-        {link.label === "Bookings" && <InboxBadge />}
       </Link>
     );
   });

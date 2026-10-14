@@ -50,21 +50,15 @@ describe("email esc() in attribute context", () => {
     expect(html).not.toContain(`onclick="alert(1)"`);
   });
 
-  // agreement-email.ts was replaced by the per-email modules in src/lib/emails/.
-  it("emails/*: a name, note or link with quotes stays inside the text / attribute", async () => {
-    const { declinedEmail } = await import("./emails/declined");
-    const { html } = declinedEmail({
-      lang: "en",
-      name: `O'Brien" <b>x</b>`,
-      eventDate: "2027-05-01",
-      ref: "TXQ-000001",
-      link: `https://txquince.com/my/booking/x" onclick="alert(1)`,
-      reason: "<b>x</b>",
-    });
+  it("agreement-email.ts: a name with quotes stays inside the text", async () => {
+    const { sendAgreementDeclinedClient } = await import("./agreement-email");
+    await sendAgreementDeclinedClient(
+      { id: "b1", name: `O'Brien" <b>x</b>`, email: "f@example.com", event_date: "2027-05-01" },
+      "en",
+    );
+    const html = sent[0]!.html;
     expect(html).toContain("O&#39;Brien&quot;");
     expect(html).not.toContain("<b>x</b>");
-    expect(html).not.toContain(`onclick="alert(1)"`);
-    expect(html).toContain(`x&quot; onclick=&quot;alert(1)`);
   });
 });
 

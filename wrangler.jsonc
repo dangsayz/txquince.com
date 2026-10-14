@@ -1,9 +1,7 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "txquince",
-  // Custom entry: re-exports OpenNext's fetch handler and adds `scheduled`
-  // for the Cron Trigger below (client journey daily run, /api/cron/daily).
-  "main": "cloudflare/worker.ts",
+  "main": ".open-next/worker.js",
   "compatibility_date": "2026-06-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "workers_dev": true,
@@ -29,13 +27,6 @@
     {
       "binding": "PORTFOLIO",
       "bucket_name": "txquince-portfolio"
-    },
-    // Signed contract PDFs (contracts/<bookingId>/<sha256>.pdf). PRIVATE —
-    // served only by the family's private link or to the admin. The bucket
-    // must be created by the owner before deploy: wrangler r2 bucket create txquince-contracts
-    {
-      "binding": "CONTRACTS",
-      "bucket_name": "txquince-contracts"
     }
   ],
   // Durable per-IP rate limits (src/lib/rate-limit.ts). Counters live in
@@ -58,13 +49,6 @@
   ],
   "observability": {
     "enabled": true
-  },
-  // Daily client-journey run: expire lapsed holds (+ their Stripe sessions),
-  // balance reminders, owner/family nudges. 13:05 UTC ≈ 8:05 AM in Dallas
-  // (CDT) / 7:05 AM (CST). Idempotent — safe if Cloudflare fires it twice.
-  // Needs the CRON_SECRET secret (wrangler secret put CRON_SECRET — owner only).
-  "triggers": {
-    "crons": ["5 13 * * *"]
   },
   "vars": {
     "NEXT_PUBLIC_SITE_URL": "https://txquince.com"

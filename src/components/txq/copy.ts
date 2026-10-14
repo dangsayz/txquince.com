@@ -282,10 +282,8 @@ const en = {
     doneTitle: "Thank you!",
     doneHeld: (days: number) => `Your date is held for ${days} days while we confirm.`,
     doneBody: (date: string, email: string) =>
-      `We'll write to ${email} within a day to confirm ${date}. Check your email for your private booking page — that's where you sign the agreement and pay your deposit once we confirm.`,
-    openPage: "Open my booking page",
+      `We'll write to ${email} within a day to confirm ${date}. Then you sign the agreement and pay your deposit on your private page.`,
     again: "Start a new request",
-    leadNote: (days: number) => `We need at least ${days} days' notice, so the next few days are closed.`,
     pricesChanged: "Prices were just updated — please check your total.",
     errors: {
       date: "Please pick a date.",
@@ -579,10 +577,8 @@ const es: Copy = {
     doneTitle: "¡Gracias!",
     doneHeld: (days: number) => `Tu fecha queda apartada ${days} días mientras la confirmamos.`,
     doneBody: (date: string, email: string) =>
-      `Te escribiremos a ${email} en un día para confirmar el ${date}. Revisa tu correo: ahí llega el enlace a tu página privada, donde firmas el contrato y pagas tu depósito cuando confirmemos.`,
-    openPage: "Abrir mi página de reserva",
+      `Te escribiremos a ${email} en un día para confirmar el ${date}. Luego firmas el contrato y pagas tu depósito en tu página privada.`,
     again: "Empezar otra solicitud",
-    leadNote: (days: number) => `Necesitamos al menos ${days} días de anticipación, así que los próximos días no están disponibles.`,
     pricesChanged: "Acabamos de actualizar los precios — por favor revisa tu total.",
     errors: {
       date: "Por favor elige una fecha.",
