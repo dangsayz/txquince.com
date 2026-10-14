@@ -2,6 +2,7 @@ import { crc32, deflateSync, inflateSync } from "node:zlib";
 import { PDFDocument, StandardFonts } from "pdf-lib";
 import { describe, expect, it } from "vitest";
 import { buildAgreement, type AgreementInput, type SignedAgreement } from "@/lib/agreement";
+import { DEFAULT_PRICE_BOOK } from "@/lib/commission";
 import {
   ContractPdfError,
   ESIGN_CONSENT,
@@ -78,7 +79,7 @@ const baseInput: AgreementInput = {
 };
 
 function signed(input: Partial<AgreementInput> = {}, extra: Partial<SignedAgreement> = {}): SignedAgreement {
-  const a = buildAgreement({ ...baseInput, ...input });
+  const a = buildAgreement({ ...baseInput, ...input }, DEFAULT_PRICE_BOOK);
   return {
     ...a,
     signedName: input.name ?? baseInput.name,
