@@ -7,8 +7,8 @@
  * schema. This is the center of the wheel: homepage/nav → hub → 20+ blog spokes
  * → city/venue pages → packages.
  *
- * Answers use REAL TX Quince facts (collections $1,800–$5,500, Signature pairs
- * photo + film, save-the-date included) — that specificity is what keeps it from
+ * Answers use REAL TX Quince facts (commissions from the price book in src/lib/commission.ts,
+ * the portrait session, photo + film) — that specificity is what keeps it from
  * reading generic/AI.
  */
 import type { Metadata } from "next";
@@ -16,7 +16,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { EditOverlay } from "@/components/EditMode";
 import { site } from "@/content/site";
-import { packages } from "@/content/packages";
+import { commissions, commissionsFromLabel, commissionLinks, retainerPercentLabel } from "@/content/commissions";
+import { TIER_PRICE_USD, usd } from "@/lib/commission";
 import { getPageHero, getPortfolioImages, type PortfolioImage } from "@/lib/content-db";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
@@ -26,7 +27,7 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
   title: "The Quinceañera Guide: Every Question, Answered",
   description:
-    "Straight answers to the most-asked quinceañera questions — cost, planning timeline, photo vs. film, la misa, el vals, and more — from a Dallas–Fort Worth quinceañera photographer. Collections from $1,800.",
+    `Straight answers to the most-asked quinceañera questions — cost, planning timeline, photo vs. film, la misa, el vals, and more — from a Dallas–Fort Worth quinceañera photographer. Commissions from ${commissionsFromLabel}.`,
   keywords:
     "quinceañera guide, quinceañera questions, quinceañera planning, quinceañera photographer cost, how much does a quinceañera photographer cost, quinceañera timeline, quinceañera FAQ Dallas Fort Worth",
   alternates: { canonical: "/quinceanera-guide" },
@@ -90,7 +91,7 @@ const BUCKETS: Bucket[] = [
     qas: [
       {
         q: "How much does a quinceañera photographer cost in Dallas–Fort Worth?",
-        a: "In DFW, professional quinceañera photography generally runs about $1,800–$5,500. Our collections start at $1,800 (Moments — one artist, five focused hours) and reach $5,500 (Legacy — photo, film, drone, and a premium album). What you pay tracks coverage hours and whether you want photo, film, or both.",
+        a: `Most DFW quinceañera studios publish packages between about $1,500 and $6,000. TX Quince works at the top of the market: a Portrait Study is ${usd(TIER_PRICE_USD.study)}, photo and film together start at ${usd(TIER_PRICE_USD.cinema)}, The Full Production is ${usd(TIER_PRICE_USD.production)}, and the multi-day archive is ${usd(TIER_PRICE_USD.archive)}. What you pay tracks coverage hours, crew, and the heirloom pieces you keep.`,
         href: "/blog/quinceanera-photographer-cost-dallas-fort-worth",
         hrefLabel: "What drives the price",
       },
@@ -101,19 +102,19 @@ const BUCKETS: Bucket[] = [
         hrefLabel: "Why timing matters",
       },
       {
-        q: "Do you offer payment plans, and what's the deposit?",
-        a: "Yes. A deposit reserves your date and the balance is due before the celebration — you can split it into manageable payments along the way. The deposit holds your date exclusively, so no one else can book it.",
+        q: "How does the retainer work?",
+        a: `A retainer of ${retainerPercentLabel} of your commission reserves your date exclusively and is applied in full; the balance is due 30 days before the celebration. Pay it online at secure checkout, or request a consultation first and we hold the date for 7 days.`,
         href: "/blog/quinceanera-payment-plans-deposits-dfw",
         hrefLabel: "How deposits & plans work",
       },
       {
         q: "How much of my budget should go to photography?",
-        a: "Plan on 10–20% of your total quince budget for photography and film. It's the one thing that outlives the day — the flowers wilt and the food is gone, but the photos and the film are what your family keeps. Our collections span $1,800–$5,500 to fit different budgets.",
+        a: "Plan on roughly 8–15% of your total quince budget for photography and film. It's the one thing that outlives the day — the flowers wilt and the food is gone, but the photos and the film are what your family keeps.",
         href: "/blog/quinceanera-budget-breakdown-texas",
         hrefLabel: "Where the money goes",
       },
     ],
-    cta: { label: "See collections & pricing", href: "/investment" },
+    cta: { label: "See commissions & pricing", href: commissionLinks.en.compare },
   },
   {
     id: "photo-film",
@@ -123,7 +124,7 @@ const BUCKETS: Bucket[] = [
     qas: [
       {
         q: "Photo or video for a quinceañera — which do I need?",
-        a: "If you can, both — they do different jobs. Photographs are what you frame and pass down; film is her voice, the music, and the room in motion. Our Signature collection ($3,900) pairs two storytellers so you get both across the full day. On a tighter budget, choose the one she'll relive most.",
+        a: `If you can, both — they do different jobs. Photographs are what you frame and pass down; film is her voice, the music, and the room in motion. From Cinema & Stills (${usd(TIER_PRICE_USD.cinema)}) upward, a stills director and a motion director cover the full day together.`,
         href: "/blog/quinceanera-photo-vs-video",
         hrefLabel: "Photo vs. film, honestly",
       },
@@ -192,12 +193,12 @@ const BUCKETS: Bucket[] = [
       },
       {
         q: "What's a pre-quince or save-the-date session?",
-        a: "It's a relaxed portrait session weeks or months before the celebration — for her invitations, social posts, and a calm first look at her in a gown before the big day. It's complimentary with Essential, Signature, and Legacy; families choosing Moments can add a session separately.",
-        href: "/quinceanera-save-the-date",
-        hrefLabel: "About the save-the-date session",
+        a: `It's an editorial portrait session weeks or months before the celebration — for her invitations, the welcome board, and a calm first look at her in the gown. Book it on its own as the Portrait Study (${usd(TIER_PRICE_USD.study)}), or receive it inside The Full Production and the Multi-Day Archive.`,
+        href: "/quinceanera-photoshoot",
+        hrefLabel: "About the pre-quince photoshoot",
       },
     ],
-    cta: { label: "Reserve your date", href: "/reserve" },
+    cta: { label: "Check your date", href: commissionLinks.en.book },
   },
 ];
 
@@ -414,17 +415,17 @@ export default async function QuinceaneraGuidePage() {
       <section className="bg-ink text-white" aria-labelledby="guide-collections-title">
         <div className="mx-auto grid max-w-[90rem] gap-10 px-5 py-16 sm:px-10 sm:py-20 lg:grid-cols-[minmax(0,0.55fr)_minmax(0,0.45fr)] lg:gap-20 lg:px-16 lg:py-24">
           <div>
-            <p className="text-xs uppercase tracking-[0.18em] text-white/65">Four collections</p>
+            <p className="text-xs uppercase tracking-[0.18em] text-white/65">Four commissions</p>
             <h2 id="guide-collections-title" className="mt-4 max-w-[20ch] font-display text-[clamp(1.875rem,3vw,3rem)] font-normal leading-tight">Coverage for the day you have in mind.</h2>
-            <p className="mt-5 max-w-md text-base leading-7 text-white/75">Published prices begin at {packages[0].priceLabel}. Your date and collection are confirmed before a deposit is due.</p>
-            <Link href="/investment" className="mt-8 inline-flex min-h-12 items-center gap-4 border-b border-white pb-1 text-sm font-medium">Compare collections <span aria-hidden="true">↗</span></Link>
+            <p className="mt-5 max-w-md text-base leading-7 text-white/75">Published prices begin at {commissionsFromLabel}. A {retainerPercentLabel} retainer holds your date and is applied in full.</p>
+            <Link href={commissionLinks.en.compare} className="mt-8 inline-flex min-h-12 items-center gap-4 border-b border-white pb-1 text-sm font-medium">Compare commissions <span aria-hidden="true">↗</span></Link>
           </div>
           <ol className="border-t border-white/30">
-            {packages.map((collection, index) => (
-              <li key={collection.id} className="grid grid-cols-[2rem_minmax(0,1fr)_auto] items-baseline gap-3 border-b border-white/30 py-5 sm:gap-6">
+            {commissions.map((c, index) => (
+              <li key={c.id} className="grid grid-cols-[2rem_minmax(0,1fr)_auto] items-baseline gap-3 border-b border-white/30 py-5 sm:gap-6">
                 <span className="text-xs text-white/55">0{index + 1}</span>
-                <Link href={`/reserve?collection=${collection.id}`} className="min-h-11 text-lg hover:underline">{collection.name}</Link>
-                <span className="text-base text-white/85">{collection.priceLabel}</span>
+                <Link href={commissionLinks.en.compare} className="min-h-11 text-lg hover:underline">{c.numeral} {c.name.en}</Link>
+                <span className="text-base text-white/85">{c.priceLabel}</span>
               </li>
             ))}
           </ol>

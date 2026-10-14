@@ -116,9 +116,9 @@ const post: BlogPost = {
     {
       type: "cta",
       heading: "Que estos momentos los capte gente que conoce el orden del día",
-      body: "Colecciones de foto y video pensadas para el día completo de la quince: del arreglo de la mañana al último baile. Precios fijos, sin formulario de cotización.",
-      href: "/investment",
-      label: "Ver colecciones y precios",
+      body: "Comisiones de foto y video pensadas para el día completo de la quince: del arreglo de la mañana al último baile. Precios publicados, sin formulario de cotización.",
+      href: "/es#commissions",
+      label: "Comparar comisiones",
     },
     { type: "h2", text: "El brindis, la cena y el pastel" },
     {
@@ -152,11 +152,11 @@ const post: BlogPost = {
     { type: "h2", text: "¿Cuántas horas de cobertura necesita?" },
     {
       type: "p",
-      text: "Si quiere toda la historia, del arreglo de la mañana hasta el baile sorpresa, considere alrededor de 8 a 10 horas de cobertura. Los paquetes más cortos, de 4 a 6 horas, por lo general alcanzan solo para la recepción, lo que deja fuera el arreglo, la misa y las fotos. El arrepentimiento más común que escuchamos es haber reservado muy pocas horas y haberse perdido el baile con el papá o el cambio de zapatillas porque se acabó el tiempo del fotógrafo. Cuando compare opciones, compare lo que [incluye cada colección](/investment) por sus horas de cobertura, no nada más por el precio.",
+      text: "Si quiere toda la historia, del arreglo de la mañana hasta el baile sorpresa, considere alrededor de 8 a 10 horas de cobertura. Los paquetes más cortos, de 4 a 6 horas, por lo general alcanzan solo para la recepción, lo que deja fuera el arreglo, la misa y las fotos. El arrepentimiento más común que escuchamos es haber reservado muy pocas horas y haberse perdido el baile con el papá o el cambio de zapatillas porque se acabó el tiempo del fotógrafo. Cuando compare opciones, compare lo que [incluye cada comisión](/es#commissions) por sus horas de cobertura, no nada más por el precio.",
     },
     {
       type: "p",
-      text: "Cuando ya tenga su fecha, puede [ver si está libre](/check-your-date) en unos segundos y [apartarla](/reserve) antes de que otra familia tome su sábado.",
+      text: "Cuando ya tenga su fecha, puede [ver si está libre](/check-your-date) en unos segundos y [apartarla](/es#intake) antes de que otra familia tome su sábado.",
     },
   ],
   faqs: [

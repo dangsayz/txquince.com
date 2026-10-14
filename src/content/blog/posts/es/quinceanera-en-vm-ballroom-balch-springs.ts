@@ -1,4 +1,10 @@
 import type { BlogPost } from "@/content/blog";
+import { TIER_PRICE_USD, RETAINER, usd } from "@/lib/commission";
+
+const study = usd(TIER_PRICE_USD.study);
+const cinema = usd(TIER_PRICE_USD.cinema);
+const production = usd(TIER_PRICE_USD.production);
+const archive = usd(TIER_PRICE_USD.archive);
 
 const post: BlogPost = {
   "slug": "quinceanera-en-vm-ballroom-balch-springs",
@@ -7,6 +13,7 @@ const post: BlogPost = {
   "category": "Locations",
   "excerpt": "VM Ballroom en Balch Springs: capacidad, precios, consejos para las fotos y preguntas para el recorrido.",
   "publishedAt": "2026-07-02",
+  "updatedAt": "2026-10-14",
   "readMinutes": 7,
   "lead": "VM Ballroom es un salón de eventos para quinceañeras y bodas en el 11221 de Lake June Rd, en Balch Springs, al sureste de Dallas, con capacidad para hasta 250 invitados sentados. Hemos fotografiado quinceañeras ahí más de una vez, así que esta guía responde lo que las familias de verdad quieren saber antes de reservar: qué es el salón, cómo funcionan sus precios, qué preguntar en el recorrido y cómo planear el día para que el salón se vea lo mejor posible en fotos.",
   "lang": "es",
@@ -55,7 +62,7 @@ const post: BlogPost = {
     },
     {
       "type": "p",
-      "text": "Le cotice lo que le cotice VM Ballroom, la fotografía y el video son una línea aparte y fija. Nuestras colecciones cuestan $1,800, $2,500, $3,900 y $5,500 — vea qué incluye cada colección — y los planes de pago dividen cualquiera en mensualidades. El presupuesto del salón es el que se mueve; la cobertura no tiene por qué moverse."
+      "text": `Le cotice lo que le cotice VM Ballroom, la fotografía y el video son una línea aparte y fija. Nuestras [comisiones](/es#commissions) están publicadas en ${study}, ${cinema}, ${production} y ${archive}, y un anticipo del ${Math.round(RETAINER.rate * 100)}% aparta la fecha, con el saldo ${RETAINER.balanceDueDays} días antes. El presupuesto del salón es el que se mueve; la cobertura no tiene por qué moverse.`
     },
     {
       "type": "h2",

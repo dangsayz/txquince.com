@@ -12,9 +12,9 @@ export const metadata: Metadata = {
 };
 
 const links = [
-  { href: "/reserve", label: "Reserve your date" },
+  { href: "/#intake", label: "Reserve your date" },
   { href: "/portfolio", label: "See the portfolio" },
-  { href: "/investment", label: "Collections & pricing" },
+  { href: "/#commissions", label: "Commissions & pricing" },
   { href: "/check-your-date", label: "Check if your date is open" },
 ] as const;
 

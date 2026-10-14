@@ -12,6 +12,7 @@ import {
 } from "react";
 import { COPY, type Copy } from "./copy";
 import type { AddOnId, Lang, TierId } from "./data";
+import { NO_EXTRA_CREW, addOnAllowed, clampCrew, type Crew } from "@/lib/commission";
 
 /* ------------------------------------------------------------------ */
 /* Language + commission selection (shared by Commissions and Intake)  */
@@ -26,6 +27,9 @@ type SiteState = {
   addOns: AddOnId[];
   toggleAddOn: (a: AddOnId) => void;
   setAddOns: (a: AddOnId[]) => void;
+  /** Added directors beyond the tier's included crew. */
+  crew: Crew;
+  setCrew: (c: Crew) => void;
 };
 
 const SiteCtx = createContext<SiteState | null>(null);
@@ -33,12 +37,14 @@ const LANG_KEY = "txq:lang";
 const LANG_EVENT = "txq:lang";
 
 /* The visitor's language lives in localStorage (a per-viewer convenience),
-   read through an external store so SSR renders English and the client
-   switches without a hydration mismatch. */
+   read through an external store so SSR renders the URL's language and the
+   client switches without a hydration mismatch. A Spanish URL (/es) always
+   opens in Spanish; the root URL follows the visitor's saved choice. */
 let memoryLang: Lang | null = null;
 
-function readLang(): Lang {
+function readLang(urlLang: Lang): Lang {
   if (memoryLang) return memoryLang;
+  if (urlLang === "es") return "es";
   try {
     const saved = localStorage.getItem(LANG_KEY);
     if (saved === "en" || saved === "es") return saved;
@@ -56,10 +62,20 @@ function subscribeLang(cb: () => void) {
   };
 }
 
-export function SiteProvider({ children }: { children: ReactNode }) {
-  const lang = useSyncExternalStore(subscribeLang, readLang, () => "en" as Lang);
+export function SiteProvider({ children, urlLang = "en" }: { children: ReactNode; urlLang?: Lang }) {
+  const lang = useSyncExternalStore(
+    subscribeLang,
+    () => readLang(urlLang),
+    () => urlLang,
+  );
   const [tier, setTier] = useState<TierId>("cinema");
-  const [addOns, setAddOns] = useState<AddOnId[]>([]);
+  const [addOns, setAddOnsRaw] = useState<AddOnId[]>([]);
+  const [crewRaw, setCrewRaw] = useState<Crew>(NO_EXTRA_CREW);
+  // Crew and event-only enhancements always fit the chosen tier.
+  const crew = useMemo(() => clampCrew(tier, crewRaw), [tier, crewRaw]);
+  const allowedAddOns = useMemo(() => addOns.filter((a) => addOnAllowed(tier, a)), [tier, addOns]);
+  const setAddOns = useCallback((a: AddOnId[]) => setAddOnsRaw(a), []);
+  const setCrew = useCallback((c: Crew) => setCrewRaw(c), []);
 
   const setLang = useCallback((l: Lang) => {
     try {
@@ -73,12 +89,23 @@ export function SiteProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const toggleAddOn = useCallback((a: AddOnId) => {
-    setAddOns((cur) => (cur.includes(a) ? cur.filter((x) => x !== a) : [...cur, a]));
+    setAddOnsRaw((cur) => (cur.includes(a) ? cur.filter((x) => x !== a) : [...cur, a]));
   }, []);
 
   const value = useMemo(
-    () => ({ lang, setLang, t: COPY[lang], tier, setTier, addOns, toggleAddOn, setAddOns }),
-    [lang, setLang, tier, addOns, toggleAddOn],
+    () => ({
+      lang,
+      setLang,
+      t: COPY[lang],
+      tier,
+      setTier,
+      addOns: allowedAddOns,
+      toggleAddOn,
+      setAddOns,
+      crew,
+      setCrew,
+    }),
+    [lang, setLang, tier, allowedAddOns, toggleAddOn, setAddOns, crew, setCrew],
   );
 
   return <SiteCtx.Provider value={value}>{children}</SiteCtx.Provider>;

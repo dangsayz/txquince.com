@@ -449,7 +449,6 @@ export const getHeroMedia = cache(async (): Promise<HeroMedia | null> => {
 export const HERO_PAGES: Record<string, { label: string; path: string }> = {
   blog: { label: "Guide (Blog)", path: "/blog" },
   guide: { label: "Quinceañera Guide", path: "/quinceanera-guide" },
-  investment: { label: "Investment", path: "/investment" },
   about: { label: "About", path: "/about" },
   areas: { label: "Areas Served", path: "/quinceanera-photographer" },
 };

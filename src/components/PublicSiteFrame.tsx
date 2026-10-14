@@ -8,9 +8,9 @@ import { Footer } from "@/components/Footer";
 export function PublicSiteFrame({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin");
-  // The homepage is the self-contained editorial site (src/components/txq),
+  // The homepage (EN at /, ES at /es) is the self-contained editorial site (src/components/txq),
   // which renders its own header, <main> and footer.
-  if (pathname === "/") return <>{children}</>;
+  if (pathname === "/" || pathname === "/es") return <>{children}</>;
   const locale = pathname === "/es" || pathname.startsWith("/es/") ? "es" : "en";
 
   return (

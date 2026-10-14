@@ -1,4 +1,7 @@
 import type { BlogPost } from "@/content/blog";
+import { RETAINER, CONSULT_HOLD_DAYS } from "@/lib/commission";
+
+const retainerPct = `${Math.round(RETAINER.rate * 100)}%`;
 
 const post: BlogPost = {
   slug: "when-to-book-quinceanera-photographer-dfw",
@@ -9,6 +12,7 @@ const post: BlogPost = {
   excerpt:
     "The short answer: book 9–14 months ahead, right after your date and venue. Waiting costs you your Saturday, and never gets you a discount.",
   publishedAt: "2026-06-09",
+  updatedAt: "2026-10-14",
   readMinutes: 7,
   lead: "If you've set the date and you're starting to line up vendors, photography is one to handle early — not last. The best photographers in Dallas–Fort Worth take one quinceañera per day, and the prime spring and fall Saturdays go first. Here's exactly when to reach out, in plain terms, so the date you want is still open when you do.",
   content: [
@@ -31,7 +35,7 @@ const post: BlogPost = {
       items: [
         "More open dates — your Saturday is still on the calendar, not already claimed by another family.",
         "Your first choice of artist — you book the photographer you want, not the backup who had a gap.",
-        "Today's price — booking locks the current collection price before any annual update.",
+        "Today's price — booking locks the current commission price before any annual update.",
         "Time to plan the details — a pre-quince session, the timeline, the shot list, all without rushing.",
       ],
     },
@@ -93,12 +97,12 @@ const post: BlogPost = {
         "Your date — the confirmed day of the celebration.",
         "Your venue — or at least the city, so travel and timing are clear.",
         "A rough idea of coverage — photo-only or photo + film (you can decide later, but it helps to know your lean).",
-        "Your budget range — so you can match it to the right [collection](/investment) without guesswork.",
+        "Your budget range — so you can match it to the right [commission](/#commissions) without guesswork.",
       ],
     },
     {
       type: "p",
-      text: "With the date and venue in hand, [reserve your day](/reserve) is a short step — a deposit holds the date and the rest is a payment plan. If you're still comparing artists, look through a few full [galleries](/portfolio) start to finish before you decide.",
+      text: `With the date and venue in hand, [reserve your day](/#intake) is a short step — a ${retainerPct} retainer holds the date and the balance is due ${RETAINER.balanceDueDays} days before the celebration. Want to talk first? Request a consultation and we'll hold the date for ${CONSULT_HOLD_DAYS} days. If you're still comparing artists, look through a few full [galleries](/portfolio) start to finish before you decide.`,
     },
     { type: "h2", text: "When to schedule the pre-quince session" },
     {
@@ -134,7 +138,7 @@ const post: BlogPost = {
     },
     {
       q: "What do I need before booking a photographer?",
-      a: "Just two things: your confirmed date and your venue (or at least the city). That's enough to check availability and reserve with a deposit. Coverage choices, the timeline, and the pre-quince session can all be sorted out afterward.",
+      a: "Just two things: your confirmed date and your venue (or at least the city). That's enough to check availability and reserve with a retainer — or request a consultation first. Coverage choices, the timeline, and the pre-quince session can all be sorted out afterward.",
     },
     {
       q: "When should I schedule the pre-quince or save-the-date session?",

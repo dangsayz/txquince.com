@@ -53,7 +53,7 @@ export default function StyleguidePage() {
       <section className="border-t border-line py-12" aria-labelledby="controls-heading">
         <h2 id="controls-heading" className="text-xl font-semibold text-ink">Controls</h2>
         <div className="mt-6 flex flex-wrap items-center gap-3">
-          <ButtonLink href="/reserve">Reserve your date</ButtonLink>
+          <ButtonLink href="/#intake">Reserve your date</ButtonLink>
           <ButtonLink href="/check-your-date" tone="secondary">Check your date</ButtonLink>
           <Button tone="quiet" onClick={() => setToastOpen(true)}>Quiet action</Button>
           <Button disabled>Disabled action</Button>

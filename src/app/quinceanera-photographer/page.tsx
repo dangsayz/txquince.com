@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { commissionsFromLabel } from "@/content/commissions";
 import Image from "next/image";
 import Link from "next/link";
 import { locations } from "@/content/locations";
@@ -12,12 +13,12 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
   title: "Quinceañera Photographer — Dallas–Fort Worth",
   description:
-    "Cinematic quinceañera photography & film across Dallas–Fort Worth — Grand Prairie, Irving, Garland, Dallas, Fort Worth, Arlington, Mansfield, and Farmers Branch. Fixed-price collections from $1,800.",
+    `Luxury quinceañera photography & film across Dallas–Fort Worth — Dallas, Fort Worth, Frisco, Plano, McKinney, Arlington and beyond. Published commissions from ${commissionsFromLabel}.`,
   alternates: { canonical: "/quinceanera-photographer" },
   openGraph: {
     title: `Quinceañera Photographer — Dallas–Fort Worth · ${site.brand}`,
     description:
-      "Quinceañera photography & film across the DFW metroplex. Fixed-price collections from $1,800.",
+      `Quinceañera photography & film across the DFW metroplex. Published commissions from ${commissionsFromLabel}.`,
     url: `${site.url}/quinceanera-photographer`,
   },
 };
@@ -122,7 +123,7 @@ export default async function LocationsHub() {
             <p className="max-w-lg text-base leading-7 text-ink-soft">We plan around your church, portrait location, and venue so the photographs feel like your family and your city. Choose the coverage that fits the day, then tell us the date you have in mind.</p>
             <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3">
               <Link href="/portfolio" className="inline-flex min-h-11 items-center gap-3 border-b border-ink text-sm font-medium text-ink">See the work <span aria-hidden="true">↗</span></Link>
-              <Link href="/investment" className="inline-flex min-h-11 items-center gap-3 border-b border-ink text-sm font-medium text-ink">Explore collections <span aria-hidden="true">↗</span></Link>
+              <Link href="/#commissions" className="inline-flex min-h-11 items-center gap-3 border-b border-ink text-sm font-medium text-ink">Explore commissions <span aria-hidden="true">↗</span></Link>
               <Link href={site.cta.href} className="inline-flex min-h-11 items-center gap-3 border-b border-ink text-sm font-medium text-ink">Request a date <span aria-hidden="true">↗</span></Link>
             </div>
           </div>

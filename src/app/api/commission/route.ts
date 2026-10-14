@@ -23,6 +23,8 @@ import {
   ADD_ON_NAME_EN,
   commissionSchema,
   describeCommission,
+  addOnAllowed,
+  clampCrew,
   quoteCommission,
 } from "@/lib/commission";
 import { HONEYPOT_FIELD, TURNSTILE_FIELD, formatEventDate, type BookingRecord } from "@/lib/booking";
@@ -114,14 +116,18 @@ export async function POST(req: NextRequest) {
     return fail(503, "payments_unavailable", "Online retainers aren't live yet. Choose a consultation first and we'll hold your date.");
   }
 
-  const q = quoteCommission(r.tier, r.add_ons);
+  const q = quoteCommission(r.tier, r.add_ons, r.extra_crew);
+  const crew = clampCrew(r.tier, r.extra_crew);
+  const addOns = r.add_ons.filter((a) => addOnAllowed(r.tier, a));
   const retainerCents = q.retainerUsd * 100;
   const service = r.scope === "motion" ? "video" : r.scope === "stills" ? "photo" : TIER_SERVICE[r.tier];
   const summary = describeCommission(r, q);
   const meta = {
     source: "commission",
     tier: r.tier,
-    add_ons: r.add_ons,
+    add_ons: addOns,
+    extra_crew: crew,
+    crew_size: q.crewSize,
     total_usd: q.totalUsd,
     retainer_usd: q.retainerUsd,
     city: r.city,
@@ -161,7 +167,7 @@ export async function POST(req: NextRequest) {
         metadata: meta,
         attribution: sanitizeAttribution(body.attribution),
       })
-      .select("id, name, email, phone, event_date, package, collection, notes, status, deposit_amount_cents, currency")
+      .select("id, name, email, phone, event_date, package, collection, notes, status, deposit_amount_cents, currency, metadata")
       .single();
 
     if (error) {
@@ -213,7 +219,11 @@ export async function POST(req: NextRequest) {
   try {
     const siteUrl = getSiteUrl();
     const prettyDate = formatEventDate(hold.event_date);
-    const extras = r.add_ons.map((a) => ADD_ON_NAME_EN[a]).join(", ");
+    const extras = [
+      ...(crew.photo ? [`${crew.photo} added photographer${crew.photo > 1 ? "s" : ""}`] : []),
+      ...(crew.motion ? [`${crew.motion} added videographer${crew.motion > 1 ? "s" : ""}`] : []),
+      ...addOns.map((a) => ADD_ON_NAME_EN[a]),
+    ].join(", ");
     const session = await createStripeCheckoutSession({
       amountCents: hold.deposit_amount_cents,
       currency: hold.currency,
@@ -234,7 +244,8 @@ export async function POST(req: NextRequest) {
         booking_id: hold.booking_id,
         event_date: hold.event_date,
         tier: r.tier,
-        add_ons: r.add_ons.join(","),
+        add_ons: addOns.join(","),
+        crew_size: q.crewSize,
         total_usd: q.totalUsd,
         language: r.language,
       },

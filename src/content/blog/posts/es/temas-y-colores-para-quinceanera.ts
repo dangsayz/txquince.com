@@ -136,7 +136,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Cuando sus colores estén casi listos, puede [revisar si su fecha está libre](/check-your-date) en segundos y ver qué incluye cada [colección](/investment) de foto y video. Tráiganos su paleta desde temprano y planeamos la iluminación y las tomas alrededor de ella — para que el look que tardó meses en armar sea el look que termina en su video.",
+      text: "Cuando sus colores estén casi listos, puede [revisar si su fecha está libre](/check-your-date) en segundos y ver qué incluye cada [comisión](/es#commissions) de foto y video. Tráiganos su paleta desde temprano y planeamos la iluminación y las tomas alrededor de ella — para que el look que tardó meses en armar sea el look que termina en su video.",
     },
   ],
   faqs: [

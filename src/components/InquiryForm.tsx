@@ -226,7 +226,7 @@ export function InquiryForm({ initialDate = "", locale = "en" }: { initialDate?:
             </option>
             {BUDGET_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>
-                {o.label}
+                {es ? o.labelEs : o.label}
               </option>
             ))}
           </select>

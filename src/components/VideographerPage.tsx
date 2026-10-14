@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import { packages } from "@/content/packages";
+import { commissionLinks, commissions } from "@/content/commissions";
+import { MATRIX } from "@/components/txq/data";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { getFeaturedImages, getVideos } from "@/lib/content-db";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
@@ -14,11 +15,11 @@ const copy = {
     films: "Real celebrations, real films.",
     filmsIntro: "Watch the work before you ask about your date.",
     collections: "Film coverage, clearly priced.",
-    one: "Film is available as the single service in Moments and Essential. Signature and Legacy bring photo and film together.",
+    one: "Film is part of every commission from Cinema & Stills upward: a dedicated motion director, a 4K feature, a teaser and vertical reels. Need film only? Choose “Motion only” when you check your date and we tailor the commission.",
     faq: "Before you reserve",
     questions: [
-      ["Can we book video without photography?", "Yes. Moments and Essential let you choose film as your one service. Signature and Legacy include both photography and film."],
-      ["How long is the highlight film?", "The finished film depends on the collection and the story of the day. We will confirm deliverables in writing before you reserve."],
+      ["Can we book video without photography?", "Yes. Choose “Motion only” when you check your date and we tailor the commission to film. Most families pair film with photography, which every commission from Cinema & Stills upward includes."],
+      ["How long is the film?", "Cinema & Stills delivers an 8–10 minute 4K feature, The Full Production 12–15 minutes, and the Multi-Day Archive a 20-minute documentary, each with a theatrical teaser and vertical reels."],
       ["Do you travel across DFW?", "Yes. We cover quinceañeras across Dallas–Fort Worth, from the ceremony through the reception."],
     ],
     cta: "Check her date",
@@ -30,23 +31,20 @@ const copy = {
     films: "Celebraciones reales, videos reales.",
     filmsIntro: "Mira nuestro trabajo antes de consultar tu fecha.",
     collections: "Cobertura de video, con precios claros.",
-    one: "En Moments y Essential puedes elegir video como servicio único. Signature y Legacy incluyen fotografía y video.",
+    one: "El cine forma parte de cada encargo desde Cine y fotografía: un director de cine dedicado, una película 4K, un avance y reels verticales. ¿Solo necesitas video? Elige “Solo cine” al consultar tu fecha y adaptamos el encargo.",
     faq: "Antes de reservar",
     questions: [
-      ["¿Puedo contratar solo video?", "Sí. En Moments y Essential puedes elegir video como tu servicio. Signature y Legacy incluyen foto y video."],
-      ["¿Cuánto dura el video final?", "Depende de la colección y de lo que suceda ese día. Confirmamos las entregas por escrito antes de reservar."],
+      ["¿Puedo contratar solo video?", "Sí. Elige “Solo cine” al consultar tu fecha y adaptamos el encargo al video. La mayoría combina cine y fotografía, que incluye cada encargo desde Cine y fotografía."],
+      ["¿Cuánto dura la película?", "Cine y fotografía entrega una película 4K de 8 a 10 minutos, La producción completa de 12 a 15 minutos y el Archivo de varios días un documental de 20 minutos, cada una con avance y reels verticales."],
       ["¿Trabajan en todo DFW?", "Sí. Cubrimos quinceañeras en todo Dallas–Fort Worth, desde la ceremonia hasta la recepción."],
     ],
     cta: "Consulta su fecha",
   },
 } as const;
 
-const spanishTeasers: Record<string, string> = {
-  moments: "Video con un artista durante cinco horas esenciales.",
-  essential: "Video con un artista para los momentos principales, más una sesión previa.",
-  signature: "Foto y video con dos artistas durante el día completo.",
-  legacy: "Todo lo de Signature, más video largo, cobertura aérea y álbum premium.",
-};
+/** Motion deliverables per commission, straight from the homepage matrix. */
+const motionRows = MATRIX.find((g) => g.id === "motion")!.rows;
+const filmCommissions = commissions.filter((c) => c.id !== "study");
 
 export async function VideographerPage({ locale }: { locale: "en" | "es" }) {
   const c = copy[locale];
@@ -95,15 +93,21 @@ export async function VideographerPage({ locale }: { locale: "en" | "es" }) {
             <p className="mt-5 max-w-md text-base leading-7 text-ink-soft">{c.one}</p>
           </div>
           <ol className="border-t border-line">
-            {packages.map((collection, index) => (
-              <li key={collection.id} className="border-b border-line py-6">
-                <Link href={locale === "es" ? inquiry : `/reserve?collection=${collection.id}`} className="group grid grid-cols-[2rem_minmax(0,1fr)_auto] items-baseline gap-3 text-ink sm:gap-6">
+            {filmCommissions.map((cm, index) => (
+              <li key={cm.id} className="border-b border-line py-6">
+                <Link href={commissionLinks[locale].compare} className="group grid grid-cols-[2rem_minmax(0,1fr)_auto] items-baseline gap-3 text-ink sm:gap-6">
                   <span className="text-xs text-ink-faint">0{index + 1}</span>
-                  <span className="font-display text-xl font-normal group-hover:underline">{collection.name}</span>
-                  <span className="text-base">{collection.priceLabel}</span>
+                  <span className="font-display text-xl font-normal group-hover:underline">{cm.numeral} {cm.name[locale]}</span>
+                  <span className="text-base">{cm.priceLabel}</span>
                 </Link>
-                <p className="ml-11 mt-2 max-w-lg text-base leading-7 text-ink-soft sm:ml-14">{locale === "es" ? spanishTeasers[collection.id] : collection.teaser}</p>
-                <p className="ml-11 mt-2 text-sm text-ink-soft sm:ml-14">{collection.depositLabel} {locale === "es" ? "de depósito tras confirmar la fecha" : "deposit after date confirmation"}</p>
+                <p className="ml-11 mt-2 max-w-lg text-base leading-7 text-ink-soft sm:ml-14">
+                  {motionRows
+                    .map((r) => r.values[cm.id])
+                    .filter((v) => v !== null)
+                    .map((v) => v![locale])
+                    .join(" · ")}
+                </p>
+                <p className="ml-11 mt-2 text-sm text-ink-soft sm:ml-14">{cm.retainerLabel} {locale === "es" ? "de anticipo para apartar la fecha" : "retainer holds the date"}</p>
               </li>
             ))}
           </ol>

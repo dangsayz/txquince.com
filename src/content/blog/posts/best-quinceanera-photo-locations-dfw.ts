@@ -177,7 +177,7 @@ const post: BlogPost = {
     { type: "h2", text: "Pick the place — we'll handle the rest" },
     {
       type: "p",
-      text: "Whether it's the canals of Las Colinas, the murals of Bishop Arts, or the skyline of downtown Dallas, the location should feel like your daughter. Choose the one she lights up about, and we'll take care of the permits, the timing, and the light. When you're ready, [reserve your date](/reserve) and we'll start planning the spots together.",
+      text: "Whether it's the canals of Las Colinas, the murals of Bishop Arts, or the skyline of downtown Dallas, the location should feel like your daughter. Choose the one she lights up about, and we'll take care of the permits, the timing, and the light. When you're ready, [reserve your date](/#intake) and we'll start planning the spots together.",
     },
   ],
   faqs: [

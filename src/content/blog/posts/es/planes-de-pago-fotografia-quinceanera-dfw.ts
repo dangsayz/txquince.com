@@ -1,103 +1,118 @@
 import type { BlogPost } from "@/content/blog";
+import {
+  TIER_PRICE_USD,
+  RETAINER,
+  CONSULT_HOLD_DAYS,
+  quoteCommission,
+  usd,
+} from "@/lib/commission";
+
+const retainerPct = `${Math.round(RETAINER.rate * 100)}%`;
+const retainerFloor = usd(RETAINER.floorUsd);
+const due = RETAINER.balanceDueDays;
+const hold = CONSULT_HOLD_DAYS;
+const retainerFor = (tier: keyof typeof TIER_PRICE_USD) =>
+  usd(quoteCommission(tier, []).retainerUsd);
 
 const post: BlogPost = {
   slug: "planes-de-pago-fotografia-quinceanera-dfw",
-  title: "Planes de pago y depósito para fotografía de quinceañera en DFW",
+  title: "Planes de pago, depósito y anticipo para fotografía de quinceañera en DFW",
   description:
-    "Cómo apartar a su fotógrafo de quinceañera en Dallas–Fort Worth sin pagar todo de golpe: el depósito que aparta la fecha, los pagos mensuales sin intereses, qué pasa con el reembolso si nosotros cancelamos y una opción de menor entrada cuando el presupuesto está ajustado.",
+    "Cómo funciona de verdad apartar a su fotógrafo de quinceañera en Dallas–Fort Worth: depósito o anticipo, cuándo se paga el saldo, qué preguntar sobre reembolsos y cómo guardar la fecha mientras decide.",
   category: "Cost & Budget",
   excerpt:
-    "Un depósito aparta la fecha y el resto se divide en pagos mensuales sin intereses antes del evento. Así funcionan los planes de pago en TX Quince, y qué hacer si el presupuesto está apretado.",
+    "Un anticipo aparta la fecha y el saldo se paga poco antes de la celebración. Así funcionan los depósitos y anticipos en DFW, y cómo guardar su fecha mientras decide.",
   publishedAt: "2026-06-09",
+  updatedAt: "2026-10-14",
   readMinutes: 7,
   lang: "es",
-  lead: "Cuando ve el precio de la fotografía de quinceañera en un solo número, parece un muro. No lo es. Casi ninguna familia paga el total de una sola vez: usted aparta la fecha con un depósito y reparte el resto entre los meses que ya tiene antes de la celebración. En TX Quince ese reparto funciona en pasos sencillos, pensados para que pueda reservar hoy y pagar con calma.",
+  lead: "Cuando ve el precio de la fotografía de quinceañera en un solo número, parece un muro. No lo es. Casi ninguna familia paga el total el día que reserva: usted aparta la fecha con un depósito o anticipo, y el saldo se paga más cerca de la celebración. Aquí le explicamos cómo funciona eso en Dallas–Fort Worth y en TX Quince, en pasos sencillos, para que pueda reservar con confianza.",
   content: [
-    { type: "h2", text: "¿Ofrecen planes de pago? Sí, y la mayoría de las familias los usa" },
+    { type: "h2", text: "¿Tiene que pagar todo por adelantado? No" },
     {
       type: "p",
-      text: "La respuesta corta es sí. Nadie espera que usted entregue todo el dinero en un solo pago. Aparta su fecha con un depósito y el saldo restante se divide en pagos mensuales sin intereses que terminan antes del día de la quinceañera. Si prefiere pagar el total de una vez, también puede hacerlo, pero el plan existe precisamente para que el costo caiga con suavidad a lo largo de varios meses en lugar de todo junto.",
+      text: `La respuesta corta es no. En TX Quince usted aparta su fecha con un anticipo del ${retainerPct} de su comisión, y el saldo se paga ${due} días antes de la quinceañera. Eso es todo: dos pagos, los dos claros desde el día en que reserva, para que nada del costo la tome por sorpresa después.`,
     },
     {
       type: "callout",
-      text: "El precio total es el mismo en ambos casos. Un plan de pago no cuesta más que pagar de contado: no hay intereses ni cargos por financiamiento. Es exactamente el mismo precio de la colección, solo que repartido en pagos programados.",
+      text: "El anticipo no es un cargo adicional. Se aplica completo al total de su comisión, así que simplemente se convierte en su primer pago del mismo precio publicado.",
     },
-    { type: "h2", text: "¿De cuánto es el depósito para apartar la fecha?" },
+    { type: "h2", text: "¿De cuánto es el depósito o anticipo para apartar la fecha?" },
     {
       type: "p",
-      text: "En el área de Dallas–Fort Worth, el depósito para apartar a un fotógrafo de quinceañera suele ir de unos 200 a 800 dólares, y algunos estudios piden alrededor de un tercio del total. En [TX Quince](/investment), el depósito depende de la colección que usted elija:",
+      text: `En el área de Dallas–Fort Worth, cada estudio lo maneja distinto: algunos piden un depósito fijo de unos cientos de dólares y otros piden un porcentaje del total, muchas veces alrededor de un tercio. En [TX Quince](/es#commissions), el anticipo es el ${retainerPct} de su comisión, con un mínimo de ${retainerFloor}:`,
     },
     {
       type: "ul",
       items: [
-        "Moments (1,800 dólares): depósito de 300 dólares para apartar su fecha.",
-        "Essential (2,500 dólares): depósito de 500 dólares para apartar su fecha.",
-        "Signature (3,900 dólares): depósito de 750 dólares para apartar su fecha.",
-        "Legacy (5,500 dólares): depósito de 1,000 dólares para apartar su fecha.",
+        `I. Estudio de retrato (${usd(TIER_PRICE_USD.study)}): anticipo de ${retainerFor("study")} para apartar su fecha.`,
+        `II. Cine y fotografía (${usd(TIER_PRICE_USD.cinema)}): anticipo de ${retainerFor("cinema")} para apartar su fecha.`,
+        `III. La producción completa (${usd(TIER_PRICE_USD.production)}): anticipo de ${retainerFor("production")} para apartar su fecha.`,
+        `IV. Archivo editorial de varios días (${usd(TIER_PRICE_USD.archive)}): anticipo de ${retainerFor("archive")} para apartar su fecha.`,
       ],
     },
     {
       type: "p",
-      text: "El depósito no es un cargo adicional. Se descuenta del total de su colección, así que se convierte en su primer pago. ¿Quiere ver con detalle qué incluye cada colección antes de decidir? Revise la [página de colecciones y precios](/investment) o lea nuestra [guía completa de cuánto cuesta un fotógrafo de quinceañera](/es/blog/cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth).",
+      text: "Si agrega un extra, el total sube y el anticipo sigue el mismo porcentaje. ¿Quiere ver con detalle qué incluye cada comisión antes de decidir? Revise [las comisiones](/es#commissions) o lea nuestra [guía completa de cuánto cuesta un fotógrafo de quinceañera](/es/blog/cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth).",
     },
-    { type: "h2", text: "Cómo funciona el plan mensual sin intereses" },
+    { type: "h2", text: "Cómo funcionan el anticipo y el saldo" },
     {
       type: "p",
-      text: "Una vez que recibimos su depósito, el ritmo es este, y lo hicimos a propósito sencillo, porque lo último que necesita un año de organizar una quinceañera es una cuenta más que confunda.",
+      text: "El ritmo es este, y lo hicimos a propósito sencillo, porque lo último que necesita un año de organizar una quinceañera es una cuenta más que confunda.",
     },
     {
       type: "ol",
       items: [
-        "Usted aparta su fecha con el depósito de su colección.",
-        "Vemos cuántos meses faltan para la celebración y dividimos el saldo restante en pagos iguales, sin intereses.",
-        "Esos pagos se programan cada mes y terminan antes del día de la quinceañera, nunca después.",
-        "¿Prefiere terminar antes o pagar todo de una vez? Puede hacerlo en cualquier momento, sin penalización.",
+        "Elija su comisión y los extras que quiera: el total está publicado, así que lo ve antes de pagar nada.",
+        `Reserve en línea con el anticipo del ${retainerPct} mediante pago seguro. Su fecha sale del calendario en cuanto se recibe el pago.`,
+        "El anticipo se aplica completo a su total, así que lo que queda es el saldo, sin nada agregado.",
+        `El saldo se paga ${due} días antes de la celebración, para que todo quede liquidado con tiempo antes del gran día.`,
       ],
     },
     {
       type: "p",
-      text: "Como el plan se reparte entre los meses que usted ya tiene, reservar antes significa pagos mensuales más pequeños, una razón más por la que el calendario que verá más adelante importa tanto.",
+      text: `Algunos estudios de DFW ofrecen planes de pago mensuales; si eso le importa, pregunte a cualquier estudio cuántos pagos son, cuándo cae el último y si el plan cuesta más que pagar de contado. Nuestra estructura es sencilla a propósito: un anticipo ahora y el saldo ${due} días antes.`,
     },
-    { type: "h2", text: "Qué asegura el depósito (y qué pasa si nosotros cancelamos)" },
+    { type: "h2", text: "Qué asegura el anticipo (y qué preguntar sobre reembolsos)" },
     {
       type: "p",
-      text: "El depósito cumple una función importante: saca su fecha del calendario para que ninguna otra familia pueda apartarla. Un fotógrafo solo puede estar en un lugar un sábado dado, así que el depósito es lo que reserva a su artista, sus horas de cobertura y su lugar.",
+      text: "El anticipo cumple una función importante: saca su fecha del calendario para que ninguna otra familia pueda apartarla. Un equipo solo puede estar en un lugar un sábado dado, así que el anticipo es lo que reserva a sus directores, sus horas de cobertura y su lugar.",
     },
     {
       type: "p",
-      text: "¿El depósito es reembolsable? Le decimos lo que muchos estudios no ponen por escrito: el depósito aparta su fecha y se aplica a su saldo, así que no está pensado para devolverse si los planes cambian de su lado. Pero si TX Quince alguna vez tuviera que cancelar, su depósito se le devuelve por completo. Usted nunca pierde dinero por algo que dependa de nosotros.",
+      text: "¿El depósito o anticipo es reembolsable? Cada estudio tiene su política, así que pida las condiciones por escrito antes de pagar. En general, el anticipo aparta una fecha por la que el estudio deja de aceptar a otras familias, así que no está pensado para devolverse si los planes cambian de su lado. Lo que siempre debe tener por escrito es qué pasa si el estudio le cancela a usted: en TX Quince, si alguna vez tuviéramos que cancelar, su anticipo se le devuelve por completo.",
     },
     {
       type: "quote",
-      text: "El depósito protege su fecha. El plan sin intereses protege su presupuesto. La política de reembolso si nosotros cancelamos la protege a usted de nosotros.",
+      text: "El anticipo protege su fecha. El precio publicado protege su presupuesto. Las condiciones por escrito la protegen de sorpresas.",
     },
     {
       type: "cta",
-      heading: "Aparte su fecha con un depósito y pague el resto con calma",
-      body: "Entregue su depósito para apartar la fecha y divida el saldo en pagos mensuales sin intereses. El mismo precio, sin sorpresas.",
-      href: "/reserve",
+      heading: "Aparte su fecha, o platique con nosotros primero",
+      body: `Pague el anticipo del ${retainerPct} mediante pago seguro para apartar su fecha, o pida una consulta y le guardamos la fecha ${hold} días mientras platicamos.`,
+      href: "/es#intake",
       label: "Aparte su fecha",
     },
-    { type: "h2", text: "Si el presupuesto está apretado ahora: una opción de menor entrada" },
+    { type: "h2", text: "Si todavía no está lista para decidir: guarde la fecha primero" },
     {
       type: "p",
-      text: "A veces una colección completa no es realista este mes, pero usted tampoco quiere arriesgarse a perder su fecha ni a su fotógrafo. Dos caminos de menor costo ayudan aquí:",
+      text: "A veces quiere platicarlo antes de pagar nada, pero tampoco quiere arriesgarse a perder su fecha. Dos caminos ayudan aquí:",
     },
     {
       type: "ul",
       items: [
-        "Empiece con el depósito más bajo. El depósito de 500 dólares de la colección Essential es la forma más accesible de apartar su fecha hoy y comenzar un plan; siempre podemos conversar sobre ajustar la cobertura con el paso de los meses.",
-        "Reserve una sesión save-the-date o pre-quince. Una sesión de retrato breve es un compromiso mucho menor que la cobertura del día completo, le da imágenes hermosas para las invitaciones y para el libro de firmas, y le permite empezar una relación con su fotógrafo antes de comprometerse con el día entero.",
+        `Pida primero una consulta. Cuéntenos su fecha y lo que se imagina, y le guardamos la fecha ${hold} días mientras hablamos de la cobertura, el horario y qué comisión le conviene, sin pagar nada para empezar.`,
+        `Empiece con el Estudio de retrato. Por ${usd(TIER_PRICE_USD.study)}, es nuestra comisión de solo foto: una sesión editorial de retrato de tres horas antes de la celebración, 60 fotos retocadas y un retrato en movimiento, con un anticipo de ${retainerFor("study")}.`,
       ],
     },
     {
       type: "p",
-      text: "En cualquiera de los dos casos, la meta es la misma: asegurar la fecha ahora, en condiciones que se ajusten a este mes, y no en el arrepentimiento del próximo año. Vea el [portafolio](/portfolio) para conocer la clase de imágenes que entrega incluso una mini sesión, o compare todas las opciones en la [página de inversión](/investment).",
+      text: "En cualquiera de los dos casos, la meta es la misma: asegurar la fecha ahora, en condiciones que entienda, y no en el arrepentimiento del próximo año. Vea el [portafolio](/portfolio) para conocer nuestro trabajo, o compare todas las opciones en [las comisiones](/es#commissions).",
     },
     { type: "h2", text: "Por qué el calendario de pagos se relaciona con reservar 9 a 12 meses antes" },
     {
       type: "p",
-      text: "En Dallas–Fort Worth, los mejores sábados de primavera y otoño se apartan con nueve a doce meses de anticipación. Reservar tan temprano logra dos cosas a la vez: asegura la fecha que su hija quiere y le da a su plan de pago la mayor cantidad de meses para repartirse, lo que significa el pago mensual más pequeño posible. Si espera hasta unos pocos meses antes, ese mismo saldo tiene que comprimirse en menos pagos y más grandes.",
+      text: `En Dallas–Fort Worth, los mejores sábados de primavera y otoño se apartan con nueve a doce meses de anticipación. Reservar tan temprano logra dos cosas a la vez: asegura la fecha que su hija quiere y le da a su familia el mayor tiempo posible para juntar el saldo antes de que se pague, ${due} días antes. Si espera hasta unos pocos meses antes, ese mismo saldo tiene que juntarse mucho más rápido.`,
     },
     {
       type: "p",
@@ -107,23 +122,23 @@ const post: BlogPost = {
   faqs: [
     {
       q: "¿Ofrecen planes de pago para la fotografía de quinceañera?",
-      a: "Sí. Usted aparta su fecha con un depósito y el saldo restante se divide en pagos mensuales sin intereses que terminan antes del día de la quinceañera. Usar un plan no tiene ningún costo adicional: es el mismo precio de la colección, solo que programado. Si prefiere, también puede pagar el total de una vez.",
+      a: `TX Quince usa una estructura sencilla de dos pagos en lugar de mensualidades: un anticipo del ${retainerPct} de su comisión (mínimo ${retainerFloor}) aparta su fecha, y el saldo se paga ${due} días antes de la celebración. El anticipo se aplica completo, así que no hay ningún costo adicional.`,
     },
     {
-      q: "¿De cuánto es el depósito para apartar la fecha?",
-      a: "En DFW el depósito suele ir de unos 200 a 800 dólares, o alrededor de un tercio del total. En TX Quince depende de su colección: 300 dólares para Moments (1,800), 500 dólares para Essential (2,500), 750 dólares para Signature (3,900) y 1,000 dólares para Legacy (5,500). El depósito se aplica a su total, así que se convierte en su primer pago.",
+      q: "¿De cuánto es el anticipo para apartar la fecha?",
+      a: `Es el ${retainerPct} de su comisión, con un mínimo de ${retainerFloor}: ${retainerFor("study")} para el Estudio de retrato (${usd(TIER_PRICE_USD.study)}), ${retainerFor("cinema")} para Cine y fotografía (${usd(TIER_PRICE_USD.cinema)}), ${retainerFor("production")} para La producción completa (${usd(TIER_PRICE_USD.production)}) y ${retainerFor("archive")} para el Archivo editorial de varios días (${usd(TIER_PRICE_USD.archive)}).`,
     },
     {
-      q: "¿El depósito es reembolsable?",
-      a: "El depósito aparta su fecha y se aplica a su saldo, por lo que no está pensado para devolverse si los planes cambian de su lado. Sin embargo, si TX Quince alguna vez tuviera que cancelar, su depósito se le devuelve por completo: usted nunca pierde dinero por algo que dependa de nosotros.",
+      q: "¿El anticipo es reembolsable?",
+      a: "El anticipo aparta su fecha y se aplica a su saldo, por lo que no está pensado para devolverse si los planes cambian de su lado. Si TX Quince alguna vez tuviera que cancelar, su anticipo se le devuelve por completo. Con cualquier estudio, pida la política por escrito antes de pagar.",
     },
     {
-      q: "¿Puedo pagar el saldo en mensualidades?",
-      a: "Sí. Después de su depósito, el saldo restante se divide en pagos mensuales iguales y sin intereses, programados para terminar antes de la celebración. Reservar antes le da más meses para repartir, lo que hace que cada pago mensual sea más pequeño. También puede liquidarlo antes en cualquier momento, sin penalización.",
+      q: "¿Cuándo se paga el saldo?",
+      a: `El saldo se paga ${due} días antes de la celebración, para que todo quede liquidado con tiempo antes del gran día.`,
     },
     {
-      q: "¿Cuál es la forma más económica de apartar mi fecha si el dinero está justo ahora?",
-      a: "Empiece con el depósito más bajo, el de 500 dólares de la colección Essential, para apartar su fecha y comenzar un plan; o reserve una sesión pre-quince o save-the-date, que es un compromiso mucho menor que la cobertura del día completo y aun así le da imágenes para las invitaciones y el libro de firmas.",
+      q: "¿Puedo guardar mi fecha antes de pagar?",
+      a: `Sí. Pida primero una consulta y le guardamos la fecha ${hold} días mientras platicamos de la cobertura y de qué comisión le conviene. Cuando esté lista, el anticipo la asegura.`,
     },
   ],
   related: [

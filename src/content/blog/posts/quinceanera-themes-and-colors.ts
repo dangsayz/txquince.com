@@ -135,7 +135,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "When your colors are close to final, you can [check if your date is open](/check-your-date) in seconds and see what each [collection includes](/investment) for photo and film. Bring us your palette early and we'll plan the lighting and the shots around it — so the look you spent months building is the look that ends up in your film.",
+      text: "When your colors are close to final, you can [check if your date is open](/check-your-date) in seconds and see what each [commission includes](/#commissions) for photo and film. Bring us your palette early and we'll plan the lighting and the shots around it — so the look you spent months building is the look that ends up in your film.",
     },
   ],
   faqs: [

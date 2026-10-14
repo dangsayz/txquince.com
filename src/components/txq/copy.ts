@@ -4,7 +4,7 @@
  * `es` is typed against `en`, so a missing translation fails the build.
  */
 import type { Category } from "./data";
-import { CONSULT_HOLD_DAYS, RETAINER, TIER_PRICE_USD } from "@/lib/commission";
+import { CONSULT_HOLD_DAYS, EXTRA_DIRECTOR_USD, MAX_CREW, RETAINER, TIER_PRICE_USD } from "@/lib/commission";
 
 // FAQ answers quote the live price book so copy can never drift from checkout.
 const $ = (n: number) => `$${n.toLocaleString("en-US")}`;
@@ -106,6 +106,22 @@ const en = {
     add: "Add",
     added: "Added",
   },
+  crew: {
+    title: "Expand the crew",
+    dek: `Add photographers or videographers, in any mix, up to a crew of ${MAX_CREW} on the day. ${$(EXTRA_DIRECTOR_USD)} each.`,
+    photo: "Photographers",
+    motion: "Videographers",
+    add: (role: string) => `Add one ${role}`,
+    remove: (role: string) => `Remove one ${role}`,
+    roleOne: { photo: "photographer", motion: "videographer" },
+    total: (n: number) => `Crew on the day: ${n} of ${MAX_CREW}`,
+    included: (n: number) => `${n} included`,
+    full: "Crew is at its maximum for one day.",
+    studyNote: "The Portrait Study is a single-director session. Choose an event commission to expand the crew.",
+    line: (n: number, role: "photo" | "motion") =>
+      `+${n} ${role === "photo" ? (n > 1 ? "photographers" : "photographer") : n > 1 ? "videographers" : "videographer"}`,
+    eventOnly: "Event commissions only",
+  },
   editorial: {
     index: "04 / Editorial",
     title: "Notes from the Studio",
@@ -144,6 +160,10 @@ const en = {
       {
         q: "Is photography and film included together?",
         a: "Yes, from Commission II up. Two directors cover the day, one for stills and one for motion, so the gallery and the film are made side by side. The Portrait Study is photography only.",
+      },
+      {
+        q: "Can we add more photographers or videographers?",
+        a: `Yes. On any event commission you can add photographers or videographers, in any mix, up to a crew of ${MAX_CREW} on the day, at ${$(EXTRA_DIRECTOR_USD)} each. A day-of coordinator can be added too, to run the timeline and cue the court so the family can be present.`,
       },
       {
         q: "How many hours of coverage does a quinceañera need?",
@@ -363,6 +383,22 @@ const es: Copy = {
     add: "Añadir",
     added: "Añadido",
   },
+  crew: {
+    title: "Amplía el equipo",
+    dek: `Añade fotógrafos o videógrafos, en la combinación que quieras, hasta un equipo de ${MAX_CREW} en el día. ${$(EXTRA_DIRECTOR_USD)} cada uno.`,
+    photo: "Fotógrafos",
+    motion: "Videógrafos",
+    add: (role: string) => `Añadir un ${role}`,
+    remove: (role: string) => `Quitar un ${role}`,
+    roleOne: { photo: "fotógrafo", motion: "videógrafo" },
+    total: (n: number) => `Equipo en el día: ${n} de ${MAX_CREW}`,
+    included: (n: number) => `${n} incluidos`,
+    full: "El equipo está al máximo para un día.",
+    studyNote: "El Estudio de retrato es una sesión con un solo director. Elige un encargo de evento para ampliar el equipo.",
+    line: (n: number, role: "photo" | "motion") =>
+      `+${n} ${role === "photo" ? (n > 1 ? "fotógrafos" : "fotógrafo") : n > 1 ? "videógrafos" : "videógrafo"}`,
+    eventOnly: "Solo encargos de evento",
+  },
   editorial: {
     index: "04 / Editorial",
     title: "Notas del estudio",
@@ -401,6 +437,10 @@ const es: Copy = {
       {
         q: "¿La foto y el video vienen juntos?",
         a: "Sí, a partir del Encargo II. Dos directores cubren el día, uno de foto y otro de cine, así que la galería y la película se hacen a la par. El Estudio de retrato es solo fotografía.",
+      },
+      {
+        q: "¿Podemos añadir más fotógrafos o videógrafos?",
+        a: `Sí. En cualquier encargo de evento puedes añadir fotógrafos o videógrafos, en la combinación que quieras, hasta un equipo de ${MAX_CREW} en el día, a ${$(EXTRA_DIRECTOR_USD)} cada uno. También puedes añadir una coordinadora del día, que lleva el itinerario y coordina a la corte para que la familia disfrute.`,
       },
       {
         q: "¿Cuántas horas de cobertura necesita una quinceañera?",

@@ -2073,3 +2073,79 @@ textarea.tq-input {
     grid-column: 4 / span 9;
   }
 }
+
+/* ---------- 15. Crew control ---------- */
+.tq-crew-block {
+  margin: 0 0 28px;
+  padding: 20px;
+  border: 1px solid var(--border-hairline);
+}
+.tq-crew-block h4 {
+  margin: 0 0 6px;
+}
+.tq-crew__dek,
+.tq-crew__note {
+  margin: 0 0 16px;
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+}
+.tq-crew__note {
+  margin: 0;
+}
+.tq-crew {
+  display: grid;
+  gap: 8px;
+}
+.tq-crew__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 6px 0;
+  border-top: 1px solid var(--border-hairline);
+}
+.tq-crew__label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  font-weight: 500;
+}
+.tq-stepper-ctl {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border-control);
+  flex: none;
+}
+.tq-stepper-ctl button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  font-size: 1.25rem;
+  line-height: 1;
+  transition: background-color 200ms var(--ease);
+}
+.tq-stepper-ctl button:not(:disabled):hover {
+  background: color-mix(in srgb, var(--accent-hover) 50%, transparent);
+}
+.tq-stepper-ctl button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.tq-stepper-ctl output {
+  min-width: 40px;
+  text-align: center;
+  font-size: 1.0625rem;
+}
+.tq-crew__total {
+  margin: 4px 0 0;
+}
+.tq-crew--compact {
+  padding: 16px;
+  border: 1px solid var(--border-hairline);
+}
+.tq-addon:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}

@@ -10,7 +10,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { site } from "@/content/site";
-import { packages } from "@/content/packages";
+import { commissionsFromLabel } from "@/content/commissions";
+import { PRICE_CEILING_USD, PRICE_FLOOR_USD, usd } from "@/lib/commission";
 import { venues, getVenue } from "@/content/venues";
 import { getLocation } from "@/content/locations";
 import { getImagesByVenue, getVenueCopy } from "@/lib/content-db";
@@ -38,7 +39,7 @@ export async function generateMetadata({
   const title = `${venue.venue} Quinceañera Photographer — ${venue.city}, TX`;
   const description =
     copy?.about?.slice(0, 200) ||
-    `Quinceañera photography at ${venue.venue} in ${venue.city}, Texas. Explore ${site.brand} collections from ${packages[0].priceLabel} and ask about your date.`;
+    `Quinceañera photography at ${venue.venue} in ${venue.city}, Texas. Explore ${site.brand} commissions from ${commissionsFromLabel} and check your date.`;
   return {
     title,
     description,
@@ -91,7 +92,6 @@ export default async function VenuePage({
   const about =
     copy?.about ||
     `Planning a quinceañera at ${venue.venue} in ${venue.city}? Explore our photography and film, then tell us about your date and the moments your family wants documented.`;
-  const prices = packages.map((p) => p.price);
 
   const sameAs = [ig, web].filter(Boolean) as string[];
   const jsonLd = {
@@ -106,7 +106,7 @@ export default async function VenuePage({
         image: `${site.url}/opengraph-image`,
         email: site.contact.email,
         areaServed: { "@type": "City", name: `${venue.city}, TX` },
-        priceRange: `$${Math.min(...prices)}–$${Math.max(...prices)}`,
+        priceRange: `${usd(PRICE_FLOOR_USD)}–${usd(PRICE_CEILING_USD)}`,
         knowsLanguage: ["en", "es"],
       },
       {

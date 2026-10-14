@@ -19,6 +19,7 @@ import {
   TIER_PRICE_USD,
   quoteCommission,
   type AddOnId,
+  type Crew,
   type TierId,
 } from "@/lib/commission";
 
@@ -340,6 +341,15 @@ export const MATRIX: MatrixGroup[] = [
     title: { en: "Coverage & Direction", es: "Cobertura y dirección" },
     rows: [
       {
+        label: v("Crew on the day", "Equipo en el día"),
+        values: {
+          study: v("1 director", "1 director"),
+          cinema: v("2 directors, expandable to 5", "2 directores, ampliable a 5"),
+          production: v("3 directors, expandable to 5", "3 directores, ampliable a 5"),
+          archive: v("4 directors, expandable to 5", "4 directores, ampliable a 5"),
+        },
+      },
+      {
         label: v("Hours of coverage", "Horas de cobertura"),
         values: {
           study: v("3 hrs, one session", "3 h, una sesión"),
@@ -484,16 +494,25 @@ export const ADD_ONS: AddOn[] = [
     },
     price: ADD_ON_PRICE_USD.parents,
   },
+  {
+    id: "coordinator",
+    name: { en: "Day-of Coordinator", es: "Coordinadora del día" },
+    note: {
+      en: "Runs the timeline, cues the vendors and the court, and keeps the family present. Event commissions.",
+      es: "Lleva el itinerario, coordina a proveedores y a la corte, y deja a la familia disfrutar. Para encargos de evento.",
+    },
+    price: ADD_ON_PRICE_USD.coordinator,
+  },
 ];
 
 export const tierById = (id: TierId) => TIERS.find((t) => t.id === id)!;
 
-export function estimate(tier: TierId, addOns: AddOnId[]) {
-  return quoteCommission(tier, addOns).totalUsd;
+export function estimate(tier: TierId, addOns: AddOnId[], crew?: Crew) {
+  return quoteCommission(tier, addOns, crew).totalUsd;
 }
 
-export function retainer(tier: TierId, addOns: AddOnId[]) {
-  return quoteCommission(tier, addOns).retainerUsd;
+export function retainer(tier: TierId, addOns: AddOnId[], crew?: Crew) {
+  return quoteCommission(tier, addOns, crew).retainerUsd;
 }
 
 export function money(n: number) {

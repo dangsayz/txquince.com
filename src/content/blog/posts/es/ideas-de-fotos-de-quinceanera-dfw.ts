@@ -12,6 +12,7 @@ const post: BlogPost = {
   excerpt:
     "Las fotos imprescindibles de quinceañera, ordenadas por cuándo ocurren de verdad: el vestido y la tiara, el primer vistazo, la misa, la hora dorada, la corte, la recepción. Más una idea de pose sencilla por momento.",
   publishedAt: "2026-06-15",
+  updatedAt: "2026-10-14",
   readMinutes: 9,
   lang: "es",
   lead: "Casi todas las ideas de fotos para quinceañera que encuentra en internet son un montón de poses sueltas, sin ningún orden. Eso está al revés. Las fotos que de verdad va a conservar están atadas a los momentos del día: el vestido antes de que nadie lo haya visto, la cara de su hija cuando su papá se voltea, el vals girando por la pista. Así que aquí está la lista de tomas tal como corre el día de verdad: el arreglo, el primer vistazo, la misa, los retratos a la hora dorada, la corte y la recepción. Cada momento trae las fotos imprescindibles de quinceañera con las que se va a quedar, más una idea de pose sencilla para que no salgan tiesas.",
@@ -160,7 +161,7 @@ const post: BlogPost = {
     { type: "h2", text: "Arme la lista alrededor de su día y déjenos correrla" },
     {
       type: "p",
-      text: "Esa es la lista completa de tomas de quinceañera, en el orden en que pasa: los detalles, el primer vistazo, la misa, los retratos a la hora dorada, la corte y el vals, la recepción. Elija los pocos momentos que su familia no puede perder, asegúrese de que estén en el plan y deje el resto a quienes sostienen las cámaras. Cuando esté lista, [verifique si su fecha está disponible](/check-your-date) o [aparte su fecha](/reserve), y armamos el cronograma para que cada foto de esta lista tenga su momento.",
+      text: "Esa es la lista completa de tomas de quinceañera, en el orden en que pasa: los detalles, el primer vistazo, la misa, los retratos a la hora dorada, la corte y el vals, la recepción. Elija los pocos momentos que su familia no puede perder, asegúrese de que estén en el plan y deje el resto a quienes sostienen las cámaras. Cuando esté lista, [verifique si su fecha está disponible](/check-your-date) o [aparte su fecha](/es#intake), y armamos el cronograma para que cada foto de esta lista tenga su momento.",
     },
   ],
   faqs: [
@@ -182,7 +183,7 @@ const post: BlogPost = {
     },
     {
       q: "¿Necesito un segundo fotógrafo?",
-      a: "No es obligatorio, pero un segundo artista significa dos ángulos a la vez: alguien en su cara durante el vals mientras el otro atrapa al público, o uno en los detalles del arreglo mientras el otro la fotografía a ella. En TX Quince, las colecciones Signature y Legacy incluyen a dos de nosotros cubriendo el día completo, y por eso nada importante pasa fuera de cámara.",
+      a: "No es obligatorio, pero un segundo artista significa dos ángulos a la vez: alguien en su cara durante el vals mientras el otro atrapa al público, o uno en los detalles del arreglo mientras el otro la fotografía a ella. En TX Quince, cada comisión de foto y video reúne a un director de foto con un director de video — y La producción completa y el Archivo editorial de varios días suman un segundo fotógrafo —, y por eso nada importante pasa fuera de cámara.",
     },
     {
       q: "¿Cuántas fotos editadas recibo de una quinceañera?",

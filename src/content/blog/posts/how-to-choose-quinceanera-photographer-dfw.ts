@@ -9,6 +9,7 @@ const post: BlogPost = {
   excerpt:
     "How to pick the right photographer for your daughter's quince — styles explained, what a real portfolio shows, and the questions that protect your money and your date.",
   publishedAt: "2026-06-09",
+  updatedAt: "2026-10-14",
   readMinutes: 9,
   lead: "Your daughter's quinceañera happens once. The photos and film are what's left after the flowers wilt and the dress goes in the closet — so choosing the right photographer matters more than almost any other vendor decision. This DFW-specific guide walks you through it: how to read a portfolio, what the styles actually mean, and exactly what to verify before you hand over a deposit.",
   content: [
@@ -73,14 +74,14 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "This is exactly why our Signature collection pairs a photographer and a filmmaker as one team for the full day. If you're weighing whether you even need video, read [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video) before you decide — it's the most common after-the-fact regret.",
+      text: "This is exactly why every TX Quince photo + film commission pairs a stills director and a motion director as one team for the whole day. If you're weighing whether you even need video, read [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video) before you decide — it's the most common after-the-fact regret.",
     },
     {
       type: "cta",
-      heading: "See the four collections and what's included",
-      body: "Moments, Essential, Signature, and Legacy — fixed prices, full inclusions, and a real-time date check on one page.",
-      href: "/investment",
-      label: "View collections & pricing",
+      heading: "See the four commissions and what's included",
+      body: "Portrait Study, Cinema & Stills, The Full Production, and the Multi-Day Editorial Archive — published prices and full inclusions on one page.",
+      href: "/#commissions",
+      label: "Compare commissions",
     },
     { type: "h2", text: "What to verify before you pay a deposit" },
     {
@@ -94,7 +95,7 @@ const post: BlogPost = {
         "Second shooter — is a second artist included or extra? Two cameras mean the misa and the reception entrance are both covered, with reverse angles you can't fake alone.",
         "Edited-photo count — ask how many final, edited images you'll receive, not how many they'll \"take.\" A real number (and a delivery timeline) tells you they've done this before.",
         "Usage and print rights — do you get a private gallery with the rights to print and share? You shouldn't have to buy back photos of your own daughter.",
-        "Deposit and what locks the date — how much reserves the day, whether it's refundable, and what the payment plan looks like. The date isn't yours until the deposit and signed agreement are both in.",
+        "Deposit or retainer and what locks the date — how much reserves the day, whether it's refundable, and when the balance is due. The date isn't yours until the payment and signed agreement are both in.",
         "Backup and contingency — backup gear, dual memory cards, and what happens if your photographer is sick. Professionals have a plan; hobbyists don't.",
       ],
     },
@@ -118,7 +119,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "If you have a date in mind, you can [check if it's open](/check-your-date) in a few seconds, read [when to book your photographer](/blog/when-to-book-quinceanera-photographer-dfw) so you don't lose your Saturday, or go straight to [reserve your date](/reserve) when you're ready. And if cost is your next question, here's [what quince photography actually runs in DFW](/blog/quinceanera-photographer-cost-dallas-fort-worth).",
+      text: "If you have a date in mind, you can [check if it's open](/check-your-date) in a few seconds, read [when to book your photographer](/blog/when-to-book-quinceanera-photographer-dfw) so you don't lose your Saturday, or go straight to [reserve your date](/#intake) when you're ready. And if cost is your next question, here's [what quince photography actually runs in DFW](/blog/quinceanera-photographer-cost-dallas-fort-worth).",
     },
   ],
   faqs: [
@@ -128,11 +129,11 @@ const post: BlogPost = {
     },
     {
       q: "How many photos should I get from a quinceañera?",
-      a: "It varies by collection and coverage length, but a fully covered quince day typically delivers several hundred final, edited images — often 400 to 800+ for full-day coverage. What matters is asking for the number of edited photos you'll receive and a delivery timeline, not how many the photographer will \"take.\"",
+      a: "It varies by package and coverage length, but a fully covered quince day typically delivers several hundred final, edited images — often 400 to 800+ for full-day coverage. What matters is asking for the number of edited photos you'll receive and a delivery timeline, not how many the photographer will \"take.\"",
     },
     {
       q: "Should I hire one team for photo and video?",
-      a: "For a quinceañera, yes — one team is almost always better than two separate vendors. A coordinated photo-and-film team plans coverage together so they don't block each other, gives you one contract and one point of contact, and delivers a gallery and video that match in style and color. At TX Quince, the Signature collection pairs a photographer and filmmaker as one team for the full day.",
+      a: "For a quinceañera, yes — one team is almost always better than two separate vendors. A coordinated photo-and-film team plans coverage together so they don't block each other, gives you one contract and one point of contact, and delivers a gallery and video that match in style and color. At TX Quince, every photo + film commission pairs a stills director and a motion director as one team for the whole day.",
     },
     {
       q: "How do I know if a photographer is experienced with quinceañeras?",

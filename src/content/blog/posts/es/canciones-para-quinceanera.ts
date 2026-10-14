@@ -123,7 +123,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Cuando sus canciones estén listas, puede [revisar si su fecha está libre](/check-your-date) en segundos, ver qué incluye cada [colección](/investment) de foto y video, o [reservar su fecha](/reserve). Y si todavía está armando el orden de la noche, nuestra [guía del orden de la quinceañera](/es/blog/que-pasa-en-una-quinceanera-orden) muestra exactamente dónde cae cada una de estas canciones.",
+      text: "Cuando sus canciones estén listas, puede [revisar si su fecha está libre](/check-your-date) en segundos, ver qué incluye cada [comisión](/es#commissions) de foto y video, o [reservar su fecha](/es#intake). Y si todavía está armando el orden de la noche, nuestra [guía del orden de la quinceañera](/es/blog/que-pasa-en-una-quinceanera-orden) muestra exactamente dónde cae cada una de estas canciones.",
     },
   ],
   faqs: [

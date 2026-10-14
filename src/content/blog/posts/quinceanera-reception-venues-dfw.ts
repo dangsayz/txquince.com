@@ -1,4 +1,10 @@
 import type { BlogPost } from "@/content/blog";
+import { TIER_PRICE_USD, usd } from "@/lib/commission";
+
+const study = usd(TIER_PRICE_USD.study);
+const cinema = usd(TIER_PRICE_USD.cinema);
+const production = usd(TIER_PRICE_USD.production);
+const archive = usd(TIER_PRICE_USD.archive);
 
 const post: BlogPost = {
   slug: "quinceanera-reception-venues-dfw",
@@ -10,6 +16,7 @@ const post: BlogPost = {
   excerpt:
     "Real DFW halls grouped by city and guest count, all-inclusive vs. à-la-carte, and the venue questions that actually protect your photos and film.",
   publishedAt: "2026-06-09",
+  updatedAt: "2026-10-14",
   readMinutes: 8,
   lead: "Before you fall in love with a chandelier or a marble dance floor, start with one number: how many people are coming. Capacity first, everything else second. Here are real quinceañera halls across Dallas–Fort Worth grouped by city and guest count — plus the questions that protect your celebration and the way it gets photographed.",
   content: [
@@ -120,13 +127,13 @@ const post: BlogPost = {
       type: "cta",
       heading: "Found your hall? Lock your photographer next.",
       body: "Reserve your date with TX Quince before the best Saturdays go — we'll confirm we know your venue and how to light it.",
-      href: "/reserve",
+      href: "/#intake",
       label: "Reserve your date",
     },
     { type: "h2", text: "Pair the venue with a photographer who knows it" },
     {
       type: "p",
-      text: "A photographer who has shot your hall before walks in already knowing where the good light is, where the surprise dance reads best, and how the room turns over from misa to reception. That's why families book the venue and the photographer close together — see how it comes together in our [portfolio](/portfolio), then [reserve your date](/reserve) once your hall is set.",
+      text: "A photographer who has shot your hall before walks in already knowing where the good light is, where the surprise dance reads best, and how the room turns over from misa to reception. That's why families book the venue and the photographer close together — see how it comes together in our [portfolio](/portfolio), then [reserve your date](/#intake) once your hall is set.",
     },
     {
       type: "image",
@@ -139,7 +146,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "One last note on money: venue and catering are their own line in your budget — completely separate from photography. Our photo and film collections are fixed at $1,800, $2,500, $3,900, and $5,500, so once your hall is chosen, your coverage cost is already a known number.",
+      text: `One last note on money: venue and catering are their own line in your budget — completely separate from photography. Our [commissions](/#commissions) are published at ${study} (photo only), ${cinema}, ${production}, and ${archive}, so once your hall is chosen, your coverage cost is already a known number.`,
     },
   ],
   faqs: [
@@ -157,7 +164,7 @@ const post: BlogPost = {
     },
     {
       q: "How much do quinceañera venues cost in Dallas?",
-      a: "Venue cost varies widely by hall, season, day of the week, and whether catering is bundled, so request a current quote from each venue directly — that number is separate from photography. For reference, TX Quince photo and film collections are fixed at $1,800, $2,500, $3,900, and $5,500, independent of which hall you book.",
+      a: `Venue cost varies widely by hall, season, day of the week, and whether catering is bundled, so request a current quote from each venue directly — that number is separate from photography. For reference, TX Quince commissions are published at ${study}, ${cinema}, ${production}, and ${archive}, independent of which hall you book.`,
     },
     {
       q: "Can I bring my own photographer to a DFW quinceañera hall?",

@@ -29,6 +29,8 @@ export type BookingRow = {
   expires_at: string;
   /** First-touch acquisition source { source, medium, campaign, referrer, landing, ts }. */
   attribution: Record<string, string> | null;
+  /** Commission details for homepage bookings { tier, add_ons, total_usd, language, … }. */
+  metadata?: Record<string, unknown> | null;
 };
 
 export type InquiryRow = {
@@ -85,7 +87,7 @@ export const getBookings = cache(async (): Promise<BookingRow[]> => {
     const { data, error } = await supabase
       .from("bookings")
       .select(
-        "id, created_at, name, email, phone, event_date, package, collection, notes, status, deposit_amount_cents, currency, paid_at, expires_at, attribution",
+        "id, created_at, name, email, phone, event_date, package, collection, notes, status, deposit_amount_cents, currency, paid_at, expires_at, attribution, metadata",
       )
       .order("created_at", { ascending: false });
     if (error || !data) return [];

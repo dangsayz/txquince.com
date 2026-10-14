@@ -15,14 +15,15 @@ export const SERVICE_OPTIONS = [
 ] as const;
 
 /**
- * Budget ranges (req). The LOWEST option starts at $1,800 — THE FILTER, mirroring
- * the Moments floor. No true sub-floor option: budget shoppers self-select away.
+ * Budget ranges (req). Mirror the commission ladder in src/lib/commission.ts —
+ * the lowest option is the Portrait Study, so budget shoppers self-select away.
+ * Stored as free text (inquiries.budget_range), so old rows keep their values.
  */
 export const BUDGET_OPTIONS = [
-  { value: "$1,800–$2,500", label: "$1,800 – $2,500" },
-  { value: "$2,500–$3,500", label: "$2,500 – $3,500" },
-  { value: "$3,500–$4,500", label: "$3,500 – $4,500" },
-  { value: "$4,500–$5,500+", label: "$4,500 – $5,500+" },
+  { value: "$2,500 portrait session", label: "$2,500 — Portrait session", labelEs: "$2,500 — Sesión de retrato" },
+  { value: "$7,500–$11,500", label: "$7,500 – $11,500 — Photo + film", labelEs: "$7,500 – $11,500 — Foto + cine" },
+  { value: "$11,500–$18,500", label: "$11,500 – $18,500 — Full production", labelEs: "$11,500 – $18,500 — Producción completa" },
+  { value: "$18,500+", label: "$18,500+ — Multi-day archive", labelEs: "$18,500+ — Archivo de varios días" },
 ] as const;
 
 /** "How did you hear about us?" — keep light, helps attribution. */

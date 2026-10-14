@@ -3,15 +3,22 @@
  *
  * City selection is FACT-BASED, not a guess: each city pairs a large
  * Mexican-American family base (where quinces actually happen, by volume) with
- * household income that supports a $2,500–$5,500 collection. "volume" cities are
- * the booking engine; "premium" cities skew to Legacy. (Source: 2024 Census/ACS
- * city estimates — see the cities chosen and why in the project notes.)
+ * household income that supports a commission (prices live in src/lib/commission.ts
+ * — never hardcode them here). "volume" cities are the booking engine; "premium"
+ * cities (Mansfield, Farmers Branch and the Collin County trio of Frisco, Plano
+ * and McKinney) skew to The Full Production and the Multi-Day Editorial Archive.
+ * (Source: 2024 Census/ACS city estimates — see the cities chosen and why in the
+ * project notes.)
  *
  * English pages live at /quinceanera-photographer/<slug>; Spanish at
  * /es/fotografo-de-quinceaneras/<slug>. The Spanish set targets a market with
  * even less competition ("fotógrafo de quinceañera en <ciudad>"). Each page is
  * unique local content wrapped around the conversion flow — not a doorway page.
  */
+
+import { TIER_PRICE_USD, RETAINER, CONSULT_HOLD_DAYS, usd } from "@/lib/commission";
+
+const RETAINER_PCT = `${Math.round(RETAINER.rate * 100)}%`;
 
 export type CityTier = "volume" | "premium";
 
@@ -52,7 +59,7 @@ export const locations: Location[] = [
     lead: "Right in the heart of one of DFW's largest Mexican-American communities.",
     intro: [
       "Grand Prairie sits in the sweet spot for a quinceañera — a deep, established Mexican-American community spread across the Dallas–Tarrant line, with the church-to-reception traditions still done in full. From the parishes off Pioneer Parkway to receptions out near Lone Star Park and EpicCentral, I photograph the whole day the way these families actually celebrate it.",
-      "Because I only book one quinceañera a day, your celebration gets my complete attention — la misa, the portraits, el vals, and the reception, start to finish. No rushing between two events, no second photographer splitting their focus.",
+      "Because I only book one quinceañera a day, your celebration gets my complete attention — la misa, the portraits, el vals, and the reception, start to finish. No rushing between two events, no crew split across two Saturdays.",
     ],
     faqs: [
       {
@@ -67,7 +74,7 @@ export const locations: Location[] = [
     leadEs: "En el corazón de una de las comunidades mexicanas más grandes de DFW.",
     introEs: [
       "Grand Prairie es de los mejores lugares para una quinceañera: una comunidad mexicana arraigada que se extiende entre los condados de Dallas y Tarrant, donde todavía se hace la tradición completa, de la iglesia a la recepción. Desde las parroquias por Pioneer Parkway hasta los salones cerca de Lone Star Park y EpicCentral, fotografío todo el día tal como lo celebran las familias.",
-      "Como solo reservo una quinceañera al día, tu celebración tiene toda mi atención: la misa, las fotos, el vals y la recepción, de principio a fin. Sin correr entre dos eventos, sin un segundo fotógrafo dividiendo su atención.",
+      "Como solo reservo una quinceañera al día, tu celebración tiene toda mi atención: la misa, las fotos, el vals y la recepción, de principio a fin. Sin correr entre dos eventos, sin un equipo repartido entre dos celebraciones.",
     ],
     faqsEs: [
       {
@@ -104,7 +111,7 @@ export const locations: Location[] = [
       },
       {
         q: "Can we do portraits in Las Colinas?",
-        a: "Absolutely. Williams Square and the Las Colinas canals make beautiful portrait backdrops, and we can build a save-the-date session there before the day or fit portraits into the timeline.",
+        a: "Absolutely. Williams Square and the Las Colinas canals make beautiful portrait backdrops. We can make them the setting for a portrait session before the celebration — the heart of the Portrait Study, and included at one location in The Full Production — or fit portraits into the day's timeline.",
       },
     ],
     leadEs: "De las parroquias del sur de Irving a las torres de Las Colinas.",
@@ -119,7 +126,7 @@ export const locations: Location[] = [
       },
       {
         q: "¿Podemos hacer fotos en Las Colinas?",
-        a: "Claro que sí. Williams Square y los canales de Las Colinas son fondos preciosos, y podemos hacer una sesión save-the-date ahí antes del día o acomodar las fotos en el itinerario.",
+        a: "Claro que sí. Williams Square y los canales de Las Colinas son fondos preciosos. Ahí podemos hacer una sesión de retrato antes de la celebración —el corazón del Estudio de retrato, e incluida en una locación con La producción completa— o acomodar las fotos en el itinerario del día.",
       },
     ],
   },
@@ -138,7 +145,7 @@ export const locations: Location[] = [
     lead: "One of Dallas County's biggest, most celebration-proud communities.",
     intro: [
       "Garland is one of the largest Mexican-American communities in Dallas County, and it shows in how families do a quinceañera — full courts, full days, nothing skipped. From the parishes around downtown Garland Square to receptions near Firewheel and the Lake Ray Hubbard side of town, I document all of it.",
-      "Booking one quinceañera a day is how I keep the quality where it should be. Your misa, your portraits, your entrada and vals and the celebration after — one photographer, fully present, the entire day.",
+      "Booking one quinceañera a day is how I keep the quality where it should be. Your misa, your portraits, your entrada and vals and the celebration after — one team, fully present, the entire day.",
     ],
     faqs: [
       {
@@ -147,13 +154,13 @@ export const locations: Location[] = [
       },
       {
         q: "How early should Garland families book?",
-        a: "As early as you can — I take a limited number of quinceañeras each season and the best Saturdays go first, often a year out. Reserve your date with a deposit and lock it in.",
+        a: `As early as you can — I take a limited number of quinceañeras each season and the best Saturdays go first, often a year out. Reserve online with a ${RETAINER_PCT} retainer at secure checkout, or request a consultation first and I'll hold your date for ${CONSULT_HOLD_DAYS} days.`,
       },
     ],
     leadEs: "Una de las comunidades más grandes y festivas del condado de Dallas.",
     introEs: [
       "Garland es una de las comunidades mexicanas más grandes del condado de Dallas, y se nota en cómo las familias hacen la quinceañera: cortes completas, días completos, sin saltarse nada. Desde las parroquias por el centro de Garland Square hasta las recepciones cerca de Firewheel y el lado de Lake Ray Hubbard, lo documento todo.",
-      "Reservar una sola quinceañera al día es como mantengo la calidad donde debe estar. Tu misa, tus fotos, tu entrada y vals y la celebración después: un fotógrafo, presente por completo, todo el día.",
+      "Reservar una sola quinceañera al día es como mantengo la calidad donde debe estar. Tu misa, tus fotos, tu entrada y vals y la celebración después: un solo equipo, presente por completo, todo el día.",
     ],
     faqsEs: [
       {
@@ -162,7 +169,7 @@ export const locations: Location[] = [
       },
       {
         q: "¿Con cuánta anticipación deben reservar las familias de Garland?",
-        a: "Lo antes posible — tomo un número limitado de quinceañeras por temporada y los mejores sábados se van primero, muchas veces con un año de anticipación. Reserva tu fecha con un depósito y déjala apartada.",
+        a: `Lo antes posible — tomo un número limitado de quinceañeras por temporada y los mejores sábados se van primero, muchas veces con un año de anticipación. Aparta tu fecha en línea con un anticipo del ${RETAINER_PCT} en pago seguro, o pide primero una consulta y te la aparto ${CONSULT_HOLD_DAYS} días.`,
       },
     ],
   },
@@ -191,7 +198,7 @@ export const locations: Location[] = [
       },
       {
         q: "Can we do portraits in Bishop Arts or Oak Cliff?",
-        a: "Yes — Bishop Arts and the Kessler area make gorgeous portrait backdrops. We can shoot a save-the-date session there beforehand or work portraits into the day's timeline.",
+        a: "Yes — Bishop Arts and the Kessler area make gorgeous portrait backdrops. We can shoot a portrait session there before the celebration or work portraits into the day's timeline.",
       },
     ],
     leadEs: "El corazón del Dallas mexicano — Oak Cliff, West Dallas, Pleasant Grove.",
@@ -206,7 +213,7 @@ export const locations: Location[] = [
       },
       {
         q: "¿Podemos hacer fotos en Bishop Arts u Oak Cliff?",
-        a: "Sí — Bishop Arts y la zona del Kessler son fondos hermosos. Podemos hacer una sesión save-the-date ahí antes o acomodar las fotos en el itinerario del día.",
+        a: "Sí — Bishop Arts y la zona del Kessler son fondos hermosos. Podemos hacer ahí una sesión de retrato antes de la celebración o acomodar las fotos en el itinerario del día.",
       },
     ],
   },
@@ -225,7 +232,7 @@ export const locations: Location[] = [
     lead: "Deep-rooted Northside tradition, from the parishes to the Stockyards.",
     intro: [
       "Fort Worth's Mexican-American community runs deep on the North Side — North Main, the Mercado, parishes that have celebrated quinceañeras for generations. I photograph the whole tradition here, from a morning misa to portraits near the Stockyards or the Cultural District and a reception on the west side of the metroplex.",
-      "One celebration per day is my rule. Your quinceañera in Fort Worth gets a photographer who's fully there for la misa, el vals, the baile sorpresa, and every moment of the night — not divided across a packed Saturday.",
+      "One celebration per day is my rule. Your quinceañera in Fort Worth gets a team that's fully there for la misa, el vals, the baile sorpresa, and every moment of the night — not divided across a packed Saturday.",
     ],
     faqs: [
       {
@@ -234,13 +241,13 @@ export const locations: Location[] = [
       },
       {
         q: "Can we take portraits at the Stockyards?",
-        a: "Yes — the Stockyards and the Cultural District are favorite Fort Worth portrait spots. We can plan a save-the-date session there or fold portraits into the quinceañera timeline.",
+        a: "Yes — the Stockyards and the Cultural District are favorite Fort Worth portrait spots. We can plan a portrait session there before the celebration or fold portraits into the quinceañera timeline.",
       },
     ],
     leadEs: "Tradición arraigada del Northside, de las parroquias a los Stockyards.",
     introEs: [
       "La comunidad mexicana de Fort Worth se vive fuerte en el North Side — North Main, el Mercado, parroquias que han celebrado quinceañeras por generaciones. Aquí fotografío la tradición completa, desde una misa de mañana hasta fotos cerca de los Stockyards o el Cultural District y una recepción del lado oeste del metroplex.",
-      "Una celebración al día es mi regla. Tu quinceañera en Fort Worth tiene un fotógrafo presente por completo para la misa, el vals, el baile sorpresa y cada momento de la noche, sin dividirse en un sábado saturado.",
+      "Una celebración al día es mi regla. Tu quinceañera en Fort Worth tiene un equipo presente por completo para la misa, el vals, el baile sorpresa y cada momento de la noche, sin dividirse en un sábado saturado.",
     ],
     faqsEs: [
       {
@@ -249,7 +256,7 @@ export const locations: Location[] = [
       },
       {
         q: "¿Podemos tomar fotos en los Stockyards?",
-        a: "Sí — los Stockyards y el Cultural District son de los lugares favoritos para fotos en Fort Worth. Podemos planear una sesión save-the-date ahí o incluir las fotos en el itinerario.",
+        a: "Sí — los Stockyards y el Cultural District son de los lugares favoritos para fotos en Fort Worth. Podemos planear ahí una sesión de retrato antes de la celebración o incluir las fotos en el itinerario.",
       },
     ],
   },
@@ -268,7 +275,7 @@ export const locations: Location[] = [
     lead: "Centered in the metroplex, between Dallas and Fort Worth.",
     intro: [
       "Arlington sits right in the middle of DFW, with a large Mexican-American community and an Entertainment District that gives quinceañeras some unmistakable backdrops — AT&T Stadium and Globe Life Field a short drive from most receptions. From the church to portraits to the celebration, I photograph the full Arlington quinceañera day.",
-      "Because I take just one quinceañera a day, your celebration is never competing for my attention. La misa, the portraits, el vals, and the reception — one photographer, all day, fully present.",
+      "Because I take just one quinceañera a day, your celebration is never competing for my attention. La misa, the portraits, el vals, and the reception — one team, all day, fully present.",
     ],
     faqs: [
       {
@@ -277,13 +284,13 @@ export const locations: Location[] = [
       },
       {
         q: "Can we shoot portraits in the Entertainment District?",
-        a: "Yes — the area around AT&T Stadium and Globe Life makes a bold portrait backdrop. We can plan it as a save-the-date session or work it into the day.",
+        a: "Yes — the area around AT&T Stadium and Globe Life makes a bold portrait backdrop. We can plan it as a portrait session before the celebration or work it into the day.",
       },
     ],
     leadEs: "En el centro del metroplex, entre Dallas y Fort Worth.",
     introEs: [
       "Arlington está justo en medio de DFW, con una comunidad mexicana grande y un Entertainment District que le da a las quinceañeras fondos inconfundibles: el AT&T Stadium y el Globe Life Field a unos minutos de la mayoría de los salones. De la iglesia a las fotos y a la celebración, fotografío todo el día de la quinceañera en Arlington.",
-      "Como tomo una sola quinceañera al día, tu celebración nunca compite por mi atención. La misa, las fotos, el vals y la recepción: un fotógrafo, todo el día, presente por completo.",
+      "Como tomo una sola quinceañera al día, tu celebración nunca compite por mi atención. La misa, las fotos, el vals y la recepción: un solo equipo, todo el día, presente por completo.",
     ],
     faqsEs: [
       {
@@ -292,7 +299,7 @@ export const locations: Location[] = [
       },
       {
         q: "¿Podemos hacer fotos en el Entertainment District?",
-        a: "Sí — la zona del AT&T Stadium y el Globe Life es un fondo espectacular. Lo podemos planear como sesión save-the-date o incluirlo en el día.",
+        a: "Sí — la zona del AT&T Stadium y el Globe Life es un fondo espectacular. Lo podemos planear como sesión de retrato antes de la celebración o incluirlo en el día.",
       },
     ],
   },
@@ -310,32 +317,32 @@ export const locations: Location[] = [
     ],
     lead: "Where DFW families go all-out on the celebration.",
     intro: [
-      "Mansfield families tend to do a quinceañera in full — the complete day, the larger court, the cinematic film and album to match. It's exactly the celebration my Signature and Legacy collections are built for: two storytellers, the whole day, the long-form film and drone coverage that do a milestone like this justice.",
+      "Mansfield families tend to do a quinceañera in full — the complete day, the larger court, the cinematic film and heirloom book to match. It's exactly the celebration The Full Production and the Multi-Day Editorial Archive are built for: a stills director and a motion director, the whole day, a feature-length film and a linen monograph that do a milestone like this justice.",
       "I book one quinceañera a day, so your celebration gets everything — la misa, portraits around Historic Downtown Mansfield or the Mansfield National area, el vals, and a reception captured start to finish, nothing rushed.",
     ],
     faqs: [
       {
         q: "Do you photograph quinceañeras in Mansfield?",
-        a: "Yes — Mansfield is part of my Dallas–Fort Worth service area with no travel fee. It's a natural fit for the Signature and Legacy collections, which cover the full day with film and album included.",
+        a: "Yes — Mansfield is part of my Dallas–Fort Worth service area with no travel fee. It's a natural fit for The Full Production, which covers the full day with photo, film and a linen heirloom monograph included.",
       },
       {
-        q: "Which collection do most Mansfield families choose?",
-        a: "Most go with Signature ($3,900) for the full day with photo and film, and many step up to Legacy ($5,500) for the long-form cinematic film, drone coverage, and a premium album. See exactly what's included on the investment page.",
+        q: "Which commission do you recommend for a Mansfield quinceañera?",
+        a: `For most celebrations, III. The Full Production (${usd(TIER_PRICE_USD.production)}) — 11 hours with motion and a second stills shooter, a portrait session at one location, a 12–15 minute feature film, 700+ retouched frames and a 40-page linen heirloom monograph. Families planning more than one day of celebrating can step up to IV. Multi-Day Editorial Archive (${usd(TIER_PRICE_USD.archive)}). Compare all four at /#commissions.`,
       },
     ],
     leadEs: "Donde las familias de DFW se lucen con la celebración.",
     introEs: [
-      "Las familias de Mansfield suelen hacer la quinceañera en grande: el día completo, la corte más grande, el video cinematográfico y el álbum a la altura. Es justo la celebración para la que están hechas mis colecciones Signature y Legacy: dos narradores, todo el día, el video de larga duración y la toma con dron que le hacen justicia a un momento así.",
+      "Las familias de Mansfield suelen hacer la quinceañera en grande: el día completo, la corte más grande, la película cinematográfica y el libro a la altura. Es justo la celebración para la que están hechos La producción completa y el Archivo editorial de varios días: un director de foto y uno de cine, todo el día, una película de larga duración y una monografía de lino que le hacen justicia a un momento así.",
       "Reservo una quinceañera al día, así que tu celebración lo tiene todo: la misa, fotos por el Historic Downtown Mansfield o la zona de Mansfield National, el vals y una recepción capturada de principio a fin, sin prisas.",
     ],
     faqsEs: [
       {
         q: "¿Fotografías quinceañeras en Mansfield?",
-        a: "Sí — Mansfield es parte de mi área de Dallas–Fort Worth, sin cargo por traslado. Encaja perfecto con las colecciones Signature y Legacy, que cubren todo el día con video y álbum incluidos.",
+        a: "Sí — Mansfield es parte de mi área de Dallas–Fort Worth, sin cargo por traslado. Encaja perfecto con La producción completa, que cubre todo el día con foto, video y una monografía de lino incluidos.",
       },
       {
-        q: "¿Qué colección eligen la mayoría de las familias de Mansfield?",
-        a: "La mayoría elige Signature ($3,900) por el día completo con foto y video, y muchas suben a Legacy ($5,500) por el video cinematográfico de larga duración, la toma con dron y un álbum premium. Mira todo lo que incluye cada una en la página de inversión.",
+        q: "¿Qué encargo recomiendas para una quinceañera en Mansfield?",
+        a: `Para la mayoría de las celebraciones, III. La producción completa (${usd(TIER_PRICE_USD.production)}): 11 horas con cine y un segundo fotógrafo, una sesión de retrato en una locación, una película de 12 a 15 minutos, más de 700 imágenes retocadas y una monografía de lino de 40 páginas. Si van a celebrar más de un día, pueden subir a IV. Archivo editorial de varios días (${usd(TIER_PRICE_USD.archive)}). Compara los cuatro en /es#commissions.`,
       },
     ],
   },
@@ -354,7 +361,7 @@ export const locations: Location[] = [
     lead: "An established community that celebrates in full.",
     intro: [
       "Farmers Branch pairs a strong, settled Mexican-American community with the means to do a quinceañera properly — and the families here tend to. From the church to portraits at the Historical Park or rose gardens and a full reception, I document the complete day the way it's meant to be remembered.",
-      "One celebration per day means your quinceañera gets my full attention — la misa, el vals, the baile sorpresa, and the whole night. The Signature and Legacy collections are built for exactly this kind of all-day celebration.",
+      "One celebration per day means your quinceañera gets my full attention — la misa, el vals, the baile sorpresa, and the whole night. The Full Production — the commission I recommend for most celebrations — is built for exactly this kind of all-day celebration.",
     ],
     faqs: [
       {
@@ -363,13 +370,13 @@ export const locations: Location[] = [
       },
       {
         q: "Can we do portraits at the Historical Park?",
-        a: "Yes — the Farmers Branch Historical Park and rose gardens are beautiful portrait settings. We can plan a save-the-date session there or build portraits into the quinceañera day.",
+        a: "Yes — the Farmers Branch Historical Park and rose gardens are beautiful portrait settings. We can plan a portrait session there before the celebration or build portraits into the quinceañera day.",
       },
     ],
     leadEs: "Una comunidad establecida que celebra en grande.",
     introEs: [
       "Farmers Branch combina una comunidad mexicana fuerte y arraigada con los medios para hacer la quinceañera como se debe, y aquí las familias lo hacen. De la iglesia a las fotos en el Historical Park o los jardines de rosas y una recepción completa, documento todo el día como merece recordarse.",
-      "Una celebración al día significa que tu quinceañera tiene toda mi atención: la misa, el vals, el baile sorpresa y toda la noche. Las colecciones Signature y Legacy están hechas justo para este tipo de celebración de día completo.",
+      "Una celebración al día significa que tu quinceañera tiene toda mi atención: la misa, el vals, el baile sorpresa y toda la noche. La producción completa —el encargo que recomiendo para la mayoría de las celebraciones— está hecha justo para este tipo de celebración de día completo.",
     ],
     faqsEs: [
       {
@@ -378,7 +385,136 @@ export const locations: Location[] = [
       },
       {
         q: "¿Podemos hacer fotos en el Historical Park?",
-        a: "Sí — el Farmers Branch Historical Park y los jardines de rosas son escenarios preciosos. Podemos planear una sesión save-the-date ahí o incluir las fotos en el día de la quinceañera.",
+        a: "Sí — el Farmers Branch Historical Park y los jardines de rosas son escenarios preciosos. Podemos planear ahí una sesión de retrato antes de la celebración o incluir las fotos en el día de la quinceañera.",
+      },
+    ],
+  },
+  {
+    slug: "frisco",
+    city: "Frisco",
+    county: "Collin & Denton counties",
+    tier: "premium",
+    areas: [
+      "The Star in Frisco",
+      "Frisco Square",
+      "the Rail District",
+      "Stonebriar",
+      "the PGA Frisco area",
+    ],
+    lead: "Where the quinceañera is planned like a destination celebration.",
+    intro: [
+      "Frisco families tend to plan a quinceañera the way other cities plan a destination wedding — a hotel or resort ballroom, a full court, relatives driving up from across Texas for the weekend. From a morning misa to portraits around The Star or Frisco Square and a reception off the Dallas North Tollway, I photograph the whole tradition, set against the newest backdrops in the metroplex.",
+      `Because I take one quinceañera a day, a Frisco celebration gets the full crew and the full day. The Full Production (${usd(TIER_PRICE_USD.production)}) is the commission I recommend for most families here — 11 hours of photo and film, a portrait session at one location, and a linen heirloom monograph to hand down.`,
+    ],
+    faqs: [
+      {
+        q: "Do you photograph quinceañeras in Frisco?",
+        a: "Yes — Frisco is part of my Dallas–Fort Worth service area, on both the Collin and Denton County sides, with no travel fee. I cover the church, the portraits and the reception wherever your day takes us.",
+      },
+      {
+        q: "Can we do portraits at The Star or Frisco Square?",
+        a: "Yes — The Star's plazas and the civic grounds around Frisco Square both make polished, modern portrait backdrops. We can plan them as the portrait session before the celebration or build them into the day's timeline.",
+      },
+    ],
+    leadEs: "Donde la quinceañera se planea como una celebración de destino.",
+    introEs: [
+      "Las familias de Frisco suelen planear la quinceañera como en otras ciudades se planea una boda de destino: un salón de hotel o de resort, la corte completa y parientes que llegan de todo Texas para el fin de semana. Desde la misa de la mañana hasta las fotos por The Star o Frisco Square y una recepción junto al Dallas North Tollway, fotografío la tradición completa con los fondos más nuevos del metroplex.",
+      `Como tomo una sola quinceañera al día, una celebración en Frisco tiene al equipo completo todo el día. La producción completa (${usd(TIER_PRICE_USD.production)}) es el encargo que recomiendo para la mayoría de las familias aquí: 11 horas de foto y cine, una sesión de retrato en una locación y una monografía de lino para heredar.`,
+    ],
+    faqsEs: [
+      {
+        q: "¿Fotografías quinceañeras en Frisco?",
+        a: "Sí — Frisco es parte de mi área de Dallas–Fort Worth, tanto del lado de Collin como de Denton, sin cargo por traslado. Cubro la iglesia, las fotos y la recepción donde sea que se celebre tu día.",
+      },
+      {
+        q: "¿Podemos hacer fotos en The Star o en Frisco Square?",
+        a: "Sí — las plazas de The Star y los jardines cívicos de Frisco Square son fondos modernos y elegantes. Los podemos planear como la sesión de retrato antes de la celebración o acomodarlos en el itinerario del día.",
+      },
+    ],
+  },
+  {
+    slug: "plano",
+    city: "Plano",
+    county: "Collin County",
+    tier: "premium",
+    areas: [
+      "Historic Downtown Plano",
+      "Legacy West",
+      "Arbor Hills Nature Preserve",
+      "Oak Point Park",
+      "east Plano",
+    ],
+    lead: "From the brick of Historic Downtown to the ballrooms of Legacy West.",
+    intro: [
+      "Plano is really two cities, and a quinceañera here usually touches both — the older east side around Historic Downtown and 15th Street, home to much of the city's Hispanic community, and the west side of Legacy West and the corporate campuses, where the hotel ballrooms are. From a misa on the east side to portraits at Arbor Hills Nature Preserve and a reception near the tollway, I photograph the day the way Plano families actually plan it.",
+      `One quinceañera a day means yours is the only thing on my calendar — la misa, the portraits, el vals and the whole reception. For a day that runs from downtown to Legacy, I recommend The Full Production (${usd(TIER_PRICE_USD.production)}), with photo and film by one crew and a linen heirloom monograph at the end.`,
+    ],
+    faqs: [
+      {
+        q: "Do you photograph quinceañeras in Plano?",
+        a: "Yes — Plano is part of my core Dallas–Fort Worth service area with no travel fee, east side and west side alike. Church, portraits and reception, start to finish.",
+      },
+      {
+        q: "Can we take portraits in Historic Downtown Plano or at Arbor Hills?",
+        a: "Yes — the brick storefronts of 15th Street and the prairie trails of Arbor Hills Nature Preserve are two of my favorite Plano settings, and they pair well in a single session. We can plan them before the celebration or fold them into the day.",
+      },
+    ],
+    leadEs: "Del ladrillo del Historic Downtown a los salones de Legacy West.",
+    introEs: [
+      "Plano en realidad son dos ciudades, y una quinceañera aquí casi siempre toca las dos: el lado este, más antiguo, alrededor del Historic Downtown y la calle 15, donde vive buena parte de la comunidad hispana de la ciudad, y el lado oeste de Legacy West y los corporativos, donde están los salones de hotel. Desde una misa en el lado este hasta las fotos en Arbor Hills Nature Preserve y una recepción cerca del tollway, fotografío el día como de verdad lo planean las familias de Plano.",
+      `Una sola quinceañera al día significa que la tuya es lo único en mi calendario: la misa, las fotos, el vals y toda la recepción. Para un día que va del centro a Legacy, recomiendo La producción completa (${usd(TIER_PRICE_USD.production)}), con foto y cine de un solo equipo y una monografía de lino al final.`,
+    ],
+    faqsEs: [
+      {
+        q: "¿Fotografías quinceañeras en Plano?",
+        a: "Sí — Plano es parte de mi área principal de Dallas–Fort Worth, sin cargo por traslado, lo mismo en el lado este que en el oeste. Iglesia, fotos y recepción, de principio a fin.",
+      },
+      {
+        q: "¿Podemos hacer fotos en el Historic Downtown de Plano o en Arbor Hills?",
+        a: "Sí — las fachadas de ladrillo de la calle 15 y los senderos de pradera de Arbor Hills Nature Preserve son dos de mis lugares favoritos en Plano, y combinan bien en una sola sesión. Los podemos planear antes de la celebración o acomodarlos en el día.",
+      },
+    ],
+  },
+  {
+    slug: "mckinney",
+    city: "McKinney",
+    county: "Collin County",
+    tier: "premium",
+    areas: [
+      "Historic Downtown McKinney",
+      "Chestnut Square",
+      "Adriatica Village",
+      "Towne Lake",
+      "Craig Ranch",
+    ],
+    lead: "A hometown square, a growing city, and a celebration done in full.",
+    intro: [
+      "McKinney has what most of Collin County doesn't: a real historic downtown, built around the old county courthouse on the square, with long-rooted families on the east side and newer ones arriving every year. A McKinney quinceañera often feels like a hometown celebration — the parish, portraits on the square or at Chestnut Square, a reception out toward Craig Ranch — and I photograph every part of it.",
+      `I book one quinceañera a day, so your celebration gets the whole crew from the first church frame to the last dance. For most McKinney families I recommend The Full Production (${usd(TIER_PRICE_USD.production)}); for portraits alone, the Portrait Study (${usd(TIER_PRICE_USD.study)}) is a 3-hour editorial session before the day.`,
+    ],
+    faqs: [
+      {
+        q: "Do you photograph quinceañeras in McKinney?",
+        a: "Yes — McKinney is part of my Dallas–Fort Worth service area with no travel fee. I cover the full day, church through reception, anywhere in the city.",
+      },
+      {
+        q: "Can we do portraits on the downtown square or at Adriatica?",
+        a: "Yes — the brick storefronts around the downtown square and the stone lanes and bell tower of Adriatica Village give you two very different looks in one city. We can plan them as a portrait session before the celebration or work them into the day.",
+      },
+    ],
+    leadEs: "Una plaza de pueblo, una ciudad que crece y una celebración completa.",
+    introEs: [
+      "McKinney tiene lo que casi nadie más tiene en el condado de Collin: un centro histórico de verdad, alrededor del antiguo juzgado del condado en la plaza, con familias de raíces hondas en el lado este y nuevas que llegan cada año. Una quinceañera en McKinney muchas veces se siente como una fiesta de pueblo —la parroquia, fotos en la plaza o en Chestnut Square, la recepción rumbo a Craig Ranch— y yo fotografío cada parte.",
+      `Reservo una quinceañera al día, así que tu celebración tiene al equipo completo desde la primera foto en la iglesia hasta el último baile. Para la mayoría de las familias de McKinney recomiendo La producción completa (${usd(TIER_PRICE_USD.production)}); si solo quieres retratos, el Estudio de retrato (${usd(TIER_PRICE_USD.study)}) es una sesión editorial de 3 horas antes del día.`,
+    ],
+    faqsEs: [
+      {
+        q: "¿Fotografías quinceañeras en McKinney?",
+        a: "Sí — McKinney es parte de mi área de Dallas–Fort Worth, sin cargo por traslado. Cubro todo el día, de la iglesia a la recepción, en cualquier parte de la ciudad.",
+      },
+      {
+        q: "¿Podemos hacer fotos en la plaza del centro o en Adriatica?",
+        a: "Sí — las fachadas de ladrillo alrededor de la plaza y los callejones de piedra y el campanario de Adriatica Village te dan dos estilos muy distintos en una misma ciudad. Los podemos planear como sesión de retrato antes de la celebración o acomodarlos en el día.",
       },
     ],
   },
@@ -394,6 +530,9 @@ export const cityGeo: Record<string, { lat: number; lon: number }> = {
   arlington: { lat: 32.7357, lon: -97.1081 },
   mansfield: { lat: 32.5632, lon: -97.1417 },
   "farmers-branch": { lat: 32.9265, lon: -96.8961 },
+  frisco: { lat: 33.1507, lon: -96.8236 },
+  plano: { lat: 33.0198, lon: -96.6989 },
+  mckinney: { lat: 33.1972, lon: -96.6398 },
 };
 
 export function getLocation(slug: string): Location | undefined {
@@ -402,9 +541,9 @@ export function getLocation(slug: string): Location | undefined {
 
 /**
  * Other cities for the "also serving" internal links. Defaults to the FULL set
- * (every other city) so the reciprocal link graph is complete — with 8 cities
- * the old slice(0,5) silently starved the two tail cities (Mansfield, Farmers
- * Branch) from every page. `n` stays optional for any caller that wants a cap.
+ * (every other city) so the reciprocal link graph is complete — a fixed
+ * slice(0,5) silently starved the tail cities (Mansfield, Farmers Branch and
+ * now Frisco, Plano, McKinney) from every page. `n` stays optional for any caller that wants a cap.
  */
 export function nearbyLocations(slug: string, n = locations.length): Location[] {
   return locations.filter((l) => l.slug !== slug).slice(0, n);

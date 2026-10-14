@@ -80,7 +80,7 @@ export async function InquiryPage({ locale, initialDate = "" }: { locale: "en" |
             <h2 id="inquiry-form-title" className="mt-5 font-display text-[clamp(1.9rem,2.8vw,2.8rem)] font-light leading-tight text-ink">{c.formTitle}</h2>
             <p className="mt-7 max-w-md font-serif text-lg leading-8 text-ink-soft">{c.formIntro}</p>
             <p className="mt-8 max-w-md border-t border-line pt-6 text-sm leading-7 text-ink-soft">{c.formNote}</p>
-            <Link href={isSpanish ? "/es/paquetes" : "/investment"} className="mt-5 inline-flex min-h-12 items-center gap-6 border-b border-ink text-xs uppercase tracking-[.14em] text-ink">{c.price}<span aria-hidden="true">↗</span></Link>
+            <Link href={isSpanish ? "/es#commissions" : "/#commissions"} className="mt-5 inline-flex min-h-12 items-center gap-6 border-b border-ink text-xs uppercase tracking-[.14em] text-ink">{c.price}<span aria-hidden="true">↗</span></Link>
           </div>
           <div className="min-w-0"><InquiryForm initialDate={initialDate} locale={locale} /></div>
         </div>

@@ -10,14 +10,14 @@ export function Footer({ locale = "en" }: { locale?: "en" | "es" }) {
   const work = isSpanish
     ? [
         { label: "Portafolio", href: "/portfolio" },
-        { label: "Colecciones", href: "/es/paquetes" },
+        { label: "Encargos", href: "/es#commissions" },
         { label: "Video", href: "/es/videografo-de-quinceaneras" },
         { label: "La guía", href: "/es/blog" },
         { label: "Salones", href: "/es/salones" },
       ]
     : [
         { label: "Portfolio", href: "/portfolio" },
-        { label: "Collections", href: "/investment" },
+        { label: "Commissions", href: "/#commissions" },
         { label: "Film", href: "/quinceanera-videographer" },
         { label: "The guide", href: "/quinceanera-guide" },
         { label: "Venues", href: "/venues" },

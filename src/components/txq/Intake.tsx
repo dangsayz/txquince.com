@@ -5,7 +5,15 @@ import { forwardRef, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { getFirstTouch } from "@/components/Tracker";
-import { CONSULT_HOLD_DAYS, quoteCommission, type AddOnId, type TierId } from "@/lib/commission";
+import {
+  CONSULT_HOLD_DAYS,
+  CREW_ROLES,
+  addOnAllowed,
+  quoteCommission,
+  type AddOnId,
+  type Crew,
+  type TierId,
+} from "@/lib/commission";
 import {
   ADD_ONS,
   CITIES,
@@ -20,7 +28,7 @@ import {
   type Scope,
 } from "./data";
 import { isoDate, useAvailability, useSite } from "./state";
-import { useTween } from "./Commissions";
+import { CrewControl, useTween } from "./Commissions";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const MAX_MONTHS_AHEAD = 36;
@@ -45,6 +53,7 @@ type Draft = {
   scope: Scope;
   tier: TierId;
   addOns: AddOnId[];
+  crew?: Crew;
   name: string;
   honoree: string;
   email: string;
@@ -75,7 +84,7 @@ function longDate(iso: string, lang: Lang) {
 }
 
 export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
-  const { t, lang, tier, setTier, addOns, toggleAddOn, setAddOns } = useSite();
+  const { t, lang, tier, setTier, addOns, toggleAddOn, setAddOns, crew, setCrew } = useSite();
   const avail = useAvailability();
   const reduce = useReducedMotion();
 
@@ -113,11 +122,11 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
     titleRef.current?.focus({ preventScroll: true });
   }, [step, done, reduce]);
 
-  const total = estimate(tier, addOns);
+  const total = estimate(tier, addOns, crew);
   const shown = useTween(total);
   const language = prefLang ?? lang;
   const portrait = workById("w02");
-  const quote = quoteCommission(tier, addOns);
+  const quote = quoteCommission(tier, addOns, crew);
 
   // Returning from Stripe: restore the family's details and show the outcome.
   function arrive(params: URLSearchParams, status: string) {
@@ -130,6 +139,7 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
       setScope(draft.scope);
       setTier(draft.tier);
       setAddOns(draft.addOns);
+      if (draft.crew) setCrew(draft.crew);
       setName(draft.name);
       setHonoree(draft.honoree);
       setEmail(draft.email);
@@ -207,7 +217,7 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
     }
     setSending(true);
     setNotice(null);
-    const draft: Draft = { date, city, venue, scope, tier, addOns, name, honoree, email, phone, prefLang, note };
+    const draft: Draft = { date, city, venue, scope, tier, addOns, crew, name, honoree, email, phone, prefLang, note };
     try {
       const res = await fetch("/api/commission", {
         method: "POST",
@@ -220,6 +230,7 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
           scope,
           tier,
           add_ons: addOns,
+          extra_crew: crew,
           name: name.trim(),
           honoree: honoree.trim(),
           email: email.trim(),
@@ -534,12 +545,19 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
                           </div>
                         </fieldset>
 
+                        <div className="tq-field">
+                          <span className="tq-mono tq-legend">
+                            {t.crew.title} <span className="tq-muted">— {t.intake.optional}</span>
+                          </span>
+                          <CrewControl compact />
+                        </div>
+
                         <fieldset className="tq-field" style={{ border: 0, padding: 0, margin: 0 }}>
                           <legend className="tq-mono tq-legend" style={{ marginBottom: 10 }}>
                             {t.intake.addOns} <span className="tq-muted">— {t.intake.optional}</span>
                           </legend>
                           <div className="tq-choice tq-choice--check">
-                            {ADD_ONS.map((a) => (
+                            {ADD_ONS.filter((a) => addOnAllowed(tier, a.id)).map((a) => (
                               <label key={a.id}>
                                 <input
                                   type="checkbox"
@@ -756,10 +774,11 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
 /* ------------------------------------------------------------------ */
 
 function Summary({ date, city, total }: { date: string | null; city: string; total: number }) {
-  const { t, lang, tier, addOns } = useSite();
+  const { t, lang, tier, addOns, crew } = useSite();
   const x = tierById(tier);
   const extras = ADD_ONS.filter((a) => addOns.includes(a.id));
-  const q = quoteCommission(tier, addOns);
+  const q = quoteCommission(tier, addOns, crew);
+  const crewParts = CREW_ROLES.filter((r) => crew[r] > 0).map((r) => t.crew.line(crew[r], r));
   return (
     <dl className="tq-summary" aria-label={t.intake.summary}>
       <div>
@@ -773,7 +792,9 @@ function Summary({ date, city, total }: { date: string | null; city: string; tot
         <dt className="tq-mono">{t.intake.steps[1]}</dt>
         <dd>
           {x.numeral} {pick(lang, x.name)}
+          {crewParts.length > 0 && ` · ${crewParts.join(", ")}`}
           {extras.length > 0 && ` + ${extras.map((a) => pick(lang, a.name)).join(", ")}`}
+          <span className="tq-muted"> · {t.crew.total(q.crewSize)}</span>
         </dd>
       </div>
       <div>

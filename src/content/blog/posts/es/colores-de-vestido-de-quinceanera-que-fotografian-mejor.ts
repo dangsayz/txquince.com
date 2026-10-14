@@ -8,6 +8,7 @@ const post: BlogPost = {
   "category": "Photography & Film",
   "excerpt": "Los tonos joya saturados, el azul rey y el vino guardan su intensidad ante el lente; el blanco puro y el rosa pálido pelean con la luz bajo el sol fuerte. Un fotógrafo de quinceañeras en DFW sobre qué colores se fotografían mejor de verdad, y por qué.",
   "publishedAt": "2026-06-27",
+  "updatedAt": "2026-10-14",
   "readMinutes": 6,
   "lead": "Pregúntele a cualquier fotógrafo que trabaja y la respuesta se repite: los colores de vestido de quinceañera que mejor se fotografían son los tonos saturados y reales, los que guardan su intensidad en cualquier luz — tonos joya como el esmeralda y el zafiro, un rojo profundo o vino, el azul rey. Conservan el detalle en lugar de lavarse bajo la luz cálida del salón o quemarse al sol de Texas. Los más difíciles son los extremos pálidos — el blanco puro, el rosa más claro, el plateado pesado — preciosos en persona pero una pelea ante el lente. La respuesta más honesta, eso sí, es que el mejor color le va a su piel, a la luz de su salón y al fondo donde va a posar. Aquí le contamos cómo se ve cada color, desde un estudio de DFW que solo fotografía quinceañeras.",
   "content": [
@@ -115,7 +116,7 @@ const post: BlogPost = {
     {
       "type": "cta",
       "heading": "¿Está eligiendo el color y al fotógrafo al mismo tiempo?",
-      "body": "Es la misma decisión, tomada temprano. Vea qué incluye cada colección y luego revise si su fecha sigue libre.",
+      "body": "Es la misma decisión, tomada temprano. Vea qué incluye cada comisión y luego revise si su fecha sigue libre.",
       "href": "/check-your-date",
       "label": "Verifique su fecha"
     },
@@ -151,7 +152,7 @@ const post: BlogPost = {
     },
     {
       "type": "p",
-      "text": "Y decídalo temprano. El color y el fotógrafo se eligen en el mismo periodo — su sesión de save-the-date usa el vestido o uno de reemplazo, así que defina el color primero; muchas familias lo cierran de nueve a doce meses antes. Vea qué incluye cada colección — la sesión de save-the-date gratis empieza en la colección Essential — en nuestra [página de inversión](/investment), y luego [aparte su fecha](/reserve) una vez que el sábado es suyo."
+      "text": "Y decídalo temprano. El color y el fotógrafo se eligen en el mismo periodo — su sesión de retrato antes de la celebración usa el vestido o uno de reemplazo, así que defina el color primero; muchas familias lo cierran de nueve a doce meses antes. Vea qué incluye cada comisión — el Estudio de retrato y La producción completa incluyen una sesión editorial de retrato — en nuestras [comisiones](/es#commissions), y luego [aparte su fecha](/es#intake) una vez que el sábado es suyo."
     }
   ],
   "faqs": [
@@ -181,7 +182,7 @@ const post: BlogPost = {
     },
     {
       "q": "¿Con cuánta anticipación debo decidir el color del vestido?",
-      "a": "Más o menos al mismo tiempo que reserva a su fotógrafo — los dos son decisiones tempranas. Su sesión de save-the-date usa el vestido o uno de reemplazo, así que el color debe quedar definido antes de eso, y muchas familias lo cierran de nueve a doce meses antes. Decidir temprano también le da tiempo de probar la tela en luz real antes de comprar."
+      "a": "Más o menos al mismo tiempo que reserva a su fotógrafo — los dos son decisiones tempranas. Su sesión de retrato antes de la celebración usa el vestido o uno de reemplazo, así que el color debe quedar definido antes de eso, y muchas familias lo cierran de nueve a doce meses antes. Decidir temprano también le da tiempo de probar la tela en luz real antes de comprar."
     }
   ],
   "related": [

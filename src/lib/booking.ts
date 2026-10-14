@@ -100,6 +100,8 @@ export interface BookingRecord {
   status: string;
   deposit_amount_cents: number;
   currency: string;
+  /** Commission details for homepage bookings (tier, add-ons, language…). */
+  metadata?: Record<string, unknown> | null;
 }
 
 /** "YYYY-MM-DD" → "Saturday, May 9, 2026" (UTC-safe; no off-by-one). */

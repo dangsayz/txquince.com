@@ -10,6 +10,7 @@ const post: BlogPost = {
   excerpt:
     "Cómo elegir al fotógrafo indicado para los quince de su hija: los estilos explicados, lo que muestra un portafolio de verdad y lo que debe verificar para proteger su dinero y su fecha.",
   publishedAt: "2026-06-09",
+  updatedAt: "2026-10-14",
   readMinutes: 9,
   lead: "Los quince años de su hija pasan una sola vez. Las fotos y el video son lo que queda cuando se marchitan las flores y el vestido vuelve al clóset; por eso elegir al fotógrafo correcto pesa más que casi cualquier otra decisión de proveedor. Esta guía, pensada para Dallas–Fort Worth, le muestra cómo leer un portafolio, qué significan de verdad los estilos y exactamente qué debe verificar antes de entregar un anticipo.",
   content: [
@@ -74,14 +75,14 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Por eso nuestra colección Signature reúne a un fotógrafo y a un cinematógrafo como un solo equipo durante todo el día, con un adelanto de imágenes la misma semana. Si todavía está decidiendo si necesita video, lea [foto o video para una quinceañera](/es/blog/foto-o-video-quinceanera) antes de elegir: es el arrepentimiento más común después de la fiesta.",
+      text: "Por eso cada comisión de foto y video de TX Quince reúne a un director de foto y a un director de video como un solo equipo durante todo el día. Si todavía está decidiendo si necesita video, lea [foto o video para una quinceañera](/es/blog/foto-o-video-quinceanera) antes de elegir: es el arrepentimiento más común después de la fiesta.",
     },
     {
       type: "cta",
-      heading: "Vea las cuatro colecciones y qué incluye cada una",
-      body: "Moments, Essential, Signature y Legacy: precios fijos, todo lo que incluye cada paquete y una verificación de fecha en tiempo real, todo en una sola página.",
-      href: "/investment",
-      label: "Ver colecciones y precios",
+      heading: "Vea las cuatro comisiones y qué incluye cada una",
+      body: "Estudio de retrato, Cine y fotografía, La producción completa y Archivo editorial de varios días: precios publicados y todo lo que incluye cada una, en una sola página.",
+      href: "/es#commissions",
+      label: "Comparar comisiones",
     },
     { type: "h2", text: "Qué verificar antes de pagar un anticipo" },
     {
@@ -95,7 +96,7 @@ const post: BlogPost = {
         "Segundo fotógrafo: ¿viene incluido o es aparte? Dos cámaras significan que la misa y la entrada a la recepción quedan cubiertas, con ángulos opuestos que una sola persona no puede lograr.",
         "Número de fotos editadas: pregunte cuántas imágenes finales y editadas recibirá, no cuántas «tomará». Un número concreto (y un tiempo de entrega) le indica que ya lo han hecho antes.",
         "Derechos de uso e impresión: ¿recibe una galería privada con derecho a imprimir y compartir? No debería tener que volver a comprar las fotos de su propia hija.",
-        "Anticipo y qué aparta la fecha: cuánto reserva el día, si es reembolsable y cómo es el plan de pagos. La fecha no es suya hasta que estén el anticipo y el contrato firmado.",
+        "Anticipo y qué aparta la fecha: cuánto reserva el día, si es reembolsable y cuándo se paga el saldo. La fecha no es suya hasta que estén el anticipo y el contrato firmado.",
         "Respaldo y plan de contingencia: equipo de respaldo, doble tarjeta de memoria y qué pasa si su fotógrafo se enferma. Los profesionales tienen un plan; los aficionados, no.",
       ],
     },
@@ -119,7 +120,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Si ya tiene una fecha en mente, puede [verificar si está disponible](/check-your-date) en unos segundos, leer [cuándo reservar a su fotógrafo](/es/blog/cuando-reservar-fotografo-quinceanera-dfw) para no perder su sábado, o ir directo a [reservar su fecha](/reserve) cuando esté lista. Y si el costo es su siguiente pregunta, vea [cuánto cuesta de verdad un fotógrafo de quinceañera en DFW](/es/blog/cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth). Si busca a alguien por zona, también tenemos [fotógrafo de quinceañeras en Dallas](/es/fotografo-de-quinceaneras/dallas) y en [Fort Worth](/es/fotografo-de-quinceaneras/fort-worth).",
+      text: "Si ya tiene una fecha en mente, puede [verificar si está disponible](/check-your-date) en unos segundos, leer [cuándo reservar a su fotógrafo](/es/blog/cuando-reservar-fotografo-quinceanera-dfw) para no perder su sábado, o ir directo a [reservar su fecha](/es#intake) cuando esté lista. Y si el costo es su siguiente pregunta, vea [cuánto cuesta de verdad un fotógrafo de quinceañera en DFW](/es/blog/cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth). Si busca a alguien por zona, también tenemos [fotógrafo de quinceañeras en Dallas](/es/fotografo-de-quinceaneras/dallas) y en [Fort Worth](/es/fotografo-de-quinceaneras/fort-worth).",
     },
   ],
   faqs: [
@@ -129,11 +130,11 @@ const post: BlogPost = {
     },
     {
       q: "¿Cuántas fotos debo recibir?",
-      a: "Depende de la colección y de las horas de cobertura, pero un día de quince bien cubierto suele entregar varios cientos de imágenes finales y editadas, a menudo de 400 a más de 800 con cobertura de día completo. Lo importante es preguntar cuántas fotos editadas recibirá y en qué tiempo se las entregan, no cuántas «tomará» el fotógrafo.",
+      a: "Depende del paquete y de las horas de cobertura, pero un día de quince bien cubierto suele entregar varios cientos de imágenes finales y editadas, a menudo de 400 a más de 800 con cobertura de día completo. Lo importante es preguntar cuántas fotos editadas recibirá y en qué tiempo se las entregan, no cuántas «tomará» el fotógrafo.",
     },
     {
       q: "¿Conviene un solo equipo para foto y video?",
-      a: "Para una quinceañera, sí: un solo equipo casi siempre es mejor que dos proveedores por separado. Un equipo coordinado de foto y video planea la cobertura en conjunto para no estorbarse, le da un solo contrato y un solo punto de contacto, y entrega una galería y un video que combinan en estilo y color. En TX Quince, la colección Signature reúne a un fotógrafo y a un cinematógrafo como un solo equipo durante todo el día.",
+      a: "Para una quinceañera, sí: un solo equipo casi siempre es mejor que dos proveedores por separado. Un equipo coordinado de foto y video planea la cobertura en conjunto para no estorbarse, le da un solo contrato y un solo punto de contacto, y entrega una galería y un video que combinan en estilo y color. En TX Quince, cada comisión de foto y video reúne a un director de foto y a un director de video como un solo equipo durante todo el día.",
     },
     {
       q: "¿Cómo sé si un fotógrafo tiene experiencia en quinceañeras?",

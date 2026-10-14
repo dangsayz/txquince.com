@@ -104,13 +104,13 @@ const post: BlogPost = {
     {
       type: "cta",
       heading: "Cover both faces, not just one",
-      body: "Our two-artist and film collections are built for moments you can't restage — the cambio de zapatos and the vals among them. See what's included.",
-      href: "/investment",
-      label: "View collections & pricing",
+      body: "Our photo + film commissions are built for moments you can't restage — the cambio de zapatos and the vals among them. See what's included.",
+      href: "/#commissions",
+      label: "Compare commissions",
     },
     {
       type: "p",
-      text: "When you've got a date in mind, you can [check if it's open](/check-your-date) in a few seconds, or [reserve your date](/reserve) to lock in your photographer and today's pricing.",
+      text: "When you've got a date in mind, you can [check if it's open](/check-your-date) in a few seconds, or [reserve your date](/#intake) to lock in your photographer and today's pricing.",
     },
   ],
   faqs: [

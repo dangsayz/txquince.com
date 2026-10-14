@@ -3,7 +3,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { site } from "@/content/site";
-import { packages } from "@/content/packages";
+import { commissions, commissionsFromLabel, commissionLinks, retainerPercentLabel } from "@/content/commissions";
+import { PRICE_CEILING_USD, PRICE_FLOOR_USD, TIER_PRICE_USD, usd } from "@/lib/commission";
 import { locations, getLocation, nearbyLocations, cityGeo } from "@/content/locations";
 import { getCityContent } from "@/content/city-content";
 import { getPost } from "@/content/blog";
@@ -75,7 +76,7 @@ export async function generateMetadata({
   if (!loc) return {};
 
   const title = `${loc.city} Quinceañera Photographer, TX`;
-  const description = `Quinceañera photographer & videographer in ${loc.city}. Fixed-price collections from $1,800, complimentary Save-the-Date — la misa to the reception.`;
+  const description = `Luxury quinceañera photographer & videographer in ${loc.city}. Published commissions from ${commissionsFromLabel}, bilingual, la misa to the last dance. Check your date live.`;
   const url = `${site.url}/quinceanera-photographer/${loc.slug}`;
   const esUrl = `${site.url}/es/fotografo-de-quinceaneras/${loc.slug}`;
 
@@ -104,19 +105,19 @@ function sharedFaqs(city: string) {
   return [
     {
       q: `How much does a quinceañera photographer cost in ${city}?`,
-      a: `Our collections are fixed-price — $1,800 to $5,500 in ${city} — with the number shown up front. A complimentary Save-the-Date session is included from Essential upward. Payment plans are available.`,
+      a: `Every commission is published: a Portrait Study is ${usd(TIER_PRICE_USD.study)}, photo and film together start at ${usd(TIER_PRICE_USD.cinema)}, and The Full Production, the commission we recommend for most ${city} celebrations, is ${usd(TIER_PRICE_USD.production)}. The multi-day archive is ${usd(TIER_PRICE_USD.archive)}.`,
     },
     {
       q: "Do you offer video too, or only photography?",
-      a: "Both — I'm a quinceañera photographer and videographer. The Signature and Legacy collections cover the day with photo and film together, one team, so the misa, el vals, and the reception are captured as stills and cinematic video without two vendors getting in each other's way.",
+      a: "Both. From Cinema & Stills upward, a stills director and a motion director cover the day as one team, so the misa, el vals and the reception are captured as photographs and a 4K film without two vendors getting in each other's way.",
     },
     {
       q: "Do you charge a travel fee?",
       a: `No — ${city} is inside my Dallas–Fort Worth service area, so there's no travel fee. Coverage hours are the same whether your church and venue are close together or across town.`,
     },
     {
-      q: "Do you offer payment plans?",
-      a: "Yes. After we confirm your date and coverage, a collection deposit reserves it. You can discuss installments for the remaining balance before the celebration.",
+      q: "How do we reserve the date?",
+      a: `A retainer of ${retainerPercentLabel} of your commission holds the date and is applied in full; the balance is due 30 days before the celebration. Reserve online at secure checkout, or request a consultation first and we hold the date for 7 days.`,
     },
   ];
 }
@@ -137,7 +138,6 @@ export default async function CityPage({
   const cityVenues = venuesByCity(loc.slug);
   const guides = CITY_GUIDES.map(getPost).filter((p) => p !== undefined);
   const url = `${site.url}/quinceanera-photographer/${loc.slug}`;
-  const prices = packages.map((p) => p.price);
   // This city's OWN tagged work first; fall back to featured until it's tagged.
   const cityShots = await getImagesByCity(loc.slug, 6);
   const featured = cityShots.length ? cityShots : await getFeaturedImages(6);
@@ -180,18 +180,18 @@ export default async function CityPage({
           addressRegion: "TX",
           addressCountry: "US",
         },
-        priceRange: `$${Math.min(...prices)}–$${Math.max(...prices)}`,
+        priceRange: `${usd(PRICE_FLOOR_USD)}–${usd(PRICE_CEILING_USD)}`,
         knowsLanguage: ["en", "es"],
         hasOfferCatalog: {
           "@type": "OfferCatalog",
-          name: "Quinceañera Collections",
-          itemListElement: packages.map((p) => ({
+          name: "Quinceañera Commissions",
+          itemListElement: commissions.map((c) => ({
             "@type": "Offer",
-            name: p.name,
-            description: p.teaser,
-            price: String(p.price),
+            name: `${c.numeral} ${c.name.en}`,
+            description: c.summary.en,
+            price: String(c.price),
             priceCurrency: "USD",
-            url: `${site.url}/reserve?collection=${p.id}`,
+            url: `${site.url}${commissionLinks.en.compare}`,
           })),
         },
       },
@@ -304,53 +304,49 @@ export default async function CityPage({
         </section>
       ) : null}
 
-      {/* Compact collections — full detail lives on /investment */}
+      {/* Compact commissions — full matrix lives on the homepage */}
       <section className="bg-ivory">
         <div className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
           <Reveal>
             <h2 className="display-2 text-ink text-balance">
-              Fixed-price collections from {packages[0].priceLabel}
+              Published commissions from {commissionsFromLabel}
             </h2>
             <p className="mt-5 max-w-xl text-base leading-7 text-ink-soft">
-              Fixed pricing for your {loc.city} celebration. We confirm availability
-              and coverage before a deposit reserves the date. Signature brings two
-              storytellers together for photo and film across the full day.
+              Every price for your {loc.city} celebration is published. A {retainerPercentLabel} retainer
+              holds the date and is applied in full. The Full Production brings a stills
+              director, a motion director and a linen monograph to the whole day.
             </p>
           </Reveal>
 
           <div className="mt-10 border-t border-line">
-            {packages.map((p, i) => (
+            {commissions.map((c, i) => (
               <Reveal
-                key={p.id}
+                key={c.id}
                 delay={i * 60}
                 className="grid gap-y-4 border-b border-line py-8 md:grid-cols-12 md:gap-x-8"
               >
                 <div className="md:col-span-4">
                   <div className="flex items-baseline gap-3">
-                    <h3 className="font-display text-2xl text-ink">{p.name}</h3>
-                    {p.badge ? (
-                      <span className="text-sm font-medium text-ink-soft">
-                        {p.badge}
-                      </span>
+                    <h3 className="font-display text-2xl text-ink">
+                      {c.numeral} {c.name.en}
+                    </h3>
+                    {c.recommended ? (
+                      <span className="text-sm font-medium text-ink-soft">Recommended</span>
                     ) : null}
                   </div>
-                  <p className="mt-2 max-w-xs text-base leading-7 text-ink-soft">{p.tagline}</p>
-                  <p className="mt-4 font-display text-2xl text-ink">{p.priceLabel}</p>
+                  <p className="mt-2 max-w-xs text-base leading-7 text-ink-soft">{c.summary.en}</p>
+                  <p className="mt-4 font-display text-2xl text-ink">{c.priceLabel}</p>
                 </div>
                 <div className="md:col-span-7 md:col-start-6">
                   <ul className="grid gap-x-8 gap-y-2 text-base leading-7 text-ink-soft sm:grid-cols-2">
-                    {p.includes.slice(0, 4).map((item) => (
+                    {c.highlights.en.map((item) => (
                       <li key={item} className="border-b border-line/70 pb-2">
                         {item}
                       </li>
                     ))}
                   </ul>
-                  <CTAButton
-                    href={`/reserve?collection=${p.id}`}
-                    variant="text"
-                    className="mt-5 text-base"
-                  >
-                    Reserve {p.name}
+                  <CTAButton href={commissionLinks.en.book} variant="text" className="mt-5 text-base">
+                    Check your date
                   </CTAButton>
                 </div>
               </Reveal>
@@ -359,18 +355,18 @@ export default async function CityPage({
 
           <p className="mt-8 text-base">
             <Link
-              href="/investment"
+              href={commissionLinks.en.compare}
               className="inline-flex min-h-11 items-center text-ink underline underline-offset-2 hover:text-ink-soft"
             >
-              See everything included in each collection →
+              Compare every deliverable →
             </Link>
           </p>
           <p className="mt-3 text-base">
             <Link
-              href="/quinceanera-save-the-date"
+              href="/quinceanera-photoshoot"
               className="inline-flex min-h-11 items-center text-ink underline underline-offset-2 hover:text-ink-soft"
             >
-              Your Save-the-Date session is included free →
+              The pre-quince photoshoot →
             </Link>
           </p>
         </div>

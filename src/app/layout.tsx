@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { commissionsFromLabel } from "@/content/commissions";
 import { Lora, Montserrat, Public_Sans } from "next/font/google";
 import "./globals.css";
 import { site } from "@/content/site";
@@ -31,7 +32,7 @@ export const metadata: Metadata = {
     template: `%s · ${site.brand}`,
   },
   description:
-    "Quinceañera photography and film across Dallas–Fort Worth. Four clear collections from $1,800, with coverage for portraits, traditions, and the celebration.",
+    `Luxury quinceañera photography and film across Dallas–Fort Worth. Four published commissions from ${commissionsFromLabel}, from the portrait session to the last dance.`,
   applicationName: site.brand,
   alternates: { canonical: "/" },
   openGraph: {
@@ -41,13 +42,13 @@ export const metadata: Metadata = {
     url: site.url,
     title: `${site.brand} — Quinceañera Photography & Film`,
     description:
-      "Cinematic quinceañera photography and film across Dallas–Fort Worth. Collections from $1,800.",
+      `Editorial quinceañera photography and film across Dallas–Fort Worth. Commissions from ${commissionsFromLabel}.`,
   },
   twitter: {
     card: "summary_large_image",
     title: `${site.brand} — Quinceañera Photography & Film`,
     description:
-      "Cinematic quinceañera photography and film across Dallas–Fort Worth. Collections from $1,800.",
+      `Editorial quinceañera photography and film across Dallas–Fort Worth. Commissions from ${commissionsFromLabel}.`,
   },
   robots: { index: true, follow: true },
 };

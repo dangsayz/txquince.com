@@ -33,9 +33,9 @@ const mono = JetBrains_Mono({
   display: "swap",
 });
 
-export function TxqSite() {
+export function TxqSite({ urlLang = "en" }: { urlLang?: "en" | "es" }) {
   return (
-    <SiteProvider>
+    <SiteProvider urlLang={urlLang}>
       <AvailabilityProvider>
         <MotionConfig reducedMotion="user">
           <Shell />

@@ -4,6 +4,7 @@
  * Editorial-system layout; ImageObject JSON-LD; quiet CTA to book.
  */
 import type { Metadata } from "next";
+import { commissionsFromLabel } from "@/content/commissions";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { site } from "@/content/site";
@@ -37,7 +38,7 @@ export async function generateMetadata({
   if (!img || img.section !== category) return {};
 
   const copy = publicPhotoCopy(img, altPhraseFor(img.section));
-  const description = `${copy.description} — quinceañera photography by ${site.brand}, Dallas–Fort Worth. Collections from $1,800; reserve your date.`;
+  const description = `${copy.description} — quinceañera photography by ${site.brand}, Dallas–Fort Worth. Commissions from ${commissionsFromLabel}; check your date.`;
   const pagePath = imagePagePath(img.section, slug);
   const imgUrl = `${site.url}/api/img/${slug}`;
 
@@ -98,7 +99,7 @@ export default async function PhotoPage({
         copyrightNotice: `© ${site.brand}`,
         creditText: site.brand,
         license: `${site.url}/privacy`,
-        acquireLicensePage: `${site.url}/investment`,
+        acquireLicensePage: `${site.url}/#commissions`,
         ...(img.city ? { contentLocation: { "@type": "City", name: `${img.city}, TX` } } : { contentLocation: { "@type": "Place", name: "Dallas–Fort Worth, TX" } }),
       },
       {

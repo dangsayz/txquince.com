@@ -109,7 +109,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Si su corte ya está lista y conoce su fecha, puede [revisar si su fecha está libre](/check-your-date) en segundos, comparar qué incluye cada [colección](/investment) para foto y video, o de una vez [reservar su fecha](/reserve). Y si todavía está armando la línea de tiempo de la noche, el [cambio de zapatillas](/es/blog/el-cambio-de-zapatillas-quinceanera) es otro momento de la celebración que vale la pena entender antes de cerrar el programa.",
+      text: "Si su corte ya está lista y conoce su fecha, puede [revisar si su fecha está libre](/check-your-date) en segundos, comparar qué incluye cada [comisión](/es#commissions) para foto y video, o de una vez [reservar su fecha](/es#intake). Y si todavía está armando la línea de tiempo de la noche, el [cambio de zapatillas](/es/blog/el-cambio-de-zapatillas-quinceanera) es otro momento de la celebración que vale la pena entender antes de cerrar el programa.",
     },
   ],
   faqs: [

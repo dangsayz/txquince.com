@@ -37,7 +37,7 @@ export async function POST(request: Request) {
   const { data: booking, error } = await supabase
     .from("bookings")
     .select(
-      "id, name, email, phone, event_date, package, collection, notes, status, deposit_amount_cents, currency",
+      "id, name, email, phone, event_date, package, collection, notes, status, deposit_amount_cents, currency, metadata",
     )
     .eq("id", parsed.data.id)
     .single();
@@ -77,7 +77,7 @@ export async function POST(request: Request) {
       clientReferenceId: b.id,
       customerEmail: b.email,
       successUrl: `${siteUrl}/reserve/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancelUrl: `${siteUrl}/reserve?canceled=1`,
+      cancelUrl: `${siteUrl}/?commission=closed#intake`,
       expiresAt,
       metadata: {
         source: "txquince-admin",

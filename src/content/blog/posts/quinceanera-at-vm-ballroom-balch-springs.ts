@@ -1,4 +1,10 @@
 import type { BlogPost } from "@/content/blog";
+import { TIER_PRICE_USD, RETAINER, usd } from "@/lib/commission";
+
+const study = usd(TIER_PRICE_USD.study);
+const cinema = usd(TIER_PRICE_USD.cinema);
+const production = usd(TIER_PRICE_USD.production);
+const archive = usd(TIER_PRICE_USD.archive);
 
 const post: BlogPost = {
   "slug": "quinceanera-at-vm-ballroom-balch-springs",
@@ -7,6 +13,7 @@ const post: BlogPost = {
   "category": "Locations",
   "excerpt": "VM Ballroom in Balch Springs, from guest capacity and venue pricing to photography tips and tour questions.",
   "publishedAt": "2026-07-02",
+  "updatedAt": "2026-10-14",
   "readMinutes": 7,
   "lead": "VM Ballroom is a quinceañera and wedding venue at 11221 Lake June Rd in Balch Springs, on the southeast side of Dallas, with seating for up to 250 guests. We've photographed quinceañeras there more than once, so this guide covers what families actually want to know before booking — what the venue is, how its pricing works, what to ask on a tour, and how to plan the day so the room photographs at its best.",
   "content": [
@@ -54,7 +61,7 @@ const post: BlogPost = {
     },
     {
       "type": "p",
-      "text": "Whatever VM Ballroom quotes you, photography and film are a separate, fixed line. Our collections are $1,800, $2,500, $3,900, and $5,500 — see what's in each collection — and payment plans split any of them into monthly amounts. Venue budgeting is the moving target; coverage doesn't have to be."
+      "text": `Whatever VM Ballroom quotes you, photography and film are a separate, fixed line. Our [commissions](/#commissions) are published at ${study}, ${cinema}, ${production}, and ${archive}, and a retainer of ${Math.round(RETAINER.rate * 100)}% holds the date, with the balance due ${RETAINER.balanceDueDays} days before. Venue budgeting is the moving target; coverage doesn't have to be.`
     },
     {
       "type": "h2",

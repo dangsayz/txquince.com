@@ -39,12 +39,30 @@ Researched October 2026. Prices live in one place, `src/lib/commission.ts`. Chan
 | Same-day reception edit | $2,400 | No DFW price published. An editor's day plus crew is roughly $1.5–3K |
 | Super 8mm film roll | $1,800 | Luxury flat add-on $1.5–3.5K |
 | Fine art parent albums (pair) | $1,100 | $400–600 each |
+| Day-of coordinator (event commissions) | $1,800 | Not researched. A placeholder to confirm against local planners. |
+
+**Expandable crew.** On event commissions (II–IV), families can add directors one at a time. Each one is either a photographer or a videographer, interchangeably, until the crew reaches **5 people on the day**:
+
+| Commission | Crew included | Can add up to |
+|---|---|---|
+| I. Portrait Study | 1 | — (single-director session) |
+| II. Cinema & Stills | 2 | 3 |
+| III. The Full Production | 3 | 2 |
+| IV. Multi-Day Editorial Archive | 4 | 1 |
+
+Each added director is **$1,200**. Dallas second shooters run $500–900, and premium studios charge $900–1,200. All three numbers (`EXTRA_DIRECTOR_USD`, `MAX_CREW`, `BASE_CREW`) are in `src/lib/commission.ts`. The server re-prices the crew and caps it at the limit, the same way it re-prices everything else.
 
 **Retainer:** 30% of the commission, minimum $750, rounded to $50, applied in full. The balance is due 30 days before the celebration. Texas norms are 25–50% with the balance 14–30 days out. Local quince studios take a flat $500, which is too small to signal commitment at these prices.
 
-**Before launch:**
-- The **old pages still sell $1,800–$5,500**: `/investment`, `/es/paquetes`, `/reserve` and the `BUDGET_OPTIONS` in `src/lib/inquiry.ts`. Retire them, redirect them, or reprice them so the two price lists never appear side by side.
-- The site-wide structured data (`src/components/JsonLd.tsx`) now reads the new price book.
+**Old pricing retired (done):**
+- **Permanent redirects:**
+  - `/investment` and `/payment-plans` go to `/#commissions`.
+  - `/reserve` goes to `/#intake`.
+  - `/es/paquetes` and `/es/planes-de-pago` go to `/es#commissions`.
+  - `/quinceanera-save-the-date` goes to `/quinceanera-photoshoot` (Spanish to `/es/sesion-de-fotos-quinceanera`).
+- **`/es`** is now the new site, rendered in Spanish.
+- **New prices everywhere else:** city pages (now including Frisco, Plano and McKinney), hubs, videographer pages, the guide, venues, photo pages, all 41 blog posts, the inquiry budget options, emails and structured data. Prices are read from the price book wherever possible.
+- **Old booking flow removed:** `/api/booking`, `/api/reserve-request` and their forms are deleted, replaced by `/api/commission`. `/reserve/success` stays so old Stripe receipts still resolve.
 - These prices are 2–3× the current business. Expect fewer, larger bookings, and that portfolio, delivery quality and the client experience will have to visibly match the number.
 
 ---
@@ -83,6 +101,7 @@ Cost in DFW · whether photo and film come together · how many hours of coverag
 - Service + OfferCatalog structured data with the four commissions. The site-wide ProfessionalService `priceRange` now reads $2,500–$18,500.
 
 ### Next, in priority order
+_(Done: the `/quinceanera-photoshoot` + `/es/sesion-de-fotos-quinceanera` pages, Frisco, Plano and McKinney, and repricing `/investment` (now a redirect).)_
 1. **Google Business Profile.** It decides "near me" and the local pack. Link it to the hub page, add the new commissions as Products, and ask every client for a review that names the city and venue.
 2. Build `/quinceanera-photoshoot` and the Spanish mirror.
 3. Add Frisco, Plano and McKinney city pages, carrying the new pricing.

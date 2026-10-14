@@ -165,7 +165,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Cuando esté lista para asegurar su día alrededor de la iglesia, puede [reservar su fecha](/reserve) con nosotros, y nosotros nos encargamos de la coordinación con la parroquia para que la misa siga siendo exactamente lo que debe ser: suya.",
+      text: "Cuando esté lista para asegurar su día alrededor de la iglesia, puede [reservar su fecha](/es#intake) con nosotros, y nosotros nos encargamos de la coordinación con la parroquia para que la misa siga siendo exactamente lo que debe ser: suya.",
     },
   ],
   faqs: [

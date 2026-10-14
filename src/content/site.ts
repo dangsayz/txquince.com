@@ -64,7 +64,7 @@ export const site = {
 
   nav: [
     { href: "/portfolio", label: "Portfolio" },
-    { href: "/investment", label: "Investment" },
+    { href: "/#commissions", label: "Commissions" },
     { href: "/quinceanera-photographer", label: "Areas Served" },
     { href: "/quinceanera-guide", label: "Guide" },
     { href: "/about", label: "About" },
@@ -91,7 +91,7 @@ export const site = {
    */
   cta: {
     label: "Reserve Your Date",
-    href: "/reserve",
+    href: "/#intake",
   },
   secondaryCta: {
     label: "Questions first? Inquire",

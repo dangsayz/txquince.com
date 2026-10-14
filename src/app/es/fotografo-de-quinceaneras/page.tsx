@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { commissionsFromLabel } from "@/content/commissions";
 import Link from "next/link";
 import Image from "next/image";
 import { site } from "@/content/site";
@@ -10,7 +11,7 @@ export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Fotógrafo de Quinceañeras — Dallas–Fort Worth",
-  description: "Fotografía y video de quinceañera en todo Dallas–Fort Worth — Grand Prairie, Irving, Garland, Dallas, Fort Worth, Arlington, Mansfield y Farmers Branch. Colecciones a precio fijo desde $1,800.",
+  description: `Fotografía y cine de quinceañera de lujo en todo Dallas–Fort Worth — Dallas, Fort Worth, Frisco, Plano, McKinney, Arlington y más. Encargos publicados desde ${commissionsFromLabel}.`,
   alternates: {
     canonical: "/es/fotografo-de-quinceaneras",
     languages: {
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Fotógrafo de Quinceañeras — Dallas–Fort Worth · " + site.brand,
-    description: "Fotografía y video de quinceañera en todo el metroplex de DFW. Colecciones a precio fijo desde $1,800.",
+    description: `Fotografía y cine de quinceañera en todo el metroplex de DFW. Encargos publicados desde ${commissionsFromLabel}.`,
     url: site.url + "/es/fotografo-de-quinceaneras",
     locale: "es_MX",
   },
@@ -90,7 +91,7 @@ export default async function LocationsHubEs() {
       <section className="bg-white" aria-labelledby="coverage-title">
         <div className="mx-auto grid max-w-[88rem] gap-10 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-[minmax(0,0.55fr)_minmax(0,0.45fr)] lg:gap-20 lg:px-12 lg:py-24">
           <div><p className="text-xs uppercase tracking-[0.18em] text-ink-soft">Más allá del mapa</p><h2 id="coverage-title" className="mt-4 max-w-[20ch] font-display text-[clamp(1.875rem,3vw,3rem)] font-normal leading-tight text-ink">Del primer retrato al último baile.</h2></div>
-          <div><p className="max-w-lg text-base leading-7 text-ink-soft">Planeamos alrededor de tu iglesia, el lugar de retratos y el salón. Explora el trabajo y las cuatro colecciones; luego dinos qué fecha tienes en mente.</p><div className="mt-8 flex flex-wrap gap-x-8 gap-y-3"><Link href="/portfolio" className="inline-flex min-h-11 items-center gap-3 border-b border-ink text-base text-ink">Ver fotografías ↗</Link><Link href="/es/paquetes" className="inline-flex min-h-11 items-center gap-3 border-b border-ink text-base text-ink">Ver colecciones ↗</Link><Link href="/es/consulta" className="inline-flex min-h-11 items-center gap-3 border-b border-ink text-base text-ink">Consultar fecha ↗</Link></div></div>
+          <div><p className="max-w-lg text-base leading-7 text-ink-soft">Planeamos alrededor de tu iglesia, el lugar de retratos y el salón. Explora el trabajo y los cuatro encargos; luego dinos qué fecha tienes en mente.</p><div className="mt-8 flex flex-wrap gap-x-8 gap-y-3"><Link href="/portfolio" className="inline-flex min-h-11 items-center gap-3 border-b border-ink text-base text-ink">Ver fotografías ↗</Link><Link href="/es#commissions" className="inline-flex min-h-11 items-center gap-3 border-b border-ink text-base text-ink">Ver encargos ↗</Link><Link href="/es/consulta" className="inline-flex min-h-11 items-center gap-3 border-b border-ink text-base text-ink">Consultar fecha ↗</Link></div></div>
         </div>
       </section>
     </>

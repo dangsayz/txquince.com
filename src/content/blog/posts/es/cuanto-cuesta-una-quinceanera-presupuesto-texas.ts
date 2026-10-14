@@ -1,4 +1,11 @@
 import type { BlogPost } from "@/content/blog";
+import { TIER_PRICE_USD, RETAINER, usd } from "@/lib/commission";
+
+const study = usd(TIER_PRICE_USD.study);
+const cinema = usd(TIER_PRICE_USD.cinema);
+const production = usd(TIER_PRICE_USD.production);
+const archive = usd(TIER_PRICE_USD.archive);
+const retainerPct = `${Math.round(RETAINER.rate * 100)}%`;
 
 const post: BlogPost = {
   slug: "cuanto-cuesta-una-quinceanera-presupuesto-texas",
@@ -12,6 +19,7 @@ const post: BlogPost = {
   excerpt:
     "El rango total real en Texas, un desglose por rubros y por qué la foto y el video son lo único que queda después del día — sin estadísticas inventadas.",
   publishedAt: "2026-06-09",
+  updatedAt: "2026-10-14",
   readMinutes: 8,
   lang: "es",
   lead: "¿Cuánto cuesta de verdad una quinceañera en Texas? Ni la versión de revista ni la cifra baja que le suelta un vendedor — el rango real, rubro por rubro. Tener esa cifra clara antes de apartar al primer proveedor le permite planear con calma en lugar de ir reaccionando sobre la marcha.",
@@ -19,7 +27,7 @@ const post: BlogPost = {
     { type: "h2", text: "El rango real en Texas" },
     {
       type: "p",
-      text: "En Texas, una quinceañera suele costar entre $5,000 y $20,000 o más, y el rango es así de amplio porque dos familias pueden hacer fiestas muy distintas bajo la misma palabra. Una celebración en casa para 60 invitados no se parece en nada a un salón de 300 personas con grupo en vivo. La mayoría de las familias del área de Dallas–Fort Worth con las que platicamos están planeando entre $8,000 y $15,000, y la cifra la deciden casi por completo dos cosas: a cuánta gente invita y dónde la recibe.",
+      text: "En Dallas–Fort Worth, la mayoría de las quinceañeras cuestan entre $12,000 y $25,000, y las celebraciones de lujo van de $25,000 a $50,000 o más; el rango es así de amplio porque dos familias pueden hacer fiestas muy distintas bajo la misma palabra. Una celebración en casa para 60 invitados no se parece en nada a un salón de 300 personas con grupo en vivo o a un salón de hotel. Donde sea que caiga su familia, la cifra la deciden casi por completo dos cosas: a cuánta gente invita y dónde la recibe.",
     },
     {
       type: "callout",
@@ -37,7 +45,7 @@ const post: BlogPost = {
         "Comida / banquete — alrededor de un tercio (cerca del 30 %) del presupuesto, y el rubro que más crece con el número de invitados. Cada plato de más es dinero real.",
         "Vestido, vestuario de la corte y accesorios — 8 a 12 %. El vestido, las zapatillas, la corona y, además, vestir a chambelanes y damas.",
         "DJ / entretenimiento — cerca del 12 %. DJ, sonido, a veces grupo en vivo, animador o un coreógrafo para el vals y el baile sorpresa.",
-        "Fotografía y video — 10 a 15 %. El equipo que convierte una noche en algo que puede guardar para siempre.",
+        "Fotografía y video — 8 a 15 %. El equipo que convierte una noche en algo que puede guardar para siempre.",
         "Pastel y postres — 3 a 5 %. El tradicional pastel de pisos y, si lo desea, una mesa de postres.",
         "Decoración y flores — 8 a 12 %. Centros de mesa, la mesa principal, la ceremonia, globos y manteles.",
         "Invitaciones y papelería — 2 a 4 %. Invitaciones, confirmaciones, libro de firmas y programas.",
@@ -58,7 +66,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Una colección de foto y video es otro proveedor y otro oficio: los artistas que acompañan a su hija durante todo el día y le devuelven la historia completa. En [TX Quince](/investment) esas colecciones son fijas: $1,800, $2,500, $3,900 y $5,500. Un paquete de salón de $3,000 y una colección de video de $3,900 son dos compras distintas que solo se parecen en el número — no deje que una hoja de cotización las revuelva.",
+      text: `Una comisión de foto y video es otro proveedor y otro oficio: los artistas que acompañan a su hija durante todo el día y le devuelven la historia completa. En [TX Quince](/es#commissions) esas comisiones están publicadas: ${study} (solo foto), ${cinema}, ${production} y ${archive}. Un “paquete” de salón y una comisión de foto y video pueden sonar a la misma clase de compra — no lo son, así que no deje que una hoja de cotización las revuelva.`,
     },
     { type: "h2", text: "Por qué la foto y el video merecen su parte" },
     {
@@ -71,14 +79,14 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Por eso vale la pena proteger ese 10 a 15 % aunque el presupuesto se apriete. Y por eso, si tiene que elegir, las familias lamentan mucho más haber recortado la cobertura que haber pedido un pastel más chico. Puede ver cómo se ve una cobertura completa en nuestro [portafolio](/portfolio), y si está decidiendo entre uno y otro, [foto o video](/es/blog/foto-o-video-quinceanera) sopesa qué guarda cada uno y qué le cuesta.",
+      text: "Por eso vale la pena proteger ese 8 a 15 % aunque el presupuesto se apriete. Y por eso, si tiene que elegir, las familias lamentan mucho más haber recortado la cobertura que haber pedido un pastel más chico. Puede ver cómo se ve una cobertura completa en nuestro [portafolio](/portfolio), y si está decidiendo entre uno y otro, [foto o video](/es/blog/foto-o-video-quinceanera) sopesa qué guarda cada uno y qué le cuesta.",
     },
     {
       type: "cta",
-      heading: "Vea exactamente qué incluye cada colección",
-      body: "Precios fijos, inclusiones completas, depósitos y planes de pago — todo publicado en una página, sin formulario de cotización.",
-      href: "/investment",
-      label: "Ver colecciones y precios",
+      heading: "Vea exactamente qué incluye cada comisión",
+      body: "Precios publicados, inclusiones completas y cómo funciona el anticipo — todo en una página, sin formulario de cotización.",
+      href: "/es#commissions",
+      label: "Comparar comisiones",
     },
     {
       type: "h2",
@@ -114,7 +122,7 @@ const post: BlogPost = {
       items: [
         "Defina primero el total que de verdad puede pagar — y luego el número de invitados a esa medida, no al revés.",
         "Aparte un tercio para la comida y de 15 a 20 % para el salón antes que nada; esos dos anclan todo lo demás.",
-        "Proteja un 10 a 15 % para foto y video y no lo toque para decoración — es el único rubro que se queda.",
+        "Proteja un 8 a 15 % para foto y video y no lo toque para decoración — es el único rubro que se queda.",
         "Deje un fondo para imprevistos real del 10 % y haga de cuenta que no existe hasta que lo necesite.",
         "Reserve temprano a los proveedores que dependen de la fecha (salón y fotógrafo); los mejores sábados se van con 9 a 12 meses de anticipación, y apartar la fecha suele congelar el precio.",
       ],
@@ -126,7 +134,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Es común que se apadrine el pastel, el vestido, la corona y la última muñeca, las flores, el DJ, los gastos de la iglesia, los recuerditos e incluso la fotografía. Asigne a cada padrino un rubro, anótelo, y un total de $12,000 se reparte en una docena de partes manejables. Para la cobertura en particular, nuestros [planes de pago](/es/blog/planes-de-pago-fotografia-quinceanera-dfw) facilitan que un padrino apadrine el depósito mientras usted cubre el saldo poco a poco.",
+      text: `Es común que se apadrine el pastel, el vestido, la corona y la última muñeca, las flores, el DJ, los gastos de la iglesia, los recuerditos e incluso la fotografía. Asigne a cada padrino un rubro, anótelo, y un total de $20,000 se reparte en una docena de partes manejables. Para la cobertura en particular, [cómo funciona nuestro anticipo](/es/blog/planes-de-pago-fotografia-quinceanera-dfw) facilita que un padrino apadrine el anticipo del ${retainerPct} mientras usted junta el saldo, que se paga ${RETAINER.balanceDueDays} días antes de la celebración.`,
     },
     {
       type: "callout",
@@ -135,17 +143,17 @@ const post: BlogPost = {
     { type: "h2", text: "Su siguiente paso" },
     {
       type: "p",
-      text: "Una vez que conoce su número, la fecha es lo que lo vuelve real — los sábados de primavera y otoño se llenan primero en todo el metroplex. Puede [verificar si su fecha está disponible](/check-your-date) en unos segundos, conocer la cobertura de foto y video en [Dallas](/es/fotografo-de-quinceaneras/dallas) o en [Fort Worth](/es/fotografo-de-quinceaneras/fort-worth), o [reservar su fecha](/reserve) cuando esté lista para apartarla.",
+      text: "Una vez que conoce su número, la fecha es lo que lo vuelve real — los sábados de primavera y otoño se llenan primero en todo el metroplex. Puede [verificar si su fecha está disponible](/check-your-date) en unos segundos, conocer la cobertura de foto y video en [Dallas](/es/fotografo-de-quinceaneras/dallas) o en [Fort Worth](/es/fotografo-de-quinceaneras/fort-worth), o [reservar su fecha](/es#intake) cuando esté lista para apartarla.",
     },
   ],
   faqs: [
     {
       q: "¿Cuánto cuesta una quinceañera en Texas?",
-      a: "La mayoría de las quinceañeras en Texas cuestan entre $5,000 y $20,000 o más, y en Dallas–Fort Worth lo típico ronda entre $8,000 y $15,000. Los dos factores que más pesan son el número de invitados y el salón — comida y salón juntos suelen ser cerca de la mitad del total.",
+      a: "La mayoría de las quinceañeras en Dallas–Fort Worth cuestan entre $12,000 y $25,000, y las de lujo van de $25,000 a $50,000 o más. Los dos factores que más pesan son el número de invitados y el salón — comida y salón juntos suelen ser cerca de la mitad del total.",
     },
     {
       q: "¿Qué porcentaje del presupuesto va a la fotografía?",
-      a: "Calcule entre el 10 y el 15 % del presupuesto total para fotografía y video juntos. Vale la pena proteger esa parte porque la foto y el video son lo único que sobrevive al día — todo lo demás se renta por una noche.",
+      a: "Calcule entre el 8 y el 15 % del presupuesto total para fotografía y video juntos. Vale la pena proteger esa parte porque la foto y el video son lo único que sobrevive al día — todo lo demás se renta por una noche.",
     },
     {
       q: "¿Cómo puedo ahorrar en una quinceañera?",
@@ -157,7 +165,7 @@ const post: BlogPost = {
     },
     {
       q: "¿Los paquetes del salón son lo mismo que las colecciones de fotografía?",
-      a: "No. Los paquetes de salón todo incluido (a menudo de $2,000 a $4,000 en DFW) le compran el lugar, las mesas y a veces el banquete o el DJ. Una colección de foto y video es otro proveedor y otro oficio — en TX Quince son fijas: $1,800, $2,500, $3,900 y $5,500. Precios parecidos, compras totalmente distintas.",
+      a: `No. Los paquetes de salón todo incluido (a menudo de $2,000 a $4,000 en DFW) le compran el lugar, las mesas y a veces el banquete o el DJ. Una comisión de foto y video es otro proveedor y otro oficio — en TX Quince están publicadas en ${study}, ${cinema}, ${production} y ${archive}. “Paquetes” que suenan parecido, compras totalmente distintas.`,
     },
   ],
   related: [

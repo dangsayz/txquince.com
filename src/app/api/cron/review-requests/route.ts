@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
   const sixtyDaysAgo = new Date(Date.now() - 60 * 86_400_000).toISOString().slice(0, 10);
   const { data, error } = await supabase
     .from("bookings")
-    .select("id, name, email, phone, event_date, package, collection, notes, status, deposit_amount_cents, currency")
+    .select("id, name, email, phone, event_date, package, collection, notes, status, deposit_amount_cents, currency, metadata")
     .eq("status", "paid")
     .is("review_request_sent_at", null)
     .lte("event_date", thirtyDaysAgo)

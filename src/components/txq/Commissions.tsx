@@ -14,6 +14,67 @@ import {
   type Lang,
 } from "./data";
 import { useSite } from "./state";
+import {
+  BASE_CREW,
+  CREW_ROLES,
+  EXTRA_DIRECTOR_USD,
+  addOnAllowed,
+  maxExtraCrew,
+  quoteCommission,
+  type CrewRole,
+} from "@/lib/commission";
+
+/** Interchangeable crew: add photographers or videographers up to the day's maximum. */
+export function CrewControl({ compact = false }: { compact?: boolean }) {
+  const { t, tier, crew, setCrew } = useSite();
+  const cap = maxExtraCrew(tier);
+  const added = crew.photo + crew.motion;
+  const size = BASE_CREW[tier] + added;
+
+  if (cap === 0 && BASE_CREW[tier] === 1) {
+    return <p className="tq-crew__note">{t.crew.studyNote}</p>;
+  }
+  const step = (role: CrewRole, d: number) =>
+    setCrew({ ...crew, [role]: Math.max(0, crew[role] + d) });
+
+  return (
+    <div className={`tq-crew${compact ? " tq-crew--compact" : ""}`} role="group" aria-label={t.crew.title}>
+      {CREW_ROLES.map((role) => (
+        <div key={role} className="tq-crew__row">
+          <span className="tq-crew__label">
+            {role === "photo" ? t.crew.photo : t.crew.motion}
+            <span className="tq-mono tq-muted"> +{money(EXTRA_DIRECTOR_USD)}</span>
+          </span>
+          <span className="tq-stepper-ctl">
+            <button
+              type="button"
+              aria-label={t.crew.remove(t.crew.roleOne[role])}
+              disabled={crew[role] === 0}
+              onClick={() => step(role, -1)}
+            >
+              −
+            </button>
+            <output className="tq-nums" aria-live="polite">
+              {crew[role]}
+            </output>
+            <button
+              type="button"
+              aria-label={t.crew.add(t.crew.roleOne[role])}
+              disabled={added >= cap}
+              onClick={() => step(role, 1)}
+            >
+              +
+            </button>
+          </span>
+        </div>
+      ))}
+      <p className="tq-crew__total tq-mono">
+        {t.crew.total(size)} · {t.crew.included(BASE_CREW[tier])}
+        {added >= cap ? <span className="tq-muted"> · {t.crew.full}</span> : null}
+      </p>
+    </div>
+  );
+}
 
 /** Tween a number toward its new value (snaps under reduced motion). */
 export function useTween(value: number) {
@@ -39,8 +100,8 @@ export function useTween(value: number) {
 }
 
 export function Commissions() {
-  const { t, lang, tier, addOns, toggleAddOn } = useSite();
-  const total = estimate(tier, addOns);
+  const { t, lang, tier, addOns, toggleAddOn, crew } = useSite();
+  const total = estimate(tier, addOns, crew);
   const shown = useTween(total);
   const current = tierById(tier);
 
@@ -141,15 +202,22 @@ export function Commissions() {
           <div className="tq-tailor__left">
             <h3 className="tq-display">{t.commissions.tailor}</h3>
             <p>{t.commissions.tailorDek}</p>
+            <div className="tq-crew-block">
+              <h4 className="tq-mono">{t.crew.title}</h4>
+              <p className="tq-crew__dek">{t.crew.dek}</p>
+              <CrewControl />
+            </div>
             <div className="tq-addons">
               {ADD_ONS.map((a) => {
-                const on = addOns.includes(a.id);
+                const allowed = addOnAllowed(tier, a.id);
+                const on = allowed && addOns.includes(a.id);
                 return (
                   <button
                     key={a.id}
                     type="button"
                     className="tq-addon"
                     aria-pressed={on}
+                    disabled={!allowed}
                     onClick={() => toggleAddOn(a.id)}
                   >
                     <span className="tq-addon__name">{pick(lang, a.name)}</span>
@@ -159,7 +227,10 @@ export function Commissions() {
                         {on ? "✓" : ""}
                       </span>
                     </span>
-                    <span className="tq-addon__note">{pick(lang, a.note)}</span>
+                    <span className="tq-addon__note">
+                      {pick(lang, a.note)}
+                      {!allowed ? <em className="tq-mono"> · {t.crew.eventOnly}</em> : null}
+                    </span>
                   </button>
                 );
               })}
@@ -181,6 +252,12 @@ export function Commissions() {
                 </dt>
                 <dd>{money(current.price)}</dd>
               </div>
+              {CREW_ROLES.filter((r) => crew[r] > 0).map((r) => (
+                <div key={r}>
+                  <dt>{t.crew.line(crew[r], r)}</dt>
+                  <dd>+{money(crew[r] * EXTRA_DIRECTOR_USD)}</dd>
+                </div>
+              ))}
               {ADD_ONS.filter((a) => addOns.includes(a.id)).map((a) => (
                 <div key={a.id}>
                   <dt>{pick(lang, a.name)}</dt>
@@ -188,8 +265,12 @@ export function Commissions() {
                 </div>
               ))}
               <div>
+                <dt>{t.crew.total(quoteCommission(tier, addOns, crew).crewSize)}</dt>
+                <dd />
+              </div>
+              <div>
                 <dt>{t.commissions.retainer}</dt>
-                <dd>{money(retainer(tier, addOns))}</dd>
+                <dd>{money(retainer(tier, addOns, crew))}</dd>
               </div>
             </dl>
             <a href="#intake" className="tq-btn tq-btn--lg tq-btn--block">

@@ -3,7 +3,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { site } from "@/content/site";
-import { packages } from "@/content/packages";
+import { commissions, commissionsFromLabel, commissionLinks, retainerPercentLabel } from "@/content/commissions";
+import { PRICE_CEILING_USD, PRICE_FLOOR_USD, TIER_PRICE_USD, usd } from "@/lib/commission";
 import { locations, getLocation, nearbyLocations, cityGeo } from "@/content/locations";
 import { getCityContent } from "@/content/city-content";
 import { getEsPost } from "@/content/blog";
@@ -37,7 +38,7 @@ export async function generateMetadata({
   if (!loc) return {};
 
   const title = `Fotógrafo de Quinceañeras en ${loc.city}, TX`;
-  const description = `Fotografía y video de quinceañeras en ${loc.city}. Cuatro colecciones a precio fijo desde $1,800; sesión Save-the-Date incluida desde Essential.`;
+  const description = `Fotógrafo y videógrafo de quinceañeras de lujo en ${loc.city}. Encargos publicados desde ${commissionsFromLabel}, en español, de la misa al último baile. Consulta tu fecha en vivo.`;
   const esUrl = `${site.url}/es/fotografo-de-quinceaneras/${loc.slug}`;
   const enUrl = `${site.url}/quinceanera-photographer/${loc.slug}`;
 
@@ -62,60 +63,23 @@ export async function generateMetadata({
   };
 }
 
-/** Spanish collection blurbs (packages.ts copy is English-only). */
-const TIER_ES: Record<string, string> = {
-  moments: "Foto o video, un artista, cinco horas enfocadas en los momentos clave.",
-  essential: "Foto o video, un artista, los momentos clave del día.",
-  signature:
-    "Foto + video, dos narradores, tu día completo con un adelanto la misma semana.",
-  legacy:
-    "Todo lo de Signature, más video de larga duración, dron y un álbum premium.",
-};
-
-/** Spanish top-4 inclusions per tier (packages.includes is English-only; hand-authored, not auto-translated). */
-const INCLUDES_ES: Record<string, string[]> = {
-  moments: [
-    "Foto O video — un servicio, un artista",
-    "5 horas de cobertura — de la misa a la recepción temprana",
-    "Galería editada O un video de momentos",
-  ],
-  essential: [
-    "Foto O video — un servicio, un artista",
-    "Hasta 6 horas de cobertura (iglesia + recepción)",
-    "Galería editada O un video de momentos",
-    "Sesión Save-the-Date sin costo",
-  ],
-  signature: [
-    "Foto + video — dos narradores, todo el día",
-    "Hasta 7 horas de cobertura del día completo",
-    "Video de momentos + galería completa editada",
-    "Adelanto la misma semana",
-  ],
-  legacy: [
-    "Todo lo de Signature",
-    "Video cinematográfico de larga duración (1–3 horas)",
-    "Cobertura con dron / aérea",
-    "Hasta 8 horas de cobertura y una segunda sesión de retratos",
-  ],
-};
-
 function sharedFaqsEs(city: string) {
   return [
     {
       q: `¿Cuánto cuesta un fotógrafo de quinceañera en ${city}?`,
-      a: `Las cuatro colecciones de foto y video para ${city} tienen precios publicados de $1,800 a $5,500. La sesión Save-the-Date está incluida desde Essential; Moments ofrece cinco horas de foto o video. Puedes consultar tu fecha sin pagar.`,
+      a: `Todos los encargos están publicados: un Estudio de retrato cuesta ${usd(TIER_PRICE_USD.study)}, foto y cine juntos desde ${usd(TIER_PRICE_USD.cinema)}, y La producción completa, el encargo que recomendamos para la mayoría de las celebraciones en ${city}, cuesta ${usd(TIER_PRICE_USD.production)}. El archivo de varios días cuesta ${usd(TIER_PRICE_USD.archive)}. Puedes consultar tu fecha sin pagar.`,
     },
     {
       q: "¿También ofreces video, o solo fotografía?",
-      a: "Los dos — soy fotógrafo y videógrafo de quinceañeras. Las colecciones Signature y Legacy cubren el día con foto y video juntos, un solo equipo, para que la misa, el vals y la recepción queden en fotos y en video cinematográfico sin que dos proveedores se estorben.",
+      a: "Los dos. Desde Cine y fotografía, un director de foto y un director de cine cubren el día como un solo equipo, para que la misa, el vals y la recepción queden en fotografías y en una película 4K sin que dos proveedores se estorben.",
     },
     {
       q: "¿Cobras por traslado?",
       a: `No — ${city} está dentro de mi área de Dallas–Fort Worth, así que no hay cargo por traslado. Las horas de cobertura son las mismas, esté tu iglesia y salón cerca o al otro lado de la ciudad.`,
     },
     {
-      q: "¿Tienen planes de pago?",
-      a: "Sí. Podemos revisar un plan de pagos contigo. Primero confirmamos la fecha y la cobertura; después enviamos el enlace seguro para el depósito, que se aplica al saldo de la colección.",
+      q: "¿Cómo apartamos la fecha?",
+      a: `Un anticipo del ${retainerPercentLabel} del encargo aparta la fecha y se aplica completo; el saldo se liquida 30 días antes de la celebración. Puedes pagarlo en línea con pago seguro, o pedir primero una consulta y apartamos la fecha 7 días.`,
     },
   ];
 }
@@ -135,7 +99,6 @@ export default async function CityPageEs({
   const cityVenues = venuesByCity(loc.slug);
   const guides = ES_CITY_GUIDES.map(getEsPost).filter((p) => p !== undefined);
   const esUrl = `${site.url}/es/fotografo-de-quinceaneras/${loc.slug}`;
-  const prices = packages.map((p) => p.price);
   // Las fotos propias de esta ciudad primero; si no hay, se usan las destacadas.
   const cityShots = await getImagesByCity(loc.slug, 6);
   const featured = cityShots.length ? cityShots : await getFeaturedImages(6);
@@ -176,18 +139,18 @@ export default async function CityPageEs({
           addressRegion: "TX",
           addressCountry: "US",
         },
-        priceRange: `$${Math.min(...prices)}–$${Math.max(...prices)}`,
+        priceRange: `${usd(PRICE_FLOOR_USD)}–${usd(PRICE_CEILING_USD)}`,
         knowsLanguage: ["es", "en"],
         hasOfferCatalog: {
           "@type": "OfferCatalog",
-          name: "Colecciones de Quinceañera",
-          itemListElement: packages.map((p) => ({
+          name: "Encargos de quinceañera",
+          itemListElement: commissions.map((c) => ({
             "@type": "Offer",
-            name: p.name,
-            description: TIER_ES[p.id],
-            price: String(p.price),
+            name: `${c.numeral} ${c.name.es}`,
+            description: c.summary.es,
+            price: String(c.price),
             priceCurrency: "USD",
-            url: `${site.url}/es/consulta`,
+            url: `${site.url}${commissionLinks.es.compare}`,
           })),
         },
       },
@@ -280,16 +243,16 @@ export default async function CityPageEs({
       <section className="bg-ivory" aria-labelledby="city-collections-title">
         <div className="mx-auto max-w-[88rem] px-5 py-16 sm:px-8 sm:py-20 lg:px-12">
           <div className="grid gap-5 border-b border-line pb-8 md:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)] md:items-end">
-            <div><p className="text-xs uppercase tracking-[0.18em] text-ink-soft">Foto y video / {loc.city}</p><h2 id="city-collections-title" className="mt-3 font-display text-[clamp(1.75rem,2.7vw,2.5rem)] font-normal leading-tight text-ink">Colecciones desde {packages[0].priceLabel}.</h2></div>
-            <p className="max-w-md text-base leading-7 text-ink-soft">Cuatro opciones con precios publicados. Moments cubre cinco horas; Signature reúne foto y video. Confirmamos disponibilidad antes de pedir un depósito.</p>
+            <div><p className="text-xs uppercase tracking-[0.18em] text-ink-soft">Foto y video / {loc.city}</p><h2 id="city-collections-title" className="mt-3 font-display text-[clamp(1.75rem,2.7vw,2.5rem)] font-normal leading-tight text-ink">Encargos desde {commissionsFromLabel}.</h2></div>
+            <p className="max-w-md text-base leading-7 text-ink-soft">Cuatro encargos con precios publicados. Un anticipo del {retainerPercentLabel} aparta la fecha y se aplica completo; La producción completa reúne foto, cine y una monografía de lino.</p>
           </div>
           <div className="divide-y divide-line">
-            {packages.map((p, i) => <article key={p.id} className="grid gap-5 py-8 md:grid-cols-[minmax(0,0.42fr)_minmax(0,0.58fr)] md:gap-10">
-              <div><p className="text-xs uppercase tracking-[0.16em] text-ink-soft">0{i + 1} / 04</p><h3 className="mt-3 font-display text-[clamp(1.55rem,2.3vw,2.1rem)] font-normal text-ink">{p.name}</h3><p className="mt-2 max-w-sm text-base leading-7 text-ink-soft">{TIER_ES[p.id]}</p></div>
-              <div><div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 border-b border-line pb-4"><p className="font-display text-2xl font-normal text-ink">{p.priceLabel}</p><p className="text-base text-ink-soft">Depósito: {p.depositLabel}</p></div><ul className="mt-4 grid gap-x-6 gap-y-2 text-base leading-7 text-ink-soft sm:grid-cols-2">{(INCLUDES_ES[p.id] ?? p.includes).map((item) => <li key={item} className="flex gap-2"><span aria-hidden="true">—</span><span>{item}</span></li>)}</ul><Link href="/es/consulta" className="mt-5 inline-flex min-h-12 items-center gap-5 border-b border-ink text-base text-ink">Consultar {p.name} <span aria-hidden="true">↗</span></Link></div>
+            {commissions.map((c, i) => <article key={c.id} className="grid gap-5 py-8 md:grid-cols-[minmax(0,0.42fr)_minmax(0,0.58fr)] md:gap-10">
+              <div><p className="text-xs uppercase tracking-[0.16em] text-ink-soft">0{i + 1} / 04{c.recommended ? " · Recomendado" : ""}</p><h3 className="mt-3 font-display text-[clamp(1.55rem,2.3vw,2.1rem)] font-normal text-ink">{c.numeral} {c.name.es}</h3><p className="mt-2 max-w-sm text-base leading-7 text-ink-soft">{c.summary.es}</p></div>
+              <div><div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 border-b border-line pb-4"><p className="font-display text-2xl font-normal text-ink">{c.priceLabel}</p><p className="text-base text-ink-soft">Anticipo: {c.retainerLabel}</p></div><ul className="mt-4 grid gap-x-6 gap-y-2 text-base leading-7 text-ink-soft sm:grid-cols-2">{c.highlights.es.map((item) => <li key={item} className="flex gap-2"><span aria-hidden="true">—</span><span>{item}</span></li>)}</ul><Link href={commissionLinks.es.book} className="mt-5 inline-flex min-h-12 items-center gap-5 border-b border-ink text-base text-ink">Consultar tu fecha <span aria-hidden="true">↗</span></Link></div>
             </article>)}
           </div>
-          <div className="flex flex-wrap gap-x-8 gap-y-2 border-t border-line pt-6 text-base"><Link href="/es/paquetes" className="inline-flex min-h-11 items-center text-ink underline underline-offset-4">Comparar todas las colecciones ↗</Link><Link href="/es/save-the-date-quinceanera" className="inline-flex min-h-11 items-center text-ink underline underline-offset-4">Sobre la sesión Save-the-Date ↗</Link></div>
+          <div className="flex flex-wrap gap-x-8 gap-y-2 border-t border-line pt-6 text-base"><Link href={commissionLinks.es.compare} className="inline-flex min-h-11 items-center text-ink underline underline-offset-4">Comparar todos los encargos ↗</Link><Link href="/es/sesion-de-fotos-quinceanera" className="inline-flex min-h-11 items-center text-ink underline underline-offset-4">Sesión de fotos pre-quince ↗</Link></div>
         </div>
       </section>
 
@@ -304,7 +267,7 @@ export default async function CityPageEs({
             },
             {
               t: "Confirmamos la disponibilidad",
-              b: "Revisamos los detalles contigo antes de enviarte un enlace para el depósito de la colección elegida.",
+              b: "Aparta en línea con el anticipo, o pide primero una consulta y apartamos la fecha 7 días mientras platicamos.",
             },
             {
               t: "Planeamos la cobertura",

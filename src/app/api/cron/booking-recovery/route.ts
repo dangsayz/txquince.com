@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
   const { data, error } = await supabase
     .from("bookings")
     .select(
-      "id, name, email, phone, event_date, package, collection, notes, status, deposit_amount_cents, currency",
+      "id, name, email, phone, event_date, package, collection, notes, status, deposit_amount_cents, currency, metadata",
     )
     .eq("status", "expired")
     .is("recovery_sent_at", null)

@@ -7,7 +7,7 @@ import { Wordmark } from "@/components/Wordmark";
 
 const english = [
   { href: "/portfolio", label: "The work" },
-  { href: "/investment", label: "Collections" },
+  { href: "/#commissions", label: "Commissions" },
   { href: "/quinceanera-guide", label: "The guide" },
   { href: "/quinceanera-photographer", label: "Areas served" },
   { href: "/about", label: "About" },
@@ -15,7 +15,7 @@ const english = [
 
 const spanish = [
   { href: "/portfolio", label: "Portafolio" },
-  { href: "/es/paquetes", label: "Colecciones" },
+  { href: "/es#commissions", label: "Encargos" },
   { href: "/es/blog", label: "La guía" },
   { href: "/es/fotografo-de-quinceaneras", label: "Áreas" },
   { href: "/about", label: "Nosotros" },
