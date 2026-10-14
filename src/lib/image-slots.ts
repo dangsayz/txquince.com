@@ -79,8 +79,9 @@ const SIZES = {
 };
 
 function fallbackPhoto(url: string) {
-  const p = portfolioFallback.find((x) => x.url === url) ?? portfolioFallback[0];
-  return { defaultSrc: p.url, defaultWidth: p.width, defaultHeight: p.height };
+  const p = portfolioFallback.find((x) => x.url === url);
+  // A /public photo outside the fallback list keeps its own URL (size unknown).
+  return p ? { defaultSrc: p.url, defaultWidth: p.width, defaultHeight: p.height } : { defaultSrc: url };
 }
 
 /** Spanish alt text for the bundled fallback photographs. */
