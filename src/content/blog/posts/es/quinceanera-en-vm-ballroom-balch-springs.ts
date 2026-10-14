@@ -1,10 +1,10 @@
 import type { BlogPost } from "@/content/blog";
-import { TIER_PRICE_USD, RETAINER, usd } from "@/lib/commission";
+import { PT } from "@/lib/price-text";
 
-const study = usd(TIER_PRICE_USD.study);
-const cinema = usd(TIER_PRICE_USD.cinema);
-const production = usd(TIER_PRICE_USD.production);
-const archive = usd(TIER_PRICE_USD.archive);
+const study = PT.price.study;
+const cinema = PT.price.cinema;
+const production = PT.price.production;
+const archive = PT.price.archive;
 
 const post: BlogPost = {
   "slug": "quinceanera-en-vm-ballroom-balch-springs",
@@ -62,7 +62,7 @@ const post: BlogPost = {
     },
     {
       "type": "p",
-      "text": `Le cotice lo que le cotice VM Ballroom, la fotografía y el video son una línea aparte y fija. Nuestros [paquetes](/es#commissions) están publicados en ${study}, ${cinema}, ${production} y ${archive}, y un depósito del ${Math.round(RETAINER.rate * 100)}% asegura la fecha una vez aprobado su contrato, y el resto se paga ${RETAINER.balanceDueHours} horas antes del evento. El presupuesto del salón es el que se mueve; la cobertura no tiene por qué moverse.`
+      "text": `Le cotice lo que le cotice VM Ballroom, la fotografía y el video son una línea aparte y fija. Nuestros [paquetes](/es#commissions) están publicados en ${study}, ${cinema}, ${production} y ${archive}, y un depósito del ${PT.deposit.percent} asegura la fecha una vez aprobado su contrato, y el resto se paga ${PT.balanceDays} días antes del evento. El presupuesto del salón es el que se mueve; la cobertura no tiene por qué moverse.`
     },
     {
       "type": "h2",

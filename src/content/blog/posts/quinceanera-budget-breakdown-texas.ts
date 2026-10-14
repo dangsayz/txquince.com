@@ -1,11 +1,11 @@
 import type { BlogPost } from "@/content/blog";
-import { TIER_PRICE_USD, RETAINER, usd } from "@/lib/commission";
+import { PT } from "@/lib/price-text";
 
-const study = usd(TIER_PRICE_USD.study);
-const cinema = usd(TIER_PRICE_USD.cinema);
-const production = usd(TIER_PRICE_USD.production);
-const archive = usd(TIER_PRICE_USD.archive);
-const retainerPct = `${Math.round(RETAINER.rate * 100)}%`;
+const study = PT.price.study;
+const cinema = PT.price.cinema;
+const production = PT.price.production;
+const archive = PT.price.archive;
+const retainerPct = PT.deposit.percent;
 
 const post: BlogPost = {
   slug: "quinceanera-budget-breakdown-texas",
@@ -124,7 +124,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Common sponsorships include the cake, the dress, the tiara and last doll, the flowers, the DJ, the church ceremony fees, the favors, even the photography. Assign each padrino one line, write it down, and a $20,000 total can split into a dozen manageable pieces. For coverage specifically, [how our deposit works](/blog/quinceanera-payment-plans-deposits-dfw) makes it simple for a padrino to sponsor the ${retainerPct} deposit while you set aside the rest, due ${RETAINER.balanceDueHours} hours before the event.`,
+      text: `Common sponsorships include the cake, the dress, the tiara and last doll, the flowers, the DJ, the church ceremony fees, the favors, even the photography. Assign each padrino one line, write it down, and a $20,000 total can split into a dozen manageable pieces. For coverage specifically, [how our deposit works](/blog/quinceanera-payment-plans-deposits-dfw) makes it simple for a padrino to sponsor the ${retainerPct} deposit while you set aside the rest, due ${PT.balanceDays} days before the event.`,
     },
     {
       type: "callout",

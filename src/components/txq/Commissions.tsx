@@ -1,36 +1,20 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { animate, useReducedMotion } from "motion/react";
-import {
-  ADD_ONS,
-  MATRIX,
-  TIERS,
-  estimate,
-  money,
-  retainer,
-  pick,
-  tierById,
-  type Lang,
-} from "./data";
-import { useSite } from "./state";
-import {
-  BASE_CREW,
-  BASE_HOURS,
-  COORDINATOR_INCLUDED,
-  CREW_ROLES,
-  EXTRA_HOUR_USD,
-  MAX_HOURS,
-  canShift,
-  type CrewRole,
-} from "@/lib/commission";
+import { ADD_ONS, TIERS, matrixFor, money, pick, tierById, type Lang } from "./data";
+import { useQuote, useSite } from "./state";
+import { usePriceBook } from "@/components/PriceBookProvider";
+import { BASE_CREW, COORDINATOR_INCLUDED, CREW_ROLES, canShift, type CrewRole } from "@/lib/commission";
 
-/** Hours on the day: included hours, plus extra hours one at a time up to MAX_HOURS. */
+/** Hours on the day: included hours, plus extra hours one at a time up to the package's max. */
 export function HoursControl() {
   const { t, tier, hours, setHours } = useSite();
-  const base = BASE_HOURS[tier];
-  if (base >= MAX_HOURS) {
-    return <p className="tq-crew__note">{t.hours.full(base)}</p>;
+  const { book, maxHours, canAddHours } = usePriceBook();
+  const base = book.packages[tier].hours;
+  const max = maxHours(tier);
+  if (!canAddHours(tier)) {
+    return <p className="tq-crew__note">{tier === "archive" ? t.hours.full(base) : t.hours.value(base)}</p>;
   }
   return (
     <div className="tq-crew" role="group" aria-label={t.hours.title}>
@@ -43,14 +27,14 @@ export function HoursControl() {
           <output className="tq-nums" aria-live="polite">
             {hours}
           </output>
-          <button type="button" aria-label={t.hours.more} disabled={hours >= MAX_HOURS} onClick={() => setHours(hours + 1)}>
+          <button type="button" aria-label={t.hours.more} disabled={hours >= max} onClick={() => setHours(hours + 1)}>
             +
           </button>
         </span>
       </div>
       <p className="tq-crew__total tq-mono">
         {t.hours.value(hours)}
-        {hours > base ? <span> · +{money((hours - base) * EXTRA_HOUR_USD[tier])}</span> : null}
+        {hours > base ? <span> · +{money((hours - base) * book.packages[tier].extraHour)}</span> : null}
       </p>
     </div>
   );
@@ -133,9 +117,12 @@ export function useTween(value: number) {
 
 export function Commissions() {
   const { t, lang, tier, addOns, toggleAddOn, crew, hours } = useSite();
-  const total = estimate(tier, addOns, hours);
+  const { book, maxHours, canAddHours } = usePriceBook();
+  const q = useQuote();
+  const total = q.totalUsd;
   const shown = useTween(total);
   const current = tierById(tier);
+  const MATRIX = useMemo(() => matrixFor(book), [book]);
 
   return (
     <section id="commissions" className="tq-section" aria-labelledby="tq-comm-title">
@@ -236,8 +223,8 @@ export function Commissions() {
             <p>{t.commissions.tailorDek}</p>
             <div className="tq-crew-block">
               <h4 className="tq-mono">{t.hours.title}</h4>
-              {BASE_HOURS[tier] < MAX_HOURS ? (
-                <p className="tq-crew__dek">{t.hours.dek(BASE_HOURS[tier], money(EXTRA_HOUR_USD[tier]), MAX_HOURS)}</p>
+              {canAddHours(tier) ? (
+                <p className="tq-crew__dek">{t.hours.dek(q.baseHours, money(book.packages[tier].extraHour), maxHours(tier))}</p>
               ) : null}
               <HoursControl />
             </div>
@@ -259,7 +246,7 @@ export function Commissions() {
                   >
                     <span className="tq-addon__name">{pick(lang, a.name)}</span>
                     <span className="tq-addon__state tq-mono">
-                      +{money(a.price)}
+                      +{money(book.addOns[a.id])}
                       <span className="tq-addon__box" aria-hidden>
                         {on ? "✓" : ""}
                       </span>
@@ -284,22 +271,22 @@ export function Commissions() {
                 <dt>
                   {current.numeral} {pick(lang, current.name)}
                 </dt>
-                <dd>{money(current.price)}</dd>
+                <dd>{money(q.tierUsd)}</dd>
               </div>
               <div>
                 <dt>{t.hours.label}</dt>
                 <dd>{t.hours.value(hours)}</dd>
               </div>
-              {hours > BASE_HOURS[tier] ? (
+              {hours > q.baseHours ? (
                 <div>
-                  <dt>{t.hours.extra(hours - BASE_HOURS[tier])}</dt>
-                  <dd>+{money((hours - BASE_HOURS[tier]) * EXTRA_HOUR_USD[tier])}</dd>
+                  <dt>{t.hours.extra(hours - q.baseHours)}</dt>
+                  <dd>+{money(q.extraHoursUsd)}</dd>
                 </div>
               ) : null}
               {ADD_ONS.filter((a) => addOns.includes(a.id)).map((a) => (
                 <div key={a.id}>
                   <dt>{pick(lang, a.name)}</dt>
-                  <dd>+{money(a.price)}</dd>
+                  <dd>+{money(book.addOns[a.id])}</dd>
                 </div>
               ))}
               <div>
@@ -314,7 +301,7 @@ export function Commissions() {
               ) : null}
               <div>
                 <dt>{t.commissions.retainer}</dt>
-                <dd>{money(retainer(tier, addOns, hours))}</dd>
+                <dd>{money(q.retainerUsd)}</dd>
               </div>
             </dl>
             <a href="#intake" className="tq-btn tq-btn--lg tq-btn--block">
@@ -330,6 +317,7 @@ export function Commissions() {
 
 function TierHead({ id, lang }: { id: (typeof TIERS)[number]["id"]; lang: Lang }) {
   const { t, tier, setTier } = useSite();
+  const { book } = usePriceBook();
   const x = tierById(id);
   const sel = tier === id;
   return (
@@ -341,7 +329,7 @@ function TierHead({ id, lang }: { id: (typeof TIERS)[number]["id"]; lang: Lang }
         <span className="tq-mono tq-muted" style={{ display: "block", marginBottom: 4 }}>
           {t.commissions.investment}
         </span>
-        <span className="tq-display tq-tierhead__price tq-nums">{money(x.price)}</span>
+        <span className="tq-display tq-tierhead__price tq-nums">{money(book.packages[id].price)}</span>
       </span>
       <button
         type="button"

@@ -4,7 +4,8 @@
  * Editorial-system layout; ImageObject JSON-LD; quiet CTA to book.
  */
 import type { Metadata } from "next";
-import { commissionsFromLabel } from "@/content/commissions";
+import { priceFloor, usd } from "@/lib/commission";
+import { getPriceBook } from "@/lib/pricing";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { site } from "@/content/site";
@@ -39,7 +40,7 @@ export async function generateMetadata({
   if (!img || img.section !== category) return {};
 
   const copy = publicPhotoCopy(img, altPhraseFor(img.section));
-  const description = `${copy.description} — quinceañera photography by ${site.brand}, Dallas–Fort Worth. Packages from ${commissionsFromLabel}; check your date.`;
+  const description = `${copy.description} — quinceañera photography by ${site.brand}, Dallas–Fort Worth. Packages from ${usd(priceFloor(await getPriceBook()))}; check your date.`;
   const pagePath = imagePagePath(img.section, slug);
   const imgUrl = `${site.url}/api/img/${slug}`;
 

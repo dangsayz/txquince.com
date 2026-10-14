@@ -6,27 +6,26 @@
  * the booking at signing time (with AGREEMENT_VERSION), so editing this file
  * later never changes an agreement someone already signed.
  *
- * Pure and isomorphic: the intake renders it for review, the API re-builds it
- * server-side from the re-priced quote (never trusting client text), and the
- * admin, email and pay pages show the stored snapshot.
+ * Pure and isomorphic: the intake renders it for review with the price book
+ * the page was served, the API re-builds it server-side from its own live
+ * book (never trusting client text), and the admin, email and pay pages show
+ * the stored snapshot — including the deposit %, balance-due days and hold
+ * days it was signed under, so a later price change never touches it.
  */
 import {
-  BASE_HOURS,
   COORDINATOR_INCLUDED,
-  EXTRA_HOUR_USD,
-  RETAINER,
-  CONSULT_HOLD_DAYS,
   normalizeCrew,
   quoteCommission,
   usd,
   type AddOnId,
   type Crew,
+  type PriceBook,
   type TierId,
 } from "@/lib/commission";
-import { ADD_ONS, MATRIX, TIERS, type Lang } from "@/components/txq/data";
+import { ADD_ONS, matrixFor, TIERS, type Lang } from "@/components/txq/data";
 
 /** Bump when the wording below changes; stored with every signature. */
-export const AGREEMENT_VERSION = "2026-10-14";
+export const AGREEMENT_VERSION = "2026-10-14.2";
 
 export type AgreementInput = {
   lang: Lang;
@@ -55,6 +54,10 @@ export type Agreement = {
   totalUsd: number;
   depositUsd: number;
   balanceUsd: number;
+  /** Terms it was signed under (absent on agreements signed before 2026-10-14.2: 25% / 48 hours / 7 days). */
+  depositPercent?: number;
+  balanceDueDays?: number;
+  holdDays?: number;
 };
 
 const T = {
@@ -83,9 +86,9 @@ const T = {
     pkgPrice: "Package",
     extraHours: (n: number) => `Extra ${n === 1 ? "hour" : "hours"} (${n})`,
     total: "Total",
-    deposit: (amt: string) =>
-      `Deposit: ${amt} (25%). You pay it after we approve this agreement. It locks in your date and goes toward your total.`,
-    balance: (amt: string, hrs: number) => `The rest: ${amt}, due ${hrs} hours before the event.`,
+    deposit: (amt: string, pct: number) =>
+      `Deposit: ${amt} (${pct}%). You pay it after we approve this agreement. It locks in your date and goes toward your total.`,
+    balance: (amt: string, days: number) => `The rest: ${amt}, due ${days} ${days === 1 ? "day" : "days"} before the event.`,
     tax: "Texas sales tax, and travel outside Dallas–Fort Worth, Houston, Austin and San Antonio, are quoted separately if they apply.",
     how: "How booking works",
     howLines: (days: number) => [
@@ -133,9 +136,9 @@ const T = {
     pkgPrice: "Paquete",
     extraHours: (n: number) => `${n === 1 ? "Hora extra" : "Horas extra"} (${n})`,
     total: "Total",
-    deposit: (amt: string) =>
-      `Depósito: ${amt} (25%). Lo pagas después de que aprobemos este contrato. Aparta tu fecha y se abona a tu total.`,
-    balance: (amt: string, hrs: number) => `El resto: ${amt}, se paga ${hrs} horas antes del evento.`,
+    deposit: (amt: string, pct: number) =>
+      `Depósito: ${amt} (${pct}%). Lo pagas después de que aprobemos este contrato. Aparta tu fecha y se abona a tu total.`,
+    balance: (amt: string, days: number) => `El resto: ${amt}, se paga ${days} ${days === 1 ? "día" : "días"} antes del evento.`,
     tax: "El impuesto de Texas, y los viajes fuera de Dallas–Fort Worth, Houston, Austin y San Antonio, se cotizan aparte si aplican.",
     how: "Cómo funciona la reservación",
     howLines: (days: number) => [
@@ -171,16 +174,16 @@ function longDate(iso: string, lang: Lang) {
   }).format(d);
 }
 
-export function buildAgreement(input: AgreementInput): Agreement {
+export function buildAgreement(input: AgreementInput, book: PriceBook): Agreement {
   const t = T[input.lang];
-  const q = quoteCommission(input.tier, input.addOns, input.hours);
+  const q = quoteCommission(book, input.tier, input.addOns, input.hours);
   const crew = normalizeCrew(input.tier, input.crew);
   const tier = TIERS.find((x) => x.id === input.tier)!;
-  const base = BASE_HOURS[input.tier];
+  const base = q.baseHours;
   const extraHours = q.hours - base;
   const extras = ADD_ONS.filter((a) => input.addOns.includes(a.id));
 
-  const includes = MATRIX.flatMap((g) =>
+  const includes = matrixFor(book).flatMap((g) =>
     g.rows
       .filter((r) => r.values[input.tier] && !/hours|horas|team|equipo|coordinat/i.test(r.label.en))
       .map((r) => `${r.label[input.lang]}: ${r.values[input.tier]![input.lang]}`),
@@ -207,21 +210,21 @@ export function buildAgreement(input: AgreementInput): Agreement {
     { title: t.includes, lines: includes },
     {
       title: t.extras,
-      lines: extras.length ? extras.map((a) => `${a.name[input.lang]} — ${usd(a.price)}`) : [t.noExtras],
+      lines: extras.length ? extras.map((a) => `${a.name[input.lang]} — ${usd(book.addOns[a.id])}`) : [t.noExtras],
     },
     {
       title: t.money,
       lines: [
         `${t.pkgPrice}: ${usd(q.tierUsd)}`,
-        ...(extraHours > 0 ? [`${t.extraHours(extraHours)}: ${usd(extraHours * EXTRA_HOUR_USD[input.tier])}`] : []),
+        ...(extraHours > 0 ? [`${t.extraHours(extraHours)}: ${usd(q.extraHoursUsd)}`] : []),
         ...(extras.length ? [`${t.extras}: ${usd(q.addOnsUsd)}`] : []),
         `${t.total}: ${usd(q.totalUsd)}`,
-        t.deposit(usd(q.retainerUsd)),
-        t.balance(usd(q.balanceUsd), RETAINER.balanceDueHours),
+        t.deposit(usd(q.retainerUsd), q.depositPercent),
+        t.balance(usd(q.balanceUsd), book.balanceDueDays),
         t.tax,
       ],
     },
-    { title: t.how, lines: [...t.howLines(CONSULT_HOLD_DAYS)] },
+    { title: t.how, lines: [...t.howLines(book.holdDays)] },
     { title: t.changes, lines: [...t.changesLines] },
     { title: t.media, lines: [...t.mediaLines(input.sharePermission)] },
   ];
@@ -235,7 +238,27 @@ export function buildAgreement(input: AgreementInput): Agreement {
     totalUsd: q.totalUsd,
     depositUsd: q.retainerUsd,
     balanceUsd: q.balanceUsd,
+    depositPercent: q.depositPercent,
+    balanceDueDays: book.balanceDueDays,
+    holdDays: book.holdDays,
   };
+}
+
+/**
+ * When the rest is due, in the words of the agreement the family SIGNED —
+ * never the current book. Older agreements predate the days rule and said 48 hours.
+ */
+export function signedBalanceDue(a: Pick<Agreement, "balanceDueDays">, lang: Lang): string {
+  if (typeof a.balanceDueDays === "number") {
+    const d = a.balanceDueDays;
+    return lang === "es" ? `${d} ${d === 1 ? "día" : "días"}` : `${d} ${d === 1 ? "day" : "days"}`;
+  }
+  return lang === "es" ? "48 horas" : "48 hours";
+}
+
+/** Deposit percent the family signed for (older agreements: 25%). */
+export function signedDepositPercent(a: Pick<Agreement, "depositPercent">): number {
+  return typeof a.depositPercent === "number" ? a.depositPercent : 25;
 }
 
 /** Plain-text rendering for emails and the stored snapshot. */

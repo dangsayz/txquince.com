@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import { commissionLinks, commissions } from "@/content/commissions";
-import { MATRIX } from "@/components/txq/data";
+import { commissionLinks, commissionsFor } from "@/content/commissions";
+import { matrixFor } from "@/components/txq/data";
+import { getPriceBook } from "@/lib/pricing";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { getFeaturedImages, getVideos } from "@/lib/content-db";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
@@ -65,10 +66,11 @@ const copy = {
 } as const;
 
 /** Video deliverables per package, straight from the homepage matrix. */
-const motionRows = MATRIX.find((g) => g.id === "motion")!.rows;
-const filmCommissions = commissions.filter((c) => c.id !== "study");
 
 export async function VideographerPage({ locale }: { locale: "en" | "es" }) {
+  const priceBook = await getPriceBook();
+  const motionRows = matrixFor(priceBook).find((g) => g.id === "motion")!.rows;
+  const filmCommissions = commissionsFor(priceBook).filter((c) => c.id !== "study");
   const c = copy[locale];
   const book = commissionLinks[locale].book;
   const [videos, images] = await Promise.all([getVideos(), getFeaturedImages(1)]);

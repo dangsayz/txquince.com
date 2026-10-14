@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { site } from "@/content/site";
 import { getAllEsPosts } from "@/content/blog";
+import { getPriceBook } from "@/lib/pricing";
+import { fillDeep } from "@/lib/price-text";
 import { portfolioFallback } from "@/content/portfolio-fallback";
 import { getFeaturedImages, getPageHero } from "@/lib/content-db";
 import { BlogIndexView, type BlogThumb } from "@/components/BlogContent";
@@ -37,7 +39,7 @@ export const metadata: Metadata = {
 };
 
 export default async function EsBlogIndexPage() {
-  const posts = getAllEsPosts();
+  const posts = fillDeep(getAllEsPosts(), await getPriceBook());
 
   const imgs = await getFeaturedImages(24);
   const toThumb = (image: (typeof imgs)[number]): BlogThumb => ({

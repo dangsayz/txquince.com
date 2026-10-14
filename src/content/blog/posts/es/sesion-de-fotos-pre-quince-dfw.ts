@@ -1,5 +1,5 @@
 import type { BlogPost } from "@/content/blog";
-import { TIER_PRICE_USD, ADD_ON_PRICE_USD, BASE_HOURS, usd } from "@/lib/commission";
+import { PT } from "@/lib/price-text";
 
 const post: BlogPost = {
   slug: "sesion-de-fotos-pre-quince-dfw",
@@ -77,7 +77,7 @@ const post: BlogPost = {
     {
       type: "cta",
       heading: "Reserve su sesión de fotos pre-quince",
-      body: `Nuestra Sesión de retratos (${usd(TIER_PRICE_USD.study)}) son ${BASE_HOURS.study} horas con un fotógrafo: 60 fotos editadas y un video corto para redes sociales. Elija su locación y su tema, y nosotros nos encargamos de la luz.`,
+      body: `Nuestra Sesión de retratos (${PT.price.study}) son ${PT.hours.study} horas con un fotógrafo: 60 fotos editadas y un video corto para redes sociales. Elija su locación y su tema, y nosotros nos encargamos de la luz.`,
       href: "/es#intake",
       label: "Reservar su sesión",
     },
@@ -143,7 +143,7 @@ const post: BlogPost = {
     },
     {
       q: "¿La sesión va incluida o es aparte?",
-      a: `Depende del estudio y del paquete. En TX Quince, la Sesión de retratos (${usd(TIER_PRICE_USD.study)}) es la sesión de retrato por sí sola; la Celebración completa incluye una sesión de retrato en una locación y la Celebración de dos días incluye dos. También puede agregar una Sesión con el vestido, fotos con su vestido antes del gran día, por ${usd(ADD_ON_PRICE_USD.destination)}. Compare todos los paquetes antes de reservar.`,
+      a: `Depende del estudio y del paquete. En TX Quince, la Sesión de retratos (${PT.price.study}) es la sesión de retrato por sí sola; la Celebración completa incluye una sesión de retrato en una locación y la Celebración de dos días incluye dos. También puede agregar una Sesión con el vestido, fotos con su vestido antes del gran día, por ${PT.addon.destination}. Compare todos los paquetes antes de reservar.`,
     },
   ],
   related: [

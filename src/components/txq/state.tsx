@@ -12,7 +12,8 @@ import {
 } from "react";
 import { COPY, type Copy } from "./copy";
 import type { AddOnId, Lang, TierId } from "./data";
-import { BASE_HOURS, normalizeCrew, normalizeHours, type Crew } from "@/lib/commission";
+import { normalizeCrew, type Crew } from "@/lib/commission";
+import { usePriceBook } from "@/components/PriceBookProvider";
 
 /* ------------------------------------------------------------------ */
 /* Language + commission selection (shared by Commissions and Intake)  */
@@ -100,6 +101,7 @@ export function SiteProvider({
     () => urlLang,
   );
   const lang = isHome ? stored : urlLang;
+  const prices = usePriceBook();
   const [tier, setTier] = useState<TierId>("cinema");
   const [addOns, setAddOnsRaw] = useState<AddOnId[]>([]);
   const [crewRaw, setCrewRaw] = useState<Crew | null>(null);
@@ -110,7 +112,7 @@ export function SiteProvider({
   // Hours belong to the package they were chosen on; switching packages starts
   // again from that package's included hours.
   const [hoursRaw, setHoursRaw] = useState<{ tier: TierId; h: number } | null>(null);
-  const hours = hoursRaw && hoursRaw.tier === tier ? normalizeHours(tier, hoursRaw.h) : BASE_HOURS[tier];
+  const hours = prices.normalizeHours(tier, hoursRaw && hoursRaw.tier === tier ? hoursRaw.h : null);
   const setHours = useCallback((h: number, forTier?: TierId) => setHoursRaw({ tier: forTier ?? tier, h }), [tier]);
 
   const setLang = useCallback((l: Lang) => {
@@ -138,11 +140,14 @@ export function SiteProvider({
     setAddOnsRaw((cur) => (cur.includes(a) ? cur.filter((x) => x !== a) : [...cur, a]));
   }, []);
 
+  // Copy carries price tokens; fill them from the live book once per language/book.
+  const t = useMemo(() => prices.fillDeep(COPY[lang]), [prices, lang]);
+
   const value = useMemo(
     () => ({
       lang,
       setLang,
-      t: COPY[lang],
+      t,
       tier,
       setTier,
       addOns,
@@ -155,7 +160,7 @@ export function SiteProvider({
       isHome,
       homeHref,
     }),
-    [lang, setLang, tier, addOns, toggleAddOn, setAddOns, crew, setCrew, hours, setHours, isHome, homeHref],
+    [lang, setLang, t, tier, addOns, toggleAddOn, setAddOns, crew, setCrew, hours, setHours, isHome, homeHref],
   );
 
   return <SiteCtx.Provider value={value}>{children}</SiteCtx.Provider>;
@@ -165,6 +170,16 @@ export function useSite() {
   const ctx = useContext(SiteCtx);
   if (!ctx) throw new Error("useSite must be used inside <SiteProvider>");
   return ctx;
+}
+
+/**
+ * The family's current selection priced with the live book (total, deposit,
+ * rest, hours). UI-independent: any package/booking view can read it.
+ */
+export function useQuote() {
+  const { tier, addOns, hours } = useSite();
+  const { quote } = usePriceBook();
+  return useMemo(() => quote(tier, addOns, hours), [quote, tier, addOns, hours]);
 }
 
 /* ------------------------------------------------------------------ */

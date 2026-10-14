@@ -1,7 +1,7 @@
 import type { BlogPost } from "@/content/blog";
-import { RETAINER, CONSULT_HOLD_DAYS } from "@/lib/commission";
+import { PT } from "@/lib/price-text";
 
-const retainerPct = `${Math.round(RETAINER.rate * 100)}%`;
+const retainerPct = PT.deposit.percent;
 
 const post: BlogPost = {
   slug: "cuando-reservar-fotografo-quinceanera-dfw",
@@ -104,7 +104,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Con la fecha y el salón en mano, [aparte su día](/es#intake) es un paso corto: elija un paquete y firme el contrato en línea, y le apartamos la fecha ${CONSULT_HOLD_DAYS} días mientras lo revisamos. Ya aprobado, un depósito del ${retainerPct} la asegura, y el resto se paga ${RETAINER.balanceDueHours} horas antes del evento. ¿Prefiere platicar primero? Pida una llamada rápida. Y si todavía está comparando fotógrafos, revise algunas [galerías completas](/portfolio) de principio a fin antes de decidir. Si aún no lo ha hecho, [vea si su fecha está libre](/check-your-date) primero.`,
+      text: `Con la fecha y el salón en mano, [aparte su día](/es#intake) es un paso corto: elija un paquete y firme el contrato en línea, y le apartamos la fecha ${PT.holdDays} días mientras lo revisamos. Ya aprobado, un depósito del ${retainerPct} la asegura, y el resto se paga ${PT.balanceDays} días antes del evento. ¿Prefiere platicar primero? Pida una llamada rápida. Y si todavía está comparando fotógrafos, revise algunas [galerías completas](/portfolio) de principio a fin antes de decidir. Si aún no lo ha hecho, [vea si su fecha está libre](/check-your-date) primero.`,
     },
     { type: "h2", text: "Cuándo agendar la sesión pre-quince o save-the-date" },
     {

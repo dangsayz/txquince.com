@@ -1,22 +1,18 @@
 /**
  * commissions.ts — the four packages, shaped for the SEO landing
  * pages (city, videographer, guide, venue, save-the-date). Prices come from the
- * price book (src/lib/commission.ts); names and deliverables from the homepage
- * matrix, so every page shows the same offer as the homepage and checkout.
+ * LIVE price book (commissionsFor(await getPriceBook())); names and
+ * deliverables from the homepage matrix, so every page shows the same offer as
+ * the homepage and checkout. The prose exports below carry price tokens
+ * (src/lib/price-text.ts) — fill them with fillPrices/fillDeep when rendering.
  *
  * Replaces the retired Moments / Essential / Signature / Legacy collections for
  * anything public-facing. (content/packages.ts remains only so historic
  * bookings, analytics and admin tools can still label old rows.)
  */
-import { MATRIX, TIERS, type L, type Lang } from "@/components/txq/data";
-import {
-  CONSULT_HOLD_DAYS,
-  PRICE_FLOOR_USD,
-  RETAINER,
-  quoteCommission,
-  usd,
-  type TierId,
-} from "@/lib/commission";
+import { matrixFor, TIERS, type L, type Lang } from "@/components/txq/data";
+import { depositFor, usd, type PriceBook, type TierId } from "@/lib/commission";
+import { PT } from "@/lib/price-text";
 
 export type Commission = {
   id: TierId;
@@ -41,9 +37,9 @@ const HIGHLIGHT_ROWS = [
   "Printed photo album",
 ];
 
-function highlightsFor(id: TierId, lang: Lang): string[] {
+function highlightsFor(book: PriceBook, id: TierId, lang: Lang): string[] {
   const out: string[] = [];
-  for (const group of MATRIX) {
+  for (const group of matrixFor(book)) {
     for (const row of group.rows) {
       if (!HIGHLIGHT_ROWS.includes(row.label.en)) continue;
       const v = row.values[id];
@@ -53,32 +49,39 @@ function highlightsFor(id: TierId, lang: Lang): string[] {
   return out.slice(0, 4);
 }
 
-export const commissions: Commission[] = TIERS.map((t) => ({
-  id: t.id,
-  numeral: t.numeral,
-  name: t.name,
-  summary: t.summary,
-  price: t.price,
-  priceLabel: usd(t.price),
-  retainerLabel: usd(quoteCommission(t.id, []).retainerUsd),
-  highlights: { en: highlightsFor(t.id, "en"), es: highlightsFor(t.id, "es") },
-  recommended: t.id === "production",
-}));
+/** The four packages priced from a price book (server: `commissionsFor(await getPriceBook())`). */
+export function commissionsFor(book: PriceBook): Commission[] {
+  return TIERS.map((t) => {
+    const price = book.packages[t.id].price;
+    return {
+      id: t.id,
+      numeral: t.numeral,
+      name: t.name,
+      summary: t.summary,
+      price,
+      priceLabel: usd(price),
+      retainerLabel: usd(depositFor(book, price)),
+      highlights: { en: highlightsFor(book, t.id, "en"), es: highlightsFor(book, t.id, "es") },
+      recommended: t.id === "production",
+    };
+  });
+}
 
-export const commissionsFromLabel = usd(PRICE_FLOOR_USD);
-export const retainerPercentLabel = `${Math.round(RETAINER.rate * 100)}%`;
-/** The rest of the total is due this many hours before the event. */
-export const balanceDueHours = RETAINER.balanceDueHours;
+/** Price tokens for prose (fill with fillPrices / fillDeep at render time). */
+export const commissionsFromLabel = PT.price.floor;
+export const retainerPercentLabel = PT.deposit.percent;
+/** The rest of the total is due this many days before the event. */
+export const balanceDueDays = PT.balanceDays;
 /** Days we hold the date while we review a signed agreement. */
-export const reviewHoldDays = CONSULT_HOLD_DAYS;
+export const reviewHoldDays = PT.holdDays;
 
 /**
  * How booking works, in plain words — one paragraph per language, reused on
  * every page that explains booking or the deposit.
  */
 export const bookingFlow = {
-  en: `Pick a package, fill in your details, then review and sign the agreement online. We review and approve it within one day, and we hold your date for ${reviewHoldDays} days while we do. Once it's approved, you pay the ${retainerPercentLabel} deposit to lock in your date. No payment is taken before then. The rest is due ${balanceDueHours} hours before the event.`,
-  es: `Elige un paquete, llena tus datos, y revisa y firma el contrato en línea. Lo revisamos y aprobamos en un día, y mientras tanto te apartamos la fecha ${reviewHoldDays} días. Ya aprobado, pagas el depósito del ${retainerPercentLabel} para asegurar tu fecha. No se cobra nada antes. El resto se paga ${balanceDueHours} horas antes del evento.`,
+  en: `Pick a package, fill in your details, then review and sign the agreement online. We review and approve it within one day, and we hold your date for ${reviewHoldDays} days while we do. Once it's approved, you pay the ${retainerPercentLabel} deposit to lock in your date. No payment is taken before then. The rest is due ${balanceDueDays} days before the event.`,
+  es: `Elige un paquete, llena tus datos, y revisa y firma el contrato en línea. Lo revisamos y aprobamos en un día, y mientras tanto te apartamos la fecha ${reviewHoldDays} días. Ya aprobado, pagas el depósito del ${retainerPercentLabel} para asegurar tu fecha. No se cobra nada antes. El resto se paga ${balanceDueDays} días antes del evento.`,
 } as const;
 
 /** Where to compare and where to book, per language. */
@@ -102,7 +105,7 @@ export const bookingSteps: Record<Lang, BookingStep[]> = {
     },
     {
       title: "Lock in your date",
-      body: `We review and approve it within one day. Then you pay the ${retainerPercentLabel} deposit to lock in your date. The rest is due ${balanceDueHours} hours before the event.`,
+      body: `We review and approve it within one day. Then you pay the ${retainerPercentLabel} deposit to lock in your date. The rest is due ${balanceDueDays} days before the event.`,
     },
     {
       title: "Your day, captured",
@@ -120,7 +123,7 @@ export const bookingSteps: Record<Lang, BookingStep[]> = {
     },
     {
       title: "Asegura tu fecha",
-      body: `Lo revisamos y aprobamos en un día. Luego pagas el depósito del ${retainerPercentLabel} para asegurar tu fecha. El resto se paga ${balanceDueHours} horas antes del evento.`,
+      body: `Lo revisamos y aprobamos en un día. Luego pagas el depósito del ${retainerPercentLabel} para asegurar tu fecha. El resto se paga ${balanceDueDays} días antes del evento.`,
     },
     {
       title: "Tu día, para siempre",

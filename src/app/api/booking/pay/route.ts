@@ -1,6 +1,8 @@
 /**
- * /api/booking/pay — opens Stripe Checkout for an APPROVED agreement's 25%
- * deposit. Called from the family's pay page (/booking/[id]?t=…); the token
+ * /api/booking/pay — opens Stripe Checkout for an APPROVED agreement's
+ * deposit. It charges the STORED deposit (bookings.deposit_amount_cents, set
+ * when the family signed) — never a re-quote from the current price book, so
+ * a price change at /admin/prices can't move what an existing family pays. Called from the family's pay page (/booking/[id]?t=…); the token
  * from the approval email is the only key. Re-uses an open checkout when one
  * exists so a family can't end up with two live sessions, and otherwise opens
  * a fresh one (Stripe sessions last at most 24h; the date hold is longer).
@@ -9,7 +11,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
 import { createStripeCheckoutSession, isStripeConfigured } from "@/lib/stripe";
-import { isSignedAgreement, tokenMatches } from "@/lib/agreement";
+import { isSignedAgreement, signedDepositPercent, tokenMatches } from "@/lib/agreement";
 import { TIER_NAME_EN, type TierId } from "@/lib/commission";
 import { formatEventDate } from "@/lib/booking";
 import { getSiteUrl } from "@/lib/site-url";
@@ -62,7 +64,7 @@ export async function POST(request: Request) {
     const session = await createStripeCheckoutSession({
       amountCents: b.deposit_amount_cents,
       currency: b.currency || "usd",
-      productName: `${site.brand} — 25% deposit · ${tier}`,
+      productName: `${site.brand} — ${signedDepositPercent(agreement)}% deposit · ${tier}`,
       productDescription: `Locks in ${date}. Goes toward your total of $${Number(meta.total_usd ?? 0).toLocaleString("en-US")}.`,
       paymentDescription: `TX Quince deposit — ${date}`,
       clientReferenceId: b.id,

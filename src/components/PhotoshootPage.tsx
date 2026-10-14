@@ -3,8 +3,10 @@ import Image from "next/image";
 import { site } from "@/content/site";
 import { getImagesBySection } from "@/lib/content-db";
 import { portfolioFallback } from "@/content/portfolio-fallback";
-import { commissionLinks, commissions } from "@/content/commissions";
-import { ADD_ON_NAME_EN, ADD_ON_PRICE_USD, BASE_HOURS, TIER_PRICE_USD, usd } from "@/lib/commission";
+import { commissionLinks, commissionsFor } from "@/content/commissions";
+import { ADD_ON_NAME_EN, usd } from "@/lib/commission";
+import { getPriceBook } from "@/lib/pricing";
+import { PT, fillDeep } from "@/lib/price-text";
 import "@/components/txq/pages/places.css";
 
 /**
@@ -18,7 +20,6 @@ import "@/components/txq/pages/places.css";
 
 type Locale = "en" | "es";
 
-const study = commissions.find((c) => c.id === "study")!;
 
 const COPY = {
   en: {
@@ -30,14 +31,14 @@ const COPY = {
     other: "Ver en español",
     otherHref: "/es/sesion-de-fotos-quinceanera",
     sessionEyebrow: "01 / The Portrait Session",
-    sessionTitle: `${BASE_HOURS.study} unhurried hours, one plan.`,
+    sessionTitle: `${PT.hours.study} unhurried hours, one plan.`,
     sessionBody: [
       "We plan the session like a magazine sitting: the location, the light, the hour, the two looks. Her own quince gown, a second dress, or both. Your photographer guides posture and light, then steps back so she still looks like herself.",
       "It is also the easiest way to know us before the celebration. By the time the misa begins, the camera already feels familiar.",
     ],
     includedTitle: "What the Portrait Session includes",
     included: [
-      `A ${BASE_HOURS.study}-hour portrait session with one photographer`,
+      `A ${PT.hours.study}-hour portrait session with one photographer`,
       "Location and timing planned with you",
       "60 edited photos",
       "1 short video for social media",
@@ -56,16 +57,16 @@ const COPY = {
     waysEyebrow: "03 / Ways to book",
     waysTitle: "On its own, or already included",
     ways: [
-      { label: "Portrait Session, on its own", note: "The session alone, no event coverage", price: usd(TIER_PRICE_USD.study) },
-      { label: "Included in the Full Celebration", note: "Portrait session at one location, plus the full day", price: usd(TIER_PRICE_USD.production) },
-      { label: "Included in the Two-Day Celebration", note: "Two portrait locations on their own day, plus the celebration", price: usd(TIER_PRICE_USD.archive) },
-      { label: ADD_ON_NAME_EN.destination, note: "A photo session in her dress before the big day, added to any package", price: `+${usd(ADD_ON_PRICE_USD.destination)}` },
+      { label: "Portrait Session, on its own", note: "The session alone, no event coverage", price: PT.price.study },
+      { label: "Included in the Full Celebration", note: "Portrait session at one location, plus the full day", price: PT.price.production },
+      { label: "Included in the Two-Day Celebration", note: "Two portrait locations on their own day, plus the celebration", price: PT.price.archive },
+      { label: ADD_ON_NAME_EN.destination, note: "A photo session in her dress before the big day, added to any package", price: `+${PT.addon.destination}` },
     ],
     compare: "Compare every package",
     faqEyebrow: "04 / Questions",
     faqTitle: "Photoshoot questions, answered.",
     faqs: [
-      { q: "How much is a quinceañera photoshoot?", a: `The Portrait Session is ${usd(TIER_PRICE_USD.study)} on its own: ${BASE_HOURS.study} hours with one photographer, 60 edited photos and a short video for social media. It is included in the Full Celebration (${usd(TIER_PRICE_USD.production)}) and the Two-Day Celebration (${usd(TIER_PRICE_USD.archive)}).` },
+      { q: "How much is a quinceañera photoshoot?", a: `The Portrait Session is ${PT.price.study} on its own: ${PT.hours.study} hours with one photographer, 60 edited photos and a short video for social media. It is included in the Full Celebration (${PT.price.production}) and the Two-Day Celebration (${PT.price.archive}).` },
       { q: "Can we book only the photoshoot, without the event?", a: "Yes. The Portrait Session is designed to stand alone, for the invitations and welcome board, and it works just as well when the celebration itself is covered by family or another team." },
       { q: "Can she wear her own quince dress?", a: "Yes, her own gown and as many as two looks in the session. There is no rental and no restriction on the dress." },
       { q: "When should we schedule it?", a: "Usually two to four months before the celebration, so the portraits are ready for invitations. Spring and fall light in Dallas–Fort Worth is the most forgiving; we plan the hour around it." },
@@ -91,14 +92,14 @@ const COPY = {
     other: "View in English",
     otherHref: "/quinceanera-photoshoot",
     sessionEyebrow: "01 / Sesión de retratos",
-    sessionTitle: `${BASE_HOURS.study} horas sin prisa, un solo plan.`,
+    sessionTitle: `${PT.hours.study} horas sin prisa, un solo plan.`,
     sessionBody: [
       "Planeamos la sesión como una producción de revista: el lugar, la luz, la hora y los dos cambios. Su propio vestido de quince, un segundo vestido, o los dos. Tu fotógrafo guía la postura y la luz, y luego se aparta para que ella siga siendo ella.",
       "También es la forma más fácil de conocernos antes de la celebración. Para cuando empieza la misa, la cámara ya le resulta familiar.",
     ],
     includedTitle: "Qué incluye la Sesión de retratos",
     included: [
-      `Una sesión de retratos de ${BASE_HOURS.study} horas con un fotógrafo`,
+      `Una sesión de retratos de ${PT.hours.study} horas con un fotógrafo`,
       "Lugar y horario planeados contigo",
       "60 fotos editadas",
       "1 video corto para redes sociales",
@@ -117,16 +118,16 @@ const COPY = {
     waysEyebrow: "03 / Cómo reservar",
     waysTitle: "Sola, o ya incluida",
     ways: [
-      { label: "Sesión de retratos, por sí sola", note: "Solo la sesión, sin cobertura del evento", price: usd(TIER_PRICE_USD.study) },
-      { label: "Incluida en la Celebración completa", note: "Sesión de retrato en una locación, más el día completo", price: usd(TIER_PRICE_USD.production) },
-      { label: "Incluida en la Celebración de dos días", note: "Dos locaciones de retrato en su propio día, más la celebración", price: usd(TIER_PRICE_USD.archive) },
-      { label: "Sesión con el vestido", note: "Una sesión de fotos con su vestido antes del gran día, añadida a cualquier paquete", price: `+${usd(ADD_ON_PRICE_USD.destination)}` },
+      { label: "Sesión de retratos, por sí sola", note: "Solo la sesión, sin cobertura del evento", price: PT.price.study },
+      { label: "Incluida en la Celebración completa", note: "Sesión de retrato en una locación, más el día completo", price: PT.price.production },
+      { label: "Incluida en la Celebración de dos días", note: "Dos locaciones de retrato en su propio día, más la celebración", price: PT.price.archive },
+      { label: "Sesión con el vestido", note: "Una sesión de fotos con su vestido antes del gran día, añadida a cualquier paquete", price: `+${PT.addon.destination}` },
     ],
     compare: "Comparar todos los paquetes",
     faqEyebrow: "04 / Preguntas",
     faqTitle: "Preguntas sobre la sesión de fotos.",
     faqs: [
-      { q: "¿Cuánto cuesta una sesión de fotos de quinceañera?", a: `La Sesión de retratos cuesta ${usd(TIER_PRICE_USD.study)} por sí sola: ${BASE_HOURS.study} horas con un fotógrafo, 60 fotos editadas y un video corto para redes sociales. Está incluida en la Celebración completa (${usd(TIER_PRICE_USD.production)}) y en la Celebración de dos días (${usd(TIER_PRICE_USD.archive)}).` },
+      { q: "¿Cuánto cuesta una sesión de fotos de quinceañera?", a: `La Sesión de retratos cuesta ${PT.price.study} por sí sola: ${PT.hours.study} horas con un fotógrafo, 60 fotos editadas y un video corto para redes sociales. Está incluida en la Celebración completa (${PT.price.production}) y en la Celebración de dos días (${PT.price.archive}).` },
       { q: "¿Podemos reservar solo la sesión de fotos, sin el evento?", a: "Sí. La Sesión de retratos está pensada para reservarse sola, para las invitaciones y el tablero de bienvenida, y funciona igual de bien si la celebración la cubre la familia u otro equipo." },
       { q: "¿Puede usar su propio vestido de quince?", a: "Sí, su propio vestido y hasta dos cambios en la sesión. No hay renta ni restricciones sobre el vestido." },
       { q: "¿Cuándo conviene hacerla?", a: "Normalmente de dos a cuatro meses antes de la celebración, para que los retratos estén listos para las invitaciones. La luz de primavera y otoño en Dallas–Fort Worth es la más amable; planeamos la hora alrededor de ella." },
@@ -144,9 +145,12 @@ const COPY = {
     alt: "Sesión de retratos pre-quince en Dallas–Fort Worth",
   },
 } satisfies Record<Locale, unknown>;
+// COPY carries price tokens (PT.*) — fill with fillDeep(…, book) before rendering.
 
-export function photoshootMetadata(locale: Locale) {
+export async function photoshootMetadata(locale: Locale) {
+  const book = await getPriceBook();
   const t = COPY[locale];
+  const study = { priceLabel: usd(book.packages.study.price) };
   const en = `${site.url}${COPY.en.path}`;
   const es = `${site.url}${COPY.es.path}`;
   const title =
@@ -155,8 +159,8 @@ export function photoshootMetadata(locale: Locale) {
       : "Sesión de Fotos de Quinceañera y Pre-Quince — Dallas–Fort Worth";
   const description =
     locale === "en"
-      ? `Pre-quince photoshoot in Dallas–Fort Worth: a ${BASE_HOURS.study}-hour Portrait Session for ${study.priceLabel}, bookable on its own. Her own dress, Arboretum to Highland Park Village.`
-      : `Sesión de fotos pre-quince en Dallas–Fort Worth: una Sesión de retratos de ${BASE_HOURS.study} horas por ${study.priceLabel}, se reserva sola. Su propio vestido, del Arboretum a Highland Park Village.`;
+      ? `Pre-quince photoshoot in Dallas–Fort Worth: a ${book.packages.study.hours}-hour Portrait Session for ${study.priceLabel}, bookable on its own. Her own dress, Arboretum to Highland Park Village.`
+      : `Sesión de fotos pre-quince en Dallas–Fort Worth: una Sesión de retratos de ${book.packages.study.hours} horas por ${study.priceLabel}, se reserva sola. Su propio vestido, del Arboretum a Highland Park Village.`;
   return {
     title,
     description,
@@ -173,7 +177,10 @@ function focal(fx?: number | null, fy?: number | null): string {
 }
 
 export async function PhotoshootPage({ locale }: { locale: Locale }) {
-  const t = COPY[locale];
+  // Copy carries price tokens; fill from the live price book (body + JSON-LD).
+  const book = await getPriceBook();
+  const t = fillDeep(COPY[locale], book);
+  const study = commissionsFor(book).find((c) => c.id === "study")!;
   const links = commissionLinks[locale];
   const url = `${site.url}${t.path}`;
 
