@@ -170,8 +170,20 @@ export function SlotEditor({
     [canFrame],
   );
 
+  /** Why Save can't run yet, in plain words (the button never greys out). */
+  const blocker = !encoded && !current
+    ? "Choose a new photo first."
+    : !altOk(alt.en)
+      ? "Describe the photo in English."
+      : !altOk(alt.es)
+        ? "Describe the photo in Spanish."
+        : !encoded && !dirty
+          ? "Nothing has changed yet."
+          : null;
+
   async function save() {
-    if (!canSave) return;
+    if (busy) return;
+    if (!canSave) return setError(blocker);
     setError(null);
     setBusy("Saving…");
     try {
@@ -420,7 +432,7 @@ export function SlotEditor({
           <button
             type="button"
             onClick={save}
-            disabled={!canSave}
+            disabled={!!busy}
             className="inline-flex min-h-12 items-center whitespace-nowrap px-6 text-base font-semibold text-white disabled:opacity-40"
             style={{ background: INK }}
           >

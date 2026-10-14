@@ -60,12 +60,11 @@ export function ImagesManager({ slots }: { slots: SlotListItem[] }) {
     <div className="mt-6" style={{ color: INK }}>
       <div className="flex flex-wrap items-end gap-4">
         <label className="block min-w-0 flex-1 sm:max-w-sm">
-          <span className="text-base font-medium">Find a photo</span>
+          <span className="text-base font-medium">Find a photo — try “Dallas” or “blog”</span>
           <input
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Homepage, Dallas, blog…"
             className="mt-1 block min-h-12 w-full border px-3 text-base"
             style={{ borderColor: INK, color: INK }}
           />
@@ -105,16 +104,18 @@ export function ImagesManager({ slots }: { slots: SlotListItem[] }) {
                       >
                         Replace
                       </button>
-                      <button
-                        type="button"
-                        onClick={() => undo(s)}
-                        disabled={!s.current || busy === s.id}
-                        aria-label={`Undo: ${s.label}`}
-                        className="inline-flex min-h-11 items-center whitespace-nowrap border px-4 text-base disabled:opacity-40"
-                        style={{ borderColor: INK }}
-                      >
-                        {busy === s.id ? "Undoing…" : "Undo"}
-                      </button>
+                      {s.current ? (
+                        <button
+                          type="button"
+                          onClick={() => undo(s)}
+                          disabled={busy === s.id}
+                          aria-label={`Undo: ${s.label}`}
+                          className="inline-flex min-h-11 items-center whitespace-nowrap border px-4 text-base"
+                          style={{ borderColor: INK }}
+                        >
+                          {busy === s.id ? "Undoing…" : "Undo"}
+                        </button>
+                      ) : null}
                       <a href={s.page} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center whitespace-nowrap px-2 text-base underline underline-offset-4">
                         View <span aria-hidden>↗</span>
                       </a>
