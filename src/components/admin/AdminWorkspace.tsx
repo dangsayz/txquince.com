@@ -19,6 +19,7 @@ const websiteLinks = [
   { href: "/admin/videos", label: "Films" },
   { href: "/admin/venues", label: "Venues" },
   { href: "/admin/hero", label: "Page imagery" },
+  { href: "/admin/images", label: "Every image" },
 ] as const;
 
 function isActive(pathname: string, href: string) {

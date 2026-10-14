@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import { SlotImage } from "@/components/SlotImage";
 import { commissionLinks, commissions } from "@/content/commissions";
 import { MATRIX } from "@/components/txq/data";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
@@ -96,14 +96,13 @@ export async function VideographerPage({ locale }: { locale: "en" | "es" }) {
           </div>
         </header>
         <figure className="tq-pg-plate">
-          <Image
-            src={hero?.url ?? "/portfolio/kimberly-reception.webp"}
-            alt={hero ? publicPhotoCopy(hero, altPhraseFor(hero.section)).alt : "Quinceañera celebration photographed by TX Quince"}
+          <SlotImage
+            slot="videographer.hero"
+            lang={locale}
             fill
-            unoptimized={!hero}
             priority
             sizes="100vw"
-            style={{ objectPosition: `${Math.round((hero?.focus_x ?? 0.5) * 100)}% ${Math.round((hero?.focus_y ?? 0.4) * 100)}%` }}
+            fallback={hero ? { src: hero.url, alt: publicPhotoCopy(hero, altPhraseFor(hero.section)).alt, width: hero.width, height: hero.height, focus: `${Math.round((hero.focus_x ?? 0.5) * 100)}% ${Math.round((hero.focus_y ?? 0.4) * 100)}%` } : null}
           />
           <figcaption>
             <span className="tq-tag tq-tag--bl tq-mono">[Video — 4K]</span>

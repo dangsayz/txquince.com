@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import { SlotImage } from "@/components/SlotImage";
 import { notFound } from "next/navigation";
 import { site } from "@/content/site";
 import {
@@ -262,14 +263,13 @@ export default async function CityPageEs({
         <div className="tq-place-stage">
           <figure className="tq-plate" style={{ margin: 0 }}>
             <div className="tq-plate__loop">
-              <Image
-                src={hero.url}
-                alt={hero.alt}
+              <SlotImage
+                slot={`city.${loc.slug}.hero`}
+                lang="es"
                 fill
-                preload
-                unoptimized={hero.local}
+                priority
                 sizes="100vw"
-                style={{ objectPosition: hero.focus }}
+                fallback={{ src: hero.url, alt: hero.alt, focus: hero.focus }}
               />
             </div>
             <figcaption>

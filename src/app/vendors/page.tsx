@@ -6,6 +6,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import { SlotImage } from "@/components/SlotImage";
 import { site } from "@/content/site";
 import { getVendors, getPortfolioImages } from "@/lib/content-db";
 import { VENDOR_CATEGORIES, altPhraseFor, vendorCategoryLabel } from "@/content/portfolio-taxonomy";
@@ -96,7 +97,7 @@ export default async function VendorsPage() {
           </div>
         </header>
         <figure className="tq-pg-plate tq-pg-plate--short">
-          <Image src={heroPhoto?.url ?? "/portfolio/reception.webp"} alt={heroPhoto ? publicPhotoCopy(heroPhoto, altPhraseFor(heroPhoto.section)).alt : "Quinceañera celebration in Dallas–Fort Worth"} fill priority unoptimized={!heroPhoto} sizes="100vw" style={heroPhoto ? { objectPosition: `${Math.round((heroPhoto.focus_x ?? 0.5) * 100)}% ${Math.round((heroPhoto.focus_y ?? 0.4) * 100)}%` } : undefined} />
+          <SlotImage slot="vendors.hero" lang="en" fill priority sizes="100vw" fallback={heroPhoto ? { src: heroPhoto.url, alt: publicPhotoCopy(heroPhoto, altPhraseFor(heroPhoto.section)).alt, width: heroPhoto.width, height: heroPhoto.height, focus: `${Math.round((heroPhoto.focus_x ?? 0.5) * 100)}% ${Math.round((heroPhoto.focus_y ?? 0.4) * 100)}%` } : null} />
           <figcaption>
             <span className="tq-tag tq-tag--bl tq-mono">[{vendors.length} vendors credited]</span>
           </figcaption>

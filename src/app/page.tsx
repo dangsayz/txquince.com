@@ -4,6 +4,8 @@ import { latestJournal } from "@/components/txq/journal";
 import { getCinemaFilms } from "@/components/txq/films";
 import { HomeJsonLd } from "@/components/txq/HomeJsonLd";
 import { getFeedPage, getHomeOverrides } from "@/lib/photo-dump";
+import { resolveHomeSlots } from "@/lib/image-slot-home";
+import { SlotProvider } from "@/components/slots/SlotProvider";
 import { PRICE_FLOOR_USD } from "@/lib/commission";
 import { site } from "@/content/site";
 
@@ -31,7 +33,9 @@ export default async function HomePage() {
   return (
     <>
       <HomeJsonLd lang="en" />
-      <TxqSite journal={latestJournal()} films={films} photos={photos} overrides={overrides} />
+      <SlotProvider slots={await resolveHomeSlots(overrides)}>
+        <TxqSite journal={latestJournal()} films={films} photos={photos} overrides={overrides} />
+      </SlotProvider>
     </>
   );
 }

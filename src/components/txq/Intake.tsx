@@ -1,10 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import { forwardRef, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { getFirstTouch } from "@/components/Tracker";
+import { SlotPicture } from "@/components/slots/SlotPicture";
+import { SlotAdminControl } from "@/components/slots/SlotAdminControl";
+import { useSlot } from "@/components/slots/SlotProvider";
 import {
   CONSULT_HOLD_DAYS,
   BASE_CREW,
@@ -97,6 +99,7 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
   const shown = useTween(total);
   const language = prefLang ?? lang;
   const portrait = workById("w02");
+  const portraitImage = useSlot("home.intake.portrait", portrait);
   const quote = quoteCommission(tier, addOns, hours);
 
   const cityLabel = CITIES.find((c) => c.id === city);
@@ -256,14 +259,8 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
           {/* Editorial context */}
           <aside className="tq-intake__aside">
             <div className="tq-intake__portrait">
-              <Image
-                src={portrait.src}
-                alt={pick(lang, portrait.alt)}
-                fill
-                unoptimized
-                sizes="(min-width: 960px) 40vw, 100vw"
-                style={{ objectPosition: portrait.focus }}
-              />
+              <SlotPicture image={portraitImage} lang={lang} fill sizes="(min-width: 960px) 40vw, 100vw" />
+              <SlotAdminControl slot="home.intake.portrait" />
             </div>
             <div className="tq-live">
               <span className="tq-mono" style={{ display: "flex", alignItems: "center", gap: 10 }}>

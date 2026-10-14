@@ -4,6 +4,8 @@ import { latestJournal } from "@/components/txq/journal";
 import { getCinemaFilms } from "@/components/txq/films";
 import { HomeJsonLd } from "@/components/txq/HomeJsonLd";
 import { getFeedPage, getHomeOverrides } from "@/lib/photo-dump";
+import { resolveHomeSlots } from "@/lib/image-slot-home";
+import { SlotProvider } from "@/components/slots/SlotProvider";
 import { PRICE_FLOOR_USD, usd } from "@/lib/commission";
 
 // Films come from the admin video library; admin edits revalidate at once.
@@ -27,7 +29,9 @@ export default async function InicioEs() {
   return (
     <>
       <HomeJsonLd lang="es" />
-      <TxqSite journal={latestJournal()} films={films} photos={photos} overrides={overrides} />
+      <SlotProvider slots={await resolveHomeSlots(overrides)}>
+        <TxqSite journal={latestJournal()} films={films} photos={photos} overrides={overrides} />
+      </SlotProvider>
     </>
   );
 }
