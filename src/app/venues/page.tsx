@@ -13,6 +13,7 @@ import { getImagesByVenue } from "@/lib/content-db";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import "@/components/txq/pages/places.css";
+import { jsonLdString } from "@/lib/json-ld";
 
 export const revalidate = 3600;
 
@@ -74,7 +75,7 @@ export default async function VenuesPage() {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replaceAll("<", "\\u003c") }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }} />
 
       <div className="tq-wrap">
         <nav className="tq-place-crumbs tq-mono" aria-label="Breadcrumb">

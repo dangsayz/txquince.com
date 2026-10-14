@@ -1,6 +1,7 @@
 import { site } from "@/content/site";
 import { TIER_IDS, TIER_NAME_EN, priceCeiling, priceFloor, usd, type PriceBook } from "@/lib/commission";
 import { locations } from "@/content/locations";
+import { jsonLdString } from "@/lib/json-ld";
 
 /**
  * LocalBusiness structured data (SEO BASELINE). Driven from content so it stays
@@ -56,7 +57,7 @@ export function JsonLd({ book }: { book: PriceBook }) {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+      dangerouslySetInnerHTML={{ __html: jsonLdString(data) }}
     />
   );
 }

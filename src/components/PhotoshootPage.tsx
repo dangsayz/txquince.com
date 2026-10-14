@@ -8,6 +8,7 @@ import { ADD_ON_NAME_EN, usd } from "@/lib/commission";
 import { getPriceBook } from "@/lib/pricing";
 import { PT, fillDeep } from "@/lib/price-text";
 import "@/components/txq/pages/places.css";
+import { jsonLdString } from "@/lib/json-ld";
 
 /**
  * PRE-QUINCE PHOTOSHOOT landing page (EN /quinceanera-photoshoot, ES
@@ -227,7 +228,7 @@ export async function PhotoshootPage({ locale }: { locale: Locale }) {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }} />
 
       <div className="tq-wrap">
         <nav className="tq-place-crumbs tq-mono" aria-label={locale === "en" ? "Breadcrumb" : "Ruta de navegación"}>

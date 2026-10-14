@@ -9,6 +9,7 @@ import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import { BlogIndexView, type BlogThumb } from "@/components/BlogContent";
 import { blogIndexJsonLd } from "@/app/blog/structured-data";
+import { jsonLdString } from "@/lib/json-ld";
 
 export const revalidate = 3600;
 
@@ -73,7 +74,7 @@ export default async function BlogIndexPage() {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }} />
       <BlogIndexView
         lang="en"
         title={

@@ -10,6 +10,7 @@ import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import { portfolioFallback } from "@/content/portfolio-fallback";
 import { FinalCTA } from "@/components/FinalCTA";
 import "@/components/txq/pages/pages.css";
+import { jsonLdString } from "@/lib/json-ld";
 
 export const dynamic = "force-dynamic";
 
@@ -151,8 +152,8 @@ async function PortfolioContent({ searchParams }: {
 
   return (
     <>
-      {videoJsonLd ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(videoJsonLd).replaceAll("<", "\\u003c") }} /> : null}
-      {imageGalleryJsonLd ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(imageGalleryJsonLd).replaceAll("<", "\\u003c") }} /> : null}
+      {videoJsonLd ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(videoJsonLd) }} /> : null}
+      {imageGalleryJsonLd ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(imageGalleryJsonLd) }} /> : null}
       <div className="tq-wrap">
         <header className="tq-pg-mast" aria-labelledby="portfolio-title">
           <p className="tq-pg-mast__index tq-mono">[01 / Archive — Dallas–Fort Worth]</p>

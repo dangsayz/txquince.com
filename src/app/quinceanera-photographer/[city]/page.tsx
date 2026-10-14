@@ -24,6 +24,7 @@ import { venuesByCity } from "@/content/venues";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import "@/components/txq/pages/places.css";
+import { jsonLdString } from "@/lib/json-ld";
 
 /** Curated guides surfaced on each city page (closes the city↔blog loop). */
 const CITY_GUIDES = [
@@ -290,7 +291,7 @@ export default async function CityPage({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }}
       />
 
       <div className="tq-wrap">

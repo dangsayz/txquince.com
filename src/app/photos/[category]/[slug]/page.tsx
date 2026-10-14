@@ -22,6 +22,7 @@ import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import { venueForLocation } from "@/content/venues";
 import { PhotoActions } from "@/components/gallery/PhotoActions";
 import "@/components/txq/pages/pages.css";
+import { jsonLdString } from "@/lib/json-ld";
 
 /** Branded serve URL at an explicit derivative width. */
 function at(url: string, w: number): string {
@@ -121,7 +122,7 @@ export default async function PhotoPage({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replaceAll("<", "\\u003c") }}
+        dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }}
       />
       <article className="tq-wrap">
         <nav className="tq-pg-crumbs tq-mono" aria-label="Breadcrumb">
