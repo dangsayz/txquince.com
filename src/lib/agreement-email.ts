@@ -29,7 +29,7 @@ function resend(): Resend | null {
 const FROM = process.env.RESEND_FROM ?? `${site.brand} <hello@${site.domain}>`;
 const INK = "#111110";
 
-const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 
 function shell(title: string, body: string, cta?: { url: string; label: string }) {
   return `<!doctype html><html><body style="margin:0;background:#faf8f5;font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:${INK}">

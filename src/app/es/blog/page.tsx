@@ -7,6 +7,7 @@ import { portfolioFallback } from "@/content/portfolio-fallback";
 import { getFeaturedImages, getPageHero } from "@/lib/content-db";
 import { BlogIndexView, type BlogThumb } from "@/components/BlogContent";
 import { blogIndexJsonLd } from "@/app/blog/structured-data";
+import { jsonLdString } from "@/lib/json-ld";
 
 export const revalidate = 3600;
 
@@ -66,7 +67,7 @@ export default async function EsBlogIndexPage() {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }} />
       <BlogIndexView
         lang="es"
         title={

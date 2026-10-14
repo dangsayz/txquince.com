@@ -8,6 +8,7 @@ import { blogPostingJsonLd, postMetaTitle } from "@/app/blog/structured-data";
 import { BlogArticleView } from "@/components/BlogContent";
 import { getPriceBook } from "@/lib/pricing";
 import { fillDeep } from "@/lib/price-text";
+import { jsonLdString } from "@/lib/json-ld";
 
 export const revalidate = 3600;
 
@@ -99,7 +100,7 @@ export default async function BlogPostPage({
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }} />
       <BlogArticleView
         lang="en"
         post={post}

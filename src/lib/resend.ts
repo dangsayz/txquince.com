@@ -14,6 +14,7 @@ import "server-only";
 import { Resend } from "resend";
 import { site } from "@/content/site";
 import { getSiteUrl } from "@/lib/site-url";
+import { escapeHtml } from "@/lib/html-escape";
 import type { InquiryInput } from "@/lib/inquiry";
 import {
   type BookingRecord,
@@ -69,12 +70,8 @@ const WINE = "#8a6f43";
 const CREAM = "#faf7f2";
 const INK = "#1a1a1a";
 
-function esc(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-}
+// Escapes quotes too: values land in href="tel:…"/"mailto:…" attributes.
+const esc = escapeHtml;
 
 function field(label: string, value?: string): string {
   return `${label}: ${value && value.trim() ? value.trim() : "—"}`;

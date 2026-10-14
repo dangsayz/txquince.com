@@ -26,7 +26,7 @@ import {
   type SlotValue,
   type Version,
 } from "@/lib/image-slot-state";
-import { sniffImage } from "@/lib/image-sniff";
+import { probeImage } from "@/lib/image-probe";
 import {
   getAllSlotValues,
   getSlotBucket,
@@ -163,7 +163,7 @@ export async function handleReplace(request: Request, slot: string): Promise<Nex
     if (!["image/webp", "image/jpeg"].includes(file.type)) return fail("Photos must be WebP or JPEG.", 415);
     if (file.size <= 0 || file.size > MAX_RENDITION_BYTES) return fail("Each copy of the photo must be under 8 MB.", 413);
     const bytes = await file.arrayBuffer();
-    const s = sniffImage(bytes);
+    const s = probeImage(bytes);
     if (!s || (s.type === "webp") !== (file.type === "image/webp")) return fail("This file is not a WebP or JPEG photo.", 415);
     if (s.width !== rw) return fail(`The ${rw}px copy is ${s.width}px wide.`, 400);
     if (Math.abs(s.height - Math.round((rw * h) / w)) > 2) return fail("The copies do not match the photo's shape.", 400);

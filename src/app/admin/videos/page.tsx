@@ -1,9 +1,11 @@
 import { getVideos } from "@/lib/content-db";
 import { VideosManager } from "@/components/admin/VideosManager";
+import { requireAdminPage } from "@/lib/require-admin";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminVideosPage() {
+  await requireAdminPage("/admin/videos"); // server-side gate; middleware is not enough
   const videos = await getVideos();
   return (
     <main className="mx-auto max-w-[90rem] px-5 pb-20 pt-8 md:px-10 md:pt-12 lg:px-16">

@@ -3,11 +3,13 @@ import { readManifest } from "@/lib/photo-dump";
 import { HERO_SLOTS, archiveSlot } from "@/lib/photo-dump-shared";
 import { WORKS, workById } from "@/components/txq/data";
 import { PhotosManager, type SlotRow } from "./PhotosManager";
+import { requireAdminPage } from "@/lib/require-admin";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Photo dump" };
 
 export default async function AdminPhotosPage() {
+  await requireAdminPage("/admin/photos"); // server-side gate; middleware is not enough
   const read = await readManifest().catch(() => null);
   const heroA = workById("w01");
   const heroB = workById("w02");

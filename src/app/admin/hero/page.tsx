@@ -10,10 +10,12 @@ import {
   type HeroPageRow,
   type HeroLibraryItem,
 } from "@/components/admin/PageHeroManager";
+import { requireAdminPage } from "@/lib/require-admin";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminHero() {
+  await requireAdminPage("/admin/hero"); // server-side gate; middleware is not enough
   const pageKeys = Object.keys(HERO_PAGES);
   const [media, allImages, ...currents] = await Promise.all([
     getHeroMedia(),

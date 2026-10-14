@@ -4,10 +4,12 @@ import { getInquiries, getInquiryActivity } from "@/lib/clients-db";
 import { formatEventDate, packageLabel } from "@/lib/booking";
 import { InquiryActions } from "@/components/InquiryActions";
 import { InquiryActivityPanel } from "@/components/admin/InquiryActivityPanel";
+import { requireAdminPage } from "@/lib/require-admin";
 
 export const dynamic = "force-dynamic";
 
 export default async function InquiryDetail({ params }: { params: Promise<{ id: string }> }) {
+  await requireAdminPage("/admin/inquiries"); // server-side gate; middleware is not enough
   const [{ id }, inquiries, activity] = await Promise.all([params, getInquiries(), getInquiryActivity()]);
   const inquiry = inquiries.find((row) => row.id === id);
   if (!inquiry) notFound();

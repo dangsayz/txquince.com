@@ -19,36 +19,16 @@ import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server"
 import { verifyTurnstile } from "@/lib/turnstile";
 import { sendOperatorEmail, sendInquirerEmail } from "@/lib/resend";
 import { sanitizeAttribution } from "@/lib/attribution";
+import { clientIp } from "@/lib/client-ip";
+import { rateLimiter } from "@/lib/rate-limit";
 import { getPriceBook } from "@/lib/pricing";
 
 // Always run server-side at request time.
 export const dynamic = "force-dynamic";
 
-/**
- * Best-effort in-memory rate limit. NOTE (RATE LIMITING LAW): serverless
- * instances don't share memory, so this only throttles bursts hitting the same
- * warm instance. Turnstile is the REAL defense; swap in Upstash/@upstash/ratelimit
- * for durable limiting (see README). Kept tiny + dependency-free on purpose.
- */
-const HITS = new Map<string, number[]>();
-const WINDOW_MS = 60_000;
-const MAX_PER_WINDOW = 5;
-
-function rateLimited(ip: string): boolean {
-  const now = Date.now();
-  const arr = (HITS.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
-  arr.push(now);
-  HITS.set(ip, arr);
-  // light cleanup to avoid unbounded growth on a warm instance
-  if (HITS.size > 5000) HITS.clear();
-  return arr.length > MAX_PER_WINDOW;
-}
-
-function clientIp(req: NextRequest): string {
-  const xff = req.headers.get("x-forwarded-for");
-  if (xff) return xff.split(",")[0]!.trim();
-  return req.headers.get("x-real-ip") ?? "unknown";
-}
+// Per-IP limit: Workers Rate Limiting binding in production, in-memory in
+// dev (src/lib/rate-limit.ts). Turnstile remains the primary gate.
+const rateLimited = rateLimiter("inquiry");
 
 export async function POST(req: NextRequest) {
   let body: Record<string, unknown>;
@@ -66,7 +46,7 @@ export async function POST(req: NextRequest) {
 
   // 2) Best-effort rate limit (Turnstile is the primary gate).
   const ip = clientIp(req);
-  if (rateLimited(ip)) {
+  if (await rateLimited(ip)) {
     return NextResponse.json(
       { ok: false, error: "Too many requests. Please try again in a minute." },
       { status: 429 },
