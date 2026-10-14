@@ -4,7 +4,7 @@
  * `es` is typed against `en`, so a missing translation fails the build.
  */
 import type { Category } from "./data";
-import { BASE_CREW, CONSULT_HOLD_DAYS, RETAINER, TIER_PRICE_USD } from "@/lib/commission";
+import { BASE_CREW, BASE_HOURS, CONSULT_HOLD_DAYS, EXTRA_HOUR_USD, MAX_HOURS, RETAINER, TIER_PRICE_USD } from "@/lib/commission";
 
 // FAQ answers quote the live price book so copy can never drift from checkout.
 const $ = (n: number) => `$${n.toLocaleString("en-US")}`;
@@ -21,7 +21,7 @@ const en = {
     links: [
       { n: "01", label: "Index", href: "#archive" },
       { n: "02", label: "Motion", href: "#cinema" },
-      { n: "03", label: "Commissions", href: "#commissions" },
+      { n: "03", label: "Packages", href: "#commissions" },
       { n: "04", label: "Editorial", href: "#editorial" },
       { n: "05", label: "Journal", href: "/blog" },
     ],
@@ -42,8 +42,9 @@ const en = {
     season: "Season",
     seasonValue: "2027 — Booking now",
     regions: "Regions",
+    regionsValue: "Dallas–Fort Worth, Houston, Austin & San Antonio",
     status: "Status",
-    action: "Check Commission Availability",
+    action: "Check Your Date",
     actionNote: "We reply personally, in English or Spanish.",
   },
   status: {
@@ -55,7 +56,7 @@ const en = {
   archive: {
     index: "01 / Archive",
     title: "The Archive",
-    dek: "Ten commissions, read as essays. Each frame is made once, in the room, by the light that was there.",
+    dek: "Ten real quinceañeras we photographed across Texas. Every photo taken in the moment, in the light that was there.",
     views: { grid: "Editorial Grid", list: "Index List" },
     viewLabel: "View",
     filterLabel: "Filter works",
@@ -91,37 +92,49 @@ const en = {
     empty: "Our films are loading into the library. Watch them on the videographer page.",
   },
   commissions: {
-    index: "03 / Commissions",
-    title: "Commissions",
-    dek: "Four ways to be photographed and filmed. Every price is published, every deliverable named. Nothing waits to be revealed on a call.",
-    investment: "Investment",
+    index: "03 / Packages",
+    title: "Packages & Prices",
+    dek: "Four packages, every price shown up front. Pick one, choose your hours, and see your total right away — no surprises, no sales call.",
+    investment: "Price",
     select: "Select",
     selected: "Selected",
     included: "Included",
     notIncluded: "Not included",
-    tailor: "Tailor the commission",
-    tailorDek: "Tap an enhancement to add it. The estimate updates as you go.",
-    estimate: "Estimated investment",
-    retainer: "Retainer to hold the date (30%)",
-    base: "Commission",
-    begin: "Begin with this commission",
-    fine: "Texas sales tax and travel outside our four regions are quoted separately.",
+    tailor: "Make it yours",
+    tailorDek: "Choose your hours and your team, then tap any extra to add it. Your total updates as you go.",
+    estimate: "Your total",
+    retainer: "Deposit to hold your date (30%)",
+    base: "Package",
+    begin: "Book this package",
+    fine: "Texas sales tax and travel outside Dallas–Fort Worth, Houston, Austin and San Antonio are quoted separately.",
+    extras: "Extras",
     add: "Add",
     added: "Added",
   },
   crew: {
-    title: "Choose your crew",
+    title: "Your team",
     dek: (n: number) =>
-      `${n} directors are included. Photographers and videographers are interchangeable, so set the mix that suits the day, at no extra cost.`,
+      `${n} people are included. Choose how many take photos and how many take video — same price either way.`,
     photo: "Photographers",
     motion: "Videographers",
     toPhoto: "Swap a videographer for a photographer",
     toMotion: "Swap a photographer for a videographer",
-    total: (n: number) => `Crew on the day: ${n} included`,
+    total: (n: number) => `Team on the day: ${n} included`,
     mix: (p: number, m: number) =>
       `${p} ${p === 1 ? "photographer" : "photographers"} · ${m} ${m === 1 ? "videographer" : "videographers"}`,
-    studyNote: "The Portrait Study is a single-photographer session. Choose an event commission for a full crew.",
-    coordinator: "Day-of coordinator included",
+    studyNote: "The Portrait Session is one photographer. Choose Photo + Video or bigger for a team.",
+    coordinator: "Coordinator who runs the day included",
+  },
+  hours: {
+    title: "Your hours",
+    dek: (base: number, rate: string, max: number) =>
+      `${base} hours are included. Need more? Add hours one at a time, up to ${max}, for ${rate} each.`,
+    full: (base: number) => `${base} hours on the celebration day, plus a second day for portraits. That's our longest coverage.`,
+    label: "Hours on the day",
+    less: "One hour less",
+    more: "One hour more",
+    value: (h: number) => `${h} hours`,
+    extra: (n: number) => `Extra ${n === 1 ? "hour" : "hours"} (${n})`,
   },
   editorial: {
     index: "04 / Editorial",
@@ -153,19 +166,19 @@ const en = {
     items: [
       {
         q: "How much does a quinceañera photographer and videographer cost in Dallas–Fort Worth?",
-        a: `Most DFW quinceañera studios publish packages between about $1,500 and $6,000. TX Quince publishes every price: a Portrait Study begins at ${$(P.study)}, photo and film together begin at ${$(P.cinema)}, and The Full Production, the commission we recommend for most celebrations, is ${$(P.production)}.`,
+        a: `Most DFW quinceañera studios charge between about $1,500 and $6,000. Our prices are all shown above: a Portrait Session is ${$(P.study)}, Photo + Video starts at ${$(P.cinema)}, and the Full Celebration, the package we recommend for most families, is ${$(P.production)}.`,
       },
       {
         q: "Is photography and film included together?",
-        a: "Yes, from Commission II up. Two directors cover the day, one for stills and one for motion, so the gallery and the film are made side by side. The Portrait Study is photography only.",
+        a: "Yes, from the Photo + Video package up. A photographer and a videographer cover the day together, so you get both the photos and the video. The Portrait Session is photos only.",
       },
       {
         q: "How many photographers and videographers do we get?",
-        a: `It's built into every commission: Cinema & Stills includes ${BASE_CREW.cinema} directors, The Full Production ${BASE_CREW.production}, and the Multi-Day Archive ${BASE_CREW.archive}. Photographers and videographers are interchangeable, so you choose the mix. The Full Production and the Archive also include a day-of coordinator who runs the timeline and cues the court, so the family can be present.`,
+        a: `It's included in the price: Photo + Video comes with ${BASE_CREW.cinema} people, the Full Celebration with ${BASE_CREW.production}, and the Two-Day Celebration with ${BASE_CREW.archive}. You choose how many take photos and how many take video. The Full Celebration and Two-Day Celebration also include a coordinator who runs the schedule and lines up the court, so your family can just enjoy the day.`,
       },
       {
         q: "How many hours of coverage does a quinceañera need?",
-        a: "Plan on the whole arc: getting ready at home, the misa (about an hour), portraits between church and reception, then the grand entrance, vals, surprise dance and toasts. That is usually 8 to 11 hours, which is what Commissions II and III cover.",
+        a: `Most families choose ${MAX_HOURS - 2} to ${MAX_HOURS} hours: getting ready at home, the misa (about an hour), photos between church and the party, then the grand entrance, vals, surprise dance and toasts. Our packages include ${BASE_HOURS.study} to ${BASE_HOURS.archive} hours, and you can add hours up to ${MAX_HOURS} (from ${$(EXTRA_HOUR_USD.study)} an hour).`,
       },
       {
         q: "How far in advance should we book?",
@@ -177,11 +190,11 @@ const en = {
       },
       {
         q: "Do you work in Spanish?",
-        a: "Yes. Every consultation, timeline and delivery is available in English or Spanish, and our directors speak with grandparents and padrinos in whichever language is most comfortable.",
+        a: "Yes. Every consultation, timeline and delivery is available in English or Spanish, and our team speaks with grandparents and padrinos in whichever language is most comfortable.",
       },
       {
-        q: "How does the retainer work?",
-        a: `A retainer of ${PCT} of your commission holds the date and is applied in full to your balance, which is due ${RETAINER.balanceDueDays} days before the celebration. You can pay it online at secure checkout, or request a consultation first and we will hold the date for ${CONSULT_HOLD_DAYS} days while we talk.`,
+        q: "How does the deposit work?",
+        a: `A deposit of ${PCT} of your total holds your date, and all of it goes toward what you owe. The rest is due ${RETAINER.balanceDueDays} days before the celebration. You can pay the deposit online, or ask for a call first and we'll hold your date for ${CONSULT_HOLD_DAYS} days while we talk.`,
       },
       {
         q: "Where do you take pre-quince portraits around Dallas?",
@@ -201,11 +214,11 @@ const en = {
     liveNote: "Read directly from the studio calendar.",
     nextTitle: "What happens next",
     next: [
-      "A director writes back personally, within one day, in your language.",
+      "We write back personally, within one day, in your language.",
       "A thirty-minute consultation, by video or over coffee.",
-      "A 30% retainer secures the date. Planning begins.",
+      "A 30% deposit holds your date. Then we start planning together.",
     ],
-    steps: ["Date & Locale", "Aesthetic & Tier", "Family & Language"],
+    steps: ["Date & Place", "Package", "Your Details"],
     stepOf: (a: number, b: number) => `Step ${a} of ${b}`,
     date: "Celebration date",
     prevMonth: "Previous month",
@@ -219,9 +232,9 @@ const en = {
     venue: "Venue",
     venueHint: "If you've chosen one. Leave blank if not.",
     scope: "Celebration scope",
-    tier: "Choose a commission",
-    addOns: "Enhancements",
-    estimate: "Estimated investment",
+    tier: "Choose a package",
+    addOns: "Extras",
+    estimate: "Your total",
     parent: "Your name",
     parentHint: "Parent, guardian, or the quinceañera herself.",
     honoree: "Quinceañera's first name",
@@ -239,19 +252,19 @@ const en = {
     finish: "How would you like to hold it?",
     pathRetainer: "Reserve now",
     pathRetainerNote: (amount: string) =>
-      `Pay the ${amount} retainer through secure checkout. The date is yours the moment it clears.`,
+      `Pay the ${amount} deposit online. Your date is yours the moment it goes through.`,
     pathConsult: "Consultation first",
     pathConsultNote: (days: number) =>
       `No payment today. We hold the date for ${days} days while we talk it through together.`,
     submitRetainer: (amount: string) => `Secure checkout · ${amount}`,
     redirecting: "Opening secure checkout…",
-    secure: "Secure checkout by Stripe. Your retainer is applied in full; the balance is due 30 days before the celebration.",
-    retainerLabel: "Retainer today",
-    balanceLabel: "Balance, 30 days before",
+    secure: "Secure payment by Stripe. Your deposit goes toward your total; the rest is due 30 days before the celebration.",
+    retainerLabel: "Deposit today",
+    balanceLabel: "The rest, due 30 days before",
     closed: "Checkout closed before payment. Your details are saved, so you can continue whenever you're ready.",
     paidTitle: "Your date is reserved.",
     paidBody: (date: string, amount: string) =>
-      `We've received your ${amount} retainer for ${date}. A director will write within one day to begin planning.`,
+      `We've received your ${amount} deposit for ${date}. We'll write within one day to start planning.`,
     processingTitle: "Payment processing.",
     processingBody: (date: string) =>
       `Your bank is confirming the payment. ${date} stays held, and we'll email you the moment it clears.`,
@@ -296,7 +309,7 @@ const es: Copy = {
     links: [
       { n: "01", label: "Índice", href: "#archive" },
       { n: "02", label: "Cine", href: "#cinema" },
-      { n: "03", label: "Encargos", href: "#commissions" },
+      { n: "03", label: "Paquetes", href: "#commissions" },
       { n: "04", label: "Editorial", href: "#editorial" },
       { n: "05", label: "Diario", href: "/es/blog" },
     ],
@@ -317,8 +330,9 @@ const es: Copy = {
     season: "Temporada",
     seasonValue: "2027 — Reservando",
     regions: "Regiones",
+    regionsValue: "Dallas–Fort Worth, Houston, Austin y San Antonio",
     status: "Estado",
-    action: "Consultar disponibilidad",
+    action: "Revisa tu fecha",
     actionNote: "Respondemos en persona, en español o en inglés.",
   },
   status: {
@@ -330,7 +344,7 @@ const es: Copy = {
   archive: {
     index: "01 / Archivo",
     title: "El Archivo",
-    dek: "Diez encargos, leídos como ensayos. Cada imagen se hace una sola vez, en el lugar, con la luz que había.",
+    dek: "Diez quinceañeras reales que fotografiamos en Texas. Cada foto tomada en el momento, con la luz que había.",
     views: { grid: "Retícula editorial", list: "Lista índice" },
     viewLabel: "Vista",
     filterLabel: "Filtrar obras",
@@ -366,28 +380,29 @@ const es: Copy = {
     empty: "Nuestras películas se están cargando. Míralas en la página de videografía.",
   },
   commissions: {
-    index: "03 / Encargos",
-    title: "Encargos",
-    dek: "Cuatro maneras de ser fotografiada y filmada. Cada precio publicado, cada entrega nombrada. Nada espera a revelarse en una llamada.",
-    investment: "Inversión",
+    index: "03 / Paquetes",
+    title: "Paquetes y precios",
+    dek: "Cuatro paquetes, con todos los precios a la vista. Elige uno, escoge tus horas y ve tu total al instante — sin sorpresas, sin llamadas de venta.",
+    investment: "Precio",
     select: "Elegir",
     selected: "Elegido",
     included: "Incluido",
     notIncluded: "No incluido",
-    tailor: "A la medida",
-    tailorDek: "Toca un complemento para añadirlo. El estimado se actualiza al instante.",
-    estimate: "Inversión estimada",
-    retainer: "Anticipo para apartar la fecha (30%)",
-    base: "Encargo",
-    begin: "Comenzar con este encargo",
-    fine: "El impuesto de Texas y los viajes fuera de nuestras cuatro regiones se cotizan aparte.",
+    tailor: "Hazlo a tu manera",
+    tailorDek: "Escoge tus horas y tu equipo, y toca cualquier extra para añadirlo. Tu total se actualiza al instante.",
+    estimate: "Tu total",
+    retainer: "Depósito para apartar tu fecha (30%)",
+    base: "Paquete",
+    begin: "Reservar este paquete",
+    fine: "El impuesto de Texas y los viajes fuera de Dallas–Fort Worth, Houston, Austin y San Antonio se cotizan aparte.",
+    extras: "Extras",
     add: "Añadir",
     added: "Añadido",
   },
   crew: {
-    title: "Elige tu equipo",
+    title: "Tu equipo",
     dek: (n: number) =>
-      `Incluye ${n} directores. Fotógrafos y videógrafos son intercambiables: arma la combinación que mejor le quede al día, sin costo extra.`,
+      `Incluye ${n} personas. Escoge cuántas toman fotos y cuántas graban video — el precio es el mismo.`,
     photo: "Fotógrafos",
     motion: "Videógrafos",
     toPhoto: "Cambiar un videógrafo por un fotógrafo",
@@ -395,8 +410,19 @@ const es: Copy = {
     total: (n: number) => `Equipo en el día: ${n} incluidos`,
     mix: (p: number, m: number) =>
       `${p} ${p === 1 ? "fotógrafo" : "fotógrafos"} · ${m} ${m === 1 ? "videógrafo" : "videógrafos"}`,
-    studyNote: "El Estudio de retrato es una sesión con un solo fotógrafo. Elige un encargo de evento para un equipo completo.",
-    coordinator: "Coordinadora del día incluida",
+    studyNote: "La Sesión de retratos es con un fotógrafo. Elige Foto + Video o más para tener un equipo.",
+    coordinator: "Incluye coordinadora que lleva el día",
+  },
+  hours: {
+    title: "Tus horas",
+    dek: (base: number, rate: string, max: number) =>
+      `Incluye ${base} horas. ¿Necesitas más? Añade horas una por una, hasta ${max}, a ${rate} cada una.`,
+    full: (base: number) => `${base} horas el día de la celebración, más un segundo día para retratos. Es nuestra cobertura más larga.`,
+    label: "Horas en el día",
+    less: "Una hora menos",
+    more: "Una hora más",
+    value: (h: number) => `${h} horas`,
+    extra: (n: number) => `${n === 1 ? "Hora extra" : "Horas extra"} (${n})`,
   },
   editorial: {
     index: "04 / Editorial",
@@ -428,19 +454,19 @@ const es: Copy = {
     items: [
       {
         q: "¿Cuánto cuesta un fotógrafo y videógrafo de quinceañera en Dallas–Fort Worth?",
-        a: `La mayoría de los estudios de quinceañera en DFW publican paquetes de entre $1,500 y $6,000. TX Quince publica todos sus precios: un Estudio de retrato comienza en ${$(P.study)}, foto y cine juntos desde ${$(P.cinema)}, y La producción completa, el encargo que recomendamos para la mayoría de las celebraciones, cuesta ${$(P.production)}.`,
+        a: `La mayoría de los estudios de quinceañera en DFW cobran entre $1,500 y $6,000. Todos nuestros precios están arriba: la Sesión de retratos cuesta ${$(P.study)}, Foto + Video desde ${$(P.cinema)}, y la Celebración completa, el paquete que recomendamos para la mayoría de las familias, ${$(P.production)}.`,
       },
       {
         q: "¿La foto y el video vienen juntos?",
-        a: "Sí, a partir del Encargo II. Dos directores cubren el día, uno de foto y otro de cine, así que la galería y la película se hacen a la par. El Estudio de retrato es solo fotografía.",
+        a: "Sí, desde el paquete Foto + Video. Un fotógrafo y un videógrafo cubren el día juntos, así que tienes las fotos y el video. La Sesión de retratos es solo de fotos.",
       },
       {
         q: "¿Cuántos fotógrafos y videógrafos incluye?",
-        a: `Viene incluido en cada encargo: Cine y fotografía incluye ${BASE_CREW.cinema} directores, La producción completa ${BASE_CREW.production} y el Archivo de varios días ${BASE_CREW.archive}. Fotógrafos y videógrafos son intercambiables, así que tú eliges la combinación. La producción completa y el Archivo también incluyen una coordinadora del día que lleva el itinerario y coordina a la corte, para que la familia disfrute.`,
+        a: `Viene incluido en el precio: Foto + Video trae ${BASE_CREW.cinema} personas, la Celebración completa ${BASE_CREW.production} y la Celebración de dos días ${BASE_CREW.archive}. Tú escoges cuántas toman fotos y cuántas graban video. La Celebración completa y la de dos días también incluyen una coordinadora que lleva el horario y organiza a la corte, para que tu familia solo disfrute.`,
       },
       {
         q: "¿Cuántas horas de cobertura necesita una quinceañera?",
-        a: "Considera todo el día: el arreglo en casa, la misa (alrededor de una hora), los retratos entre la iglesia y la recepción, y luego la entrada, el vals, el baile sorpresa y los brindis. Normalmente son de 8 a 11 horas, lo que cubren los Encargos II y III.",
+        a: `La mayoría de las familias escogen de ${MAX_HOURS - 2} a ${MAX_HOURS} horas: el arreglo en casa, la misa (alrededor de una hora), fotos entre la iglesia y la fiesta, y luego la entrada, el vals, el baile sorpresa y los brindis. Nuestros paquetes incluyen de ${BASE_HOURS.study} a ${BASE_HOURS.archive} horas, y puedes añadir horas hasta ${MAX_HOURS} (desde ${$(EXTRA_HOUR_USD.study)} la hora).`,
       },
       {
         q: "¿Con cuánta anticipación debemos reservar?",
@@ -452,11 +478,11 @@ const es: Copy = {
       },
       {
         q: "¿Trabajan en español?",
-        a: "Sí. Cada consulta, itinerario y entrega está disponible en español o en inglés, y nuestros directores hablan con abuelos y padrinos en el idioma que les sea más cómodo.",
+        a: "Sí. Cada consulta, itinerario y entrega está disponible en español o en inglés, y nuestro equipo habla con abuelos y padrinos en el idioma que les sea más cómodo.",
       },
       {
-        q: "¿Cómo funciona el anticipo?",
-        a: `Un anticipo del ${PCT} del encargo aparta la fecha y se aplica completo a tu saldo, que se liquida ${RETAINER.balanceDueDays} días antes de la celebración. Puedes pagarlo en línea con pago seguro, o pedir primero una consulta y apartamos la fecha ${CONSULT_HOLD_DAYS} días mientras platicamos.`,
+        q: "¿Cómo funciona el depósito?",
+        a: `Un depósito del ${PCT} de tu total aparta tu fecha, y todo se abona a lo que debes. El resto se paga ${RETAINER.balanceDueDays} días antes de la celebración. Puedes pagar el depósito en línea, o pedir primero una llamada y apartamos tu fecha ${CONSULT_HOLD_DAYS} días mientras platicamos.`,
       },
       {
         q: "¿Dónde toman los retratos pre-quince en Dallas?",
@@ -476,11 +502,11 @@ const es: Copy = {
     liveNote: "Leído directamente del calendario del estudio.",
     nextTitle: "Qué sigue",
     next: [
-      "Un director te responde en persona, en un día, en tu idioma.",
+      "Te respondemos en persona, en un día, en tu idioma.",
       "Una consulta de treinta minutos, por video o con un café.",
-      "Un anticipo del 30% asegura la fecha. Comienza la planeación.",
+      "Un depósito del 30% aparta tu fecha. Luego planeamos juntos.",
     ],
-    steps: ["Fecha y lugar", "Estética y encargo", "Familia e idioma"],
+    steps: ["Fecha y lugar", "Paquete", "Tus datos"],
     stepOf: (a: number, b: number) => `Paso ${a} de ${b}`,
     date: "Fecha de la celebración",
     prevMonth: "Mes anterior",
@@ -494,9 +520,9 @@ const es: Copy = {
     venue: "Salón",
     venueHint: "Si ya lo eligieron. Déjalo en blanco si no.",
     scope: "Alcance de la celebración",
-    tier: "Elige un encargo",
-    addOns: "Complementos",
-    estimate: "Inversión estimada",
+    tier: "Elige un paquete",
+    addOns: "Extras",
+    estimate: "Tu total",
     parent: "Tu nombre",
     parentHint: "Mamá, papá, tutor o la quinceañera misma.",
     honoree: "Nombre de la quinceañera",
@@ -514,19 +540,19 @@ const es: Copy = {
     finish: "¿Cómo quieres apartarla?",
     pathRetainer: "Reservar ahora",
     pathRetainerNote: (amount: string) =>
-      `Paga el anticipo de ${amount} en un pago seguro. La fecha es tuya en cuanto se confirme.`,
+      `Paga el depósito de ${amount} en línea. La fecha es tuya en cuanto se confirme el pago.`,
     pathConsult: "Primero una consulta",
     pathConsultNote: (days: number) =>
       `Sin pago hoy. Apartamos la fecha ${days} días mientras platicamos.`,
     submitRetainer: (amount: string) => `Pago seguro · ${amount}`,
     redirecting: "Abriendo el pago seguro…",
-    secure: "Pago seguro con Stripe. El anticipo se aplica completo; el saldo se liquida 30 días antes de la celebración.",
-    retainerLabel: "Anticipo hoy",
-    balanceLabel: "Saldo, 30 días antes",
+    secure: "Pago seguro con Stripe. Tu depósito se abona a tu total; el resto se paga 30 días antes de la celebración.",
+    retainerLabel: "Depósito hoy",
+    balanceLabel: "El resto, 30 días antes",
     closed: "El pago se cerró antes de completarse. Tus datos están guardados; continúa cuando quieras.",
     paidTitle: "Tu fecha está reservada.",
     paidBody: (date: string, amount: string) =>
-      `Recibimos tu anticipo de ${amount} para el ${date}. Un director te escribirá en un día para comenzar a planear.`,
+      `Recibimos tu depósito de ${amount} para el ${date}. Te escribiremos en un día para empezar a planear.`,
     processingTitle: "Pago en proceso.",
     processingBody: (date: string) =>
       `Tu banco está confirmando el pago. El ${date} sigue apartado y te escribiremos en cuanto se confirme.`,

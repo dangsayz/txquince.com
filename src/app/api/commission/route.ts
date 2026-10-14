@@ -113,10 +113,10 @@ export async function POST(req: NextRequest) {
   }
   if (r.path === "retainer" && !isStripeConfigured()) {
     console.error("[commission] STRIPE_SECRET_KEY not set.");
-    return fail(503, "payments_unavailable", "Online retainers aren't live yet. Choose a consultation first and we'll hold your date.");
+    return fail(503, "payments_unavailable", "Online deposits aren't live yet. Choose a consultation first and we'll hold your date.");
   }
 
-  const q = quoteCommission(r.tier, r.add_ons);
+  const q = quoteCommission(r.tier, r.add_ons, r.hours);
   const crew = normalizeCrew(r.tier, r.crew_mix);
   const addOns = r.add_ons;
   const retainerCents = q.retainerUsd * 100;
@@ -128,6 +128,7 @@ export async function POST(req: NextRequest) {
     add_ons: addOns,
     crew_mix: crew,
     crew_size: q.crewSize,
+    hours: q.hours,
     coordinator_included: COORDINATOR_INCLUDED[r.tier],
     total_usd: q.totalUsd,
     retainer_usd: q.retainerUsd,
@@ -228,12 +229,12 @@ export async function POST(req: NextRequest) {
     const session = await createStripeCheckoutSession({
       amountCents: hold.deposit_amount_cents,
       currency: hold.currency,
-      productName: `${site.brand} — Retainer · ${TIER_NAME_EN[r.tier]}`,
+      productName: `${site.brand} — Deposit · ${TIER_NAME_EN[r.tier]} (${q.hours} hrs)`,
       productDescription:
-        `Holds ${prettyDate}. Commission total $${q.totalUsd.toLocaleString("en-US")}` +
+        `Holds ${prettyDate}. Package total $${q.totalUsd.toLocaleString("en-US")} for ${q.hours} hours` +
         (extras ? ` incl. ${extras}` : "") +
-        `. Applied in full to your balance.`,
-      paymentDescription: `TX Quince retainer — ${prettyDate}`,
+        `. Your deposit goes toward the total.`,
+      paymentDescription: `TX Quince deposit — ${prettyDate}`,
       clientReferenceId: hold.booking_id,
       customerEmail: r.email,
       locale: r.language === "es" ? "es" : "en",
@@ -247,6 +248,7 @@ export async function POST(req: NextRequest) {
         tier: r.tier,
         add_ons: addOns.join(","),
         crew_size: q.crewSize,
+        hours: q.hours,
         total_usd: q.totalUsd,
         language: r.language,
       },

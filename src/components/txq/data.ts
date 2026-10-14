@@ -16,6 +16,8 @@ export const pick = (lang: Lang, v: L) => v[lang];
 
 import {
   ADD_ON_PRICE_USD,
+  BASE_HOURS,
+  MAX_HOURS,
   TIER_PRICE_USD,
   quoteCommission,
   type AddOnId,
@@ -254,10 +256,10 @@ export const TIERS: Tier[] = [
   {
     id: "study",
     numeral: "I.",
-    name: { en: "Portrait Study", es: "Estudio de retrato" },
+    name: { en: "Portrait Session", es: "Sesión de retratos" },
     summary: {
-      en: "A single unhurried session before the celebration. Couture, light, and her.",
-      es: "Una sola sesión sin prisa antes de la celebración. Vestido, luz y ella.",
+      en: "Photos only. A relaxed session before the big day — her dress, her style, beautiful light.",
+      es: "Solo fotos. Una sesión tranquila antes del gran día — su vestido, su estilo, luz hermosa.",
     },
     price: TIER_PRICE_USD.study,
     scope: "stills",
@@ -265,10 +267,10 @@ export const TIERS: Tier[] = [
   {
     id: "cinema",
     numeral: "II.",
-    name: { en: "Cinema & Stills", es: "Cine y fotografía" },
+    name: { en: "Photo + Video", es: "Foto + Video" },
     summary: {
-      en: "The day, told twice: once in frames, once in motion, by two directors.",
-      es: "El día, contado dos veces: en imágenes y en movimiento, por dos directores.",
+      en: "One photographer and one videographer for the celebration, so you get the photos and the video.",
+      es: "Un fotógrafo y un videógrafo en la celebración, para que tengas las fotos y el video.",
     },
     price: TIER_PRICE_USD.cinema,
     scope: "both",
@@ -276,10 +278,10 @@ export const TIERS: Tier[] = [
   {
     id: "production",
     numeral: "III.",
-    name: { en: "The Full Production", es: "La producción completa" },
+    name: { en: "Full Celebration", es: "Celebración completa" },
     summary: {
-      en: "Four directors and a day-of coordinator, from the portrait session to the last dance, bound in linen.",
-      es: "Cuatro directores y una coordinadora del día, de la sesión de retrato al último baile, encuadernado en lino.",
+      en: "The one we recommend most. A team of four plus a coordinator who runs the day, so you can enjoy it. Includes a portrait session and a printed album.",
+      es: "La que más recomendamos. Un equipo de cuatro más una coordinadora que lleva el día, para que tú lo disfrutes. Incluye sesión de retratos y álbum impreso.",
     },
     price: TIER_PRICE_USD.production,
     scope: "both",
@@ -287,10 +289,10 @@ export const TIERS: Tier[] = [
   {
     id: "archive",
     numeral: "IV.",
-    name: { en: "Multi-Day Editorial Archive", es: "Archivo editorial de varios días" },
+    name: { en: "Two-Day Celebration", es: "Celebración de dos días" },
     summary: {
-      en: "Five directors and a coordinator, from the dress fitting to the last song. A documentary of the season.",
-      es: "Cinco directores y una coordinadora, de la prueba del vestido a la última canción. Un documental de la temporada.",
+      en: "Everything in the Full Celebration, plus a second day for portraits, a team of five, and a larger album.",
+      es: "Todo lo de la Celebración completa, más un segundo día de retratos, un equipo de cinco y un álbum más grande.",
     },
     price: TIER_PRICE_USD.archive,
     scope: "both",
@@ -302,22 +304,38 @@ export type MatrixGroup = { id: string; title: L; rows: MatrixRow[] };
 
 const v = (en: string, es: string = en): L => ({ en, es });
 
+/** "6 hours" / "6 horas", plus how far it can grow. */
+const hoursCell = (tier: TierId): L => {
+  const base = BASE_HOURS[tier];
+  if (base >= MAX_HOURS) return v(`${base} hours, both days`, `${base} horas, ambos días`);
+  return v(`${base} hours (add up to ${MAX_HOURS})`, `${base} horas (hasta ${MAX_HOURS})`);
+};
+
 export const MATRIX: MatrixGroup[] = [
   {
     id: "coverage",
-    title: { en: "Coverage & Direction", es: "Cobertura y dirección" },
+    title: { en: "Your day", es: "Tu día" },
     rows: [
       {
-        label: v("Crew on the day", "Equipo en el día"),
+        label: v("Hours", "Horas"),
         values: {
-          study: v("1 photographer", "1 fotógrafo"),
-          cinema: v("2 directors, your mix", "2 directores, a tu medida"),
-          production: v("4 directors, your mix", "4 directores, a tu medida"),
-          archive: v("5 directors, your mix", "5 directores, a tu medida"),
+          study: hoursCell("study"),
+          cinema: hoursCell("cinema"),
+          production: hoursCell("production"),
+          archive: hoursCell("archive"),
         },
       },
       {
-        label: v("Day-of coordinator", "Coordinadora del día"),
+        label: v("Your team", "Tu equipo"),
+        values: {
+          study: v("1 photographer", "1 fotógrafo"),
+          cinema: v("1 photographer + 1 videographer", "1 fotógrafo + 1 videógrafo"),
+          production: v("4 people — you pick photo or video", "4 personas — tú eliges foto o video"),
+          archive: v("5 people — you pick photo or video", "5 personas — tú eliges foto o video"),
+        },
+      },
+      {
+        label: v("Coordinator who runs the day", "Coordinadora que lleva el día"),
         values: {
           study: null,
           cinema: null,
@@ -326,87 +344,78 @@ export const MATRIX: MatrixGroup[] = [
         },
       },
       {
-        label: v("Hours of coverage", "Horas de cobertura"),
+        label: v("Portrait session", "Sesión de retratos"),
         values: {
-          study: v("3 hrs, one session", "3 h, una sesión"),
-          cinema: v("8 hrs", "8 h"),
-          production: v("11 hrs", "11 h"),
-          archive: v("2 days + 12 hrs", "2 días + 12 h"),
-        },
-      },
-      {
-        label: v("Portrait session", "Sesión de retrato"),
-        values: {
-          study: v("The session itself", "La sesión misma"),
+          study: v("Yes — that's this package", "Sí — es este paquete"),
           cinema: null,
-          production: v("One location", "Una locación"),
-          archive: v("Two locations", "Dos locaciones"),
+          production: v("1 location", "1 lugar"),
+          archive: v("2 locations, on its own day", "2 lugares, en su propio día"),
         },
       },
     ],
   },
   {
     id: "motion",
-    title: { en: "Motion Deliverables", es: "Entregas de cine" },
+    title: { en: "Video", es: "Video" },
     rows: [
       {
-        label: v("4K feature cut", "Largometraje 4K"),
+        label: v("Full-length video", "Video completo"),
         values: {
           study: null,
-          cinema: v("8–10 min", "8–10 min"),
-          production: v("12–15 min", "12–15 min"),
-          archive: v("20 min documentary", "Documental de 20 min"),
+          cinema: v("8–10 minutes", "8–10 minutos"),
+          production: v("12–15 minutes", "12–15 minutos"),
+          archive: v("20 minutes", "20 minutos"),
         },
       },
       {
-        label: v("Theatrical teaser", "Avance cinematográfico"),
+        label: v("Short trailer", "Tráiler corto"),
         values: {
           study: null,
-          cinema: v("60 sec", "60 s"),
-          production: v("90 sec", "90 s"),
-          archive: v("2 min trailer", "Tráiler de 2 min"),
+          cinema: v("1 minute", "1 minuto"),
+          production: v("90 seconds", "90 segundos"),
+          archive: v("2 minutes", "2 minutos"),
         },
       },
       {
-        label: v("Vertical reels", "Reels verticales"),
+        label: v("Short videos for social media", "Videos cortos para redes"),
         values: {
-          study: v("1 motion portrait", "1 retrato en movimiento"),
-          cinema: v("2 cuts", "2 cortes"),
-          production: v("4 cuts", "4 cortes"),
-          archive: v("6 cuts, 48-hr preview", "6 cortes, avance en 48 h"),
+          study: v("1", "1"),
+          cinema: v("2", "2"),
+          production: v("4", "4"),
+          archive: v("6, first one in 48 hours", "6, el primero en 48 horas"),
         },
       },
     ],
   },
   {
     id: "print",
-    title: { en: "Print & Archival", es: "Impresión y archivo" },
+    title: { en: "Photos & album", es: "Fotos y álbum" },
     rows: [
       {
-        label: v("Retouched selects", "Selección retocada"),
+        label: v("Edited photos", "Fotos editadas"),
         values: {
-          study: v("60 frames", "60 imágenes"),
-          cinema: v("400+ frames", "400+ imágenes"),
-          production: v("700+ frames", "700+ imágenes"),
-          archive: v("1,000+ frames", "1,000+ imágenes"),
+          study: v("60", "60"),
+          cinema: v("400+", "400+"),
+          production: v("700+", "700+"),
+          archive: v("1,000+", "1,000+"),
         },
       },
       {
-        label: v("Linen heirloom monograph", "Monografía de lino"),
+        label: v("Printed photo album", "Álbum de fotos impreso"),
         values: {
           study: null,
           cinema: null,
-          production: v("10×10 in, 40 pp", "25×25 cm, 40 pp"),
-          archive: v("12×12 in, 60 pp, slipcase", "30×30 cm, 60 pp, estuche"),
+          production: v("10×10 in, 40 pages", "25×25 cm, 40 páginas"),
+          archive: v("12×12 in, 60 pages, gift box", "30×30 cm, 60 páginas, caja de regalo"),
         },
       },
       {
-        label: v("Raw archive delivery", "Entrega del archivo crudo"),
+        label: v("All your original files", "Todos tus archivos originales"),
         values: {
           study: null,
           cinema: null,
-          production: v("Stills", "Foto"),
-          archive: v("Stills + motion, two drives", "Foto + cine, dos discos"),
+          production: v("Photos", "Fotos"),
+          archive: v("Photos + video", "Fotos + video"),
         },
       },
     ],
@@ -418,37 +427,37 @@ export type AddOn = { id: AddOnId; name: L; note: L; price: number };
 export const ADD_ONS: AddOn[] = [
   {
     id: "destination",
-    name: { en: "Pre-Event Destination Portrait Session", es: "Sesión de retrato en destino" },
+    name: { en: "Extra Portrait Session", es: "Sesión de retratos extra" },
     note: {
-      en: "A half-day anywhere in Texas: Marfa, Galveston, the Hill Country.",
-      es: "Medio día en cualquier parte de Texas: Marfa, Galveston, el Hill Country.",
+      en: "A second portrait session anywhere in Texas — Galveston, the Hill Country, wherever she loves.",
+      es: "Una segunda sesión de retratos en cualquier parte de Texas — Galveston, el Hill Country, donde ella quiera.",
     },
     price: ADD_ON_PRICE_USD.destination,
   },
   {
     id: "sameday",
-    name: { en: "Same-Day Reception Edit", es: "Edición el mismo día" },
+    name: { en: "Same-Night Highlight Video", es: "Video resumen la misma noche" },
     note: {
-      en: "A two-minute film screened for your guests before the last dance.",
-      es: "Una película de dos minutos proyectada antes del último baile.",
+      en: "A 2-minute video of her day, played for your guests before the party ends.",
+      es: "Un video de 2 minutos de su día, proyectado para tus invitados antes de que termine la fiesta.",
     },
     price: ADD_ON_PRICE_USD.sameday,
   },
   {
     id: "super8",
-    name: { en: "Super 8mm Film Roll", es: "Rollo de Super 8" },
+    name: { en: "Vintage Film Clip", es: "Clip de película vintage" },
     note: {
-      en: "Three minutes of real film, grain and all, cut into the feature.",
-      es: "Tres minutos de película real, con todo y grano, dentro del largometraje.",
+      en: "Three minutes shot on real old-style film (Super 8), added to her video.",
+      es: "Tres minutos grabados en película antigua de verdad (Super 8), dentro de su video.",
     },
     price: ADD_ON_PRICE_USD.super8,
   },
   {
     id: "parents",
-    name: { en: "Fine Art Parent Albums", es: "Álbumes de arte para padres" },
+    name: { en: "Albums for Mom & Dad", es: "Álbumes para mamá y papá" },
     note: {
-      en: "Two 8×8 linen companions to the monograph, one for each household.",
-      es: "Dos álbumes de lino de 20×20 cm, uno para cada hogar.",
+      en: "Two smaller 8×8 copies of her album, one for each home.",
+      es: "Dos copias más pequeñas de 20×20 cm de su álbum, una para cada hogar.",
     },
     price: ADD_ON_PRICE_USD.parents,
   },
@@ -456,12 +465,12 @@ export const ADD_ONS: AddOn[] = [
 
 export const tierById = (id: TierId) => TIERS.find((t) => t.id === id)!;
 
-export function estimate(tier: TierId, addOns: AddOnId[]) {
-  return quoteCommission(tier, addOns).totalUsd;
+export function estimate(tier: TierId, addOns: AddOnId[], hours?: number) {
+  return quoteCommission(tier, addOns, hours).totalUsd;
 }
 
-export function retainer(tier: TierId, addOns: AddOnId[]) {
-  return quoteCommission(tier, addOns).retainerUsd;
+export function retainer(tier: TierId, addOns: AddOnId[], hours?: number) {
+  return quoteCommission(tier, addOns, hours).retainerUsd;
 }
 
 export function money(n: number) {

@@ -28,7 +28,7 @@ import {
   type Scope,
 } from "./data";
 import { isoDate, useAvailability, useSite } from "./state";
-import { CrewControl, useTween } from "./Commissions";
+import { CrewControl, HoursControl, useTween } from "./Commissions";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const MAX_MONTHS_AHEAD = 36;
@@ -54,6 +54,7 @@ type Draft = {
   tier: TierId;
   addOns: AddOnId[];
   crew?: Crew;
+  hours?: number;
   name: string;
   honoree: string;
   email: string;
@@ -84,7 +85,7 @@ function longDate(iso: string, lang: Lang) {
 }
 
 export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
-  const { t, lang, tier, setTier, addOns, toggleAddOn, setAddOns, crew, setCrew } = useSite();
+  const { t, lang, tier, setTier, addOns, toggleAddOn, setAddOns, crew, setCrew, hours, setHours } = useSite();
   const avail = useAvailability();
   const reduce = useReducedMotion();
 
@@ -122,11 +123,11 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
     titleRef.current?.focus({ preventScroll: true });
   }, [step, done, reduce]);
 
-  const total = estimate(tier, addOns);
+  const total = estimate(tier, addOns, hours);
   const shown = useTween(total);
   const language = prefLang ?? lang;
   const portrait = workById("w02");
-  const quote = quoteCommission(tier, addOns);
+  const quote = quoteCommission(tier, addOns, hours);
 
   // Returning from Stripe: restore the family's details and show the outcome.
   function arrive(params: URLSearchParams, status: string) {
@@ -140,6 +141,7 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
       setTier(draft.tier);
       setAddOns(draft.addOns);
       if (draft.crew) setCrew(draft.crew);
+      if (draft.hours) setHours(draft.hours, draft.tier);
       setName(draft.name);
       setHonoree(draft.honoree);
       setEmail(draft.email);
@@ -217,7 +219,7 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
     }
     setSending(true);
     setNotice(null);
-    const draft: Draft = { date, city, venue, scope, tier, addOns, crew, name, honoree, email, phone, prefLang, note };
+    const draft: Draft = { date, city, venue, scope, tier, addOns, crew, hours, name, honoree, email, phone, prefLang, note };
     try {
       const res = await fetch("/api/commission", {
         method: "POST",
@@ -231,6 +233,7 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
           tier,
           add_ons: addOns,
           crew_mix: crew,
+          hours,
           name: name.trim(),
           honoree: honoree.trim(),
           email: email.trim(),
@@ -546,6 +549,11 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
                         </fieldset>
 
                         <div className="tq-field">
+                          <span className="tq-mono tq-legend">{t.hours.title}</span>
+                          <HoursControl />
+                        </div>
+
+                        <div className="tq-field">
                           <span className="tq-mono tq-legend">
                             {t.crew.title} <span className="tq-muted">— {t.intake.optional}</span>
                           </span>
@@ -774,10 +782,10 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
 /* ------------------------------------------------------------------ */
 
 function Summary({ date, city, total }: { date: string | null; city: string; total: number }) {
-  const { t, lang, tier, addOns, crew } = useSite();
+  const { t, lang, tier, addOns, crew, hours } = useSite();
   const x = tierById(tier);
   const extras = ADD_ONS.filter((a) => addOns.includes(a.id));
-  const q = quoteCommission(tier, addOns);
+  const q = quoteCommission(tier, addOns, hours);
   return (
     <dl className="tq-summary" aria-label={t.intake.summary}>
       <div>
@@ -793,6 +801,8 @@ function Summary({ date, city, total }: { date: string | null; city: string; tot
           {x.numeral} {pick(lang, x.name)}
           {extras.length > 0 && ` + ${extras.map((a) => pick(lang, a.name)).join(", ")}`}
           <span className="tq-muted">
+            {" · "}
+            {t.hours.value(hours)}
             {" · "}
             {BASE_CREW[tier] > 1 ? t.crew.mix(crew.photo, crew.motion) : t.crew.mix(1, 0)}
             {COORDINATOR_INCLUDED[tier] ? ` · ${t.crew.coordinator}` : ""}

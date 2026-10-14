@@ -9,7 +9,9 @@
   --bg-surface: #f2efe9; /* raw linen */
   --bg-cinema: #0d0d0c; /* obsidian film room */
   --text-primary: #111110; /* deep carbon */
-  --text-muted: #6e6a63; /* warm pewter — 5.2:1 on canvas */
+  /* Secondary text is ink too: the owner wants every word in black, so
+     hierarchy comes from size, weight and the mono face — not grey. */
+  --text-muted: #111110;
   --border-hairline: #e2ddd5; /* structural grid lines (decorative) */
   --border-control: #8c877f; /* form + control borders — 3.4:1 on canvas */
   --accent-fill: #111110;
@@ -50,7 +52,7 @@
   --bg-canvas: var(--bg-cinema);
   --bg-surface: #181816;
   --text-primary: #faf8f5;
-  --text-muted: #a49f96; /* 7.3:1 on cinema */
+  --text-muted: #faf8f5;
   --border-hairline: #2a2925;
   --border-control: #77726a;
   --accent-fill: #faf8f5;
@@ -642,25 +644,42 @@ a:hover > .tq-arrow {
   max-width: 46ch;
   color: var(--text-muted);
 }
+/* Hero facts: a small label over its value, evenly ruled, so long values
+   wrap under their own label instead of drifting out of line. */
 .tq-meta {
   display: grid;
-  gap: 12px;
+  width: 100%;
   margin: 0;
 }
 .tq-meta div {
   display: grid;
-  grid-template-columns: 88px 1fr;
-  gap: 12px;
-  align-items: center;
+  gap: 6px;
+  padding: 14px 0;
 }
+.tq-meta div + div {
+  border-top: 1px solid var(--border-hairline);
+}
+.tq-meta div:first-child { padding-top: 0; }
+.tq-meta div:last-child { padding-bottom: 0; }
 .tq-meta dt {
-  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-primary);
 }
 .tq-meta dd {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   margin: 0;
+  font-size: 1rem;
+  font-weight: var(--weight-medium);
+  line-height: 1.4;
+  text-wrap: balance;
+}
+.tq-meta dd .tq-dot {
+  margin-top: calc((1.4em - 7px) / 2);
 }
 .tq-action {
   display: flex;
@@ -685,8 +704,18 @@ a:hover > .tq-arrow {
   background: var(--accent-hover);
   color: #111110;
 }
+.tq-action__link > span:first-child {
+  white-space: nowrap;
+}
 .tq-action__link .tq-arrow {
   font-size: 1.25rem;
+}
+.tq-action > .tq-mono {
+  text-wrap: balance;
+}
+.tq-action__note {
+  font-size: 0.9375rem;
+  line-height: 1.5;
 }
 .tq-action__link:hover .tq-arrow {
   transform: translateX(5px);
@@ -1656,7 +1685,9 @@ a:hover > .tq-arrow {
   letter-spacing: -0.01em;
 }
 .tq-input::placeholder {
-  color: var(--text-muted);
+  /* The only lighter text: an empty field must not look filled in. */
+  color: var(--text-primary);
+  opacity: 0.45;
 }
 .tq-input:focus-visible {
   outline: none;

@@ -86,14 +86,14 @@ export function Hero() {
           </div>
 
           <div className="tq-ledger__meta">
-            <dl className="tq-meta tq-mono">
+            <dl className="tq-meta">
               <div>
                 <dt>{t.hero.season}</dt>
                 <dd>{t.hero.seasonValue}</dd>
               </div>
               <div>
                 <dt>{t.hero.regions}</dt>
-                <dd>DFW · HOU · ATX · SATX</dd>
+                <dd>{t.hero.regionsValue}</dd>
               </div>
               <div>
                 <dt>{t.hero.status}</dt>
@@ -113,7 +113,7 @@ export function Hero() {
                   →
                 </span>
               </a>
-              <span className="tq-mono tq-muted">{t.hero.actionNote}</span>
+              <span className="tq-action__note">{t.hero.actionNote}</span>
             </div>
           </div>
         </div>
