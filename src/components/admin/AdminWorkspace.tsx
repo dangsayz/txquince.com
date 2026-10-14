@@ -20,6 +20,7 @@ const websiteLinks = [
   { href: "/admin/venues", label: "Venues" },
   { href: "/admin/hero", label: "Page imagery" },
   { href: "/admin/prices", label: "Prices" },
+  { href: "/admin/images", label: "Every image" },
 ] as const;
 
 function isActive(pathname: string, href: string) {

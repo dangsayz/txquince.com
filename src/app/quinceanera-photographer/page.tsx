@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { SlotImage } from "@/components/SlotImage";
 import Link from "next/link";
 import { commissionsFromLabel as FROM_TOKEN } from "@/content/commissions";
 import { getPriceBook } from "@/lib/pricing";
@@ -108,14 +108,13 @@ export default async function LocationsHub() {
         <div className="tq-place-stage">
           <figure className="tq-plate" style={{ margin: 0 }}>
             <div className="tq-plate__loop">
-              <Image
-                src={hero.url}
-                alt={hero.alt}
+              <SlotImage
+                slot="areas.hero"
+                lang="en"
                 fill
-                preload
-                unoptimized={hero.local}
+                priority
                 sizes="100vw"
-                style={{ objectPosition: hero.focus }}
+                fallback={{ src: hero.url, alt: hero.alt, focus: hero.focus }}
               />
             </div>
             <figcaption>
@@ -190,13 +189,12 @@ export default async function LocationsHub() {
                 >
                   <span className="tq-place-card__media">
                     {shot ? (
-                      <Image
-                        src={shot.url}
-                        alt={shot.alt}
+                      <SlotImage
+                        slot={`city.${location.slug}.card`}
+                        lang="en"
                         fill
-                        unoptimized={shot.local}
                         sizes="(min-width: 1280px) 25vw, (min-width: 960px) 33vw, (min-width: 640px) 50vw, 100vw"
-                        style={{ objectPosition: shot.focus }}
+                        fallback={{ src: shot.url, alt: shot.alt, focus: shot.focus }}
                       />
                     ) : (
                       <span className="tq-place-card__blank">

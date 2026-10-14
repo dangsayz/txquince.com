@@ -11,6 +11,10 @@ import {
 import { WORKS, pick, type Category, type Work } from "./data";
 import { useSite } from "./state";
 import { archiveSlot, type HomeOverrides } from "@/lib/photo-dump-shared";
+import type { ResolvedSlotImage } from "@/lib/image-slot-resolve";
+import { SlotPicture } from "@/components/slots/SlotPicture";
+import { SlotAdminControl } from "@/components/slots/SlotAdminControl";
+import { fallbackSlot, useSlots } from "@/components/slots/SlotProvider";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const FILTERS: ("all" | Category)[] = ["all", "couture", "ceremony", "fiesta", "editorial"];
@@ -19,16 +23,21 @@ const pad = (n: number) => String(n).padStart(2, "0");
 
 export function Archive({ overrides = {} }: { overrides?: HomeOverrides }) {
   const { t, lang } = useSite();
-  // Frames the admin swapped for a Photo dump photo (Admin → Photo dump).
+  // Frames the admin replaced (image slots, resolved by the page) or swapped
+  // for a Photo dump photo (Admin → Photo dump).
+  const slots = useSlots();
   const all = useMemo(
     () =>
-      WORKS.map((w) => {
-        const swap = overrides[archiveSlot(w.id)];
-        return swap
+      WORKS.map((w): Work & { image: ResolvedSlotImage } => {
+        const id = archiveSlot(w.id);
+        const swap = overrides[id];
+        const own = swap
           ? { ...w, src: swap.src, width: swap.w, height: swap.h, focus: "50% 40%", alt: { en: swap.alt.en || w.alt.en, es: swap.alt.es || w.alt.es } }
           : w;
+        const image = slots[id] ?? fallbackSlot(id, own);
+        return { ...own, src: image.src, width: image.width ?? own.width, height: image.height ?? own.height, focus: image.objectPosition ?? own.focus, alt: image.alt, image };
       }),
-    [overrides],
+    [overrides, slots],
   );
   const [filter, setFilter] = useState<"all" | Category>("all");
   const [view, setView] = useState<"grid" | "list">("grid");
@@ -40,7 +49,7 @@ export function Archive({ overrides = {} }: { overrides?: HomeOverrides }) {
     [filter, all],
   );
   // Index numbers are stable to the archive, not the filtered view.
-  const number = (w: Work) => pad(all.indexOf(w) + 1);
+  const number = (w: Work) => pad(all.findIndex((x) => x.id === w.id) + 1);
 
   const open = (i: number, el: HTMLElement) => {
     opener.current = el;
@@ -128,14 +137,8 @@ export function Archive({ overrides = {} }: { overrides?: HomeOverrides }) {
                         viewport={{ once: true, margin: "0px 0px -10% 0px" }}
                         transition={{ duration: 1.1, ease: EASE }}
                       >
-                        <Image
-                          src={w.src}
-                          alt={pick(lang, w.alt)}
-                          fill
-                          unoptimized
-                          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                          style={{ objectPosition: w.focus }}
-                        />
+                        <SlotPicture image={w.image} lang={lang} fill sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" />
+                        <SlotAdminControl slot={w.image.slot} />
                       </motion.div>
                       <span className="tq-cap tq-mono">
                         <span>[{number(w)}]</span>

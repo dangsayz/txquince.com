@@ -1,12 +1,14 @@
 "use client";
 
-import Image from "next/image";
 import { forwardRef, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { getFirstTouch } from "@/components/Tracker";
 import { BASE_CREW, COORDINATOR_INCLUDED, priceBookSchema, type PriceBook } from "@/lib/commission";
 import { usePriceBook } from "@/components/PriceBookProvider";
+import { SlotPicture } from "@/components/slots/SlotPicture";
+import { SlotAdminControl } from "@/components/slots/SlotAdminControl";
+import { useSlot } from "@/components/slots/SlotProvider";
 import { buildAgreement } from "@/lib/agreement";
 import {
   ADD_ONS,
@@ -95,6 +97,7 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
   const shown = useTween(total);
   const language = prefLang ?? lang;
   const portrait = workById("w02");
+  const portraitImage = useSlot("home.intake.portrait", portrait);
 
   const cityLabel = CITIES.find((c) => c.id === city);
   // Package decides what's covered: the Portrait Session is photos only.
@@ -267,14 +270,8 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
           {/* Editorial context */}
           <aside className="tq-intake__aside">
             <div className="tq-intake__portrait">
-              <Image
-                src={portrait.src}
-                alt={pick(lang, portrait.alt)}
-                fill
-                unoptimized
-                sizes="(min-width: 960px) 40vw, 100vw"
-                style={{ objectPosition: portrait.focus }}
-              />
+              <SlotPicture image={portraitImage} lang={lang} fill sizes="(min-width: 960px) 40vw, 100vw" />
+              <SlotAdminControl slot="home.intake.portrait" />
             </div>
             <div className="tq-live">
               <span className="tq-mono" style={{ display: "flex", alignItems: "center", gap: 10 }}>

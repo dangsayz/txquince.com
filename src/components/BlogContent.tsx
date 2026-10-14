@@ -4,6 +4,8 @@ import type { CSSProperties, ReactNode } from "react";
 import type { BlogBlock, BlogCategory, BlogFaq, BlogPost } from "@/content/blog";
 import { slugifyHeading } from "@/content/blog";
 import { BlogShare } from "@/components/BlogShare";
+import { SlotImage } from "@/components/SlotImage";
+import { blogCoverSlotId } from "@/lib/image-slots";
 import "@/components/txq/pages/blog.css";
 
 /**
@@ -493,14 +495,13 @@ export function BlogIndexView({
           <div className="tq-wrap">
             <article className="tq-blog-feature">
               <div className="tq-blog-feature__media">
-                <Image
-                  src={featuredImage?.url ?? "/portfolio/hero.webp"}
-                  alt={featuredImage?.alt || c.fallbackAlt}
+                <SlotImage
+                  slot="blog.hero"
+                  lang={lang}
                   fill
                   priority
                   sizes="(max-width: 959px) calc(100vw - 48px), 58vw"
-                  unoptimized={isStatic(featuredImage?.url ?? "/portfolio/hero.webp")}
-                  style={{ objectPosition: focal(featuredImage?.focus_x, featuredImage?.focus_y) }}
+                  fallback={featuredImage?.url ? { src: featuredImage.url, alt: featuredImage.alt || c.fallbackAlt, focus: focal(featuredImage.focus_x, featuredImage.focus_y) } : null}
                 />
                 <span className="tq-tag tq-tag--tl tq-mono">[02 / {c.featured}]</span>
               </div>
@@ -673,14 +674,13 @@ export function BlogArticleView({
 
           <figure className="tq-blog-cover" data-capped={coverVars ? "true" : undefined} style={coverVars}>
             <div className="tq-blog-cover__media">
-              <Image
-                src={coverUrl}
-                alt={coverAlt}
+              <SlotImage
+                slot={blogCoverSlotId(post.slug, lang)}
+                lang={lang}
                 fill
                 priority
                 sizes="(max-width: 639px) calc(100vw - 48px), (max-width: 959px) calc(100vw - 96px), (max-width: 1279px) calc(100vw - 144px), calc(100vw - 160px)"
-                unoptimized={isStatic(coverUrl)}
-                style={{ objectPosition: focal(cover.focus_x, cover.focus_y) }}
+                fallback={{ src: coverUrl, alt: coverAlt, width: cover.width, height: cover.height, focus: focal(cover.focus_x, cover.focus_y) }}
               />
             </div>
             {coverCaption ? (

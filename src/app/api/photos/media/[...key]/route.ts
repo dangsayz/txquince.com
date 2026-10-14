@@ -1,7 +1,9 @@
 /**
  * /api/photos/media/dump/<YYYY>/<MM>/<id>.webp[?w=640] — serves Photo dump
- * images from the private PORTFOLIO bucket. Only `dump/` photo keys are
- * readable; anything else is a 404.
+ * images from the private PORTFOLIO bucket, and image-slot renditions
+ * (/api/photos/media/slots/<slotId>/<versionId>-<w>.webp — each width is its
+ * own stored file, so `?w=` is ignored for them). Only `dump/` and `slots/`
+ * image keys are readable; anything else is a 404.
  *
  * Keys are permanent (a replaced photo gets a new key), so responses are
  * cached for a year, immutable. `?w=` asks the Cloudflare Images binding for
@@ -11,6 +13,8 @@
 import { getDumpBucket, getImagesBinding } from "@/lib/photo-dump";
 import { KEY_RE } from "@/lib/photo-dump-shared";
 import { site } from "@/content/site";
+import { SLOT_MEDIA_KEY_RE } from "@/lib/image-slot-state";
+import { getSlotBucket } from "@/lib/image-slot-store";
 
 export const dynamic = "force-dynamic";
 
@@ -46,12 +50,13 @@ const notFound = () => new Response("Not found", { status: 404, headers: { "cach
 export async function GET(request: Request, ctx: { params: Promise<{ key: string[] }> }) {
   const { key: parts } = await ctx.params;
   const key = parts.map(decodeURIComponent).join("/");
-  if (!KEY_RE.test(key)) return notFound();
+  const isSlot = SLOT_MEDIA_KEY_RE.test(key);
+  if (!KEY_RE.test(key) && !isSlot) return notFound();
   if (hotlinked(request)) return new Response("Hotlinking is not permitted.", { status: 403 });
 
   const url = new URL(request.url);
   const asked = Number(url.searchParams.get("w"));
-  const width = Number.isFinite(asked) && asked > 0 ? (WIDTHS.find((s) => s >= asked) ?? 2560) : 0;
+  const width = isSlot ? 0 : Number.isFinite(asked) && asked > 0 ? (WIDTHS.find((s) => s >= asked) ?? 2560) : 0;
 
   // Edge cache keyed on the snapped width, so ?w=600 and ?w=640 share a copy.
   const cacheKey = new Request(`${url.origin}/api/photos/media/${key}${width ? `?w=${width}` : ""}`);
@@ -59,7 +64,7 @@ export async function GET(request: Request, ctx: { params: Promise<{ key: string
   const hit = await cache?.match(cacheKey).catch(() => undefined);
   if (hit) return hit;
 
-  const bucket = await getDumpBucket();
+  const bucket = isSlot ? await getSlotBucket() : await getDumpBucket();
   if (!bucket) return notFound();
   const obj = await bucket.get(key);
   if (!obj) return notFound();

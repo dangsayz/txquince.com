@@ -6,6 +6,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import { SlotImage } from "@/components/SlotImage";
 import { site } from "@/content/site";
 import { venues } from "@/content/venues";
 import { portfolioFallback } from "@/content/portfolio-fallback";
@@ -89,26 +90,18 @@ export default async function VenuesPage() {
         <div className="tq-place-stage">
           <figure className="tq-plate" style={{ margin: 0 }}>
             <div className="tq-plate__loop">
-              {heroPhoto ? (
-                <Image
-                  src={heroPhoto.url}
-                  alt={publicPhotoCopy(heroPhoto, altPhraseFor(heroPhoto.section)).alt}
-                  fill
-                  preload
-                  sizes="100vw"
-                  style={{ objectPosition: `${Math.round((heroPhoto.focus_x ?? 0.5) * 100)}% ${Math.round((heroPhoto.focus_y ?? 0.4) * 100)}%` }}
-                />
-              ) : (
-                <Image
-                  src={fallbackHero.url}
-                  alt={fallbackHero.alt}
-                  fill
-                  preload
-                  unoptimized
-                  sizes="100vw"
-                  style={{ objectPosition: "50% 60%" }}
-                />
-              )}
+              <SlotImage
+                slot="venues.hero"
+                lang="en"
+                fill
+                priority
+                sizes="100vw"
+                fallback={
+                  heroPhoto
+                    ? { src: heroPhoto.url, alt: publicPhotoCopy(heroPhoto, altPhraseFor(heroPhoto.section)).alt, width: heroPhoto.width, height: heroPhoto.height, focus: `${Math.round((heroPhoto.focus_x ?? 0.5) * 100)}% ${Math.round((heroPhoto.focus_y ?? 0.4) * 100)}%` }
+                    : { src: fallbackHero.url, alt: fallbackHero.alt, focus: "50% 60%" }
+                }
+              />
             </div>
             <figcaption>
               <span className="tq-tag tq-tag--tl tq-mono">[Places / DFW]</span>

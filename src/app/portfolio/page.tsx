@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { SlotImage } from "@/components/SlotImage";
 import { Suspense } from "react";
 import { site } from "@/content/site";
 import { getPortfolioImages, getVideos } from "@/lib/content-db";
@@ -176,7 +176,7 @@ async function PortfolioContent({ searchParams }: {
           </div>
         </header>
         <figure className="tq-pg-plate">
-          <Image src={heroPhoto?.url ?? "/portfolio/hero.webp"} alt={heroPhoto?.alt ?? "Quinceañera portrait in Dallas–Fort Worth"} fill priority unoptimized={!heroPhoto?.url || heroPhoto.url.startsWith("/portfolio/")} sizes="100vw" style={heroPhoto ? { objectPosition: `${Math.round((heroPhoto.fx ?? 0.5) * 100)}% ${Math.round((heroPhoto.fy ?? 0.4) * 100)}%` } : undefined} />
+          <SlotImage slot="portfolio.hero" lang="en" fill priority sizes="100vw" fallback={heroPhoto?.url ? { src: heroPhoto.url, alt: heroPhoto.alt || "Quinceañera portrait in Dallas–Fort Worth", width: heroPhoto.width, height: heroPhoto.height, focus: `${Math.round((heroPhoto.fx ?? 0.5) * 100)}% ${Math.round((heroPhoto.fy ?? 0.4) * 100)}%` } : null} />
           <figcaption>
             <span className="tq-tag tq-tag--bl tq-mono">[Plate 01 — {items.length} photographs]</span>
           </figcaption>
