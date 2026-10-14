@@ -3,6 +3,7 @@ import { TxqSite } from "@/components/txq/TxqSite";
 import { latestJournal } from "@/components/txq/journal";
 import { getCinemaFilms } from "@/components/txq/films";
 import { HomeJsonLd } from "@/components/txq/HomeJsonLd";
+import { condensed } from "@/components/txq/fonts";
 import { PRICE_FLOOR_USD, usd } from "@/lib/commission";
 
 // Films come from the admin video library; admin edits revalidate at once.
@@ -23,7 +24,7 @@ export default async function InicioEs() {
   return (
     <>
       <HomeJsonLd lang="es" />
-      <TxqSite journal={latestJournal()} films={await getCinemaFilms()} />
+      <TxqSite fontClass={condensed.variable} journal={latestJournal()} films={await getCinemaFilms()} />
     </>
   );
 }

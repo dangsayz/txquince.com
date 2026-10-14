@@ -20,9 +20,19 @@ type ShellControls = {
   setCinema: (on: boolean) => void;
   /** Hide the mobile dock (e.g. while the intake form is on screen). */
   setDockHidden: (hidden: boolean) => void;
+  /** The homepage hero's floating bar stands in for the global header while it holds the screen. */
+  setHeroBar: (on: boolean) => void;
+  /** Open the site menu (from a trigger outside the header). */
+  openMenu: () => void;
 };
 
-const ShellCtx = createContext<ShellControls>({ setCinema: () => {}, setDockHidden: () => {} });
+const noop = () => {};
+const ShellCtx = createContext<ShellControls>({
+  setCinema: noop,
+  setDockHidden: noop,
+  setHeroBar: noop,
+  openMenu: noop,
+});
 export const useShell = () => useContext(ShellCtx);
 
 export function SiteShell({ children }: { children: ReactNode }) {
@@ -42,10 +52,16 @@ export function SiteShell({ children }: { children: ReactNode }) {
 }
 
 function Frame({ children }: { children: ReactNode }) {
-  const { lang, t } = useSite();
+  const { lang, t, isHome } = useSite();
   const [cinema, setCinema] = useState(false);
   const [dockHidden, setDockHidden] = useState(false);
-  const controls = useMemo(() => ({ setCinema, setDockHidden }), []);
+  // Homepages open on the hero, so the global header starts tucked away there.
+  const [heroBar, setHeroBar] = useState(isHome);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const controls = useMemo(
+    () => ({ setCinema, setDockHidden, setHeroBar, openMenu: () => setMenuOpen(true) }),
+    [],
+  );
 
   // Keep the document language in step with the visible language.
   useEffect(() => {
@@ -54,11 +70,16 @@ function Frame({ children }: { children: ReactNode }) {
 
   return (
     <ShellCtx.Provider value={controls}>
-      <div className="txq" data-theme={cinema ? "cinema" : "light"} lang={lang}>
+      <div
+        className="txq"
+        data-theme={cinema ? "cinema" : "light"}
+        data-herobar={heroBar || undefined}
+        lang={lang}
+      >
         <a href="#content" className="tq-skip">
           {t.meta.skip}
         </a>
-        <Header />
+        <Header open={menuOpen} setOpen={setMenuOpen} />
         <main id="content" className="tq-main">
           {children}
         </main>

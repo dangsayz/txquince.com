@@ -14,10 +14,14 @@ export type L = { en: string; es: string };
 
 export const pick = (lang: Lang, v: L) => v[lang];
 
+const v = (en: string, es: string = en): L => ({ en, es });
+
 import {
   ADD_ON_PRICE_USD,
+  PRICE_FLOOR_USD,
   TIER_PRICE_USD,
   quoteCommission,
+  usd,
   type AddOnId,
   type TierId,
 } from "@/lib/commission";
@@ -216,6 +220,74 @@ export const WORKS: Work[] = [
 export const workById = (id: string) => WORKS.find((w) => w.id === id)!;
 
 /* ------------------------------------------------------------------ */
+/* Hero slides                                                         */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The homepage hero, one slide per featured work. Swap content here and only
+ * here. Each slide owns ONE accent, pulled from its key art: it colors the
+ * title, label, icons, floating bar, pagination and progress bar, and nothing
+ * else on screen is colored. Accents must stay saturated and pass 4.5:1 both
+ * as text on near-black and under black text (the bar).
+ */
+export type HeroSlide = {
+  id: string;
+  /** Archive record (image, alt text, crop) the slide is built from. */
+  work: string;
+  title: L;
+  /** Small line under the title: place and year. */
+  label: L;
+  accent: string;
+  /** Primary action: the play button and the CTA strip under the floating bar. */
+  cta: { label: L; href: string };
+};
+
+const from = usd(PRICE_FLOOR_USD);
+
+export const HERO_SLIDES: HeroSlide[] = [
+  {
+    id: "gilded",
+    work: "w01",
+    title: { en: "Gilded Salon", es: "Salón Dorado" },
+    label: v("Dallas · 2026"),
+    accent: "#FFC23D", // gilt of the painted dome — 13.0:1 under black text
+    cta: { label: v("Check your date", "Consulta tu fecha"), href: "#intake" },
+  },
+  {
+    id: "fuchsia",
+    work: "w02",
+    title: { en: "Fuchsia Stair", es: "Escalera Fucsia" },
+    label: v("San Antonio · 2026"),
+    accent: "#FD0DBA", // the gown — 5.9:1 under black text
+    cta: { label: v(`Commissions from ${from}`, `Encargos desde ${from}`), href: "#commissions" },
+  },
+  {
+    id: "nopal",
+    work: "w09",
+    title: { en: "Prickly Pear", es: "Nopalera" },
+    label: v("Fort Worth · 2025"),
+    accent: "#4DE335", // the cactus wall — 12.4:1 under black text
+    cta: { label: v("View the archive", "Ver el archivo"), href: "#archive" },
+  },
+  {
+    id: "waltz",
+    work: "w06",
+    title: { en: "The Last Waltz", es: "El Último Vals" },
+    label: v("Arlington · 2025"),
+    accent: "#A6E2FB", // the stage wash — 14.9:1 under black text
+    cta: { label: v("Watch the films", "Ver las películas"), href: "#cinema" },
+  },
+  {
+    id: "crimson",
+    work: "w05",
+    title: { en: "Crimson Garden", es: "Jardín Carmesí" },
+    label: v("Dallas · 2025"),
+    accent: "#FF4433", // the gown — 6.1:1 under black text
+    cta: { label: v("Check your date", "Consulta tu fecha"), href: "#intake" },
+  },
+];
+
+/* ------------------------------------------------------------------ */
 /* Cinema Room                                                         */
 /* ------------------------------------------------------------------ */
 
@@ -300,7 +372,6 @@ export const TIERS: Tier[] = [
 export type MatrixRow = { label: L; values: Record<TierId, L | null> };
 export type MatrixGroup = { id: string; title: L; rows: MatrixRow[] };
 
-const v = (en: string, es: string = en): L => ({ en, es });
 
 export const MATRIX: MatrixGroup[] = [
   {

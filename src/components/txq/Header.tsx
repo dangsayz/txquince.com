@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { useAvailability, useSite } from "./state";
 import type { Lang } from "./data";
@@ -45,15 +45,14 @@ export function StatusLabel() {
   );
 }
 
-export function Header() {
+export function Header({ open, setOpen }: { open: boolean; setOpen: (open: boolean) => void }) {
   const { t, homeHref } = useSite();
-  const [open, setOpen] = useState(false);
-  const menuBtn = useRef<HTMLButtonElement>(null);
   const closeBtn = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!open) return;
-    const trigger = menuBtn.current;
+    // Return focus to whichever trigger opened the menu (header or hero bar).
+    const trigger = document.activeElement as HTMLElement | null;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     closeBtn.current?.focus();
@@ -64,7 +63,7 @@ export function Header() {
       window.removeEventListener("keydown", onKey);
       trigger?.focus();
     };
-  }, [open]);
+  }, [open, setOpen]);
 
   return (
     <>
@@ -94,7 +93,6 @@ export function Header() {
               {t.nav.cta} <span className="tq-arrow" aria-hidden>↗</span>
             </a>
             <button
-              ref={menuBtn}
               type="button"
               className="tq-menu-btn"
               aria-label={t.nav.menu}
