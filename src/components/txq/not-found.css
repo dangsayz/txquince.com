@@ -1,0 +1,189 @@
+/* ==========================================================================
+   404 — particle portrait under a night sky (NotFoundScene.tsx)
+   Full-bleed inside .tq-main; the shell is dimmed to the cinema theme.
+   ========================================================================== */
+
+.txq .tq-404 {
+  --n-text: #f5f2fa;
+  --n-muted: #cfc9dc; /* ≥7:1 on the shaded center */
+  --n-line: rgba(245, 242, 250, 0.22);
+  --n-tile: rgba(20, 18, 28, 0.62);
+
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  min-height: calc(100svh - var(--header-h));
+  overflow: hidden;
+  background: linear-gradient(180deg, #4a4862 0%, #2b2940 42%, #15141c 78%, #0d0c10 100%);
+  color: var(--n-text);
+  padding: 72px 16px calc(96px + env(safe-area-inset-bottom));
+}
+
+.tq-404__wash {
+  position: absolute;
+  inset: -48px;
+  z-index: -3;
+  background-size: cover;
+  background-position: center 60%;
+  filter: blur(24px) saturate(0.85) brightness(0.72);
+  opacity: 0.75;
+  -webkit-mask-image: linear-gradient(180deg, transparent 8%, #000 62%);
+  mask-image: linear-gradient(180deg, transparent 8%, #000 62%);
+}
+
+.tq-404__field {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 900ms var(--ease);
+}
+.tq-404__field[data-ready="true"] {
+  opacity: 1;
+}
+
+/* A soft pool of shadow behind the copy keeps it legible over any frame. */
+.tq-404__shade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 42% 36% at 50% 48%, rgba(12, 11, 16, 0.58), rgba(12, 11, 16, 0.22) 62%, transparent 100%),
+    linear-gradient(180deg, transparent 72%, rgba(13, 12, 16, 0.5));
+}
+
+.tq-404__body {
+  display: grid;
+  justify-items: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 40rem;
+  text-align: center;
+}
+
+.tq-404__code {
+  color: var(--n-muted);
+  white-space: nowrap;
+}
+
+.tq-404__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 6.2vw, 4.75rem);
+  font-weight: 340;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+  text-shadow: 0 2px 24px rgba(10, 9, 14, 0.5);
+}
+
+.tq-404__dek {
+  margin: 0;
+  max-width: 30rem;
+  color: var(--n-muted);
+  font-size: 1rem;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.tq-404__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 24px;
+  margin-top: 8px;
+}
+.txq .tq-404__cta {
+  background: var(--n-text);
+  border-color: var(--n-text);
+  color: #111110;
+}
+.txq .tq-404__cta:hover {
+  background: #d9d3e6;
+  border-color: #d9d3e6;
+}
+.tq-404__back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: 4px;
+  color: var(--n-text);
+  font-size: 1rem;
+  white-space: nowrap;
+  text-decoration: underline;
+  text-decoration-color: var(--n-line);
+  text-underline-offset: 6px;
+  transition: text-decoration-color 300ms var(--ease);
+}
+.tq-404__back:hover {
+  text-decoration-color: currentColor;
+}
+
+/* The dock: a framed row of tiles, after a game's item bar. */
+.tq-404__dock {
+  margin-top: 28px;
+  padding: 8px;
+  border: 1px solid var(--n-line);
+  background: rgba(13, 12, 16, 0.38);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+.tq-404__dock ul {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(64px, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tq-404__tile {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 8px;
+  min-height: 72px;
+  padding: 10px 12px;
+  border: 1px solid rgba(245, 242, 250, 0.1);
+  background: var(--n-tile);
+  color: var(--n-text);
+  transition:
+    background-color 300ms var(--ease),
+    border-color 300ms var(--ease),
+    transform 400ms var(--ease);
+}
+.tq-404__tile .tq-mono {
+  color: var(--n-muted);
+  white-space: nowrap;
+}
+.tq-404__tile:hover {
+  background: rgba(245, 242, 250, 0.12);
+  border-color: var(--n-line);
+  transform: translateY(-2px);
+}
+.tq-404__tile:focus-visible,
+.tq-404__back:focus-visible,
+.tq-404__cta:focus-visible {
+  outline: 2px solid var(--n-text);
+  outline-offset: 3px;
+}
+
+@media (min-width: 640px) {
+  .tq-404__dock ul {
+    grid-template-columns: repeat(4, 96px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tq-404__field,
+  .tq-404__tile {
+    transition: none;
+  }
+  .tq-404__tile:hover {
+    transform: none;
+  }
+}
