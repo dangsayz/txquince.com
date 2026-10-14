@@ -67,6 +67,9 @@ export const BOOKED: readonly Status[] = ["confirmed", "paid_in_full", "complete
 /** Waiting on someone (owner or family) before the date is secured. */
 export const OPEN: readonly Status[] = ["requested", "approved"];
 
+/** For code that holds status as a plain string (dashboards, analytics). */
+export const BOOKED_STATUSES: ReadonlySet<string> = new Set<string>(BOOKED);
+
 export const holdsDate = (s: Status) => HOLDS_DATE.includes(s);
 export const isBooked = (s: Status) => BOOKED.includes(s);
 

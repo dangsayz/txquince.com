@@ -1,58 +1,27 @@
+/**
+ * PATCH /api/admin/bookings — kept for older admin screens: { id, status }.
+ * Delegates to the journey's guarded actions (src/lib/journey/admin.ts) so the
+ * one state machine applies. Only release/decline is supported here; marking a
+ * booking paid now means recording the payment (method + amount) on its record.
+ */
 import { NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { requireAdmin } from "@/lib/require-admin";
-import { unauthorizedAdminResponse } from "@/lib/admin-auth";
-import { getServiceSupabase } from "@/lib/supabase-server";
-import { sendAgreementDeclinedClient } from "@/lib/agreement-email";
+import { journeyDeps } from "@/lib/journey/deps";
+import { runAdminAction } from "@/lib/journey/admin";
+import { failResponse } from "@/lib/journey/http";
 
 export const dynamic = "force-dynamic";
 
-// Operator-driven status changes. 'cancelled' frees the held date immediately
-// (the public availability check only counts requested/pending_payment/paid).
-const Schema = z.object({
-  id: z.string().uuid(),
-  status: z.enum(["cancelled", "paid", "requested"]),
-});
+const Schema = z.object({ id: z.string().uuid(), status: z.enum(["cancelled", "declined"]) });
 
 export async function PATCH(request: Request) {
-  if (!(await requireAdmin())) return unauthorizedAdminResponse();
+  const deps = journeyDeps();
+  if (!(await deps.adminEmail())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const parsed = Schema.safeParse(await request.json().catch(() => ({})));
-  if (!parsed.success) {
-    return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
-  }
-  const { id, status } = parsed.data;
-
-  const fields: Record<string, unknown> = { status };
-  if (status === "paid") fields.paid_at = new Date().toISOString();
-
-  const supabase = getServiceSupabase();
-  const { data: before } = await supabase
-    .from("bookings")
-    .select("status, metadata")
-    .eq("id", id)
-    .maybeSingle();
-  const { data, error } = await supabase
-    .from("bookings")
-    .update(fields)
-    .eq("id", id)
-    .select("id, status, name, email, event_date")
-    .single();
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-
-  // Declining a signed agreement that was still waiting: tell the family
-  // (nothing was charged — deposits are only taken after approval).
-  const meta = (before?.metadata ?? {}) as Record<string, unknown>;
-  if (
-    status === "cancelled" &&
-    meta.flow === "agreement" &&
-    (before?.status === "requested" || before?.status === "pending_payment")
-  ) {
-    const mail = await sendAgreementDeclinedClient(data, meta.language === "es" ? "es" : "en");
-    if (!mail.ok) console.error("[admin/bookings] decline email:", mail.error);
-  }
-
-  revalidatePath("/admin/bookings");
-  revalidatePath("/"); // availability/date-holds
-  return NextResponse.json({ booking: data });
+  if (!parsed.success) return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
+  const b = await deps.db.getBooking(parsed.data.id);
+  if (!b) return NextResponse.json({ error: "Booking not found." }, { status: 404 });
+  const action = b.status === "requested" || b.status === "approved" ? "decline" : "cancel";
+  const r = await runAdminAction(deps, b.id, action);
+  return r.ok ? NextResponse.json({ booking: { id: b.id, status: r.status } }) : failResponse(r);
 }

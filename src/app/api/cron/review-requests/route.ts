@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
   const { data, error } = await supabase
     .from("bookings")
     .select("id, name, email, phone, event_date, package, collection, notes, status, deposit_amount_cents, currency, metadata")
-    .eq("status", "paid")
+    .in("status", ["confirmed", "paid_in_full", "completed"])
     .is("review_request_sent_at", null)
     .lte("event_date", thirtyDaysAgo)
     .gte("event_date", sixtyDaysAgo)

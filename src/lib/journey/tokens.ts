@@ -43,7 +43,4 @@ export function secretsEqual(expected: string | undefined | null, given: string 
   return Boolean(expected) && Boolean(given) && timingSafeEqual(e, g);
 }
 
-/** Short display reference ("TXQ-1A2B3C"). Not a credential. */
-export function refFor(id: string): string {
-  return `TXQ-${id.replace(/-/g, "").slice(0, 6).toUpperCase()}`;
-}
+export { refFor } from "./ref";

@@ -70,6 +70,10 @@ export interface JourneyDb {
   /** Idempotent on stripe_checkout_session_id / stripe_refund_id. */
   insertPayment(p: NewPayment): Promise<{ inserted: boolean; row: PaymentRow }>;
   listPayments(bookingId: string): Promise<PaymentRow[]>;
+  /** Payments for many bookings at once (admin list). */
+  listPaymentsFor(bookingIds: string[]): Promise<PaymentRow[]>;
+  /** The Stripe charge (not refund) row for a PaymentIntent, if it's ours. */
+  findPaymentByIntent(paymentIntentId: string): Promise<PaymentRow | null>;
 
   insertSession(s: Omit<CheckoutSessionRow, "created_at" | "completed_at" | "status"> & { status?: SessionStatus }): Promise<void>;
   getSession(id: string): Promise<CheckoutSessionRow | null>;
@@ -255,6 +259,28 @@ export function supabaseJourneyDb(sb: SupabaseClient): JourneyDb {
         .order("created_at", { ascending: true });
       if (error) fail("listPayments", error);
       return (data ?? []) as PaymentRow[];
+    },
+    async listPaymentsFor(ids) {
+      if (!ids.length) return [];
+      const out: PaymentRow[] = [];
+      for (let i = 0; i < ids.length; i += 200) {
+        const { data, error } = await sb.from("booking_payments").select(PAYMENT_COLUMNS).in("booking_id", ids.slice(i, i + 200));
+        if (error) fail("listPaymentsFor", error);
+        out.push(...((data ?? []) as PaymentRow[]));
+      }
+      return out;
+    },
+    async findPaymentByIntent(pi) {
+      const { data, error } = await sb
+        .from("booking_payments")
+        .select(PAYMENT_COLUMNS)
+        .eq("stripe_payment_intent_id", pi)
+        .neq("kind", "refund")
+        .order("created_at", { ascending: true })
+        .limit(1)
+        .maybeSingle();
+      if (error) fail("findPaymentByIntent", error);
+      return (data as PaymentRow) ?? null;
     },
 
     async insertSession(s) {
