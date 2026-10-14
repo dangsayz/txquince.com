@@ -93,7 +93,7 @@ const BUCKETS: Bucket[] = [
     qas: [
       {
         q: "How much does a quinceañera photographer cost in Dallas–Fort Worth?",
-        a: `Most DFW quinceañera studios publish packages between about $1,500 and $6,000. TX Quince works at the top of the market: a Portrait Study is ${usd(TIER_PRICE_USD.study)}, photo and film together start at ${usd(TIER_PRICE_USD.cinema)}, The Full Production is ${usd(TIER_PRICE_USD.production)}, and the multi-day archive is ${usd(TIER_PRICE_USD.archive)}. What you pay tracks coverage hours, crew, and the heirloom pieces you keep.`,
+        a: `Most DFW quinceañera studios publish packages between about $1,500 and $6,000. TX Quince publishes every price: a Portrait Study is ${usd(TIER_PRICE_USD.study)}, photo and film together start at ${usd(TIER_PRICE_USD.cinema)}, The Full Production is ${usd(TIER_PRICE_USD.production)}, and the multi-day archive is ${usd(TIER_PRICE_USD.archive)}. What you pay tracks coverage hours, crew, and the heirloom pieces you keep.`,
         href: "/blog/quinceanera-photographer-cost-dallas-fort-worth",
         hrefLabel: "What drives the price",
       },

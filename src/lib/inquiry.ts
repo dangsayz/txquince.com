@@ -6,6 +6,7 @@
  * field (never trust the client — VALIDATION LAW).
  */
 import { z } from "zod";
+import { TIER_PRICE_USD as P, usd } from "@/lib/commission";
 
 /** Services offered (req). Mirrors the data model `services` column. */
 export const SERVICE_OPTIONS = [
@@ -20,10 +21,10 @@ export const SERVICE_OPTIONS = [
  * Stored as free text (inquiries.budget_range), so old rows keep their values.
  */
 export const BUDGET_OPTIONS = [
-  { value: "$2,500 portrait session", label: "$2,500 — Portrait session", labelEs: "$2,500 — Sesión de retrato" },
-  { value: "$7,500–$11,500", label: "$7,500 – $11,500 — Photo + film", labelEs: "$7,500 – $11,500 — Foto + cine" },
-  { value: "$11,500–$18,500", label: "$11,500 – $18,500 — Full production", labelEs: "$11,500 – $18,500 — Producción completa" },
-  { value: "$18,500+", label: "$18,500+ — Multi-day archive", labelEs: "$18,500+ — Archivo de varios días" },
+  { value: `${usd(P.study)} portrait session`, label: `${usd(P.study)} — Portrait session`, labelEs: `${usd(P.study)} — Sesión de retrato` },
+  { value: `${usd(P.cinema)}–${usd(P.production)}`, label: `${usd(P.cinema)} – ${usd(P.production)} — Photo + film`, labelEs: `${usd(P.cinema)} – ${usd(P.production)} — Foto + cine` },
+  { value: `${usd(P.production)}–${usd(P.archive)}`, label: `${usd(P.production)} – ${usd(P.archive)} — Full production`, labelEs: `${usd(P.production)} – ${usd(P.archive)} — Producción completa` },
+  { value: `${usd(P.archive)}+`, label: `${usd(P.archive)}+ — Multi-day archive`, labelEs: `${usd(P.archive)}+ — Archivo de varios días` },
 ] as const;
 
 /** "How did you hear about us?" — keep light, helps attribution. */

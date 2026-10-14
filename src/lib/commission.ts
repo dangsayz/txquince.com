@@ -16,27 +16,26 @@ export type TierId = (typeof TIER_IDS)[number];
 export type AddOnId = (typeof ADD_ON_IDS)[number];
 
 /**
- * Whole US dollars. Positioned for the top of the Dallas–Fort Worth market
+ * Whole US dollars. Priced for what DFW quinceañera families actually spend
  * (research Oct 2026, docs/dfw-pricing-search-booking.md):
- *  - The highest published DFW quince package sits near $6K; luxury Dallas
- *    wedding photo + film averages ~$10K and runs to ~$25K. II enters the
- *    premium band just above every published quince competitor, III is the
- *    intended sale, IV anchors the ultra-premium ceiling.
- *  - At an 8–15% photo/film share, a $75–150K hotel celebration (Rosewood,
- *    The Adolphus, the Ritz-Carlton) budgets roughly $6K–22K for this line.
+ *  - Most DFW quince budgets are $12–25K all-in; photo + film takes 8–15%.
+ *  - Published DFW quince packages: photo-only $1.5–3K, photo + video
+ *    $3–5.5K, luxury collections $5.5–8K (highest published ~$6K).
+ *  - II sits in the photo + video band, III (the intended sale, with 4 crew
+ *    and a coordinator included) stays under the highest published package,
+ *    IV is the luxury anchor inside the market's top band.
  */
 export const TIER_PRICE_USD: Record<TierId, number> = {
-  study: 2500,
-  cinema: 7500,
-  production: 11500,
-  archive: 18500,
+  study: 1200,
+  cinema: 3500,
+  production: 4900,
+  archive: 6900,
 };
-
 export const ADD_ON_PRICE_USD: Record<AddOnId, number> = {
-  destination: 2000,
-  sameday: 2400,
-  super8: 1800,
-  parents: 1100,
+  destination: 650,
+  sameday: 900,
+  super8: 600,
+  parents: 550,
 };
 
 /** English names for Stripe line items, receipts and operator email. */
@@ -131,7 +130,7 @@ export const TIER_SERVICE: Record<TierId, "photo" | "both"> = {
  */
 export const RETAINER = {
   rate: 0.3,
-  floorUsd: 750,
+  floorUsd: 350,
   roundToUsd: 50,
   /** Balance due this many days before the celebration. */
   balanceDueDays: 30,

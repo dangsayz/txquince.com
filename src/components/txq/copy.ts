@@ -151,7 +151,7 @@ const en = {
     items: [
       {
         q: "How much does a quinceañera photographer and videographer cost in Dallas–Fort Worth?",
-        a: `Most DFW quinceañera studios publish packages between about $1,500 and $6,000. TX Quince works at the top of the market: a Portrait Study begins at ${$(P.study)}, photo and film together begin at ${$(P.cinema)}, and The Full Production, the commission we recommend for most celebrations, is ${$(P.production)}. Every price is published above.`,
+        a: `Most DFW quinceañera studios publish packages between about $1,500 and $6,000. TX Quince publishes every price: a Portrait Study begins at ${$(P.study)}, photo and film together begin at ${$(P.cinema)}, and The Full Production, the commission we recommend for most celebrations, is ${$(P.production)}.`,
       },
       {
         q: "Is photography and film included together?",
@@ -424,7 +424,7 @@ const es: Copy = {
     items: [
       {
         q: "¿Cuánto cuesta un fotógrafo y videógrafo de quinceañera en Dallas–Fort Worth?",
-        a: `La mayoría de los estudios de quinceañera en DFW publican paquetes de entre $1,500 y $6,000. TX Quince trabaja en lo más alto del mercado: un Estudio de retrato comienza en ${$(P.study)}, foto y cine juntos desde ${$(P.cinema)}, y La producción completa, el encargo que recomendamos para la mayoría de las celebraciones, cuesta ${$(P.production)}. Todos los precios están publicados arriba.`,
+        a: `La mayoría de los estudios de quinceañera en DFW publican paquetes de entre $1,500 y $6,000. TX Quince publica todos sus precios: un Estudio de retrato comienza en ${$(P.study)}, foto y cine juntos desde ${$(P.cinema)}, y La producción completa, el encargo que recomendamos para la mayoría de las celebraciones, cuesta ${$(P.production)}.`,
       },
       {
         q: "¿La foto y el video vienen juntos?",
