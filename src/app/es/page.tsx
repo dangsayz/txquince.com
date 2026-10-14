@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import { TxqSite } from "@/components/txq/TxqSite";
 import { latestJournal } from "@/components/txq/journal";
+import { getCinemaFilms } from "@/components/txq/films";
 import { HomeJsonLd } from "@/components/txq/HomeJsonLd";
 import { PRICE_FLOOR_USD, usd } from "@/lib/commission";
+
+// Films come from the admin video library; admin edits revalidate at once.
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: { absolute: "Fotógrafo y Videógrafo de Quinceañeras en Dallas–Fort Worth | TX Quince" },
@@ -15,11 +19,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function InicioEs() {
+export default async function InicioEs() {
   return (
     <>
       <HomeJsonLd lang="es" />
-      <TxqSite journal={latestJournal()} />
+      <TxqSite journal={latestJournal()} films={await getCinemaFilms()} />
     </>
   );
 }

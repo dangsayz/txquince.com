@@ -8,12 +8,13 @@ import { Editorial, Faq, type Journal } from "./Editorial";
 import { Hero } from "./Hero";
 import { Intake } from "./Intake";
 import { useShell } from "./SiteShell";
+import type { CinemaFilm } from "./data";
 
 /**
  * The homepage sections (EN at /, ES at /es). The global header, footer, dock,
  * fonts and language state come from <SiteShell>, which wraps every page.
  */
-export function TxqSite({ journal }: { journal: Journal }) {
+export function TxqSite({ journal, films }: { journal: Journal; films: CinemaFilm[] }) {
   const { setCinema, setDockHidden } = useShell();
   const cinemaRef = useRef<HTMLElement>(null);
   const intakeRef = useRef<HTMLElement>(null);
@@ -51,7 +52,7 @@ export function TxqSite({ journal }: { journal: Journal }) {
     <>
       <Hero />
       <Archive />
-      <CinemaRoom ref={cinemaRef} />
+      <CinemaRoom ref={cinemaRef} films={films} />
       <Commissions />
       <Editorial journal={journal} />
       <Faq />
