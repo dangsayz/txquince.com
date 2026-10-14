@@ -138,6 +138,38 @@ export async function sendAgreementSignedClient(b: BookingLite, a: SignedAgreeme
   return send(b.email, subject, text, html);
 }
 
+/** → operator: a new booking REQUEST (unsigned) is waiting for confirmation. */
+export async function sendBookingRequestOperator(b: BookingLite, adminUrl: string, summary: string): Promise<Result> {
+  const to = process.env.OPERATOR_NOTIFY_EMAIL;
+  if (!to) return { ok: false, error: "no-operator-email" };
+  const date = prettyDate(b.event_date, "en");
+  const subject = `New booking request — ${b.name}, ${date}`;
+  const lead = `${b.name} asked to book ${date}. The date is held while you confirm. Nothing is signed or paid yet: the family signs the agreement and pays the deposit after you confirm.`;
+  const text = [lead, adminUrl, "", summary].join("\n");
+  const html = shell(
+    "New booking request",
+    `<p style="margin:0 0 12px">${esc(lead)}</p>
+     <pre style="white-space:pre-wrap;font:14px/1.5 ui-monospace,Menlo,monospace;margin:0 0 8px">${esc(summary)}</pre>`,
+    { url: adminUrl, label: "Review request" },
+  );
+  return send(to, subject, text, html);
+}
+
+/** → family: we got your request; what happens next. Numbers come from the server's own quote. */
+export async function sendBookingRequestClient(
+  b: BookingLite,
+  r: { lang: Lang; holdDays: number; depositPercent: number; depositUsd: number; totalUsd: number },
+): Promise<Result> {
+  const es = r.lang === "es";
+  const name = first(b.name);
+  const date = prettyDate(b.event_date, r.lang);
+  const subject = es ? `Recibimos tu solicitud — ${date}` : `We got your request — ${date}`;
+  const lead = es
+    ? `¡Gracias, ${name}! Recibimos tu solicitud para el ${date}. Tu fecha queda apartada ${r.holdDays} días mientras la confirmamos — te escribimos en un día. Luego firmas el contrato y pagas tu depósito del ${r.depositPercent}% (${usd(r.depositUsd)}) en tu página privada. Total: ${usd(r.totalUsd)}. Hoy no se cobró nada.`
+    : `Thank you, ${name}! We got your request for ${date}. Your date is held for ${r.holdDays} days while we confirm — we'll write within one day. Then you sign the agreement and pay your ${r.depositPercent}% deposit (${usd(r.depositUsd)}) on your private page. Total: ${usd(r.totalUsd)}. Nothing was charged today.`;
+  return send(b.email, subject, lead, shell(es ? "Recibimos tu solicitud" : "We got your request", `<p style="margin:0">${esc(lead)}</p>`));
+}
+
 /** → family: approved; here's the deposit link. */
 export async function sendAgreementApprovedClient(
   b: BookingLite,

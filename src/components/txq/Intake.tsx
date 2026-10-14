@@ -1,39 +1,45 @@
 "use client";
 
-import Image from "next/image";
-import { forwardRef, useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { Turnstile } from "@marsidev/react-turnstile";
+/**
+ * The booking panel — ONE panel with five steps (Package · Hours & extras ·
+ * Date · Your details · Send request) inside the Packages & Prices section.
+ *
+ * Steps are a stepper, not an ARIA tablist: it is one form filled in order,
+ * later steps stay locked until the earlier ones are valid, and the current
+ * step is announced with aria-current="step". Plain buttons keep Tab order
+ * honest (no roving tabindex to learn) and screen readers read "Step 2 of 5".
+ *
+ * The family SENDS A REQUEST here — nothing is signed or charged. The studio
+ * confirms the date; the agreement is signed and the deposit paid later on
+ * their private booking page. Every number comes from the live price book.
+ */
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { motion } from "motion/react";
+import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { getFirstTouch } from "@/components/Tracker";
 import { BASE_CREW, COORDINATOR_INCLUDED, priceBookSchema, type PriceBook } from "@/lib/commission";
+import { HONEYPOT_FIELD } from "@/lib/booking";
 import { usePriceBook } from "@/components/PriceBookProvider";
-import { buildAgreement } from "@/lib/agreement";
-import {
-  ADD_ONS,
-  CITIES,
-  TIERS,
-  money,
-  pick,
-  tierById,
-  workById,
-  type Lang,
-} from "./data";
-import { isoDate, useAvailability, useQuote, useSite } from "./state";
-import { CrewControl, HoursControl, useTween } from "./Commissions";
-import { SignaturePad } from "./SignaturePad";
+import { ADD_ONS, CITIES, money, pick, tierById, type Lang, type TierId } from "./data";
+import { BOOKING_STEPS, isoDate, useAvailability, useQuote, useSite } from "./state";
+import { ExtrasStep, PackageStep, useTween } from "./Commissions";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
+const LAST = BOOKING_STEPS - 1;
 const MAX_MONTHS_AHEAD = 36;
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const BOOK_HASH = /^#book-(study|cinema|production|archive)$/;
 
 const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 // Turnstile is locked to production hostnames; local dev skips it (the API
 // also skips verification when no secret is configured outside production).
 const SHOW_TURNSTILE = Boolean(SITE_KEY) && process.env.NODE_ENV === "production";
-const STEPS = 4;
-const LAST = STEPS - 1;
 
-type Done = { ref: string; holdDays: number; depositUsd: number };
+/** Link that opens the booking panel at Hours & extras with this package chosen. */
+export const bookHref = (tier: TierId) => `#book-${tier}`;
+
+type Done = { ref: string; holdDays: number; date: string; email: string };
+type Errors = Record<string, string>;
 
 const localeOf = (l: Lang) => (l === "es" ? "es-MX" : "en-US");
 const fromIso = (s: string) => new Date(`${s}T00:00:00`);
@@ -47,148 +53,209 @@ function longDate(iso: string, lang: Lang) {
   }).format(fromIso(iso));
 }
 
-export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
-  const { t, lang, tier, setTier, addOns, toggleAddOn, crew, hours } = useSite();
+/** "16:00" → "4:00 PM" (en) / "4:00 p.m." (es). */
+function timeLabel(hhmm: string, lang: Lang) {
+  const m = /^(\d{2}):(\d{2})$/.exec(hhmm);
+  if (!m) return "";
+  return new Intl.DateTimeFormat(localeOf(lang), { hour: "numeric", minute: "2-digit" }).format(
+    new Date(2000, 0, 1, Number(m[1]), Number(m[2])),
+  );
+}
+
+const isTextField = (el: EventTarget | null) =>
+  el instanceof HTMLElement &&
+  el.matches("textarea, select, input:not([type=radio]):not([type=checkbox]):not([type=button]):not([type=submit])");
+
+export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) {
+  const { t, lang, tier, addOns, crew, hours, booking: b, updateBooking, resetBooking, pickPackage, pickTick } =
+    useSite();
   const avail = useAvailability();
-  const reduce = useReducedMotion();
   const prices = usePriceBook();
   const { book } = prices;
+  const quote = useQuote();
+  const step = b.step;
 
-  const [step, setStep] = useState(0);
+  const [errors, setErrors] = useState<Errors>({});
+  const [notice, setNotice] = useState("");
+  const [sending, setSending] = useState(false);
   const [done, setDone] = useState<Done | null>(null);
   const [token, setToken] = useState("");
   /** Month the calendar opens on when no date is picked (keeps place after a conflict). */
   const [anchor, setAnchor] = useState<string | null>(null);
-  const [date, setDate] = useState<string | null>(null);
-  const [city, setCity] = useState("");
-  const [venue, setVenue] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [name, setName] = useState("");
-  const [honoree, setHonoree] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [prefLang, setPrefLang] = useState<Lang | null>(null);
-  const [note, setNote] = useState("");
-  const [share, setShare] = useState(true);
-  const [signedName, setSignedName] = useState("");
-  const [signature, setSignature] = useState<string | null>(null);
-  const [agree, setAgree] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [sending, setSending] = useState(false);
+  /** Bumps whenever the step changes on purpose: focus the heading, bring the panel into view. */
+  const [moveTick, setMoveTick] = useState(0);
 
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const flowRef = useRef<HTMLDivElement>(null);
-  const mounted = useRef(false);
-  useEffect(() => {
-    if (!mounted.current) {
-      mounted.current = true;
-      return;
-    }
-    // Bring the new step's top into view if it starts above the fold.
-    const top = flowRef.current?.getBoundingClientRect().top ?? 0;
-    if (top < 64) flowRef.current?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
-    titleRef.current?.focus({ preventScroll: true });
-  }, [step, done, reduce]);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const navRef = useRef<HTMLDivElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
+  const honeypotRef = useRef<HTMLInputElement>(null);
+  const noticeRef = useRef<HTMLParagraphElement>(null);
+  const turnstileRef = useRef<TurnstileInstance>(null);
+  useImperativeHandle(ref, () => panelRef.current as HTMLDivElement);
 
-  const quote = useQuote();
-  const total = quote.totalUsd;
-  const shown = useTween(total);
-  const language = prefLang ?? lang;
-  const portrait = workById("w02");
-
-  const cityLabel = CITIES.find((c) => c.id === city);
-  // Package decides what's covered: the Portrait Session is photos only.
+  const language = b.prefLang ?? lang;
+  // The package decides what's covered: the Portrait Session is photos only.
   const scope = tier === "study" ? "stills" : "both";
-  const agreement = useMemo(
-    () =>
-      step === LAST
-        ? buildAgreement({
-            lang: language,
-            tier,
-            hours,
-            crew,
-            addOns,
-            eventDate: date ?? isoDate(new Date()),
-            cityLabel: cityLabel ? pick(language, cityLabel.label) : "",
-            venue: venue.trim(),
-            startTime: startTime.trim(),
-            honoree: honoree.trim(),
-            name: name.trim(),
-            email: email.trim(),
-            phone: phone.trim(),
-            sharePermission: share,
-          }, book)
-        : null,
-    [step, language, tier, hours, crew, addOns, date, cityLabel, venue, startTime, honoree, name, email, phone, share, book],
-  );
+  const moved = moveTick > 0 || pickTick > 0;
 
-  const validate = (s: number) => {
-    const e: Record<string, string> = {};
-    if (s === 0) {
-      if (!date) e.date = t.intake.errors.date;
-      if (!city) e.city = t.intake.errors.city;
-    }
+  /* ---------- step moves ---------- */
+
+  const errorsFor = (s: number): Errors => {
+    const e: Errors = {};
     if (s === 2) {
-      if (name.trim().length < 2) e.name = t.intake.errors.name;
-      if (!EMAIL.test(email.trim())) e.email = t.intake.errors.email;
-      if (phone.replace(/\D/g, "").length < 7) e.phone = t.intake.errors.phone;
+      if (!b.date) e.date = t.booking.errors.date;
+      if (!b.city) e.city = t.booking.errors.city;
     }
-    if (s === LAST) {
-      if (signedName.trim().length < 2) e.signedName = t.intake.errors.signedName;
-      if (!signature) e.signature = t.intake.errors.signature;
-      if (!agree) e.agree = t.intake.errors.agree;
+    if (s === 3) {
+      if (b.name.trim().length < 2) e.name = t.booking.errors.name;
+      if (!EMAIL.test(b.email.trim())) e.email = t.booking.errors.email;
+      if (b.phone.replace(/\D/g, "").length < 7) e.phone = t.booking.errors.phone;
     }
-    setErrors(e);
-    return Object.keys(e).length === 0;
+    return e;
   };
 
-  const next = () => {
-    if (!validate(step)) return;
-    // Pre-fill the signing name with the name they gave us.
-    if (step === 2 && !signedName.trim()) setSignedName(name.trim());
-    setStep((s) => Math.min(s + 1, LAST));
-  };
-  const back = () => {
+  const focusFirstInvalid = () =>
+    requestAnimationFrame(() =>
+      panelRef.current?.querySelector<HTMLElement>('[aria-invalid="true"], [data-invalid="true"]')?.focus(),
+    );
+
+  /** Go to a step. Moving forward checks every step in between; the first one with a problem opens instead. */
+  const go = (target: number) => {
+    for (let s = step; s < target; s++) {
+      const e = errorsFor(s);
+      if (Object.keys(e).length) {
+        setErrors(e);
+        if (s !== step) {
+          updateBooking({ step: s });
+          setMoveTick((n) => n + 1);
+        }
+        focusFirstInvalid();
+        return;
+      }
+    }
     setErrors({});
-    setStep((s) => Math.max(s - 1, 0));
+    updateBooking({ step: target, reached: Math.max(b.reached, target) });
+    setMoveTick((n) => n + 1);
   };
+
+  const clearError = (key: string) => setErrors((e) => (e[key] ? { ...e, [key]: "" } : e));
+
+  // After a deliberate step change: heading gets focus; the panel's top is
+  // scrolled into view only when it has gone off-screen.
+  useEffect(() => {
+    if (!moveTick && !pickTick) return;
+    const panel = panelRef.current;
+    if (!panel) return;
+    const top = panel.getBoundingClientRect().top;
+    const header = parseFloat(getComputedStyle(panel).scrollMarginTop) || 64;
+    if (top < header - 1 || top > window.innerHeight - 120) {
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      panel.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    }
+    headingRef.current?.focus({ preventScroll: true });
+  }, [moveTick, pickTick]);
+
+  // "Book this" links anywhere: #book-<package> opens the panel at Hours & extras.
+  useEffect(() => {
+    const onHash = () => {
+      const m = BOOK_HASH.exec(window.location.hash);
+      if (!m) return;
+      pickPackage(m[1] as TierId);
+      history.replaceState(null, "", `${window.location.pathname}${window.location.search}#intake`);
+    };
+    // After the draft restore (a parent effect) so the link wins over an old draft.
+    const id = window.setTimeout(onHash, 0);
+    window.addEventListener("hashchange", onHash);
+    return () => {
+      window.clearTimeout(id);
+      window.removeEventListener("hashchange", onHash);
+    };
+  }, [pickPackage]);
+
+  /* ---------- running total bar (phones + tablets) ---------- */
+
+  const [inView, setInView] = useState(false);
+  const [navInView, setNavInView] = useState(false);
+  const [typing, setTyping] = useState(false);
+  useEffect(() => {
+    const panel = panelRef.current;
+    const nav = navRef.current;
+    if (!panel) return;
+    const a = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { rootMargin: "0px 0px -30% 0px" });
+    a.observe(panel);
+    const c = nav ? new IntersectionObserver(([e]) => setNavInView(e.isIntersecting)) : null;
+    if (nav) c?.observe(nav);
+    return () => {
+      a.disconnect();
+      c?.disconnect();
+    };
+  }, [done]);
+  // The bar steps aside while the keyboard is up (a text field has focus) and
+  // whenever the step's own Back/Next row is on screen.
+  const showBar = !done && inView && !navInView && !typing;
+
+  const onPanelFocus = (e: React.FocusEvent) => {
+    const text = isTextField(e.target);
+    setTyping(text);
+    // A control reached by keyboard must never sit under the bar.
+    const bar = barRef.current;
+    if (!text && showBar && bar && e.target instanceof HTMLElement && !bar.contains(e.target)) {
+      const r = e.target.getBoundingClientRect();
+      const limit = window.innerHeight - bar.offsetHeight - 12;
+      if (r.bottom > limit) window.scrollBy({ top: r.bottom - limit, behavior: "instant" });
+    }
+  };
+
+  /* ---------- send ---------- */
 
   const submit = async (ev: React.FormEvent) => {
     ev.preventDefault();
-    if (step < LAST) return next();
-    if (!validate(LAST) || !date) return;
+    if (step < LAST) return go(step + 1);
+    for (let s = 0; s < LAST; s++) {
+      const e = errorsFor(s);
+      if (Object.keys(e).length) {
+        setErrors(e);
+        updateBooking({ step: s });
+        setMoveTick((n) => n + 1);
+        focusFirstInvalid();
+        return;
+      }
+    }
+    if (!b.date) return;
     if (SHOW_TURNSTILE && !token) {
-      setErrors({ form: t.intake.errors.verify });
+      setErrors({ form: t.booking.errors.verify });
       return;
     }
     setSending(true);
+    setErrors({});
+    setNotice("");
+    let ok = false;
     try {
       const res = await fetch("/api/commission", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          event_date: date,
-          city,
-          venue: venue.trim(),
-          start_time: startTime.trim(),
+          event_date: b.date,
+          city: b.city,
+          venue: b.venue.trim(),
+          start_time: timeLabel(b.startTime, "en"),
           scope,
           tier,
           add_ons: addOns,
           crew_mix: crew,
           hours,
-          name: name.trim(),
-          honoree: honoree.trim(),
-          email: email.trim(),
-          phone: phone.trim(),
+          name: b.name.trim(),
+          honoree: b.honoree.trim(),
+          email: b.email.trim(),
+          phone: b.phone.trim(),
           language,
-          note: note.trim(),
-          share_permission: share,
-          signed_name: signedName.trim(),
-          signature,
-          agree,
+          note: b.note.trim(),
+          share_permission: b.share,
           // What the family was shown; the server refuses if its own price differs.
           quoted_total_usd: quote.totalUsd,
           quoted_deposit_usd: quote.retainerUsd,
+          [HONEYPOT_FIELD]: honeypotRef.current?.value ?? "",
           "cf-turnstile-response": token,
           attribution: getFirstTouch(),
         }),
@@ -203,572 +270,570 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
       };
 
       if (j.code === "prices_changed") {
-        // Prices changed while this tab was open: show the new numbers and ask
-        // them to read and sign again (the agreement above rebuilds itself).
+        // Prices changed while this tab was open: show the new numbers first.
         const fresh = priceBookSchema.safeParse(j.book);
         if (fresh.success) prices.adopt(fresh.data as PriceBook);
-        setSignature(null);
-        setAgree(false);
-        setErrors({ form: t.intake.errors.pricesChanged });
+        setNotice(t.booking.pricesChanged);
+        requestAnimationFrame(() => noticeRef.current?.focus());
         return;
       }
       if (res.status === 409 || j.code === "date_taken") {
-        avail.markTaken(date);
+        avail.markTaken(b.date);
         avail.refresh();
-        setAnchor(date);
-        setDate(null);
-        setStep(0);
-        setErrors({ date: t.intake.errors.taken });
+        setAnchor(b.date);
+        updateBooking({ date: null, step: 2 });
+        setErrors({ date: t.booking.errors.taken });
+        setMoveTick((n) => n + 1);
         return;
       }
       if (!res.ok || !j.ok) {
-        setErrors({ form: j.error || t.intake.errors.failed });
+        setErrors({ form: j.error || t.booking.errors.failed });
         return;
       }
-      setDone({ ref: j.ref ?? "", holdDays: j.holdDays ?? book.holdDays, depositUsd: quote.retainerUsd });
+      ok = true;
+      setDone({ ref: j.ref ?? "", holdDays: j.holdDays ?? book.holdDays, date: b.date, email: b.email.trim() });
+      resetBooking();
       avail.refresh();
+      setMoveTick((n) => n + 1);
     } catch {
-      setErrors({ form: t.intake.errors.failed });
+      setErrors({ form: t.booking.errors.failed });
     } finally {
       setSending(false);
+      // A Turnstile token is single-use: get a fresh one for the next try.
+      if (!ok && SHOW_TURNSTILE) {
+        turnstileRef.current?.reset();
+        setToken("");
+      }
     }
   };
 
-  const reset = () => {
-    setDone(null);
-    setStep(0);
-    setDate(null);
-    setNote("");
-    setSignature(null);
-    setAgree(false);
-  };
-
-  const slide = reduce
-    ? { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 } }
-    : {
-        initial: { opacity: 0, x: 28 },
-        animate: { opacity: 1, x: 0 },
-        exit: { opacity: 0, x: -28 },
-      };
+  const nextLabel = step < LAST ? t.booking.next : sending ? t.booking.sending : t.booking.send;
 
   return (
-    <section ref={ref} id="intake" className="tq-section" aria-labelledby="tq-intake-title">
-      <div className="tq-wrap">
-        <header className="tq-head">
-          <p className="tq-head__index tq-mono" style={{ margin: 0 }}>
-            [{t.intake.index}]
-          </p>
-          <h2 id="tq-intake-title" className="tq-display tq-head__title">
-            {t.intake.title}
-          </h2>
-        </header>
-
-        <div className="tq-intake">
-          {/* Editorial context */}
-          <aside className="tq-intake__aside">
-            <div className="tq-intake__portrait">
-              <Image
-                src={portrait.src}
-                alt={pick(lang, portrait.alt)}
-                fill
-                unoptimized
-                sizes="(min-width: 960px) 40vw, 100vw"
-                style={{ objectPosition: portrait.focus }}
-              />
-            </div>
-            <div className="tq-live">
-              <span className="tq-mono" style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <span className="tq-dot" data-pending={!avail.ready} data-limited={avail.limited} aria-hidden />
-                {t.intake.live}
-              </span>
-              <p className="tq-display tq-live__count" style={{ margin: 0 }} aria-live="polite">
-                {avail.ready ? t.intake.liveCount(avail.openSaturdays) : t.status.loading}
-              </p>
-              <span className="tq-mono tq-muted">{t.intake.liveNote}</span>
-            </div>
-            <div>
-              <h3 className="tq-mono" style={{ margin: "0 0 8px" }}>
-                {t.intake.nextTitle}
-              </h3>
-              <ol className="tq-timeline">
-                {t.intake.next.map((n, i) => (
-                  <li key={n}>
-                    <span className="tq-mono tq-muted">0{i + 1}</span>
-                    <span>{n}</span>
+    <div
+      ref={panelRef}
+      id="intake"
+      className="tq-bk"
+      role="region"
+      aria-label={t.booking.label}
+      onFocus={onPanelFocus}
+      onBlur={() => setTyping(false)}
+    >
+      {done ? (
+        <Success done={done} onAgain={() => setDone(null)} headingRef={headingRef} />
+      ) : (
+        <>
+          <nav className="tq-bk-steps" aria-label={t.booking.stepsLabel}>
+            <ol>
+              {t.booking.steps.map((label, i) => {
+                const passed = i < b.reached && i !== step;
+                const state = i === step ? "current" : i <= b.reached ? "open" : "locked";
+                return (
+                  <li key={label} data-state={state}>
+                    <button
+                      type="button"
+                      disabled={i > b.reached}
+                      aria-current={i === step ? "step" : undefined}
+                      onClick={() => i !== step && go(i)}
+                    >
+                      <span className="tq-bk-steps__n tq-nums" aria-hidden>
+                        {passed ? "✓" : i + 1}
+                      </span>
+                      <span className="tq-bk-steps__label">{label}</span>
+                      {passed ? <span className="tq-sr">, {t.booking.stepDone}</span> : null}
+                      {state === "locked" ? <span className="tq-sr">, {t.booking.stepLocked}</span> : null}
+                    </button>
                   </li>
-                ))}
-              </ol>
-            </div>
-          </aside>
+                );
+              })}
+            </ol>
+          </nav>
 
-          {/* Interactive flow */}
-          <div ref={flowRef} className="tq-intake__flow">
-            {done ? (
-              <motion.div
-                className="tq-done"
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, ease: EASE }}
-              >
-                {done.ref && (
-                  <span className="tq-mono" style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <span className="tq-dot" aria-hidden /> {t.intake.reference} — {done.ref}
-                  </span>
-                )}
-                <h3 ref={titleRef} tabIndex={-1} className="tq-display" style={{ outline: "none" }}>
-                  {t.intake.doneTitle}
-                </h3>
-                <p>
-                  {t.intake.doneBody(
-                    date ? longDate(date, lang) : "",
-                    email.trim(),
-                    done.holdDays,
-                    money(done.depositUsd),
-                  )}
-                </p>
-                <Summary
-                  date={date}
-                  city={cityLabel ? pick(lang, cityLabel.label) : ""}
-                  total={total}
+          <div className="tq-bk-body">
+            <form id="tq-bk-form" className="tq-bk-main" onSubmit={submit} noValidate>
+              {/* Honeypot — hidden from people; bots fill it and are quietly dropped. */}
+              <div aria-hidden className="tq-sr">
+                <label htmlFor={`tq-${HONEYPOT_FIELD}`}>Leave this empty</label>
+                <input
+                  ref={honeypotRef}
+                  id={`tq-${HONEYPOT_FIELD}`}
+                  name={HONEYPOT_FIELD}
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
                 />
-                <div>
-                  <button type="button" className="tq-btn tq-btn--ghost" onClick={reset}>
-                    {t.intake.again}
-                  </button>
+              </div>
+
+              <motion.div
+                key={step}
+                className="tq-bk-step"
+                initial={moved ? { opacity: 0, y: 10 } : false}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.28, ease: EASE }}
+              >
+                <div className="tq-bk-head">
+                  <p className="tq-bk-kicker" aria-hidden>
+                    {t.booking.stepOf(step + 1, BOOKING_STEPS)}
+                  </p>
+                  <h3 ref={headingRef} tabIndex={-1} className="tq-display tq-bk-title">
+                    <span className="tq-sr">{t.booking.stepOf(step + 1, BOOKING_STEPS)}: </span>
+                    {t.booking.steps[step]}
+                  </h3>
+                  <p className="tq-bk-dek">
+                    {[t.booking.packageDek, t.booking.extrasDek, t.booking.dateDek, t.booking.detailsDek, t.booking.sendDek][step]}
+                  </p>
                 </div>
-              </motion.div>
-            ) : (
-              <form onSubmit={submit} noValidate>
-                <ol className="tq-stepper" aria-label={t.intake.stepOf(step + 1, STEPS)}>
-                  {t.intake.steps.map((s, i) => {
-                    const state = i < step ? "done" : i === step ? "current" : "todo";
-                    return (
-                      <li key={s} data-state={state}>
-                        <button
-                          type="button"
-                          disabled={i >= step}
-                          aria-current={i === step ? "step" : undefined}
-                          onClick={() => {
-                            setErrors({});
-                            setStep(i);
-                          }}
-                        >
-                          <span className="tq-mono">0{i + 1}</span>
-                          <span className="tq-stepper__label">{s}</span>
-                        </button>
-                        {i <= step && (
-                          <motion.span
-                            className="tq-stepper__bar"
-                            initial={{ scaleX: 0 }}
-                            animate={{ scaleX: 1 }}
-                            transition={{ duration: 0.6, ease: EASE }}
-                          />
-                        )}
-                      </li>
-                    );
-                  })}
-                </ol>
 
-                <AnimatePresence mode="wait" initial={false}>
-                  <motion.div
-                    key={step}
-                    className="tq-step"
-                    {...slide}
-                    transition={{ duration: 0.45, ease: EASE }}
-                  >
-                    <h3 ref={titleRef} tabIndex={-1} className="tq-display tq-step__title">
-                      <span className="tq-sr">{t.intake.stepOf(step + 1, STEPS)}: </span>
-                      {t.intake.steps[step]}
-                    </h3>
+                {step === 0 && <PackageStep />}
 
-                    {step === 0 && (
-                      <>
-                        <Calendar
-                          value={date}
-                          anchor={anchor}
-                          onChange={(d) => {
-                            setDate(d);
-                            setErrors((e) => ({ ...e, date: "" }));
-                          }}
-                          error={errors.date}
-                        />
+                {step === 1 && <ExtrasStep onChangePackage={() => go(0)} />}
 
-                        <fieldset className="tq-field" style={{ border: 0, padding: 0, margin: 0 }}>
-                          <legend className="tq-mono tq-legend" style={{ marginBottom: 10 }}>
-                            {t.intake.city}
-                          </legend>
-                          <div className="tq-pills">
-                            {CITIES.map((c) => (
-                              <label key={c.id} className="tq-pill">
-                                <input
-                                  type="radio"
-                                  name="city"
-                                  value={c.id}
-                                  checked={city === c.id}
-                                  onChange={() => {
-                                    setCity(c.id);
-                                    setErrors((e) => ({ ...e, city: "" }));
-                                  }}
-                                  aria-describedby={errors.city ? "err-city" : undefined}
-                                />
-                                {pick(lang, c.label)}
-                              </label>
-                            ))}
-                          </div>
-                          {errors.city && (
-                            <p id="err-city" className="tq-error" role="alert">
-                              {errors.city}
-                            </p>
-                          )}
-                        </fieldset>
-
-                        <div className="tq-field">
-                          <label htmlFor="tq-venue" className="tq-mono">
-                            {t.intake.venue} <span className="tq-muted">— {t.intake.optional}</span>
+                {step === 2 && (
+                  <>
+                    <p className="tq-bk-live" aria-live="polite">
+                      <span className="tq-dot" data-pending={!avail.ready} data-limited={avail.limited} aria-hidden />
+                      {avail.ready ? t.booking.openCount(avail.openSaturdays) : t.status.loading}
+                    </p>
+                    <Calendar
+                      value={b.date}
+                      anchor={anchor}
+                      onChange={(d) => {
+                        updateBooking({ date: d });
+                        clearError("date");
+                      }}
+                      error={errors.date}
+                    />
+                    <fieldset className="tq-bk-group">
+                      <legend className="tq-bk-label">{t.booking.city}</legend>
+                      <div className="tq-pills">
+                        {CITIES.map((c, i) => (
+                          <label key={c.id} className="tq-pill">
+                            <input
+                              type="radio"
+                              name="city"
+                              value={c.id}
+                              checked={b.city === c.id}
+                              onChange={() => {
+                                updateBooking({ city: c.id });
+                                clearError("city");
+                              }}
+                              aria-invalid={errors.city && i === 0 ? true : undefined}
+                              aria-describedby={errors.city ? "tq-err-city" : undefined}
+                            />
+                            {pick(lang, c.label)}
                           </label>
-                          <input
-                            id="tq-venue"
-                            className="tq-input"
-                            value={venue}
-                            onChange={(e) => setVenue(e.target.value)}
-                            autoComplete="off"
-                            aria-describedby="tq-venue-hint"
-                          />
-                          <p id="tq-venue-hint" className="tq-hint">
-                            {t.intake.venueHint}
-                          </p>
-                        </div>
-
-                        <Field
-                          id="tq-start"
-                          label={t.intake.startTime}
-                          hint={t.intake.startHint}
-                          optional={t.intake.optional}
-                          value={startTime}
-                          onChange={setStartTime}
-                          autoComplete="off"
-                        />
-                      </>
-                    )}
-
-                    {step === 1 && (
-                      <>
-                        <fieldset className="tq-field" style={{ border: 0, padding: 0, margin: 0 }}>
-                          <legend className="tq-mono tq-legend" style={{ marginBottom: 10 }}>
-                            {t.intake.tier}
-                          </legend>
-                          <div className="tq-choice">
-                            {TIERS.map((x) => (
-                              <label key={x.id}>
-                                <input
-                                  type="radio"
-                                  name="tier"
-                                  value={x.id}
-                                  checked={tier === x.id}
-                                  onChange={() => setTier(x.id)}
-                                />
-                                <span className="tq-display tq-choice__num">{x.numeral}</span>
-                                <span>
-                                  <span className="tq-choice__name" style={{ display: "block" }}>
-                                    {pick(lang, x.name)}
-                                  </span>
-                                  <span className="tq-muted" style={{ fontSize: "0.9375rem" }}>
-                                    {pick(lang, x.summary)}
-                                  </span>
-                                </span>
-                                <span className="tq-mono tq-choice__price tq-nums">{money(book.packages[x.id].price)}</span>
-                              </label>
-                            ))}
-                          </div>
-                        </fieldset>
-
-                        <div className="tq-field">
-                          <span className="tq-mono tq-legend">{t.hours.title}</span>
-                          <HoursControl />
-                        </div>
-
-                        <div className="tq-field">
-                          <span className="tq-mono tq-legend">
-                            {t.crew.title} <span className="tq-muted">— {t.intake.optional}</span>
-                          </span>
-                          <CrewControl compact />
-                        </div>
-
-                        <fieldset className="tq-field" style={{ border: 0, padding: 0, margin: 0 }}>
-                          <legend className="tq-mono tq-legend" style={{ marginBottom: 10 }}>
-                            {t.intake.addOns} <span className="tq-muted">— {t.intake.optional}</span>
-                          </legend>
-                          <div className="tq-choice tq-choice--check">
-                            {ADD_ONS.map((a) => (
-                              <label key={a.id}>
-                                <input
-                                  type="checkbox"
-                                  checked={addOns.includes(a.id)}
-                                  onChange={() => toggleAddOn(a.id)}
-                                />
-                                <span className="tq-choice__box" aria-hidden>
-                                  {addOns.includes(a.id) ? "✓" : ""}
-                                </span>
-                                <span>{pick(lang, a.name)}</span>
-                                <span className="tq-mono tq-choice__price tq-nums">+{money(book.addOns[a.id])}</span>
-                              </label>
-                            ))}
-                          </div>
-                        </fieldset>
-
-                        <div className="tq-total">
-                          <span className="tq-mono">{t.intake.estimate}</span>
-                          <span className="tq-display tq-nums" aria-live="polite">
-                            <span className="tq-sr">{money(total)}</span>
-                            <span aria-hidden>{money(shown)}</span>
-                          </span>
-                        </div>
-                      </>
-                    )}
-
-                    {step === 2 && (
-                      <>
-                        <Summary
-                          date={date}
-                          city={cityLabel ? pick(lang, cityLabel.label) : ""}
-                          total={total}
-                        />
-                        <div className="tq-fieldrow">
-                          <Field
-                            id="tq-name"
-                            label={t.intake.parent}
-                            hint={t.intake.parentHint}
-                            value={name}
-                            onChange={setName}
-                            autoComplete="name"
-                            error={errors.name}
-                            required
-                          />
-                          <Field
-                            id="tq-honoree"
-                            label={t.intake.honoree}
-                            optional={t.intake.optional}
-                            value={honoree}
-                            onChange={setHonoree}
-                            autoComplete="off"
-                          />
-                        </div>
-                        <div className="tq-fieldrow">
-                          <Field
-                            id="tq-email"
-                            type="email"
-                            label={t.intake.email}
-                            value={email}
-                            onChange={setEmail}
-                            autoComplete="email"
-                            inputMode="email"
-                            error={errors.email}
-                            required
-                          />
-                          <Field
-                            id="tq-phone"
-                            type="tel"
-                            label={t.intake.phone}
-                            value={phone}
-                            onChange={setPhone}
-                            autoComplete="tel"
-                            inputMode="tel"
-                            error={errors.phone}
-                            required
-                          />
-                        </div>
-                        <fieldset className="tq-field" style={{ border: 0, padding: 0, margin: 0 }}>
-                          <legend className="tq-mono tq-legend" style={{ marginBottom: 10 }}>
-                            {t.intake.language}
-                          </legend>
-                          <div className="tq-pills">
-                            {(["en", "es"] as Lang[]).map((l) => (
-                              <label key={l} className="tq-pill" lang={l}>
-                                <input
-                                  type="radio"
-                                  name="language"
-                                  value={l}
-                                  checked={language === l}
-                                  onChange={() => setPrefLang(l)}
-                                />
-                                {t.intake.langs[l]}
-                              </label>
-                            ))}
-                          </div>
-                        </fieldset>
-                        <div className="tq-field">
-                          <label htmlFor="tq-note" className="tq-mono">
-                            {t.intake.note} <span className="tq-muted">— {t.intake.optional}</span>
-                          </label>
-                          <textarea
-                            id="tq-note"
-                            className="tq-input"
-                            rows={3}
-                            value={note}
-                            placeholder={t.intake.notePlaceholder}
-                            onChange={(e) => setNote(e.target.value)}
-                          />
-                        </div>
-                        <label className="tq-check">
-                          <input type="checkbox" checked={share} onChange={(e) => setShare(e.target.checked)} />
-                          <span className="tq-check__box" aria-hidden>
-                            {share ? "✓" : ""}
-                          </span>
-                          <span>{t.intake.share}</span>
-                        </label>
-                      </>
-                    )}
-
-                    {step === LAST && agreement && (
-                      <>
-                        <p style={{ margin: 0 }}>{t.intake.signIntro}</p>
-                        <article className="tq-agreement" aria-label={agreement.title} tabIndex={0}>
-                          <h4 className="tq-agreement__title">{agreement.title}</h4>
-                          <p>{agreement.intro}</p>
-                          {agreement.sections.map((sec) => (
-                            <section key={sec.title}>
-                              <h5 className="tq-mono">{sec.title}</h5>
-                              <ul>
-                                {sec.lines.map((l) => (
-                                  <li key={l}>{l}</li>
-                                ))}
-                              </ul>
-                            </section>
-                          ))}
-                        </article>
-                        <Field
-                          id="tq-signed-name"
-                          label={t.intake.signedName}
-                          value={signedName}
-                          onChange={setSignedName}
-                          autoComplete="name"
-                          error={errors.signedName}
-                          required
-                        />
-                        <SignaturePad
-                          value={signature}
-                          onChange={(png) => {
-                            setSignature(png);
-                            if (png) setErrors((e) => ({ ...e, signature: "" }));
-                          }}
-                          label={t.intake.signature}
-                          clearLabel={t.intake.clear}
-                          typedName={signedName}
-                          useTypedLabel={t.intake.useTyped}
-                          error={errors.signature}
-                        />
-                        <label className="tq-check">
-                          <input
-                            type="checkbox"
-                            checked={agree}
-                            onChange={(e) => {
-                              setAgree(e.target.checked);
-                              if (e.target.checked) setErrors((x) => ({ ...x, agree: "" }));
-                            }}
-                            aria-describedby={errors.agree ? "err-agree" : undefined}
-                          />
-                          <span className="tq-check__box" aria-hidden>
-                            {agree ? "✓" : ""}
-                          </span>
-                          <span>{t.intake.agree}</span>
-                        </label>
-                        {errors.agree && (
-                          <p id="err-agree" className="tq-error" role="alert">
-                            {errors.agree}
-                          </p>
-                        )}
-                        {SHOW_TURNSTILE && SITE_KEY ? (
-                          <Turnstile
-                            siteKey={SITE_KEY}
-                            onSuccess={setToken}
-                            onExpire={() => setToken("")}
-                            onError={() => setToken("")}
-                            options={{ theme: "auto", language: language }}
-                          />
-                        ) : null}
-                        {errors.form && (
-                          <p className="tq-error" role="alert">
-                            {errors.form}
-                          </p>
-                        )}
-                      </>
-                    )}
-
-                    <div className="tq-step__nav">
-                      {step > 0 && (
-                        <button type="button" className="tq-btn tq-btn--ghost tq-btn--lg" onClick={back}>
-                          ← {t.intake.back}
-                        </button>
-                      )}
-                      <button type="submit" className="tq-btn tq-btn--lg" disabled={sending}>
-                        {step < LAST ? (
-                          <>
-                            {t.intake.continue} <span className="tq-arrow" aria-hidden>→</span>
-                          </>
-                        ) : sending ? (
-                          t.intake.sending
-                        ) : (
-                          <>
-                            {t.intake.submit} <span className="tq-arrow" aria-hidden>→</span>
-                          </>
-                        )}
-                      </button>
+                        ))}
+                      </div>
+                      {errors.city ? (
+                        <p id="tq-err-city" className="tq-error" role="alert">
+                          {errors.city}
+                        </p>
+                      ) : null}
+                    </fieldset>
+                    <div className="tq-fieldrow">
+                      <Field
+                        id="tq-venue"
+                        label={t.booking.venue}
+                        optional={t.booking.optional}
+                        hint={t.booking.venueHint}
+                        value={b.venue}
+                        onChange={(v) => updateBooking({ venue: v })}
+                        autoComplete="off"
+                        maxLength={160}
+                      />
+                      <Field
+                        id="tq-start"
+                        type="time"
+                        label={t.booking.startTime}
+                        optional={t.booking.optional}
+                        hint={t.booking.startHint}
+                        value={b.startTime}
+                        onChange={(v) => updateBooking({ startTime: v })}
+                        autoComplete="off"
+                      />
                     </div>
-                  </motion.div>
-                </AnimatePresence>
-              </form>
-            )}
+                  </>
+                )}
+
+                {step === 3 && (
+                  <>
+                    <div className="tq-fieldrow">
+                      <Field
+                        id="tq-name"
+                        label={t.booking.parent}
+                        hint={t.booking.parentHint}
+                        value={b.name}
+                        onChange={(v) => {
+                          updateBooking({ name: v });
+                          clearError("name");
+                        }}
+                        autoComplete="name"
+                        autoCapitalize="words"
+                        maxLength={120}
+                        error={errors.name}
+                        required
+                      />
+                      <Field
+                        id="tq-email"
+                        type="email"
+                        label={t.booking.email}
+                        value={b.email}
+                        onChange={(v) => {
+                          updateBooking({ email: v });
+                          clearError("email");
+                        }}
+                        autoComplete="email"
+                        inputMode="email"
+                        autoCapitalize="off"
+                        spellCheck={false}
+                        maxLength={200}
+                        error={errors.email}
+                        required
+                      />
+                    </div>
+                    <div className="tq-fieldrow">
+                      <Field
+                        id="tq-phone"
+                        type="tel"
+                        label={t.booking.phone}
+                        value={b.phone}
+                        onChange={(v) => {
+                          updateBooking({ phone: v });
+                          clearError("phone");
+                        }}
+                        autoComplete="tel"
+                        inputMode="tel"
+                        maxLength={40}
+                        error={errors.phone}
+                        required
+                      />
+                      <Field
+                        id="tq-honoree"
+                        label={t.booking.honoree}
+                        optional={t.booking.optional}
+                        value={b.honoree}
+                        onChange={(v) => updateBooking({ honoree: v })}
+                        autoComplete="off"
+                        autoCapitalize="words"
+                        maxLength={80}
+                      />
+                    </div>
+                    <fieldset className="tq-bk-group">
+                      <legend className="tq-bk-label">{t.booking.language}</legend>
+                      <div className="tq-pills">
+                        {(["en", "es"] as Lang[]).map((l) => (
+                          <label key={l} className="tq-pill" lang={l}>
+                            <input
+                              type="radio"
+                              name="language"
+                              value={l}
+                              checked={language === l}
+                              onChange={() => updateBooking({ prefLang: l })}
+                            />
+                            {t.booking.langs[l]}
+                          </label>
+                        ))}
+                      </div>
+                    </fieldset>
+                    <label className="tq-check">
+                      <input
+                        type="checkbox"
+                        checked={b.share}
+                        onChange={(e) => updateBooking({ share: e.target.checked })}
+                      />
+                      <span className="tq-check__box" aria-hidden>
+                        {b.share ? "✓" : ""}
+                      </span>
+                      <span>{t.booking.share}</span>
+                    </label>
+                    <div className="tq-field">
+                      <label htmlFor="tq-note" className="tq-bk-label">
+                        {t.booking.note} <span className="tq-bk-opt">— {t.booking.optional}</span>
+                      </label>
+                      <textarea
+                        id="tq-note"
+                        className="tq-input"
+                        rows={3}
+                        maxLength={2000}
+                        value={b.note}
+                        placeholder={t.booking.notePlaceholder}
+                        onChange={(e) => updateBooking({ note: e.target.value })}
+                      />
+                    </div>
+                  </>
+                )}
+
+                {step === LAST && (
+                  <>
+                    {/* Prices changed while the tab was open: said right above the new numbers. */}
+                    {notice ? (
+                      <p ref={noticeRef} className="tq-bk-notice" role="alert" tabIndex={-1}>
+                        {notice}
+                      </p>
+                    ) : null}
+                    <Summary onEdit={go} language={language} />
+                    <div className="tq-bk-next">
+                      <h4 className="tq-bk-label">{t.booking.nextTitle}</h4>
+                      <ol>
+                        {t.booking.nextSteps.map((s) => (
+                          <li key={s}>{s}</li>
+                        ))}
+                      </ol>
+                      <p className="tq-bk-nocharge">{t.booking.noCharge}</p>
+                    </div>
+                    {SHOW_TURNSTILE && SITE_KEY ? (
+                      <Turnstile
+                        ref={turnstileRef}
+                        siteKey={SITE_KEY}
+                        onSuccess={setToken}
+                        onExpire={() => setToken("")}
+                        onError={() => setToken("")}
+                        options={{ theme: "light", language }}
+                      />
+                    ) : null}
+                  </>
+                )}
+
+                {errors.form ? (
+                  <p className="tq-error" role="alert">
+                    {errors.form}
+                  </p>
+                ) : null}
+              </motion.div>
+
+              <div ref={navRef} className="tq-bk-nav" data-first={step === 0} data-last={step === LAST}>
+                {step > 0 ? (
+                  <button type="button" className="tq-btn tq-btn--ghost tq-btn--lg" onClick={() => go(step - 1)}>
+                    <span aria-hidden>←</span> {t.booking.back}
+                  </button>
+                ) : null}
+                <button type="submit" className="tq-btn tq-btn--lg tq-bk-nav__next" disabled={sending} aria-busy={sending}>
+                  {nextLabel} {sending ? null : <span className="tq-arrow" aria-hidden>→</span>}
+                </button>
+              </div>
+            </form>
+
+            <Totals nextLabel={nextLabel} sending={sending} />
           </div>
-        </div>
-      </div>
-    </section>
+
+          {/* Phones + tablets: total · deposit and Next, pinned to the bottom. */}
+          <div
+            ref={barRef}
+            className="tq-bk-bar"
+            data-show={showBar}
+            aria-hidden={!showBar}
+            inert={!showBar}
+          >
+            <span className="tq-bk-bar__sum tq-nums">
+              <span className="tq-bk-bar__total">
+                {t.booking.total}: {money(quote.totalUsd)}
+              </span>
+              <span className="tq-bk-bar__dep">
+                {t.booking.depositShort}: {money(quote.retainerUsd)}
+              </span>
+            </span>
+            <button type="submit" form="tq-bk-form" className="tq-btn tq-btn--lg" disabled={sending}>
+              {nextLabel} {sending ? null : <span className="tq-arrow" aria-hidden>→</span>}
+            </button>
+          </div>
+        </>
+      )}
+
+      {/* One quiet announcement of the total for screen readers. */}
+      <p className="tq-sr" aria-live="polite">
+        {done ? "" : `${t.booking.total}: ${money(quote.totalUsd)}`}
+      </p>
+    </div>
   );
 });
 
 /* ------------------------------------------------------------------ */
+/* Running total — side card on desktop                                */
+/* ------------------------------------------------------------------ */
 
-function Summary({ date, city, total }: { date: string | null; city: string; total: number }) {
-  const { t, lang, tier, addOns, crew, hours } = useSite();
-  const x = tierById(tier);
-  const extras = ADD_ONS.filter((a) => addOns.includes(a.id));
+function Totals({ nextLabel, sending }: { nextLabel: string; sending: boolean }) {
+  const { t, lang, tier, addOns, hours } = useSite();
+  const { book } = usePriceBook();
   const q = useQuote();
+  const shown = useTween(q.totalUsd);
+  const x = tierById(tier);
   return (
-    <dl className="tq-summary" aria-label={t.intake.summary}>
-      <div>
-        <dt className="tq-mono">{t.intake.steps[0]}</dt>
-        <dd>
-          {date ? longDate(date, lang) : "—"}
-          {city ? ` · ${city}` : ""}
-        </dd>
-      </div>
-      <div>
-        <dt className="tq-mono">{t.intake.steps[1]}</dt>
-        <dd>
-          {x.numeral} {pick(lang, x.name)}
-          {extras.length > 0 && ` + ${extras.map((a) => pick(lang, a.name)).join(", ")}`}
-          <span className="tq-muted">
-            {" · "}
-            {t.hours.value(hours)}
-            {" · "}
-            {BASE_CREW[tier] > 1 ? t.crew.mix(crew.photo, crew.motion) : t.crew.mix(1, 0)}
-            {COORDINATOR_INCLUDED[tier] ? ` · ${t.crew.coordinator}` : ""}
-          </span>
-        </dd>
-      </div>
-      <div>
-        <dt className="tq-mono">{t.intake.estimate}</dt>
-        <dd className="tq-nums">{money(total)}</dd>
-      </div>
-      <div>
-        <dt className="tq-mono">{t.intake.depositLabel}</dt>
-        <dd className="tq-nums">
-          {money(q.retainerUsd)}
-          <span className="tq-muted"> · {t.intake.balanceLabel}: {money(q.balanceUsd)}</span>
-        </dd>
-      </div>
-    </dl>
+    <aside className="tq-bk-side" aria-label={t.booking.total}>
+      <p className="tq-bk-kicker">{t.booking.total}</p>
+      <p className="tq-display tq-bk-side__total tq-nums" aria-hidden>
+        {money(shown)}
+      </p>
+      <dl className="tq-bk-lines tq-nums">
+        <div>
+          <dt>{pick(lang, x.name)}</dt>
+          <dd>{money(q.tierUsd)}</dd>
+        </div>
+        <div>
+          <dt>{t.booking.hourOption(hours)}</dt>
+          <dd>{hours > q.baseHours ? `+${money(q.extraHoursUsd)}` : t.booking.includedTag}</dd>
+        </div>
+        {ADD_ONS.filter((a) => addOns.includes(a.id)).map((a) => (
+          <div key={a.id}>
+            <dt>{pick(lang, a.name)}</dt>
+            <dd>+{money(book.addOns[a.id])}</dd>
+          </div>
+        ))}
+        <div className="tq-bk-lines__strong">
+          <dt>
+            {t.booking.deposit} <span className="tq-bk-lines__when">({t.booking.depositWhen})</span>
+          </dt>
+          <dd>{money(q.retainerUsd)}</dd>
+        </div>
+        <div>
+          <dt>{t.booking.rest}</dt>
+          <dd>{money(q.balanceUsd)}</dd>
+        </div>
+      </dl>
+      <button type="submit" form="tq-bk-form" className="tq-btn tq-btn--lg tq-btn--block" disabled={sending}>
+        {nextLabel} {sending ? null : <span className="tq-arrow" aria-hidden>→</span>}
+      </button>
+      <p className="tq-bk-fine">
+        {t.booking.noCharge} {t.commissions.fine}
+      </p>
+    </aside>
   );
 }
+
+/* ------------------------------------------------------------------ */
+/* Step 5 — summary                                                    */
+/* ------------------------------------------------------------------ */
+
+function Summary({ onEdit, language }: { onEdit: (step: number) => void; language: Lang }) {
+  const { t, lang, tier, addOns, crew, hours, booking: b } = useSite();
+  const q = useQuote();
+  const x = tierById(tier);
+  const extras = ADD_ONS.filter((a) => addOns.includes(a.id));
+  const city = CITIES.find((c) => c.id === b.city);
+  const rows: { step: number; label: string; lines: string[] }[] = [
+    { step: 0, label: t.booking.rowPackage, lines: [`${pick(lang, x.name)} — ${money(q.tierUsd)}`] },
+    {
+      step: 1,
+      label: t.booking.steps[1],
+      lines: [
+        `${t.booking.hourOption(hours)}${hours > q.baseHours ? ` (+${money(q.extraHoursUsd)})` : ""}`,
+        extras.length ? extras.map((a) => pick(lang, a.name)).join(", ") : t.booking.noExtras,
+        `${BASE_CREW[tier] > 1 ? t.crew.mix(crew.photo, crew.motion) : t.crew.mix(1, 0)}${
+          COORDINATOR_INCLUDED[tier] ? ` · ${t.crew.coordinator}` : ""
+        }`,
+      ],
+    },
+    {
+      step: 2,
+      label: t.booking.steps[2],
+      lines: [
+        b.date ? longDate(b.date, lang) : "—",
+        [city ? pick(lang, city.label) : "", b.venue.trim(), timeLabel(b.startTime, lang)].filter(Boolean).join(" · "),
+      ].filter(Boolean),
+    },
+    {
+      step: 3,
+      label: t.booking.rowYou,
+      lines: [
+        b.name.trim(),
+        b.email.trim(),
+        b.phone.trim(),
+        b.honoree.trim() ? `${t.booking.honoree}: ${b.honoree.trim()}` : "",
+        t.booking.langs[language],
+      ].filter(Boolean),
+    },
+  ];
+  return (
+    <div className="tq-bk-summary">
+      <h4 className="tq-sr">{t.booking.summary}</h4>
+      <dl>
+        {rows.map((r) => (
+          <div key={r.step} className="tq-bk-summary__row">
+            <dt className="tq-bk-label">{r.label}</dt>
+            <dd>
+              {r.lines.map((l) => (
+                <span key={l} className="tq-bk-summary__line">
+                  {l}
+                </span>
+              ))}
+            </dd>
+            <button type="button" className="tq-bk-edit" onClick={() => onEdit(r.step)}>
+              {t.booking.edit}
+              <span className="tq-sr">: {r.label}</span>
+            </button>
+          </div>
+        ))}
+      </dl>
+      <dl className="tq-bk-due tq-nums">
+        <div className="tq-bk-due__total">
+          <dt>{t.booking.total}</dt>
+          <dd>{money(q.totalUsd)}</dd>
+        </div>
+        <div>
+          <dt>
+            {t.booking.deposit} ({t.booking.depositWhen})
+          </dt>
+          <dd>{money(q.retainerUsd)}</dd>
+        </div>
+        <div>
+          <dt>{t.booking.rest}</dt>
+          <dd>{money(q.balanceUsd)}</dd>
+        </div>
+      </dl>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Success                                                             */
+/* ------------------------------------------------------------------ */
+
+function Success({
+  done,
+  onAgain,
+  headingRef,
+}: {
+  done: Done;
+  onAgain: () => void;
+  headingRef: React.RefObject<HTMLHeadingElement | null>;
+}) {
+  const { t, lang } = useSite();
+  return (
+    <motion.div
+      className="tq-bk-done"
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: EASE }}
+    >
+      <h3 ref={headingRef} tabIndex={-1} className="tq-display tq-bk-done__title">
+        {t.booking.doneTitle}
+      </h3>
+      <p className="tq-bk-done__held">{t.booking.doneHeld(done.holdDays)}</p>
+      <p>{t.booking.doneBody(longDate(done.date, lang), done.email)}</p>
+      {done.ref ? (
+        <p className="tq-bk-done__ref">
+          {t.booking.reference}: <strong className="tq-nums">{done.ref}</strong>
+        </p>
+      ) : null}
+      <div className="tq-bk-next">
+        <h4 className="tq-bk-label">{t.booking.nextTitle}</h4>
+        <ol>
+          {t.booking.nextSteps.map((s) => (
+            <li key={s}>{s}</li>
+          ))}
+        </ol>
+      </div>
+      <div>
+        <button type="button" className="tq-btn tq-btn--ghost tq-btn--lg" onClick={onAgain}>
+          {t.booking.again}
+        </button>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Fields                                                              */
+/* ------------------------------------------------------------------ */
 
 function Field({
   id,
@@ -793,9 +858,9 @@ function Field({
   const describedBy = [hint && `${id}-hint`, error && `${id}-err`].filter(Boolean).join(" ") || undefined;
   return (
     <div className="tq-field">
-      <label htmlFor={id} className="tq-mono">
+      <label htmlFor={id} className="tq-bk-label">
         {label}
-        {optional && <span className="tq-muted"> — {optional}</span>}
+        {optional ? <span className="tq-bk-opt"> — {optional}</span> : null}
       </label>
       <input
         id={id}
@@ -807,20 +872,22 @@ function Field({
         aria-describedby={describedBy}
         {...rest}
       />
-      {hint && (
-        <p id={`${id}-hint`} className="tq-hint">
+      {hint ? (
+        <p id={`${id}-hint`} className="tq-bk-hint">
           {hint}
         </p>
-      )}
-      {error && (
+      ) : null}
+      {error ? (
         <p id={`${id}-err`} className="tq-error" role="alert">
           {error}
         </p>
-      )}
+      ) : null}
     </div>
   );
 }
 
+/* ------------------------------------------------------------------ */
+/* Calendar — today and the past can't be booked online                */
 /* ------------------------------------------------------------------ */
 
 function Calendar({
@@ -855,9 +922,7 @@ function Calendar({
     });
 
   const loc = localeOf(lang);
-  const monthLabel = new Intl.DateTimeFormat(loc, { month: "long", year: "numeric" }).format(
-    new Date(view.y, view.m, 1),
-  );
+  const monthLabel = new Intl.DateTimeFormat(loc, { month: "long", year: "numeric" }).format(new Date(view.y, view.m, 1));
   // 2023-01-01 was a Sunday.
   const dows = Array.from({ length: 7 }, (_, i) =>
     new Intl.DateTimeFormat(loc, { weekday: "short" }).format(new Date(2023, 0, 1 + i)).replace(".", ""),
@@ -867,9 +932,15 @@ function Calendar({
   const dayFmt = new Intl.DateTimeFormat(loc, { weekday: "long", month: "long", day: "numeric", year: "numeric" });
 
   return (
-    <div className="tq-field" role="group" aria-labelledby="tq-cal-label">
-      <span id="tq-cal-label" className="tq-mono tq-legend">
-        {t.intake.date}
+    <div
+      className="tq-field tq-cal"
+      role="group"
+      aria-labelledby="tq-cal-label"
+      tabIndex={error ? -1 : undefined}
+      data-invalid={error ? true : undefined}
+    >
+      <span id="tq-cal-label" className="tq-bk-label">
+        {t.booking.date}
       </span>
       <div>
         <div className="tq-cal__nav">
@@ -882,8 +953,7 @@ function Calendar({
               className="tq-icon-btn"
               onClick={() => shift(-1)}
               disabled={monthsAhead <= 0}
-              aria-label={t.intake.prevMonth}
-              style={monthsAhead <= 0 ? { opacity: 0.35, cursor: "not-allowed" } : undefined}
+              aria-label={t.booking.prevMonth}
             >
               ←
             </button>
@@ -892,7 +962,7 @@ function Calendar({
               className="tq-icon-btn"
               onClick={() => shift(1)}
               disabled={monthsAhead >= MAX_MONTHS_AHEAD}
-              aria-label={t.intake.nextMonth}
+              aria-label={t.booking.nextMonth}
             >
               →
             </button>
@@ -900,7 +970,7 @@ function Calendar({
         </div>
         <div className="tq-cal__grid">
           {dows.map((d) => (
-            <span key={d} className="tq-cal__dow tq-mono" aria-hidden>
+            <span key={d} className="tq-cal__dow" aria-hidden>
               {d}
             </span>
           ))}
@@ -913,18 +983,16 @@ function Calendar({
             // Today can't be booked online (the server only accepts future dates).
             const past = d <= today;
             const isTaken = taken.has(iso);
-            const picked = value === iso;
             return (
               <button
                 key={iso}
                 type="button"
                 className="tq-day tq-nums"
                 disabled={past || isTaken}
-                aria-pressed={picked}
-                aria-label={`${dayFmt.format(d)}${isTaken ? ` — ${t.intake.legendTaken}` : ""}`}
+                aria-pressed={value === iso}
+                aria-label={`${dayFmt.format(d)}${isTaken ? ` — ${t.booking.legendTaken}` : ""}`}
                 data-past={past}
                 data-taken={isTaken}
-                data-today={d.getTime() === today.getTime()}
                 data-sat={d.getDay() === 6}
                 onClick={() => onChange(iso)}
               >
@@ -933,36 +1001,35 @@ function Calendar({
             );
           })}
         </div>
-        <div className="tq-cal__legend tq-mono" aria-hidden>
+        <div className="tq-cal__legend" aria-hidden>
           <span>
-            <i className="tq-cal__key" /> {t.intake.legendOpen}
+            <i className="tq-cal__key" /> {t.booking.legendOpen}
           </span>
           <span>
-            <i className="tq-cal__key tq-cal__key--taken" /> {t.intake.legendTaken}
+            <i className="tq-cal__key tq-cal__key--taken" /> {t.booking.legendTaken}
           </span>
           <span>
-            <i className="tq-cal__key tq-cal__key--picked" /> {t.intake.legendPicked}
+            <i className="tq-cal__key tq-cal__key--picked" /> {t.booking.legendPicked}
           </span>
         </div>
       </div>
-      <p className="tq-picked" aria-live="polite" style={{ margin: 0 }}>
+      <p className="tq-picked" aria-live="polite">
         {value ? (
           <>
             <span className="tq-dot" aria-hidden />
             <span>
-              <span className="tq-mono tq-muted">{t.intake.pickedPrefix} — </span>
-              {longDate(value, lang)}
+              <strong>{t.booking.pickedPrefix}</strong> {longDate(value, lang)}
             </span>
           </>
         ) : (
-          <span className="tq-muted">{t.intake.noDate}</span>
+          <span>{t.booking.noDate}</span>
         )}
       </p>
-      {error && (
+      {error ? (
         <p className="tq-error" role="alert">
           {error}
         </p>
-      )}
+      ) : null}
     </div>
   );
 }

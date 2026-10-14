@@ -1,12 +1,15 @@
 /**
  * /api/commission — the homepage intake's booking endpoint.
  *
- * Sign → approve → pay (src/lib/agreement.ts):
- *   The family picks a package, fills in their details and signs the booking
- *   agreement. We save the signed agreement on a 'requested' booking that
- *   holds the date for the price book's holdDays while the studio reviews it,
- *   and email both sides. Approving in /admin/bookings emails the family a pay
- *   link for the deposit (/booking/[id]); the Stripe webhook makes it final.
+ * Request → approve → sign + pay:
+ *   The homepage booking panel sends a REQUEST (package, date, details — no
+ *   signature). We save it on a 'requested' booking (metadata.flow "request")
+ *   that holds the date for the price book's holdDays while the studio
+ *   confirms, and email both sides. The agreement is built and signed later,
+ *   on the family's private booking page, before the deposit is paid.
+ *   A body that still carries a signature (signed_name + signature + agree)
+ *   is stored as a signed agreement exactly as before (metadata.flow
+ *   "agreement"), so older open tabs keep working.
  *
  * Same defenses as before: honeypot, rate limit, Turnstile, zod. The price and
  * the agreement text are ALWAYS rebuilt server-side from the server's own live
@@ -31,7 +34,12 @@ import { HONEYPOT_FIELD, TURNSTILE_FIELD } from "@/lib/booking";
 import { sanitizeAttribution } from "@/lib/attribution";
 import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
 import { verifyTurnstile } from "@/lib/turnstile";
-import { sendAgreementSignedClient, sendAgreementSignedOperator } from "@/lib/agreement-email";
+import {
+  sendAgreementSignedClient,
+  sendAgreementSignedOperator,
+  sendBookingRequestClient,
+  sendBookingRequestOperator,
+} from "@/lib/agreement-email";
 import { getSiteUrl } from "@/lib/site-url";
 import { site } from "@/content/site";
 import { getPriceBook } from "@/lib/pricing";
@@ -96,6 +104,13 @@ export async function POST(req: NextRequest) {
     );
   }
   const r = parsed.data;
+  // The homepage sends an unsigned REQUEST (the family signs later, on their
+  // private booking page). A signed body (older clients) still works as before;
+  // a half-signed one is refused rather than stored as either.
+  const signedNow = Boolean(r.signed_name && r.signature && r.agree);
+  if (!signedNow && (r.signed_name || r.signature || r.agree)) {
+    return fail(422, "invalid", "Please sign the agreement and check the box to agree.");
+  }
 
   const q = quoteCommission(book, r.tier, r.add_ons, r.hours);
   // The family must have been shown THIS price. A tab opened before a price
@@ -108,7 +123,7 @@ export async function POST(req: NextRequest) {
       {
         ok: false,
         code: "prices_changed",
-        error: "Our prices were just updated. Please review your new total and sign again.",
+        error: "Our prices were just updated. Please check your new total.",
         book,
       },
       { status: 409 },
@@ -122,9 +137,9 @@ export async function POST(req: NextRequest) {
   const service = r.scope === "motion" ? "video" : r.scope === "stills" ? "photo" : TIER_SERVICE[r.tier];
   const summary = describeCommission(r, q, book);
 
-  // The agreement is rebuilt here from the re-priced quote — the client's copy
-  // is only for review. What we store is exactly what the family saw and signed.
-  const agreement = buildAgreement({
+  // A signed agreement is rebuilt here from the re-priced quote — the client's
+  // copy is only for review. A request stores no agreement: it is built at signing.
+  const agreement = signedNow ? buildAgreement({
     lang: r.language,
     tier: r.tier,
     hours: q.hours,
@@ -139,20 +154,22 @@ export async function POST(req: NextRequest) {
     email: r.email,
     phone: r.phone,
     sharePermission: r.share_permission,
-  }, book);
-  const signed: SignedAgreement = {
-    ...agreement,
-    signedName: r.signed_name,
-    signature: r.signature,
-    signedAt: new Date().toISOString(),
-    ip,
-    userAgent: (req.headers.get("user-agent") ?? "").slice(0, 300),
-    sharePermission: r.share_permission,
-  };
+  }, book) : null;
+  const signed: SignedAgreement | null = agreement
+    ? {
+        ...agreement,
+        signedName: r.signed_name!,
+        signature: r.signature!,
+        signedAt: new Date().toISOString(),
+        ip,
+        userAgent: (req.headers.get("user-agent") ?? "").slice(0, 300),
+        sharePermission: r.share_permission,
+      }
+    : null;
 
   const meta = {
     source: "commission",
-    flow: "agreement",
+    flow: signed ? "agreement" : "request",
     tier: r.tier,
     add_ons: r.add_ons,
     crew_mix: crew,
@@ -169,7 +186,8 @@ export async function POST(req: NextRequest) {
     scope: r.scope,
     honoree: r.honoree,
     language: r.language,
-    agreement: signed,
+    share_permission: r.share_permission,
+    ...(signed ? { agreement: signed } : {}),
   };
   const supabase = getServiceSupabase();
 
@@ -205,14 +223,27 @@ export async function POST(req: NextRequest) {
   if (error || !inserted) {
     if (error?.code === "23505") return fail(409, "date_taken", "That date was just reserved by another family.");
     console.error("[commission] insert:", error?.message);
-    return fail(500, "save_failed", "We couldn't save your agreement. Please try again.");
+    return fail(500, "save_failed", "We couldn't save your request. Please try again.");
   }
 
   const adminUrl = `${getSiteUrl()}/admin/bookings#${inserted.id}`;
-  const [op, cl] = await Promise.all([
-    sendAgreementSignedOperator(inserted, signed, adminUrl, summary),
-    sendAgreementSignedClient(inserted, signed),
-  ]);
+  const [op, cl] = await Promise.all(
+    signed
+      ? [
+          sendAgreementSignedOperator(inserted, signed, adminUrl, summary),
+          sendAgreementSignedClient(inserted, signed),
+        ]
+      : [
+          sendBookingRequestOperator(inserted, adminUrl, summary),
+          sendBookingRequestClient(inserted, {
+            lang: r.language,
+            holdDays: book.holdDays,
+            depositPercent: q.depositPercent,
+            depositUsd: q.retainerUsd,
+            totalUsd: q.totalUsd,
+          }),
+        ],
+  );
   if (!op.ok) console.error("[commission] operator email:", op.error);
   if (!cl.ok) console.error("[commission] client email:", cl.error);
 

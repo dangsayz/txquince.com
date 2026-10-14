@@ -31,7 +31,7 @@ export function TxqSite({
 }) {
   const { setCinema, setDockHidden } = useShell();
   const cinemaRef = useRef<HTMLElement>(null);
-  const intakeRef = useRef<HTMLElement>(null);
+  const intakeRef = useRef<HTMLDivElement>(null);
 
   // Dim the whole page to the film room while the Motion section holds the
   // middle of the viewport.
@@ -48,7 +48,8 @@ export function TxqSite({
     };
   }, [setCinema]);
 
-  // The mobile dock steps aside once the intake itself is on screen.
+  // The mobile dock steps aside while the booking panel is on screen (the
+  // panel has its own total · Next bar).
   useEffect(() => {
     const el = intakeRef.current;
     if (!el) return;
@@ -68,10 +69,12 @@ export function TxqSite({
       <Archive overrides={overrides} />
       <PhotoDump initial={photos} />
       <CinemaRoom ref={cinemaRef} films={films} />
-      <Commissions />
+      {/* Packages & Prices and the booking steps are one panel. */}
+      <Commissions>
+        <Intake ref={intakeRef} />
+      </Commissions>
       <Editorial journal={journal} />
       <Faq />
-      <Intake ref={intakeRef} />
     </>
   );
 }
