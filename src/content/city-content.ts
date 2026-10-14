@@ -4,39 +4,33 @@
  * city-specific FAQs that answer the local autocomplete intents) so each page is
  * genuinely distinct — NOT a doorway page. Keyed by the same slug as locations.ts.
  *
- * Prices are NEVER typed here — they interpolate from the package price book
- * (src/lib/commission.ts), so a price change there updates every city page.
+ * Prices are NEVER typed here — they are price tokens (src/lib/price-text.ts)
+ * filled from the live price book when the page renders, so a price change at
+ * /admin/prices updates every city page without a deploy.
  */
-import {
-  TIER_PRICE_USD,
-  ADD_ON_PRICE_USD,
-  RETAINER,
-  CONSULT_HOLD_DAYS,
-  BASE_CREW,
-  BASE_HOURS,
-  usd,
-} from "@/lib/commission";
+import { BASE_CREW } from "@/lib/commission";
+import { PT } from "@/lib/price-text";
 
-const STUDY = usd(TIER_PRICE_USD.study);
-const CINEMA = usd(TIER_PRICE_USD.cinema);
-const PRODUCTION = usd(TIER_PRICE_USD.production);
-const ARCHIVE = usd(TIER_PRICE_USD.archive);
-const DESTINATION = usd(ADD_ON_PRICE_USD.destination);
-const SAMEDAY = usd(ADD_ON_PRICE_USD.sameday);
-const SUPER8 = usd(ADD_ON_PRICE_USD.super8);
-const PARENTS = usd(ADD_ON_PRICE_USD.parents);
-const RETAINER_PCT = `${Math.round(RETAINER.rate * 100)}%`;
-const BALANCE_HOURS = RETAINER.balanceDueHours;
-const HOLD_DAYS = CONSULT_HOLD_DAYS;
+const STUDY = PT.price.study;
+const CINEMA = PT.price.cinema;
+const PRODUCTION = PT.price.production;
+const ARCHIVE = PT.price.archive;
+const DESTINATION = PT.addon.destination;
+const SAMEDAY = PT.addon.sameday;
+const SUPER8 = PT.addon.super8;
+const PARENTS = PT.addon.parents;
+const RETAINER_PCT = PT.deposit.percent;
+const BALANCE_DAYS = PT.balanceDays;
+const HOLD_DAYS = PT.holdDays;
 // Team included on the celebration day (photo/video mix is the family's choice).
 const CREW_CINEMA = BASE_CREW.cinema;
 const CREW_PRODUCTION = BASE_CREW.production;
 const CREW_ARCHIVE = BASE_CREW.archive;
-// Hours included on the day (families can add hours up to MAX_HOURS).
-const HRS_STUDY = BASE_HOURS.study;
-const HRS_CINEMA = BASE_HOURS.cinema;
-const HRS_PRODUCTION = BASE_HOURS.production;
-const HRS_ARCHIVE = BASE_HOURS.archive;
+// Hours included on the day (families can add hours up to the book's longest day).
+const HRS_STUDY = PT.hours.study;
+const HRS_CINEMA = PT.hours.cinema;
+const HRS_PRODUCTION = PT.hours.production;
+const HRS_ARCHIVE = PT.hours.archive;
 
 export type CityPhotoSpot = { name: string; why: string; whyEs: string };
 
@@ -613,7 +607,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqs": [
       {
         "q": "How much does a quinceañera photographer cost in Mansfield?",
-        "a": `Packages are ${STUDY} (Portrait Session), ${CINEMA} (Photo + Video), ${PRODUCTION} (Full Celebration, the one I recommend for most celebrations) and ${ARCHIVE} (Two-Day Celebration). A ${RETAINER_PCT} deposit locks in the date once your agreement is approved, and the rest is due ${BALANCE_HOURS} hours before the event. There's no travel fee anywhere in DFW, so Mansfield's southeast-corner location never adds to the price.`
+        "a": `Packages are ${STUDY} (Portrait Session), ${CINEMA} (Photo + Video), ${PRODUCTION} (Full Celebration, the one I recommend for most celebrations) and ${ARCHIVE} (Two-Day Celebration). A ${RETAINER_PCT} deposit locks in the date once your agreement is approved, and the rest is due ${BALANCE_DAYS} days before the event. There's no travel fee anywhere in DFW, so Mansfield's southeast-corner location never adds to the price.`
       },
       {
         "q": "Where are the best places to take quince pictures in Mansfield?",
@@ -635,7 +629,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqsEs": [
       {
         "q": "¿Cuánto cuesta un fotógrafo de quinceañera en Mansfield?",
-        "a": `Los paquetes son ${STUDY} (Sesión de retratos), ${CINEMA} (Foto + Video), ${PRODUCTION} (Celebración completa, la que recomiendo para la mayoría de las celebraciones) y ${ARCHIVE} (Celebración de dos días). Un depósito del ${RETAINER_PCT} asegura la fecha una vez aprobado tu contrato, y el resto se paga ${BALANCE_HOURS} horas antes del evento. No hay cargo por traslado en ningún punto de DFW, así que estar en el extremo sureste del metroplex nunca sube el precio.`
+        "a": `Los paquetes son ${STUDY} (Sesión de retratos), ${CINEMA} (Foto + Video), ${PRODUCTION} (Celebración completa, la que recomiendo para la mayoría de las celebraciones) y ${ARCHIVE} (Celebración de dos días). Un depósito del ${RETAINER_PCT} asegura la fecha una vez aprobado tu contrato, y el resto se paga ${BALANCE_DAYS} días antes del evento. No hay cargo por traslado en ningún punto de DFW, así que estar en el extremo sureste del metroplex nunca sube el precio.`
       },
       {
         "q": "¿Cuáles son los mejores lugares para tomar fotos de quince en Mansfield?",
@@ -862,7 +856,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqs": [
       {
         "q": "How much does a quinceañera photographer cost in Plano?",
-        "a": `Portrait Session is ${STUDY}, Photo + Video ${CINEMA}, Full Celebration ${PRODUCTION} and Two-Day Celebration ${ARCHIVE}. I recommend the Full Celebration for most Plano celebrations because it covers the misa through the last dance with photos and video and ends in a printed photo album. A ${RETAINER_PCT} deposit locks in the date once your agreement is approved, and the rest is due ${BALANCE_HOURS} hours before the event; compare everything on our Packages & Prices page.`
+        "a": `Portrait Session is ${STUDY}, Photo + Video ${CINEMA}, Full Celebration ${PRODUCTION} and Two-Day Celebration ${ARCHIVE}. I recommend the Full Celebration for most Plano celebrations because it covers the misa through the last dance with photos and video and ends in a printed photo album. A ${RETAINER_PCT} deposit locks in the date once your agreement is approved, and the rest is due ${BALANCE_DAYS} days before the event; compare everything on our Packages & Prices page.`
       },
       {
         "q": "Where are the best places to take quince pictures in Plano?",
@@ -884,7 +878,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqsEs": [
       {
         "q": "¿Cuánto cuesta un fotógrafo de quinceañera en Plano?",
-        "a": `Sesión de retratos cuesta ${STUDY}, Foto + Video ${CINEMA}, Celebración completa ${PRODUCTION} y la Celebración de dos días ${ARCHIVE}. Para la mayoría de las celebraciones en Plano recomiendo la Celebración completa porque cubre de la misa al último baile con fotos y video, y termina en un álbum de fotos impreso. Un depósito del ${RETAINER_PCT} asegura la fecha una vez aprobado tu contrato, y el resto se paga ${BALANCE_HOURS} horas antes del evento; compara todo en nuestra página de Paquetes y precios.`
+        "a": `Sesión de retratos cuesta ${STUDY}, Foto + Video ${CINEMA}, Celebración completa ${PRODUCTION} y la Celebración de dos días ${ARCHIVE}. Para la mayoría de las celebraciones en Plano recomiendo la Celebración completa porque cubre de la misa al último baile con fotos y video, y termina en un álbum de fotos impreso. Un depósito del ${RETAINER_PCT} asegura la fecha una vez aprobado tu contrato, y el resto se paga ${BALANCE_DAYS} días antes del evento; compara todo en nuestra página de Paquetes y precios.`
       },
       {
         "q": "¿Cuáles son los mejores lugares para tomar fotos de quince en Plano?",

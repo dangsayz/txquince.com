@@ -14,15 +14,7 @@ export type L = { en: string; es: string };
 
 export const pick = (lang: Lang, v: L) => v[lang];
 
-import {
-  ADD_ON_PRICE_USD,
-  BASE_HOURS,
-  MAX_HOURS,
-  TIER_PRICE_USD,
-  quoteCommission,
-  type AddOnId,
-  type TierId,
-} from "@/lib/commission";
+import { canAddHours, type AddOnId, type PriceBook, type TierId } from "@/lib/commission";
 
 /* ------------------------------------------------------------------ */
 /* Archive                                                             */
@@ -241,7 +233,9 @@ export type CinemaFilm = {
 /* Commissions                                                         */
 /* ------------------------------------------------------------------ */
 
-// Prices live in the shared price book so the server re-prices every checkout.
+// Names and deliverables live here; every PRICE and hour count lives in the
+// live price book (PriceBook — read with usePriceBook() on the client and
+// getPriceBook() on the server), so the server re-prices every checkout.
 export type { TierId, AddOnId } from "@/lib/commission";
 
 export type Tier = {
@@ -249,7 +243,10 @@ export type Tier = {
   numeral: string;
   name: L;
   summary: L;
-  price: number;
+  /** Three or four plain-language points for the package card (prices and hours come from the book). */
+  bullets: L[];
+  /** The package we suggest to most families (badge on its card). */
+  recommended?: boolean;
   scope: "stills" | "both";
 };
 
@@ -262,7 +259,11 @@ export const TIERS: Tier[] = [
       en: "Photos only. A relaxed session before the big day — her dress, her style, beautiful light.",
       es: "Solo fotos. Una sesión tranquila antes del gran día — su vestido, su estilo, luz hermosa.",
     },
-    price: TIER_PRICE_USD.study,
+    bullets: [
+      { en: "Photos only — no video", es: "Solo fotos — sin video" },
+      { en: "A relaxed session in her dress, before the big day", es: "Una sesión tranquila con su vestido, antes del gran día" },
+      { en: "60 edited photos", es: "60 fotos editadas" },
+    ],
     scope: "stills",
   },
   {
@@ -273,7 +274,12 @@ export const TIERS: Tier[] = [
       en: "One photographer and one videographer for the celebration, so you get the photos and the video.",
       es: "Un fotógrafo y un videógrafo en la celebración, para que tengas las fotos y el video.",
     },
-    price: TIER_PRICE_USD.cinema,
+    bullets: [
+      { en: "Photos and video of the celebration", es: "Fotos y video de la celebración" },
+      { en: "An 8–10 minute video and a 1-minute trailer", es: "Un video de 8–10 minutos y un tráiler de 1 minuto" },
+      { en: "400+ edited photos", es: "Más de 400 fotos editadas" },
+      { en: "2 short videos for social media", es: "2 videos cortos para redes" },
+    ],
     scope: "both",
   },
   {
@@ -284,7 +290,13 @@ export const TIERS: Tier[] = [
       en: "The one we recommend most. A team of four plus a coordinator who runs the day, so you can enjoy it. Includes a portrait session and a printed album.",
       es: "La que más recomendamos. Un equipo de cuatro más una coordinadora que lleva el día, para que tú lo disfrutes. Incluye sesión de retratos y álbum impreso.",
     },
-    price: TIER_PRICE_USD.production,
+    bullets: [
+      { en: "A coordinator who runs the day", es: "Una coordinadora que lleva el día" },
+      { en: "A portrait session at 1 location", es: "Una sesión de retratos en 1 lugar" },
+      { en: "A 12–15 minute video and a 90-second trailer", es: "Un video de 12–15 minutos y un tráiler de 90 segundos" },
+      { en: "700+ photos and a printed album", es: "Más de 700 fotos y un álbum impreso" },
+    ],
+    recommended: true,
     scope: "both",
   },
   {
@@ -295,7 +307,12 @@ export const TIERS: Tier[] = [
       en: "Everything in the Full Celebration, plus a second day for portraits, a team of five, and a larger album.",
       es: "Todo lo de la Celebración completa, más un segundo día de retratos, un equipo de cinco y un álbum más grande.",
     },
-    price: TIER_PRICE_USD.archive,
+    bullets: [
+      { en: "Everything in the Full Celebration", es: "Todo lo de la Celebración completa" },
+      { en: "A second day for portraits at 2 locations", es: "Un segundo día de retratos en 2 lugares" },
+      { en: "A 20-minute video and a 2-minute trailer", es: "Un video de 20 minutos y un tráiler de 2 minutos" },
+      { en: "1,000+ photos and a large album in a gift box", es: "Más de 1,000 fotos y un álbum grande en caja de regalo" },
+    ],
     scope: "both",
   },
 ];
@@ -305,14 +322,19 @@ export type MatrixGroup = { id: string; title: L; rows: MatrixRow[] };
 
 const v = (en: string, es: string = en): L => ({ en, es });
 
-/** "6 hours" / "6 horas", plus how far it can grow. */
-const hoursCell = (tier: TierId): L => {
-  const base = BASE_HOURS[tier];
-  if (base >= MAX_HOURS) return v(`${base} hours, both days`, `${base} horas, ambos días`);
-  return v(`${base} hours (add up to ${MAX_HOURS})`, `${base} horas (hasta ${MAX_HOURS})`);
+/** "6 hours" / "6 horas", plus how far it can grow (from the live book). */
+const hoursCell = (book: PriceBook, tier: TierId): L => {
+  const base = book.packages[tier].hours;
+  if (!canAddHours(book, tier)) {
+    return tier === "archive"
+      ? v(`${base} hours, both days`, `${base} horas, ambos días`)
+      : v(`${base} hours`, `${base} horas`);
+  }
+  return v(`${base} hours (add up to ${book.maxHours})`, `${base} horas (hasta ${book.maxHours})`);
 };
 
-export const MATRIX: MatrixGroup[] = [
+/** The comparison matrix. Hours come from the live price book. */
+export const matrixFor = (book: PriceBook): MatrixGroup[] => [
   {
     id: "coverage",
     title: { en: "Your day", es: "Tu día" },
@@ -320,10 +342,10 @@ export const MATRIX: MatrixGroup[] = [
       {
         label: v("Hours", "Horas"),
         values: {
-          study: hoursCell("study"),
-          cinema: hoursCell("cinema"),
-          production: hoursCell("production"),
-          archive: hoursCell("archive"),
+          study: hoursCell(book, "study"),
+          cinema: hoursCell(book, "cinema"),
+          production: hoursCell(book, "production"),
+          archive: hoursCell(book, "archive"),
         },
       },
       {
@@ -423,7 +445,7 @@ export const MATRIX: MatrixGroup[] = [
   },
 ];
 
-export type AddOn = { id: AddOnId; name: L; note: L; price: number };
+export type AddOn = { id: AddOnId; name: L; note: L };
 
 export const ADD_ONS: AddOn[] = [
   {
@@ -433,7 +455,6 @@ export const ADD_ONS: AddOn[] = [
       en: "A photo session in her dress before the big day — a park, a garden, wherever she loves.",
       es: "Una sesión de fotos con su vestido antes del gran día — un parque, un jardín, donde ella quiera.",
     },
-    price: ADD_ON_PRICE_USD.destination,
   },
   {
     id: "sameday",
@@ -442,7 +463,6 @@ export const ADD_ONS: AddOn[] = [
       en: "A short highlight video of her day, ready within 24 hours to share with family.",
       es: "Un video corto con lo mejor de su día, listo en 24 horas para compartir con la familia.",
     },
-    price: ADD_ON_PRICE_USD.sameday,
   },
   {
     id: "super8",
@@ -451,7 +471,6 @@ export const ADD_ONS: AddOn[] = [
       en: "Three minutes shot on real old-style film (Super 8), added to her video.",
       es: "Tres minutos grabados en película antigua de verdad (Super 8), dentro de su video.",
     },
-    price: ADD_ON_PRICE_USD.super8,
   },
   {
     id: "parents",
@@ -460,19 +479,10 @@ export const ADD_ONS: AddOn[] = [
       en: "Two smaller 8×8 copies of her album, one for each home.",
       es: "Dos copias más pequeñas de 20×20 cm de su álbum, una para cada hogar.",
     },
-    price: ADD_ON_PRICE_USD.parents,
   },
 ];
 
 export const tierById = (id: TierId) => TIERS.find((t) => t.id === id)!;
-
-export function estimate(tier: TierId, addOns: AddOnId[], hours?: number) {
-  return quoteCommission(tier, addOns, hours).totalUsd;
-}
-
-export function retainer(tier: TierId, addOns: AddOnId[], hours?: number) {
-  return quoteCommission(tier, addOns, hours).retainerUsd;
-}
 
 export function money(n: number) {
   return new Intl.NumberFormat("en-US", {

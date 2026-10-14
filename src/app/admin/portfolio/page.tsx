@@ -1,10 +1,12 @@
 import { getPortfolioImages, getVendors } from "@/lib/content-db";
 import { locations } from "@/content/locations";
 import { PortfolioManager } from "@/components/admin/PortfolioManager";
+import { requireAdminPage } from "@/lib/require-admin";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminPortfolioPage() {
+  await requireAdminPage("/admin/portfolio"); // server-side gate; middleware is not enough
   const [images, vendors] = await Promise.all([getPortfolioImages(), getVendors()]);
   const cities = locations.map((l) => ({ slug: l.slug, label: l.city }));
   return (

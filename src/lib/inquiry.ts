@@ -6,7 +6,8 @@
  * field (never trust the client — VALIDATION LAW).
  */
 import { z } from "zod";
-import { TIER_PRICE_USD as P, usd } from "@/lib/commission";
+import { PT, fillPrices } from "@/lib/price-text";
+import type { PriceBook } from "@/lib/commission";
 
 /** Services offered (req). Mirrors the data model `services` column. */
 export const SERVICE_OPTIONS = [
@@ -16,16 +17,26 @@ export const SERVICE_OPTIONS = [
 ] as const;
 
 /**
- * Budget ranges (req). Mirror the package ladder in src/lib/commission.ts —
- * the lowest option is the Portrait Session, so budget shoppers self-select away.
- * Stored as free text (inquiries.budget_range), so old rows keep their values.
+ * Budget ranges (req). Mirror the package ladder in the live price book — the
+ * lowest option is the Portrait Session, so budget shoppers self-select away.
+ * `value` is a stable key (so a price change never invalidates an open form);
+ * labels carry price tokens filled from the live book (client: usePriceBook,
+ * server: fillPrices). The server stores `stored`, filled with ITS book, as
+ * free text (inquiries.budget_range), so old rows keep their values.
  */
+const P = PT.price;
 export const BUDGET_OPTIONS = [
-  { value: `${usd(P.study)} portrait session`, label: `${usd(P.study)} — Portrait Session`, labelEs: `${usd(P.study)} — Sesión de retratos` },
-  { value: `${usd(P.cinema)}–${usd(P.production)}`, label: `${usd(P.cinema)} – ${usd(P.production)} — Photo + video`, labelEs: `${usd(P.cinema)} – ${usd(P.production)} — Foto + video` },
-  { value: `${usd(P.production)}–${usd(P.archive)}`, label: `${usd(P.production)} – ${usd(P.archive)} — Full Celebration`, labelEs: `${usd(P.production)} – ${usd(P.archive)} — Celebración completa` },
-  { value: `${usd(P.archive)}+`, label: `${usd(P.archive)}+ — Two-Day Celebration`, labelEs: `${usd(P.archive)}+ — Celebración de dos días` },
+  { value: "portrait", stored: `${P.study} portrait session`, label: `${P.study} — Portrait Session`, labelEs: `${P.study} — Sesión de retratos` },
+  { value: "photo_video", stored: `${P.cinema}–${P.production}`, label: `${P.cinema} – ${P.production} — Photo + video`, labelEs: `${P.cinema} – ${P.production} — Foto + video` },
+  { value: "full", stored: `${P.production}–${P.archive}`, label: `${P.production} – ${P.archive} — Full Celebration`, labelEs: `${P.production} – ${P.archive} — Celebración completa` },
+  { value: "two_day", stored: `${P.archive}+`, label: `${P.archive}+ — Two-Day Celebration`, labelEs: `${P.archive}+ — Celebración de dos días` },
 ] as const;
+
+/** The text saved on the inquiry for a chosen budget key, priced with the server's book. */
+export function budgetStoredText(value: string, book: PriceBook): string {
+  const o = BUDGET_OPTIONS.find((b) => b.value === value);
+  return o ? fillPrices(o.stored, book) : value;
+}
 
 /** "How did you hear about us?" — keep light, helps attribution. */
 export const REFERRAL_OPTIONS = [

@@ -1,20 +1,12 @@
 import type { BlogPost } from "@/content/blog";
-import {
-  TIER_PRICE_USD,
-  ADD_ON_PRICE_USD,
-  RETAINER,
-  CONSULT_HOLD_DAYS,
-  BASE_CREW,
-  BASE_HOURS,
-  EXTRA_HOUR_USD,
-  usd,
-} from "@/lib/commission";
+import { BASE_CREW } from "@/lib/commission";
+import { PT } from "@/lib/price-text";
 
-const study = usd(TIER_PRICE_USD.study);
-const cinema = usd(TIER_PRICE_USD.cinema);
-const production = usd(TIER_PRICE_USD.production);
-const archive = usd(TIER_PRICE_USD.archive);
-const retainerPct = `${Math.round(RETAINER.rate * 100)}%`;
+const study = PT.price.study;
+const cinema = PT.price.cinema;
+const production = PT.price.production;
+const archive = PT.price.archive;
+const retainerPct = PT.deposit.percent;
 
 const post: BlogPost = {
   slug: "cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth",
@@ -62,12 +54,12 @@ const post: BlogPost = {
     { type: "h2", text: "¿Solo foto, o foto y video?" },
     {
       type: "p",
-      text: `Esta es la decisión que más mueve el precio — y el arrepentimiento más común. Las familias que reservan solo foto, después, suelen desear haber tenido [el vals y el baile sorpresa](/portfolio) en video. El vals, los chambelanes y las damas, el cambio de zapatillas, el brindis: son momentos que se viven en movimiento. Nuestra Sesión de retratos (${study}) es solo foto — ${BASE_HOURS.study} horas con un fotógrafo — y todos los paquetes desde ${cinema} combinan foto y video. Compárelos lado a lado en [los paquetes](/es#commissions); la mayoría de las familias elige la Celebración completa (${production}). Y si quiere profundizar, lea [foto o video para la quinceañera](/es/blog/foto-o-video-quinceanera).`,
+      text: `Esta es la decisión que más mueve el precio — y el arrepentimiento más común. Las familias que reservan solo foto, después, suelen desear haber tenido [el vals y el baile sorpresa](/portfolio) en video. El vals, los chambelanes y las damas, el cambio de zapatillas, el brindis: son momentos que se viven en movimiento. Nuestra Sesión de retratos (${study}) es solo foto — ${PT.hours.study} horas con un fotógrafo — y todos los paquetes desde ${cinema} combinan foto y video. Compárelos lado a lado en [los paquetes](/es#commissions); la mayoría de las familias elige la Celebración completa (${production}). Y si quiere profundizar, lea [foto o video para la quinceañera](/es/blog/foto-o-video-quinceanera).`,
     },
     { type: "h2", text: "El depósito y el saldo" },
     {
       type: "p",
-      text: `No paga todo por adelantado. Elija un paquete y firme el contrato en línea, y le apartamos la fecha ${CONSULT_HOLD_DAYS} días mientras lo revisamos. Ya aprobado (en un día), un depósito del ${retainerPct} de su paquete asegura su fecha y se abona a su total; el resto se paga ${RETAINER.balanceDueHours} horas antes del evento. ¿Prefiere platicar primero? Pida una llamada rápida. Vea cómo funciona [el depósito paso a paso](/es/blog/planes-de-pago-fotografia-quinceanera-dfw).`,
+      text: `No paga todo por adelantado. Elija un paquete y firme el contrato en línea, y le apartamos la fecha ${PT.holdDays} días mientras lo revisamos. Ya aprobado (en un día), un depósito del ${retainerPct} de su paquete asegura su fecha y se abona a su total; el resto se paga ${PT.balanceDays} días antes del evento. ¿Prefiere platicar primero? Pida una llamada rápida. Vea cómo funciona [el depósito paso a paso](/es/blog/planes-de-pago-fotografia-quinceanera-dfw).`,
     },
     {
       type: "cta",
@@ -80,7 +72,7 @@ const post: BlogPost = {
     {
       type: "ul",
       items: [
-        `Sube: agregar video, un equipo más grande, más horas el día de la fiesta (desde ${usd(EXTRA_HOUR_USD.study)} por hora extra con nosotros), un segundo día, o extras como una Sesión con el vestido (${usd(ADD_ON_PRICE_USD.destination)}) o una Edición el mismo día, lista en 24 horas (${usd(ADD_ON_PRICE_USD.sameday)}).`,
+        `Sube: agregar video, un equipo más grande, más horas el día de la fiesta (desde ${PT.extra.study} por hora extra con nosotros), un segundo día, o extras como una Sesión con el vestido (${PT.addon.destination}) o una Edición el mismo día, lista en 24 horas (${PT.addon.sameday}).`,
         "Sube un poco: viajar lejos del área metropolitana (dentro de DFW normalmente no hay cargo por traslado).",
         "No cambia el precio con un estudio honesto: su salón, el número de invitados o el día de la semana — desconfíe de quien cotice por eso.",
       ],
@@ -119,7 +111,7 @@ const post: BlogPost = {
     },
     {
       q: "¿Cómo funciona el depósito?",
-      a: `El depósito es el ${retainerPct} de su paquete y se paga cuando aprobamos su contrato firmado. Asegura su fecha y se abona a su total, y el resto se paga ${RETAINER.balanceDueHours} horas antes del evento. Le apartamos la fecha ${CONSULT_HOLD_DAYS} días mientras revisamos el contrato. ¿Prefiere platicar primero? Pida una llamada rápida.`,
+      a: `El depósito es el ${retainerPct} de su paquete y se paga cuando aprobamos su contrato firmado. Asegura su fecha y se abona a su total, y el resto se paga ${PT.balanceDays} días antes del evento. Le apartamos la fecha ${PT.holdDays} días mientras revisamos el contrato. ¿Prefiere platicar primero? Pida una llamada rápida.`,
     },
     {
       q: "¿Cobran más por número de invitados o por el salón?",

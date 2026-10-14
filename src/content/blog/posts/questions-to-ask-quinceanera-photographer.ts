@@ -1,7 +1,8 @@
 import type { BlogPost } from "@/content/blog";
-import { RETAINER, BASE_CREW } from "@/lib/commission";
+import { BASE_CREW } from "@/lib/commission";
+import { PT } from "@/lib/price-text";
 
-const retainerPct = `${Math.round(RETAINER.rate * 100)}%`;
+const retainerPct = PT.deposit.percent;
 
 const post: BlogPost = {
   slug: "questions-to-ask-quinceanera-photographer",
@@ -77,7 +78,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `What a good answer sounds like: a specific deposit, a clear payment schedule with the balance due before the event, and a simple statement that the signed agreement plus deposit locks the date. With us, you sign the agreement online, we approve it within one day, and then a deposit of ${retainerPct} of your package locks your date and goes toward your total. The rest is due ${RETAINER.balanceDueHours} hours before the event. You can review the numbers in our [packages](/#commissions) and [check whether your date is still open](/check-your-date) before you commit.`,
+      text: `What a good answer sounds like: a specific deposit, a clear payment schedule with the balance due before the event, and a simple statement that the signed agreement plus deposit locks the date. With us, you sign the agreement online, we approve it within one day, and then a deposit of ${retainerPct} of your package locks your date and goes toward your total. The rest is due ${PT.balanceDays} days before the event. You can review the numbers in our [packages](/#commissions) and [check whether your date is still open](/check-your-date) before you commit.`,
     },
     {
       type: "cta",

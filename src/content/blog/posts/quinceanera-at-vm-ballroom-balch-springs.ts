@@ -1,10 +1,10 @@
 import type { BlogPost } from "@/content/blog";
-import { TIER_PRICE_USD, RETAINER, usd } from "@/lib/commission";
+import { PT } from "@/lib/price-text";
 
-const study = usd(TIER_PRICE_USD.study);
-const cinema = usd(TIER_PRICE_USD.cinema);
-const production = usd(TIER_PRICE_USD.production);
-const archive = usd(TIER_PRICE_USD.archive);
+const study = PT.price.study;
+const cinema = PT.price.cinema;
+const production = PT.price.production;
+const archive = PT.price.archive;
 
 const post: BlogPost = {
   "slug": "quinceanera-at-vm-ballroom-balch-springs",
@@ -61,7 +61,7 @@ const post: BlogPost = {
     },
     {
       "type": "p",
-      "text": `Whatever VM Ballroom quotes you, photos and video are a separate, fixed line. Our [packages](/#commissions) are published at ${study}, ${cinema}, ${production}, and ${archive}, and a deposit of ${Math.round(RETAINER.rate * 100)}% locks in the date once your agreement is approved, with the rest due ${RETAINER.balanceDueHours} hours before the event. Venue budgeting is the moving target; coverage doesn't have to be.`
+      "text": `Whatever VM Ballroom quotes you, photos and video are a separate, fixed line. Our [packages](/#commissions) are published at ${study}, ${cinema}, ${production}, and ${archive}, and a deposit of ${PT.deposit.percent} locks in the date once your agreement is approved, with the rest due ${PT.balanceDays} days before the event. Venue budgeting is the moving target; coverage doesn't have to be.`
     },
     {
       "type": "h2",

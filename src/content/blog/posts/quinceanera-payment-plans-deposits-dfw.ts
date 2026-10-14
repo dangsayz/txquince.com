@@ -1,18 +1,9 @@
 import type { BlogPost } from "@/content/blog";
-import {
-  TIER_PRICE_USD,
-  RETAINER,
-  CONSULT_HOLD_DAYS,
-  BASE_HOURS,
-  quoteCommission,
-  usd,
-} from "@/lib/commission";
+import { PT } from "@/lib/price-text";
 
-const retainerPct = `${Math.round(RETAINER.rate * 100)}%`;
-const due = RETAINER.balanceDueHours;
-const hold = CONSULT_HOLD_DAYS;
-const retainerFor = (tier: keyof typeof TIER_PRICE_USD) =>
-  usd(quoteCommission(tier, []).retainerUsd);
+const retainerPct = PT.deposit.percent;
+const due = PT.balanceDays;
+const hold = PT.holdDays;
 
 const post: BlogPost = {
   slug: "quinceanera-payment-plans-deposits-dfw",
@@ -31,7 +22,7 @@ const post: BlogPost = {
     { type: "h2", text: "Do you have to pay everything up front? No." },
     {
       type: "p",
-      text: `Short answer: no. At TX Quince you reserve your date with a deposit of ${retainerPct} of your package, and the rest is due ${due} hours before the event. That's it — two payments, both known from the day you book, so nothing about the cost surprises you later.`,
+      text: `Short answer: no. At TX Quince you reserve your date with a deposit of ${retainerPct} of your package, and the rest is due ${due} days before the event. That's it — two payments, both known from the day you book, so nothing about the cost surprises you later.`,
     },
     {
       type: "callout",
@@ -45,10 +36,10 @@ const post: BlogPost = {
     {
       type: "ul",
       items: [
-        `Portrait Session (${usd(TIER_PRICE_USD.study)}) — ${retainerFor("study")} deposit to reserve your date.`,
-        `Photo + Video (${usd(TIER_PRICE_USD.cinema)}) — ${retainerFor("cinema")} deposit to reserve your date.`,
-        `Full Celebration (${usd(TIER_PRICE_USD.production)}) — ${retainerFor("production")} deposit to reserve your date.`,
-        `Two-Day Celebration (${usd(TIER_PRICE_USD.archive)}) — ${retainerFor("archive")} deposit to reserve your date.`,
+        `Portrait Session (${PT.price.study}) — ${PT.deposit.study} deposit to reserve your date.`,
+        `Photo + Video (${PT.price.cinema}) — ${PT.deposit.cinema} deposit to reserve your date.`,
+        `Full Celebration (${PT.price.production}) — ${PT.deposit.production} deposit to reserve your date.`,
+        `Two-Day Celebration (${PT.price.archive}) — ${PT.deposit.archive} deposit to reserve your date.`,
       ],
     },
     {
@@ -66,12 +57,12 @@ const post: BlogPost = {
         "Pick your package and any extras — the total is published, so you see it before you pay anything.",
         `Fill in your details, then review and sign the agreement online. We hold your date for ${hold} days while we look it over, and no payment is taken yet.`,
         `We review and approve it within one day. Then you pay the ${retainerPct} deposit to lock in your date.`,
-        `The deposit goes toward your total, and the rest is due ${due} hours before the event.`,
+        `The deposit goes toward your total, and the rest is due ${due} days before the event.`,
       ],
     },
     {
       type: "p",
-      text: `Some studios in DFW offer monthly payment plans instead; if that matters to you, ask any studio exactly how many payments, when the last one falls, and whether a plan costs more than paying in full. Our structure is deliberately simple: one deposit to lock in your date, and the rest ${due} hours before the event.`,
+      text: `Some studios in DFW offer monthly payment plans instead; if that matters to you, ask any studio exactly how many payments, when the last one falls, and whether a plan costs more than paying in full. Our structure is deliberately simple: one deposit to lock in your date, and the rest ${due} days before the event.`,
     },
     { type: "h2", text: "What the deposit secures (and what to ask about refunds)" },
     {
@@ -102,7 +93,7 @@ const post: BlogPost = {
       type: "ul",
       items: [
         `Sign the agreement first. We hold your date for ${hold} days while we review it, and nothing is charged until it's approved. Want to talk it through? Ask for a quick call about the timeline and which package fits.`,
-        `Start with the Portrait Session. At ${usd(TIER_PRICE_USD.study)}, it's our photo-only package — ${BASE_HOURS.study} hours with one photographer, 60 edited photos, and a short video for social media — with a ${retainerFor("study")} deposit.`,
+        `Start with the Portrait Session. At ${PT.price.study}, it's our photo-only package — ${PT.hours.study} hours with one photographer, 60 edited photos, and a short video for social media — with a ${PT.deposit.study} deposit.`,
       ],
     },
     {
@@ -122,11 +113,11 @@ const post: BlogPost = {
   faqs: [
     {
       q: "Do you offer payment plans for quinceañera photography?",
-      a: `TX Quince uses a simple two-payment structure rather than a monthly plan: a deposit of ${retainerPct} of your package reserves your date, and the rest is due ${due} hours before the event. The deposit is applied in full, so there's no extra cost.`,
+      a: `TX Quince uses a simple two-payment structure rather than a monthly plan: a deposit of ${retainerPct} of your package reserves your date, and the rest is due ${due} days before the event. The deposit is applied in full, so there's no extra cost.`,
     },
     {
       q: "How much is the deposit to book?",
-      a: `It's ${retainerPct} of your package: ${retainerFor("study")} for the Portrait Session (${usd(TIER_PRICE_USD.study)}), ${retainerFor("cinema")} for Photo + Video (${usd(TIER_PRICE_USD.cinema)}), ${retainerFor("production")} for the Full Celebration (${usd(TIER_PRICE_USD.production)}), and ${retainerFor("archive")} for the Two-Day Celebration (${usd(TIER_PRICE_USD.archive)}).`,
+      a: `It's ${retainerPct} of your package: ${PT.deposit.study} for the Portrait Session (${PT.price.study}), ${PT.deposit.cinema} for Photo + Video (${PT.price.cinema}), ${PT.deposit.production} for the Full Celebration (${PT.price.production}), and ${PT.deposit.archive} for the Two-Day Celebration (${PT.price.archive}).`,
     },
     {
       q: "Is the deposit refundable?",
@@ -134,7 +125,7 @@ const post: BlogPost = {
     },
     {
       q: "When is the rest due?",
-      a: `The rest is due ${due} hours before the event.`,
+      a: `The rest is due ${due} days before the event.`,
     },
     {
       q: "Can I hold my date before paying anything?",

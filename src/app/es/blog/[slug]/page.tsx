@@ -11,6 +11,9 @@ import { getBlogImages } from "@/lib/content-db";
 import { absoluteImageUrl, ogImageFor, resolveBlogCover } from "@/lib/blog-cover";
 import { blogPostingJsonLd, postMetaTitle } from "@/app/blog/structured-data";
 import { BlogArticleView } from "@/components/BlogContent";
+import { getPriceBook } from "@/lib/pricing";
+import { fillDeep } from "@/lib/price-text";
+import { jsonLdString } from "@/lib/json-ld";
 
 export const revalidate = 3600;
 
@@ -24,8 +27,10 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = getEsPost(slug);
-  if (!post) return {};
+  // Posts carry price tokens; fill from the live book (meta + body + JSON-LD).
+  const raw = getEsPost(slug);
+  if (!raw) return {};
+  const post = fillDeep(raw, await getPriceBook());
   const url = `${site.url}/es/blog/${post.slug}`;
   const enSlug = enSlugForEs(post.slug);
   const cover = await resolveBlogCover(post, await getBlogImages(post.content), "es");
@@ -75,11 +80,13 @@ export default async function EsBlogPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = getEsPost(slug);
-  if (!post) notFound();
+  const raw = getEsPost(slug);
+  if (!raw) notFound();
+  const book = await getPriceBook();
+  const post = fillDeep(raw, book);
 
   const url = `${site.url}/es/blog/${post.slug}`;
-  const related = relatedEsPosts(post);
+  const related = fillDeep(relatedEsPosts(raw), book);
   const images = await getBlogImages(post.content);
   const cover = await resolveBlogCover(post, images, "es");
   const coverAbs = absoluteImageUrl(cover.url);
@@ -98,7 +105,7 @@ export default async function EsBlogPostPage({
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }} />
       <BlogArticleView
         lang="es"
         post={post}

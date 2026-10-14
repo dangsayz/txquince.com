@@ -1,17 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import { SlotImage } from "@/components/SlotImage";
 import { notFound } from "next/navigation";
 import { site } from "@/content/site";
 import {
   bookingFlow,
   bookingSteps,
-  commissions,
-  commissionsFromLabel,
+  commissionsFor,
+  commissionsFromLabel as FROM_TOKEN,
   commissionLinks,
-  retainerPercentLabel,
+  retainerPercentLabel as PCT_TOKEN,
 } from "@/content/commissions";
-import { PRICE_CEILING_USD, PRICE_FLOOR_USD, TIER_PRICE_USD, usd } from "@/lib/commission";
+import { priceCeiling, priceFloor, usd } from "@/lib/commission";
+import { getPriceBook } from "@/lib/pricing";
+import { PT, fillDeep, fillPrices } from "@/lib/price-text";
 import { locations, getLocation, nearbyLocations, cityGeo } from "@/content/locations";
 import { getCityContent } from "@/content/city-content";
 import { getEsPost } from "@/content/blog";
@@ -19,6 +22,7 @@ import { portfolioFallback } from "@/content/portfolio-fallback";
 import { getFeaturedImages, getImagesByCity } from "@/lib/content-db";
 import { venuesByCity } from "@/content/venues";
 import "@/components/txq/pages/places.css";
+import { jsonLdString } from "@/lib/json-ld";
 
 /** Curated ES guides surfaced on each city page (closes the city↔blog loop). */
 const ES_CITY_GUIDES = [
@@ -43,6 +47,7 @@ export async function generateMetadata({
   const { city } = await params;
   const loc = getLocation(city);
   if (!loc) return {};
+  const commissionsFromLabel = fillPrices(FROM_TOKEN, await getPriceBook());
 
   const title = `Fotógrafo de Quinceañeras en ${loc.city}, TX`;
   const description = `Fotógrafo y videógrafo de quinceañeras de lujo en ${loc.city}. Paquetes publicados desde ${commissionsFromLabel}, en español, de la misa al último baile. Consulta tu fecha en vivo.`;
@@ -74,7 +79,7 @@ function sharedFaqsEs(city: string) {
   return [
     {
       q: `¿Cuánto cuesta un fotógrafo de quinceañera en ${city}?`,
-      a: `Todos los paquetes están publicados: la Sesión de retratos cuesta ${usd(TIER_PRICE_USD.study)}, fotos y video juntos desde ${usd(TIER_PRICE_USD.cinema)}, y la Celebración completa, el paquete que recomendamos para la mayoría de las celebraciones en ${city}, cuesta ${usd(TIER_PRICE_USD.production)}. La Celebración de dos días cuesta ${usd(TIER_PRICE_USD.archive)}. Puedes consultar tu fecha sin pagar.`,
+      a: `Todos los paquetes están publicados: la Sesión de retratos cuesta ${PT.price.study}, fotos y video juntos desde ${PT.price.cinema}, y la Celebración completa, el paquete que recomendamos para la mayoría de las celebraciones en ${city}, cuesta ${PT.price.production}. La Celebración de dos días cuesta ${PT.price.archive}. Puedes consultar tu fecha sin pagar.`,
     },
     {
       q: "¿También ofreces video, o solo fotografía?",
@@ -101,7 +106,6 @@ function focal(fx?: number | null, fy?: number | null, dy = 0.35): string {
 }
 
 /** Del primer mensaje al día. */
-const PASOS = bookingSteps.es.map((p) => ({ t: p.title, b: p.body }));
 
 export default async function CityPageEs({
   params,
@@ -109,14 +113,23 @@ export default async function CityPageEs({
   params: Promise<{ city: string }>;
 }) {
   const { city } = await params;
-  const loc = getLocation(city);
-  if (!loc) notFound();
+  const rawLoc = getLocation(city);
+  if (!rawLoc) notFound();
 
-  const content = getCityContent(loc.slug);
-  const faqs = content?.faqsEs ?? [...loc.faqsEs, ...sharedFaqsEs(loc.city)];
+  // Copy carries price tokens; fill everything from the live price book here,
+  // once, so the page body, FAQ and JSON-LD all read the same current prices.
+  const book = await getPriceBook();
+  const loc = fillDeep(rawLoc, book);
+  const commissions = commissionsFor(book);
+  const commissionsFromLabel = fillPrices(FROM_TOKEN, book);
+  const retainerPercentLabel = fillPrices(PCT_TOKEN, book);
+  const PASOS = fillDeep(bookingSteps.es, book).map((p) => ({ t: p.title, b: p.body }));
+
+  const content = fillDeep(getCityContent(loc.slug), book);
+  const faqs = content?.faqsEs ?? fillDeep([...loc.faqsEs, ...sharedFaqsEs(loc.city)], book);
   const nearby = nearbyLocations(loc.slug);
   const cityVenues = venuesByCity(loc.slug);
-  const guides = ES_CITY_GUIDES.map(getEsPost).filter((p) => p !== undefined);
+  const guides = fillDeep(ES_CITY_GUIDES.map(getEsPost).filter((p) => p !== undefined), book);
   const esUrl = `${site.url}/es/fotografo-de-quinceaneras/${loc.slug}`;
   // Las fotos propias de esta ciudad primero; si no hay, las destacadas; si
   // tampoco hay, el portafolio incluido (primero las de esta ciudad). Así nunca
@@ -199,7 +212,7 @@ export default async function CityPageEs({
           addressRegion: "TX",
           addressCountry: "US",
         },
-        priceRange: `${usd(PRICE_FLOOR_USD)}–${usd(PRICE_CEILING_USD)}`,
+        priceRange: `${usd(priceFloor(book))}–${usd(priceCeiling(book))}`,
         knowsLanguage: ["es", "en"],
         hasOfferCatalog: {
           "@type": "OfferCatalog",
@@ -245,7 +258,7 @@ export default async function CityPageEs({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }}
       />
 
       <div className="tq-wrap">
@@ -262,14 +275,13 @@ export default async function CityPageEs({
         <div className="tq-place-stage">
           <figure className="tq-plate" style={{ margin: 0 }}>
             <div className="tq-plate__loop">
-              <Image
-                src={hero.url}
-                alt={hero.alt}
+              <SlotImage
+                slot={`city.${loc.slug}.hero`}
+                lang="es"
                 fill
-                preload
-                unoptimized={hero.local}
+                priority
                 sizes="100vw"
-                style={{ objectPosition: hero.focus }}
+                fallback={{ src: hero.url, alt: hero.alt, focus: hero.focus }}
               />
             </div>
             <figcaption>

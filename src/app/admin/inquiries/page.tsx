@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getInquiries, getInquiryActivity } from "@/lib/clients-db";
 import { buildLeadWork, countDue } from "@/lib/admin-workflow";
 import { formatEventDate } from "@/lib/booking";
+import { requireAdminPage } from "@/lib/require-admin";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +13,7 @@ const views: { id: View; label: string }[] = [
 ];
 
 export default async function AdminInquiries({ searchParams }: { searchParams: Promise<{ view?: string; q?: string }> }) {
+  await requireAdminPage("/admin/inquiries"); // server-side gate; middleware is not enough
   const [inquiries, activity, params] = await Promise.all([getInquiries(), getInquiryActivity(), searchParams]);
   const work = buildLeadWork(inquiries, activity);
   const byId = new Map(work.map((item) => [item.inquiry.id, item]));

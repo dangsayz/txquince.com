@@ -1,10 +1,11 @@
 import type { BlogPost } from "@/content/blog";
-import { TIER_PRICE_USD, BASE_CREW, BASE_HOURS, MAX_HOURS, usd } from "@/lib/commission";
+import { BASE_CREW } from "@/lib/commission";
+import { PT } from "@/lib/price-text";
 
-const study = usd(TIER_PRICE_USD.study);
-const cinema = usd(TIER_PRICE_USD.cinema);
-const production = usd(TIER_PRICE_USD.production);
-const archive = usd(TIER_PRICE_USD.archive);
+const study = PT.price.study;
+const cinema = PT.price.cinema;
+const production = PT.price.production;
+const archive = PT.price.archive;
 
 const post: BlogPost = {
   slug: "foto-o-video-quinceanera",
@@ -107,7 +108,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Anclado a nuestros paquetes: la Sesión de retratos cuesta ${study} — solo fotos, ${BASE_HOURS.study} horas con un fotógrafo. Foto + Video cuesta ${cinema} — ${BASE_HOURS.cinema} horas con un fotógrafo y un videógrafo, un video completo en 4K de 8 a 10 minutos, un tráiler corto y videos cortos para redes sociales. La Celebración completa, por ${production}, es la que recomendamos para la mayoría de las celebraciones — ${BASE_HOURS.production} horas, un equipo de ${BASE_CREW.production} y una coordinadora del día, una sesión de retratos, un video completo de 12 a 15 minutos y un álbum de fotos impreso. La Celebración de dos días, por ${archive}, le da ${BASE_HOURS.archive} horas más un segundo día de retratos, con un equipo de ${BASE_CREW.archive} y una coordinadora del día. ¿Necesita más tiempo el día de la fiesta? Puede agregar horas, una a la vez, hasta ${MAX_HOURS} en total. Para ver qué incluye cada paquete y [cuáles incluyen ambos](/es#commissions), revise los paquetes; y para una mirada más amplia al costo, lea [cuánto cuesta un fotógrafo de quinceañera en DFW](/es/blog/cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth).`,
+      text: `Anclado a nuestros paquetes: la Sesión de retratos cuesta ${study} — solo fotos, ${PT.hours.study} horas con un fotógrafo. Foto + Video cuesta ${cinema} — ${PT.hours.cinema} horas con un fotógrafo y un videógrafo, un video completo en 4K de 8 a 10 minutos, un tráiler corto y videos cortos para redes sociales. La Celebración completa, por ${production}, es la que recomendamos para la mayoría de las celebraciones — ${PT.hours.production} horas, un equipo de ${BASE_CREW.production} y una coordinadora del día, una sesión de retratos, un video completo de 12 a 15 minutos y un álbum de fotos impreso. La Celebración de dos días, por ${archive}, le da ${PT.hours.archive} horas más un segundo día de retratos, con un equipo de ${BASE_CREW.archive} y una coordinadora del día. ¿Necesita más tiempo el día de la fiesta? Puede agregar horas, una a la vez, hasta ${PT.hours.max} en total. Para ver qué incluye cada paquete y [cuáles incluyen ambos](/es#commissions), revise los paquetes; y para una mirada más amplia al costo, lea [cuánto cuesta un fotógrafo de quinceañera en DFW](/es/blog/cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth).`,
     },
     { type: "h2", text: "Si el presupuesto solo alcanza para uno" },
     {

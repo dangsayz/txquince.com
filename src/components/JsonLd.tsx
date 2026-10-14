@@ -1,22 +1,17 @@
 import { site } from "@/content/site";
-import {
-  PRICE_CEILING_USD,
-  PRICE_FLOOR_USD,
-  TIER_IDS,
-  TIER_NAME_EN,
-  TIER_PRICE_USD,
-} from "@/lib/commission";
+import { TIER_IDS, TIER_NAME_EN, priceCeiling, priceFloor, usd, type PriceBook } from "@/lib/commission";
 import { locations } from "@/content/locations";
+import { jsonLdString } from "@/lib/json-ld";
 
 /**
  * LocalBusiness structured data (SEO BASELINE). Driven from content so it stays
- * in sync with brand, area, and pricing. As a service-area business (no
+ * in sync with brand, area, and the live price book. As a service-area business (no
  * storefront), it declares an enumerated areaServed city list + a GeoCircle
  * footprint + a machine-readable price catalog — the on-site signals that make
  * the site eligible for local "near me" queries across the metroplex (the GBP
  * is what actually wins them; this reinforces relevance).
  */
-export function JsonLd() {
+export function JsonLd({ book }: { book: PriceBook }) {
   const areaServed = [
     ...locations.map((l) => ({ "@type": "City", name: `${l.city}, TX` })),
     { "@type": "City", name: "Oak Cliff, TX" },
@@ -45,13 +40,13 @@ export function JsonLd() {
       addressRegion: "TX",
       addressCountry: "US",
     },
-    priceRange: `$${PRICE_FLOOR_USD.toLocaleString("en-US")}–$${PRICE_CEILING_USD.toLocaleString("en-US")}`,
+    priceRange: `${usd(priceFloor(book))}–${usd(priceCeiling(book))}`,
     // Machine-readable price catalog from the commission price book — rivals
     // show "inquire for pricing"; this feeds price queries and AI overviews.
     makesOffer: TIER_IDS.map((id) => ({
       "@type": "Offer",
       name: `${TIER_NAME_EN[id]} — Quinceañera Photos & Video`,
-      price: String(TIER_PRICE_USD[id]),
+      price: String(book.packages[id].price),
       priceCurrency: "USD",
       url: `${site.url}/#commissions`,
     })),
@@ -62,7 +57,7 @@ export function JsonLd() {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+      dangerouslySetInnerHTML={{ __html: jsonLdString(data) }}
     />
   );
 }

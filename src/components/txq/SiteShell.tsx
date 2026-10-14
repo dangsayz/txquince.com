@@ -7,6 +7,8 @@ import { Footer } from "./Editorial";
 import { Header, MobileDock } from "./Header";
 import { NoUpscale } from "./NoUpscale";
 import { AvailabilityProvider, SiteProvider, useSite } from "./state";
+import { PriceBookProvider } from "@/components/PriceBookProvider";
+import type { PriceBook } from "@/lib/commission";
 import "./txq.css";
 
 /**
@@ -26,19 +28,21 @@ type ShellControls = {
 const ShellCtx = createContext<ShellControls>({ setCinema: () => {}, setDockHidden: () => {} });
 export const useShell = () => useContext(ShellCtx);
 
-export function SiteShell({ children }: { children: ReactNode }) {
+export function SiteShell({ children, book }: { children: ReactNode; book: PriceBook }) {
   const pathname = usePathname() || "/";
   const isHome = pathname === "/" || pathname === "/es";
   const urlLang = pathname === "/es" || pathname.startsWith("/es/") ? "es" : "en";
 
   return (
-    <SiteProvider urlLang={urlLang} isHome={isHome}>
-      <AvailabilityProvider>
-        <MotionConfig reducedMotion="user">
-          <Frame key={pathname}>{children}</Frame>
-        </MotionConfig>
-      </AvailabilityProvider>
-    </SiteProvider>
+    <PriceBookProvider book={book}>
+      <SiteProvider urlLang={urlLang} isHome={isHome}>
+        <AvailabilityProvider>
+          <MotionConfig reducedMotion="user">
+            <Frame key={pathname}>{children}</Frame>
+          </MotionConfig>
+        </AvailabilityProvider>
+      </SiteProvider>
+    </PriceBookProvider>
   );
 }
 

@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { site } from "@/content/site";
 import { getAllEsPosts } from "@/content/blog";
+import { getPriceBook } from "@/lib/pricing";
+import { fillDeep } from "@/lib/price-text";
 import { portfolioFallback } from "@/content/portfolio-fallback";
 import { getFeaturedImages, getPageHero } from "@/lib/content-db";
 import { BlogIndexView, type BlogThumb } from "@/components/BlogContent";
 import { blogIndexJsonLd } from "@/app/blog/structured-data";
+import { jsonLdString } from "@/lib/json-ld";
 
 export const revalidate = 3600;
 
@@ -37,7 +40,7 @@ export const metadata: Metadata = {
 };
 
 export default async function EsBlogIndexPage() {
-  const posts = getAllEsPosts();
+  const posts = fillDeep(getAllEsPosts(), await getPriceBook());
 
   const imgs = await getFeaturedImages(24);
   const toThumb = (image: (typeof imgs)[number]): BlogThumb => ({
@@ -64,7 +67,7 @@ export default async function EsBlogIndexPage() {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }} />
       <BlogIndexView
         lang="es"
         title={

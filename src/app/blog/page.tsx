@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import { site } from "@/content/site";
 import { getAllPosts } from "@/content/blog";
+import { getPriceBook } from "@/lib/pricing";
+import { fillDeep } from "@/lib/price-text";
 import { portfolioFallback } from "@/content/portfolio-fallback";
 import { getFeaturedImages, getPageHero } from "@/lib/content-db";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import { BlogIndexView, type BlogThumb } from "@/components/BlogContent";
 import { blogIndexJsonLd } from "@/app/blog/structured-data";
+import { jsonLdString } from "@/lib/json-ld";
 
 export const revalidate = 3600;
 
@@ -41,7 +44,7 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogIndexPage() {
-  const posts = getAllPosts();
+  const posts = fillDeep(getAllPosts(), await getPriceBook());
 
   // Real photography carries the contrast a text-only index can't. The featured
   // frame is operator-choosable in /admin/hero (page "blog"), falling back to
@@ -71,7 +74,7 @@ export default async function BlogIndexPage() {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }} />
       <BlogIndexView
         lang="en"
         title={

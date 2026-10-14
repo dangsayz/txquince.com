@@ -4,7 +4,8 @@
  * Editorial-system layout; ImageObject JSON-LD; quiet CTA to book.
  */
 import type { Metadata } from "next";
-import { commissionsFromLabel } from "@/content/commissions";
+import { priceFloor, usd } from "@/lib/commission";
+import { getPriceBook } from "@/lib/pricing";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { site } from "@/content/site";
@@ -21,6 +22,7 @@ import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import { venueForLocation } from "@/content/venues";
 import { PhotoActions } from "@/components/gallery/PhotoActions";
 import "@/components/txq/pages/pages.css";
+import { jsonLdString } from "@/lib/json-ld";
 
 /** Branded serve URL at an explicit derivative width. */
 function at(url: string, w: number): string {
@@ -39,7 +41,7 @@ export async function generateMetadata({
   if (!img || img.section !== category) return {};
 
   const copy = publicPhotoCopy(img, altPhraseFor(img.section));
-  const description = `${copy.description} — quinceañera photography by ${site.brand}, Dallas–Fort Worth. Packages from ${commissionsFromLabel}; check your date.`;
+  const description = `${copy.description} — quinceañera photography by ${site.brand}, Dallas–Fort Worth. Packages from ${usd(priceFloor(await getPriceBook()))}; check your date.`;
   const pagePath = imagePagePath(img.section, slug);
   const imgUrl = `${site.url}/api/img/${slug}`;
 
@@ -120,7 +122,7 @@ export default async function PhotoPage({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replaceAll("<", "\\u003c") }}
+        dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }}
       />
       <article className="tq-wrap">
         <nav className="tq-pg-crumbs tq-mono" aria-label="Breadcrumb">

@@ -1,14 +1,16 @@
 import { COPY } from "./copy";
-import { TIER_IDS, TIER_NAME_EN, TIER_PRICE_USD } from "@/lib/commission";
+import { TIER_IDS, TIER_NAME_EN, type PriceBook } from "@/lib/commission";
+import { fillDeep } from "@/lib/price-text";
 import { site } from "@/content/site";
+import { jsonLdString } from "@/lib/json-ld";
 
-/** Page-level structured data: the FAQ shown on the page, plus the service catalog. */
-export function HomeJsonLd({ lang }: { lang: "en" | "es" }) {
+/** Page-level structured data: the FAQ shown on the page, plus the service catalog — both from the live book. */
+export function HomeJsonLd({ lang, book }: { lang: "en" | "es"; book: PriceBook }) {
   const faq = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     inLanguage: lang === "es" ? "es-MX" : "en-US",
-    mainEntity: COPY[lang].faq.items.map((i) => ({
+    mainEntity: fillDeep(COPY[lang].faq.items, book).map((i) => ({
       "@type": "Question",
       name: i.q,
       acceptedAnswer: { "@type": "Answer", text: i.a },
@@ -27,7 +29,7 @@ export function HomeJsonLd({ lang }: { lang: "en" | "es" }) {
       itemListElement: TIER_IDS.map((id) => ({
         "@type": "Offer",
         name: TIER_NAME_EN[id],
-        price: String(TIER_PRICE_USD[id]),
+        price: String(book.packages[id].price),
         priceCurrency: "USD",
         url: `${site.url}${lang === "es" ? "/es" : "/"}#commissions`,
       })),
@@ -35,8 +37,8 @@ export function HomeJsonLd({ lang }: { lang: "en" | "es" }) {
   };
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(service) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(faq) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(service) }} />
     </>
   );
 }

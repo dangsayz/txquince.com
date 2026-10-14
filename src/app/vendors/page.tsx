@@ -6,12 +6,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import { SlotImage } from "@/components/SlotImage";
 import { site } from "@/content/site";
 import { getVendors, getPortfolioImages } from "@/lib/content-db";
 import { VENDOR_CATEGORIES, altPhraseFor, vendorCategoryLabel } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import { FinalCTA } from "@/components/FinalCTA";
 import "@/components/txq/pages/pages.css";
+import { jsonLdString } from "@/lib/json-ld";
 
 export const revalidate = 3600;
 
@@ -79,7 +81,7 @@ export default async function VendorsPage() {
 
   return (
     <>
-      {jsonLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replaceAll("<", "\\u003c") }} />}
+      {jsonLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }} />}
       <div className="tq-wrap">
         <header className="tq-pg-mast" aria-labelledby="vendors-title">
           <p className="tq-pg-mast__index tq-mono">[TX Quince / Community]</p>
@@ -96,7 +98,7 @@ export default async function VendorsPage() {
           </div>
         </header>
         <figure className="tq-pg-plate tq-pg-plate--short">
-          <Image src={heroPhoto?.url ?? "/portfolio/reception.webp"} alt={heroPhoto ? publicPhotoCopy(heroPhoto, altPhraseFor(heroPhoto.section)).alt : "Quinceañera celebration in Dallas–Fort Worth"} fill priority unoptimized={!heroPhoto} sizes="100vw" style={heroPhoto ? { objectPosition: `${Math.round((heroPhoto.focus_x ?? 0.5) * 100)}% ${Math.round((heroPhoto.focus_y ?? 0.4) * 100)}%` } : undefined} />
+          <SlotImage slot="vendors.hero" lang="en" fill priority sizes="100vw" fallback={heroPhoto ? { src: heroPhoto.url, alt: publicPhotoCopy(heroPhoto, altPhraseFor(heroPhoto.section)).alt, width: heroPhoto.width, height: heroPhoto.height, focus: `${Math.round((heroPhoto.focus_x ?? 0.5) * 100)}% ${Math.round((heroPhoto.focus_y ?? 0.4) * 100)}%` } : null} />
           <figcaption>
             <span className="tq-tag tq-tag--bl tq-mono">[{vendors.length} vendors credited]</span>
           </figcaption>

@@ -6,6 +6,9 @@ import type { BlogBlock, BlogPost } from "@/content/blog";
 import { getAllPosts, enSlugForEs } from "@/content/blog";
 import { getFeaturedImages, getPageHero, type ResolvedBlogImage } from "@/lib/content-db";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
+import { blogCoverSlotId } from "@/lib/image-slots";
+import { getSlotVersion } from "@/lib/image-slot-store";
+import { renditionUrl } from "@/lib/image-slot-shared";
 
 /**
  * Blog cover (hero) selection — the root-cause fix for blurry blog heroes.
@@ -40,6 +43,21 @@ export async function resolveBlogCover(
   images: Record<string, ResolvedBlogImage>,
   lang: "en" | "es",
 ): Promise<BlogCover> {
+  // 0. A cover the admin chose for this story (Admin → Every image).
+  const chosen = await getSlotVersion(blogCoverSlotId(post.slug, lang));
+  if (chosen) {
+    const w = Math.max(...chosen.widths.filter((x) => x <= 1600), Math.min(...chosen.widths));
+    return {
+      url: renditionUrl(chosen.key, w, chosen.ext ?? "webp"),
+      width: chosen.w,
+      height: chosen.h,
+      alt: chosen.alt[lang],
+      caption: null,
+      focus_x: chosen.focal.x,
+      focus_y: chosen.focal.y,
+    };
+  }
+
   // 1. The post's own photo.
   const block = post.content.find(
     (b): b is Extract<BlogBlock, { type: "image" }> => b.type === "image" && Boolean(images[b.slug]?.url),
@@ -114,6 +132,8 @@ export function ogImageFor(cover: BlogCover): { url: string; width?: number; hei
   const w = cover.width ?? undefined;
   const h = cover.height ?? undefined;
   if (!w || !h) return { url, alt: cover.alt };
-  const outW = cover.url.startsWith("/api/img/") ? Math.min(OG_WIDTH, w) : w;
+  // Slot renditions name their own width (…-1600.webp).
+  const rendition = cover.url.match(/-(\d+)\.(?:webp|jpg)$/);
+  const outW = cover.url.startsWith("/api/img/") ? Math.min(OG_WIDTH, w) : rendition ? Math.min(Number(rendition[1]), w) : w;
   return { url, width: outW, height: Math.round((h * outW) / w), alt: cover.alt };
 }

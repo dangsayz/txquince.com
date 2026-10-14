@@ -1,7 +1,7 @@
 import type { BlogPost } from "@/content/blog";
-import { RETAINER, CONSULT_HOLD_DAYS } from "@/lib/commission";
+import { PT } from "@/lib/price-text";
 
-const retainerPct = `${Math.round(RETAINER.rate * 100)}%`;
+const retainerPct = PT.deposit.percent;
 
 const post: BlogPost = {
   slug: "when-to-book-quinceanera-photographer-dfw",
@@ -102,7 +102,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `With the date and venue in hand, [reserve your day](/#intake) is a short step — pick a package and sign the agreement online, and we hold your date for ${CONSULT_HOLD_DAYS} days while we review it. Once it's approved, a ${retainerPct} deposit locks it in, and the rest is due ${RETAINER.balanceDueHours} hours before the event. Want to talk first? Ask for a quick call. If you're still comparing artists, look through a few full [galleries](/portfolio) start to finish before you decide.`,
+      text: `With the date and venue in hand, [reserve your day](/#intake) is a short step — pick a package and sign the agreement online, and we hold your date for ${PT.holdDays} days while we review it. Once it's approved, a ${retainerPct} deposit locks it in, and the rest is due ${PT.balanceDays} days before the event. Want to talk first? Ask for a quick call. If you're still comparing artists, look through a few full [galleries](/portfolio) start to finish before you decide.`,
     },
     { type: "h2", text: "When to schedule the pre-quince session" },
     {

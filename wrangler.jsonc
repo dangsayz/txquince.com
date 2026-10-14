@@ -29,6 +29,24 @@
       "bucket_name": "txquince-portfolio"
     }
   ],
+  // Durable per-IP rate limits (src/lib/rate-limit.ts). Counters live in
+  // Cloudflare, per location, and survive isolate recycling. namespace_id is
+  // any integer unique in the Cloudflare account; nothing to create in the
+  // dashboard. Keep limit/period equal to RATE_LIMITS (a test checks it).
+  "ratelimits": [
+    {
+      // /api/commission and /api/inquiry: 5 per minute per IP (separate keys).
+      "name": "RATE_LIMIT_FORMS",
+      "namespace_id": "47101",
+      "simple": { "limit": 5, "period": 60 }
+    },
+    {
+      // /api/track and /api/csp-report: 60 per minute per IP.
+      "name": "RATE_LIMIT_TRACK",
+      "namespace_id": "47102",
+      "simple": { "limit": 60, "period": 60 }
+    }
+  ],
   "observability": {
     "enabled": true
   },

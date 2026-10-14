@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { SlotImage } from "@/components/SlotImage";
 import Link from "next/link";
-import { commissionsFromLabel } from "@/content/commissions";
+import { commissionsFromLabel as FROM_TOKEN } from "@/content/commissions";
+import { getPriceBook } from "@/lib/pricing";
+import { fillDeep, fillPrices } from "@/lib/price-text";
 import { locations } from "@/content/locations";
 import { portfolioFallback } from "@/content/portfolio-fallback";
 import { site } from "@/content/site";
@@ -11,9 +13,10 @@ import "@/components/txq/pages/places.css";
 
 export const revalidate = 3600;
 
-export const metadata: Metadata = {
+// Carries a price token (FROM_TOKEN); filled from the live book below.
+const META: Metadata = {
   title: "Fotógrafo de Quinceañeras — Dallas–Fort Worth",
-  description: `Fotos y video de quinceañera de lujo en todo Dallas–Fort Worth — Dallas, Fort Worth, Frisco, Plano, McKinney, Arlington y más. Paquetes publicados desde ${commissionsFromLabel}.`,
+  description: `Fotos y video de quinceañera de lujo en todo Dallas–Fort Worth — Dallas, Fort Worth, Frisco, Plano, McKinney, Arlington y más. Paquetes publicados desde ${FROM_TOKEN}.`,
   alternates: {
     canonical: "/es/fotografo-de-quinceaneras",
     languages: {
@@ -24,11 +27,15 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Fotógrafo de Quinceañeras — Dallas–Fort Worth · " + site.brand,
-    description: `Fotos y video de quinceañera en todo el metroplex de DFW. Paquetes publicados desde ${commissionsFromLabel}.`,
+    description: `Fotos y video de quinceañera en todo el metroplex de DFW. Paquetes publicados desde ${FROM_TOKEN}.`,
     url: site.url + "/es/fotografo-de-quinceaneras",
     locale: "es_MX",
   },
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  return fillDeep(META, await getPriceBook());
+}
 
 /** Una fotografía, normalizada desde la base de datos o el portafolio incluido. */
 type Shot = { url: string; alt: string; focus: string; local: boolean };
@@ -54,6 +61,7 @@ const fromFallback = (photo: (typeof portfolioFallback)[number]): Shot => ({
 });
 
 export default async function LocationsHubEs() {
+  const commissionsFromLabel = fillPrices(FROM_TOKEN, await getPriceBook());
   const [imgs, assignedHero, cityPhotoSets] = await Promise.all([
     getFeaturedImages(24),
     getPageHero("areas"),
@@ -97,14 +105,13 @@ export default async function LocationsHubEs() {
         <div className="tq-place-stage">
           <figure className="tq-plate" style={{ margin: 0 }}>
             <div className="tq-plate__loop">
-              <Image
-                src={hero.url}
-                alt={hero.alt}
+              <SlotImage
+                slot="areas.hero"
+                lang="es"
                 fill
-                preload
-                unoptimized={hero.local}
+                priority
                 sizes="100vw"
-                style={{ objectPosition: hero.focus }}
+                fallback={{ src: hero.url, alt: hero.alt, focus: hero.focus }}
               />
             </div>
             <figcaption>
@@ -179,13 +186,12 @@ export default async function LocationsHubEs() {
                 >
                   <span className="tq-place-card__media">
                     {shot ? (
-                      <Image
-                        src={shot.url}
-                        alt={shot.alt}
+                      <SlotImage
+                        slot={`city.${location.slug}.card`}
+                        lang="es"
                         fill
-                        unoptimized={shot.local}
                         sizes="(min-width: 1280px) 25vw, (min-width: 960px) 33vw, (min-width: 640px) 50vw, 100vw"
-                        style={{ objectPosition: shot.focus }}
+                        fallback={{ src: shot.url, alt: shot.alt, focus: shot.focus }}
                       />
                     ) : (
                       <span className="tq-place-card__blank">

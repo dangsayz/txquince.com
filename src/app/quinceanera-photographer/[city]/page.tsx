@@ -1,17 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import { SlotImage } from "@/components/SlotImage";
 import { notFound } from "next/navigation";
 import { site } from "@/content/site";
 import {
   bookingFlow,
   bookingSteps,
-  commissions,
-  commissionsFromLabel,
+  commissionsFor,
+  commissionsFromLabel as FROM_TOKEN,
   commissionLinks,
-  retainerPercentLabel,
+  retainerPercentLabel as PCT_TOKEN,
 } from "@/content/commissions";
-import { BASE_CREW, PRICE_CEILING_USD, PRICE_FLOOR_USD, TIER_PRICE_USD, usd } from "@/lib/commission";
+import { BASE_CREW, priceCeiling, priceFloor, usd } from "@/lib/commission";
+import { getPriceBook } from "@/lib/pricing";
+import { PT, fillDeep, fillPrices } from "@/lib/price-text";
 import { locations, getLocation, nearbyLocations, cityGeo } from "@/content/locations";
 import { getCityContent } from "@/content/city-content";
 import { getPost } from "@/content/blog";
@@ -22,6 +25,7 @@ import { venuesByCity } from "@/content/venues";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import "@/components/txq/pages/places.css";
+import { jsonLdString } from "@/lib/json-ld";
 
 /** Curated guides surfaced on each city page (closes the city↔blog loop). */
 const CITY_GUIDES = [
@@ -66,7 +70,6 @@ const DAY_TIMELINE: { when: string; title: string; body: string }[] = [
 ];
 
 /** From first message to the day — removes the "what happens next?" drop-off. */
-const BOOKING_STEPS = bookingSteps.en;
 
 // ISR: regenerate hourly so newly city-tagged photos surface without a redeploy.
 export const revalidate = 3600;
@@ -83,6 +86,7 @@ export async function generateMetadata({
   const { city } = await params;
   const loc = getLocation(city);
   if (!loc) return {};
+  const commissionsFromLabel = fillPrices(FROM_TOKEN, await getPriceBook());
 
   const title = `${loc.city} Quinceañera Photographer, TX`;
   const description = `Luxury quinceañera photographer & videographer in ${loc.city}. Published packages from ${commissionsFromLabel}, bilingual, la misa to the last dance. Check your date live.`;
@@ -114,7 +118,7 @@ function sharedFaqs(city: string) {
   return [
     {
       q: `How much does a quinceañera photographer cost in ${city}?`,
-      a: `Every package is published: the Portrait Session is ${usd(TIER_PRICE_USD.study)}, photos and video together start at ${usd(TIER_PRICE_USD.cinema)}, and the Full Celebration, the package we recommend for most ${city} celebrations, is ${usd(TIER_PRICE_USD.production)}. The Two-Day Celebration is ${usd(TIER_PRICE_USD.archive)}.`,
+      a: `Every package is published: the Portrait Session is ${PT.price.study}, photos and video together start at ${PT.price.cinema}, and the Full Celebration, the package we recommend for most ${city} celebrations, is ${PT.price.production}. The Two-Day Celebration is ${PT.price.archive}.`,
     },
     {
       q: "Do you offer video too, or only photography?",
@@ -146,15 +150,23 @@ export default async function CityPage({
   params: Promise<{ city: string }>;
 }) {
   const { city } = await params;
-  const loc = getLocation(city);
-  if (!loc) notFound();
+  const rawLoc = getLocation(city);
+  if (!rawLoc) notFound();
 
-  const content = getCityContent(loc.slug);
+  // Copy carries price tokens; fill everything from the live price book here,
+  // once, so the page body, FAQ and JSON-LD all read the same current prices.
+  const book = await getPriceBook();
+  const loc = fillDeep(rawLoc, book);
+  const content = fillDeep(getCityContent(loc.slug), book);
+  const commissions = commissionsFor(book);
+  const commissionsFromLabel = fillPrices(FROM_TOKEN, book);
+  const retainerPercentLabel = fillPrices(PCT_TOKEN, book);
+  const BOOKING_STEPS = fillDeep(bookingSteps.en, book);
   // Prefer the unique, researched per-city FAQs; fall back to the legacy set.
-  const faqs = content?.faqs ?? [...loc.faqs, ...sharedFaqs(loc.city)];
+  const faqs = content?.faqs ?? fillDeep([...loc.faqs, ...sharedFaqs(loc.city)], book);
   const nearby = nearbyLocations(loc.slug);
   const cityVenues = venuesByCity(loc.slug);
-  const guides = CITY_GUIDES.map(getPost).filter((p) => p !== undefined);
+  const guides = fillDeep(CITY_GUIDES.map(getPost).filter((p) => p !== undefined), book);
   const quotes = releasedTestimonials().slice(0, 3);
   const url = `${site.url}/quinceanera-photographer/${loc.slug}`;
   // This city's OWN tagged work first; fall back to featured until it's tagged,
@@ -230,7 +242,7 @@ export default async function CityPage({
           addressRegion: "TX",
           addressCountry: "US",
         },
-        priceRange: `${usd(PRICE_FLOOR_USD)}–${usd(PRICE_CEILING_USD)}`,
+        priceRange: `${usd(priceFloor(book))}–${usd(priceCeiling(book))}`,
         knowsLanguage: ["en", "es"],
         hasOfferCatalog: {
           "@type": "OfferCatalog",
@@ -280,7 +292,7 @@ export default async function CityPage({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }}
       />
 
       <div className="tq-wrap">
@@ -297,14 +309,13 @@ export default async function CityPage({
         <div className="tq-place-stage">
           <figure className="tq-plate" style={{ margin: 0 }}>
             <div className="tq-plate__loop">
-              <Image
-                src={hero.url}
-                alt={hero.alt}
+              <SlotImage
+                slot={`city.${loc.slug}.hero`}
+                lang="en"
                 fill
-                preload
-                unoptimized={hero.local}
+                priority
                 sizes="100vw"
-                style={{ objectPosition: hero.focus }}
+                fallback={{ src: hero.url, alt: hero.alt, focus: hero.focus }}
               />
             </div>
             <figcaption>

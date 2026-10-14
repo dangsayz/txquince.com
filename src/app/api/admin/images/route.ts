@@ -6,6 +6,7 @@ import { unauthorizedAdminResponse } from "@/lib/admin-auth";
 import { getServiceSupabase } from "@/lib/supabase-server";
 import { deletePortfolioObjects } from "@/lib/r2-portfolio";
 import { CATEGORY_IDS } from "@/content/portfolio-taxonomy";
+import { handleList } from "@/lib/image-slot-admin";
 
 export const dynamic = "force-dynamic";
 
@@ -19,6 +20,11 @@ function bust() {
   revalidatePath("/");
   revalidatePath("/portfolio");
   revalidatePath("/vendors");
+}
+
+// Every image slot on the public site with its current photo (admin only).
+export async function GET() {
+  return handleList();
 }
 
 // Record a freshly-uploaded image.

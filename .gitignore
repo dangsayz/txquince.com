@@ -54,3 +54,7 @@ inspo/
 # or deploy these; the ingest script optimizes + uploads them to Supabase.
 /public/Blog/
 /media-inbox/
+
+# local price book store (dev / tests; production uses R2 config/pricing.json)
+/.pricing-local/
+/.claude/worktrees/

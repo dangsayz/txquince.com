@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { securityHeaders } from "./src/lib/security-headers";
 
 /**
  * TX Quince — Next.js config
@@ -30,6 +31,20 @@ const nextConfig: NextConfig = {
       // The bundled Save-the-Date session became the Portrait Study.
       { source: "/quinceanera-save-the-date", destination: "/quinceanera-photoshoot", permanent: true },
       { source: "/es/save-the-date-quinceanera", destination: "/es/sesion-de-fotos-quinceanera", permanent: true },
+    ];
+  },
+  // Security headers on every route (M4). The CSP is Report-Only for now —
+  // see src/lib/security-headers.ts for the allowlist and the switch-over plan.
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: securityHeaders({
+          dev: process.env.NODE_ENV === "development",
+          supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
+          mediaBaseUrl: process.env.NEXT_PUBLIC_R2_BASE_URL,
+        }),
+      },
     ];
   },
   // Premium perception dies on a slow site (PERFORMANCE BUDGET LAW).

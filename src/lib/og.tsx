@@ -1,6 +1,5 @@
 import { ImageResponse } from "next/og";
 import { site } from "@/content/site";
-import { PRICE_FLOOR_USD, usd } from "@/lib/commission";
 
 /** Shared visual renderer for social previews. No server or data contract changes. */
 export const ogSize = { width: 1200, height: 630 };
@@ -12,7 +11,10 @@ export function renderOg(opts: {
   footer?: string;
 }) {
   const { eyebrow = site.serviceArea, title, footer } = opts;
-  const foot = footer ?? `${site.domain} · Packages from ${usd(PRICE_FLOOR_USD)}`;
+  // No price on social cards: they are pre-rendered at build time and cached by
+  // every social network for weeks, so a number here would go stale the moment
+  // the owner changes prices at /admin/prices. Pages carry the live prices.
+  const foot = footer ?? `${site.domain} · Prices published on the site`;
 
   return new ImageResponse(
     (
