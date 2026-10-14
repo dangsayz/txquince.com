@@ -67,7 +67,7 @@ export const viewport: Viewport = {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  // The live price book (R2, cached ~30s; launch defaults when unreachable).
+  // The live price book (read from R2 per request; launch defaults when unreachable).
   // Handed to every public page's client UI through the site shell.
   const book = await getPriceBook();
   return (
