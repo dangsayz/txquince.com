@@ -3,7 +3,6 @@ import { TxqSite } from "@/components/txq/TxqSite";
 import { latestJournal } from "@/components/txq/journal";
 import { getCinemaFilms } from "@/components/txq/films";
 import { HomeJsonLd } from "@/components/txq/HomeJsonLd";
-import { condensed } from "@/components/txq/fonts";
 import { PRICE_FLOOR_USD } from "@/lib/commission";
 import { site } from "@/content/site";
 
@@ -28,7 +27,7 @@ export default async function HomePage() {
   return (
     <>
       <HomeJsonLd lang="en" />
-      <TxqSite fontClass={condensed.variable} journal={latestJournal()} films={await getCinemaFilms()} />
+      <TxqSite journal={latestJournal()} films={await getCinemaFilms()} />
     </>
   );
 }

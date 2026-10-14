@@ -14,16 +14,7 @@ import type { CinemaFilm } from "./data";
  * The homepage sections (EN at /, ES at /es). The global header, footer, dock,
  * fonts and language state come from <SiteShell>, which wraps every page.
  */
-export function TxqSite({
-  journal,
-  films,
-  fontClass,
-}: {
-  journal: Journal;
-  films: CinemaFilm[];
-  /** The hero's condensed face (fonts.ts), loaded by the page so only homepages preload it. */
-  fontClass: string;
-}) {
+export function TxqSite({ journal, films }: { journal: Journal; films: CinemaFilm[] }) {
   const { setCinema, setDockHidden, setHeroBar } = useShell();
   const heroRef = useRef<HTMLElement>(null);
   const cinemaRef = useRef<HTMLElement>(null);
@@ -82,7 +73,7 @@ export function TxqSite({
 
   return (
     <>
-      <Hero ref={heroRef} live={heroLive} fontClass={fontClass} />
+      <Hero ref={heroRef} live={heroLive} />
       <Archive />
       <CinemaRoom ref={cinemaRef} films={films} />
       <Commissions />

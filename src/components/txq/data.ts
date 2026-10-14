@@ -250,7 +250,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     work: "w01",
     title: { en: "Gilded Salon", es: "Salón Dorado" },
     label: v("Dallas · 2026"),
-    accent: "#FFC23D", // gilt of the painted dome — 13.0:1 under black text
+    accent: "#E6D3AE", // champagne of the gilded dome
     cta: { label: v("Check your date", "Consulta tu fecha"), href: "#intake" },
   },
   {
@@ -258,7 +258,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     work: "w02",
     title: { en: "Fuchsia Stair", es: "Escalera Fucsia" },
     label: v("San Antonio · 2026"),
-    accent: "#FD0DBA", // the gown — 5.9:1 under black text
+    accent: "#E8BFCB", // dusty rose of the gown
     cta: { label: v(`Commissions from ${from}`, `Encargos desde ${from}`), href: "#commissions" },
   },
   {
@@ -266,7 +266,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     work: "w09",
     title: { en: "Prickly Pear", es: "Nopalera" },
     label: v("Fort Worth · 2025"),
-    accent: "#4DE335", // the cactus wall — 12.4:1 under black text
+    accent: "#C3CFAE", // sage of the cactus wall
     cta: { label: v("View the archive", "Ver el archivo"), href: "#archive" },
   },
   {
@@ -274,7 +274,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     work: "w06",
     title: { en: "The Last Waltz", es: "El Último Vals" },
     label: v("Arlington · 2025"),
-    accent: "#A6E2FB", // the stage wash — 14.9:1 under black text
+    accent: "#C2CEDA", // the cool stage light
     cta: { label: v("Watch the films", "Ver las películas"), href: "#cinema" },
   },
   {
@@ -282,7 +282,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     work: "w05",
     title: { en: "Crimson Garden", es: "Jardín Carmesí" },
     label: v("Dallas · 2025"),
-    accent: "#FF4433", // the gown — 6.1:1 under black text
+    accent: "#E4B8A6", // clay rose of the gown
     cta: { label: v("Check your date", "Consulta tu fecha"), href: "#intake" },
   },
 ];

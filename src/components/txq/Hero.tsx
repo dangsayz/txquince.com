@@ -22,7 +22,7 @@ import { useSite } from "./state";
 /**
  * Homepage hero — a full-bleed slideshow of featured work. One accent color per
  * slide (see HERO_SLIDES) drives every colored thing on screen; the image is a
- * darkened, accent-tinted mood behind a huge condensed title.
+ * darkened, softly tinted mood behind a large title in the site face.
  */
 
 const SLIDES = HERO_SLIDES.map((s) => ({ ...s, art: workById(s.work) }));
@@ -65,7 +65,7 @@ function toggleSaved(id: string) {
 
 const noopSubscribe = () => () => {};
 
-export const Hero = forwardRef<HTMLElement, { live: boolean; fontClass: string }>(function Hero({ live, fontClass }, ref) {
+export const Hero = forwardRef<HTMLElement, { live: boolean }>(function Hero({ live }, ref) {
   const { t, lang, setLang } = useSite();
   const { openMenu } = useShell();
   const reduced = useReducedMotion();
@@ -165,7 +165,7 @@ export const Hero = forwardRef<HTMLElement, { live: boolean; fontClass: string }
     <section
       ref={setRoot}
       id="top"
-      className={`tq-cine ${fontClass}`}
+      className="tq-cine"
       style={style}
       aria-roledescription="carousel"
       aria-label={t.hero.carousel}
