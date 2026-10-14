@@ -19,7 +19,6 @@ import {
   TIER_PRICE_USD,
   quoteCommission,
   type AddOnId,
-  type Crew,
   type TierId,
 } from "@/lib/commission";
 
@@ -311,8 +310,8 @@ export const TIERS: Tier[] = [
     numeral: "III.",
     name: { en: "The Full Production", es: "La producción completa" },
     summary: {
-      en: "Portrait session, Mass, and fiesta under one crew, bound in linen.",
-      es: "Sesión de retrato, misa y fiesta con un solo equipo, encuadernado en lino.",
+      en: "Four directors and a day-of coordinator, from the portrait session to the last dance, bound in linen.",
+      es: "Cuatro directores y una coordinadora del día, de la sesión de retrato al último baile, encuadernado en lino.",
     },
     price: TIER_PRICE_USD.production,
     scope: "both",
@@ -322,8 +321,8 @@ export const TIERS: Tier[] = [
     numeral: "IV.",
     name: { en: "Multi-Day Editorial Archive", es: "Archivo editorial de varios días" },
     summary: {
-      en: "From the dress fitting to the last song. A documentary of the whole season.",
-      es: "De la prueba del vestido a la última canción. Un documental de toda la temporada.",
+      en: "Five directors and a coordinator, from the dress fitting to the last song. A documentary of the season.",
+      es: "Cinco directores y una coordinadora, de la prueba del vestido a la última canción. Un documental de la temporada.",
     },
     price: TIER_PRICE_USD.archive,
     scope: "both",
@@ -343,10 +342,19 @@ export const MATRIX: MatrixGroup[] = [
       {
         label: v("Crew on the day", "Equipo en el día"),
         values: {
-          study: v("1 director", "1 director"),
-          cinema: v("2 directors, expandable to 5", "2 directores, ampliable a 5"),
-          production: v("3 directors, expandable to 5", "3 directores, ampliable a 5"),
-          archive: v("4 directors, expandable to 5", "4 directores, ampliable a 5"),
+          study: v("1 photographer", "1 fotógrafo"),
+          cinema: v("2 directors, your mix", "2 directores, a tu medida"),
+          production: v("4 directors, your mix", "4 directores, a tu medida"),
+          archive: v("5 directors, your mix", "5 directores, a tu medida"),
+        },
+      },
+      {
+        label: v("Day-of coordinator", "Coordinadora del día"),
+        values: {
+          study: null,
+          cinema: null,
+          production: v("Included", "Incluida"),
+          archive: v("Included, both days", "Incluida, ambos días"),
         },
       },
       {
@@ -356,24 +364,6 @@ export const MATRIX: MatrixGroup[] = [
           cinema: v("8 hrs", "8 h"),
           production: v("11 hrs", "11 h"),
           archive: v("2 days + 12 hrs", "2 días + 12 h"),
-        },
-      },
-      {
-        label: v("Lead director", "Director principal"),
-        values: {
-          study: v("Stills", "Foto"),
-          cinema: v("Stills", "Foto"),
-          production: v("Stills", "Foto"),
-          archive: v("Stills", "Foto"),
-        },
-      },
-      {
-        label: v("Second director", "Segundo director"),
-        values: {
-          study: null,
-          cinema: v("Motion", "Cine"),
-          production: v("Motion + second stills", "Cine + segunda foto"),
-          archive: v("Full crew of four", "Equipo completo de cuatro"),
         },
       },
       {
@@ -494,25 +484,16 @@ export const ADD_ONS: AddOn[] = [
     },
     price: ADD_ON_PRICE_USD.parents,
   },
-  {
-    id: "coordinator",
-    name: { en: "Day-of Coordinator", es: "Coordinadora del día" },
-    note: {
-      en: "Runs the timeline, cues the vendors and the court, and keeps the family present. Event commissions.",
-      es: "Lleva el itinerario, coordina a proveedores y a la corte, y deja a la familia disfrutar. Para encargos de evento.",
-    },
-    price: ADD_ON_PRICE_USD.coordinator,
-  },
 ];
 
 export const tierById = (id: TierId) => TIERS.find((t) => t.id === id)!;
 
-export function estimate(tier: TierId, addOns: AddOnId[], crew?: Crew) {
-  return quoteCommission(tier, addOns, crew).totalUsd;
+export function estimate(tier: TierId, addOns: AddOnId[]) {
+  return quoteCommission(tier, addOns).totalUsd;
 }
 
-export function retainer(tier: TierId, addOns: AddOnId[], crew?: Crew) {
-  return quoteCommission(tier, addOns, crew).retainerUsd;
+export function retainer(tier: TierId, addOns: AddOnId[]) {
+  return quoteCommission(tier, addOns).retainerUsd;
 }
 
 export function money(n: number) {

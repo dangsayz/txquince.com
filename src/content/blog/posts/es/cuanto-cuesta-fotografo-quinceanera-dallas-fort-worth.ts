@@ -4,6 +4,7 @@ import {
   ADD_ON_PRICE_USD,
   RETAINER,
   CONSULT_HOLD_DAYS,
+  BASE_CREW,
   usd,
 } from "@/lib/commission";
 
@@ -52,7 +53,7 @@ const post: BlogPost = {
       type: "ul",
       items: [
         "Horas de cobertura — el día de unos quince es largo: el arreglo, la misa de acción de gracias, las fotos formales y la fiesta. La cobertura de día completo es la diferencia entre un resumen y la historia entera.",
-        "Un artista o un equipo dirigido — un director de foto y un director de video (y un segundo fotógrafo en las comisiones mayores) significan que la iglesia y la entrada al salón quedan cubiertas al mismo tiempo, con ángulos opuestos que una sola cámara no puede inventar.",
+        `Un artista o un equipo dirigido — ${BASE_CREW.cinema} directores en Cine y fotografía, ${BASE_CREW.production} más una coordinadora del día en La producción completa, repartidos entre foto y video como usted prefiera — significa que la iglesia y la entrada al salón quedan cubiertas al mismo tiempo, con ángulos opuestos que una sola cámara no puede inventar.`,
         "Foto, o foto y video — el video es un oficio aparte y una edición aparte. Una comisión con ambos son dos narradores, no una persona haciendo malabares con la cámara y el tripié.",
         "Entrega — una galería privada en línea, la película editada y los reels y, en las comisiones mayores, un libro encuadernado en lino y el archivo completo sin editar.",
       ],

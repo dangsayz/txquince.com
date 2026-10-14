@@ -1,5 +1,5 @@
 import type { BlogPost } from "@/content/blog";
-import { RETAINER, CONSULT_HOLD_DAYS, usd } from "@/lib/commission";
+import { RETAINER, CONSULT_HOLD_DAYS, BASE_CREW, usd } from "@/lib/commission";
 
 const retainerPct = `${Math.round(RETAINER.rate * 100)}%`;
 
@@ -60,7 +60,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Así suena una buena respuesta: si el segundo fotógrafo va incluido, si está disponible como complemento o si no se ofrece, y en cuáles paquetes. Con nosotros, La producción completa y el Archivo editorial de varios días incluyen un segundo fotógrafo junto al director de video, y puede ver los ángulos inversos y los momentos de doble cobertura que hace posibles en el [portafolio](/portfolio). Si un fotógrafo no puede mostrarle cobertura de dos cámaras, dé por hecho que trabaja solo.",
+      text: `Así suena una buena respuesta: si el segundo fotógrafo va incluido, si está disponible como complemento o si no se ofrece, y en cuáles paquetes. Con nosotros, La producción completa y el Archivo editorial de varios días incluyen ${BASE_CREW.production} y ${BASE_CREW.archive} directores, en la combinación de fotógrafos y videógrafos que usted elija, y puede ver los ángulos inversos y los momentos de doble cobertura que hacen posibles en el [portafolio](/portfolio). Si un fotógrafo no puede mostrarle cobertura de dos cámaras, dé por hecho que trabaja solo.`,
     },
     { type: "h2", text: "5. ¿Me da los derechos de uso e impresión de las fotos?" },
     {
@@ -112,7 +112,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Así suena una buena respuesta: un sí o un no directo. Nosotros ofrecemos foto y video como un solo equipo en cada comisión desde Cine y fotografía, con un director de foto y un director de video trabajando el mismo día y una película, un teaser y reels verticales, no una sola persona haciendo malabares entre la cámara y el tripié. Si todavía está decidiendo si vale la pena el video, [foto o video para la quinceañera](/es/blog/foto-o-video-quinceanera) sopesa esa decisión sin rodeos.",
+      text: `Así suena una buena respuesta: un sí o un no directo. Nosotros ofrecemos foto y video como un solo equipo en cada comisión desde Cine y fotografía, con ${BASE_CREW.cinema} a ${BASE_CREW.archive} directores trabajando el mismo día —en la combinación de foto y video que usted elija— y una película, un teaser y reels verticales, no una sola persona haciendo malabares entre la cámara y el tripié. Si todavía está decidiendo si vale la pena el video, [foto o video para la quinceañera](/es/blog/foto-o-video-quinceanera) sopesa esa decisión sin rodeos.`,
     },
     { type: "h2", text: "Para cerrar" },
     {

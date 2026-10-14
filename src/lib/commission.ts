@@ -11,7 +11,7 @@
 import { z } from "zod";
 
 export const TIER_IDS = ["study", "cinema", "production", "archive"] as const;
-export const ADD_ON_IDS = ["destination", "sameday", "super8", "parents", "coordinator"] as const;
+export const ADD_ON_IDS = ["destination", "sameday", "super8", "parents"] as const;
 export type TierId = (typeof TIER_IDS)[number];
 export type AddOnId = (typeof ADD_ON_IDS)[number];
 
@@ -37,7 +37,6 @@ export const ADD_ON_PRICE_USD: Record<AddOnId, number> = {
   sameday: 2400,
   super8: 1800,
   parents: 1100,
-  coordinator: 1800,
 };
 
 /** English names for Stripe line items, receipts and operator email. */
@@ -53,50 +52,69 @@ export const ADD_ON_NAME_EN: Record<AddOnId, string> = {
   sameday: "Same-Day Reception Edit",
   super8: "Super 8mm Film Roll",
   parents: "Fine Art Parent Albums",
-  coordinator: "Day-of Coordinator",
 };
 
 /* ------------------------------------------------------------------ */
-/* Crew — directors are interchangeable: each added seat is a          */
-/* photographer or a videographer, up to MAX_CREW on the day.          */
+/* Crew — included value. Each commission includes a number of         */
+/* directors; families choose the mix of photographers and             */
+/* videographers (they are interchangeable) at no extra cost.          */
 /* ------------------------------------------------------------------ */
 
 export const CREW_ROLES = ["photo", "motion"] as const;
 export type CrewRole = (typeof CREW_ROLES)[number];
+/** The chosen mix: how many of the included directors shoot stills vs. motion. */
 export type Crew = Record<CrewRole, number>;
-export const NO_EXTRA_CREW: Crew = { photo: 0, motion: 0 };
 
-/** Directors already included on the celebration day. */
+/** Directors included on the celebration day. */
 export const BASE_CREW: Record<TierId, number> = {
   study: 1,
   cinema: 2,
-  production: 3,
-  archive: 4,
+  production: 4,
+  archive: 5,
 };
 
-/** Largest crew we field on one day (included + added). */
-export const MAX_CREW = 5;
+/** Largest crew we field on one day. */
+export const MAX_CREW = Math.max(...Object.values(BASE_CREW));
 
-/** Per added photographer or videographer, for the celebration day. */
-export const EXTRA_DIRECTOR_USD = 1200;
+/** A day-of coordinator comes with the larger productions. */
+export const COORDINATOR_INCLUDED: Record<TierId, boolean> = {
+  study: false,
+  cinema: false,
+  production: true,
+  archive: true,
+};
 
-/** The Portrait Study is a single-director session; crew and coordination are for event days. */
-export const EVENT_TIERS: readonly TierId[] = ["cinema", "production", "archive"];
-const EVENT_ONLY_ADD_ONS: readonly AddOnId[] = ["coordinator"];
+/** The Portrait Study is stills only; every event commission keeps at least one of each. */
+const MIN_ROLE: Record<TierId, Crew> = {
+  study: { photo: 1, motion: 0 },
+  cinema: { photo: 1, motion: 1 },
+  production: { photo: 1, motion: 1 },
+  archive: { photo: 1, motion: 1 },
+};
 
-export const maxExtraCrew = (tier: TierId) =>
-  EVENT_TIERS.includes(tier) ? Math.max(0, MAX_CREW - BASE_CREW[tier]) : 0;
+const DEFAULT_MIX: Record<TierId, Crew> = {
+  study: { photo: 1, motion: 0 },
+  cinema: { photo: 1, motion: 1 },
+  production: { photo: 2, motion: 2 },
+  archive: { photo: 3, motion: 2 },
+};
 
-export const addOnAllowed = (tier: TierId, a: AddOnId) =>
-  !EVENT_ONLY_ADD_ONS.includes(a) || EVENT_TIERS.includes(tier);
+export const defaultCrew = (tier: TierId): Crew => ({ ...DEFAULT_MIX[tier] });
 
-/** Keep a crew request inside what the tier can carry (photo seats first). */
-export function clampCrew(tier: TierId, crew: Crew): Crew {
-  const cap = maxExtraCrew(tier);
-  const photo = Math.max(0, Math.min(Math.floor(crew.photo) || 0, cap));
-  const motion = Math.max(0, Math.min(Math.floor(crew.motion) || 0, cap - photo));
-  return { photo, motion };
+/** Fit any requested mix to the tier: total = included crew, minimums respected. */
+export function normalizeCrew(tier: TierId, mix?: Partial<Crew> | null): Crew {
+  const total = BASE_CREW[tier];
+  const min = MIN_ROLE[tier];
+  const want = Number.isFinite(mix?.photo) ? Math.floor(mix!.photo!) : DEFAULT_MIX[tier].photo;
+  const photo = Math.max(min.photo, Math.min(want, total - min.motion));
+  return { photo, motion: total - photo };
 }
+
+/** Can the family still move a seat to this role? */
+export const canShift = (tier: TierId, mix: Crew, to: CrewRole) => {
+  const from: CrewRole = to === "photo" ? "motion" : "photo";
+  return mix[from] > MIN_ROLE[tier][from];
+};
 
 /** Single-craft tiers carry a photo-only service; the rest are photo + film. */
 export const TIER_SERVICE: Record<TierId, "photo" | "both"> = {
@@ -126,32 +144,25 @@ export const CONSULT_HOLD_DAYS = 7;
 export type Quote = {
   tierUsd: number;
   addOnsUsd: number;
-  crewUsd: number;
-  /** Directors on the celebration day, included + added. */
+  /** Directors included on the celebration day. */
   crewSize: number;
   totalUsd: number;
   retainerUsd: number;
   balanceUsd: number;
 };
 
-export function quoteCommission(
-  tier: TierId,
-  addOns: readonly AddOnId[],
-  extraCrew: Crew = NO_EXTRA_CREW,
-): Quote {
+export function quoteCommission(tier: TierId, addOns: readonly AddOnId[]): Quote {
   const tierUsd = TIER_PRICE_USD[tier];
-  const unique = Array.from(new Set(addOns)).filter((a) => addOnAllowed(tier, a));
+  const unique = Array.from(new Set(addOns));
   const addOnsUsd = unique.reduce((sum, a) => sum + ADD_ON_PRICE_USD[a], 0);
-  const crew = clampCrew(tier, extraCrew);
-  const crewUsd = (crew.photo + crew.motion) * EXTRA_DIRECTOR_USD;
-  const crewSize = BASE_CREW[tier] + crew.photo + crew.motion;
-  const totalUsd = tierUsd + addOnsUsd + crewUsd;
+  const crewSize = BASE_CREW[tier];
+  const totalUsd = tierUsd + addOnsUsd;
   const raw = Math.max(totalUsd * RETAINER.rate, RETAINER.floorUsd);
   const retainerUsd = Math.min(
     totalUsd,
     Math.round(raw / RETAINER.roundToUsd) * RETAINER.roundToUsd,
   );
-  return { tierUsd, addOnsUsd, crewUsd, crewSize, totalUsd, retainerUsd, balanceUsd: totalUsd - retainerUsd };
+  return { tierUsd, addOnsUsd, crewSize, totalUsd, retainerUsd, balanceUsd: totalUsd - retainerUsd };
 }
 
 /** "$11,500" — use in prose so copy reads straight from the price book. */
@@ -191,12 +202,13 @@ export const commissionSchema = z.object({
   scope: z.enum(SCOPE_IDS),
   tier: z.enum(TIER_IDS),
   add_ons: z.array(z.enum(ADD_ON_IDS)).max(ADD_ON_IDS.length).default([]),
-  extra_crew: z
+  /** Requested photographer / videographer mix; normalized to the tier's included crew. */
+  crew_mix: z
     .object({
       photo: z.number().int().min(0).max(MAX_CREW),
       motion: z.number().int().min(0).max(MAX_CREW),
     })
-    .default({ photo: 0, motion: 0 }),
+    .optional(),
   name: z.string().trim().min(2, "Please enter your name.").max(120),
   honoree: z.string().trim().max(80).optional().default(""),
   email: z.string().trim().toLowerCase().email("Please enter a valid email."),
@@ -215,11 +227,9 @@ const CITY_NAME: Record<(typeof CITY_IDS)[number], string> = {
   other: "Elsewhere in Texas",
 };
 
-function crewLines(tier: TierId, extra: Crew): string[] {
-  const c = clampCrew(tier, extra);
-  const line = (n: number, role: string) =>
-    n ? [`+ ${n} additional ${role}${n > 1 ? "s" : ""} — ${usd(n * EXTRA_DIRECTOR_USD)}`] : [];
-  return [...line(c.photo, "photographer"), ...line(c.motion, "videographer")];
+function crewLine(tier: TierId, mix: Crew): string {
+  const n = (k: number, one: string) => `${k} ${one}${k === 1 ? "" : "s"}`;
+  return `Crew (included, ${BASE_CREW[tier]}): ${n(mix.photo, "photographer")} + ${n(mix.motion, "videographer")}`;
 }
 
 /** Human-readable summary stored on the booking and shown to the operator. */
@@ -227,11 +237,9 @@ export function describeCommission(r: CommissionRequest, q: Quote): string {
   const usd = (n: number) => `$${n.toLocaleString("en-US")}`;
   const lines = [
     `Commission: ${TIER_NAME_EN[r.tier]} — ${usd(q.tierUsd)}`,
-    ...r.add_ons
-      .filter((a) => addOnAllowed(r.tier, a))
-      .map((a) => `+ ${ADD_ON_NAME_EN[a]} — ${usd(ADD_ON_PRICE_USD[a])}`),
-    ...crewLines(r.tier, r.extra_crew),
-    `Crew on the day: ${q.crewSize} directors`,
+    ...r.add_ons.map((a) => `+ ${ADD_ON_NAME_EN[a]} — ${usd(ADD_ON_PRICE_USD[a])}`),
+    crewLine(r.tier, normalizeCrew(r.tier, r.crew_mix)),
+    COORDINATOR_INCLUDED[r.tier] ? "Day-of coordinator: included" : "",
     `Total: ${usd(q.totalUsd)} · Retainer: ${usd(q.retainerUsd)} · Balance: ${usd(q.balanceUsd)}`,
     `Path: ${r.path === "retainer" ? "Paid retainer online" : "Consultation first"}`,
     `City: ${CITY_NAME[r.city]}${r.venue ? ` · Venue: ${r.venue}` : ""}`,

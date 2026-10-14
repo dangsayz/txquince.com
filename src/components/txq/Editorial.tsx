@@ -82,7 +82,7 @@ export function Editorial({ journal }: { journal: Journal }) {
 }
 
 export function Footer() {
-  const { t } = useSite();
+  const { t, homeHref } = useSite();
   const handle = site.social.instagram.replace(/\/$/, "").split("/").pop();
   return (
     <footer className="tq-footer">
@@ -107,7 +107,7 @@ export function Footer() {
             <ul className="tq-footer__links">
               {t.nav.links.map((l) => (
                 <li key={l.href}>
-                  <a href={l.href}>
+                  <a href={l.href.startsWith("#") ? homeHref(l.href) : l.href}>
                     <span className="tq-mono tq-muted" style={{ marginRight: 10 }}>
                       {l.n}
                     </span>
@@ -119,10 +119,10 @@ export function Footer() {
           </div>
           <div>
             <span className="tq-mono tq-muted">TX Quince</span>
-            <a href="#intake">
+            <a href={homeHref("#intake")}>
               {t.nav.cta} <span className="tq-arrow" aria-hidden>↗</span>
             </a>
-            <a href="#top">{t.footer.top} ↑</a>
+            <a href="#content">{t.footer.top} ↑</a>
           </div>
         </div>
         <div className="tq-footer__base tq-mono">

@@ -19,7 +19,7 @@ export default function InicioEs() {
   return (
     <>
       <HomeJsonLd lang="es" />
-      <TxqSite urlLang="es" journal={latestJournal()} />
+      <TxqSite journal={latestJournal()} />
     </>
   );
 }

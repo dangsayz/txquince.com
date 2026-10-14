@@ -4,6 +4,7 @@ import {
   ADD_ON_PRICE_USD,
   RETAINER,
   CONSULT_HOLD_DAYS,
+  BASE_CREW,
   usd,
 } from "@/lib/commission";
 
@@ -49,7 +50,7 @@ const post: BlogPost = {
       type: "ul",
       items: [
         "Coverage hours — a quince day runs long: getting ready, la misa, portraits, and the reception. Full-day coverage is the difference between a highlight and the whole story.",
-        "One artist vs. a directed crew — a stills director and a motion director (plus a second stills artist on larger commissions) mean the church and the reception entrance are both covered at once, with reverse angles you can't fake with one camera.",
+        `One artist vs. a directed crew — ${BASE_CREW.cinema} directors on Cinema & Stills, ${BASE_CREW.production} plus a day-of coordinator on The Full Production, mixed between photo and film however you like — means the church and the reception entrance are both covered at once, with reverse angles you can't fake with one camera.`,
         "Photo vs. photo + film — film is a separate craft and a separate edit. A commission with both is two storytellers, not one person juggling a camera and a tripod.",
         "Delivery — a private online gallery, the edited film and reels, and on the larger commissions a linen-bound monograph and the raw archive.",
       ],

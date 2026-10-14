@@ -12,6 +12,7 @@ import {
   ADD_ON_PRICE_USD,
   RETAINER,
   CONSULT_HOLD_DAYS,
+  BASE_CREW,
   usd,
 } from "@/lib/commission";
 
@@ -27,6 +28,10 @@ const RETAINER_PCT = `${Math.round(RETAINER.rate * 100)}%`;
 const RETAINER_MIN = usd(RETAINER.floorUsd);
 const BALANCE_DAYS = RETAINER.balanceDueDays;
 const HOLD_DAYS = CONSULT_HOLD_DAYS;
+// Directors included on the celebration day (photo/film mix is the family's choice).
+const CREW_CINEMA = BASE_CREW.cinema;
+const CREW_PRODUCTION = BASE_CREW.production;
+const CREW_ARCHIVE = BASE_CREW.archive;
 
 export type CityPhotoSpot = { name: string; why: string; whyEs: string };
 
@@ -92,7 +97,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer both photo and video for quinceañeras in Grand Prairie?",
-        "a": "Yes — Cinema & Stills, The Full Production and the Multi-Day Editorial Archive all include film alongside photography, shot the same day by one team. Cinema & Stills delivers an 8–10 minute 4K feature and a 60-second teaser; The Full Production extends that to a 12–15 minute feature, a 90-second teaser and four vertical reels. Because I only take one celebration a day, the film never competes with the photos for attention."
+        "a": `Yes — Cinema & Stills, The Full Production and the Multi-Day Editorial Archive all include film alongside photography, shot the same day by one team — ${CREW_CINEMA}, ${CREW_PRODUCTION} or ${CREW_ARCHIVE} directors, in whatever mix of photographers and videographers you choose. Cinema & Stills delivers an 8–10 minute 4K feature and a 60-second teaser; The Full Production extends that to a 12–15 minute feature, a 90-second teaser and four vertical reels. Because I only take one celebration a day, the film never competes with the photos for attention.`
       },
       {
         "q": "What areas near Grand Prairie do you serve?",
@@ -114,7 +119,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video para quinceañeras en Grand Prairie?",
-        "a": "Sí — Cine y fotografía, La producción completa y el Archivo editorial de varios días incluyen cine junto con la fotografía, grabado el mismo día por un solo equipo. Cine y fotografía entrega una película 4K de 8 a 10 minutos y un avance de 60 segundos; La producción completa sube a una película de 12 a 15 minutos, un avance de 90 segundos y cuatro reels verticales. Como solo tomo una celebración al día, el video nunca compite con las fotos por la atención."
+        "a": `Sí — Cine y fotografía, La producción completa y el Archivo editorial de varios días incluyen cine junto con la fotografía, grabado el mismo día por un solo equipo: ${CREW_CINEMA}, ${CREW_PRODUCTION} o ${CREW_ARCHIVE} directores, en la combinación de fotógrafos y videógrafos que tú elijas. Cine y fotografía entrega una película 4K de 8 a 10 minutos y un avance de 60 segundos; La producción completa sube a una película de 12 a 15 minutos, un avance de 90 segundos y cuatro reels verticales. Como solo tomo una celebración al día, el video nunca compite con las fotos por la atención.`
       },
       {
         "q": "¿Qué áreas cerca de Grand Prairie cubres?",
@@ -168,7 +173,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqs": [
       {
         "q": "How much does a quinceañera photographer cost in Irving?",
-        "a": `My commissions run from ${STUDY} (I. Portrait Study) to ${ARCHIVE} (IV. Multi-Day Editorial Archive). The one I recommend for most celebrations is III. The Full Production at ${PRODUCTION} — 11 hours with motion and a second stills shooter, a portrait session at one location (the Mandalay Canal is a natural pick), a 12–15 minute feature film and 700+ retouched frames. II. Cinema & Stills, at ${CINEMA}, covers 8 hours of photo and film. There's no travel fee anywhere in Irving or the rest of DFW; see every inclusion at /#commissions.`
+        "a": `My commissions run from ${STUDY} (I. Portrait Study) to ${ARCHIVE} (IV. Multi-Day Editorial Archive). The one I recommend for most celebrations is III. The Full Production at ${PRODUCTION} — 11 hours with ${CREW_PRODUCTION} directors and a day-of coordinator, a portrait session at one location (the Mandalay Canal is a natural pick), a 12–15 minute feature film and 700+ retouched frames. II. Cinema & Stills, at ${CINEMA}, covers 8 hours of photo and film. There's no travel fee anywhere in Irving or the rest of DFW; see every inclusion at /#commissions.`
       },
       {
         "q": "Where are the best places to take quince pictures in Irving?",
@@ -180,7 +185,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer photo and video for quinceañeras in Irving?",
-        "a": `Yes. II. Cinema & Stills (${CINEMA}), III. The Full Production (${PRODUCTION}) and IV. Multi-Day Editorial Archive (${ARCHIVE}) all include both photography and a 4K feature film, shot the same day by one team. If you'd like a short film screened for your guests that same night, the same-day reception edit is ${SAMEDAY}.`
+        "a": `Yes. II. Cinema & Stills (${CINEMA}), III. The Full Production (${PRODUCTION}) and IV. Multi-Day Editorial Archive (${ARCHIVE}) all include both photography and a 4K feature film, shot the same day by one team of ${CREW_CINEMA} to ${CREW_ARCHIVE} directors, in whatever mix of photographers and videographers you choose. If you'd like a short film screened for your guests that same night, the same-day reception edit is ${SAMEDAY}.`
       },
       {
         "q": "What areas near Irving do you cover?",
@@ -190,7 +195,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqsEs": [
       {
         "q": "¿Cuánto cuesta un fotógrafo de quinceañera en Irving?",
-        "a": `Mis encargos van de ${STUDY} (I. Estudio de retrato) a ${ARCHIVE} (IV. Archivo editorial de varios días). El que recomiendo para la mayoría de las celebraciones es III. La producción completa, en ${PRODUCTION}: 11 horas con cine y un segundo fotógrafo, una sesión de retrato en una locación (el Mandalay Canal es la opción natural), una película de 12 a 15 minutos y más de 700 imágenes retocadas. II. Cine y fotografía, en ${CINEMA}, cubre 8 horas de foto y video. No hay cargo por traslado en Irving ni en el resto de DFW; mira todo lo que incluye cada uno en /es#commissions.`
+        "a": `Mis encargos van de ${STUDY} (I. Estudio de retrato) a ${ARCHIVE} (IV. Archivo editorial de varios días). El que recomiendo para la mayoría de las celebraciones es III. La producción completa, en ${PRODUCTION}: 11 horas con ${CREW_PRODUCTION} directores y una coordinadora del día, una sesión de retrato en una locación (el Mandalay Canal es la opción natural), una película de 12 a 15 minutos y más de 700 imágenes retocadas. II. Cine y fotografía, en ${CINEMA}, cubre 8 horas de foto y video. No hay cargo por traslado en Irving ni en el resto de DFW; mira todo lo que incluye cada uno en /es#commissions.`
       },
       {
         "q": "¿Cuáles son los mejores lugares para tomar fotos de quince en Irving?",
@@ -202,7 +207,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video para quinceañeras en Irving?",
-        "a": `Sí. II. Cine y fotografía (${CINEMA}), III. La producción completa (${PRODUCTION}) y IV. Archivo editorial de varios días (${ARCHIVE}) incluyen fotografía y una película 4K, grabadas el mismo día por un solo equipo. Si quieres un video corto proyectado para tus invitados esa misma noche, la edición el mismo día cuesta ${SAMEDAY}.`
+        "a": `Sí. II. Cine y fotografía (${CINEMA}), III. La producción completa (${PRODUCTION}) y IV. Archivo editorial de varios días (${ARCHIVE}) incluyen fotografía y una película 4K, grabadas el mismo día por un solo equipo de ${CREW_CINEMA} a ${CREW_ARCHIVE} directores, repartidos entre fotógrafos y videógrafos como tú prefieras. Si quieres un video corto proyectado para tus invitados esa misma noche, la edición el mismo día cuesta ${SAMEDAY}.`
       },
       {
         "q": "¿Qué zonas cerca de Irving cubres?",
@@ -263,7 +268,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer photo and video in Garland?",
-        "a": `Yes. II. Cinema & Stills (${CINEMA}) pairs a stills director with a motion director for an 8–10 minute 4K feature, a 60-second teaser and 400+ retouched frames; III. The Full Production (${PRODUCTION}) adds a second stills shooter, a 12–15 minute feature and a 40-page linen heirloom monograph. If you only want portraits, I. Portrait Study (${STUDY}) is photo only.`
+        "a": `Yes. II. Cinema & Stills (${CINEMA}) pairs a stills director with a motion director for an 8–10 minute 4K feature, a 60-second teaser and 400+ retouched frames; III. The Full Production (${PRODUCTION}) brings ${CREW_PRODUCTION} directors and a day-of coordinator, a 12–15 minute feature and a 40-page linen heirloom monograph. If you only want portraits, I. Portrait Study (${STUDY}) is photo only.`
       },
       {
         "q": "What areas around Garland do you cover?",
@@ -285,7 +290,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video en Garland?",
-        "a": `Sí. II. Cine y fotografía (${CINEMA}) junta a un director de foto con uno de cine para una película 4K de 8 a 10 minutos, un avance de 60 segundos y más de 400 imágenes retocadas; III. La producción completa (${PRODUCTION}) suma un segundo fotógrafo, una película de 12 a 15 minutos y una monografía de lino de 40 páginas. Si solo quieres retratos, I. Estudio de retrato (${STUDY}) es solo de foto.`
+        "a": `Sí. II. Cine y fotografía (${CINEMA}) junta a un director de foto con uno de cine para una película 4K de 8 a 10 minutos, un avance de 60 segundos y más de 400 imágenes retocadas; III. La producción completa (${PRODUCTION}) trae ${CREW_PRODUCTION} directores y una coordinadora del día, una película de 12 a 15 minutos y una monografía de lino de 40 páginas. Si solo quieres retratos, I. Estudio de retrato (${STUDY}) es solo de foto.`
       },
       {
         "q": "¿Qué zonas alrededor de Garland cubres?",
@@ -439,7 +444,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer photo and video for Fort Worth quinceañeras?",
-        "a": `Yes. II. Cinema & Stills, III. The Full Production and IV. Multi-Day Editorial Archive pair a stills director and a motion director so you get both, with a teaser and vertical reels alongside the feature film. If you only want portraits, I. Portrait Study (${STUDY}) is a photo-only, 3-hour editorial session before the celebration.`
+        "a": `Yes. II. Cinema & Stills, III. The Full Production and IV. Multi-Day Editorial Archive include ${CREW_CINEMA}, ${CREW_PRODUCTION} or ${CREW_ARCHIVE} directors — you choose how many shoot photo and how many shoot film — so you get both, with a teaser and vertical reels alongside the feature film. If you only want portraits, I. Portrait Study (${STUDY}) is a photo-only, 3-hour editorial session before the celebration.`
       },
       {
         "q": "What areas around Fort Worth do you cover?",
@@ -461,7 +466,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video para quinceañeras en Fort Worth?",
-        "a": `Sí. II. Cine y fotografía, III. La producción completa y IV. Archivo editorial de varios días incluyen un director de foto y uno de cine para que tengas los dos, con un avance y reels verticales junto con la película. Si solo quieres retratos, I. Estudio de retrato (${STUDY}) es una sesión editorial de 3 horas, solo de foto, antes de la celebración.`
+        "a": `Sí. II. Cine y fotografía, III. La producción completa y IV. Archivo editorial de varios días incluyen ${CREW_CINEMA}, ${CREW_PRODUCTION} o ${CREW_ARCHIVE} directores —tú eliges cuántos son fotógrafos y cuántos videógrafos— para que tengas los dos, con un avance y reels verticales junto con la película. Si solo quieres retratos, I. Estudio de retrato (${STUDY}) es una sesión editorial de 3 horas, solo de foto, antes de la celebración.`
       },
       {
         "q": "¿Qué zonas alrededor de Fort Worth cubres?",
@@ -615,7 +620,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer both photo and video for a Mansfield quinceañera?",
-        "a": `Yes. II. Cinema & Stills (${CINEMA}) and III. The Full Production (${PRODUCTION}) pair photography with a 4K feature film, and IV. Multi-Day Editorial Archive (${ARCHIVE}) goes further — a crew of four across two days, a 20-minute documentary and a 2-minute trailer. If you don't need video, I. Portrait Study (${STUDY}) is photo only.`
+        "a": `Yes. II. Cinema & Stills (${CINEMA}) and III. The Full Production (${PRODUCTION}) pair photography with a 4K feature film, and IV. Multi-Day Editorial Archive (${ARCHIVE}) goes further — ${CREW_ARCHIVE} directors and a day-of coordinator across two days, a 20-minute documentary and a 2-minute trailer. If you don't need video, I. Portrait Study (${STUDY}) is photo only.`
       },
       {
         "q": "Which areas near Mansfield do you cover?",
@@ -637,7 +642,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video para una quinceañera en Mansfield?",
-        "a": `Sí. II. Cine y fotografía (${CINEMA}) y III. La producción completa (${PRODUCTION}) combinan fotografía con una película 4K, y IV. Archivo editorial de varios días (${ARCHIVE}) va más allá: un equipo de cuatro durante dos días, un documental de 20 minutos y un tráiler de 2 minutos. Si no necesitas video, I. Estudio de retrato (${STUDY}) es solo de foto.`
+        "a": `Sí. II. Cine y fotografía (${CINEMA}) y III. La producción completa (${PRODUCTION}) combinan fotografía con una película 4K, y IV. Archivo editorial de varios días (${ARCHIVE}) va más allá: ${CREW_ARCHIVE} directores y una coordinadora del día durante dos días, un documental de 20 minutos y un tráiler de 2 minutos. Si no necesitas video, I. Estudio de retrato (${STUDY}) es solo de foto.`
       },
       {
         "q": "¿Qué zonas cerca de Mansfield cubres?",
@@ -732,12 +737,12 @@ export const cityContent: Record<string, CityContent> = {
     "intro": [
       "Frisco has been one of the fastest-growing cities in the country for two decades, and a quinceañera here is often planned like a destination event: a hotel or resort ballroom, a full court, and relatives driving up from across Texas for the weekend. The city straddles the Collin–Denton county line, and the families who celebrate here keep the whole tradition intact — the misa, the court of honor, the vals with Papá, the baile sorpresa — just set against a newer, more polished backdrop than the older parts of the metroplex.",
       "That backdrop is the point. The Star in Frisco gives you glass, steel and open plazas around the Ford Center; Frisco Square has the civic lawns and tree-lined streets around City Hall; and a few blocks east, the Rail District along Main Street keeps the brick, the murals and the railroad history of the original town. For something green, Frisco Commons Park has water features, a pond and big open lawns a short walk from Frisco Square, so we can move from city to garden without losing the afternoon light.",
-      `I photograph one quinceañera a day, in English and Spanish, with no travel fee anywhere in DFW — Frisco included. For a Frisco celebration I recommend III. The Full Production (${PRODUCTION}): eleven hours with motion and a second stills shooter, a portrait session at one location, a 12–15 minute feature film and a 40-page linen heirloom monograph. If your family is planning a welcome dinner or a second day around the quince, IV. Multi-Day Editorial Archive (${ARCHIVE}) is built for exactly that — a crew of four across two days plus twelve hours.`
+      `I photograph one quinceañera a day, in English and Spanish, with no travel fee anywhere in DFW — Frisco included. For a Frisco celebration I recommend III. The Full Production (${PRODUCTION}): eleven hours with ${CREW_PRODUCTION} directors and a day-of coordinator, a portrait session at one location, a 12–15 minute feature film and a 40-page linen heirloom monograph. If your family is planning a welcome dinner or a second day around the quince, IV. Multi-Day Editorial Archive (${ARCHIVE}) is built for exactly that — ${CREW_ARCHIVE} directors and a day-of coordinator across two days plus twelve hours.`
     ],
     "introEs": [
       "Frisco lleva dos décadas entre las ciudades que más crecen en el país, y aquí una quinceañera muchas veces se planea como evento de destino: un salón de hotel o de resort, la corte completa y parientes que llegan de todo Texas para el fin de semana. La ciudad está partida entre los condados de Collin y Denton, y las familias que celebran aquí mantienen la tradición completa —la misa, la corte de honor, el vals con papá, el baile sorpresa—, solo que con un fondo más nuevo y pulido que el de las zonas más antiguas del metroplex.",
       "Ese fondo es justo lo especial. The Star in Frisco te da cristal, acero y plazas abiertas alrededor del Ford Center; Frisco Square tiene los jardines cívicos y las calles arboladas alrededor del City Hall; y unas cuadras al este, el Rail District sobre Main Street conserva el ladrillo, los murales y la historia ferroviaria del pueblo original. Si quieres verde, Frisco Commons Park tiene fuentes, un estanque y prados amplios a unos pasos de Frisco Square, así que pasamos de la ciudad al jardín sin perder la luz de la tarde.",
-      `Fotografío una sola quinceañera al día, en inglés y español, sin cargo por traslado en ningún lugar de DFW, Frisco incluido. Para una celebración en Frisco recomiendo III. La producción completa (${PRODUCTION}): once horas con cine y un segundo fotógrafo, una sesión de retrato en una locación, una película de 12 a 15 minutos y una monografía de lino de 40 páginas. Si tu familia planea una cena de bienvenida o un segundo día alrededor del quince, IV. Archivo editorial de varios días (${ARCHIVE}) está hecho justo para eso: un equipo de cuatro durante dos días más doce horas.`
+      `Fotografío una sola quinceañera al día, en inglés y español, sin cargo por traslado en ningún lugar de DFW, Frisco incluido. Para una celebración en Frisco recomiendo III. La producción completa (${PRODUCTION}): once horas con ${CREW_PRODUCTION} directores y una coordinadora del día, una sesión de retrato en una locación, una película de 12 a 15 minutos y una monografía de lino de 40 páginas. Si tu familia planea una cena de bienvenida o un segundo día alrededor del quince, IV. Archivo editorial de varios días (${ARCHIVE}) está hecho justo para eso: ${CREW_ARCHIVE} directores y una coordinadora del día durante dos días más doce horas.`
     ],
     "photoSpots": [
       {
@@ -781,7 +786,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer photo and video for quinceañeras in Frisco?",
-        "a": `Yes. II. Cinema & Stills (${CINEMA}), III. The Full Production (${PRODUCTION}) and IV. Multi-Day Editorial Archive (${ARCHIVE}) all pair a stills director with a motion director on the same day. In a big Frisco ballroom, the same-day reception edit (${SAMEDAY}) is a favorite way to let guests see the film before the last dance.`
+        "a": `Yes. II. Cinema & Stills (${CINEMA}), III. The Full Production (${PRODUCTION}) and IV. Multi-Day Editorial Archive (${ARCHIVE}) all put photographers and videographers on the same day — ${CREW_CINEMA}, ${CREW_PRODUCTION} or ${CREW_ARCHIVE} directors, in the mix you choose. In a big Frisco ballroom, the same-day reception edit (${SAMEDAY}) is a favorite way to let guests see the film before the last dance.`
       },
       {
         "q": "What areas near Frisco do you serve?",
@@ -803,7 +808,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video para quinceañeras en Frisco?",
-        "a": `Sí. II. Cine y fotografía (${CINEMA}), III. La producción completa (${PRODUCTION}) y IV. Archivo editorial de varios días (${ARCHIVE}) juntan a un director de foto con uno de cine el mismo día. En un salón grande de Frisco, la edición el mismo día (${SAMEDAY}) es una forma preciosa de que los invitados vean el video antes del último baile.`
+        "a": `Sí. II. Cine y fotografía (${CINEMA}), III. La producción completa (${PRODUCTION}) y IV. Archivo editorial de varios días (${ARCHIVE}) juntan fotógrafos y videógrafos el mismo día: ${CREW_CINEMA}, ${CREW_PRODUCTION} o ${CREW_ARCHIVE} directores, en la combinación que tú elijas. En un salón grande de Frisco, la edición el mismo día (${SAMEDAY}) es una forma preciosa de que los invitados vean el video antes del último baile.`
       },
       {
         "q": "¿Qué zonas cerca de Frisco cubres?",
@@ -815,12 +820,12 @@ export const cityContent: Record<string, CityContent> = {
     "intro": [
       "Plano is two cities in one, and a quinceañera here often touches both. East of Central Expressway sits the older Plano — Historic Downtown along 15th Street, the DART station, and the east-side neighborhoods that are home to much of the city's Hispanic community. West of the tollway is Legacy: the corporate campuses, Legacy West and the Shops at Legacy, and hotel ballrooms built for big celebrations. Plano families keep the tradition whole — the misa first, then the portraits, then the vals and the fiesta — and they tend to plan every piece of it carefully.",
       "That split gives portraits real range. Historic Downtown Plano has brick storefronts, murals and Haggard Park, where the old interurban railway station still stands; Arbor Hills Nature Preserve on the west side opens into rolling prairie and woodland trails that glow at golden hour; Legacy West gives you modern architecture and landscaped walkways for an editorial, city-at-night look. And if you want wide, quiet frames, Oak Point Park and Nature Preserve in the northeast adds hundreds of acres of ponds and meadows.",
-      `I photograph one quinceañera a day, fully bilingual, with no travel fee anywhere in DFW. If your day runs from a downtown misa to a Legacy ballroom, III. The Full Production (${PRODUCTION}) is the commission I recommend: 11 hours with motion and a second stills shooter, a portrait session at one location, a 12–15 minute feature film and a 40-page linen monograph. Families who want only an editorial portrait session before the day can start with I. Portrait Study (${STUDY}).`
+      `I photograph one quinceañera a day, fully bilingual, with no travel fee anywhere in DFW. If your day runs from a downtown misa to a Legacy ballroom, III. The Full Production (${PRODUCTION}) is the commission I recommend: 11 hours with ${CREW_PRODUCTION} directors and a day-of coordinator, a portrait session at one location, a 12–15 minute feature film and a 40-page linen monograph. Families who want only an editorial portrait session before the day can start with I. Portrait Study (${STUDY}).`
     ],
     "introEs": [
       "Plano son dos ciudades en una, y una quinceañera aquí muchas veces toca las dos. Al este de la Central Expressway está el Plano más antiguo: el Historic Downtown sobre la calle 15, la estación del DART y los barrios del lado este, donde vive buena parte de la comunidad hispana de la ciudad. Al oeste del tollway está Legacy: los corporativos, Legacy West y las Shops at Legacy, y salones de hotel hechos para celebraciones grandes. Las familias de Plano hacen la tradición completa —primero la misa, luego las fotos, después el vals y la fiesta— y suelen planear cada detalle con cuidado.",
       "Esa división les da mucha variedad a las fotos. El Historic Downtown de Plano tiene fachadas de ladrillo, murales y el Haggard Park, donde sigue en pie la vieja estación del tren interurbano; Arbor Hills Nature Preserve, del lado oeste, se abre en praderas onduladas y senderos entre árboles que brillan a la hora dorada; Legacy West te da arquitectura moderna y andadores con jardines para un look editorial de ciudad de noche. Y si quieres tomas amplias y tranquilas, Oak Point Park and Nature Preserve, al noreste, suma cientos de acres de lagunas y praderas.",
-      `Fotografío una sola quinceañera al día, todo bilingüe, sin cargo por traslado en ningún lugar de DFW. Si tu día va de una misa en el centro a un salón en Legacy, III. La producción completa (${PRODUCTION}) es el encargo que recomiendo: 11 horas con cine y un segundo fotógrafo, una sesión de retrato en una locación, una película de 12 a 15 minutos y una monografía de lino de 40 páginas. Las familias que solo quieren una sesión editorial de retrato antes del día pueden empezar con I. Estudio de retrato (${STUDY}).`
+      `Fotografío una sola quinceañera al día, todo bilingüe, sin cargo por traslado en ningún lugar de DFW. Si tu día va de una misa en el centro a un salón en Legacy, III. La producción completa (${PRODUCTION}) es el encargo que recomiendo: 11 horas con ${CREW_PRODUCTION} directores y una coordinadora del día, una sesión de retrato en una locación, una película de 12 a 15 minutos y una monografía de lino de 40 páginas. Las familias que solo quieren una sesión editorial de retrato antes del día pueden empezar con I. Estudio de retrato (${STUDY}).`
     ],
     "photoSpots": [
       {
@@ -864,7 +869,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer both photo and video for quinceañeras in Plano?",
-        "a": `Yes. II. Cinema & Stills (${CINEMA}) pairs a stills director and a motion director for an 8–10 minute 4K feature; III. The Full Production (${PRODUCTION}) adds a second stills shooter, a 12–15 minute feature and four vertical reels. If you'd rather shoot portraits somewhere beyond DFW, the destination portrait session is ${DESTINATION}.`
+        "a": `Yes. II. Cinema & Stills (${CINEMA}) pairs a stills director and a motion director for an 8–10 minute 4K feature; III. The Full Production (${PRODUCTION}) brings ${CREW_PRODUCTION} directors and a day-of coordinator, a 12–15 minute feature and four vertical reels. If you'd rather shoot portraits somewhere beyond DFW, the destination portrait session is ${DESTINATION}.`
       },
       {
         "q": "What areas near Plano do you cover?",
@@ -886,7 +891,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video para quinceañeras en Plano?",
-        "a": `Sí. II. Cine y fotografía (${CINEMA}) junta a un director de foto y uno de cine para una película 4K de 8 a 10 minutos; III. La producción completa (${PRODUCTION}) suma un segundo fotógrafo, una película de 12 a 15 minutos y cuatro reels verticales. Si prefieres hacer los retratos en algún lugar fuera de DFW, la sesión de retrato en destino cuesta ${DESTINATION}.`
+        "a": `Sí. II. Cine y fotografía (${CINEMA}) junta a un director de foto y uno de cine para una película 4K de 8 a 10 minutos; III. La producción completa (${PRODUCTION}) trae ${CREW_PRODUCTION} directores y una coordinadora del día, una película de 12 a 15 minutos y cuatro reels verticales. Si prefieres hacer los retratos en algún lugar fuera de DFW, la sesión de retrato en destino cuesta ${DESTINATION}.`
       },
       {
         "q": "¿Qué zonas cerca de Plano cubres?",

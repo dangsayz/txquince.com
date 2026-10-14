@@ -1,4 +1,5 @@
 import type { BlogPost } from "@/content/blog";
+import { BASE_CREW } from "@/lib/commission";
 
 const post: BlogPost = {
   slug: "how-to-choose-quinceanera-photographer-dfw",
@@ -74,7 +75,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "This is exactly why every TX Quince photo + film commission pairs a stills director and a motion director as one team for the whole day. If you're weighing whether you even need video, read [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video) before you decide — it's the most common after-the-fact regret.",
+      text: `This is exactly why every TX Quince photo + film commission puts at least one photographer and one videographer — up to ${BASE_CREW.archive} directors, in the mix you choose — on one team for the whole day. If you're weighing whether you even need video, read [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video) before you decide — it's the most common after-the-fact regret.`,
     },
     {
       type: "cta",
@@ -133,7 +134,7 @@ const post: BlogPost = {
     },
     {
       q: "Should I hire one team for photo and video?",
-      a: "For a quinceañera, yes — one team is almost always better than two separate vendors. A coordinated photo-and-film team plans coverage together so they don't block each other, gives you one contract and one point of contact, and delivers a gallery and video that match in style and color. At TX Quince, every photo + film commission pairs a stills director and a motion director as one team for the whole day.",
+      a: `For a quinceañera, yes — one team is almost always better than two separate vendors. A coordinated photo-and-film team plans coverage together so they don't block each other, gives you one contract and one point of contact, and delivers a gallery and video that match in style and color. At TX Quince, every photo + film commission puts at least one photographer and one videographer on one team for the whole day — up to ${BASE_CREW.archive} directors, in whatever mix you choose.`,
     },
     {
       q: "How do I know if a photographer is experienced with quinceañeras?",

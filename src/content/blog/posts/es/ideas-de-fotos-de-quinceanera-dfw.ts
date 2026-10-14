@@ -1,4 +1,5 @@
 import type { BlogPost } from "@/content/blog";
+import { BASE_CREW } from "@/lib/commission";
 
 const post: BlogPost = {
   slug: "ideas-de-fotos-de-quinceanera-dfw",
@@ -183,7 +184,7 @@ const post: BlogPost = {
     },
     {
       q: "¿Necesito un segundo fotógrafo?",
-      a: "No es obligatorio, pero un segundo artista significa dos ángulos a la vez: alguien en su cara durante el vals mientras el otro atrapa al público, o uno en los detalles del arreglo mientras el otro la fotografía a ella. En TX Quince, cada comisión de foto y video reúne a un director de foto con un director de video — y La producción completa y el Archivo editorial de varios días suman un segundo fotógrafo —, y por eso nada importante pasa fuera de cámara.",
+      a: `No es obligatorio, pero un segundo artista significa dos ángulos a la vez: alguien en su cara durante el vals mientras el otro atrapa al público, o uno en los detalles del arreglo mientras el otro la fotografía a ella. En TX Quince, cada comisión de foto y video incluye al menos un fotógrafo y un videógrafo — La producción completa trae ${BASE_CREW.production} directores y el Archivo editorial de varios días ${BASE_CREW.archive}, en la combinación de foto y video que usted elija —, y por eso nada importante pasa fuera de cámara.`,
     },
     {
       q: "¿Cuántas fotos editadas recibo de una quinceañera?",

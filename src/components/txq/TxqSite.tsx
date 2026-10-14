@@ -1,50 +1,22 @@
 "use client";
 
-import { Geist_Mono, Inter } from "next/font/google";
-import { useEffect, useRef, useState } from "react";
-import { MotionConfig } from "motion/react";
+import { useEffect, useRef } from "react";
 import { Archive } from "./Archive";
 import { CinemaRoom } from "./CinemaRoom";
 import { Commissions } from "./Commissions";
-import { Editorial, Faq, Footer, type Journal } from "./Editorial";
-import { Header, MobileDock } from "./Header";
+import { Editorial, Faq, type Journal } from "./Editorial";
 import { Hero } from "./Hero";
 import { Intake } from "./Intake";
-import { AvailabilityProvider, SiteProvider, useSite } from "./state";
-import "./txq.css";
+import { useShell } from "./SiteShell";
 
-// Type system after Linear: Inter (variable — weights 510/590 for display and
-// UI), tight negative tracking, and a precise mono for the index labels.
-const sans = Inter({
-  subsets: ["latin"],
-  variable: "--font-txq-sans",
-  display: "swap",
-});
-const mono = Geist_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-txq-mono",
-  display: "swap",
-});
-
-export function TxqSite({ urlLang = "en", journal }: { urlLang?: "en" | "es"; journal: Journal }) {
-  return (
-    <SiteProvider urlLang={urlLang}>
-      <AvailabilityProvider>
-        <MotionConfig reducedMotion="user">
-          <Shell journal={journal} />
-        </MotionConfig>
-      </AvailabilityProvider>
-    </SiteProvider>
-  );
-}
-
-function Shell({ journal }: { journal: Journal }) {
-  const { lang, t } = useSite();
+/**
+ * The homepage sections (EN at /, ES at /es). The global header, footer, dock,
+ * fonts and language state come from <SiteShell>, which wraps every page.
+ */
+export function TxqSite({ journal }: { journal: Journal }) {
+  const { setCinema, setDockHidden } = useShell();
   const cinemaRef = useRef<HTMLElement>(null);
   const intakeRef = useRef<HTMLElement>(null);
-  const [cinema, setCinema] = useState(false);
-  const [intakeVisible, setIntakeVisible] = useState(false);
 
   // Dim the whole page to the film room while the Motion section holds the
   // middle of the viewport.
@@ -55,41 +27,35 @@ function Shell({ journal }: { journal: Journal }) {
       rootMargin: "-45% 0px -45% 0px",
     });
     io.observe(el);
-    return () => io.disconnect();
-  }, []);
+    return () => {
+      io.disconnect();
+      setCinema(false);
+    };
+  }, [setCinema]);
 
   // The mobile dock steps aside once the intake itself is on screen.
   useEffect(() => {
     const el = intakeRef.current;
     if (!el) return;
-    const io = new IntersectionObserver(([e]) => setIntakeVisible(e.isIntersecting), {
+    const io = new IntersectionObserver(([e]) => setDockHidden(e.isIntersecting), {
       rootMargin: "0px 0px -30% 0px",
     });
     io.observe(el);
-    return () => io.disconnect();
-  }, []);
+    return () => {
+      io.disconnect();
+      setDockHidden(false);
+    };
+  }, [setDockHidden]);
 
   return (
-    <div
-      className={`txq ${sans.variable} ${mono.variable}`}
-      data-theme={cinema ? "cinema" : "light"}
-      lang={lang}
-    >
-      <a href="#content" className="tq-skip">
-        {t.meta.skip}
-      </a>
-      <Header />
-      <main id="content">
-        <Hero />
-        <Archive />
-        <CinemaRoom ref={cinemaRef} />
-        <Commissions />
-        <Editorial journal={journal} />
-        <Faq />
-        <Intake ref={intakeRef} />
-      </main>
-      <Footer />
-      <MobileDock hidden={intakeVisible} />
-    </div>
+    <>
+      <Hero />
+      <Archive />
+      <CinemaRoom ref={cinemaRef} />
+      <Commissions />
+      <Editorial journal={journal} />
+      <Faq />
+      <Intake ref={intakeRef} />
+    </>
   );
 }

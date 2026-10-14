@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { commissionsFromLabel } from "@/content/commissions";
-import { Lora, Montserrat, Public_Sans } from "next/font/google";
+import { Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { site } from "@/content/site";
 import { PublicSiteFrame } from "@/components/PublicSiteFrame";
@@ -9,19 +9,17 @@ import { WebAnalytics } from "@/components/WebAnalytics";
 import { Tracker } from "@/components/Tracker";
 import { Suspense } from "react";
 
-const montserrat = Montserrat({
+// One type family site-wide (after linear.app): Inter for display + UI, Geist
+// Mono for index labels. The shell and every page read these variables.
+const sans = Inter({
   subsets: ["latin"],
-  variable: "--font-montserrat",
+  variable: "--font-txq-sans",
   display: "swap",
 });
-const publicSans = Public_Sans({
+const mono = Geist_Mono({
   subsets: ["latin"],
-  variable: "--font-public-sans",
-  display: "swap",
-});
-const lora = Lora({
-  subsets: ["latin"],
-  variable: "--font-lora",
+  weight: ["400", "500"],
+  variable: "--font-txq-mono",
   display: "swap",
 });
 
@@ -54,7 +52,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f8f5ed",
+  themeColor: "#faf8f5",
   width: "device-width",
   initialScale: 1,
 };
@@ -66,7 +64,7 @@ export default function RootLayout({
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`${montserrat.variable} ${publicSans.variable} ${lora.variable} h-full`}
+      className={`${sans.variable} ${mono.variable} h-full`}
     >
       <body className="flex min-h-dvh flex-col bg-cream">
         <PublicSiteFrame>{children}</PublicSiteFrame>

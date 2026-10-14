@@ -1,4 +1,5 @@
 import type { BlogPost } from "@/content/blog";
+import { BASE_CREW } from "@/lib/commission";
 
 const post: BlogPost = {
   slug: "como-elegir-fotografo-de-quinceanera-dfw",
@@ -75,7 +76,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Por eso cada comisión de foto y video de TX Quince reúne a un director de foto y a un director de video como un solo equipo durante todo el día. Si todavía está decidiendo si necesita video, lea [foto o video para una quinceañera](/es/blog/foto-o-video-quinceanera) antes de elegir: es el arrepentimiento más común después de la fiesta.",
+      text: `Por eso cada comisión de foto y video de TX Quince reúne al menos a un fotógrafo y a un videógrafo —hasta ${BASE_CREW.archive} directores, en la combinación que usted elija— como un solo equipo durante todo el día. Si todavía está decidiendo si necesita video, lea [foto o video para una quinceañera](/es/blog/foto-o-video-quinceanera) antes de elegir: es el arrepentimiento más común después de la fiesta.`,
     },
     {
       type: "cta",
@@ -134,7 +135,7 @@ const post: BlogPost = {
     },
     {
       q: "¿Conviene un solo equipo para foto y video?",
-      a: "Para una quinceañera, sí: un solo equipo casi siempre es mejor que dos proveedores por separado. Un equipo coordinado de foto y video planea la cobertura en conjunto para no estorbarse, le da un solo contrato y un solo punto de contacto, y entrega una galería y un video que combinan en estilo y color. En TX Quince, cada comisión de foto y video reúne a un director de foto y a un director de video como un solo equipo durante todo el día.",
+      a: `Para una quinceañera, sí: un solo equipo casi siempre es mejor que dos proveedores por separado. Un equipo coordinado de foto y video planea la cobertura en conjunto para no estorbarse, le da un solo contrato y un solo punto de contacto, y entrega una galería y un video que combinan en estilo y color. En TX Quince, cada comisión de foto y video reúne al menos a un fotógrafo y a un videógrafo como un solo equipo durante todo el día, hasta ${BASE_CREW.archive} directores en la combinación que usted elija.`,
     },
     {
       q: "¿Cómo sé si un fotógrafo tiene experiencia en quinceañeras?",

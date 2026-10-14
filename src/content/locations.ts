@@ -16,7 +16,7 @@
  * unique local content wrapped around the conversion flow — not a doorway page.
  */
 
-import { TIER_PRICE_USD, RETAINER, CONSULT_HOLD_DAYS, usd } from "@/lib/commission";
+import { TIER_PRICE_USD, RETAINER, CONSULT_HOLD_DAYS, BASE_CREW, usd } from "@/lib/commission";
 
 const RETAINER_PCT = `${Math.round(RETAINER.rate * 100)}%`;
 
@@ -317,7 +317,7 @@ export const locations: Location[] = [
     ],
     lead: "Where DFW families go all-out on the celebration.",
     intro: [
-      "Mansfield families tend to do a quinceañera in full — the complete day, the larger court, the cinematic film and heirloom book to match. It's exactly the celebration The Full Production and the Multi-Day Editorial Archive are built for: a stills director and a motion director, the whole day, a feature-length film and a linen monograph that do a milestone like this justice.",
+      `Mansfield families tend to do a quinceañera in full — the complete day, the larger court, the cinematic film and heirloom book to match. It's exactly the celebration The Full Production and the Multi-Day Editorial Archive are built for: ${BASE_CREW.production} or ${BASE_CREW.archive} directors plus a day-of coordinator, the whole day, a feature-length film and a linen monograph that do a milestone like this justice.`,
       "I book one quinceañera a day, so your celebration gets everything — la misa, portraits around Historic Downtown Mansfield or the Mansfield National area, el vals, and a reception captured start to finish, nothing rushed.",
     ],
     faqs: [
@@ -327,12 +327,12 @@ export const locations: Location[] = [
       },
       {
         q: "Which commission do you recommend for a Mansfield quinceañera?",
-        a: `For most celebrations, III. The Full Production (${usd(TIER_PRICE_USD.production)}) — 11 hours with motion and a second stills shooter, a portrait session at one location, a 12–15 minute feature film, 700+ retouched frames and a 40-page linen heirloom monograph. Families planning more than one day of celebrating can step up to IV. Multi-Day Editorial Archive (${usd(TIER_PRICE_USD.archive)}). Compare all four at /#commissions.`,
+        a: `For most celebrations, III. The Full Production (${usd(TIER_PRICE_USD.production)}) — 11 hours with ${BASE_CREW.production} directors and a day-of coordinator, a portrait session at one location, a 12–15 minute feature film, 700+ retouched frames and a 40-page linen heirloom monograph. Families planning more than one day of celebrating can step up to IV. Multi-Day Editorial Archive (${usd(TIER_PRICE_USD.archive)}). Compare all four at /#commissions.`,
       },
     ],
     leadEs: "Donde las familias de DFW se lucen con la celebración.",
     introEs: [
-      "Las familias de Mansfield suelen hacer la quinceañera en grande: el día completo, la corte más grande, la película cinematográfica y el libro a la altura. Es justo la celebración para la que están hechos La producción completa y el Archivo editorial de varios días: un director de foto y uno de cine, todo el día, una película de larga duración y una monografía de lino que le hacen justicia a un momento así.",
+      `Las familias de Mansfield suelen hacer la quinceañera en grande: el día completo, la corte más grande, la película cinematográfica y el libro a la altura. Es justo la celebración para la que están hechos La producción completa y el Archivo editorial de varios días: ${BASE_CREW.production} o ${BASE_CREW.archive} directores más una coordinadora del día, todo el día, una película de larga duración y una monografía de lino que le hacen justicia a un momento así.`,
       "Reservo una quinceañera al día, así que tu celebración lo tiene todo: la misa, fotos por el Historic Downtown Mansfield o la zona de Mansfield National, el vals y una recepción capturada de principio a fin, sin prisas.",
     ],
     faqsEs: [
@@ -342,7 +342,7 @@ export const locations: Location[] = [
       },
       {
         q: "¿Qué encargo recomiendas para una quinceañera en Mansfield?",
-        a: `Para la mayoría de las celebraciones, III. La producción completa (${usd(TIER_PRICE_USD.production)}): 11 horas con cine y un segundo fotógrafo, una sesión de retrato en una locación, una película de 12 a 15 minutos, más de 700 imágenes retocadas y una monografía de lino de 40 páginas. Si van a celebrar más de un día, pueden subir a IV. Archivo editorial de varios días (${usd(TIER_PRICE_USD.archive)}). Compara los cuatro en /es#commissions.`,
+        a: `Para la mayoría de las celebraciones, III. La producción completa (${usd(TIER_PRICE_USD.production)}): 11 horas con ${BASE_CREW.production} directores y una coordinadora del día, una sesión de retrato en una locación, una película de 12 a 15 minutos, más de 700 imágenes retocadas y una monografía de lino de 40 páginas. Si van a celebrar más de un día, pueden subir a IV. Archivo editorial de varios días (${usd(TIER_PRICE_USD.archive)}). Compara los cuatro en /es#commissions.`,
       },
     ],
   },

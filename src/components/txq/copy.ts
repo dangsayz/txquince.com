@@ -4,7 +4,7 @@
  * `es` is typed against `en`, so a missing translation fails the build.
  */
 import type { Category } from "./data";
-import { CONSULT_HOLD_DAYS, EXTRA_DIRECTOR_USD, MAX_CREW, RETAINER, TIER_PRICE_USD } from "@/lib/commission";
+import { BASE_CREW, CONSULT_HOLD_DAYS, RETAINER, TIER_PRICE_USD } from "@/lib/commission";
 
 // FAQ answers quote the live price book so copy can never drift from checkout.
 const $ = (n: number) => `$${n.toLocaleString("en-US")}`;
@@ -108,20 +108,18 @@ const en = {
     added: "Added",
   },
   crew: {
-    title: "Expand the crew",
-    dek: `Add photographers or videographers, in any mix, up to a crew of ${MAX_CREW} on the day. ${$(EXTRA_DIRECTOR_USD)} each.`,
+    title: "Choose your crew",
+    dek: (n: number) =>
+      `${n} directors are included. Photographers and videographers are interchangeable, so set the mix that suits the day, at no extra cost.`,
     photo: "Photographers",
     motion: "Videographers",
-    add: (role: string) => `Add one ${role}`,
-    remove: (role: string) => `Remove one ${role}`,
-    roleOne: { photo: "photographer", motion: "videographer" },
-    total: (n: number) => `Crew on the day: ${n} of ${MAX_CREW}`,
-    included: (n: number) => `${n} included`,
-    full: "Crew is at its maximum for one day.",
-    studyNote: "The Portrait Study is a single-director session. Choose an event commission to expand the crew.",
-    line: (n: number, role: "photo" | "motion") =>
-      `+${n} ${role === "photo" ? (n > 1 ? "photographers" : "photographer") : n > 1 ? "videographers" : "videographer"}`,
-    eventOnly: "Event commissions only",
+    toPhoto: "Swap a videographer for a photographer",
+    toMotion: "Swap a photographer for a videographer",
+    total: (n: number) => `Crew on the day: ${n} included`,
+    mix: (p: number, m: number) =>
+      `${p} ${p === 1 ? "photographer" : "photographers"} · ${m} ${m === 1 ? "videographer" : "videographers"}`,
+    studyNote: "The Portrait Study is a single-photographer session. Choose an event commission for a full crew.",
+    coordinator: "Day-of coordinator included",
   },
   editorial: {
     index: "04 / Editorial",
@@ -160,8 +158,8 @@ const en = {
         a: "Yes, from Commission II up. Two directors cover the day, one for stills and one for motion, so the gallery and the film are made side by side. The Portrait Study is photography only.",
       },
       {
-        q: "Can we add more photographers or videographers?",
-        a: `Yes. On any event commission you can add photographers or videographers, in any mix, up to a crew of ${MAX_CREW} on the day, at ${$(EXTRA_DIRECTOR_USD)} each. A day-of coordinator can be added too, to run the timeline and cue the court so the family can be present.`,
+        q: "How many photographers and videographers do we get?",
+        a: `It's built into every commission: Cinema & Stills includes ${BASE_CREW.cinema} directors, The Full Production ${BASE_CREW.production}, and the Multi-Day Archive ${BASE_CREW.archive}. Photographers and videographers are interchangeable, so you choose the mix. The Full Production and the Archive also include a day-of coordinator who runs the timeline and cues the court, so the family can be present.`,
       },
       {
         q: "How many hours of coverage does a quinceañera need?",
@@ -383,20 +381,18 @@ const es: Copy = {
     added: "Añadido",
   },
   crew: {
-    title: "Amplía el equipo",
-    dek: `Añade fotógrafos o videógrafos, en la combinación que quieras, hasta un equipo de ${MAX_CREW} en el día. ${$(EXTRA_DIRECTOR_USD)} cada uno.`,
+    title: "Elige tu equipo",
+    dek: (n: number) =>
+      `Incluye ${n} directores. Fotógrafos y videógrafos son intercambiables: arma la combinación que mejor le quede al día, sin costo extra.`,
     photo: "Fotógrafos",
     motion: "Videógrafos",
-    add: (role: string) => `Añadir un ${role}`,
-    remove: (role: string) => `Quitar un ${role}`,
-    roleOne: { photo: "fotógrafo", motion: "videógrafo" },
-    total: (n: number) => `Equipo en el día: ${n} de ${MAX_CREW}`,
-    included: (n: number) => `${n} incluidos`,
-    full: "El equipo está al máximo para un día.",
-    studyNote: "El Estudio de retrato es una sesión con un solo director. Elige un encargo de evento para ampliar el equipo.",
-    line: (n: number, role: "photo" | "motion") =>
-      `+${n} ${role === "photo" ? (n > 1 ? "fotógrafos" : "fotógrafo") : n > 1 ? "videógrafos" : "videógrafo"}`,
-    eventOnly: "Solo encargos de evento",
+    toPhoto: "Cambiar un videógrafo por un fotógrafo",
+    toMotion: "Cambiar un fotógrafo por un videógrafo",
+    total: (n: number) => `Equipo en el día: ${n} incluidos`,
+    mix: (p: number, m: number) =>
+      `${p} ${p === 1 ? "fotógrafo" : "fotógrafos"} · ${m} ${m === 1 ? "videógrafo" : "videógrafos"}`,
+    studyNote: "El Estudio de retrato es una sesión con un solo fotógrafo. Elige un encargo de evento para un equipo completo.",
+    coordinator: "Coordinadora del día incluida",
   },
   editorial: {
     index: "04 / Editorial",
@@ -435,8 +431,8 @@ const es: Copy = {
         a: "Sí, a partir del Encargo II. Dos directores cubren el día, uno de foto y otro de cine, así que la galería y la película se hacen a la par. El Estudio de retrato es solo fotografía.",
       },
       {
-        q: "¿Podemos añadir más fotógrafos o videógrafos?",
-        a: `Sí. En cualquier encargo de evento puedes añadir fotógrafos o videógrafos, en la combinación que quieras, hasta un equipo de ${MAX_CREW} en el día, a ${$(EXTRA_DIRECTOR_USD)} cada uno. También puedes añadir una coordinadora del día, que lleva el itinerario y coordina a la corte para que la familia disfrute.`,
+        q: "¿Cuántos fotógrafos y videógrafos incluye?",
+        a: `Viene incluido en cada encargo: Cine y fotografía incluye ${BASE_CREW.cinema} directores, La producción completa ${BASE_CREW.production} y el Archivo de varios días ${BASE_CREW.archive}. Fotógrafos y videógrafos son intercambiables, así que tú eliges la combinación. La producción completa y el Archivo también incluyen una coordinadora del día que lleva el itinerario y coordina a la corte, para que la familia disfrute.`,
       },
       {
         q: "¿Cuántas horas de cobertura necesita una quinceañera?",

@@ -1,5 +1,5 @@
 import type { BlogPost } from "@/content/blog";
-import { TIER_PRICE_USD, usd } from "@/lib/commission";
+import { TIER_PRICE_USD, BASE_CREW, usd } from "@/lib/commission";
 
 const study = usd(TIER_PRICE_USD.study);
 const cinema = usd(TIER_PRICE_USD.cinema);
@@ -82,7 +82,7 @@ const post: BlogPost = {
     {
       type: "cta",
       heading: "Vea exactamente cuáles comisiones incluyen video",
-      body: "El Estudio de retrato es solo foto. Cine y fotografía, La producción completa y el Archivo editorial de varios días combinan un director de foto con un director de video. Compárelas lado a lado.",
+      body: `El Estudio de retrato es solo foto. Cine y fotografía, La producción completa y el Archivo editorial de varios días combinan fotógrafos y videógrafos: ${BASE_CREW.cinema}, ${BASE_CREW.production} o ${BASE_CREW.archive} directores, en la combinación que usted elija. Compárelas lado a lado.`,
       href: "/es#commissions",
       label: "Comparar comisiones",
     },
@@ -107,7 +107,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Anclado a nuestras comisiones: el Estudio de retrato cuesta ${study} — solo foto, una sesión editorial de retrato de tres horas antes de la celebración. Cine y fotografía cuesta ${cinema} por foto y video — ocho horas con un director de foto y un director de video, una película 4K de 8 a 10 minutos, un teaser y reels. La producción completa, por ${production}, es la que recomendamos para la mayoría de las celebraciones — once horas, un segundo fotógrafo, una sesión de retrato, una película de 12 a 15 minutos y un libro encuadernado en lino. El Archivo editorial de varios días, por ${archive}, cubre dos días con un equipo de cuatro. Para ver qué incluye cada comisión y [cuáles incluyen ambos](/es#commissions), revise las comisiones; y para una mirada más amplia al costo, lea [cuánto cuesta un fotógrafo de quinceañera en DFW](/es/blog/cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth).`,
+      text: `Anclado a nuestras comisiones: el Estudio de retrato cuesta ${study} — solo foto, una sesión editorial de retrato de tres horas antes de la celebración. Cine y fotografía cuesta ${cinema} por foto y video — ocho horas con un director de foto y un director de video, una película 4K de 8 a 10 minutos, un teaser y reels. La producción completa, por ${production}, es la que recomendamos para la mayoría de las celebraciones — once horas, ${BASE_CREW.production} directores y una coordinadora del día, una sesión de retrato, una película de 12 a 15 minutos y un libro encuadernado en lino. El Archivo editorial de varios días, por ${archive}, cubre dos días con ${BASE_CREW.archive} directores y una coordinadora del día. Para ver qué incluye cada comisión y [cuáles incluyen ambos](/es#commissions), revise las comisiones; y para una mirada más amplia al costo, lea [cuánto cuesta un fotógrafo de quinceañera en DFW](/es/blog/cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth).`,
     },
     { type: "h2", text: "Si el presupuesto solo alcanza para uno" },
     {
@@ -146,7 +146,7 @@ const post: BlogPost = {
     },
     {
       q: "¿Cuáles comisiones de TX Quince incluyen foto y video?",
-      a: `El Estudio de retrato (${study}) es solo foto. Cine y fotografía (${cinema}), La producción completa (${production}) y el Archivo editorial de varios días (${archive}) incluyen foto y video con un director de foto y un director de video. La producción completa es la que recomendamos para la mayoría de las celebraciones. Puede comparar todo lo que incluye cada una en las comisiones de nuestra página principal.`,
+      a: `El Estudio de retrato (${study}) es solo foto. Cine y fotografía (${cinema}), La producción completa (${production}) y el Archivo editorial de varios días (${archive}) incluyen foto y video, con ${BASE_CREW.cinema}, ${BASE_CREW.production} o ${BASE_CREW.archive} directores en la combinación de fotógrafos y videógrafos que usted elija. La producción completa es la que recomendamos para la mayoría de las celebraciones. Puede comparar todo lo que incluye cada una en las comisiones de nuestra página principal.`,
     },
     {
       q: "¿Un mismo equipo puede hacer la foto y el video?",

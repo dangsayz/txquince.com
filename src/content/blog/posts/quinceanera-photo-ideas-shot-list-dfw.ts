@@ -1,4 +1,5 @@
 import type { BlogPost } from "@/content/blog";
+import { BASE_CREW } from "@/lib/commission";
 
 const post: BlogPost = {
   slug: "quinceanera-photo-ideas-shot-list-dfw",
@@ -202,7 +203,7 @@ const post: BlogPost = {
     },
     {
       q: "Do you need a second photographer for a quinceañera?",
-      a: "It's not required, but a second artist means two angles at once — someone on her face during the vals while the other catches the crowd, or one on getting-ready details while the other shoots her. At TX Quince every photo + film commission pairs a stills director with a motion director — and The Full Production and the Multi-Day Editorial Archive add a second stills artist — which is why nothing important happens off-camera.",
+      a: `It's not required, but a second artist means two angles at once — someone on her face during the vals while the other catches the crowd, or one on getting-ready details while the other shoots her. At TX Quince every photo + film commission includes at least one photographer and one videographer — The Full Production brings ${BASE_CREW.production} directors and the Multi-Day Editorial Archive ${BASE_CREW.archive}, in whatever photo/film mix you choose — which is why nothing important happens off-camera.`,
     },
     {
       q: "How many edited photos do you get from a quinceañera?",

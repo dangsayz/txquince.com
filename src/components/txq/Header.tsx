@@ -46,7 +46,7 @@ export function StatusLabel() {
 }
 
 export function Header() {
-  const { t } = useSite();
+  const { t, homeHref } = useSite();
   const [open, setOpen] = useState(false);
   const menuBtn = useRef<HTMLButtonElement>(null);
   const closeBtn = useRef<HTMLButtonElement>(null);
@@ -70,7 +70,7 @@ export function Header() {
     <>
       <header className="tq-header">
         <div className="tq-header__inner">
-          <a href="#top" className="tq-brand" aria-label="TX Quince">
+          <a href={homeHref("#top")} className="tq-brand" aria-label="TX Quince">
             <span className="tq-brand__mark">TX QUINCE</span>
             <span className="tq-brand__sub tq-mono">{t.meta.est}</span>
           </a>
@@ -79,7 +79,7 @@ export function Header() {
             <ul>
               {t.nav.links.map((l) => (
                 <li key={l.href}>
-                  <a href={l.href}>
+                  <a href={l.href.startsWith("#") ? homeHref(l.href) : l.href}>
                     <span className="tq-mono">{l.n}</span>
                     <span>{l.label}</span>
                   </a>
@@ -90,7 +90,7 @@ export function Header() {
 
           <div className="tq-header__right">
             <LangSwitch id="header" />
-            <a href="#intake" className="tq-btn tq-header__cta">
+            <a href={homeHref("#intake")} className="tq-btn tq-header__cta">
               {t.nav.cta} <span className="tq-arrow" aria-hidden>↗</span>
             </a>
             <button
@@ -141,7 +141,7 @@ export function Header() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.15 + i * 0.06, duration: 0.6, ease: EASE }}
                   >
-                    <a href={l.href} onClick={() => setOpen(false)}>
+                    <a href={l.href.startsWith("#") ? homeHref(l.href) : l.href} onClick={() => setOpen(false)}>
                       <span className="tq-mono tq-muted">{l.n}</span>
                       <span className="tq-display">{l.label}</span>
                     </a>
@@ -154,7 +154,7 @@ export function Header() {
                 <StatusLabel />
               </div>
               <LangSwitch id="menu" />
-              <a href="#intake" className="tq-btn tq-btn--lg tq-btn--block" onClick={() => setOpen(false)}>
+              <a href={homeHref("#intake")} className="tq-btn tq-btn--lg tq-btn--block" onClick={() => setOpen(false)}>
                 {t.nav.cta} <span className="tq-arrow" aria-hidden>↗</span>
               </a>
             </div>
@@ -166,13 +166,13 @@ export function Header() {
 }
 
 export function MobileDock({ hidden }: { hidden: boolean }) {
-  const { t } = useSite();
+  const { t, homeHref } = useSite();
   return (
     <div className="tq-dock" data-hidden={hidden} aria-hidden={hidden || undefined}>
       <span className="tq-dock__status tq-mono">
         <StatusDot />
       </span>
-      <a href="#intake" className="tq-btn tq-btn--lg" tabIndex={hidden ? -1 : undefined}>
+      <a href={homeHref("#intake")} className="tq-btn tq-btn--lg" tabIndex={hidden ? -1 : undefined}>
         {t.nav.cta} <span className="tq-arrow" aria-hidden>↗</span>
       </a>
     </div>

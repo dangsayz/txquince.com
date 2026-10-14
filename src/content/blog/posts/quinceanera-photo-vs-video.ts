@@ -1,5 +1,5 @@
 import type { BlogPost } from "@/content/blog";
-import { TIER_PRICE_USD, usd } from "@/lib/commission";
+import { TIER_PRICE_USD, BASE_CREW, usd } from "@/lib/commission";
 
 const study = usd(TIER_PRICE_USD.study);
 const cinema = usd(TIER_PRICE_USD.cinema);
@@ -80,7 +80,7 @@ const post: BlogPost = {
     {
       type: "cta",
       heading: "See exactly which commissions include film",
-      body: "The Portrait Study is photo only. Cinema & Stills, The Full Production, and the Multi-Day Editorial Archive pair a stills director with a motion director. Compare them side by side.",
+      body: `The Portrait Study is photo only. Cinema & Stills, The Full Production, and the Multi-Day Editorial Archive pair photographers with videographers — ${BASE_CREW.cinema}, ${BASE_CREW.production} or ${BASE_CREW.archive} directors, in the mix you choose. Compare them side by side.`,
       href: "/#commissions",
       label: "Compare commissions",
     },
@@ -105,7 +105,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Anchored to our commissions: the Portrait Study is ${study} — photo only, a three-hour editorial portrait session before the celebration. Cinema & Stills is ${cinema} for photo + film — eight hours with a stills director and a motion director, an 8–10 minute 4K feature, a teaser, and reels. The Full Production, at ${production}, is the one we recommend for most celebrations — eleven hours, a second stills artist, a portrait session, a 12–15 minute feature, and a linen-bound monograph. The Multi-Day Editorial Archive, at ${archive}, covers two days with a crew of four. For the full breakdown of every inclusion, see [which commissions include film](/#commissions), and for a wider look at pricing read our [quinceañera photographer cost guide for DFW](/blog/quinceanera-photographer-cost-dallas-fort-worth).`,
+      text: `Anchored to our commissions: the Portrait Study is ${study} — photo only, a three-hour editorial portrait session before the celebration. Cinema & Stills is ${cinema} for photo + film — eight hours with a stills director and a motion director, an 8–10 minute 4K feature, a teaser, and reels. The Full Production, at ${production}, is the one we recommend for most celebrations — eleven hours, ${BASE_CREW.production} directors and a day-of coordinator, a portrait session, a 12–15 minute feature, and a linen-bound monograph. The Multi-Day Editorial Archive, at ${archive}, covers two days with ${BASE_CREW.archive} directors and a day-of coordinator. For the full breakdown of every inclusion, see [which commissions include film](/#commissions), and for a wider look at pricing read our [quinceañera photographer cost guide for DFW](/blog/quinceanera-photographer-cost-dallas-fort-worth).`,
     },
     { type: "h2", text: "If your budget only stretches one way" },
     {
@@ -144,7 +144,7 @@ const post: BlogPost = {
     },
     {
       q: "Which TX Quince commissions include both photo and film?",
-      a: `The Portrait Study (${study}) is photo only. Cinema & Stills (${cinema}), The Full Production (${production}), and the Multi-Day Editorial Archive (${archive}) all include photo + film with a stills director and a motion director. The Full Production is the one we recommend for most celebrations. You can compare every inclusion in the commissions on our homepage.`,
+      a: `The Portrait Study (${study}) is photo only. Cinema & Stills (${cinema}), The Full Production (${production}), and the Multi-Day Editorial Archive (${archive}) all include photo + film, with ${BASE_CREW.cinema}, ${BASE_CREW.production} or ${BASE_CREW.archive} directors in whatever mix of photographers and videographers you choose. The Full Production is the one we recommend for most celebrations. You can compare every inclusion in the commissions on our homepage.`,
     },
     {
       q: "Can one team shoot both the photos and the video?",

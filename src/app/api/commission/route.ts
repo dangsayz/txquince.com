@@ -23,8 +23,8 @@ import {
   ADD_ON_NAME_EN,
   commissionSchema,
   describeCommission,
-  addOnAllowed,
-  clampCrew,
+  COORDINATOR_INCLUDED,
+  normalizeCrew,
   quoteCommission,
 } from "@/lib/commission";
 import { HONEYPOT_FIELD, TURNSTILE_FIELD, formatEventDate, type BookingRecord } from "@/lib/booking";
@@ -116,9 +116,9 @@ export async function POST(req: NextRequest) {
     return fail(503, "payments_unavailable", "Online retainers aren't live yet. Choose a consultation first and we'll hold your date.");
   }
 
-  const q = quoteCommission(r.tier, r.add_ons, r.extra_crew);
-  const crew = clampCrew(r.tier, r.extra_crew);
-  const addOns = r.add_ons.filter((a) => addOnAllowed(r.tier, a));
+  const q = quoteCommission(r.tier, r.add_ons);
+  const crew = normalizeCrew(r.tier, r.crew_mix);
+  const addOns = r.add_ons;
   const retainerCents = q.retainerUsd * 100;
   const service = r.scope === "motion" ? "video" : r.scope === "stills" ? "photo" : TIER_SERVICE[r.tier];
   const summary = describeCommission(r, q);
@@ -126,8 +126,9 @@ export async function POST(req: NextRequest) {
     source: "commission",
     tier: r.tier,
     add_ons: addOns,
-    extra_crew: crew,
+    crew_mix: crew,
     crew_size: q.crewSize,
+    coordinator_included: COORDINATOR_INCLUDED[r.tier],
     total_usd: q.totalUsd,
     retainer_usd: q.retainerUsd,
     city: r.city,
@@ -220,8 +221,8 @@ export async function POST(req: NextRequest) {
     const siteUrl = getSiteUrl();
     const prettyDate = formatEventDate(hold.event_date);
     const extras = [
-      ...(crew.photo ? [`${crew.photo} added photographer${crew.photo > 1 ? "s" : ""}`] : []),
-      ...(crew.motion ? [`${crew.motion} added videographer${crew.motion > 1 ? "s" : ""}`] : []),
+      `crew of ${q.crewSize} (${crew.photo} photo, ${crew.motion} film)`,
+      ...(COORDINATOR_INCLUDED[r.tier] ? ["day-of coordinator"] : []),
       ...addOns.map((a) => ADD_ON_NAME_EN[a]),
     ].join(", ");
     const session = await createStripeCheckoutSession({

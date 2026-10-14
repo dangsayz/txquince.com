@@ -12,7 +12,7 @@ import {
 } from "react";
 import { COPY, type Copy } from "./copy";
 import type { AddOnId, Lang, TierId } from "./data";
-import { NO_EXTRA_CREW, addOnAllowed, clampCrew, type Crew } from "@/lib/commission";
+import { normalizeCrew, type Crew } from "@/lib/commission";
 
 /* ------------------------------------------------------------------ */
 /* Language + commission selection (shared by Commissions and Intake)  */
@@ -27,9 +27,13 @@ type SiteState = {
   addOns: AddOnId[];
   toggleAddOn: (a: AddOnId) => void;
   setAddOns: (a: AddOnId[]) => void;
-  /** Added directors beyond the tier's included crew. */
+  /** Photographer / videographer mix of the tier's included crew. */
   crew: Crew;
   setCrew: (c: Crew) => void;
+  /** True on the homepages (/ and /es), where every section lives on one page. */
+  isHome: boolean;
+  /** Link to a homepage section from anywhere: "#intake" on home, "/#intake" or "/es#intake" elsewhere. */
+  homeHref: (hash: string) => string;
 };
 
 const SiteCtx = createContext<SiteState | null>(null);
@@ -62,18 +66,41 @@ function subscribeLang(cb: () => void) {
   };
 }
 
-export function SiteProvider({ children, urlLang = "en" }: { children: ReactNode; urlLang?: Lang }) {
-  const lang = useSyncExternalStore(
+/** The other language's version of this page, from the hreflang links Next renders in <head>. */
+function alternateHref(l: Lang): string | null {
+  const tag = l === "es" ? "es-MX" : "en-US";
+  const link = document.querySelector<HTMLLinkElement>(`link[rel="alternate"][hreflang="${tag}"]`);
+  if (!link?.href) return null;
+  try {
+    const u = new URL(link.href);
+    return `${u.pathname}${u.search}`;
+  } catch {
+    return null;
+  }
+}
+
+export function SiteProvider({
+  children,
+  urlLang = "en",
+  isHome = false,
+}: {
+  children: ReactNode;
+  urlLang?: Lang;
+  isHome?: boolean;
+}) {
+  // Homepages switch language in place and remember it; every other page's
+  // language is its URL (content is rendered per language on the server).
+  const stored = useSyncExternalStore(
     subscribeLang,
     () => readLang(urlLang),
     () => urlLang,
   );
+  const lang = isHome ? stored : urlLang;
   const [tier, setTier] = useState<TierId>("cinema");
   const [addOns, setAddOnsRaw] = useState<AddOnId[]>([]);
-  const [crewRaw, setCrewRaw] = useState<Crew>(NO_EXTRA_CREW);
-  // Crew and event-only enhancements always fit the chosen tier.
-  const crew = useMemo(() => clampCrew(tier, crewRaw), [tier, crewRaw]);
-  const allowedAddOns = useMemo(() => addOns.filter((a) => addOnAllowed(tier, a)), [tier, addOns]);
+  const [crewRaw, setCrewRaw] = useState<Crew | null>(null);
+  // The mix always fits the chosen tier's included crew (default mix until chosen).
+  const crew = useMemo(() => normalizeCrew(tier, crewRaw), [tier, crewRaw]);
   const setAddOns = useCallback((a: AddOnId[]) => setAddOnsRaw(a), []);
   const setCrew = useCallback((c: Crew) => setCrewRaw(c), []);
 
@@ -85,8 +112,18 @@ export function SiteProvider({ children, urlLang = "en" }: { children: ReactNode
     }
     // Without storage, readLang falls back; keep an in-memory override.
     memoryLang = l;
+    if (!isHome && l !== urlLang) {
+      // Jump to this page's translation, or that language's homepage.
+      window.location.assign(alternateHref(l) ?? (l === "es" ? "/es" : "/"));
+      return;
+    }
     window.dispatchEvent(new Event(LANG_EVENT));
-  }, []);
+  }, [isHome, urlLang]);
+
+  const homeHref = useCallback(
+    (hash: string) => (isHome ? hash : `${lang === "es" ? "/es" : "/"}${hash}`),
+    [isHome, lang],
+  );
 
   const toggleAddOn = useCallback((a: AddOnId) => {
     setAddOnsRaw((cur) => (cur.includes(a) ? cur.filter((x) => x !== a) : [...cur, a]));
@@ -99,13 +136,15 @@ export function SiteProvider({ children, urlLang = "en" }: { children: ReactNode
       t: COPY[lang],
       tier,
       setTier,
-      addOns: allowedAddOns,
+      addOns,
       toggleAddOn,
       setAddOns,
       crew,
       setCrew,
+      isHome,
+      homeHref,
     }),
-    [lang, setLang, tier, allowedAddOns, toggleAddOn, setAddOns, crew, setCrew],
+    [lang, setLang, tier, addOns, toggleAddOn, setAddOns, crew, setCrew, isHome, homeHref],
   );
 
   return <SiteCtx.Provider value={value}>{children}</SiteCtx.Provider>;

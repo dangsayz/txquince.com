@@ -546,12 +546,16 @@ a:hover > .tq-arrow {
   .tq-dock { display: none; }
 }
 
+/* Every page's content starts below the fixed global header. */
+.tq-main {
+  padding-top: var(--header-h);
+}
+
 /* ---------- 6. Hero ---------- */
 .tq-hero {
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto;
-  min-height: 100dvh;
-  padding-top: var(--header-h);
+  min-height: calc(100dvh - var(--header-h));
 }
 .tq-stage {
   position: relative;

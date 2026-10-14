@@ -1,5 +1,5 @@
 import type { BlogPost } from "@/content/blog";
-import { RETAINER, CONSULT_HOLD_DAYS, usd } from "@/lib/commission";
+import { RETAINER, CONSULT_HOLD_DAYS, BASE_CREW, usd } from "@/lib/commission";
 
 const retainerPct = `${Math.round(RETAINER.rate * 100)}%`;
 
@@ -59,7 +59,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "What a good answer sounds like: whether a second shooter is included, available as an add-on, or not offered — and on which packages. With us, The Full Production and the Multi-Day Editorial Archive include a second stills artist alongside the motion director, and you can see the reverse angles and dual-coverage moments it makes possible across the [portfolio](/portfolio). If a photographer can't show you two-camera coverage, assume they work solo.",
+      text: `What a good answer sounds like: whether a second shooter is included, available as an add-on, or not offered — and on which packages. With us, The Full Production and the Multi-Day Editorial Archive include ${BASE_CREW.production} and ${BASE_CREW.archive} directors, in whatever mix of photographers and videographers you choose, and you can see the reverse angles and dual-coverage moments they make possible across the [portfolio](/portfolio). If a photographer can't show you two-camera coverage, assume they work solo.`,
     },
     { type: "h2", text: "5. Do I get full usage and print rights to the images?" },
     {
@@ -111,7 +111,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "What a good answer sounds like: a direct yes or no. We offer photo + film as one team on every commission from Cinema & Stills up, including a feature film, a teaser, and vertical reels — two storytellers working the same day, not one person juggling a camera and a tripod. If you're weighing whether film is worth it at all, [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video) walks through the tradeoff honestly.",
+      text: `What a good answer sounds like: a direct yes or no. We offer photo + film as one team on every commission from Cinema & Stills up, including a feature film, a teaser, and vertical reels — ${BASE_CREW.cinema} to ${BASE_CREW.archive} directors working the same day, in whatever photo/film mix you choose, not one person juggling a camera and a tripod. If you're weighing whether film is worth it at all, [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video) walks through the tradeoff honestly.`,
     },
     { type: "h2", text: "Putting it together" },
     {

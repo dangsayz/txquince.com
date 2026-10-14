@@ -7,8 +7,8 @@ import { Turnstile } from "@marsidev/react-turnstile";
 import { getFirstTouch } from "@/components/Tracker";
 import {
   CONSULT_HOLD_DAYS,
-  CREW_ROLES,
-  addOnAllowed,
+  BASE_CREW,
+  COORDINATOR_INCLUDED,
   quoteCommission,
   type AddOnId,
   type Crew,
@@ -122,11 +122,11 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
     titleRef.current?.focus({ preventScroll: true });
   }, [step, done, reduce]);
 
-  const total = estimate(tier, addOns, crew);
+  const total = estimate(tier, addOns);
   const shown = useTween(total);
   const language = prefLang ?? lang;
   const portrait = workById("w02");
-  const quote = quoteCommission(tier, addOns, crew);
+  const quote = quoteCommission(tier, addOns);
 
   // Returning from Stripe: restore the family's details and show the outcome.
   function arrive(params: URLSearchParams, status: string) {
@@ -230,7 +230,7 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
           scope,
           tier,
           add_ons: addOns,
-          extra_crew: crew,
+          crew_mix: crew,
           name: name.trim(),
           honoree: honoree.trim(),
           email: email.trim(),
@@ -557,7 +557,7 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
                             {t.intake.addOns} <span className="tq-muted">— {t.intake.optional}</span>
                           </legend>
                           <div className="tq-choice tq-choice--check">
-                            {ADD_ONS.filter((a) => addOnAllowed(tier, a.id)).map((a) => (
+                            {ADD_ONS.map((a) => (
                               <label key={a.id}>
                                 <input
                                   type="checkbox"
@@ -777,8 +777,7 @@ function Summary({ date, city, total }: { date: string | null; city: string; tot
   const { t, lang, tier, addOns, crew } = useSite();
   const x = tierById(tier);
   const extras = ADD_ONS.filter((a) => addOns.includes(a.id));
-  const q = quoteCommission(tier, addOns, crew);
-  const crewParts = CREW_ROLES.filter((r) => crew[r] > 0).map((r) => t.crew.line(crew[r], r));
+  const q = quoteCommission(tier, addOns);
   return (
     <dl className="tq-summary" aria-label={t.intake.summary}>
       <div>
@@ -792,9 +791,12 @@ function Summary({ date, city, total }: { date: string | null; city: string; tot
         <dt className="tq-mono">{t.intake.steps[1]}</dt>
         <dd>
           {x.numeral} {pick(lang, x.name)}
-          {crewParts.length > 0 && ` · ${crewParts.join(", ")}`}
           {extras.length > 0 && ` + ${extras.map((a) => pick(lang, a.name)).join(", ")}`}
-          <span className="tq-muted"> · {t.crew.total(q.crewSize)}</span>
+          <span className="tq-muted">
+            {" · "}
+            {BASE_CREW[tier] > 1 ? t.crew.mix(crew.photo, crew.motion) : t.crew.mix(1, 0)}
+            {COORDINATOR_INCLUDED[tier] ? ` · ${t.crew.coordinator}` : ""}
+          </span>
         </dd>
       </div>
       <div>
