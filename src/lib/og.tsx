@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { site } from "@/content/site";
+import { PRICE_FLOOR_USD, usd } from "@/lib/commission";
 
 /** Shared visual renderer for social previews. No server or data contract changes. */
 export const ogSize = { width: 1200, height: 630 };
@@ -11,7 +12,7 @@ export function renderOg(opts: {
   footer?: string;
 }) {
   const { eyebrow = site.serviceArea, title, footer } = opts;
-  const foot = footer ?? `${site.domain} · Collections from $2,500`;
+  const foot = footer ?? `${site.domain} · Commissions from ${usd(PRICE_FLOOR_USD)}`;
 
   return new ImageResponse(
     (

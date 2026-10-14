@@ -22,23 +22,24 @@ Researched October 2026. Prices live in one place, `src/lib/commission.ts`. Chan
 | Photo + film share of a quince budget | 8–15% | planner guides (thin sources) |
 | Affluent DFW households | Highland Park / University Park median household income $250K+ (Census top-code); Westlake mean about $527K; Southlake about $240K+ | homesnacks.com, suburbs101.com. Check against Census ACS before quoting publicly |
 
-**The opening:** no DFW quince studio publishes anything above about $6K. The families who book Rosewood, The Adolphus or Dallas Country Club are spending wedding-level money, and nobody in the quince category is priced or presented for them. At 8–15% of a $75–150K celebration, their photo + film line is roughly **$6K–22K**.
+**The reality:** most DFW quince budgets are $12–25K all-in, and photo + film takes 8–15% of that, about $1–3.75K. The highest package any DFW quince studio publishes is about $6K. Pricing above that band (the earlier $2.5K–18.5K ladder) prices out the families who actually book. Revised October 2026.
 
-### Recommended commissions (now live in the price book)
+### Commissions (now live in the price book)
 
 | Commission | Price | Retainer (30%) | Role |
 |---|---|---|---|
-| I. Portrait Study (photo, editorial session) | **$2,500** | $750 | Entry. Above the market's $800–1,800 pre-quince sessions, justified by editorial direction and 60 retouched frames. |
-| II. Cinema & Stills (8 h, 2 directors) | **$7,500** | $2,250 | Opens the premium band, about 25% above the highest published quince package. |
-| III. The Full Production (11 h, portrait session, linen monograph) | **$11,500** | $3,450 | **The commission to sell.** In line with luxury Dallas wedding photo + film. The FAQ and copy point families here. |
-| IV. Multi-Day Editorial Archive | **$18,500** | $5,550 | The anchor at the ultra-premium end. It makes III read as the sensible choice. |
+| I. Portrait Study (photo, editorial session) | **$1,200** | $350 | Entry. Mid-band for DFW pre-quince sessions ($800–1,800). |
+| II. Cinema & Stills (8 h, 1 photo + 1 film) | **$3,500** | $1,050 | Photo + video, in the market's $3–5.5K band. |
+| III. The Full Production (11 h, 4 crew + coordinator, portrait session, linen monograph) | **$4,900** | $1,450 | **The commission to sell.** Under the highest published package, with more crew than any of them. |
+| IV. Multi-Day Editorial Archive (5 crew + coordinator) | **$6,900** | $2,050 | The luxury anchor, inside the market's $5.5–8K top band. |
 
 | Enhancement | Price | Market reference |
 |---|---|---|
-| Pre-event destination portrait session | $2,000 | Pre-quince sessions $800–1,800, plus travel |
-| Same-day reception edit | $2,400 | No DFW price published. An editor's day plus crew is roughly $1.5–3K |
-| Super 8mm film roll | $1,800 | Luxury flat add-on $1.5–3.5K |
-| Fine art parent albums (pair) | $1,100 | $400–600 each |
+| Pre-event destination portrait session | $650 | Pre-quince sessions $800–1,800 standalone |
+| Same-day reception edit | $900 | No DFW price published |
+| Super 8mm film roll | $600 | Flat add-on |
+| Fine art parent albums (pair) | $550 | $400–600 each elsewhere |
+
 **Crew and coordinator are included, not sold.** Every commission names its full crew on the day. Families choose the mix of photographers and videographers with a swap control, and the total never changes. Production and Archive also include a day-of coordinator. Nothing about the crew changes the price:
 
 | Commission | Directors on the day | Default mix | Day-of coordinator |
@@ -50,7 +51,7 @@ Researched October 2026. Prices live in one place, `src/lib/commission.ts`. Chan
 
 Event commissions keep at least one photographer and one videographer. `BASE_CREW`, `DEFAULT_MIX`, `MIN_ROLE` and `COORDINATOR_INCLUDED` are in `src/lib/commission.ts`. The server normalizes the mix that arrives (`normalizeCrew`) and stores it on the booking's metadata, so the crew sheet matches what the family chose.
 
-**Retainer:** 30% of the commission, minimum $750, rounded to $50, applied in full. The balance is due 30 days before the celebration. Texas norms are 25–50% with the balance 14–30 days out. Local quince studios take a flat $500, which is too small to signal commitment at these prices.
+**Retainer:** 30% of the commission, minimum $350, rounded to $50, applied in full. The balance is due 30 days before the celebration. Texas norms are 25–50% with the balance 14–30 days out. Local quince studios take a flat $500; 30% lands close to that on the Portrait Study and scales with the commission.
 
 **Old pricing retired (done):**
 - **Permanent redirects:**
@@ -96,7 +97,7 @@ Cost in DFW · whether photo and film come together · how many hours of coverag
 ### Done in this change
 - Homepage title: *"Quinceañera Photographer & Videographer in Dallas–Fort Worth | TX Quince"*, with a description naming Highland Park and Southlake, the starting price and live availability.
 - A bilingual, answer-first FAQ section on the homepage, with matching FAQPage structured data. Prices in the answers come from the price book.
-- Service + OfferCatalog structured data with the four commissions. The site-wide ProfessionalService `priceRange` now reads $2,500–$18,500.
+- Service + OfferCatalog structured data with the four commissions. The site-wide ProfessionalService `priceRange` now reads $1,200–$6,900.
 
 ### Next, in priority order
 _(Done: the `/quinceanera-photoshoot` + `/es/sesion-de-fotos-quinceanera` pages, Frisco, Plano and McKinney, and repricing `/investment` (now a redirect).)_
@@ -104,7 +105,7 @@ _(Done: the `/quinceanera-photoshoot` + `/es/sesion-de-fotos-quinceanera` pages,
 2. Build `/quinceanera-photoshoot` and the Spanish mirror.
 3. Add Frisco, Plano and McKinney city pages, carrying the new pricing.
 4. Single-location pages: Arboretum (confirm the fee policy with them first), Highland Park Village, Stockyards.
-5. Retire or reprice `/investment` and `/es/paquetes`. Consider a "From $2,500" title, as competitors do.
+5. Retire or reprice `/investment` and `/es/paquetes`. Consider a "From $1,200" title, as competitors do.
 6. Venue pages for the hotel tier (Rosewood Mansion, The Adolphus, Hotel Crescent Court, Four Seasons Las Colinas), because affluent families search their venue by name. Only show venues you've actually worked.
 7. Connect Search Console so the next pricing and content pass runs on real impressions.
 
