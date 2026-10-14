@@ -4,6 +4,8 @@ import { buildLeadWork, countDue } from "@/lib/admin-workflow";
 import { getBookings, getInquiries, getInquiryActivity } from "@/lib/clients-db";
 import { formatEventDate } from "@/lib/booking";
 import { requireAdminPage } from "@/lib/require-admin";
+import { getPriceBook } from "@/lib/pricing";
+import { TIER_IDS, TIER_NAME_EN, usd } from "@/lib/commission";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +19,7 @@ const priorityLabel = {
 
 export default async function AdminHome() {
   await requireAdminPage("/admin"); // server-side gate; middleware is not enough
-  const [inquiries, activity, bookings] = await Promise.all([getInquiries(), getInquiryActivity(), getBookings()]);
+  const [inquiries, activity, bookings, book] = await Promise.all([getInquiries(), getInquiryActivity(), getBookings(), getPriceBook()]);
   const work = buildLeadWork(inquiries, activity);
   const due = countDue(work);
   const unreplied = work.filter((item) => item.priority === "unreplied").length;
@@ -58,6 +60,33 @@ export default async function AdminHome() {
           </Link>
         ))}
       </div>
+
+      <section aria-labelledby="prices-title" className="mt-6 border border-[#111110] bg-white text-[#111110]">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#e6e6e4] px-5 py-5 sm:px-6">
+          <div>
+            <h2 id="prices-title" className="text-xl font-normal tracking-[-0.03em]">Your prices</h2>
+            <p className="mt-1 text-base leading-6">
+              Change them here. When you press Save, the homepage, package cards, comparison table, inquiry form and every page update at once.
+            </p>
+          </div>
+          <Link href="/admin/prices" className="inline-flex min-h-12 items-center gap-3 whitespace-nowrap bg-[#111110] px-5 text-base font-medium text-white transition-colors hover:bg-[#333] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black">
+            Change prices <span aria-hidden="true">→</span>
+          </Link>
+        </div>
+        <dl className="grid grid-cols-2 lg:grid-cols-4">
+          {TIER_IDS.map((id, index) => (
+            <div key={id} className={`px-5 py-4 sm:px-6 ${index % 2 === 0 ? "border-r border-[#e6e6e4]" : "lg:border-r lg:border-[#e6e6e4]"} ${index < 2 ? "border-b border-[#e6e6e4] lg:border-b-0" : ""} ${index === 3 ? "lg:border-r-0" : ""}`}>
+              <dt className="text-sm">{TIER_NAME_EN[id]}</dt>
+              <dd className="mt-1 text-2xl tabular-nums tracking-[-0.04em]">{usd(book.packages[id].price)}</dd>
+              <dd className="text-sm">{book.packages[id].hours} hours included</dd>
+            </div>
+          ))}
+        </dl>
+        <p className="border-t border-[#e6e6e4] px-5 py-3 text-sm sm:px-6">
+          {book.depositPercent}% deposit · the rest due {book.balanceDueDays} days before the event
+          {book.updatedAt ? ` · last changed ${new Date(book.updatedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "America/Chicago" })}` : " · launch prices"}
+        </p>
+      </section>
 
       {review.length > 0 && (
         <Link href="/admin/bookings" className="mt-6 flex min-h-14 items-center justify-between gap-4 border-l-[3px] border-[#bd8730] bg-[#f7f4ec] px-5 py-3 text-sm text-[#493920] transition-colors hover:bg-[#f2eddf] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black">

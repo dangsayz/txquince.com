@@ -336,7 +336,7 @@ export function PriceManager({ initial }: { initial: PricesSnapshot }) {
       }
       setSnap(j as PricesSnapshot);
       setForm(toForm(j.book!));
-      setMessage({ kind: "ok", text: "Saved. The website shows the new prices now (it can take up to a minute everywhere)." });
+      setMessage({ kind: "ok", text: "Saved. Your new prices are live on the website now: homepage, package cards, comparison table, inquiry form and every page." });
     } catch {
       setMessage({ kind: "error", text: "Couldn't reach the server. Nothing was changed." });
     } finally {

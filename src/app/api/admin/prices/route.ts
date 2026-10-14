@@ -61,7 +61,7 @@ function refreshPages() {
   try {
     revalidatePath("/", "layout");
   } catch {
-    /* not fatal: pages also re-read the book within ~30s */
+    /* not fatal: pages read the book fresh on every request */
   }
   for (const p of ["/", "/es", "/quinceanera-guide", "/blog", "/es/blog"]) {
     try {

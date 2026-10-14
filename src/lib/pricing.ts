@@ -10,8 +10,8 @@
  *                                            the book before and after (append-only)
  *
  * getPriceBook() is what every server surface reads (pages, metadata, JSON-LD,
- * /api/commission, the agreement, emails). It keeps a ~30s in-memory copy per
- * worker isolate and FALLS BACK TO THE LAUNCH DEFAULTS (commission.ts) when
+ * /api/inquiry, the agreement, emails). It reads storage on every request (so
+ * a save is live on the next page load) and FALLS BACK TO THE LAUNCH DEFAULTS (commission.ts) when
  * storage is unreachable — plain `next build`, `next start` without
  * Cloudflare, or an R2 hiccup — so a page never fails because of pricing.
  *
@@ -33,7 +33,6 @@ import {
 
 export const PRICING_KEY = "config/pricing.json";
 export const HISTORY_PREFIX = "config/pricing-history/";
-const CACHE_MS = 30_000;
 const HISTORY_SHOWN = 25;
 
 /* ---------------- minimal structural R2 types ---------------- */
@@ -197,35 +196,30 @@ export async function readPriceBook(): Promise<StoredBook> {
   return { book, version: obj.etag, storage, corrupt: false };
 }
 
-/* ---------------- cached public read ---------------- */
+/* ---------------- public read ---------------- */
 
-let memo: { book: PriceBook; at: number } | null = null;
-let inflight: Promise<PriceBook> | null = null;
+/** Last book this isolate read successfully: the fallback if storage hiccups. */
+let lastKnown: PriceBook | null = null;
 
-async function loadCached(): Promise<PriceBook> {
-  if (memo && Date.now() - memo.at < CACHE_MS) return memo.book;
-  if (!inflight) {
-    inflight = readPriceBook()
-      .then((r) => {
-        memo = { book: r.book, at: Date.now() };
-        return r.book;
-      })
-      .catch((err) => {
-        console.error("[pricing] read failed; using", memo ? "last known book" : "defaults", err);
-        return memo?.book ?? DEFAULT_PRICE_BOOK;
-      })
-      .finally(() => {
-        inflight = null;
-      });
+async function loadFresh(): Promise<PriceBook> {
+  try {
+    const r = await readPriceBook();
+    lastKnown = r.book;
+    return r.book;
+  } catch (err) {
+    console.error("[pricing] read failed; using", lastKnown ? "last known book" : "defaults", err);
+    return lastKnown ?? DEFAULT_PRICE_BOOK;
   }
-  return inflight;
 }
 
 /**
  * The live price book. Every server surface that shows or charges a price
- * calls this. Never throws: falls back to the last known book, then defaults.
+ * calls this. Read from storage on every request (deduped within a request by
+ * React `cache`), so a save in /admin/prices shows on the very next page load
+ * everywhere — no per-isolate delay. Never throws: falls back to the last
+ * known book, then the defaults.
  */
-export const getPriceBook = cache(loadCached);
+export const getPriceBook = cache(loadFresh);
 
 /* ---------------- write ---------------- */
 
@@ -299,7 +293,7 @@ export async function savePriceBook(
   }
 
   const book = Object.freeze(next);
-  memo = { book, at: Date.now() };
+  lastKnown = book;
   return { book, version: written.etag, changes, historySaved };
 }
 
