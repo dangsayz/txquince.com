@@ -62,3 +62,4 @@ inspo/
 # client journey: local mail sink + local signed-contract store (never commit)
 /.mail-sink/
 /.contracts-local/
+/.local/
