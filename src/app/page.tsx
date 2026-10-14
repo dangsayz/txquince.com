@@ -1,7 +1,13 @@
-import { EditorialHome } from "@/components/home/EditorialHome";
+import type { Metadata } from "next";
+import { TxqSite } from "@/components/txq/TxqSite";
 
-export const revalidate = 60;
+export const metadata: Metadata = {
+  title: { absolute: "TX Quince — Quinceañera Photography & Film, Texas" },
+  description:
+    "Editorial quinceañera portraiture and cinema across Dallas–Fort Worth, Houston, Austin and San Antonio. Published commissions, bilingual from first call to final film.",
+  alternates: { canonical: "/" },
+};
 
 export default function HomePage() {
-  return <EditorialHome locale="en" />;
+  return <TxqSite />;
 }
