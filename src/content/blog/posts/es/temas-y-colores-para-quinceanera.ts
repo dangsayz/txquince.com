@@ -13,11 +13,11 @@ const post: BlogPost = {
   publishedAt: "2026-06-27",
   readMinutes: 10,
   lang: "es",
-  lead: "El tema de su quinceañera es la idea visual sobre la que se arma todo el día, y la combinación de colores es lo que la lleva al vestido, a la corte, a las flores y al salón. Esta guía recorre los temas más populares para quinceañera, las combinaciones de colores que van con cada uno, y cómo elegir el que de verdad va con usted — más la parte que toda lista se salta: cómo se ven sus colores en cámara, porque nosotros filmamos quinces casi cada fin de semana.",
+  lead: "El tema de su quinceañera es la idea visual sobre la que se arma todo el día, y la combinación de colores es lo que la lleva al vestido, a la corte, a las flores y al salón. Esta guía recorre los temas más populares para quinceañera, las combinaciones de colores que van con cada uno, y cómo elegir el que de verdad va con usted — más la parte que toda lista se salta: cómo se ven sus colores en cámara, porque nosotros grabamos quinces casi cada fin de semana.",
   content: [
     {
       type: "p",
-      text: "El tema de una quinceañera es la única idea visual sobre la que se construye toda la celebración — princesa, jardín, charro, antifaz — y la combinación de colores son los dos o tres colores que la cargan por el vestido, la corte, las flores y el salón. Los temas más populares para quinceañera en este momento son princesa o realeza, mariposas, jardín y bosque encantado, París, antifaz, Hollywood, oro rosa y herencia mexicana (charro). Esta guía recorre esos, las combinaciones de colores que van con cada uno, cómo elegir un tema de quinceañera que de verdad sea suyo — y, como filmamos quinces casi cada fin de semana, lo único que las listas nunca mencionan: cómo se ven sus colores en cámara.",
+      text: "El tema de una quinceañera es la única idea visual sobre la que se construye toda la celebración — princesa, jardín, charro, antifaz — y la combinación de colores son los dos o tres colores que la cargan por el vestido, la corte, las flores y el salón. Los temas más populares para quinceañera en este momento son princesa o realeza, mariposas, jardín y bosque encantado, París, antifaz, Hollywood, oro rosa y herencia mexicana (charro). Esta guía recorre esos, las combinaciones de colores que van con cada uno, cómo elegir un tema de quinceañera que de verdad sea suyo — y, como grabamos quinces casi cada fin de semana, lo único que las listas nunca mencionan: cómo se ven sus colores en cámara.",
     },
     {
       type: "p",
@@ -36,7 +36,7 @@ const post: BlogPost = {
         "Jardín / bosque encantado — verde, flores suaves y luz natural; relajado y romántico, y el tema más amable para un quince de día o al aire libre.",
         "París — rosa y oro, detalles de la Torre Eiffel, y un aire romántico y más grande.",
         "Antifaz (máscaras) — tonos joya, máscaras adornadas y terciopelo; dramático y misterioso, hecho para la noche.",
-        "Hollywood — negro y oro, alfombra roja e iluminación dramática para un aire de película antigua.",
+        "Hollywood — negro y oro, alfombra roja e iluminación dramática para un aire de video antigua.",
         "Oro rosa — tonos metálicos cálidos con flores en rosa pálido; moderno, suave y muy fotogénico.",
         "Charro / herencia mexicana — rojo, turquesa, amarillo y oro con papel picado, talavera y detalles de sarape; vivo y con raíces en la tradición.",
         "Bajo el mar — azules y verdes de océano con flores en coral.",
@@ -125,7 +125,7 @@ const post: BlogPost = {
     { type: "h2", text: "No lo piense de más" },
     {
       type: "p",
-      text: "Aquí va la parte honesta: no necesita un tema elaborado y con nombre para que el día se vea hermoso. Algunos de los mejores quinces que filmamos son solo una paleta limpia de dos colores — digamos rosa pálido y oro — llevada con constancia por el vestido, las flores y la corte. Sin castillo, sin máquina de humo. Si un montaje temático grande está estresando a su familia o a su presupuesto, déjelo ir. Una paleta sencilla hecha con constancia se ve mejor en cámara que un tema ambicioso hecho a medias. Elija dos colores que le encanten, póngalos en todo, y deje que el día mismo sea la historia.",
+      text: "Aquí va la parte honesta: no necesita un tema elaborado y con nombre para que el día se vea hermoso. Algunos de los mejores quinces que grabamos son solo una paleta limpia de dos colores — digamos rosa pálido y oro — llevada con constancia por el vestido, las flores y la corte. Sin castillo, sin máquina de humo. Si un montaje temático grande está estresando a su familia o a su presupuesto, déjelo ir. Una paleta sencilla hecha con constancia se ve mejor en cámara que un tema ambicioso hecho a medias. Elija dos colores que le encanten, póngalos en todo, y deje que el día mismo sea la historia.",
     },
     {
       type: "cta",
@@ -136,7 +136,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Cuando sus colores estén casi listos, puede [revisar si su fecha está libre](/check-your-date) en segundos y ver qué incluye cada [comisión](/es#commissions) de foto y video. Tráiganos su paleta desde temprano y planeamos la iluminación y las tomas alrededor de ella — para que el look que tardó meses en armar sea el look que termina en su video.",
+      text: "Cuando sus colores estén casi listos, puede [revisar si su fecha está libre](/check-your-date) en segundos y ver qué incluye cada [paquete](/es#commissions) de foto y video. Tráiganos su paleta desde temprano y planeamos la iluminación y las tomas alrededor de ella — para que el look que tardó meses en armar sea el look que termina en su video.",
     },
   ],
   faqs: [

@@ -12,7 +12,7 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
   title: "Quinceañera Planning Guide & Journal",
   description:
-    "Honest, no-guesswork guides to planning a quinceañera in Dallas–Fort Worth — real costs, timelines, traditions, and how to choose your photographer & film team.",
+    "Honest, no-guesswork guides to planning a quinceañera in Dallas–Fort Worth — real costs, timelines, traditions, and how to choose your photo & video team.",
   alternates: {
     canonical: "/blog",
     languages: { "en-US": "/blog", "es-MX": "/es/blog", "x-default": "/blog" },
@@ -53,7 +53,7 @@ export default async function BlogIndexPage() {
           Stories around <em>her day.</em>
         </>
       }
-      dek="Costs, timelines, photography, film, and the traditions that shape the celebration."
+      dek="Costs, timelines, photos, video, and the traditions that shape the celebration."
       aside={{ href: "/quinceanera-guide", label: "Begin with the planning guide" }}
       posts={posts}
       featuredImage={featuredImage}

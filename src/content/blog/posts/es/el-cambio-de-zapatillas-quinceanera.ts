@@ -105,9 +105,9 @@ const post: BlogPost = {
     {
       type: "cta",
       heading: "Cubra los dos rostros, no solo uno",
-      body: "Nuestras comisiones de foto y video están pensadas para los momentos que no se pueden repetir: el cambio de zapatillas y el vals entre ellos. Vea qué incluye cada una.",
+      body: "Nuestros paquetes de foto y video están pensados para los momentos que no se pueden repetir: el cambio de zapatillas y el vals entre ellos. Vea qué incluye cada una.",
       href: "/es#commissions",
-      label: "Comparar comisiones",
+      label: "Comparar paquetes",
     },
     {
       type: "p",

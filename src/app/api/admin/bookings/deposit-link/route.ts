@@ -1,6 +1,9 @@
 /**
  * /api/admin/bookings/deposit-link — operator one-click "send deposit link".
  *
+ * For a signed homepage agreement this is APPROVE: it emails the family a pay
+ * link for their 25% deposit (see the agreement branch below).
+ *
  * Step-two of the request-first flow: after confirming a date, the operator
  * fires this. It creates a Stripe Checkout session for the booking's deposit,
  * emails the secure link to the family, and moves the booking into
@@ -19,6 +22,10 @@ import { collectionLabel } from "@/content/packages";
 import { formatEventDate, packageLabel, type BookingRecord } from "@/lib/booking";
 import { getSiteUrl } from "@/lib/site-url";
 import { site } from "@/content/site";
+import { randomBytes } from "crypto";
+import { CONSULT_HOLD_DAYS } from "@/lib/commission";
+import { isSignedAgreement } from "@/lib/agreement";
+import { sendAgreementApprovedClient } from "@/lib/agreement-email";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -61,6 +68,38 @@ export async function POST(request: Request) {
   }
 
   const siteUrl = getSiteUrl();
+
+  /* Signed agreement (homepage booking): APPROVE. No Stripe session yet — the
+     family gets a durable pay link (/booking/[id]?t=…) that opens a fresh
+     checkout whenever they're ready, and the date stays held meanwhile. */
+  const meta = (b.metadata ?? {}) as Record<string, unknown>;
+  if (meta.flow === "agreement" && isSignedAgreement(meta.agreement)) {
+    const payToken = meta.agreement.payToken || randomBytes(18).toString("base64url");
+    const approvedAt = meta.agreement.approvedAt || new Date().toISOString();
+    const expiresAt = new Date(Date.now() + CONSULT_HOLD_DAYS * 24 * 3600 * 1000);
+    const { error: upErr } = await supabase
+      .from("bookings")
+      .update({
+        status: "pending_payment",
+        expires_at: expiresAt.toISOString(),
+        recovery_sent_at: null,
+        metadata: { ...meta, agreement: { ...meta.agreement, approvedAt, payToken } },
+      })
+      .eq("id", b.id);
+    if (upErr) {
+      if (upErr.code === "23505") {
+        return NextResponse.json({ error: "That date is already taken by another booking." }, { status: 409 });
+      }
+      console.error("[approve] update error:", upErr.message);
+      return NextResponse.json({ error: "Could not approve this booking." }, { status: 500 });
+    }
+    const payUrl = `${siteUrl}/booking/${b.id}?t=${payToken}`;
+    const lang = meta.language === "es" ? "es" : "en";
+    const mail = await sendAgreementApprovedClient(b, lang, payUrl, b.deposit_amount_cents / 100);
+    revalidatePath("/admin/bookings");
+    return NextResponse.json({ ok: true, url: payUrl, emailed: mail.ok, approved: true });
+  }
+
   const prettyDate = formatEventDate(b.event_date);
   const tier = collectionLabel(b.collection);
   // Stripe Checkout sessions expire within 24h; hold the date for that window.

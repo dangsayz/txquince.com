@@ -10,14 +10,11 @@ import {
   BASE_CREW,
   COORDINATOR_INCLUDED,
   quoteCommission,
-  type AddOnId,
-  type Crew,
-  type TierId,
 } from "@/lib/commission";
+import { buildAgreement } from "@/lib/agreement";
 import {
   ADD_ONS,
   CITIES,
-  SCOPES,
   TIERS,
   estimate,
   money,
@@ -25,10 +22,10 @@ import {
   tierById,
   workById,
   type Lang,
-  type Scope,
 } from "./data";
 import { isoDate, useAvailability, useSite } from "./state";
 import { CrewControl, HoursControl, useTween } from "./Commissions";
+import { SignaturePad } from "./SignaturePad";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const MAX_MONTHS_AHEAD = 36;
@@ -38,39 +35,10 @@ const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 // Turnstile is locked to production hostnames; local dev skips it (the API
 // also skips verification when no secret is configured outside production).
 const SHOW_TURNSTILE = Boolean(SITE_KEY) && process.env.NODE_ENV === "production";
-const DRAFT_KEY = "txq:intake-draft";
+const STEPS = 4;
+const LAST = STEPS - 1;
 
-type Path = "retainer" | "consult";
-type Done =
-  | { kind: "consult"; ref: string; holdDays: number }
-  | { kind: "paid"; ref: string | null; amountUsd: number | null }
-  | { kind: "processing"; ref: string | null };
-
-type Draft = {
-  date: string | null;
-  city: string;
-  venue: string;
-  scope: Scope;
-  tier: TierId;
-  addOns: AddOnId[];
-  crew?: Crew;
-  hours?: number;
-  name: string;
-  honoree: string;
-  email: string;
-  phone: string;
-  prefLang: Lang | null;
-  note: string;
-};
-
-function readDraft(): Draft | null {
-  try {
-    const raw = sessionStorage.getItem(DRAFT_KEY);
-    return raw ? (JSON.parse(raw) as Draft) : null;
-  } catch {
-    return null;
-  }
-}
+type Done = { ref: string; holdDays: number; depositUsd: number };
 
 const localeOf = (l: Lang) => (l === "es" ? "es-MX" : "en-US");
 const fromIso = (s: string) => new Date(`${s}T00:00:00`);
@@ -85,27 +53,29 @@ function longDate(iso: string, lang: Lang) {
 }
 
 export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
-  const { t, lang, tier, setTier, addOns, toggleAddOn, setAddOns, crew, setCrew, hours, setHours } = useSite();
+  const { t, lang, tier, setTier, addOns, toggleAddOn, crew, hours } = useSite();
   const avail = useAvailability();
   const reduce = useReducedMotion();
 
   const [step, setStep] = useState(0);
   const [done, setDone] = useState<Done | null>(null);
-  const [path, setPath] = useState<Path>("retainer");
   const [token, setToken] = useState("");
-  const [notice, setNotice] = useState<string | null>(null);
   /** Month the calendar opens on when no date is picked (keeps place after a conflict). */
   const [anchor, setAnchor] = useState<string | null>(null);
   const [date, setDate] = useState<string | null>(null);
   const [city, setCity] = useState("");
   const [venue, setVenue] = useState("");
-  const [scope, setScope] = useState<Scope>("both");
+  const [startTime, setStartTime] = useState("");
   const [name, setName] = useState("");
   const [honoree, setHonoree] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [prefLang, setPrefLang] = useState<Lang | null>(null);
   const [note, setNote] = useState("");
+  const [share, setShare] = useState(true);
+  const [signedName, setSignedName] = useState("");
+  const [signature, setSignature] = useState<string | null>(null);
+  const [agree, setAgree] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [sending, setSending] = useState(false);
 
@@ -129,65 +99,31 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
   const portrait = workById("w02");
   const quote = quoteCommission(tier, addOns, hours);
 
-  // Returning from Stripe: restore the family's details and show the outcome.
-  function arrive(params: URLSearchParams, status: string) {
-    const draft = readDraft();
-    const restore = () => {
-      if (!draft) return;
-      setDate(draft.date);
-      setCity(draft.city);
-      setVenue(draft.venue);
-      setScope(draft.scope);
-      setTier(draft.tier);
-      setAddOns(draft.addOns);
-      if (draft.crew) setCrew(draft.crew);
-      if (draft.hours) setHours(draft.hours, draft.tier);
-      setName(draft.name);
-      setHonoree(draft.honoree);
-      setEmail(draft.email);
-      setPhone(draft.phone);
-      setPrefLang(draft.prefLang);
-      setNote(draft.note);
-    };
-    window.history.replaceState(null, "", `${window.location.pathname}#intake`);
-
-    if (status === "closed") {
-      restore();
-      if (draft) setStep(2);
-      setNotice("closed");
-      return;
-    }
-    const sessionId = params.get("session_id");
-    if (status !== "confirmed" || !sessionId) return;
-    restore();
-    fetch(`/api/commission/session?id=${encodeURIComponent(sessionId)}`)
-      .then((r) => (r.ok ? r.json() : null))
-      .then((j: { paid?: boolean; eventDate?: string | null; amountUsd?: number | null; ref?: string | null } | null) => {
-        if (j?.eventDate) setDate(j.eventDate);
-        setDone(
-          j?.paid
-            ? { kind: "paid", ref: j.ref ?? null, amountUsd: j.amountUsd ?? null }
-            : { kind: "processing", ref: j?.ref ?? null },
-        );
-        try {
-          sessionStorage.removeItem(DRAFT_KEY);
-        } catch {
-          /* ignore */
-        }
-      })
-      .catch(() => setDone({ kind: "processing", ref: null }));
-  }
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const status = params.get("commission");
-    if (!status) return;
-    // Deferred a tick so state restores after hydration, not during the effect.
-    const id = window.setTimeout(() => arrive(params, status), 0);
-    return () => window.clearTimeout(id);
-    // Runs once on arrival; setters are stable.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const cityLabel = CITIES.find((c) => c.id === city);
+  // Package decides what's covered: the Portrait Session is photos only.
+  const scope = tier === "study" ? "stills" : "both";
+  const agreement = useMemo(
+    () =>
+      step === LAST
+        ? buildAgreement({
+            lang: language,
+            tier,
+            hours,
+            crew,
+            addOns,
+            eventDate: date ?? isoDate(new Date()),
+            cityLabel: cityLabel ? pick(language, cityLabel.label) : "",
+            venue: venue.trim(),
+            startTime: startTime.trim(),
+            honoree: honoree.trim(),
+            name: name.trim(),
+            email: email.trim(),
+            phone: phone.trim(),
+            sharePermission: share,
+          })
+        : null,
+    [step, language, tier, hours, crew, addOns, date, cityLabel, venue, startTime, honoree, name, email, phone, share],
+  );
 
   const validate = (s: number) => {
     const e: Record<string, string> = {};
@@ -198,12 +134,23 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
     if (s === 2) {
       if (name.trim().length < 2) e.name = t.intake.errors.name;
       if (!EMAIL.test(email.trim())) e.email = t.intake.errors.email;
+      if (phone.replace(/\D/g, "").length < 7) e.phone = t.intake.errors.phone;
+    }
+    if (s === LAST) {
+      if (signedName.trim().length < 2) e.signedName = t.intake.errors.signedName;
+      if (!signature) e.signature = t.intake.errors.signature;
+      if (!agree) e.agree = t.intake.errors.agree;
     }
     setErrors(e);
     return Object.keys(e).length === 0;
   };
 
-  const next = () => validate(step) && setStep((s) => Math.min(s + 1, 2));
+  const next = () => {
+    if (!validate(step)) return;
+    // Pre-fill the signing name with the name they gave us.
+    if (step === 2 && !signedName.trim()) setSignedName(name.trim());
+    setStep((s) => Math.min(s + 1, LAST));
+  };
   const back = () => {
     setErrors({});
     setStep((s) => Math.max(s - 1, 0));
@@ -211,24 +158,22 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
 
   const submit = async (ev: React.FormEvent) => {
     ev.preventDefault();
-    if (step < 2) return next();
-    if (!validate(2) || !date) return;
+    if (step < LAST) return next();
+    if (!validate(LAST) || !date) return;
     if (SHOW_TURNSTILE && !token) {
       setErrors({ form: t.intake.errors.verify });
       return;
     }
     setSending(true);
-    setNotice(null);
-    const draft: Draft = { date, city, venue, scope, tier, addOns, crew, hours, name, honoree, email, phone, prefLang, note };
     try {
       const res = await fetch("/api/commission", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          path,
           event_date: date,
           city,
           venue: venue.trim(),
+          start_time: startTime.trim(),
           scope,
           tier,
           add_ons: addOns,
@@ -240,6 +185,10 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
           phone: phone.trim(),
           language,
           note: note.trim(),
+          share_permission: share,
+          signed_name: signedName.trim(),
+          signature,
+          agree,
           "cf-turnstile-response": token,
           attribution: getFirstTouch(),
         }),
@@ -248,7 +197,6 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
         ok?: boolean;
         code?: string;
         error?: string;
-        checkoutUrl?: string;
         holdDays?: number;
         ref?: string;
       };
@@ -266,17 +214,7 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
         setErrors({ form: j.error || t.intake.errors.failed });
         return;
       }
-      if (j.checkoutUrl) {
-        try {
-          sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
-        } catch {
-          /* the confirmation still works without the draft */
-        }
-        setNotice("redirecting");
-        window.location.assign(j.checkoutUrl);
-        return;
-      }
-      setDone({ kind: "consult", ref: j.ref ?? "", holdDays: j.holdDays ?? CONSULT_HOLD_DAYS });
+      setDone({ ref: j.ref ?? "", holdDays: j.holdDays ?? CONSULT_HOLD_DAYS, depositUsd: quote.retainerUsd });
       avail.refresh();
     } catch {
       setErrors({ form: t.intake.errors.failed });
@@ -290,9 +228,10 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
     setStep(0);
     setDate(null);
     setNote("");
+    setSignature(null);
+    setAgree(false);
   };
 
-  const cityLabel = CITIES.find((c) => c.id === city);
   const slide = reduce
     ? { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 } }
     : {
@@ -362,25 +301,19 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
               >
                 {done.ref && (
                   <span className="tq-mono" style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <span className="tq-dot" data-limited={done.kind === "processing"} aria-hidden /> {t.intake.reference} — {done.ref}
+                    <span className="tq-dot" aria-hidden /> {t.intake.reference} — {done.ref}
                   </span>
                 )}
                 <h3 ref={titleRef} tabIndex={-1} className="tq-display" style={{ outline: "none" }}>
-                  {done.kind === "paid"
-                    ? t.intake.paidTitle
-                    : done.kind === "processing"
-                      ? t.intake.processingTitle
-                      : t.intake.doneTitle}
+                  {t.intake.doneTitle}
                 </h3>
                 <p>
-                  {done.kind === "paid"
-                    ? t.intake.paidBody(
-                        date ? longDate(date, lang) : "",
-                        money(done.amountUsd ?? quote.retainerUsd),
-                      )
-                    : done.kind === "processing"
-                      ? t.intake.processingBody(date ? longDate(date, lang) : "")
-                      : t.intake.consultBody(date ? longDate(date, lang) : "", email.trim(), done.holdDays)}
+                  {t.intake.doneBody(
+                    date ? longDate(date, lang) : "",
+                    email.trim(),
+                    done.holdDays,
+                    money(done.depositUsd),
+                  )}
                 </p>
                 <Summary
                   date={date}
@@ -395,7 +328,7 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
               </motion.div>
             ) : (
               <form onSubmit={submit} noValidate>
-                <ol className="tq-stepper" aria-label={t.intake.stepOf(step + 1, 3)}>
+                <ol className="tq-stepper" aria-label={t.intake.stepOf(step + 1, STEPS)}>
                   {t.intake.steps.map((s, i) => {
                     const state = i < step ? "done" : i === step ? "current" : "todo";
                     return (
@@ -433,7 +366,7 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
                     transition={{ duration: 0.45, ease: EASE }}
                   >
                     <h3 ref={titleRef} tabIndex={-1} className="tq-display tq-step__title">
-                      <span className="tq-sr">{t.intake.stepOf(step + 1, 3)}: </span>
+                      <span className="tq-sr">{t.intake.stepOf(step + 1, STEPS)}: </span>
                       {t.intake.steps[step]}
                     </h3>
 
@@ -495,25 +428,15 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
                           </p>
                         </div>
 
-                        <fieldset className="tq-field" style={{ border: 0, padding: 0, margin: 0 }}>
-                          <legend className="tq-mono tq-legend" style={{ marginBottom: 10 }}>
-                            {t.intake.scope}
-                          </legend>
-                          <div className="tq-pills">
-                            {SCOPES.map((s) => (
-                              <label key={s.id} className="tq-pill">
-                                <input
-                                  type="radio"
-                                  name="scope"
-                                  value={s.id}
-                                  checked={scope === s.id}
-                                  onChange={() => setScope(s.id)}
-                                />
-                                {pick(lang, s.label)}
-                              </label>
-                            ))}
-                          </div>
-                        </fieldset>
+                        <Field
+                          id="tq-start"
+                          label={t.intake.startTime}
+                          hint={t.intake.startHint}
+                          optional={t.intake.optional}
+                          value={startTime}
+                          onChange={setStartTime}
+                          autoComplete="off"
+                        />
                       </>
                     )}
 
@@ -635,11 +558,12 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
                             id="tq-phone"
                             type="tel"
                             label={t.intake.phone}
-                            optional={t.intake.optional}
                             value={phone}
                             onChange={setPhone}
                             autoComplete="tel"
                             inputMode="tel"
+                            error={errors.phone}
+                            required
                           />
                         </div>
                         <fieldset className="tq-field" style={{ border: 0, padding: 0, margin: 0 }}>
@@ -674,55 +598,74 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
                             onChange={(e) => setNote(e.target.value)}
                           />
                         </div>
-                        <fieldset className="tq-field" style={{ border: 0, padding: 0, margin: 0 }}>
-                          <legend className="tq-mono tq-legend" style={{ marginBottom: 10 }}>
-                            {t.intake.finish}
-                          </legend>
-                          <div className="tq-choice">
-                            <label>
-                              <input
-                                type="radio"
-                                name="path"
-                                value="retainer"
-                                checked={path === "retainer"}
-                                onChange={() => setPath("retainer")}
-                              />
-                              <span className="tq-display tq-choice__num" aria-hidden>
-                                ◆
-                              </span>
-                              <span>
-                                <span className="tq-choice__name" style={{ display: "block" }}>
-                                  {t.intake.pathRetainer}
-                                </span>
-                                <span className="tq-muted" style={{ fontSize: "0.9375rem" }}>
-                                  {t.intake.pathRetainerNote(money(quote.retainerUsd))}
-                                </span>
-                              </span>
-                              <span className="tq-mono tq-choice__price tq-nums">{money(quote.retainerUsd)}</span>
-                            </label>
-                            <label>
-                              <input
-                                type="radio"
-                                name="path"
-                                value="consult"
-                                checked={path === "consult"}
-                                onChange={() => setPath("consult")}
-                              />
-                              <span className="tq-display tq-choice__num" aria-hidden>
-                                ◇
-                              </span>
-                              <span>
-                                <span className="tq-choice__name" style={{ display: "block" }}>
-                                  {t.intake.pathConsult}
-                                </span>
-                                <span className="tq-muted" style={{ fontSize: "0.9375rem" }}>
-                                  {t.intake.pathConsultNote(CONSULT_HOLD_DAYS)}
-                                </span>
-                              </span>
-                              <span className="tq-mono tq-choice__price tq-nums">$0</span>
-                            </label>
-                          </div>
-                        </fieldset>
+                        <label className="tq-check">
+                          <input type="checkbox" checked={share} onChange={(e) => setShare(e.target.checked)} />
+                          <span className="tq-check__box" aria-hidden>
+                            {share ? "✓" : ""}
+                          </span>
+                          <span>{t.intake.share}</span>
+                        </label>
+                      </>
+                    )}
+
+                    {step === LAST && agreement && (
+                      <>
+                        <p style={{ margin: 0 }}>{t.intake.signIntro}</p>
+                        <article className="tq-agreement" aria-label={agreement.title} tabIndex={0}>
+                          <h4 className="tq-agreement__title">{agreement.title}</h4>
+                          <p>{agreement.intro}</p>
+                          {agreement.sections.map((sec) => (
+                            <section key={sec.title}>
+                              <h5 className="tq-mono">{sec.title}</h5>
+                              <ul>
+                                {sec.lines.map((l) => (
+                                  <li key={l}>{l}</li>
+                                ))}
+                              </ul>
+                            </section>
+                          ))}
+                        </article>
+                        <Field
+                          id="tq-signed-name"
+                          label={t.intake.signedName}
+                          value={signedName}
+                          onChange={setSignedName}
+                          autoComplete="name"
+                          error={errors.signedName}
+                          required
+                        />
+                        <SignaturePad
+                          value={signature}
+                          onChange={(png) => {
+                            setSignature(png);
+                            if (png) setErrors((e) => ({ ...e, signature: "" }));
+                          }}
+                          label={t.intake.signature}
+                          clearLabel={t.intake.clear}
+                          typedName={signedName}
+                          useTypedLabel={t.intake.useTyped}
+                          error={errors.signature}
+                        />
+                        <label className="tq-check">
+                          <input
+                            type="checkbox"
+                            checked={agree}
+                            onChange={(e) => {
+                              setAgree(e.target.checked);
+                              if (e.target.checked) setErrors((x) => ({ ...x, agree: "" }));
+                            }}
+                            aria-describedby={errors.agree ? "err-agree" : undefined}
+                          />
+                          <span className="tq-check__box" aria-hidden>
+                            {agree ? "✓" : ""}
+                          </span>
+                          <span>{t.intake.agree}</span>
+                        </label>
+                        {errors.agree && (
+                          <p id="err-agree" className="tq-error" role="alert">
+                            {errors.agree}
+                          </p>
+                        )}
                         {SHOW_TURNSTILE && SITE_KEY ? (
                           <Turnstile
                             siteKey={SITE_KEY}
@@ -732,19 +675,12 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
                             options={{ theme: "auto", language: language }}
                           />
                         ) : null}
-                        {path === "retainer" && <p className="tq-hint">{t.intake.secure}</p>}
                         {errors.form && (
                           <p className="tq-error" role="alert">
                             {errors.form}
                           </p>
                         )}
                       </>
-                    )}
-                    {notice && step === 2 && (
-                      <p className="tq-picked" role="status" style={{ margin: 0 }}>
-                        <span className="tq-dot" data-limited aria-hidden />
-                        <span>{notice === "closed" ? t.intake.closed : t.intake.redirecting}</span>
-                      </p>
                     )}
 
                     <div className="tq-step__nav">
@@ -754,16 +690,15 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
                         </button>
                       )}
                       <button type="submit" className="tq-btn tq-btn--lg" disabled={sending}>
-                        {step < 2 ? (
+                        {step < LAST ? (
                           <>
                             {t.intake.continue} <span className="tq-arrow" aria-hidden>→</span>
                           </>
                         ) : sending ? (
-                          path === "retainer" ? t.intake.redirecting : t.intake.sending
+                          t.intake.sending
                         ) : (
                           <>
-                            {path === "retainer" ? t.intake.submitRetainer(money(quote.retainerUsd)) : t.intake.submit}{" "}
-                            <span className="tq-arrow" aria-hidden>↗</span>
+                            {t.intake.submit} <span className="tq-arrow" aria-hidden>→</span>
                           </>
                         )}
                       </button>
@@ -814,7 +749,7 @@ function Summary({ date, city, total }: { date: string | null; city: string; tot
         <dd className="tq-nums">{money(total)}</dd>
       </div>
       <div>
-        <dt className="tq-mono">{t.intake.retainerLabel}</dt>
+        <dt className="tq-mono">{t.intake.depositLabel}</dt>
         <dd className="tq-nums">
           {money(q.retainerUsd)}
           <span className="tq-muted"> · {t.intake.balanceLabel}: {money(q.balanceUsd)}</span>
@@ -964,7 +899,8 @@ function Calendar({
           {Array.from({ length: days }, (_, i) => {
             const d = new Date(view.y, view.m, i + 1);
             const iso = isoDate(d);
-            const past = d < today;
+            // Today can't be booked online (the server only accepts future dates).
+            const past = d <= today;
             const isTaken = taken.has(iso);
             const picked = value === iso;
             return (

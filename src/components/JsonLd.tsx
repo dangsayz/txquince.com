@@ -50,7 +50,7 @@ export function JsonLd() {
     // show "inquire for pricing"; this feeds price queries and AI overviews.
     makesOffer: TIER_IDS.map((id) => ({
       "@type": "Offer",
-      name: `${TIER_NAME_EN[id]} — Quinceañera Photography & Film`,
+      name: `${TIER_NAME_EN[id]} — Quinceañera Photos & Video`,
       price: String(TIER_PRICE_USD[id]),
       priceCurrency: "USD",
       url: `${site.url}/#commissions`,

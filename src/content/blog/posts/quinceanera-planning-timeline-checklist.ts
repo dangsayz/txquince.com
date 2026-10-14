@@ -35,13 +35,13 @@ const post: BlogPost = {
       type: "ol",
       items: [
         "Set the date and a backup date. A backup matters because your top venue or photographer may only have one of your two dates open.",
-        "Set the budget. Decide the total first, then divide it — venue and food usually take the biggest slice, with photography and film, attire, music, and décor following. A clear number now prevents painful cuts later.",
+        "Set the budget. Decide the total first, then divide it — venue and food usually take the biggest slice, with photos and video, attire, music, and décor following. A clear number now prevents painful cuts later.",
         "Book the photographer and the venue. These two book up the earliest, so they go first — before the dress, before the invitations, before anything that feels more exciting.",
       ],
     },
     {
       type: "p",
-      text: "If you want to understand the money side before you divide it up, our [quinceañera budget breakdown for Texas](/blog/quinceanera-budget-breakdown-texas) shows where families actually spend, and our [commissions](/#commissions) lay out published photo and film options with no quote form.",
+      text: "If you want to understand the money side before you divide it up, our [quinceañera budget breakdown for Texas](/blog/quinceanera-budget-breakdown-texas) shows where families actually spend, and our [packages](/#commissions) lay out published photo and video options with no quote form.",
     },
     { type: "h3", text: "Why the photographer and venue get booked first" },
     {
@@ -149,7 +149,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "When you're ready to start at the top of this list, you can [check your date](/check-your-date) and then [reserve your commission](/#intake) — the two steps that make every month after them easier.",
+      text: "When you're ready to start at the top of this list, you can [check your date](/check-your-date) and then [reserve your package](/#intake) — the two steps that make every month after them easier.",
     },
   ],
   faqs: [

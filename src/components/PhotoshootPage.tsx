@@ -4,7 +4,7 @@ import { site } from "@/content/site";
 import { getImagesBySection } from "@/lib/content-db";
 import { portfolioFallback } from "@/content/portfolio-fallback";
 import { commissionLinks, commissions } from "@/content/commissions";
-import { ADD_ON_PRICE_USD, TIER_PRICE_USD, usd } from "@/lib/commission";
+import { ADD_ON_NAME_EN, ADD_ON_PRICE_USD, BASE_HOURS, TIER_PRICE_USD, usd } from "@/lib/commission";
 import "@/components/txq/pages/places.css";
 
 /**
@@ -12,7 +12,7 @@ import "@/components/txq/pages/places.css";
  * /es/sesion-de-fotos-quinceanera). Targets "pre quince photoshoot",
  * "quinceanera photoshoot only dallas fort worth" and "sesión de fotos
  * quinceañera" — the largest gap in the search research. Sells the Portrait
- * Study on its own, and shows where the session is already included. Prices
+ * Session on its own, and shows where the session is already included. Prices
  * come from the price book; no fabricated offers.
  */
 
@@ -25,22 +25,22 @@ const COPY = {
     path: "/quinceanera-photoshoot",
     eyebrow: "Pre-quince photoshoot / Dallas–Fort Worth",
     h1: "The quinceañera photoshoot, made like an editorial",
-    lead: "A pre-quince portrait session for the invitations, the welcome board and the family wall. Book it on its own, no event coverage required, or receive it inside The Full Production.",
+    lead: "A pre-quince portrait session for the invitations, the welcome board and the family wall. Book it on its own, no event coverage required, or receive it inside the Full Celebration.",
     check: "Check your date",
     other: "Ver en español",
     otherHref: "/es/sesion-de-fotos-quinceanera",
-    sessionEyebrow: "01 / The Portrait Study",
-    sessionTitle: "Three unhurried hours, one direction.",
+    sessionEyebrow: "01 / The Portrait Session",
+    sessionTitle: `${BASE_HOURS.study} unhurried hours, one plan.`,
     sessionBody: [
-      "We plan the session like a magazine sitting: the location, the light, the hour, the two looks. Her own quince gown, a second dress, or both. A director guides posture and light, then steps back so she still looks like herself.",
+      "We plan the session like a magazine sitting: the location, the light, the hour, the two looks. Her own quince gown, a second dress, or both. Your photographer guides posture and light, then steps back so she still looks like herself.",
       "It is also the easiest way to know us before the celebration. By the time the misa begins, the camera already feels familiar.",
     ],
-    includedTitle: "What the Portrait Study includes",
+    includedTitle: "What the Portrait Session includes",
     included: [
-      "A 3-hour editorial portrait session",
+      `A ${BASE_HOURS.study}-hour portrait session with one photographer`,
       "Location and timing planned with you",
-      "60 retouched frames",
-      "1 motion portrait for social",
+      "60 edited photos",
+      "1 short video for social media",
       "Her own dress, a second look, or both",
     ],
     whereEyebrow: "02 / Locations",
@@ -56,17 +56,17 @@ const COPY = {
     waysEyebrow: "03 / Ways to book",
     waysTitle: "On its own, or already included",
     ways: [
-      { label: "Portrait Study, on its own", note: "The session alone, no event coverage", price: usd(TIER_PRICE_USD.study) },
-      { label: "Included in III. The Full Production", note: "Portrait session at one location, plus the full day", price: usd(TIER_PRICE_USD.production) },
-      { label: "Included in IV. Multi-Day Editorial Archive", note: "Two portrait locations, plus the whole season", price: usd(TIER_PRICE_USD.archive) },
-      { label: "Destination portrait session", note: "A half-day anywhere in Texas, added to any commission", price: `+${usd(ADD_ON_PRICE_USD.destination)}` },
+      { label: "Portrait Session, on its own", note: "The session alone, no event coverage", price: usd(TIER_PRICE_USD.study) },
+      { label: "Included in the Full Celebration", note: "Portrait session at one location, plus the full day", price: usd(TIER_PRICE_USD.production) },
+      { label: "Included in the Two-Day Celebration", note: "Two portrait locations on their own day, plus the celebration", price: usd(TIER_PRICE_USD.archive) },
+      { label: ADD_ON_NAME_EN.destination, note: "A photo session in her dress before the big day, added to any package", price: `+${usd(ADD_ON_PRICE_USD.destination)}` },
     ],
-    compare: "Compare every commission",
+    compare: "Compare every package",
     faqEyebrow: "04 / Questions",
     faqTitle: "Photoshoot questions, answered.",
     faqs: [
-      { q: "How much is a quinceañera photoshoot?", a: `The Portrait Study is ${usd(TIER_PRICE_USD.study)} on its own: a 3-hour editorial session with 60 retouched frames and a motion portrait. It is included in The Full Production (${usd(TIER_PRICE_USD.production)}) and the Multi-Day Editorial Archive (${usd(TIER_PRICE_USD.archive)}).` },
-      { q: "Can we book only the photoshoot, without the event?", a: "Yes. The Portrait Study is designed to stand alone, for the invitations and welcome board, and it works just as well when the celebration itself is covered by family or another team." },
+      { q: "How much is a quinceañera photoshoot?", a: `The Portrait Session is ${usd(TIER_PRICE_USD.study)} on its own: ${BASE_HOURS.study} hours with one photographer, 60 edited photos and a short video for social media. It is included in the Full Celebration (${usd(TIER_PRICE_USD.production)}) and the Two-Day Celebration (${usd(TIER_PRICE_USD.archive)}).` },
+      { q: "Can we book only the photoshoot, without the event?", a: "Yes. The Portrait Session is designed to stand alone, for the invitations and welcome board, and it works just as well when the celebration itself is covered by family or another team." },
       { q: "Can she wear her own quince dress?", a: "Yes, her own gown and as many as two looks in the session. There is no rental and no restriction on the dress." },
       { q: "When should we schedule it?", a: "Usually two to four months before the celebration, so the portraits are ready for invitations. Spring and fall light in Dallas–Fort Worth is the most forgiving; we plan the hour around it." },
       { q: "Do you handle location permits?", a: "Yes. Some gardens, including the Dallas Arboretum, charge their own photography fee, which is paid to the location. We confirm the rules and book the permit with you before the session." },
@@ -86,22 +86,22 @@ const COPY = {
     path: "/es/sesion-de-fotos-quinceanera",
     eyebrow: "Sesión de fotos pre-quince / Dallas–Fort Worth",
     h1: "La sesión de fotos de quinceañera, hecha como una editorial",
-    lead: "Una sesión de retratos pre-quince para las invitaciones, el tablero de bienvenida y la pared de la familia. Resérvala sola, sin cobertura del evento, o recíbela dentro de La producción completa.",
+    lead: "Una sesión de retratos pre-quince para las invitaciones, el tablero de bienvenida y la pared de la familia. Resérvala sola, sin cobertura del evento, o recíbela dentro de la Celebración completa.",
     check: "Consultar tu fecha",
     other: "View in English",
     otherHref: "/quinceanera-photoshoot",
-    sessionEyebrow: "01 / Estudio de retrato",
-    sessionTitle: "Tres horas sin prisa, una sola dirección.",
+    sessionEyebrow: "01 / Sesión de retratos",
+    sessionTitle: `${BASE_HOURS.study} horas sin prisa, un solo plan.`,
     sessionBody: [
-      "Planeamos la sesión como una producción de revista: el lugar, la luz, la hora y los dos cambios. Su propio vestido de quince, un segundo vestido, o los dos. Un director guía la postura y la luz, y luego se aparta para que ella siga siendo ella.",
+      "Planeamos la sesión como una producción de revista: el lugar, la luz, la hora y los dos cambios. Su propio vestido de quince, un segundo vestido, o los dos. Tu fotógrafo guía la postura y la luz, y luego se aparta para que ella siga siendo ella.",
       "También es la forma más fácil de conocernos antes de la celebración. Para cuando empieza la misa, la cámara ya le resulta familiar.",
     ],
-    includedTitle: "Qué incluye el Estudio de retrato",
+    includedTitle: "Qué incluye la Sesión de retratos",
     included: [
-      "Una sesión editorial de 3 horas",
+      `Una sesión de retratos de ${BASE_HOURS.study} horas con un fotógrafo`,
       "Lugar y horario planeados contigo",
-      "60 imágenes retocadas",
-      "1 retrato en movimiento para redes",
+      "60 fotos editadas",
+      "1 video corto para redes sociales",
       "Su propio vestido, un segundo cambio, o los dos",
     ],
     whereEyebrow: "02 / Lugares",
@@ -117,17 +117,17 @@ const COPY = {
     waysEyebrow: "03 / Cómo reservar",
     waysTitle: "Sola, o ya incluida",
     ways: [
-      { label: "Estudio de retrato, por sí solo", note: "Solo la sesión, sin cobertura del evento", price: usd(TIER_PRICE_USD.study) },
-      { label: "Incluida en III. La producción completa", note: "Sesión de retrato en una locación, más el día completo", price: usd(TIER_PRICE_USD.production) },
-      { label: "Incluida en IV. Archivo editorial de varios días", note: "Dos locaciones de retrato, más toda la temporada", price: usd(TIER_PRICE_USD.archive) },
-      { label: "Sesión de retrato en destino", note: "Medio día en cualquier parte de Texas, añadido a cualquier encargo", price: `+${usd(ADD_ON_PRICE_USD.destination)}` },
+      { label: "Sesión de retratos, por sí sola", note: "Solo la sesión, sin cobertura del evento", price: usd(TIER_PRICE_USD.study) },
+      { label: "Incluida en la Celebración completa", note: "Sesión de retrato en una locación, más el día completo", price: usd(TIER_PRICE_USD.production) },
+      { label: "Incluida en la Celebración de dos días", note: "Dos locaciones de retrato en su propio día, más la celebración", price: usd(TIER_PRICE_USD.archive) },
+      { label: "Sesión con el vestido", note: "Una sesión de fotos con su vestido antes del gran día, añadida a cualquier paquete", price: `+${usd(ADD_ON_PRICE_USD.destination)}` },
     ],
-    compare: "Comparar todos los encargos",
+    compare: "Comparar todos los paquetes",
     faqEyebrow: "04 / Preguntas",
     faqTitle: "Preguntas sobre la sesión de fotos.",
     faqs: [
-      { q: "¿Cuánto cuesta una sesión de fotos de quinceañera?", a: `El Estudio de retrato cuesta ${usd(TIER_PRICE_USD.study)} por sí solo: una sesión editorial de 3 horas con 60 imágenes retocadas y un retrato en movimiento. Está incluido en La producción completa (${usd(TIER_PRICE_USD.production)}) y en el Archivo editorial de varios días (${usd(TIER_PRICE_USD.archive)}).` },
-      { q: "¿Podemos reservar solo la sesión de fotos, sin el evento?", a: "Sí. El Estudio de retrato está pensado para reservarse solo, para las invitaciones y el tablero de bienvenida, y funciona igual de bien si la celebración la cubre la familia u otro equipo." },
+      { q: "¿Cuánto cuesta una sesión de fotos de quinceañera?", a: `La Sesión de retratos cuesta ${usd(TIER_PRICE_USD.study)} por sí sola: ${BASE_HOURS.study} horas con un fotógrafo, 60 fotos editadas y un video corto para redes sociales. Está incluida en la Celebración completa (${usd(TIER_PRICE_USD.production)}) y en la Celebración de dos días (${usd(TIER_PRICE_USD.archive)}).` },
+      { q: "¿Podemos reservar solo la sesión de fotos, sin el evento?", a: "Sí. La Sesión de retratos está pensada para reservarse sola, para las invitaciones y el tablero de bienvenida, y funciona igual de bien si la celebración la cubre la familia u otro equipo." },
       { q: "¿Puede usar su propio vestido de quince?", a: "Sí, su propio vestido y hasta dos cambios en la sesión. No hay renta ni restricciones sobre el vestido." },
       { q: "¿Cuándo conviene hacerla?", a: "Normalmente de dos a cuatro meses antes de la celebración, para que los retratos estén listos para las invitaciones. La luz de primavera y otoño en Dallas–Fort Worth es la más amable; planeamos la hora alrededor de ella." },
       { q: "¿Ustedes se encargan de los permisos?", a: "Sí. Algunos jardines, como el Dallas Arboretum, cobran su propia cuota de fotografía, que se paga al lugar. Confirmamos las reglas y reservamos el permiso contigo antes de la sesión." },
@@ -155,8 +155,8 @@ export function photoshootMetadata(locale: Locale) {
       : "Sesión de Fotos de Quinceañera y Pre-Quince — Dallas–Fort Worth";
   const description =
     locale === "en"
-      ? `Pre-quince photoshoot in Dallas–Fort Worth: a 3-hour editorial Portrait Study for ${study.priceLabel}, bookable on its own. Her own dress, Arboretum to Highland Park Village.`
-      : `Sesión de fotos pre-quince en Dallas–Fort Worth: un Estudio de retrato editorial de 3 horas por ${study.priceLabel}, se reserva solo. Su propio vestido, del Arboretum a Highland Park Village.`;
+      ? `Pre-quince photoshoot in Dallas–Fort Worth: a ${BASE_HOURS.study}-hour Portrait Session for ${study.priceLabel}, bookable on its own. Her own dress, Arboretum to Highland Park Village.`
+      : `Sesión de fotos pre-quince en Dallas–Fort Worth: una Sesión de retratos de ${BASE_HOURS.study} horas por ${study.priceLabel}, se reserva sola. Su propio vestido, del Arboretum a Highland Park Village.`;
   return {
     title,
     description,
@@ -194,7 +194,7 @@ export async function PhotoshootPage({ locale }: { locale: Locale }) {
       {
         "@type": "Service",
         "@id": `${url}#service`,
-        name: locale === "en" ? "Quinceañera Portrait Study (pre-quince photoshoot)" : "Estudio de retrato de quinceañera (sesión pre-quince)",
+        name: locale === "en" ? "Quinceañera Portrait Session (pre-quince photoshoot)" : "Sesión de retratos de quinceañera (sesión pre-quince)",
         serviceType: "Quinceañera portrait session",
         provider: { "@id": `${site.url}/#business` },
         areaServed: { "@type": "AdministrativeArea", name: "Dallas–Fort Worth, TX" },
@@ -263,7 +263,7 @@ export async function PhotoshootPage({ locale }: { locale: Locale }) {
           <div className="tq-ledger__meta">
             <dl className="tq-meta tq-mono">
               <div>
-                <dt>{locale === "en" ? "Commission" : "Encargo"}</dt>
+                <dt>{locale === "en" ? "Package" : "Paquete"}</dt>
                 <dd>{study.numeral} {study.name[locale]}</dd>
               </div>
               <div>

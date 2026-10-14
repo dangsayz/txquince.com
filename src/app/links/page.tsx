@@ -7,7 +7,7 @@ import "@/components/txq/pages/pages.css";
 export const metadata: Metadata = {
   title: "Links",
   description:
-    "Reserve your date, see the portfolio, and explore collections for cinematic quinceañera photography & film across Dallas–Fort Worth.",
+    "Reserve your date, see the portfolio, and explore packages for quinceañera photos & video across Dallas–Fort Worth.",
   alternates: { canonical: "/links" },
   robots: { index: false },
 };
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 const links = [
   { href: "/#intake", label: "Reserve your date" },
   { href: "/portfolio", label: "See the portfolio" },
-  { href: "/#commissions", label: "Commissions & pricing" },
+  { href: "/#commissions", label: "Packages & prices" },
   { href: "/check-your-date", label: "Check if your date is open" },
 ] as const;
 
@@ -23,7 +23,7 @@ export default function LinksPage() {
   return (
     <div className="tq-wrap">
       <header className="tq-pg-mast">
-        <p className="tq-pg-mast__index tq-mono">[Photography &amp; film / Dallas–Fort Worth]</p>
+        <p className="tq-pg-mast__index tq-mono">[Photos &amp; video / Dallas–Fort Worth]</p>
         <div className="tq-pg-mast__body">
           <h1 className="tq-display tq-pg-mast__title">{site.brand}</h1>
           <p className="tq-pg-mast__dek">{site.tagline}</p>

@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/", languages: { "en-US": "/", "es-MX": "/es" } },
   openGraph: {
     title: "TX Quince — Quinceañera Photography & Film, Dallas–Fort Worth",
-    description: `Editorial portraits and cinema for the quinceañera. Commissions from ${from}.`,
+    description: `Quinceañera photos and videos in Dallas–Fort Worth. Packages from ${from}.`,
     url: site.url,
   },
 };

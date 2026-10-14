@@ -105,7 +105,7 @@ const post: BlogPost = {
     { type: "h2", text: "The vals and the father-daughter dance" },
     {
       type: "p",
-      text: "The vals (the waltz) is the formal, choreographed centerpiece — the honoree dancing with her chambelanes and court to a classical or chosen piece they've rehearsed for months. It flows into the father-daughter dance, one of the most emotional moments of the entire day, when her dad (or a father figure) takes the floor with her. Tears are normal. This is a moment families almost universally wish they had on film as well as in photos.",
+      text: "The vals (the waltz) is the formal, choreographed centerpiece — the honoree dancing with her chambelanes and court to a classical or chosen piece they've rehearsed for months. It flows into the father-daughter dance, one of the most emotional moments of the entire day, when her dad (or a father figure) takes the floor with her. Tears are normal. This is a moment families almost universally wish they had on video as well as in photos.",
     },
     {
       type: "image",
@@ -125,9 +125,9 @@ const post: BlogPost = {
     {
       type: "cta",
       heading: "Have these moments captured by people who know the order",
-      body: "Photo and film commissions built around the full quince day — getting ready through the last dance. Published pricing, no quote form.",
+      body: "Photo and video packages built around the full quince day — getting ready through the last dance. Published pricing, no quote form.",
       href: "/#commissions",
-      label: "Compare commissions",
+      label: "Compare packages",
     },
     { type: "h2", text: "Toast, dinner, and cake" },
     {
@@ -142,7 +142,7 @@ const post: BlogPost = {
     { type: "h2", text: "The surprise dance (vals sorpresa) and Hora Loca" },
     {
       type: "p",
-      text: "Now the energy turns up. The surprise dance — el baile sorpresa or vals sorpresa — is a high-energy, secretly rehearsed routine the honoree performs with her court to upbeat, modern music (reggaetón, pop, cumbia, whatever she loves). It's the crowd favorite and almost always the most fun thing to film all night. Some families follow it with the Hora Loca — the 'crazy hour' — a burst of props, masks, light-up accessories, and nonstop music to flood the dance floor. We wrote a whole guide to [the court, the vals, and the surprise dance](/blog/court-vals-surprise-dance-quinceanera) if you're choreographing yours.",
+      text: "Now the energy turns up. The surprise dance — el baile sorpresa or vals sorpresa — is a high-energy, secretly rehearsed routine the honoree performs with her court to upbeat, modern music (reggaetón, pop, cumbia, whatever she loves). It's the crowd favorite and almost always the most fun thing to video all night. Some families follow it with the Hora Loca — the 'crazy hour' — a burst of props, masks, light-up accessories, and nonstop music to flood the dance floor. We wrote a whole guide to [the court, the vals, and the surprise dance](/blog/court-vals-surprise-dance-quinceanera) if you're choreographing yours.",
     },
     { type: "h2", text: "Open dancing and the last dance" },
     {
@@ -171,7 +171,7 @@ const post: BlogPost = {
     { type: "h2", text: "How many hours of photo coverage do you need?" },
     {
       type: "p",
-      text: "If you want the whole story — getting ready through the surprise dance — plan for roughly 8–10 hours of coverage. Shorter packages (4–6 hours) typically pick up the reception only, which means the getting-ready, the Mass, and the portraits get cut. The single most common regret we hear is booking too few hours and missing the father-daughter dance or the cambio de zapatos because the photographer's time ran out. When you're comparing options, look at the [commission inclusions](/#commissions) by coverage hours, not just by price, and use a [planning timeline checklist](/blog/quinceanera-planning-timeline-checklist) to make sure your schedule and your coverage line up.",
+      text: "If you want the whole story — getting ready through the surprise dance — plan for roughly 6–8 hours of coverage, depending on how close together your church and venue are. With fewer hours, something usually gets cut — most often the getting-ready or the end of the party. The single most common regret we hear is booking too few hours and missing the father-daughter dance or the cambio de zapatos because the photographer's time ran out. When you're comparing options, look at the [package inclusions](/#commissions) by coverage hours, not just by price, and use a [planning timeline checklist](/blog/quinceanera-planning-timeline-checklist) to make sure your schedule and your coverage line up.",
     },
     {
       type: "p",
@@ -193,7 +193,7 @@ const post: BlogPost = {
     },
     {
       q: "What is the surprise dance at a quinceañera?",
-      a: "The surprise dance (el baile sorpresa or vals sorpresa) is a high-energy, secretly rehearsed routine the honoree performs with her court to upbeat modern music — a contrast to the formal vals earlier in the night. It's usually the crowd favorite and one of the most fun moments to capture on film.",
+      a: "The surprise dance (el baile sorpresa or vals sorpresa) is a high-energy, secretly rehearsed routine the honoree performs with her court to upbeat modern music — a contrast to the formal vals earlier in the night. It's usually the crowd favorite and one of the most fun moments to capture on video.",
     },
     {
       q: "Is a quinceañera Mass a sacrament?",
@@ -201,7 +201,7 @@ const post: BlogPost = {
     },
     {
       q: "How many hours of photography coverage do I need for a quinceañera?",
-      a: "To capture the whole day — getting ready, the Mass, portraits, and the full reception through the surprise dance — plan for about 8–10 hours. Shorter 4–6 hour packages usually cover the reception only and miss the morning, the Mass, and the portrait session.",
+      a: "To capture the whole day — getting ready, the Mass, portraits, and the full reception through the surprise dance — plan for about 6–8 hours, depending on how close together your church and venue are. With fewer hours, the morning or the end of the party usually gets cut. Our Photo + Video and Full Celebration packages include 6 hours, and you can add hours up to 8.",
     },
   ],
   related: [

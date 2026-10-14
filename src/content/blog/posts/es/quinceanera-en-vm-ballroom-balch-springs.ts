@@ -62,7 +62,7 @@ const post: BlogPost = {
     },
     {
       "type": "p",
-      "text": `Le cotice lo que le cotice VM Ballroom, la fotografía y el video son una línea aparte y fija. Nuestras [comisiones](/es#commissions) están publicadas en ${study}, ${cinema}, ${production} y ${archive}, y un anticipo del ${Math.round(RETAINER.rate * 100)}% aparta la fecha, con el saldo ${RETAINER.balanceDueDays} días antes. El presupuesto del salón es el que se mueve; la cobertura no tiene por qué moverse.`
+      "text": `Le cotice lo que le cotice VM Ballroom, la fotografía y el video son una línea aparte y fija. Nuestros [paquetes](/es#commissions) están publicados en ${study}, ${cinema}, ${production} y ${archive}, y un depósito del ${Math.round(RETAINER.rate * 100)}% asegura la fecha una vez aprobado su contrato, y el resto se paga ${RETAINER.balanceDueHours} horas antes del evento. El presupuesto del salón es el que se mueve; la cobertura no tiene por qué moverse.`
     },
     {
       "type": "h2",

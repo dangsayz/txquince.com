@@ -26,11 +26,11 @@ const mono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: `${site.brand} — Quinceañera Photography & Film | Dallas–Fort Worth`,
+    default: `${site.brand} — Quinceañera Photos & Video | Dallas–Fort Worth`,
     template: `%s · ${site.brand}`,
   },
   description:
-    `Luxury quinceañera photography and film across Dallas–Fort Worth. Four published commissions from ${commissionsFromLabel}, from the portrait session to the last dance.`,
+    `Luxury quinceañera photos and video across Dallas–Fort Worth. Four published packages from ${commissionsFromLabel}, from the portrait session to the last dance.`,
   applicationName: site.brand,
   alternates: { canonical: "/" },
   openGraph: {
@@ -38,15 +38,15 @@ export const metadata: Metadata = {
     siteName: site.brand,
     locale: "en_US",
     url: site.url,
-    title: `${site.brand} — Quinceañera Photography & Film`,
+    title: `${site.brand} — Quinceañera Photos & Video`,
     description:
-      `Editorial quinceañera photography and film across Dallas–Fort Worth. Commissions from ${commissionsFromLabel}.`,
+      `Quinceañera photos and video across Dallas–Fort Worth. Packages from ${commissionsFromLabel}.`,
   },
   twitter: {
     card: "summary_large_image",
-    title: `${site.brand} — Quinceañera Photography & Film`,
+    title: `${site.brand} — Quinceañera Photos & Video`,
     description:
-      `Editorial quinceañera photography and film across Dallas–Fort Worth. Commissions from ${commissionsFromLabel}.`,
+      `Quinceañera photos and video across Dallas–Fort Worth. Packages from ${commissionsFromLabel}.`,
   },
   robots: { index: true, follow: true },
 };

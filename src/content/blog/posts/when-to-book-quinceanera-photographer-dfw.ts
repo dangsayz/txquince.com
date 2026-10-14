@@ -35,7 +35,7 @@ const post: BlogPost = {
       items: [
         "More open dates — your Saturday is still on the calendar, not already claimed by another family.",
         "Your first choice of artist — you book the photographer you want, not the backup who had a gap.",
-        "Today's price — booking locks the current commission price before any annual update.",
+        "Today's price — booking locks the current package price before any annual update.",
         "Time to plan the details — a pre-quince session, the timeline, the shot list, all without rushing.",
       ],
     },
@@ -96,13 +96,13 @@ const post: BlogPost = {
       items: [
         "Your date — the confirmed day of the celebration.",
         "Your venue — or at least the city, so travel and timing are clear.",
-        "A rough idea of coverage — photo-only or photo + film (you can decide later, but it helps to know your lean).",
-        "Your budget range — so you can match it to the right [commission](/#commissions) without guesswork.",
+        "A rough idea of coverage — photo-only or photo + video (you can decide later, but it helps to know your lean).",
+        "Your budget range — so you can match it to the right [package](/#commissions) without guesswork.",
       ],
     },
     {
       type: "p",
-      text: `With the date and venue in hand, [reserve your day](/#intake) is a short step — a ${retainerPct} retainer holds the date and the balance is due ${RETAINER.balanceDueDays} days before the celebration. Want to talk first? Request a consultation and we'll hold the date for ${CONSULT_HOLD_DAYS} days. If you're still comparing artists, look through a few full [galleries](/portfolio) start to finish before you decide.`,
+      text: `With the date and venue in hand, [reserve your day](/#intake) is a short step — pick a package and sign the agreement online, and we hold your date for ${CONSULT_HOLD_DAYS} days while we review it. Once it's approved, a ${retainerPct} deposit locks it in, and the rest is due ${RETAINER.balanceDueHours} hours before the event. Want to talk first? Ask for a quick call. If you're still comparing artists, look through a few full [galleries](/portfolio) start to finish before you decide.`,
     },
     { type: "h2", text: "When to schedule the pre-quince session" },
     {
@@ -138,7 +138,7 @@ const post: BlogPost = {
     },
     {
       q: "What do I need before booking a photographer?",
-      a: "Just two things: your confirmed date and your venue (or at least the city). That's enough to check availability and reserve with a retainer — or request a consultation first. Coverage choices, the timeline, and the pre-quince session can all be sorted out afterward.",
+      a: "Just two things: your confirmed date and your venue (or at least the city). That's enough to check availability, pick a package and sign the agreement — or ask for a quick call first. Coverage choices, the timeline, and the pre-quince session can all be sorted out afterward.",
     },
     {
       q: "When should I schedule the pre-quince or save-the-date session?",

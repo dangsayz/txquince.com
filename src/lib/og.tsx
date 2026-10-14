@@ -12,7 +12,7 @@ export function renderOg(opts: {
   footer?: string;
 }) {
   const { eyebrow = site.serviceArea, title, footer } = opts;
-  const foot = footer ?? `${site.domain} · Commissions from ${usd(PRICE_FLOOR_USD)}`;
+  const foot = footer ?? `${site.domain} · Packages from ${usd(PRICE_FLOOR_USD)}`;
 
   return new ImageResponse(
     (

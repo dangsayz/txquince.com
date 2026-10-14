@@ -1,5 +1,5 @@
 import type { BlogPost } from "@/content/blog";
-import { TIER_PRICE_USD, BASE_CREW, usd } from "@/lib/commission";
+import { TIER_PRICE_USD, BASE_CREW, BASE_HOURS, MAX_HOURS, usd } from "@/lib/commission";
 
 const study = usd(TIER_PRICE_USD.study);
 const cinema = usd(TIER_PRICE_USD.cinema);
@@ -25,7 +25,7 @@ const post: BlogPost = {
     { type: "h2", text: "La respuesta corta" },
     {
       type: "p",
-      text: "Técnicamente no necesita los dos. Muchísimas familias reservan solo foto y quedan felices. Pero la foto y el video guardan cosas distintas, y los momentos que se viven en movimiento — el vals, los discursos, el baile sorpresa, la cara de su hija cuando arranca la música — solo quedan completos en video. Si el presupuesto alcanza para ambos, un mismo equipo que haga foto y video es la forma más sencilla de lograrlo. En [TX Quince](/es#commissions), el Estudio de retrato es nuestra comisión de solo foto; Cine y fotografía, La producción completa y el Archivo editorial de varios días incluyen los dos.",
+      text: "Técnicamente no necesita los dos. Muchísimas familias reservan solo foto y quedan felices. Pero la foto y el video guardan cosas distintas, y los momentos que se viven en movimiento — el vals, los discursos, el baile sorpresa, la cara de su hija cuando arranca la música — solo quedan completos en video. Si el presupuesto alcanza para ambos, un mismo equipo que haga foto y video es la forma más sencilla de lograrlo. En [TX Quince](/es#commissions), la Sesión de retratos es nuestro paquete de solo foto; Foto + Video, la Celebración completa y la Celebración de dos días incluyen los dos.",
     },
     { type: "h2", text: "Qué guarda la foto que el video no puede" },
     {
@@ -34,7 +34,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "La foto también es como se comparte la mayor parte del día — la galería que sus familiares en México abrirán a la mañana siguiente, las impresiones para los abuelos, la imagen que se vuelve la tarjeta de agradecimiento. Si solo va a hacer una cosa, la fotografía profesional es la base. Por eso todas [las comisiones de TX Quince](/es#commissions) la incluyen.",
+      text: "La foto también es como se comparte la mayor parte del día — la galería que sus familiares en México abrirán a la mañana siguiente, las impresiones para los abuelos, la imagen que se vuelve la tarjeta de agradecimiento. Si solo va a hacer una cosa, la fotografía profesional es la base. Por eso todas [los paquetes de TX Quince](/es#commissions) la incluyen.",
     },
     { type: "h2", text: "Qué guarda el video que una foto jamás podrá" },
     {
@@ -52,7 +52,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Dos de esos momentos — el vals y el baile sorpresa — son lo que las familias más desean haber tenido en video después de la fiesta. Vea cómo se sienten en pantalla en nuestros [cortos cinematográficos del portafolio](/portfolio).",
+      text: "Dos de esos momentos — el vals y el baile sorpresa — son lo que las familias más desean haber tenido en video después de la fiesta. Vea cómo se sienten en pantalla en nuestros [videos del portafolio](/portfolio).",
     },
     { type: "h2", text: "El caso emocional del video" },
     {
@@ -72,19 +72,19 @@ const post: BlogPost = {
       type: "ul",
       items: [
         "Una edición documental — el corte largo que recorre el día en orden: el arreglo, la misa, los brindis, el vals, el baile. Es el recuerdo que se sienta a ver con la familia entera.",
-        "Un cinematográfico de 3 a 5 minutos — el corto editado con música que captura el sentimiento de todo el día. Es el que de verdad va a compartir, y el que su hija va a publicar.",
+        "Un video resumen de 3 a 5 minutos — el corto editado con música que captura el sentimiento de todo el día. Es el que de verdad va a compartir, y el que su hija va a publicar.",
       ],
     },
     {
       type: "p",
-      text: "En nuestras comisiones de foto y video, la película viene con un teaser corto y reels verticales editados para compartir — y el Archivo editorial de varios días suma un adelanto en 48 horas — para que tenga algo que publicar mientras el día sigue fresco, en lugar de esperar meses.",
+      text: "En nuestros paquetes de foto y video, el video completo viene con un tráiler corto y videos verticales cortos para redes sociales — y con la Celebración de dos días el primero llega en 48 horas — para que tenga algo que publicar mientras el día sigue fresco, en lugar de esperar meses.",
     },
     {
       type: "cta",
-      heading: "Vea exactamente cuáles comisiones incluyen video",
-      body: `El Estudio de retrato es solo foto. Cine y fotografía, La producción completa y el Archivo editorial de varios días combinan fotógrafos y videógrafos: ${BASE_CREW.cinema}, ${BASE_CREW.production} o ${BASE_CREW.archive} directores, en la combinación que usted elija. Compárelas lado a lado.`,
+      heading: "Vea exactamente cuáles paquetes incluyen video",
+      body: `La Sesión de retratos es solo foto. Foto + Video, la Celebración completa y la Celebración de dos días combinan fotógrafos y videógrafos: uno de cada uno con Foto + Video, o un equipo de ${BASE_CREW.production} o ${BASE_CREW.archive} personas con los paquetes más grandes, en la combinación que usted elija. Compárelos lado a lado.`,
       href: "/es#commissions",
-      label: "Comparar comisiones",
+      label: "Comparar paquetes",
     },
     { type: "h2", text: "Un equipo para los dos, o dos proveedores aparte" },
     {
@@ -95,7 +95,7 @@ const post: BlogPost = {
       type: "ul",
       items: [
         "Coordinación — dos proveedores que nunca se han visto tienen que negociar ángulos, luz y quién se para dónde durante el vals. Un solo equipo ya resolvió eso; no verá a dos extraños tapándose las tomas.",
-        "Un solo contacto — un contrato, un itinerario, un anticipo y una persona que conoce su día completo. No dos cadenas de correos y dos facturas que perseguir.",
+        "Un solo contacto — un contrato, un itinerario, un depósito y una persona que conoce su día completo. No dos cadenas de correos y dos facturas que perseguir.",
         "Un mismo estilo — la foto y el video comparten la misma mirada, así la galería y el video se sienten del mismo día, no de dos eventos distintos grabados por gente con gustos diferentes.",
         "Costo — y esta es la parte que sorprende a casi todas las familias: con el mismo nivel de oficio, reservar ambos con un mismo equipo normalmente sale más barato que contratar a dos personas por separado.",
       ],
@@ -107,7 +107,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Anclado a nuestras comisiones: el Estudio de retrato cuesta ${study} — solo foto, una sesión editorial de retrato de tres horas antes de la celebración. Cine y fotografía cuesta ${cinema} por foto y video — ocho horas con un director de foto y un director de video, una película 4K de 8 a 10 minutos, un teaser y reels. La producción completa, por ${production}, es la que recomendamos para la mayoría de las celebraciones — once horas, ${BASE_CREW.production} directores y una coordinadora del día, una sesión de retrato, una película de 12 a 15 minutos y un libro encuadernado en lino. El Archivo editorial de varios días, por ${archive}, cubre dos días con ${BASE_CREW.archive} directores y una coordinadora del día. Para ver qué incluye cada comisión y [cuáles incluyen ambos](/es#commissions), revise las comisiones; y para una mirada más amplia al costo, lea [cuánto cuesta un fotógrafo de quinceañera en DFW](/es/blog/cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth).`,
+      text: `Anclado a nuestros paquetes: la Sesión de retratos cuesta ${study} — solo fotos, ${BASE_HOURS.study} horas con un fotógrafo. Foto + Video cuesta ${cinema} — ${BASE_HOURS.cinema} horas con un fotógrafo y un videógrafo, un video completo en 4K de 8 a 10 minutos, un tráiler corto y videos cortos para redes sociales. La Celebración completa, por ${production}, es la que recomendamos para la mayoría de las celebraciones — ${BASE_HOURS.production} horas, un equipo de ${BASE_CREW.production} y una coordinadora del día, una sesión de retratos, un video completo de 12 a 15 minutos y un álbum de fotos impreso. La Celebración de dos días, por ${archive}, le da ${BASE_HOURS.archive} horas más un segundo día de retratos, con un equipo de ${BASE_CREW.archive} y una coordinadora del día. ¿Necesita más tiempo el día de la fiesta? Puede agregar horas, una a la vez, hasta ${MAX_HOURS} en total. Para ver qué incluye cada paquete y [cuáles incluyen ambos](/es#commissions), revise los paquetes; y para una mirada más amplia al costo, lea [cuánto cuesta un fotógrafo de quinceañera en DFW](/es/blog/cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth).`,
     },
     { type: "h2", text: "Si el presupuesto solo alcanza para uno" },
     {
@@ -138,19 +138,19 @@ const post: BlogPost = {
     },
     {
       q: "¿Qué incluye el video de quinceañera?",
-      a: "Un buen video es una historia editada, no una grabación cruda, casi siempre entregada en dos piezas: una edición documental que recorre el día completo en orden, y un cinematográfico de 3 a 5 minutos editado con música. En las comisiones de foto y video de TX Quince también incluye un teaser corto y reels verticales, para que tenga algo que compartir mientras el día sigue fresco.",
+      a: "Un buen video es una historia editada, no una grabación cruda, casi siempre entregada en dos piezas: una edición documental que recorre el día completo en orden, y un video resumen de 3 a 5 minutos editado con música. En los paquetes de foto y video de TX Quince también incluye un tráiler corto y videos verticales cortos para redes sociales, para que tenga algo que compartir mientras el día sigue fresco.",
     },
     {
       q: "¿Sale más barato contratar foto y video juntos?",
       a: "Normalmente sí, con el mismo nivel de oficio. En DFW, los paquetes combinados de foto y video suelen ir de unos $3,000 a $5,500, por lo general menos que contratar por separado a un fotógrafo y un videógrafo comparables, porque el equipo ya está en el lugar y el día se planea una sola vez.",
     },
     {
-      q: "¿Cuáles comisiones de TX Quince incluyen foto y video?",
-      a: `El Estudio de retrato (${study}) es solo foto. Cine y fotografía (${cinema}), La producción completa (${production}) y el Archivo editorial de varios días (${archive}) incluyen foto y video, con ${BASE_CREW.cinema}, ${BASE_CREW.production} o ${BASE_CREW.archive} directores en la combinación de fotógrafos y videógrafos que usted elija. La producción completa es la que recomendamos para la mayoría de las celebraciones. Puede comparar todo lo que incluye cada una en las comisiones de nuestra página principal.`,
+      q: "¿Cuáles paquetes de TX Quince incluyen foto y video?",
+      a: `La Sesión de retratos (${study}) es solo foto. Foto + Video (${cinema}), la Celebración completa (${production}) y la Celebración de dos días (${archive}) incluyen foto y video, con un equipo de ${BASE_CREW.cinema}, ${BASE_CREW.production} o ${BASE_CREW.archive} personas en la combinación de fotógrafos y videógrafos que usted elija. La Celebración completa es la que recomendamos para la mayoría de las celebraciones. Puede comparar todo lo que incluye cada uno en los paquetes de nuestra página principal.`,
     },
     {
       q: "¿Un mismo equipo puede hacer la foto y el video?",
-      a: "Sí — y normalmente es la mejor opción. Un solo equipo significa ángulos coordinados durante el vals y el baile sorpresa, un solo contacto y un solo contrato, un mismo estilo entre la galería y el video, y menor costo que contratar a dos proveedores aparte. Todas las comisiones de foto y video de TX Quince están armadas justo así.",
+      a: "Sí — y normalmente es la mejor opción. Un solo equipo significa ángulos coordinados durante el vals y el baile sorpresa, un solo contacto y un solo contrato, un mismo estilo entre la galería y el video, y menor costo que contratar a dos proveedores aparte. Todas los paquetes de foto y video de TX Quince están armadas justo así.",
     },
   ],
   related: [

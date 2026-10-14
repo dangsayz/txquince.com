@@ -152,7 +152,10 @@ export async function POST(request: NextRequest) {
       case "checkout.session.expired":
       case "checkout.session.async_payment_failed": {
         const session = checkoutSessionFromEvent(event.data.object);
-        if (session?.id) {
+        // An approved agreement's pay link opens a fresh checkout whenever the
+        // family returns, so an abandoned session must NOT release their date —
+        // the approval hold (expires_at) governs that instead.
+        if (session?.id && session.metadata?.flow !== "agreement") {
           const { error } = await getServiceSupabase()
             .from("bookings")
             .update({ status: "expired" })

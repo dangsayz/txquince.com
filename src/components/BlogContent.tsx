@@ -60,8 +60,13 @@ const CATEGORY_ES: Record<BlogCategory, string> = {
 
 const CATEGORY_ORDER: BlogCategory[] = ["Cost & Budget", "Planning", "Traditions", "Photography & Film", "Locations"];
 
+/** English display labels where the stored category key reads too technical. */
+const CATEGORY_EN: Partial<Record<BlogCategory, string>> = {
+  "Photography & Film": "Photos & Video",
+};
+
 export function categoryLabel(category: BlogCategory, lang: BlogLang): string {
-  return lang === "es" ? CATEGORY_ES[category] : category;
+  return lang === "es" ? CATEGORY_ES[category] : (CATEGORY_EN[category] ?? category);
 }
 
 const COPY = {
@@ -79,7 +84,7 @@ const COPY = {
     readStory: "Read the story",
     all: "All",
     allTitle: "Every guide",
-    allDek: (n: number) => `${n} guides on costs, timelines, traditions, photography and film.`,
+    allDek: (n: number) => `${n} guides on costs, timelines, traditions, photos and video.`,
     filterLabel: "Filter guides by topic",
     tocLabel: "In this guide",
     topic: "Topic",
@@ -91,8 +96,8 @@ const COPY = {
     relatedIndex: "Keep reading",
     relatedTitle: "More from the journal",
     closeIndex: "Your date",
-    closeTitle: ["Her day, photographed", "and filmed."],
-    closeDek: "Share the date and venue. A director writes back personally, within one day, in English or Spanish.",
+    closeTitle: ["Her day, in photos", "and video."],
+    closeDek: "Share the date and venue. We write back personally, within one day, in English or Spanish.",
     closeCta: "Inquire Date",
     closeSecondary: "All guides",
     fallbackAlt: "Quinceañera portrait in Dallas–Fort Worth",
@@ -123,8 +128,8 @@ const COPY = {
     relatedIndex: "Sigue leyendo",
     relatedTitle: "Más del diario",
     closeIndex: "Su fecha",
-    closeTitle: ["Su día, en foto", "y en cine."],
-    closeDek: "Comparta la fecha y el salón. Un director le responde en persona, en un día, en español o en inglés.",
+    closeTitle: ["Su día, en fotos", "y en video."],
+    closeDek: "Comparta la fecha y el salón. Le respondemos en persona, en un día, en español o en inglés.",
     closeCta: "Consultar fecha",
     closeSecondary: "Todas las guías",
     fallbackAlt: "Fotografía de quinceañera en Dallas–Fort Worth",

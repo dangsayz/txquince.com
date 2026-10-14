@@ -1,5 +1,5 @@
 import type { BlogPost } from "@/content/blog";
-import { RETAINER, CONSULT_HOLD_DAYS, BASE_CREW, usd } from "@/lib/commission";
+import { RETAINER, BASE_CREW } from "@/lib/commission";
 
 const retainerPct = `${Math.round(RETAINER.rate * 100)}%`;
 
@@ -28,7 +28,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "What a good answer sounds like: a clear number and proof. Not \"a lot\" — an actual count, plus a link to full galleries you can scroll start to finish. Ask to see a complete quince, not a highlight reel of someone's best frames from ten different events. Our [portfolio](/portfolio) shows whole days the way they actually unfolded.",
+      text: "What a good answer sounds like: a clear number and proof. Not \"a lot\" — an actual count, plus a link to full galleries you can scroll start to finish. Ask to see a complete quince, not a highlight video of someone's best frames from ten different events. Our [portfolio](/portfolio) shows whole days the way they actually unfolded.",
     },
     { type: "h2", text: "2. Is the portrait session day-of, or a separate pre-quince session?" },
     {
@@ -37,7 +37,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "What a good answer sounds like: a clear explanation of which one is included, whether the other is available, and what it costs if it is. There's no single right model here — what matters is that they tell you plainly, so you're not surprised by a session you assumed was included (or a fee you didn't budget for). Our [commissions](/#commissions) spell out exactly what each one covers — The Full Production, for example, includes a portrait session at one location.",
+      text: "What a good answer sounds like: a clear explanation of which one is included, whether the other is available, and what it costs if it is. There's no single right model here — what matters is that they tell you plainly, so you're not surprised by a session you assumed was included (or a fee you didn't budget for). Our [packages](/#commissions) spell out exactly what each one covers — the Full Celebration, for example, includes a portrait session at one location.",
     },
     { type: "h2", text: "3. How many edited photos will I get, and how and when are they delivered?" },
     {
@@ -46,7 +46,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "What a good answer sounds like: a delivery range and a turnaround time, in writing. A private online gallery you can download and share, an honest edit count tied to your coverage hours, and a date you can hold them to. On our photo + film commissions you also get a teaser and vertical reels so you have something to share with family while the full gallery and feature are being finished.",
+      text: "What a good answer sounds like: a delivery range and a turnaround time, in writing. A private online gallery you can download and share, an honest edit count tied to your coverage hours, and a date you can hold them to. On our photo + video packages you also get a short trailer and short vertical videos for social media so you have something to share with family while the full gallery and full-length video are being finished.",
     },
     {
       type: "callout",
@@ -59,7 +59,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `What a good answer sounds like: whether a second shooter is included, available as an add-on, or not offered — and on which packages. With us, The Full Production and the Multi-Day Editorial Archive include ${BASE_CREW.production} and ${BASE_CREW.archive} directors, in whatever mix of photographers and videographers you choose, and you can see the reverse angles and dual-coverage moments they make possible across the [portfolio](/portfolio). If a photographer can't show you two-camera coverage, assume they work solo.`,
+      text: `What a good answer sounds like: whether a second shooter is included, available as an add-on, or not offered — and on which packages. With us, the Full Celebration and the Two-Day Celebration come with a team of ${BASE_CREW.production} and ${BASE_CREW.archive}, in whatever mix of photographers and videographers you choose, and you can see the reverse angles and dual-coverage moments they make possible across the [portfolio](/portfolio). If a photographer can't show you two-camera coverage, assume they work solo.`,
     },
     { type: "h2", text: "5. Do I get full usage and print rights to the images?" },
     {
@@ -68,7 +68,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "What a good answer sounds like: \"Yes — full usage and print rights, high-resolution files, print wherever you like.\" That's the standard you should expect, and it's exactly what's [included in every TX Quince commission](/#commissions). If the answer involves print packages or per-image fees, factor that into the real price.",
+      text: "What a good answer sounds like: \"Yes — full usage and print rights, high-resolution files, print wherever you like.\" That's the standard you should expect, and it's exactly what's [included in every TX Quince package](/#commissions). If the answer involves print packages or per-image fees, factor that into the real price.",
     },
     { type: "h2", text: "6. What's the deposit, the payment schedule, and what locks my date?" },
     {
@@ -77,12 +77,12 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `What a good answer sounds like: a specific deposit, a clear payment schedule with the balance due before the event, and a simple statement that the signed agreement plus deposit locks the date. With us, a retainer of ${retainerPct} of your commission (minimum ${usd(RETAINER.floorUsd)}) locks your date and is applied in full, and the balance is due ${RETAINER.balanceDueDays} days before the celebration. You can review the numbers in our [commissions](/#commissions) and [check whether your date is still open](/check-your-date) before you commit.`,
+      text: `What a good answer sounds like: a specific deposit, a clear payment schedule with the balance due before the event, and a simple statement that the signed agreement plus deposit locks the date. With us, you sign the agreement online, we approve it within one day, and then a deposit of ${retainerPct} of your package locks your date and goes toward your total. The rest is due ${RETAINER.balanceDueHours} hours before the event. You can review the numbers in our [packages](/#commissions) and [check whether your date is still open](/check-your-date) before you commit.`,
     },
     {
       type: "cta",
       heading: "Ask us all of these — start a conversation",
-      body: `Bring this whole list. Request a consultation and we'll hold your date for ${CONSULT_HOLD_DAYS} days while we answer every question. Real prices, real policies, real galleries.`,
+      body: `Bring this whole list. Ask for a quick call and we'll answer every question. Real prices, real policies, real galleries.`,
       href: "/#intake",
       label: "Start a conversation",
     },
@@ -104,14 +104,14 @@ const post: BlogPost = {
       type: "p",
       text: "What a good answer sounds like: a calm, specific run-through of all four — because it's been thought through before you asked. If a photographer has never considered what happens if they get sick, that's your answer.",
     },
-    { type: "h2", text: "8. Do you also film, or is that a separate vendor?" },
+    { type: "h2", text: "8. Do you also video, or is that a separate vendor?" },
     {
       type: "p",
-      text: "Photo and film are two different crafts. The question is whether one team handles both — coordinating the same timeline, the same vision — or whether you're hiring and managing two vendors who've never met.",
+      text: "Photo and video are two different crafts. The question is whether one team handles both — coordinating the same timeline, the same vision — or whether you're hiring and managing two vendors who've never met.",
     },
     {
       type: "p",
-      text: `What a good answer sounds like: a direct yes or no. We offer photo + film as one team on every commission from Cinema & Stills up, including a feature film, a teaser, and vertical reels — ${BASE_CREW.cinema} to ${BASE_CREW.archive} directors working the same day, in whatever photo/film mix you choose, not one person juggling a camera and a tripod. If you're weighing whether film is worth it at all, [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video) walks through the tradeoff honestly.`,
+      text: `What a good answer sounds like: a direct yes or no. We offer photo + video as one team on every package from Photo + Video up, including a full-length video, a short trailer, and short vertical videos for social media — a team of ${BASE_CREW.cinema} to ${BASE_CREW.archive} working the same day, in whatever mix of photographers and videographers you choose, not one person juggling a camera and a tripod. If you're weighing whether video is worth it at all, [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video) walks through the tradeoff honestly.`,
     },
     { type: "h2", text: "Putting it together" },
     {
@@ -126,15 +126,15 @@ const post: BlogPost = {
   faqs: [
     {
       q: "What questions should I ask a quinceañera photographer?",
-      a: "Ask how many quinceañeras they've shot, whether the portrait session is day-of or separate, how many edited photos you'll get and the turnaround, whether a second shooter is available, whether you receive full print rights, what the deposit and payment schedule are, what their backup-gear and rescheduling policy is, and whether they also film or use a separate videographer. The goal is specific answers — numbers, policies, and full galleries you can see.",
+      a: "Ask how many quinceañeras they've shot, whether the portrait session is day-of or separate, how many edited photos you'll get and the turnaround, whether a second shooter is available, whether you receive full print rights, what the deposit and payment schedule are, what their backup-gear and rescheduling policy is, and whether they also video or use a separate videographer. The goal is specific answers — numbers, policies, and full galleries you can see.",
     },
     {
       q: "Do quinceañera photographers include print rights?",
-      a: "Not all do — some deliver low-resolution or watermarked files, or charge per print. Always ask directly. At TX Quince, full usage and print rights and high-resolution files are included in every commission, so you can print and make albums wherever you like at no extra cost.",
+      a: "Not all do — some deliver low-resolution or watermarked files, or charge per print. Always ask directly. At TX Quince, full usage and print rights and high-resolution files are included in every package, so you can print and make albums wherever you like at no extra cost.",
     },
     {
       q: "How many edited photos should I expect?",
-      a: "It depends on coverage hours, but you should get a clear delivery range and turnaround time in writing rather than a vague \"unlimited.\" Expect a private online gallery you can download and share, plus — on photo + film commissions — a teaser and reels to share while the full set is finished.",
+      a: "It depends on coverage hours, but you should get a clear delivery range and turnaround time in writing rather than a vague \"unlimited.\" Expect a private online gallery you can download and share, plus — on photo + video packages — a short trailer and short videos for social media to share while the full set is finished.",
     },
     {
       q: "What happens if my photographer gets sick?",

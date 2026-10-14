@@ -13,7 +13,7 @@ export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Fotógrafo de Quinceañeras — Dallas–Fort Worth",
-  description: `Fotografía y cine de quinceañera de lujo en todo Dallas–Fort Worth — Dallas, Fort Worth, Frisco, Plano, McKinney, Arlington y más. Encargos publicados desde ${commissionsFromLabel}.`,
+  description: `Fotos y video de quinceañera de lujo en todo Dallas–Fort Worth — Dallas, Fort Worth, Frisco, Plano, McKinney, Arlington y más. Paquetes publicados desde ${commissionsFromLabel}.`,
   alternates: {
     canonical: "/es/fotografo-de-quinceaneras",
     languages: {
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Fotógrafo de Quinceañeras — Dallas–Fort Worth · " + site.brand,
-    description: `Fotografía y cine de quinceañera en todo el metroplex de DFW. Encargos publicados desde ${commissionsFromLabel}.`,
+    description: `Fotos y video de quinceañera en todo el metroplex de DFW. Paquetes publicados desde ${commissionsFromLabel}.`,
     url: site.url + "/es/fotografo-de-quinceaneras",
     locale: "es_MX",
   },
@@ -123,7 +123,7 @@ export default async function LocationsHubEs() {
               Por todo Dallas–Fort Worth. <em>De la iglesia al último baile.</em>
             </h1>
             <p className="tq-ledger__dek">
-              Fotografiamos y filmamos quinceañeras por todo Dallas–Fort Worth. Descubre las ciudades donde
+              Capturamos quinceañeras en fotos y video por todo Dallas–Fort Worth. Descubre las ciudades donde
               trabajamos y las celebraciones reales detrás de las imágenes.
             </p>
           </div>
@@ -150,7 +150,7 @@ export default async function LocationsHubEs() {
                 <span>Consultar tu fecha</span>
                 <span className="tq-arrow" aria-hidden>→</span>
               </Link>
-              <span className="tq-mono tq-muted">Encargos desde {commissionsFromLabel}</span>
+              <span className="tq-mono tq-muted">Paquetes desde {commissionsFromLabel}</span>
             </div>
           </div>
         </div>
@@ -250,13 +250,13 @@ export default async function LocationsHubEs() {
               </h2>
             </div>
             <div className="tq-place-cta__side">
-              <p>Explora el trabajo y los cuatro encargos; luego dinos qué fecha tienes en mente.</p>
+              <p>Explora el trabajo y los cuatro paquetes; luego dinos qué fecha tienes en mente.</p>
               <div className="tq-place-actions">
                 <Link href="/es#intake" className="tq-btn tq-btn--lg">
                   Consultar tu fecha <span className="tq-arrow" aria-hidden>↗</span>
                 </Link>
                 <Link href="/portfolio" className="tq-btn tq-btn--ghost">Ver fotografías</Link>
-                <Link href="/es#commissions" className="tq-btn tq-btn--ghost">Ver encargos</Link>
+                <Link href="/es#commissions" className="tq-btn tq-btn--ghost">Ver paquetes</Link>
                 <Link href="/es/salones" className="tq-btn tq-btn--ghost">Salones</Link>
               </div>
             </div>

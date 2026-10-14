@@ -116,7 +116,7 @@ const post: BlogPost = {
     {
       "type": "cta",
       "heading": "Choosing the color and the photographer at the same time?",
-      "body": "They're the same decision, made early. See what each commission includes, then check whether your date is still open.",
+      "body": "They're the same decision, made early. See what each package includes, then check whether your date is still open.",
       "href": "/check-your-date",
       "label": "Check your date"
     },
@@ -152,7 +152,7 @@ const post: BlogPost = {
     },
     {
       "type": "p",
-      "text": "And decide it early. The color and the photographer get chosen in the same window — your pre-celebration portrait session uses the gown or a stand-in, so settle the color first; many families lock it nine to twelve months out. See what each commission includes — the Portrait Study and The Full Production both include an editorial portrait session — in our [commissions](/#commissions), then [reserve your date](/#intake) once the Saturday is yours."
+      "text": "And decide it early. The color and the photographer get chosen in the same window — your pre-celebration portrait session uses the gown or a stand-in, so settle the color first; many families lock it nine to twelve months out. See what each package includes — the Portrait Session and the Full Celebration both include a portrait session — in our [packages](/#commissions), then [reserve your date](/#intake) once the Saturday is yours."
     }
   ],
   "faqs": [

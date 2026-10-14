@@ -1604,7 +1604,7 @@ a:hover > .tq-arrow {
 
 .tq-stepper {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   margin: 0 0 32px;
   padding: 0;
   list-style: none;
@@ -1703,7 +1703,7 @@ textarea.tq-input {
 }
 .tq-error {
   margin: 0;
-  color: var(--status-limited);
+  color: #9a4a12; /* 5.6:1 on canvas */
   font-size: 0.9375rem;
 }
 .tq-fieldrow {
@@ -2153,4 +2153,140 @@ textarea.tq-input {
 .tq-addon:disabled {
   cursor: not-allowed;
   opacity: 0.55;
+}
+
+/* ---------- Agreement, signature, consent (booking) ---------- */
+.tq-check {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  min-height: 44px;
+  padding: 10px 0;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.tq-check input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+.tq-check__box {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  border: 1px solid var(--text-primary);
+  font-size: 13px;
+}
+.tq-check:has(input:checked) .tq-check__box {
+  background: var(--text-primary);
+  color: var(--bg-canvas);
+}
+.tq-check:has(input:focus-visible) .tq-check__box {
+  outline: 2px solid var(--text-primary);
+  outline-offset: 2px;
+}
+.tq-agreement {
+  max-height: 420px;
+  overflow-y: auto;
+  padding: 20px;
+  border: 1px solid var(--border-control);
+  background: var(--bg-surface);
+  font-size: 1rem;
+  line-height: 1.6;
+  overscroll-behavior: contain;
+}
+.tq-agreement:focus-visible {
+  outline: 2px solid var(--text-primary);
+  outline-offset: 2px;
+}
+.tq-agreement__title {
+  margin: 0 0 8px;
+  font-size: 1.125rem;
+  font-weight: var(--weight-medium);
+}
+.tq-agreement p { margin: 0; }
+.tq-agreement section { margin-top: 18px; }
+.tq-agreement h3,
+.tq-agreement h5 {
+  margin: 0 0 6px;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.tq-agreement ul {
+  margin: 0;
+  padding-left: 18px;
+}
+.tq-agreement li + li { margin-top: 2px; }
+.tq-agreement__sig {
+  display: grid;
+  gap: 8px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-hairline);
+}
+.tq-agreement__sig img {
+  width: min(300px, 100%);
+  height: auto;
+}
+.tq-sign {
+  display: grid;
+  gap: 8px;
+}
+.tq-sign__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+.tq-sign__actions {
+  display: flex;
+  gap: 8px;
+}
+.tq-sign__btn {
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--border-control);
+  font-size: 0.9375rem;
+  white-space: nowrap;
+}
+.tq-sign__btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.tq-sign__pad {
+  display: block;
+  width: 100%;
+  height: 180px;
+  border: 1px solid var(--text-primary);
+  background:
+    linear-gradient(transparent calc(100% - 44px), var(--border-hairline) calc(100% - 44px), var(--border-hairline) calc(100% - 43px), transparent calc(100% - 43px)),
+    #fff;
+  touch-action: none;
+  cursor: crosshair;
+}
+.tq-pay__lines {
+  display: grid;
+  margin: 24px 0 0;
+  max-width: 420px;
+}
+.tq-pay__lines div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-top: 1px solid var(--border-hairline);
+}
+.tq-pay__lines dd { margin: 0; font-weight: var(--weight-medium); }
+.tq-pay__cta {
+  display: grid;
+  gap: 12px;
+  max-width: 420px;
+  margin-top: 24px;
 }

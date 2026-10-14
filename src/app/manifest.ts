@@ -3,7 +3,7 @@ import { site } from "@/content/site";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: `${site.brand} — Quinceañera Photography & Film`,
+    name: `${site.brand} — Quinceañera Photos & Video`,
     short_name: site.brand,
     description: site.tagline,
     start_url: "/",

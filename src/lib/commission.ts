@@ -32,8 +32,8 @@ export const TIER_PRICE_USD: Record<TierId, number> = {
   archive: 6900,
 };
 export const ADD_ON_PRICE_USD: Record<AddOnId, number> = {
-  destination: 650,
-  sameday: 900,
+  destination: 400,
+  sameday: 300,
   super8: 600,
   parents: 550,
 };
@@ -47,8 +47,8 @@ export const TIER_NAME_EN: Record<TierId, string> = {
 };
 
 export const ADD_ON_NAME_EN: Record<AddOnId, string> = {
-  destination: "Extra Portrait Session (anywhere in Texas)",
-  sameday: "Same-Night Highlight Video",
+  destination: "Dress Session",
+  sameday: "Same-Day Edit (ready in 24 hours)",
   super8: "Vintage Film Clip (Super 8)",
   parents: "Albums for Mom & Dad",
 };
@@ -155,16 +155,16 @@ export const TIER_SERVICE: Record<TierId, "photo" | "both"> = {
 };
 
 /**
- * Retainer to hold the date: a share of the commission, with a floor so a
- * smaller commission still carries a meaningful hold, rounded to a clean
- * figure. Applied in full to the balance.
+ * Deposit: every package is 25% down, paid once we approve the signed
+ * agreement; it goes toward the total. The rest is due 48 hours before the
+ * event. (Named RETAINER for continuity with stored bookings.)
  */
 export const RETAINER = {
-  rate: 0.3,
-  floorUsd: 350,
-  roundToUsd: 50,
-  /** Balance due this many days before the celebration. */
-  balanceDueDays: 30,
+  rate: 0.25,
+  floorUsd: 0,
+  roundToUsd: 1,
+  /** The rest is due this many hours before the event. */
+  balanceDueHours: 48,
 } as const;
 
 /** Unpaid checkout hold, and the consultation-first courtesy hold. */
@@ -227,13 +227,13 @@ function isBookableDate(v: string): boolean {
 }
 
 export const commissionSchema = z.object({
-  /** "retainer" → Stripe Checkout now; "consult" → courtesy hold, pay after a call. */
-  path: z.enum(["retainer", "consult"]),
   event_date: z.string().trim().refine(isBookableDate, {
     message: "Choose a future date within the next three years.",
   }),
   city: z.enum(CITY_IDS),
   venue: z.string().trim().max(160).optional().default(""),
+  /** Event start time as the family wrote it ("4:00 PM"); optional. */
+  start_time: z.string().trim().max(40).optional().default(""),
   scope: z.enum(SCOPE_IDS),
   tier: z.enum(TIER_IDS),
   add_ons: z.array(z.enum(ADD_ON_IDS)).max(ADD_ON_IDS.length).default([]),
@@ -249,14 +249,23 @@ export const commissionSchema = z.object({
   name: z.string().trim().min(2, "Please enter your name.").max(120),
   honoree: z.string().trim().max(80).optional().default(""),
   email: z.string().trim().toLowerCase().email("Please enter a valid email."),
-  phone: z.string().trim().max(40).optional().default(""),
+  phone: z.string().trim().min(7, "Please enter a phone number.").max(40),
   language: z.enum(["en", "es"]),
   note: z.string().trim().max(2000).optional().default(""),
+  /** May we share some photos/videos publicly? */
+  share_permission: z.boolean().default(true),
+  /** The signed agreement: typed full name + drawn signature + consent. */
+  signed_name: z.string().trim().min(2, "Type your full name to sign.").max(120),
+  signature: z
+    .string()
+    .max(400_000)
+    .regex(/^data:image\/png;base64,[A-Za-z0-9+/=]+$/, "Please sign in the box."),
+  agree: z.literal(true, { message: "Please check the box to agree." }),
 });
 
 export type CommissionRequest = z.infer<typeof commissionSchema>;
 
-const CITY_NAME: Record<(typeof CITY_IDS)[number], string> = {
+export const CITY_NAME: Record<(typeof CITY_IDS)[number], string> = {
   dfw: "Dallas–Fort Worth",
   hou: "Houston",
   atx: "Austin",
@@ -280,8 +289,8 @@ export function describeCommission(r: CommissionRequest, q: Quote): string {
     crewLine(r.tier, normalizeCrew(r.tier, r.crew_mix)),
     COORDINATOR_INCLUDED[r.tier] ? "Day-of coordinator: included" : "",
     `Total: ${usd(q.totalUsd)} · Retainer: ${usd(q.retainerUsd)} · Balance: ${usd(q.balanceUsd)}`,
-    `Path: ${r.path === "retainer" ? "Paid retainer online" : "Consultation first"}`,
-    `City: ${CITY_NAME[r.city]}${r.venue ? ` · Venue: ${r.venue}` : ""}`,
+    `Signed by: ${r.signed_name}`,
+    `City: ${CITY_NAME[r.city]}${r.venue ? ` · Venue: ${r.venue}` : ""}${r.start_time ? ` · Starts: ${r.start_time}` : ""}`,
     `Scope: ${r.scope}`,
     r.honoree ? `Quinceañera: ${r.honoree}` : "",
     `Preferred language: ${r.language === "es" ? "Español" : "English"}`,

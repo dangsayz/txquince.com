@@ -45,11 +45,12 @@ export type Work = {
   alt: L;
 };
 
+/** What each work is, in plain words (shown at the end of its caption). */
 const M = {
-  medium: { en: "Medium Format", es: "Formato medio" },
-  film: { en: "35mm + Digital", es: "35mm + Digital" },
-  motion: { en: "Digital + Motion", es: "Digital + Cine" },
-  digital: { en: "Digital", es: "Digital" },
+  medium: { en: "Portrait", es: "Retrato" },
+  film: { en: "Portrait", es: "Retrato" },
+  motion: { en: "Photo + video", es: "Foto + video" },
+  digital: { en: "Photo", es: "Foto" },
 } satisfies Record<string, L>;
 
 export const WORKS: Work[] = [
@@ -427,19 +428,19 @@ export type AddOn = { id: AddOnId; name: L; note: L; price: number };
 export const ADD_ONS: AddOn[] = [
   {
     id: "destination",
-    name: { en: "Extra Portrait Session", es: "Sesión de retratos extra" },
+    name: { en: "Dress Session", es: "Sesión con el vestido" },
     note: {
-      en: "A second portrait session anywhere in Texas — Galveston, the Hill Country, wherever she loves.",
-      es: "Una segunda sesión de retratos en cualquier parte de Texas — Galveston, el Hill Country, donde ella quiera.",
+      en: "A photo session in her dress before the big day — a park, a garden, wherever she loves.",
+      es: "Una sesión de fotos con su vestido antes del gran día — un parque, un jardín, donde ella quiera.",
     },
     price: ADD_ON_PRICE_USD.destination,
   },
   {
     id: "sameday",
-    name: { en: "Same-Night Highlight Video", es: "Video resumen la misma noche" },
+    name: { en: "Same-Day Edit", es: "Edición el mismo día" },
     note: {
-      en: "A 2-minute video of her day, played for your guests before the party ends.",
-      es: "Un video de 2 minutos de su día, proyectado para tus invitados antes de que termine la fiesta.",
+      en: "A short highlight video of her day, ready within 24 hours to share with family.",
+      es: "Un video corto con lo mejor de su día, listo en 24 horas para compartir con la familia.",
     },
     price: ADD_ON_PRICE_USD.sameday,
   },
@@ -495,7 +496,7 @@ export const CITIES: { id: string; label: L }[] = [
 
 export type Scope = "both" | "stills" | "motion";
 export const SCOPES: { id: Scope; label: L }[] = [
-  { id: "both", label: v("Stills + Motion", "Foto + Cine") },
-  { id: "stills", label: v("Stills Only", "Solo foto") },
-  { id: "motion", label: v("Motion Only", "Solo cine") },
+  { id: "both", label: v("Photos + video", "Fotos + video") },
+  { id: "stills", label: v("Photos only", "Solo fotos") },
+  { id: "motion", label: v("Video only", "Solo video") },
 ];

@@ -1,28 +1,11 @@
-import { retainerPercentLabel } from "@/content/commissions";
+import { bookingSteps } from "@/content/commissions";
 import "@/components/txq/pages/pages.css";
 
 /**
- * "How booking works" — a 4-step ledger that removes the "what happens next?"
+ * "How booking works" — a 4-step ledger (copy lives in content/commissions.ts) that removes the "what happens next?"
  * uncertainty the booking-funnel research names as a top drop-off cause.
  */
-export const BOOKING_STEPS = [
-  {
-    title: "Send the date",
-    body: "Pick the date on the live calendar and the commission you are considering. Questions first? Request a consultation and we hold the date for 7 days.",
-  },
-  {
-    title: "Lock it in",
-    body: `A ${retainerPercentLabel} retainer at secure checkout reserves the date exclusively. It applies in full; the balance is due 30 days before the celebration.`,
-  },
-  {
-    title: "Your portrait session",
-    body: "The Full Production and the Multi-Day Archive include an editorial portrait session before the day, so we already know each other when the camera comes out.",
-  },
-  {
-    title: "Your day, captured",
-    body: "We document the whole arc of your commission, from la misa to the last dance, with stills and film made side by side."
-  },
-] as const;
+export const BOOKING_STEPS = bookingSteps.en;
 
 export function HowBookingWorks({ className = "" }: { className?: string }) {
   return (

@@ -1,0 +1,280 @@
+/**
+ * agreement.ts — the booking agreement a family signs on the homepage.
+ *
+ * Built from exactly what they picked (package, hours, team, extras) and
+ * written in plain words, in their language. The rendered text is stored on
+ * the booking at signing time (with AGREEMENT_VERSION), so editing this file
+ * later never changes an agreement someone already signed.
+ *
+ * Pure and isomorphic: the intake renders it for review, the API re-builds it
+ * server-side from the re-priced quote (never trusting client text), and the
+ * admin, email and pay pages show the stored snapshot.
+ */
+import {
+  BASE_HOURS,
+  COORDINATOR_INCLUDED,
+  EXTRA_HOUR_USD,
+  RETAINER,
+  CONSULT_HOLD_DAYS,
+  normalizeCrew,
+  quoteCommission,
+  usd,
+  type AddOnId,
+  type Crew,
+  type TierId,
+} from "@/lib/commission";
+import { ADD_ONS, MATRIX, TIERS, type Lang } from "@/components/txq/data";
+
+/** Bump when the wording below changes; stored with every signature. */
+export const AGREEMENT_VERSION = "2026-10-14";
+
+export type AgreementInput = {
+  lang: Lang;
+  tier: TierId;
+  hours?: number | null;
+  crew?: Partial<Crew> | null;
+  addOns: AddOnId[];
+  eventDate: string; // YYYY-MM-DD
+  cityLabel: string;
+  venue: string;
+  startTime: string;
+  honoree: string;
+  name: string;
+  email: string;
+  phone: string;
+  sharePermission: boolean;
+};
+
+export type AgreementSection = { title: string; lines: string[] };
+export type Agreement = {
+  version: string;
+  lang: Lang;
+  title: string;
+  intro: string;
+  sections: AgreementSection[];
+  totalUsd: number;
+  depositUsd: number;
+  balanceUsd: number;
+};
+
+const T = {
+  en: {
+    title: "TX Quince Booking Agreement",
+    intro: (name: string, honoree: string) =>
+      `This agreement is between TX Quince ("we") and ${name} ("you")${honoree ? ` for ${honoree}'s quinceañera` : " for the quinceañera"}. Please read it, then sign at the bottom.`,
+    event: "Your event",
+    date: "Date",
+    city: "Area",
+    venue: "Venue",
+    venueTbd: "To be confirmed",
+    start: "Start time",
+    startTbd: "To be confirmed",
+    pkg: "Your package",
+    hours: (h: number, base: number) =>
+      h > base ? `${h} hours on the day (${base} included + ${h - base} extra)` : `${h} hours on the day`,
+    hoursArchive: (h: number) => `${h} hours on the celebration day, plus a second day for portraits`,
+    team: (p: number, v: number) =>
+      `Your team: ${p} ${p === 1 ? "photographer" : "photographers"}${v ? ` and ${v} ${v === 1 ? "videographer" : "videographers"}` : ""}`,
+    coordinator: "A coordinator who runs the day is included",
+    includes: "What you get",
+    extras: "Extras you added",
+    noExtras: "No extras",
+    money: "Price and payments",
+    pkgPrice: "Package",
+    extraHours: (n: number) => `Extra ${n === 1 ? "hour" : "hours"} (${n})`,
+    total: "Total",
+    deposit: (amt: string) =>
+      `Deposit: ${amt} (25%). You pay it after we approve this agreement. It locks in your date and goes toward your total.`,
+    balance: (amt: string, hrs: number) => `The rest: ${amt}, due ${hrs} hours before the event.`,
+    tax: "Texas sales tax, and travel outside Dallas–Fort Worth, Houston, Austin and San Antonio, are quoted separately if they apply.",
+    how: "How booking works",
+    howLines: (days: number) => [
+      `When you sign, we hold your date for ${days} days while we review your booking.`,
+      "When we approve it, we email you a link to pay your deposit.",
+      "Your booking is final once your deposit is paid.",
+      "If we can't take your date, we'll let you know and you won't be charged anything.",
+    ],
+    changes: "Changes and cancellations",
+    changesLines: [
+      "Want more hours or an extra later? Just ask — if we're available, we'll add it and update your total.",
+      "If you cancel, your deposit is not refundable, because we save your date and turn other families away.",
+      "If we ever have to cancel, we refund everything you've paid.",
+    ],
+    media: "Your photos and videos",
+    mediaLines: (share: boolean) => [
+      "Everything we deliver is yours to keep, print and share with family and friends.",
+      share
+        ? "You're okay with us sharing some of your photos and videos on our website and social media."
+        : "We will not share your photos or videos publicly.",
+    ],
+  },
+  es: {
+    title: "Contrato de reservación de TX Quince",
+    intro: (name: string, honoree: string) =>
+      `Este contrato es entre TX Quince ("nosotros") y ${name} ("tú")${honoree ? ` para la quinceañera de ${honoree}` : " para la quinceañera"}. Léelo y luego firma al final.`,
+    event: "Tu evento",
+    date: "Fecha",
+    city: "Zona",
+    venue: "Salón",
+    venueTbd: "Por confirmar",
+    start: "Hora de inicio",
+    startTbd: "Por confirmar",
+    pkg: "Tu paquete",
+    hours: (h: number, base: number) =>
+      h > base ? `${h} horas el día del evento (${base} incluidas + ${h - base} extra)` : `${h} horas el día del evento`,
+    hoursArchive: (h: number) => `${h} horas el día de la celebración, más un segundo día para retratos`,
+    team: (p: number, v: number) =>
+      `Tu equipo: ${p} ${p === 1 ? "fotógrafo" : "fotógrafos"}${v ? ` y ${v} ${v === 1 ? "videógrafo" : "videógrafos"}` : ""}`,
+    coordinator: "Incluye una coordinadora que lleva el día",
+    includes: "Lo que recibes",
+    extras: "Extras que añadiste",
+    noExtras: "Sin extras",
+    money: "Precio y pagos",
+    pkgPrice: "Paquete",
+    extraHours: (n: number) => `${n === 1 ? "Hora extra" : "Horas extra"} (${n})`,
+    total: "Total",
+    deposit: (amt: string) =>
+      `Depósito: ${amt} (25%). Lo pagas después de que aprobemos este contrato. Aparta tu fecha y se abona a tu total.`,
+    balance: (amt: string, hrs: number) => `El resto: ${amt}, se paga ${hrs} horas antes del evento.`,
+    tax: "El impuesto de Texas, y los viajes fuera de Dallas–Fort Worth, Houston, Austin y San Antonio, se cotizan aparte si aplican.",
+    how: "Cómo funciona la reservación",
+    howLines: (days: number) => [
+      `Cuando firmas, apartamos tu fecha por ${days} días mientras revisamos tu reservación.`,
+      "Cuando la aprobamos, te enviamos por correo un enlace para pagar tu depósito.",
+      "Tu reservación queda confirmada en cuanto pagas el depósito.",
+      "Si no podemos tomar tu fecha, te avisamos y no se te cobra nada.",
+    ],
+    changes: "Cambios y cancelaciones",
+    changesLines: [
+      "¿Quieres más horas o un extra después? Solo pídelo — si estamos disponibles, lo añadimos y actualizamos tu total.",
+      "Si cancelas, el depósito no es reembolsable, porque apartamos tu fecha y rechazamos a otras familias.",
+      "Si nosotros tuviéramos que cancelar, te devolvemos todo lo que hayas pagado.",
+    ],
+    media: "Tus fotos y videos",
+    mediaLines: (share: boolean) => [
+      "Todo lo que te entregamos es tuyo para guardar, imprimir y compartir con familia y amigos.",
+      share
+        ? "Estás de acuerdo con que compartamos algunas de tus fotos y videos en nuestra página y redes sociales."
+        : "No compartiremos tus fotos ni videos públicamente.",
+    ],
+  },
+} as const;
+
+function longDate(iso: string, lang: Lang) {
+  const d = new Date(`${iso}T12:00:00Z`);
+  return new Intl.DateTimeFormat(lang === "es" ? "es-MX" : "en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(d);
+}
+
+export function buildAgreement(input: AgreementInput): Agreement {
+  const t = T[input.lang];
+  const q = quoteCommission(input.tier, input.addOns, input.hours);
+  const crew = normalizeCrew(input.tier, input.crew);
+  const tier = TIERS.find((x) => x.id === input.tier)!;
+  const base = BASE_HOURS[input.tier];
+  const extraHours = q.hours - base;
+  const extras = ADD_ONS.filter((a) => input.addOns.includes(a.id));
+
+  const includes = MATRIX.flatMap((g) =>
+    g.rows
+      .filter((r) => r.values[input.tier] && !/hours|horas|team|equipo|coordinat/i.test(r.label.en))
+      .map((r) => `${r.label[input.lang]}: ${r.values[input.tier]![input.lang]}`),
+  );
+
+  const sections: AgreementSection[] = [
+    {
+      title: t.event,
+      lines: [
+        `${t.date}: ${longDate(input.eventDate, input.lang)}`,
+        `${t.city}: ${input.cityLabel}`,
+        `${t.venue}: ${input.venue || t.venueTbd}`,
+        `${t.start}: ${input.startTime || t.startTbd}`,
+      ],
+    },
+    {
+      title: `${t.pkg}: ${tier.name[input.lang]}`,
+      lines: [
+        input.tier === "archive" ? t.hoursArchive(q.hours) : t.hours(q.hours, base),
+        t.team(crew.photo, crew.motion),
+        ...(COORDINATOR_INCLUDED[input.tier] ? [t.coordinator] : []),
+      ],
+    },
+    { title: t.includes, lines: includes },
+    {
+      title: t.extras,
+      lines: extras.length ? extras.map((a) => `${a.name[input.lang]} — ${usd(a.price)}`) : [t.noExtras],
+    },
+    {
+      title: t.money,
+      lines: [
+        `${t.pkgPrice}: ${usd(q.tierUsd)}`,
+        ...(extraHours > 0 ? [`${t.extraHours(extraHours)}: ${usd(extraHours * EXTRA_HOUR_USD[input.tier])}`] : []),
+        ...(extras.length ? [`${t.extras}: ${usd(q.addOnsUsd)}`] : []),
+        `${t.total}: ${usd(q.totalUsd)}`,
+        t.deposit(usd(q.retainerUsd)),
+        t.balance(usd(q.balanceUsd), RETAINER.balanceDueHours),
+        t.tax,
+      ],
+    },
+    { title: t.how, lines: [...t.howLines(CONSULT_HOLD_DAYS)] },
+    { title: t.changes, lines: [...t.changesLines] },
+    { title: t.media, lines: [...t.mediaLines(input.sharePermission)] },
+  ];
+
+  return {
+    version: AGREEMENT_VERSION,
+    lang: input.lang,
+    title: t.title,
+    intro: t.intro(input.name, input.honoree),
+    sections,
+    totalUsd: q.totalUsd,
+    depositUsd: q.retainerUsd,
+    balanceUsd: q.balanceUsd,
+  };
+}
+
+/** Plain-text rendering for emails and the stored snapshot. */
+export function agreementToText(a: Pick<Agreement, "title" | "intro" | "sections">): string {
+  return [
+    a.title,
+    "",
+    a.intro,
+    ...a.sections.flatMap((s) => ["", s.title.toUpperCase(), ...s.lines.map((l) => `• ${l}`)]),
+  ].join("\n");
+}
+
+/** What gets saved on the booking (metadata.agreement) when a family signs. */
+export type SignedAgreement = Agreement & {
+  signedName: string;
+  /** PNG data URL of the drawn signature. */
+  signature: string;
+  signedAt: string;
+  ip: string;
+  userAgent: string;
+  sharePermission: boolean;
+  /** Set when the studio approves; the token unlocks the family's pay page. */
+  approvedAt?: string;
+  payToken?: string;
+};
+
+export function isSignedAgreement(v: unknown): v is SignedAgreement {
+  return Boolean(
+    v &&
+      typeof v === "object" &&
+      typeof (v as SignedAgreement).signedName === "string" &&
+      Array.isArray((v as SignedAgreement).sections),
+  );
+}
+
+/** Constant-time check of the pay-link token from the approval email. */
+export function tokenMatches(expected: string | undefined, given: string | undefined | null): boolean {
+  if (!expected || !given || expected.length !== given.length) return false;
+  let diff = 0;
+  for (let i = 0; i < expected.length; i++) diff |= expected.charCodeAt(i) ^ given.charCodeAt(i);
+  return diff === 0;
+}

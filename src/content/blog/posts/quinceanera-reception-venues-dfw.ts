@@ -14,7 +14,7 @@ const post: BlogPost = {
     "A practical guide to quinceañera reception venues and salones across Dallas, Fort Worth, Irving, and Arlington — real halls grouped by city and capacity, plus the questions to ask before you book.",
   category: "Locations",
   excerpt:
-    "Real DFW halls grouped by city and guest count, all-inclusive vs. à-la-carte, and the venue questions that actually protect your photos and film.",
+    "Real DFW halls grouped by city and guest count, all-inclusive vs. à-la-carte, and the venue questions that actually protect your photos and video.",
   publishedAt: "2026-06-09",
   updatedAt: "2026-10-14",
   readMinutes: 8,
@@ -112,8 +112,8 @@ const post: BlogPost = {
       type: "ol",
       items: [
         "Does the floor fit the vals AND the surprise dance? You need clear space for the court to move, not just seated guests. Ask to see the room set with a dance floor for your guest count.",
-        "How's the lighting for photo and film? Big windows and warm dimmable light photograph beautifully; harsh fluorescents or color-washed uplighting can fight your photographer all night. Ask what the room looks like at the time of day your reception starts.",
-        "In-house or outside vendors? Confirm you can bring your own photographer, film team, DJ, and caterer — or exactly which are required.",
+        "How's the lighting for photo and video? Big windows and warm dimmable light photograph beautifully; harsh fluorescents or color-washed uplighting can fight your photographer all night. Ask what the room looks like at the time of day your reception starts.",
+        "In-house or outside vendors? Confirm you can bring your own photographer, video team, DJ, and caterer — or exactly which are required.",
         "What's the real timeline? Load-in, when you get access, and hard end time — these shape your whole evening and your coverage hours.",
         "What's included vs. add-on? Tables, chairs, linens, security, cleanup, and parking add up fast on à-la-carte rooms.",
       ],
@@ -146,13 +146,13 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `One last note on money: venue and catering are their own line in your budget — completely separate from photography. Our [commissions](/#commissions) are published at ${study} (photo only), ${cinema}, ${production}, and ${archive}, so once your hall is chosen, your coverage cost is already a known number.`,
+      text: `One last note on money: venue and catering are their own line in your budget — completely separate from photography. Our [packages](/#commissions) are published at ${study} (photo only), ${cinema}, ${production}, and ${archive}, so once your hall is chosen, your coverage cost is already a known number.`,
     },
   ],
   faqs: [
     {
       q: "How do I choose a quinceañera venue in DFW?",
-      a: "Start with your guest count, then filter halls by capacity in the city you want — Dallas, Fort Worth, Irving/Carrollton, or Arlington. Tour your top two or three, confirm the dance floor fits the vals and surprise dance, check the lighting, and ask whether you can bring your own photographer and film team. Choose the room that fits your count comfortably and photographs well, not just the prettiest one online.",
+      a: "Start with your guest count, then filter halls by capacity in the city you want — Dallas, Fort Worth, Irving/Carrollton, or Arlington. Tour your top two or three, confirm the dance floor fits the vals and surprise dance, check the lighting, and ask whether you can bring your own photographer and video team. Choose the room that fits your count comfortably and photographs well, not just the prettiest one online.",
     },
     {
       q: "How big a venue do I need for my guest count?",
@@ -160,15 +160,15 @@ const post: BlogPost = {
     },
     {
       q: "What's the difference between all-inclusive and à-la-carte halls?",
-      a: "All-inclusive venues bundle tables, linens, catering, and often DJ or décor into one package — simpler to plan and budget, but sometimes with required in-house vendors. À-la-carte venues rent you the room and let you build the rest, giving more control at the cost of coordinating more vendors. Whichever you pick, confirm you can still bring the photographer and film team you want.",
+      a: "All-inclusive venues bundle tables, linens, catering, and often DJ or décor into one package — simpler to plan and budget, but sometimes with required in-house vendors. À-la-carte venues rent you the room and let you build the rest, giving more control at the cost of coordinating more vendors. Whichever you pick, confirm you can still bring the photographer and video team you want.",
     },
     {
       q: "How much do quinceañera venues cost in Dallas?",
-      a: `Venue cost varies widely by hall, season, day of the week, and whether catering is bundled, so request a current quote from each venue directly — that number is separate from photography. For reference, TX Quince commissions are published at ${study}, ${cinema}, ${production}, and ${archive}, independent of which hall you book.`,
+      a: `Venue cost varies widely by hall, season, day of the week, and whether catering is bundled, so request a current quote from each venue directly — that number is separate from photography. For reference, TX Quince packages are published at ${study}, ${cinema}, ${production}, and ${archive}, independent of which hall you book.`,
     },
     {
       q: "Can I bring my own photographer to a DFW quinceañera hall?",
-      a: "Usually yes, but not always. Some all-inclusive salones require their in-house photographer or charge a vendor fee for outside ones. Ask before you sign so you're free to book the artist you want — most DFW venues happily welcome an outside photographer and film team.",
+      a: "Usually yes, but not always. Some all-inclusive salones require their in-house photographer or charge a vendor fee for outside ones. Ask before you sign so you're free to book the artist you want — most DFW venues happily welcome an outside photographer and video team.",
     },
   ],
   related: [

@@ -3,8 +3,15 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { site } from "@/content/site";
-import { commissions, commissionsFromLabel, commissionLinks, retainerPercentLabel } from "@/content/commissions";
-import { PRICE_CEILING_USD, PRICE_FLOOR_USD, TIER_PRICE_USD, usd } from "@/lib/commission";
+import {
+  bookingFlow,
+  bookingSteps,
+  commissions,
+  commissionsFromLabel,
+  commissionLinks,
+  retainerPercentLabel,
+} from "@/content/commissions";
+import { BASE_CREW, PRICE_CEILING_USD, PRICE_FLOOR_USD, TIER_PRICE_USD, usd } from "@/lib/commission";
 import { locations, getLocation, nearbyLocations, cityGeo } from "@/content/locations";
 import { getCityContent } from "@/content/city-content";
 import { getPost } from "@/content/blog";
@@ -59,24 +66,7 @@ const DAY_TIMELINE: { when: string; title: string; body: string }[] = [
 ];
 
 /** From first message to the day — removes the "what happens next?" drop-off. */
-const BOOKING_STEPS: { title: string; body: string }[] = [
-  {
-    title: "Send the date",
-    body: "Pick the date on the live calendar and the commission you are considering. Questions first? Request a consultation and we hold the date for 7 days.",
-  },
-  {
-    title: "Lock it in",
-    body: `A ${retainerPercentLabel} retainer at secure checkout reserves the date exclusively. It applies in full; the balance is due 30 days before the celebration.`,
-  },
-  {
-    title: "Your portrait session",
-    body: "The Full Production and the Multi-Day Archive include an editorial portrait session before the day, so we already know each other when the camera comes out.",
-  },
-  {
-    title: "Your day, captured",
-    body: "We document the whole arc of your commission, from la misa to the last dance, with stills and film made side by side.",
-  },
-];
+const BOOKING_STEPS = bookingSteps.en;
 
 // ISR: regenerate hourly so newly city-tagged photos surface without a redeploy.
 export const revalidate = 3600;
@@ -95,7 +85,7 @@ export async function generateMetadata({
   if (!loc) return {};
 
   const title = `${loc.city} Quinceañera Photographer, TX`;
-  const description = `Luxury quinceañera photographer & videographer in ${loc.city}. Published commissions from ${commissionsFromLabel}, bilingual, la misa to the last dance. Check your date live.`;
+  const description = `Luxury quinceañera photographer & videographer in ${loc.city}. Published packages from ${commissionsFromLabel}, bilingual, la misa to the last dance. Check your date live.`;
   const url = `${site.url}/quinceanera-photographer/${loc.slug}`;
   const esUrl = `${site.url}/es/fotografo-de-quinceaneras/${loc.slug}`;
 
@@ -124,19 +114,19 @@ function sharedFaqs(city: string) {
   return [
     {
       q: `How much does a quinceañera photographer cost in ${city}?`,
-      a: `Every commission is published: a Portrait Study is ${usd(TIER_PRICE_USD.study)}, photo and film together start at ${usd(TIER_PRICE_USD.cinema)}, and The Full Production, the commission we recommend for most ${city} celebrations, is ${usd(TIER_PRICE_USD.production)}. The multi-day archive is ${usd(TIER_PRICE_USD.archive)}.`,
+      a: `Every package is published: the Portrait Session is ${usd(TIER_PRICE_USD.study)}, photos and video together start at ${usd(TIER_PRICE_USD.cinema)}, and the Full Celebration, the package we recommend for most ${city} celebrations, is ${usd(TIER_PRICE_USD.production)}. The Two-Day Celebration is ${usd(TIER_PRICE_USD.archive)}.`,
     },
     {
       q: "Do you offer video too, or only photography?",
-      a: "Both. From Cinema & Stills upward, a stills director and a motion director cover the day as one team, so the misa, el vals and the reception are captured as photographs and a 4K film without two vendors getting in each other's way.",
+      a: "Both. From Photo + Video up, a photographer and a videographer cover the day as one team, so the misa, el vals and the reception are captured in photos and a 4K video without two vendors getting in each other's way.",
     },
     {
       q: "Do you charge a travel fee?",
-      a: `No — ${city} is inside my Dallas–Fort Worth service area, so there's no travel fee. Coverage hours are the same whether your church and venue are close together or across town.`,
+      a: `No — ${city} is inside my Dallas–Fort Worth service area, so there's no travel fee. Your hours are the same whether your church and venue are close together or across town.`,
     },
     {
       q: "How do we reserve the date?",
-      a: `A retainer of ${retainerPercentLabel} of your commission holds the date and is applied in full; the balance is due 30 days before the celebration. Reserve online at secure checkout, or request a consultation first and we hold the date for 7 days.`,
+      a: bookingFlow.en,
     },
   ];
 }
@@ -215,7 +205,7 @@ export default async function CityPage({
         "@type": "ProfessionalService",
         "@id": `${url}#business`,
         name: `${site.brand} — Quinceañera Photography in ${loc.city}`,
-        description: `Quinceañera photography & film serving ${loc.city}, ${loc.county}.`,
+        description: `Quinceañera photos & video serving ${loc.city}, ${loc.county}.`,
         url,
         image: `${site.url}/opengraph-image`,
         email: site.contact.email,
@@ -244,7 +234,7 @@ export default async function CityPage({
         knowsLanguage: ["en", "es"],
         hasOfferCatalog: {
           "@type": "OfferCatalog",
-          name: "Quinceañera Commissions",
+          name: "Quinceañera Packages",
           itemListElement: commissions.map((c) => ({
             "@type": "Offer",
             name: `${c.numeral} ${c.name.en}`,
@@ -328,7 +318,7 @@ export default async function CityPage({
       <div className="tq-wrap">
         <div className="tq-ledger tq-place-ledger">
           <div className="tq-ledger__head">
-            <p className="tq-mono tq-place-eyebrow">Quinceañera photography &amp; film / {loc.city}, TX</p>
+            <p className="tq-mono tq-place-eyebrow">Quinceañera photos &amp; video / {loc.city}, TX</p>
             <h1 className="tq-display">
               Her day in {loc.city}. <em>La misa to the last dance.</em>
             </h1>
@@ -342,7 +332,7 @@ export default async function CityPage({
               </div>
               <div>
                 <dt>Coverage</dt>
-                <dd>Photo &amp; film</dd>
+                <dd>Photos &amp; video</dd>
               </div>
               <div>
                 <dt>Travel</dt>
@@ -359,7 +349,7 @@ export default async function CityPage({
                 <span>{site.cta.label}</span>
                 <span className="tq-arrow" aria-hidden>→</span>
               </Link>
-              <span className="tq-mono tq-muted">Commissions from {commissionsFromLabel}</span>
+              <span className="tq-mono tq-muted">Packages from {commissionsFromLabel}</span>
             </div>
           </div>
         </div>
@@ -415,14 +405,14 @@ export default async function CityPage({
       <section className="tq-section" aria-labelledby="city-commissions-title">
         <div className="tq-wrap">
           <header className="tq-head tq-place-head--long">
-            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>{idx("commissions", "Commissions")}</p>
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>{idx("commissions", "Packages")}</p>
             <h2 id="city-commissions-title" className="tq-display tq-head__title">
-              Published commissions from {commissionsFromLabel}.
+              Published packages from {commissionsFromLabel}.
             </h2>
             <p className="tq-head__dek">
-              Every price for your {loc.city} celebration is published. A {retainerPercentLabel} retainer holds the
-              date and is applied in full. The Full Production brings a stills director, a motion director and a
-              linen monograph to the whole day.
+              Every price for your {loc.city} celebration is published. A {retainerPercentLabel} deposit holds the
+              date and goes toward your total. The Full Celebration brings a team of {BASE_CREW.production}, a day-of coordinator and a
+              printed photo album.
             </p>
           </header>
           <ol className="tq-place-tiers">
@@ -438,7 +428,7 @@ export default async function CityPage({
                 <p className="tq-place-tier__sum">{c.summary.en}</p>
                 <p className="tq-display tq-nums tq-place-tier__price">
                   {c.priceLabel}
-                  <small>Retainer {c.retainerLabel}</small>
+                  <small>Deposit {c.retainerLabel}</small>
                 </p>
                 <ul>
                   {c.highlights.en.map((item) => (
@@ -470,7 +460,7 @@ export default async function CityPage({
               The whole day, <em>church to reception.</em>
             </h2>
             <p className="tq-head__dek">
-              Every commission is built around the full celebration — not a two-hour window. Whether you call it a
+              Every package is built around the celebration — not a two-hour window. Whether you call it a
               quinceañera or just her quince, here&apos;s how the day unfolds for most {loc.city} families, and how I
               cover each part of it.
             </p>
@@ -517,7 +507,7 @@ export default async function CityPage({
               See full {loc.city} quinceañeras, start to finish.
             </h2>
             <p className="tq-head__dek">
-              Not a highlight reel — complete galleries and films from real DFW celebrations, so you know exactly
+              Not a highlight video — complete galleries and videos from real DFW celebrations, so you know exactly
               what you&apos;re reserving.
             </p>
           </header>
@@ -695,7 +685,7 @@ export default async function CityPage({
               </h2>
             </div>
             <div className="tq-place-cta__side">
-              <p>Check your date on the live calendar, or request a consultation first and we hold it for 7 days.</p>
+              <p>Check your date on the live calendar, or ask for a quick call first.</p>
               <div className="tq-place-actions">
                 <Link href={commissionLinks.en.book} className="tq-btn tq-btn--lg">
                   Check your date <span className="tq-arrow" aria-hidden>↗</span>

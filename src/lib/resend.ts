@@ -22,13 +22,22 @@ import {
   packageLabel,
 } from "@/lib/booking";
 import { collectionLabel } from "@/content/packages";
-import { TIER_NAME_EN, TIER_PRICE_USD, usd, type TierId } from "@/lib/commission";
+import { CONSULT_HOLD_DAYS, RETAINER, TIER_NAME_EN, TIER_PRICE_USD, usd, type TierId } from "@/lib/commission";
 
-/** Commission tier for homepage bookings (stored in metadata); legacy collection otherwise. */
+const DEPOSIT_PCT = `${Math.round(RETAINER.rate * 100)}%`;
+const BALANCE_HOURS = RETAINER.balanceDueHours;
+
+/** Package for homepage bookings (stored in metadata); legacy collection otherwise. */
 function tierLabel(booking: BookingRecord): string {
   const tier = booking.metadata?.tier;
   if (typeof tier === "string" && tier in TIER_NAME_EN) return TIER_NAME_EN[tier as TierId];
   return collectionLabel(booking.collection);
+}
+
+/** Hours on the day, when the booking carries them (homepage bookings). */
+function hoursLabel(booking: BookingRecord): string {
+  const hours = booking.metadata?.hours;
+  return typeof hours === "number" && Number.isFinite(hours) ? `${hours} hours` : "—";
 }
 
 let cached: Resend | null = null;
@@ -207,7 +216,7 @@ export async function sendBookingOperatorEmail(
   const deposit = formatMoney(booking.deposit_amount_cents, booking.currency);
   const headline = opts.review
     ? "DEPOSIT PAID — needs review (possible date conflict)."
-    : `DATE RESERVED — ${deposit} retainer paid.`;
+    : `DATE RESERVED — ${deposit} deposit paid.`;
 
   const lines = [
     headline,
@@ -216,9 +225,10 @@ export async function sendBookingOperatorEmail(
     field("Email", booking.email),
     field("Phone", booking.phone ?? ""),
     field("Event date", dateStr),
-    field("Commission", tierLabel(booking)),
-    field("Package", packageLabel(booking.package)),
-    field("Retainer paid", deposit),
+    field("Package", tierLabel(booking)),
+    field("Hours", hoursLabel(booking)),
+    field("Coverage", packageLabel(booking.package)),
+    field("Deposit paid", deposit),
     "",
     "Notes:",
     booking.notes?.trim() ? booking.notes.trim() : "—",
@@ -233,9 +243,10 @@ export async function sendBookingOperatorEmail(
         ["Email", `<a href="mailto:${esc(booking.email)}">${esc(booking.email)}</a>`],
         ["Phone", booking.phone ? `<a href="tel:${esc(booking.phone)}">${esc(booking.phone)}</a>` : "—"],
         ["Event date", esc(dateStr)],
-        ["Commission", esc(tierLabel(booking))],
-        ["Package", esc(packageLabel(booking.package))],
-        ["Retainer paid", esc(deposit)],
+        ["Package", esc(tierLabel(booking))],
+        ["Hours", esc(hoursLabel(booking))],
+        ["Coverage", esc(packageLabel(booking.package))],
+        ["Deposit paid", esc(deposit)],
       ]
         .map(
           ([k, v]) =>
@@ -282,7 +293,7 @@ export async function sendBookingClientEmail(
     "",
     `Your date is officially reserved: ${dateStr}.`,
     "",
-    `I've received your ${deposit} retainer, and it's applied in full to your balance, due 30 days before the celebration. Your day is held just for you — I won't take another celebration on this date.`,
+    `I've received your ${deposit} deposit. It goes toward your total, and the rest is due ${BALANCE_HOURS} hours before the event. Your day is held just for you — I won't take another celebration on this date.`,
     "",
     "I'll be in touch personally over the next day or two to start planning the details — timeline, locations, and what matters most to your family.",
     "",
@@ -291,7 +302,7 @@ export async function sendBookingClientEmail(
     `${site.url}`,
     "",
     "— — —",
-    `P.D. (Español): ¡Tu fecha está reservada! Recibí tu anticipo de ${deposit}, aplicado completo a tu saldo, que se liquida 30 días antes de la celebración. Me pondré en contacto personalmente para planear los detalles.`,
+    `P.D. (Español): ¡Tu fecha está reservada! Recibí tu depósito de ${deposit}; se abona a tu total y el resto se paga ${BALANCE_HOURS} horas antes del evento. Me pondré en contacto personalmente para planear los detalles.`,
   ].join("\n");
 
   const html = `
@@ -305,7 +316,7 @@ export async function sendBookingClientEmail(
         <p style="margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:0.12em;color:${WINE}">Your date is reserved</p>
         <p style="margin:0 0 20px;font-family:Georgia,'Times New Roman',serif;font-size:24px;line-height:1.2;color:${INK}">${esc(dateStr)}</p>
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">
-          I've received your <strong style="color:${INK}">${esc(deposit)} retainer</strong> — it's applied in full to your balance, due 30 days before the celebration. Your day is held just for you; I won't take another celebration on this date.
+          I've received your <strong style="color:${INK}">${esc(deposit)} deposit</strong>. It goes toward your total, and the rest is due ${BALANCE_HOURS} hours before the event. Your day is held just for you; I won't take another celebration on this date.
         </p>
         <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">
           I'll reach out personally over the next day or two to start planning the details — timeline, locations, and what matters most to your family.
@@ -313,7 +324,7 @@ export async function sendBookingClientEmail(
         <p style="margin:24px 0 4px;font-size:15px;color:${INK}">Can't wait to capture her day,</p>
         <p style="margin:0;font-size:15px;color:${INK}">${site.brand}</p>
         <p style="margin:24px 0 0;padding-top:20px;border-top:1px solid #e6ddd1;font-size:13px;line-height:1.6;color:#8a837b">
-          <em>P.D. (Español):</em> ¡Tu fecha está reservada! Recibí tu anticipo de ${esc(deposit)}, aplicado completo a tu saldo, que se liquida 30 días antes de la celebración. Me pondré en contacto para planear los detalles.
+          <em>P.D. (Español):</em> ¡Tu fecha está reservada! Recibí tu depósito de ${esc(deposit)}; se abona a tu total y el resto se paga ${BALANCE_HOURS} horas antes del evento. Me pondré en contacto para planear los detalles.
         </p>
       </div>
     </div>
@@ -413,9 +424,9 @@ export async function sendFollowupEmail(
       "",
       "Just circling back on your daughter's quinceañera. No pressure at all — I know there's a lot to plan.",
       "",
-      `If it helps, here are full galleries and films from real DFW celebrations (not just highlights): ${galleryUrl}`,
+      `If it helps, here are full galleries and videos from real DFW celebrations (not just highlights): ${galleryUrl}`,
       "",
-      `Every commission is published on the site — from ${usd(TIER_PRICE_USD.study)} for a portrait session, with photo and film from ${usd(TIER_PRICE_USD.cinema)}: ${investmentUrl}`,
+      `Every package is published on the site — from ${usd(TIER_PRICE_USD.study)} for a portrait session, with photo and video from ${usd(TIER_PRICE_USD.cinema)}: ${investmentUrl}`,
       "",
       "Whenever you're ready, just reply here and I'll confirm whether your date is open.",
       "",
@@ -423,7 +434,7 @@ export async function sendFollowupEmail(
     ].join("\n");
     bodyHtml = `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">Just circling back on your daughter&apos;s quinceañera — no pressure at all, I know there&apos;s a lot to plan.</p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">If it helps, here are <a href="${galleryUrl}" style="color:${WINE}">full galleries and films</a> from real DFW celebrations — not just highlights, so you see exactly what you&apos;d be getting. Pricing is <a href="${investmentUrl}" style="color:${WINE}">published right on the site</a>: from ${usd(TIER_PRICE_USD.study)} for a portrait session, with photo and film from ${usd(TIER_PRICE_USD.cinema)}.</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">If it helps, here are <a href="${galleryUrl}" style="color:${WINE}">full galleries and videos</a> from real DFW celebrations — not just highlights, so you see exactly what you&apos;d be getting. Pricing is <a href="${investmentUrl}" style="color:${WINE}">published right on the site</a>: from ${usd(TIER_PRICE_USD.study)} for a portrait session, with photo and video from ${usd(TIER_PRICE_USD.cinema)}.</p>
       <p style="margin:0;font-size:15px;line-height:1.7;color:#56504a">Whenever you&apos;re ready, just reply and I&apos;ll confirm whether your date is open.</p>`;
   } else if (step === 2) {
     subject = "How reserving your date works";
@@ -432,18 +443,18 @@ export async function sendFollowupEmail(
       "",
       "One thing I want to make easy: you don't pay it all at once.",
       "",
-      "A 30% retainer reserves your date and is applied in full; the balance is due 30 days before the celebration. Prefer to talk first? Request a consultation and I'll hold the date for 7 days.",
+      `Pick a package, fill in your details, then review and sign the agreement online. I review and approve it within one day, and I hold your date for ${CONSULT_HOLD_DAYS} days while I do. Once it's approved, a ${DEPOSIT_PCT} deposit locks in your date, and the rest is due ${BALANCE_HOURS} hours before the event. Prefer to talk first? Ask for a quick call.`,
       "",
-      `Reserving takes about two minutes and locks your date instantly (I only book one quinceañera per day): ${reserveUrl}`,
+      `Getting started takes just a few minutes (I only book one quinceañera per day): ${reserveUrl}`,
       "",
-      "If you have any questions about the commissions or the timeline, just reply — I read every message.",
+      "If you have any questions about the packages or the timeline, just reply — I read every message.",
       "",
       site.brand,
     ].join("\n");
     bodyHtml = `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">One thing I want to make easy: <strong style="color:${INK}">you don&apos;t pay it all at once.</strong></p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">A 30% retainer reserves your date and is applied in full; the balance is due 30 days before the celebration. Prefer to talk first? Request a consultation and I&apos;ll hold the date for 7 days.</p>
-      <p style="margin:0;font-size:15px;line-height:1.7;color:#56504a">Reserving takes about two minutes and locks your date instantly — I only book one quinceañera per day. Questions about the commissions or timeline? Just reply; I read every message.</p>`;
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">Pick a package, fill in your details, then review and sign the agreement online. I review and approve it within one day, and I hold your date for ${CONSULT_HOLD_DAYS} days while I do. Once it&apos;s approved, a ${DEPOSIT_PCT} deposit locks in your date, and the rest is due ${BALANCE_HOURS} hours before the event. Prefer to talk first? Ask for a quick call.</p>
+      <p style="margin:0;font-size:15px;line-height:1.7;color:#56504a">Getting started takes just a few minutes — I only book one quinceañera per day. Questions about the packages or timeline? Just reply; I read every message.</p>`;
   } else if (step === 3) {
     subject = "Last check on your date";
     text = [
@@ -573,13 +584,14 @@ export async function sendReservationRequestOperatorEmail(
     ["Email", `<a href="mailto:${esc(booking.email)}">${esc(booking.email)}</a>`],
     ["Phone", booking.phone ? `<a href="tel:${esc(booking.phone)}">${esc(booking.phone)}</a>` : "—"],
     ["Event date", esc(dateStr)],
-    ["Commission", `${esc(tier)} (${esc(packageLabel(booking.package))})`],
-    ["Retainer to collect", esc(deposit)],
+    ["Package", `${esc(tier)} (${esc(packageLabel(booking.package))})`],
+    ["Hours", esc(hoursLabel(booking))],
+    ["Deposit to collect", esc(deposit)],
   ];
 
   const html = `
   <div style="font-family:ui-sans-serif,system-ui,Arial,sans-serif;color:${INK};max-width:560px">
-    <p style="font-weight:600;color:${WINE};margin:0 0 4px">NEW DATE REQUEST — reach out to confirm + send the retainer link.</p>
+    <p style="font-weight:600;color:${WINE};margin:0 0 4px">NEW DATE REQUEST — reach out to confirm + send the deposit link.</p>
     <table style="border-collapse:collapse;width:100%;font-size:14px">
       ${rows.map(([k, v]) => `<tr><td style="padding:6px 12px 6px 0;color:#8a837b;white-space:nowrap;vertical-align:top">${k}</td><td style="padding:6px 0">${v}</td></tr>`).join("")}
     </table>
@@ -588,14 +600,15 @@ export async function sendReservationRequestOperatorEmail(
   </div>`;
 
   const text = [
-    `NEW DATE REQUEST — reach out to confirm + send the retainer link.`,
+    `NEW DATE REQUEST — reach out to confirm + send the deposit link.`,
     "",
     `Name: ${booking.name}`,
     `Email: ${booking.email}`,
     `Phone: ${booking.phone ?? "—"}`,
     `Event date: ${dateStr}`,
-    `Commission: ${tier} (${packageLabel(booking.package)})`,
-    `Retainer to collect: ${deposit}`,
+    `Package: ${tier} (${packageLabel(booking.package)})`,
+    `Hours: ${hoursLabel(booking)}`,
+    `Deposit to collect: ${deposit}`,
     "",
     `Notes: ${booking.notes?.trim() ? booking.notes.trim() : "—"}`,
   ].join("\n");
@@ -635,7 +648,7 @@ export async function sendReservationRequestClientEmail(
     "",
     `Thank you for choosing me for your daughter's quinceañera on ${dateStr}${tier && tier !== "—" ? ` (${tier})` : ""}.`,
     "",
-    "Here's what happens next: I'll personally confirm your date is open and reach out — usually within 24 hours — to talk through the day and send you a secure link to place your retainer and lock it in. No payment is needed right now.",
+    "Here's what happens next: I'll personally confirm your date is open and reach out — usually within 24 hours — to talk through the day and send you a secure link to place your deposit and lock it in. No payment is needed right now.",
     "",
     "I only book one quinceañera a day, so your request holds your date while we connect.",
     "",
@@ -645,7 +658,7 @@ export async function sendReservationRequestClientEmail(
 
   const bodyHtml = `
     <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">Thank you for choosing me for your daughter&apos;s quinceañera on <strong style="color:${INK}">${esc(dateStr)}</strong>${tier && tier !== "—" ? ` (${esc(tier)})` : ""}.</p>
-    <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">Here&apos;s what happens next: I&apos;ll personally confirm your date is open and reach out — usually within 24 hours — to talk through the day and send you a <strong style="color:${INK}">secure link to place your retainer</strong> and lock it in. <strong style="color:${INK}">No payment is needed right now.</strong></p>
+    <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">Here&apos;s what happens next: I&apos;ll personally confirm your date is open and reach out — usually within 24 hours — to talk through the day and send you a <strong style="color:${INK}">secure link to place your deposit</strong> and lock it in. <strong style="color:${INK}">No payment is needed right now.</strong></p>
     <p style="margin:0;font-size:15px;line-height:1.7;color:#56504a">I only book one quinceañera a day, so your request holds your date while we connect.</p>`;
 
   try {
@@ -695,11 +708,11 @@ export async function sendDepositLinkEmail(
   const text = [
     `Hi ${firstName},`,
     "",
-    `Your date is open and yours to claim — here's the secure link to place your ${deposit} retainer and reserve ${dateStr}${tier && tier !== "—" ? ` (${tier})` : ""}:`,
+    `Your date is open and yours to claim — here's the secure link to place your ${deposit} deposit and reserve ${dateStr}${tier && tier !== "—" ? ` (${tier})` : ""}:`,
     "",
     checkoutUrl,
     "",
-    "The retainer applies in full to your balance, due 30 days before the celebration. This link holds your date for the next 24 hours.",
+    `The deposit goes toward your total, and the rest is due ${BALANCE_HOURS} hours before the event. This link holds your date for the next 24 hours.`,
     "",
     "Can't wait to tell her story,",
     site.brand,
@@ -707,7 +720,7 @@ export async function sendDepositLinkEmail(
 
   const bodyHtml = `
     <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">Your date is open and yours to claim. Here&apos;s your secure link to place your <strong style="color:${INK}">${esc(deposit)} deposit</strong> and reserve <strong style="color:${INK}">${esc(dateStr)}</strong>${tier && tier !== "—" ? ` (${esc(tier)})` : ""}.</p>
-    <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">The retainer applies in full to your balance, due 30 days before the celebration.</p>
+    <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">The deposit goes toward your total, and the rest is due ${BALANCE_HOURS} hours before the event.</p>
     <p style="margin:0;font-size:14px;line-height:1.7;color:#8c7d69">This link holds your date for the next 24 hours.</p>`;
 
   try {
@@ -721,7 +734,7 @@ export async function sendDepositLinkEmail(
         firstName,
         bodyHtml,
         ctaUrl: checkoutUrl,
-        ctaLabel: `Place your ${deposit} retainer`,
+        ctaLabel: `Place your ${deposit} deposit`,
       }),
     });
     if (error) return { ok: false, error: String(error.message ?? error) };
@@ -743,7 +756,7 @@ export async function sendReviewRequestEmail(
   const text = [
     `Hi ${firstName},`,
     "",
-    "Thank you for inviting us to be part of her quinceañera. We hope the photographs and film bring the day back every time you see them.",
+    "Thank you for inviting us to be part of her quinceañera. We hope the photographs and video bring the day back every time you see them.",
     "",
     "If you have a moment, would you share your experience with other families? Your honest review helps them choose with confidence:",
     reviewUrl,
@@ -760,7 +773,7 @@ export async function sendReviewRequestEmail(
       text,
       html: followupHtml({
         firstName,
-        bodyHtml: `<p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">Thank you for inviting us to be part of her quinceañera. We hope the photographs and film bring the day back every time you see them.</p><p style="margin:0;font-size:15px;line-height:1.7;color:#56504a">If you have a moment, would you share your experience with other families? Your honest review helps them choose with confidence.</p>`,
+        bodyHtml: `<p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">Thank you for inviting us to be part of her quinceañera. We hope the photographs and video bring the day back every time you see them.</p><p style="margin:0;font-size:15px;line-height:1.7;color:#56504a">If you have a moment, would you share your experience with other families? Your honest review helps them choose with confidence.</p>`,
         ctaUrl: reviewUrl,
         ctaLabel: "Share your experience",
       }),

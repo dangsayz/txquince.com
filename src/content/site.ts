@@ -14,7 +14,7 @@ export const site = {
   // Used for canonical URLs, OG images, sitemap, schema. No trailing slash.
   url: "https://txquince.com",
   domain: "txquince.com",
-  tagline: "Cinematic quinceañera photography & film across Dallas–Fort Worth",
+  tagline: "Quinceañera photos & video across Dallas–Fort Worth",
   serviceArea: "Dallas–Fort Worth, Texas",
 
   contact: {
@@ -64,7 +64,7 @@ export const site = {
 
   nav: [
     { href: "/portfolio", label: "Portfolio" },
-    { href: "/#commissions", label: "Commissions" },
+    { href: "/#commissions", label: "Packages" },
     { href: "/quinceanera-photographer", label: "Areas Served" },
     { href: "/quinceanera-guide", label: "Guide" },
     { href: "/about", label: "About" },

@@ -61,7 +61,7 @@ const post: BlogPost = {
     },
     {
       "type": "p",
-      "text": `Whatever VM Ballroom quotes you, photography and film are a separate, fixed line. Our [commissions](/#commissions) are published at ${study}, ${cinema}, ${production}, and ${archive}, and a retainer of ${Math.round(RETAINER.rate * 100)}% holds the date, with the balance due ${RETAINER.balanceDueDays} days before. Venue budgeting is the moving target; coverage doesn't have to be.`
+      "text": `Whatever VM Ballroom quotes you, photos and video are a separate, fixed line. Our [packages](/#commissions) are published at ${study}, ${cinema}, ${production}, and ${archive}, and a deposit of ${Math.round(RETAINER.rate * 100)}% locks in the date once your agreement is approved, with the rest due ${RETAINER.balanceDueHours} hours before the event. Venue budgeting is the moving target; coverage doesn't have to be.`
     },
     {
       "type": "h2",
@@ -77,7 +77,7 @@ const post: BlogPost = {
         "1.Shoot portraits before the reception. The dress deserves daylight. A pre-quince session at an outdoor location — or dress portraits earlier in the day — means the ballroom only has to carry the party, not every photo.",
         "2.Ask about the uplighting. Heavy color washes look dramatic in person and fight skin tones on camera. If the lighting is adjustable, ask for a neutral or warm setting during the entrance, vals, and cake — save the saturated color for the dance floor.",
         "3.Schedule the big moments inside your coverage window. Entrance, vals, brindis, surprise dance — confirm the run of show with the venue coordinator and your photographer together, so nothing lands after the cameras leave.",
-        "4.Confirm outside vendors before you sign. Most DFW halls welcome an outside photo and film team; a few all-inclusive packages restrict it or add a fee. Ask at the tour, in writing, so you're free to book the team you actually want."
+        "4.Confirm outside vendors before you sign. Most DFW halls welcome an outside photo and video team; a few all-inclusive packages restrict it or add a fee. Ask at the tour, in writing, so you're free to book the team you actually want."
       ]
     },
     {
@@ -101,7 +101,7 @@ const post: BlogPost = {
       "items": [
         "1.What exactly is in the package — tables, linens, catering, DJ, décor, security, cleanup — and what does the itemized version look like?",
         "2.What's the real seated capacity with a dance floor for MY guest count, not the maximum?",
-        "3.Can I bring my own photographer and film team, with no vendor fee? Get it in writing.",
+        "3.Can I bring my own photographer and video team, with no vendor fee? Get it in writing.",
         "4.What's the timeline — when do we get access, when do vendors load in, and what's the hard end time?",
         "5.How do deposits and payments work, and what happens if we need to move the date?"
       ]

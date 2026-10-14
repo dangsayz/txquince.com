@@ -41,7 +41,7 @@ const post: BlogPost = {
       items: [
         "Más fechas abiertas: su sábado sigue en el calendario y no apartado ya por otra familia.",
         "Su primera opción de fotógrafo: contrata al artista que usted quiere, no al de respaldo que tenía un hueco.",
-        "El precio de hoy: reservar fija el precio actual de la comisión antes de cualquier ajuste anual.",
+        "El precio de hoy: reservar fija el precio actual del paquete antes de cualquier ajuste anual.",
         "Tiempo para los detalles: la sesión pre-quince, el orden del día y la lista de fotos, todo sin prisas.",
       ],
     },
@@ -99,12 +99,12 @@ const post: BlogPost = {
         "Su fecha: el día confirmado de la celebración.",
         "Su salón, o al menos la ciudad, para tener claros los traslados y los tiempos.",
         "Una idea general de la cobertura: solo foto o foto + video (puede decidirlo después, pero ayuda saber su preferencia).",
-        "Su rango de presupuesto, para ubicarlo en la [comisión](/es#commissions) correcta sin adivinar.",
+        "Su rango de presupuesto, para ubicarlo en el [paquete](/es#commissions) correcto sin adivinar.",
       ],
     },
     {
       type: "p",
-      text: `Con la fecha y el salón en mano, [aparte su día](/es#intake) es un paso corto: un anticipo del ${retainerPct} retiene la fecha y el saldo se paga ${RETAINER.balanceDueDays} días antes de la celebración. ¿Prefiere platicar primero? Pida una consulta y le guardamos la fecha ${CONSULT_HOLD_DAYS} días. Y si todavía está comparando fotógrafos, revise algunas [galerías completas](/portfolio) de principio a fin antes de decidir. Si aún no lo ha hecho, [vea si su fecha está libre](/check-your-date) primero.`,
+      text: `Con la fecha y el salón en mano, [aparte su día](/es#intake) es un paso corto: elija un paquete y firme el contrato en línea, y le apartamos la fecha ${CONSULT_HOLD_DAYS} días mientras lo revisamos. Ya aprobado, un depósito del ${retainerPct} la asegura, y el resto se paga ${RETAINER.balanceDueHours} horas antes del evento. ¿Prefiere platicar primero? Pida una llamada rápida. Y si todavía está comparando fotógrafos, revise algunas [galerías completas](/portfolio) de principio a fin antes de decidir. Si aún no lo ha hecho, [vea si su fecha está libre](/check-your-date) primero.`,
     },
     { type: "h2", text: "Cuándo agendar la sesión pre-quince o save-the-date" },
     {
@@ -140,7 +140,7 @@ const post: BlogPost = {
     },
     {
       q: "¿Qué necesito antes de reservar?",
-      a: "Solo dos cosas: su fecha confirmada y su salón, o al menos la ciudad. Con eso basta para consultar la disponibilidad y reservar con un anticipo, o pedir primero una consulta. La cobertura, el orden del día y la sesión pre-quince se pueden resolver después.",
+      a: "Solo dos cosas: su fecha confirmada y su salón, o al menos la ciudad. Con eso basta para consultar la disponibilidad, elegir un paquete y firmar el contrato, o pedir primero una llamada rápida. La cobertura, el orden del día y la sesión pre-quince se pueden resolver después.",
     },
     {
       q: "¿Cuándo debo agendar la sesión pre-quince o de save-the-date?",

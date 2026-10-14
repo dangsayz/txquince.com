@@ -122,9 +122,9 @@ const post: BlogPost = {
     {
       type: "cta",
       heading: "Documenting the day, traditions and all",
-      body: "Photo and film commissions built around the full quince — the Mass, the court, the symbols, the dancing. Published pricing, no quote form.",
+      body: "Photo and video packages built around the full quince — the Mass, the court, the symbols, the dancing. Published pricing, no quote form.",
       href: "/#commissions",
-      label: "Compare commissions",
+      label: "Compare packages",
     },
     { type: "h2", text: "So what actually happens on the day?" },
     {

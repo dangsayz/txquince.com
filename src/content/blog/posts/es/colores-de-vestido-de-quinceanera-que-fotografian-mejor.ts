@@ -116,7 +116,7 @@ const post: BlogPost = {
     {
       "type": "cta",
       "heading": "¿Está eligiendo el color y al fotógrafo al mismo tiempo?",
-      "body": "Es la misma decisión, tomada temprano. Vea qué incluye cada comisión y luego revise si su fecha sigue libre.",
+      "body": "Es la misma decisión, tomada temprano. Vea qué incluye cada paquete y luego revise si su fecha sigue libre.",
       "href": "/check-your-date",
       "label": "Verifique su fecha"
     },
@@ -152,7 +152,7 @@ const post: BlogPost = {
     },
     {
       "type": "p",
-      "text": "Y decídalo temprano. El color y el fotógrafo se eligen en el mismo periodo — su sesión de retrato antes de la celebración usa el vestido o uno de reemplazo, así que defina el color primero; muchas familias lo cierran de nueve a doce meses antes. Vea qué incluye cada comisión — el Estudio de retrato y La producción completa incluyen una sesión editorial de retrato — en nuestras [comisiones](/es#commissions), y luego [aparte su fecha](/es#intake) una vez que el sábado es suyo."
+      "text": "Y decídalo temprano. El color y el fotógrafo se eligen en el mismo periodo — su sesión de retrato antes de la celebración usa el vestido o uno de reemplazo, así que defina el color primero; muchas familias lo cierran de nueve a doce meses antes. Vea qué incluye cada paquete — la Sesión de retratos y la Celebración completa incluyen una sesión de retratos — en nuestros [paquetes](/es#commissions), y luego [aparte su fecha](/es#intake) una vez que el sábado es suyo."
     }
   ],
   "faqs": [

@@ -43,7 +43,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Si quiere entender bien el lado del dinero antes de repartirlo, nuestra guía de [cuánto cuesta una quinceañera en Texas](/es/blog/cuanto-cuesta-una-quinceanera-presupuesto-texas) le muestra en qué gastan de verdad las familias, y nuestras [comisiones](/es#commissions) presentan opciones publicadas de foto y video, sin formulario de cotización.",
+      text: "Si quiere entender bien el lado del dinero antes de repartirlo, nuestra guía de [cuánto cuesta una quinceañera en Texas](/es/blog/cuanto-cuesta-una-quinceanera-presupuesto-texas) le muestra en qué gastan de verdad las familias, y nuestros [paquetes](/es#commissions) presentan opciones publicadas de foto y video, sin formulario de cotización.",
     },
     { type: "h3", text: "Por qué el fotógrafo y el salón se reservan primero" },
     {
@@ -145,7 +145,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Cuando esté lista para empezar por lo primero de esta lista, puede [revisar su fecha](/check-your-date) y luego [reservar su comisión](/es#intake): los dos pasos que hacen más fácil cada mes que viene después.",
+      text: "Cuando esté lista para empezar por lo primero de esta lista, puede [revisar su fecha](/check-your-date) y luego [reservar su paquete](/es#intake): los dos pasos que hacen más fácil cada mes que viene después.",
     },
   ],
   faqs: [
