@@ -1,0 +1,9 @@
+# Cloudflare Workers static assets (/_next/static/*, public/ files) are served
+# without running the Worker, so next.config.ts headers() never reaches them.
+# This file is parsed by Workers (not served) and adds the basic headers there.
+# Keep in step with src/lib/security-headers.ts.
+/*
+  Strict-Transport-Security: max-age=63072000
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
