@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { MotionConfig } from "motion/react";
 import { Footer } from "./Editorial";
 import { Header, MobileDock } from "./Header";
+import { NoUpscale } from "./NoUpscale";
 import { AvailabilityProvider, SiteProvider, useSite } from "./state";
 import "./txq.css";
 
@@ -64,6 +65,8 @@ function Frame({ children }: { children: ReactNode }) {
         </main>
         <Footer />
         <MobileDock hidden={dockHidden} />
+        {/* Global rule: no photo is ever displayed larger than its real pixels. */}
+        <NoUpscale />
       </div>
     </ShellCtx.Provider>
   );

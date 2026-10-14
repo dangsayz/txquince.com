@@ -1,0 +1,40 @@
+/* Footer admin entry (Editorial.tsx → FooterAdmin): quiet, mono, 44px tall. */
+.txq .tq-footer-admin {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0 16px;
+}
+.txq .tq-footer-admin__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-primary);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.txq .tq-footer-admin__link:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.txq .tq-footer-admin__link:focus-visible {
+  outline: 2px solid var(--text-primary);
+  outline-offset: 2px;
+}
+.txq .tq-footer-admin__link[disabled] {
+  cursor: progress;
+}
+
+/* Base row now holds three items: © on the left, colophon + admin entry on the
+   right, all vertically centered on the 44px admin target. */
+.txq .tq-footer__base {
+  align-items: center;
+}
+.txq .tq-footer__base > :first-child {
+  margin-right: auto;
+}

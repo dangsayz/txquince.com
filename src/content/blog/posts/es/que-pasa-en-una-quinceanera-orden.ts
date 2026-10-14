@@ -5,7 +5,7 @@ const post: BlogPost = {
   title:
     "¿Qué pasa en una quinceañera? El orden completo del día (de la misa al último baile)",
   metaTitle:
-    "¿Qué pasa en una quinceañera? El orden completo del día | TX Quince",
+    "¿Qué pasa en una quinceañera? El orden completo del día",
   description:
     "El orden completo del día de una quinceañera en Dallas–Fort Worth: desde el arreglo de la mañana y la misa de acción de gracias hasta el vals, el cambio de zapatillas, el baile sorpresa y el último baile. Cuánto dura y cuántas horas de cobertura necesita.",
   category: "Traditions",

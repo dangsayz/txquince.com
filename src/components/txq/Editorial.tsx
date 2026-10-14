@@ -2,8 +2,11 @@
 
 import { motion } from "motion/react";
 import Link from "next/link";
+import { useState } from "react";
 import { site } from "@/content/site";
+import { useIsAdmin } from "@/components/EditMode";
 import { useSite } from "./state";
+import "./footer-admin.css";
 
 /** Latest blog posts, passed in from the server page (keeps post bodies out of the client bundle). */
 export type JournalItem = { href: string; title: string; category: string; readMinutes: number };
@@ -81,6 +84,57 @@ export function Editorial({ journal }: { journal: Journal }) {
   );
 }
 
+/**
+ * Discreet owner entry in the footer base row. Visitors see "Admin login"; once
+ * /api/admin/me confirms a signed-in admin (useIsAdmin — free for visitors), it
+ * becomes "Admin" (→ /admin) + "Log out" (signs out, returns to the homepage).
+ */
+function FooterAdmin() {
+  const { lang } = useSite();
+  const isAdmin = useIsAdmin();
+  const [busy, setBusy] = useState(false);
+  const es = lang === "es";
+
+  async function logOut() {
+    if (busy) return;
+    setBusy(true);
+    try {
+      // Server route clears the auth cookies; the browser client clears its own
+      // copy (loaded on demand so visitors never download the auth library).
+      await fetch("/api/admin/signout", { method: "POST" }).catch(() => undefined);
+      const { createBrowserSupabaseClient } = await import("@/lib/supabase/client");
+      const supabase = await createBrowserSupabaseClient();
+      await supabase.auth.signOut();
+    } catch {
+      /* cookies are already cleared server-side */
+    }
+    try {
+      window.localStorage.removeItem("txq_admin");
+    } catch {
+      /* ignore */
+    }
+    window.location.assign(es ? "/es" : "/");
+  }
+
+  if (!isAdmin) {
+    return (
+      <a href="/admin/login" className="tq-footer-admin__link" rel="nofollow">
+        {es ? "Acceso admin" : "Admin login"}
+      </a>
+    );
+  }
+  return (
+    <span className="tq-footer-admin">
+      <a href="/admin" className="tq-footer-admin__link" rel="nofollow">
+        Admin
+      </a>
+      <button type="button" className="tq-footer-admin__link" onClick={logOut} disabled={busy}>
+        {busy ? (es ? "Cerrando…" : "Logging out…") : es ? "Cerrar sesión" : "Log out"}
+      </button>
+    </span>
+  );
+}
+
 export function Footer() {
   const { t, homeHref } = useSite();
   const handle = site.social.instagram.replace(/\/$/, "").split("/").pop();
@@ -130,6 +184,7 @@ export function Footer() {
             © {new Date().getFullYear()} TX Quince. {t.footer.rights}
           </span>
           <span>{t.footer.colophon}</span>
+          <FooterAdmin />
         </div>
       </div>
     </footer>

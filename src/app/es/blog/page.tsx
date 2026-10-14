@@ -4,6 +4,7 @@ import { getAllEsPosts } from "@/content/blog";
 import { portfolioFallback } from "@/content/portfolio-fallback";
 import { getFeaturedImages, getPageHero } from "@/lib/content-db";
 import { BlogIndexView, type BlogThumb } from "@/components/BlogContent";
+import { blogIndexJsonLd } from "@/app/blog/structured-data";
 
 export const revalidate = 3600;
 
@@ -15,11 +16,23 @@ export const metadata: Metadata = {
     canonical: "/es/blog",
     languages: { "es-MX": "/es/blog", "en-US": "/blog", "x-default": "/blog" },
   },
+  // openGraph/twitter replace the root layout's objects wholesale (shallow
+  // merge), so the index restates siteName/locale/image and its own card copy.
   openGraph: {
+    type: "website",
+    siteName: site.brand,
     locale: "es_MX",
+    alternateLocale: ["en_US"],
     title: "Guía de Quinceañera · TX Quince",
     description: "Costos reales, fechas, tradiciones y cómo elegir a tu fotógrafo en Dallas–Fort Worth.",
     url: `${site.url}/es/blog`,
+    images: [{ url: `${site.url}/opengraph-image`, width: 1200, height: 630, alt: "TX Quince — Fotos y video de quinceañera en Dallas–Fort Worth" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Guía de Quinceañera · TX Quince",
+    description: "Costos reales, fechas, tradiciones y cómo elegir a tu fotógrafo en Dallas–Fort Worth.",
+    images: [`${site.url}/opengraph-image`],
   },
 };
 
@@ -40,18 +53,30 @@ export default async function EsBlogIndexPage() {
   const tiles = pool.length ? pool : fallbacks.slice(1);
   const thumbs = new Map(posts.map((p, idx) => [p.slug, tiles.length ? tiles[idx % tiles.length] : null]));
 
+  const jsonLd = blogIndexJsonLd({
+    url: `${site.url}/es/blog`,
+    name: "Diario",
+    description: String(metadata.description ?? ""),
+    lang: "es",
+    posts,
+    crumbs: [{ name: "Inicio", item: `${site.url}/es` }],
+  });
+
   return (
-    <BlogIndexView
-      lang="es"
-      title={
-        <>
-          Planea su quinceañera <em>con claridad.</em>
-        </>
-      }
-      dek="Costos, fechas y tradiciones para las familias de Dallas–Fort Worth. Respuestas concretas antes de tomar decisiones."
-      posts={posts}
-      featuredImage={featuredImage}
-      thumbs={thumbs}
-    />
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <BlogIndexView
+        lang="es"
+        title={
+          <>
+            Planea su quinceañera <em>con claridad.</em>
+          </>
+        }
+        dek="Costos, fechas y tradiciones para las familias de Dallas–Fort Worth. Respuestas concretas antes de tomar decisiones."
+        posts={posts}
+        featuredImage={featuredImage}
+        thumbs={thumbs}
+      />
+    </>
   );
 }

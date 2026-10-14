@@ -1,0 +1,24 @@
+/* ==========================================================================
+   NoUpscale (src/components/txq/NoUpscale.tsx) — the global "never stretch a
+   photo past its real pixels" rule. The component only marks elements that
+   WOULD be upscaled; these rules then cap them at their natural size and
+   center them. !important because a safety net must beat component CSS such
+   as `width: 100%` / `max-width: 100%`. Audit: [data-no-upscale] in DevTools.
+   ========================================================================== */
+
+/* Normal-flow image or image-only frame: cap + center in its slot. */
+.txq [data-no-upscale] {
+  max-width: var(--tq-nu-w) !important;
+  max-height: var(--tq-nu-h) !important;
+  margin-inline: auto !important;
+}
+.txq img[data-no-upscale="img"]:not([data-no-upscale-pos]) {
+  display: block;
+}
+
+/* Absolutely-positioned fill image inside a frame that also holds text: the
+   image shrinks to 1:1 and centers inside the frame (the frame never moves). */
+.txq img[data-no-upscale-pos="abs"] {
+  inset: 0 !important;
+  margin: auto !important;
+}

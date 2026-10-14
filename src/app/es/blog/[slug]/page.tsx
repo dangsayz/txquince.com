@@ -8,6 +8,8 @@ import {
   enSlugForEs,
 } from "@/content/blog";
 import { getBlogImages } from "@/lib/content-db";
+import { absoluteImageUrl, ogImageFor, resolveBlogCover } from "@/lib/blog-cover";
+import { blogPostingJsonLd, postMetaTitle } from "@/app/blog/structured-data";
 import { BlogArticleView } from "@/components/BlogContent";
 
 export const revalidate = 3600;
@@ -26,8 +28,10 @@ export async function generateMetadata({
   if (!post) return {};
   const url = `${site.url}/es/blog/${post.slug}`;
   const enSlug = enSlugForEs(post.slug);
+  const cover = await resolveBlogCover(post, await getBlogImages(post.content), "es");
+  const og = ogImageFor(cover);
   return {
-    title: post.metaTitle ?? post.title,
+    title: postMetaTitle(post),
     description: post.description,
     alternates: {
       canonical: `/es/blog/${post.slug}`,
@@ -41,14 +45,26 @@ export async function generateMetadata({
           }
         : {}),
     },
+    // openGraph/twitter replace the root layout's objects wholesale (shallow
+    // merge), so every field a post needs is restated here.
     openGraph: {
       type: "article",
+      siteName: site.brand,
       locale: "es_MX",
+      ...(enSlug ? { alternateLocale: ["en_US"] } : {}),
       title: post.title,
       description: post.description,
       url,
       publishedTime: post.publishedAt,
       modifiedTime: post.updatedAt ?? post.publishedAt,
+      section: post.category,
+      images: [og],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.description,
+      images: [og.url],
     },
   };
 }
@@ -65,57 +81,33 @@ export default async function EsBlogPostPage({
   const url = `${site.url}/es/blog/${post.slug}`;
   const related = relatedEsPosts(post);
   const images = await getBlogImages(post.content);
-  const imageUrls = Object.values(images).map((im) =>
-    im.url.startsWith("http") ? im.url : `${site.url}${im.url}`,
-  );
+  const cover = await resolveBlogCover(post, images, "es");
+  const coverAbs = absoluteImageUrl(cover.url);
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "BlogPosting",
-        "@id": `${url}#article`,
-        headline: post.title,
-        description: post.description,
-        datePublished: post.publishedAt,
-        dateModified: post.updatedAt ?? post.publishedAt,
-        inLanguage: "es",
-        author: { "@type": "Organization", name: site.brand, url: site.url },
-        publisher: { "@type": "Organization", name: site.brand, url: site.url },
-        mainEntityOfPage: url,
-        articleSection: post.category,
-        ...(imageUrls.length ? { image: imageUrls } : {}),
-      },
-      {
-        "@type": "BreadcrumbList",
-        "@id": `${url}#breadcrumb`,
-        itemListElement: [
-          { "@type": "ListItem", position: 1, name: "Inicio", item: site.url },
-          { "@type": "ListItem", position: 2, name: "Diario", item: `${site.url}/es/blog` },
-          { "@type": "ListItem", position: 3, name: post.title, item: url },
-        ],
-      },
-      ...(post.faqs && post.faqs.length
-        ? [
-            {
-              "@type": "FAQPage",
-              "@id": `${url}#faq`,
-              inLanguage: "es",
-              mainEntity: post.faqs.map((f) => ({
-                "@type": "Question",
-                name: f.q,
-                acceptedAnswer: { "@type": "Answer", text: f.a },
-              })),
-            },
-          ]
-        : []),
+  const jsonLd = blogPostingJsonLd({
+    post,
+    url,
+    lang: "es",
+    coverUrl: coverAbs,
+    imageUrls: Object.values(images).map((im) => absoluteImageUrl(im.url)),
+    crumbs: [
+      { name: "Inicio", item: `${site.url}/es` },
+      { name: "Diario", item: `${site.url}/es/blog` },
     ],
-  };
+  });
 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <BlogArticleView lang="es" post={post} images={images} related={related} />
+      <BlogArticleView
+        lang="es"
+        post={post}
+        images={images}
+        cover={cover}
+        related={related}
+        shareUrl={url}
+        shareImage={coverAbs}
+      />
     </>
   );
 }
