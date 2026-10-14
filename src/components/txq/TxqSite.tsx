@@ -39,16 +39,28 @@ export function TxqSite({ journal, films }: { journal: Journal; films: CinemaFil
   }, [heroLive, setHeroBar]);
   useEffect(() => () => setHeroBar(false), [setHeroBar]);
 
-  // Dim the whole page to the film room while the Motion section is anywhere
-  // in the middle half of the viewport: it darkens as the section rises into
-  // view and holds until the section has mostly scrolled past.
+  // Dim the whole page to the film room from the Motion section through the
+  // end of Commissions (the booking builder): it darkens as the films rise
+  // into view and holds until the bottom of Commissions has mostly scrolled
+  // past. The two sections are adjacent, so "either one is in the middle half
+  // of the viewport" is one unbroken stretch.
   useEffect(() => {
-    const el = cinemaRef.current;
-    if (!el) return;
-    const io = new IntersectionObserver(([e]) => setCinema(e.isIntersecting), {
-      rootMargin: "-25% 0px -25% 0px",
-    });
-    io.observe(el);
+    const els = [cinemaRef.current, document.getElementById("commissions")].filter(
+      (el): el is HTMLElement => !!el,
+    );
+    if (!els.length) return;
+    const inView = new Set<Element>();
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) inView.add(e.target);
+          else inView.delete(e.target);
+        }
+        setCinema(inView.size > 0);
+      },
+      { rootMargin: "-25% 0px -25% 0px" },
+    );
+    els.forEach((el) => io.observe(el));
     return () => {
       io.disconnect();
       setCinema(false);
