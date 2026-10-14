@@ -6,7 +6,7 @@ import { MotionConfig } from "motion/react";
 import { Archive } from "./Archive";
 import { CinemaRoom } from "./CinemaRoom";
 import { Commissions } from "./Commissions";
-import { Editorial, Footer } from "./Editorial";
+import { Editorial, Faq, Footer } from "./Editorial";
 import { Header, MobileDock } from "./Header";
 import { Hero } from "./Hero";
 import { Intake } from "./Intake";
@@ -91,6 +91,7 @@ function Shell() {
         <CinemaRoom ref={cinemaRef} />
         <Commissions />
         <Editorial />
+        <Faq />
         <Intake ref={intakeRef} />
       </main>
       <Footer />

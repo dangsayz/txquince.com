@@ -1,5 +1,11 @@
 import { site } from "@/content/site";
-import { packages } from "@/content/packages";
+import {
+  PRICE_CEILING_USD,
+  PRICE_FLOOR_USD,
+  TIER_IDS,
+  TIER_NAME_EN,
+  TIER_PRICE_USD,
+} from "@/lib/commission";
 import { locations } from "@/content/locations";
 
 /**
@@ -11,7 +17,6 @@ import { locations } from "@/content/locations";
  * is what actually wins them; this reinforces relevance).
  */
 export function JsonLd() {
-  const prices = packages.map((p) => p.price);
   const areaServed = [
     ...locations.map((l) => ({ "@type": "City", name: `${l.city}, TX` })),
     { "@type": "City", name: "Oak Cliff, TX" },
@@ -40,17 +45,15 @@ export function JsonLd() {
       addressRegion: "TX",
       addressCountry: "US",
     },
-    priceRange: `$${Math.min(...prices)}–$${Math.max(...prices)}`,
-    // Machine-readable price catalog — rivals show "inquire for pricing"; this
-    // feeds package/price queries and AI overviews.
-    makesOffer: packages.map((p) => ({
+    priceRange: `$${PRICE_FLOOR_USD.toLocaleString("en-US")}–$${PRICE_CEILING_USD.toLocaleString("en-US")}`,
+    // Machine-readable price catalog from the commission price book — rivals
+    // show "inquire for pricing"; this feeds price queries and AI overviews.
+    makesOffer: TIER_IDS.map((id) => ({
       "@type": "Offer",
-      name: `${p.name} — Quinceañera Photography & Film`,
-      description: p.teaser,
-      price: String(p.price),
+      name: `${TIER_NAME_EN[id]} — Quinceañera Photography & Film`,
+      price: String(TIER_PRICE_USD[id]),
       priceCurrency: "USD",
-      url: `${site.url}/reserve?collection=${p.id}`,
-      ...(p.badge ? { category: p.badge } : {}),
+      url: `${site.url}/#commissions`,
     })),
     knowsLanguage: ["en", "es"],
     sameAs: [site.social.instagram, site.social.youtube, site.social.facebook].filter(Boolean),

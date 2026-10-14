@@ -25,6 +25,7 @@ type SiteState = {
   setTier: (t: TierId) => void;
   addOns: AddOnId[];
   toggleAddOn: (a: AddOnId) => void;
+  setAddOns: (a: AddOnId[]) => void;
 };
 
 const SiteCtx = createContext<SiteState | null>(null);
@@ -76,7 +77,7 @@ export function SiteProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => ({ lang, setLang, t: COPY[lang], tier, setTier, addOns, toggleAddOn }),
+    () => ({ lang, setLang, t: COPY[lang], tier, setTier, addOns, toggleAddOn, setAddOns }),
     [lang, setLang, tier, addOns, toggleAddOn],
   );
 
@@ -98,6 +99,10 @@ export type Availability = {
   taken: Set<string>;
   openSaturdays: number;
   limited: boolean;
+  /** Re-read the studio calendar now (e.g. right before checkout). */
+  refresh: () => void;
+  /** The server just reported this date as reserved — reflect it immediately. */
+  markTaken: (iso: string) => void;
 };
 
 const AvailCtx = createContext<Availability>({
@@ -105,10 +110,14 @@ const AvailCtx = createContext<Availability>({
   taken: new Set(),
   openSaturdays: 0,
   limited: false,
+  refresh: () => {},
+  markTaken: () => {},
 });
 
 /** Below this many open Saturdays in the next year, the status reads "Limited". */
 const LIMITED_THRESHOLD = 12;
+/** Re-poll the calendar this often while the tab is visible. */
+const POLL_MS = 60_000;
 
 export function isoDate(d: Date) {
   const m = String(d.getMonth() + 1).padStart(2, "0");
@@ -127,36 +136,58 @@ function countOpenSaturdays(taken: Set<string>) {
   return n;
 }
 
-export function AvailabilityProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<Availability>({
-    ready: false,
-    taken: new Set(),
-    openSaturdays: 0,
-    limited: false,
-  });
+type Calendar = { ready: boolean; taken: Set<string>; local: Set<string> };
 
-  useEffect(() => {
-    let alive = true;
-    const settle = (dates: string[]) => {
-      if (!alive) return;
-      const taken = new Set(dates);
-      const openSaturdays = countOpenSaturdays(taken);
-      setState({ ready: true, taken, openSaturdays, limited: openSaturdays < LIMITED_THRESHOLD });
-    };
-    fetch("/api/availability")
+export function AvailabilityProvider({ children }: { children: ReactNode }) {
+  // `local` keeps dates the server just refused, so a stale poll can't re-open them.
+  const [cal, setCal] = useState<Calendar>({ ready: false, taken: new Set(), local: new Set() });
+
+  const load = useCallback(() => {
+    fetch("/api/availability", { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : { takenDates: [] }))
-      .then((j: { takenDates?: unknown }) =>
-        settle(Array.isArray(j.takenDates) ? j.takenDates.filter((x): x is string => typeof x === "string") : []),
-      )
+      .then((j: { takenDates?: unknown }) => {
+        const dates = Array.isArray(j.takenDates)
+          ? j.takenDates.filter((x): x is string => typeof x === "string")
+          : [];
+        setCal((c) => ({ ...c, ready: true, taken: new Set(dates) }));
+      })
       // Never block the page: an unreachable calendar reads as open, and the
-      // studio confirms every date by hand before anything is held.
-      .catch(() => settle([]));
-    return () => {
-      alive = false;
-    };
+      // atomic hold in /api/commission is the real guard against double-booking.
+      .catch(() => setCal((c) => ({ ...c, ready: true })));
   }, []);
 
-  return <AvailCtx.Provider value={state}>{children}</AvailCtx.Provider>;
+  // Live-ish calendar: on mount, every minute while visible, and on return to the tab.
+  useEffect(() => {
+    load();
+    const tick = window.setInterval(() => {
+      if (document.visibilityState === "visible") load();
+    }, POLL_MS);
+    const onVisible = () => document.visibilityState === "visible" && load();
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      window.clearInterval(tick);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [load]);
+
+  const markTaken = useCallback((iso: string) => {
+    setCal((c) => ({ ...c, local: new Set(c.local).add(iso) }));
+  }, []);
+
+  const value = useMemo<Availability>(() => {
+    const taken = cal.local.size ? new Set([...cal.taken, ...cal.local]) : cal.taken;
+    const openSaturdays = countOpenSaturdays(taken);
+    return {
+      ready: cal.ready,
+      taken,
+      openSaturdays,
+      limited: openSaturdays < LIMITED_THRESHOLD,
+      refresh: load,
+      markTaken,
+    };
+  }, [cal, load, markTaken]);
+
+  return <AvailCtx.Provider value={value}>{children}</AvailCtx.Provider>;
 }
 
 export const useAvailability = () => useContext(AvailCtx);

@@ -4,6 +4,12 @@
  * `es` is typed against `en`, so a missing translation fails the build.
  */
 import type { Category } from "./data";
+import { CONSULT_HOLD_DAYS, RETAINER, TIER_PRICE_USD } from "@/lib/commission";
+
+// FAQ answers quote the live price book so copy can never drift from checkout.
+const $ = (n: number) => `$${n.toLocaleString("en-US")}`;
+const P = TIER_PRICE_USD;
+const PCT = `${Math.round(RETAINER.rate * 100)}%`;
 
 const en = {
   meta: {
@@ -127,6 +133,48 @@ const en = {
       { kind: "Glossary", read: "8 min", title: "La última muñeca, and other quiet rituals" },
     ],
   },
+  faq: {
+    index: "Q&A",
+    title: "Questions families ask",
+    items: [
+      {
+        q: "How much does a quinceañera photographer and videographer cost in Dallas–Fort Worth?",
+        a: `Most DFW quinceañera studios publish packages between about $1,500 and $6,000. TX Quince works at the top of the market: a Portrait Study begins at ${$(P.study)}, photo and film together begin at ${$(P.cinema)}, and The Full Production, the commission we recommend for most celebrations, is ${$(P.production)}. Every price is published above.`,
+      },
+      {
+        q: "Is photography and film included together?",
+        a: "Yes, from Commission II up. Two directors cover the day, one for stills and one for motion, so the gallery and the film are made side by side. The Portrait Study is photography only.",
+      },
+      {
+        q: "How many hours of coverage does a quinceañera need?",
+        a: "Plan on the whole arc: getting ready at home, the misa (about an hour), portraits between church and reception, then the grand entrance, vals, surprise dance and toasts. That is usually 8 to 11 hours, which is what Commissions II and III cover.",
+      },
+      {
+        q: "How far in advance should we book?",
+        a: "Most families reserve 9 to 12 months ahead. Saturdays in spring and fall go first, and we take only one celebration per date. The calendar below is read live from our studio diary.",
+      },
+      {
+        q: "Do you photograph the misa, the vals and the surprise dance?",
+        a: "All of it: the blessing at church, the last doll, the change of shoes, the father–daughter waltz, the surprise dance and the toasts from the padrinos. We plan the timeline with you so nothing is missed.",
+      },
+      {
+        q: "Do you work in Spanish?",
+        a: "Yes. Every consultation, timeline and delivery is available in English or Spanish, and our directors speak with grandparents and padrinos in whichever language is most comfortable.",
+      },
+      {
+        q: "How does the retainer work?",
+        a: `A retainer of ${PCT} of your commission holds the date and is applied in full to your balance, which is due ${RETAINER.balanceDueDays} days before the celebration. You can pay it online at secure checkout, or request a consultation first and we will hold the date for ${CONSULT_HOLD_DAYS} days while we talk.`,
+      },
+      {
+        q: "Where do you take pre-quince portraits around Dallas?",
+        a: "Favorites include the Dallas Arboretum, Highland Park Village, Klyde Warren Park, the Fort Worth Botanic Garden and the Fort Worth Stockyards, as well as private estates and hotel ballrooms. Some gardens charge their own session fees; we confirm permits for you.",
+      },
+      {
+        q: "Do you travel outside Dallas–Fort Worth?",
+        a: "Yes. Our home is Dallas–Fort Worth, and we also accept celebrations in Houston, Austin and San Antonio, plus destination portrait sessions anywhere in Texas.",
+      },
+    ],
+  },
   intake: {
     index: "05 / Intake",
     title: "Hold your date.",
@@ -168,14 +216,37 @@ const en = {
     notePlaceholder: "Church, theme colors, a song that must be in the film…",
     continue: "Continue",
     back: "Back",
-    submit: "Request Date Hold & Consultation",
+    submit: "Request hold & consultation",
     sending: "Sending…",
+    finish: "How would you like to hold it?",
+    pathRetainer: "Reserve now",
+    pathRetainerNote: (amount: string) =>
+      `Pay the ${amount} retainer through secure checkout. The date is yours the moment it clears.`,
+    pathConsult: "Consultation first",
+    pathConsultNote: (days: number) =>
+      `No payment today. We hold the date for ${days} days while we talk it through together.`,
+    submitRetainer: (amount: string) => `Secure checkout · ${amount}`,
+    redirecting: "Opening secure checkout…",
+    secure: "Secure checkout by Stripe. Your retainer is applied in full; the balance is due 30 days before the celebration.",
+    retainerLabel: "Retainer today",
+    balanceLabel: "Balance, 30 days before",
+    closed: "Checkout closed before payment. Your details are saved, so you can continue whenever you're ready.",
+    paidTitle: "Your date is reserved.",
+    paidBody: (date: string, amount: string) =>
+      `We've received your ${amount} retainer for ${date}. A director will write within one day to begin planning.`,
+    processingTitle: "Payment processing.",
+    processingBody: (date: string) =>
+      `Your bank is confirming the payment. ${date} stays held, and we'll email you the moment it clears.`,
+    consultBody: (date: string, email: string, days: number) =>
+      `${date} is held for you for ${days} days. We'll write to ${email} within one day to arrange your consultation.`,
     errors: {
       date: "Choose a date to continue.",
       city: "Choose a city.",
       name: "Enter your name.",
       email: "Enter a valid email address.",
       failed: "Something went wrong. Please try again, or write to us directly.",
+      taken: "That date was just reserved by another family. Please choose another.",
+      verify: "Please complete the verification below.",
     },
     summary: "Your request",
     doneTitle: "Request received.",
@@ -319,6 +390,48 @@ const es: Copy = {
       { kind: "Glosario", read: "8 min", title: "La última muñeca y otros rituales callados" },
     ],
   },
+  faq: {
+    index: "Preguntas",
+    title: "Lo que preguntan las familias",
+    items: [
+      {
+        q: "¿Cuánto cuesta un fotógrafo y videógrafo de quinceañera en Dallas–Fort Worth?",
+        a: `La mayoría de los estudios de quinceañera en DFW publican paquetes de entre $1,500 y $6,000. TX Quince trabaja en lo más alto del mercado: un Estudio de retrato comienza en ${$(P.study)}, foto y cine juntos desde ${$(P.cinema)}, y La producción completa, el encargo que recomendamos para la mayoría de las celebraciones, cuesta ${$(P.production)}. Todos los precios están publicados arriba.`,
+      },
+      {
+        q: "¿La foto y el video vienen juntos?",
+        a: "Sí, a partir del Encargo II. Dos directores cubren el día, uno de foto y otro de cine, así que la galería y la película se hacen a la par. El Estudio de retrato es solo fotografía.",
+      },
+      {
+        q: "¿Cuántas horas de cobertura necesita una quinceañera?",
+        a: "Considera todo el día: el arreglo en casa, la misa (alrededor de una hora), los retratos entre la iglesia y la recepción, y luego la entrada, el vals, el baile sorpresa y los brindis. Normalmente son de 8 a 11 horas, lo que cubren los Encargos II y III.",
+      },
+      {
+        q: "¿Con cuánta anticipación debemos reservar?",
+        a: "La mayoría de las familias reservan con 9 a 12 meses de anticipación. Los sábados de primavera y otoño se van primero, y solo tomamos una celebración por fecha. El calendario de abajo se lee en vivo de nuestra agenda.",
+      },
+      {
+        q: "¿Fotografían la misa, el vals y el baile sorpresa?",
+        a: "Todo: la bendición en la iglesia, la última muñeca, el cambio de zapatilla, el vals con papá, el baile sorpresa y los brindis de los padrinos. Planeamos el itinerario contigo para que nada se pierda.",
+      },
+      {
+        q: "¿Trabajan en español?",
+        a: "Sí. Cada consulta, itinerario y entrega está disponible en español o en inglés, y nuestros directores hablan con abuelos y padrinos en el idioma que les sea más cómodo.",
+      },
+      {
+        q: "¿Cómo funciona el anticipo?",
+        a: `Un anticipo del ${PCT} del encargo aparta la fecha y se aplica completo a tu saldo, que se liquida ${RETAINER.balanceDueDays} días antes de la celebración. Puedes pagarlo en línea con pago seguro, o pedir primero una consulta y apartamos la fecha ${CONSULT_HOLD_DAYS} días mientras platicamos.`,
+      },
+      {
+        q: "¿Dónde toman los retratos pre-quince en Dallas?",
+        a: "Entre los favoritos están el Dallas Arboretum, Highland Park Village, Klyde Warren Park, el Fort Worth Botanic Garden y los Stockyards de Fort Worth, además de residencias privadas y salones de hotel. Algunos jardines cobran su propia cuota de sesión; nosotros confirmamos los permisos.",
+      },
+      {
+        q: "¿Viajan fuera de Dallas–Fort Worth?",
+        a: "Sí. Nuestra base es Dallas–Fort Worth, y también aceptamos celebraciones en Houston, Austin y San Antonio, además de sesiones de retrato en destino en cualquier parte de Texas.",
+      },
+    ],
+  },
   intake: {
     index: "05 / Solicitud",
     title: "Aparta tu fecha.",
@@ -362,12 +475,35 @@ const es: Copy = {
     back: "Atrás",
     submit: "Solicitar fecha y consulta",
     sending: "Enviando…",
+    finish: "¿Cómo quieres apartarla?",
+    pathRetainer: "Reservar ahora",
+    pathRetainerNote: (amount: string) =>
+      `Paga el anticipo de ${amount} en un pago seguro. La fecha es tuya en cuanto se confirme.`,
+    pathConsult: "Primero una consulta",
+    pathConsultNote: (days: number) =>
+      `Sin pago hoy. Apartamos la fecha ${days} días mientras platicamos.`,
+    submitRetainer: (amount: string) => `Pago seguro · ${amount}`,
+    redirecting: "Abriendo el pago seguro…",
+    secure: "Pago seguro con Stripe. El anticipo se aplica completo; el saldo se liquida 30 días antes de la celebración.",
+    retainerLabel: "Anticipo hoy",
+    balanceLabel: "Saldo, 30 días antes",
+    closed: "El pago se cerró antes de completarse. Tus datos están guardados; continúa cuando quieras.",
+    paidTitle: "Tu fecha está reservada.",
+    paidBody: (date: string, amount: string) =>
+      `Recibimos tu anticipo de ${amount} para el ${date}. Un director te escribirá en un día para comenzar a planear.`,
+    processingTitle: "Pago en proceso.",
+    processingBody: (date: string) =>
+      `Tu banco está confirmando el pago. El ${date} sigue apartado y te escribiremos en cuanto se confirme.`,
+    consultBody: (date: string, email: string, days: number) =>
+      `Apartamos el ${date} por ${days} días. Escribiremos a ${email} en un día para agendar tu consulta.`,
     errors: {
       date: "Elige una fecha para continuar.",
       city: "Elige una ciudad.",
       name: "Escribe tu nombre.",
       email: "Escribe un correo válido.",
       failed: "Algo salió mal. Inténtalo de nuevo o escríbenos directamente.",
+      taken: "Otra familia acaba de reservar esa fecha. Por favor elige otra.",
+      verify: "Completa la verificación de abajo.",
     },
     summary: "Tu solicitud",
     doneTitle: "Solicitud recibida.",

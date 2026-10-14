@@ -14,6 +14,14 @@ export type L = { en: string; es: string };
 
 export const pick = (lang: Lang, v: L) => v[lang];
 
+import {
+  ADD_ON_PRICE_USD,
+  TIER_PRICE_USD,
+  quoteCommission,
+  type AddOnId,
+  type TierId,
+} from "@/lib/commission";
+
 /* ------------------------------------------------------------------ */
 /* Archive                                                             */
 /* ------------------------------------------------------------------ */
@@ -262,8 +270,8 @@ export const REELS: Film[] = [
 /* Commissions                                                         */
 /* ------------------------------------------------------------------ */
 
-export type TierId = "study" | "cinema" | "production" | "archive";
-export type AddOnId = "destination" | "sameday" | "super8" | "parents";
+// Prices live in the shared price book so the server re-prices every checkout.
+export type { TierId, AddOnId } from "@/lib/commission";
 
 export type Tier = {
   id: TierId;
@@ -283,7 +291,7 @@ export const TIERS: Tier[] = [
       en: "A single unhurried session before the celebration. Couture, light, and her.",
       es: "Una sola sesión sin prisa antes de la celebración. Vestido, luz y ella.",
     },
-    price: 2400,
+    price: TIER_PRICE_USD.study,
     scope: "stills",
   },
   {
@@ -294,7 +302,7 @@ export const TIERS: Tier[] = [
       en: "The day, told twice: once in frames, once in motion, by two directors.",
       es: "El día, contado dos veces: en imágenes y en movimiento, por dos directores.",
     },
-    price: 6200,
+    price: TIER_PRICE_USD.cinema,
     scope: "both",
   },
   {
@@ -305,7 +313,7 @@ export const TIERS: Tier[] = [
       en: "Portrait session, Mass, and fiesta under one crew, bound in linen.",
       es: "Sesión de retrato, misa y fiesta con un solo equipo, encuadernado en lino.",
     },
-    price: 9800,
+    price: TIER_PRICE_USD.production,
     scope: "both",
   },
   {
@@ -316,7 +324,7 @@ export const TIERS: Tier[] = [
       en: "From the dress fitting to the last song. A documentary of the whole season.",
       es: "De la prueba del vestido a la última canción. Un documental de toda la temporada.",
     },
-    price: 16500,
+    price: TIER_PRICE_USD.archive,
     scope: "both",
   },
 ];
@@ -447,7 +455,7 @@ export const ADD_ONS: AddOn[] = [
       en: "A half-day anywhere in Texas: Marfa, Galveston, the Hill Country.",
       es: "Medio día en cualquier parte de Texas: Marfa, Galveston, el Hill Country.",
     },
-    price: 1400,
+    price: ADD_ON_PRICE_USD.destination,
   },
   {
     id: "sameday",
@@ -456,7 +464,7 @@ export const ADD_ONS: AddOn[] = [
       en: "A two-minute film screened for your guests before the last dance.",
       es: "Una película de dos minutos proyectada antes del último baile.",
     },
-    price: 1600,
+    price: ADD_ON_PRICE_USD.sameday,
   },
   {
     id: "super8",
@@ -465,7 +473,7 @@ export const ADD_ONS: AddOn[] = [
       en: "Three minutes of real film, grain and all, cut into the feature.",
       es: "Tres minutos de película real, con todo y grano, dentro del largometraje.",
     },
-    price: 900,
+    price: ADD_ON_PRICE_USD.super8,
   },
   {
     id: "parents",
@@ -474,24 +482,20 @@ export const ADD_ONS: AddOn[] = [
       en: "Two 8×8 linen companions to the monograph, one for each household.",
       es: "Dos álbumes de lino de 20×20 cm, uno para cada hogar.",
     },
-    price: 1200,
+    price: ADD_ON_PRICE_USD.parents,
   },
 ];
-
-export const RETAINER_RATE = 0.3;
 
 export const tierById = (id: TierId) => TIERS.find((t) => t.id === id)!;
 
 export function estimate(tier: TierId, addOns: AddOnId[]) {
-  const base = tierById(tier).price;
-  const extras = ADD_ONS.filter((a) => addOns.includes(a.id)).reduce(
-    (sum, a) => sum + a.price,
-    0,
-  );
-  return base + extras;
+  return quoteCommission(tier, addOns).totalUsd;
 }
 
-// Prices read the same in both languages ($2,400) — Texas families pay in USD.
+export function retainer(tier: TierId, addOns: AddOnId[]) {
+  return quoteCommission(tier, addOns).retainerUsd;
+}
+
 export function money(n: number) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",

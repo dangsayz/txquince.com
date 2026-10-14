@@ -5,10 +5,10 @@ import { animate, useReducedMotion } from "motion/react";
 import {
   ADD_ONS,
   MATRIX,
-  RETAINER_RATE,
   TIERS,
   estimate,
   money,
+  retainer,
   pick,
   tierById,
   type Lang,
@@ -189,7 +189,7 @@ export function Commissions() {
               ))}
               <div>
                 <dt>{t.commissions.retainer}</dt>
-                <dd>{money(Math.round(total * RETAINER_RATE))}</dd>
+                <dd>{money(retainer(tier, addOns))}</dd>
               </div>
             </dl>
             <a href="#intake" className="tq-btn tq-btn--lg tq-btn--block">

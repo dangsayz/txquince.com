@@ -117,3 +117,34 @@ export function Footer() {
     </footer>
   );
 }
+
+/** Answer-first Q&A — mirrors the FAQPage structured data on the homepage. */
+export function Faq() {
+  const { t } = useSite();
+  return (
+    <section id="questions" className="tq-section" aria-labelledby="tq-faq-title">
+      <div className="tq-wrap">
+        <header className="tq-head">
+          <p className="tq-head__index tq-mono" style={{ margin: 0 }}>
+            [{t.faq.index}]
+          </p>
+          <h2 id="tq-faq-title" className="tq-display tq-head__title">
+            {t.faq.title}
+          </h2>
+        </header>
+        <div className="tq-faq">
+          {t.faq.items.map((item, i) => (
+            <details key={item.q} className="tq-faq__item" open={i === 0}>
+              <summary>
+                <span className="tq-mono tq-muted">{String(i + 1).padStart(2, "0")}</span>
+                <h3 className="tq-faq__q">{item.q}</h3>
+                <span className="tq-faq__icon" aria-hidden />
+              </summary>
+              <p>{item.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
