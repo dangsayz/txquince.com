@@ -254,8 +254,13 @@ export async function startCheckout(deps: JourneyDeps, body: unknown): Promise<{
   if (closed.inFlight) return fail(409, "processing", es ? "Tu pago se está procesando." : "Your payment is processing.");
 
   const back = `${deps.siteUrl()}${es ? "/es/mi-reserva" : "/my/booking"}/${(body as { token: string }).token}`;
-  const holdLeft = kind === "deposit" ? Date.parse(b.expires_at) - now.getTime() : MAX_SESSION_MS;
-  const expiresAt = new Date(now.getTime() + Math.max(MIN_SESSION_MS, Math.min(MAX_SESSION_MS, holdLeft)));
+  // Idempotency: two clicks in the same minute send byte-identical params under
+  // the same key, so Stripe returns ONE session. A replaced session bumps the
+  // count, so the next attempt gets a new key (never the expired session back).
+  const minute = Math.floor(now.getTime() / 60_000) * 60_000;
+  const holdLeft = kind === "deposit" ? Date.parse(b.expires_at) - minute : MAX_SESSION_MS;
+  const expiresAt = new Date(minute + Math.max(MIN_SESSION_MS, Math.min(MAX_SESSION_MS, holdLeft)));
+  const attempt = (await deps.db.listSessions(b.id, { kind })).length;
   const date = new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }).format(
     new Date(`${b.event_date}T12:00:00Z`),
   );
@@ -272,7 +277,7 @@ export async function startCheckout(deps: JourneyDeps, body: unknown): Promise<{
     successUrl: `${back}?paid=1`,
     cancelUrl: back,
     expiresAt,
-    idempotencyKey: `txq-${b.id}-${kind}-${amount}-${Math.floor(now.getTime() / 60_000)}`,
+    idempotencyKey: `txq-${b.id}-${kind}-${amount}-${attempt}-${minute}`,
     metadata: { source: "txquince-journey", flow: "journey", booking_id: b.id, kind, amount_cents: amount },
   });
   if (!session.url) throw new Error("Stripe returned no checkout url");
