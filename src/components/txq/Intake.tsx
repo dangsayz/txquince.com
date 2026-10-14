@@ -9,16 +9,17 @@
  * step is announced with aria-current="step". Plain buttons keep Tab order
  * honest (no roving tabindex to learn) and screen readers read "Step 2 of 5".
  *
- * The family SENDS A REQUEST here — nothing is signed or charged. The studio
- * confirms the date; the agreement is signed and the deposit paid later on
- * their private booking page. Every number comes from the live price book.
+ * The family SENDS AN INQUIRY here — nothing is held, signed or charged. Their
+ * picks go to /api/inquiry, which re-prices them with the server's book and
+ * files them as a normal inquiry; the studio follows up and sends the deposit
+ * link. Every number shown comes from the live price book.
  */
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { getFirstTouch } from "@/components/Tracker";
-import { BASE_CREW, COORDINATOR_INCLUDED, priceBookSchema, type PriceBook } from "@/lib/commission";
-import { HONEYPOT_FIELD } from "@/lib/booking";
+import { BASE_CREW, COORDINATOR_INCLUDED } from "@/lib/commission";
+import { HONEYPOT_FIELD } from "@/lib/inquiry";
 import { usePriceBook } from "@/components/PriceBookProvider";
 import { ADD_ONS, CITIES, money, pick, tierById, type Lang, type TierId } from "./data";
 import { BOOKING_STEPS, isoDate, useAvailability, useQuote, useSite } from "./state";
@@ -38,7 +39,7 @@ const SHOW_TURNSTILE = Boolean(SITE_KEY) && process.env.NODE_ENV === "production
 /** Link that opens the booking panel at Hours & extras with this package chosen. */
 export const bookHref = (tier: TierId) => `#book-${tier}`;
 
-type Done = { ref: string; holdDays: number; date: string; email: string };
+type Done = { date: string; email: string };
 type Errors = Record<string, string>;
 
 const localeOf = (l: Lang) => (l === "es" ? "es-MX" : "en-US");
@@ -70,8 +71,6 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
   const { t, lang, tier, addOns, crew, hours, booking: b, updateBooking, resetBooking, pickPackage, pickTick } =
     useSite();
   const avail = useAvailability();
-  const prices = usePriceBook();
-  const { book } = prices;
   const quote = useQuote();
   const step = b.step;
 
@@ -80,8 +79,8 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState<Done | null>(null);
   const [token, setToken] = useState("");
-  /** Month the calendar opens on when no date is picked (keeps place after a conflict). */
-  const [anchor, setAnchor] = useState<string | null>(null);
+  /** Month the calendar opens on when no date is picked. */
+  const anchor: string | null = null;
   /** Bumps whenever the step changes on purpose: focus the heading, bring the panel into view. */
   const [moveTick, setMoveTick] = useState(0);
 
@@ -232,66 +231,44 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
     setNotice("");
     let ok = false;
     try {
-      const res = await fetch("/api/commission", {
+      const res = await fetch("/api/inquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          event_date: b.date,
-          city: b.city,
-          venue: b.venue.trim(),
-          start_time: timeLabel(b.startTime, "en"),
-          scope,
-          tier,
-          add_ons: addOns,
-          crew_mix: crew,
-          hours,
           name: b.name.trim(),
-          honoree: b.honoree.trim(),
           email: b.email.trim(),
           phone: b.phone.trim(),
-          language,
-          note: b.note.trim(),
-          share_permission: b.share,
-          // What the family was shown; the server refuses if its own price differs.
-          quoted_total_usd: quote.totalUsd,
-          quoted_deposit_usd: quote.retainerUsd,
+          event_date: b.date,
+          venue: b.venue.trim(),
+          // The server derives services, budget and the priced summary from `package`.
+          services: tier === "study" ? "photo" : "both",
+          budget_range: "full",
+          message: b.note.trim(),
+          package: {
+            city: b.city,
+            venue: b.venue.trim(),
+            start_time: timeLabel(b.startTime, "en"),
+            scope,
+            tier,
+            add_ons: addOns,
+            crew_mix: crew ?? undefined,
+            hours,
+            honoree: b.honoree.trim(),
+            language,
+            share_permission: b.share,
+          },
           [HONEYPOT_FIELD]: honeypotRef.current?.value ?? "",
           "cf-turnstile-response": token,
           attribution: getFirstTouch(),
         }),
       });
-      const j = (await res.json().catch(() => ({}))) as {
-        ok?: boolean;
-        code?: string;
-        error?: string;
-        holdDays?: number;
-        ref?: string;
-        book?: unknown;
-      };
-
-      if (j.code === "prices_changed") {
-        // Prices changed while this tab was open: show the new numbers first.
-        const fresh = priceBookSchema.safeParse(j.book);
-        if (fresh.success) prices.adopt(fresh.data as PriceBook);
-        setNotice(t.booking.pricesChanged);
-        requestAnimationFrame(() => noticeRef.current?.focus());
-        return;
-      }
-      if (res.status === 409 || j.code === "date_taken") {
-        avail.markTaken(b.date);
-        avail.refresh();
-        setAnchor(b.date);
-        updateBooking({ date: null, step: 2 });
-        setErrors({ date: t.booking.errors.taken });
-        setMoveTick((n) => n + 1);
-        return;
-      }
+      const j = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
       if (!res.ok || !j.ok) {
         setErrors({ form: j.error || t.booking.errors.failed });
         return;
       }
       ok = true;
-      setDone({ ref: j.ref ?? "", holdDays: j.holdDays ?? book.holdDays, date: b.date, email: b.email.trim() });
+      setDone({ date: b.date, email: b.email.trim() });
       resetBooking();
       avail.refresh();
       setMoveTick((n) => n + 1);
@@ -807,13 +784,8 @@ function Success({
       <h3 ref={headingRef} tabIndex={-1} className="tq-display tq-bk-done__title">
         {t.booking.doneTitle}
       </h3>
-      <p className="tq-bk-done__held">{t.booking.doneHeld(done.holdDays)}</p>
+      <p className="tq-bk-done__held">{t.booking.doneHeld}</p>
       <p>{t.booking.doneBody(longDate(done.date, lang), done.email)}</p>
-      {done.ref ? (
-        <p className="tq-bk-done__ref">
-          {t.booking.reference}: <strong className="tq-nums">{done.ref}</strong>
-        </p>
-      ) : null}
       <div className="tq-bk-next">
         <h4 className="tq-bk-label">{t.booking.nextTitle}</h4>
         <ol>

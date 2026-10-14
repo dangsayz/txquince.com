@@ -22,6 +22,7 @@ import { sanitizeAttribution } from "@/lib/attribution";
 import { clientIp } from "@/lib/client-ip";
 import { rateLimiter } from "@/lib/rate-limit";
 import { getPriceBook } from "@/lib/pricing";
+import { BUDGET_FOR_TIER, describeInquiryPackage, inquiryPackageSchema, servicesForTier } from "@/lib/inquiry-package";
 
 // Always run server-side at request time.
 export const dynamic = "force-dynamic";
@@ -78,8 +79,39 @@ export async function POST(req: NextRequest) {
       { status: 422 },
     );
   }
+  const book = await getPriceBook();
+  let fields = parsed.data;
+
+  // From the homepage package picker: re-validate and re-price the family's
+  // picks on the server; the summary (not any client total) goes in the message.
+  if (body.package !== undefined) {
+    const pkg = inquiryPackageSchema.safeParse(body.package);
+    if (!pkg.success || !fields.event_date) {
+      return NextResponse.json(
+        { ok: false, error: "Please check your package choices and date, then try again." },
+        { status: 422 },
+      );
+    }
+    fields = {
+      ...fields,
+      services: servicesForTier(pkg.data.tier),
+      budget_range: BUDGET_FOR_TIER[pkg.data.tier],
+      message: describeInquiryPackage(
+        pkg.data,
+        {
+          name: fields.name,
+          email: fields.email,
+          phone: fields.phone ?? "",
+          eventDate: fields.event_date,
+          note: fields.message ?? "",
+        },
+        book,
+      ),
+    };
+  }
+
   // Budget arrives as a stable key; store/email it as priced text from the live book.
-  const data = { ...parsed.data, budget_range: budgetStoredText(parsed.data.budget_range, await getPriceBook()) };
+  const data = { ...fields, budget_range: budgetStoredText(fields.budget_range, book) };
 
   // 5) Insert to Supabase (service role; RLS blocks anon entirely).
   if (!isSupabaseConfigured()) {

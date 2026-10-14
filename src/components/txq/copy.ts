@@ -176,7 +176,7 @@ const en = {
       },
       {
         q: "How does the deposit work?",
-        a: `You send your request online — nothing is charged. We hold your date for ${PT.holdDays} days and confirm it within a day. Then you sign your agreement and pay ${PCT} on your private booking page to lock in your date. All of it goes toward your total, and the rest is due ${PT.balanceDays} days before the event.`,
+        a: `Pick your package online and send it to us — nothing is charged. We reply within a day to confirm your date, then send your agreement and a secure link to pay the ${PCT} deposit, which locks in your date. All of it goes toward your total, and the rest is due ${PT.balanceDays} days before the event.`,
       },
       {
         q: "Where do you take pre-quince portraits around Dallas?",
@@ -272,17 +272,17 @@ const en = {
     rest: `The rest, ${PT.balanceDays} days before`,
     nextTitle: "What happens next",
     nextSteps: [
-      "We confirm your date within a day.",
-      `You sign the agreement and pay the ${PCT} deposit on your private page.`,
+      "We reply within a day to confirm your date.",
+      `We send your agreement and a secure link to pay the ${PCT} deposit.`,
       `The rest is due ${PT.balanceDays} days before your event.`,
     ],
     noCharge: "Nothing is charged today.",
     // After sending
     reference: "Reference",
     doneTitle: "Thank you!",
-    doneHeld: (days: number) => `Your date is held for ${days} days while we confirm.`,
+    doneHeld: "We got your package and date.",
     doneBody: (date: string, email: string) =>
-      `We'll write to ${email} within a day to confirm ${date}. Then you sign the agreement and pay your deposit on your private page.`,
+      `We'll write to ${email} within a day about ${date}, and send your agreement and deposit link.`,
     again: "Start a new request",
     pricesChanged: "Prices were just updated — please check your total.",
     errors: {
@@ -471,7 +471,7 @@ const es: Copy = {
       },
       {
         q: "¿Cómo funciona el depósito?",
-        a: `Envías tu solicitud en línea — no se cobra nada. Apartamos tu fecha ${PT.holdDays} días y la confirmamos en un día. Luego firmas tu contrato y pagas el ${PCT} en tu página privada para asegurar tu fecha. Todo se abona a tu total, y el resto se paga ${PT.balanceDays} días antes del evento.`,
+        a: `Elige tu paquete en línea y envíanoslo — no se cobra nada. Te respondemos en un día para confirmar tu fecha y te mandamos tu contrato y un enlace seguro para pagar el depósito del ${PCT}, que asegura tu fecha. Todo se abona a tu total, y el resto se paga ${PT.balanceDays} días antes del evento.`,
       },
       {
         q: "¿Dónde toman los retratos pre-quince en Dallas?",
@@ -567,17 +567,17 @@ const es: Copy = {
     rest: `El resto, ${PT.balanceDays} días antes`,
     nextTitle: "Qué sigue",
     nextSteps: [
-      "Confirmamos tu fecha en un día.",
-      `Firmas el contrato y pagas el depósito del ${PCT} en tu página privada.`,
+      "Te respondemos en un día para confirmar tu fecha.",
+      `Te mandamos tu contrato y un enlace seguro para pagar el depósito del ${PCT}.`,
       `El resto se paga ${PT.balanceDays} días antes de tu evento.`,
     ],
     noCharge: "Hoy no se cobra nada.",
     // Después de enviar
     reference: "Referencia",
     doneTitle: "¡Gracias!",
-    doneHeld: (days: number) => `Tu fecha queda apartada ${days} días mientras la confirmamos.`,
+    doneHeld: "Recibimos tu paquete y tu fecha.",
     doneBody: (date: string, email: string) =>
-      `Te escribiremos a ${email} en un día para confirmar el ${date}. Luego firmas el contrato y pagas tu depósito en tu página privada.`,
+      `Te escribiremos a ${email} en un día sobre el ${date}, y te mandamos tu contrato y el enlace del depósito.`,
     again: "Empezar otra solicitud",
     pricesChanged: "Acabamos de actualizar los precios — por favor revisa tu total.",
     errors: {
