@@ -39,13 +39,14 @@ export function TxqSite({ journal, films }: { journal: Journal; films: CinemaFil
   }, [heroLive, setHeroBar]);
   useEffect(() => () => setHeroBar(false), [setHeroBar]);
 
-  // Dim the whole page to the film room while the Motion section holds the
-  // middle of the viewport.
+  // Dim the whole page to the film room while the Motion section is anywhere
+  // in the middle half of the viewport: it darkens as the section rises into
+  // view and holds until the section has mostly scrolled past.
   useEffect(() => {
     const el = cinemaRef.current;
     if (!el) return;
     const io = new IntersectionObserver(([e]) => setCinema(e.isIntersecting), {
-      rootMargin: "-45% 0px -45% 0px",
+      rootMargin: "-25% 0px -25% 0px",
     });
     io.observe(el);
     return () => {
