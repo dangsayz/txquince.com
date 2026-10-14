@@ -84,6 +84,7 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
         /* ignore */
       }
       // Full navigation so no signed-in state survives in memory.
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- a hard reload is the point here
       window.location.assign("/");
     } catch {
       setSignOutError(true);
