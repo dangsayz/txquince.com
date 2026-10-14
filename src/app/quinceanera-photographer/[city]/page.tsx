@@ -8,9 +8,13 @@ import { PRICE_CEILING_USD, PRICE_FLOOR_USD, TIER_PRICE_USD, usd } from "@/lib/c
 import { locations, getLocation, nearbyLocations, cityGeo } from "@/content/locations";
 import { getCityContent } from "@/content/city-content";
 import { getPost } from "@/content/blog";
-import { getFeaturedImages, getImagesByCity } from "@/lib/content-db";
+import { portfolioFallback } from "@/content/portfolio-fallback";
+import { releasedTestimonials } from "@/content/testimonials";
+import { getFeaturedImages, getImagesByCity, type PortfolioImage } from "@/lib/content-db";
 import { venuesByCity } from "@/content/venues";
-import { Reveal } from "@/components/Reveal";
+import { altPhraseFor } from "@/content/portfolio-taxonomy";
+import { publicPhotoCopy } from "@/lib/public-photo-copy";
+import "@/components/txq/pages/places.css";
 
 /** Curated guides surfaced on each city page (closes the city↔blog loop). */
 const CITY_GUIDES = [
@@ -19,11 +23,6 @@ const CITY_GUIDES = [
   "quinceanera-photographer-cost-dallas-fort-worth",
   "when-to-book-quinceanera-photographer-dfw",
 ];
-import { CTAButton } from "@/components/CTAButton";
-import { HowBookingWorks } from "@/components/HowBookingWorks";
-import { Testimonials } from "@/components/Testimonials";
-import { altPhraseFor } from "@/content/portfolio-taxonomy";
-import { publicPhotoCopy } from "@/lib/public-photo-copy";
 
 /** A real church-to-reception quinceañera day — the topical depth competitors cover. */
 const DAY_TIMELINE: { when: string; title: string; body: string }[] = [
@@ -56,6 +55,26 @@ const DAY_TIMELINE: { when: string; title: string; body: string }[] = [
     when: "Night",
     title: "The celebration",
     body: "Dinner, la última muñeca, the dollar dance, and open dancing until the night winds down — covered start to finish, never cut short.",
+  },
+];
+
+/** From first message to the day — removes the "what happens next?" drop-off. */
+const BOOKING_STEPS: { title: string; body: string }[] = [
+  {
+    title: "Send the date",
+    body: "Pick the date on the live calendar and the commission you are considering. Questions first? Request a consultation and we hold the date for 7 days.",
+  },
+  {
+    title: "Lock it in",
+    body: `A ${retainerPercentLabel} retainer at secure checkout reserves the date exclusively. It applies in full; the balance is due 30 days before the celebration.`,
+  },
+  {
+    title: "Your portrait session",
+    body: "The Full Production and the Multi-Day Archive include an editorial portrait session before the day, so we already know each other when the camera comes out.",
+  },
+  {
+    title: "Your day, captured",
+    body: "We document the whole arc of your commission, from la misa to the last dance, with stills and film made side by side.",
   },
 ];
 
@@ -122,6 +141,15 @@ function sharedFaqs(city: string) {
   ];
 }
 
+/** One photograph, normalized from the DB or the bundled portfolio fallback. */
+type Shot = { key: string; url: string; alt: string; focus: string; local: boolean };
+
+const pad = (n: number) => String(n).padStart(2, "0");
+
+function focal(fx?: number | null, fy?: number | null, dy = 0.35): string {
+  return `${fx != null ? Math.round(fx * 100) : 50}% ${fy != null ? Math.round(fy * 100) : Math.round(dy * 100)}%`;
+}
+
 export default async function CityPage({
   params,
 }: {
@@ -137,14 +165,46 @@ export default async function CityPage({
   const nearby = nearbyLocations(loc.slug);
   const cityVenues = venuesByCity(loc.slug);
   const guides = CITY_GUIDES.map(getPost).filter((p) => p !== undefined);
+  const quotes = releasedTestimonials().slice(0, 3);
   const url = `${site.url}/quinceanera-photographer/${loc.slug}`;
-  // This city's OWN tagged work first; fall back to featured until it's tagged.
+  // This city's OWN tagged work first; fall back to featured until it's tagged,
+  // then to the bundled portfolio (that city's photos first) so the page never
+  // renders an empty frame — Frisco, Plano and McKinney have no tagged work yet.
   const cityShots = await getImagesByCity(loc.slug, 6);
   const featured = cityShots.length ? cityShots : await getFeaturedImages(6);
   const isCityWork = cityShots.length > 0;
+  const shots: Shot[] = featured.length
+    ? featured.map((img: PortfolioImage) => ({
+        key: img.slug ?? img.id,
+        url: img.url,
+        alt: publicPhotoCopy(img, altPhraseFor(img.section)).alt,
+        focus: focal(img.focus_x, img.focus_y),
+        local: false,
+      }))
+    : [...portfolioFallback]
+        .sort((a, b) => Number(b.city === loc.city) - Number(a.city === loc.city))
+        .slice(0, 6)
+        .map((p) => ({ key: p.slug, url: p.url, alt: p.alt, focus: "50% 35%", local: true }));
   // The opener gets its own cinematic frame; the rest fill the work grid below.
-  const hero = featured[0] ?? null;
-  const recentWork = featured.slice(1);
+  const hero = shots[0] ?? null;
+  const recentWork = shots.slice(1);
+
+  // Section index labels follow the sections that actually render.
+  const order = [
+    "intro",
+    content?.photoSpots?.length ? "spots" : null,
+    "commissions",
+    "day",
+    "booking",
+    "work",
+    "faq",
+    guides.length ? "guides" : null,
+    cityVenues.length ? "venues" : null,
+    "nearby",
+    quotes.length ? "quotes" : null,
+    "next",
+  ].filter((s): s is string => s !== null);
+  const idx = (key: string, label: string) => `[${pad(order.indexOf(key) + 1)} / ${label}]`;
 
   // Per-city structured data: a ProfessionalService scoped to this city + the
   // FAQPage. Mirrors the global JsonLd but with areaServed = this city.
@@ -221,6 +281,11 @@ export default async function CityPage({
     ],
   };
 
+  const areasLine =
+    loc.areas.length > 1
+      ? `${loc.areas.slice(0, -1).join(", ")}, and ${loc.areas[loc.areas.length - 1]}`
+      : (loc.areas[0] ?? loc.city);
+
   return (
     <>
       <script
@@ -228,325 +293,419 @@ export default async function CityPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <header className="relative isolate min-h-[70svh] overflow-hidden bg-ink text-white sm:min-h-[80svh]" aria-labelledby="city-title">
-        <Image
-          src={hero?.url ?? "/portfolio/kimberly-reception.webp"}
-          alt={hero ? publicPhotoCopy(hero, altPhraseFor(hero.section)).alt : "Quinceañera celebration photographed by TX Quince"}
-          fill
-          unoptimized={!hero}
-          priority
-          sizes="100vw"
-          className="object-cover"
-          style={{ objectPosition: `${hero?.focus_x != null ? Math.round(hero.focus_x * 100) : 50}% ${hero?.focus_y != null ? Math.round(hero.focus_y * 100) : 38}%` }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-black/10" aria-hidden="true" />
-        <div className="relative mx-auto flex min-h-[70svh] max-w-[90rem] flex-col justify-between px-5 pb-12 pt-5 sm:min-h-[80svh] sm:px-10 sm:pb-16 lg:px-16 lg:pb-20">
-          <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 text-xs text-white/85">
-            <Link href="/" className="inline-flex min-h-11 items-center underline underline-offset-4">Home</Link>
-            <span aria-hidden="true">/</span>
-            <Link href="/quinceanera-photographer" className="inline-flex min-h-11 items-center underline underline-offset-4">Areas served</Link>
-            <span aria-hidden="true">/</span>
-            <span>{loc.city}</span>
-          </nav>
-          <div className="max-w-3xl">
-            <p className="text-xs uppercase tracking-[0.22em] text-white/85">Quinceañera photography &amp; film / {loc.city}, TX</p>
-            <h1 id="city-title" className="mt-5 max-w-[20ch] font-display text-[clamp(2.15rem,4vw,4rem)] font-light leading-[1.14]">Her day in {loc.city}</h1>
+      <div className="tq-wrap">
+        <nav className="tq-place-crumbs tq-mono" aria-label="Breadcrumb">
+          <ol>
+            <li><Link href="/">Home</Link></li>
+            <li><Link href="/quinceanera-photographer">Areas served</Link></li>
+            <li><span aria-current="page">{loc.city}</span></li>
+          </ol>
+        </nav>
+      </div>
+
+      {hero ? (
+        <div className="tq-place-stage">
+          <figure className="tq-plate" style={{ margin: 0 }}>
+            <div className="tq-plate__loop">
+              <Image
+                src={hero.url}
+                alt={hero.alt}
+                fill
+                preload
+                unoptimized={hero.local}
+                sizes="100vw"
+                style={{ objectPosition: hero.focus }}
+              />
+            </div>
+            <figcaption>
+              <span className="tq-tag tq-tag--tl tq-mono">[{loc.city}, TX]</span>
+              <span className="tq-tag tq-tag--bl tq-mono">{isCityWork ? `${loc.city} work` : "Dallas–Fort Worth"}</span>
+            </figcaption>
+          </figure>
+        </div>
+      ) : null}
+
+      <div className="tq-wrap">
+        <div className="tq-ledger tq-place-ledger">
+          <div className="tq-ledger__head">
+            <p className="tq-mono tq-place-eyebrow">Quinceañera photography &amp; film / {loc.city}, TX</p>
+            <h1 className="tq-display">
+              Her day in {loc.city}. <em>La misa to the last dance.</em>
+            </h1>
+            <p className="tq-ledger__dek">{loc.lead}</p>
+          </div>
+          <div className="tq-ledger__meta">
+            <dl className="tq-meta tq-mono">
+              <div>
+                <dt>County</dt>
+                <dd>{loc.county}</dd>
+              </div>
+              <div>
+                <dt>Coverage</dt>
+                <dd>Photo &amp; film</dd>
+              </div>
+              <div>
+                <dt>Travel</dt>
+                <dd>No fee</dd>
+              </div>
+            </dl>
+          </div>
+          <div className="tq-action">
+            <Link href={`/es/fotografo-de-quinceaneras/${loc.slug}`} hrefLang="es" lang="es" className="tq-mono tq-place-note">
+              Leer en español ↗
+            </Link>
+            <div style={{ display: "grid", gap: 12 }}>
+              <Link href={site.cta.href} className="tq-action__link">
+                <span>{site.cta.label}</span>
+                <span className="tq-arrow" aria-hidden>→</span>
+              </Link>
+              <span className="tq-mono tq-muted">Commissions from {commissionsFromLabel}</span>
+            </div>
           </div>
         </div>
-      </header>
+      </div>
 
-      <section className="bg-ivory px-5 py-20 sm:px-10 sm:py-28" aria-labelledby="city-intro-title">
-        <div className="mx-auto grid max-w-[78rem] gap-8 lg:grid-cols-[minmax(0,0.4fr)_minmax(0,0.6fr)] lg:gap-20">
-        <div><p className="text-xs uppercase tracking-[0.2em] text-ink-soft">In {loc.city}</p><h2 id="city-intro-title" className="mt-5 max-w-[19ch] font-display text-[clamp(1.85rem,3vw,3rem)] font-light leading-[1.2] text-ink">A place for her story.</h2></div>
-        <Reveal className="flex max-w-2xl flex-col gap-6">
-          <p className="text-base leading-8 text-ink-soft">{loc.lead}</p>
-          {(content?.intro ?? loc.intro).map((para) => (
-            <p key={para.slice(0, 24)} className="text-base leading-8 text-ink-soft">
-              {para}
+      <section className="tq-section" aria-labelledby="city-intro-title">
+        <div className="tq-wrap">
+          <header className="tq-head">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>{idx("intro", `In ${loc.city}`)}</p>
+            <h2 id="city-intro-title" className="tq-display tq-head__title">
+              A place for <em>her story.</em>
+            </h2>
+          </header>
+          <div className="tq-place-prose">
+            {(content?.intro ?? loc.intro).map((para) => (
+              <p key={para.slice(0, 24)}>{para}</p>
+            ))}
+            <p>
+              Serving {areasLine}
+              {nearby.length
+                ? ` — plus nearby DFW cities like ${nearby.slice(0, 3).map((n) => n.city).join(", ")}.`
+                : "."}
             </p>
-          ))}
-          <p className="text-base leading-7 text-ink-soft">
-            Serving {loc.areas.slice(0, -1).join(", ")}
-            {loc.areas.length > 1 ? `, and ${loc.areas[loc.areas.length - 1]}` : loc.areas[0]}
-            {nearby.length
-              ? ` — plus nearby DFW cities like ${nearby.slice(0, 3).map((n) => n.city).join(", ")}.`
-              : "."}
-          </p>
-          <div className="flex flex-wrap items-center gap-x-8 gap-y-3"><Link href={site.cta.href} className="inline-flex min-h-12 items-center gap-4 border-b border-ink text-xs uppercase tracking-[0.15em] text-ink">{site.cta.label}<span aria-hidden="true">↗</span></Link><Link href={`/es/fotografo-de-quinceaneras/${loc.slug}`} hrefLang="es" className="inline-flex min-h-12 items-center border-b border-ink text-xs uppercase tracking-[0.15em] text-ink">Español ↗</Link></div>
-        </Reveal>
+          </div>
         </div>
       </section>
 
       {/* Where to shoot — real local photo spots (unique per city; answers
           "best places to take quince pictures in {city}") */}
       {content?.photoSpots?.length ? (
-        <section className="mx-auto max-w-5xl px-5 pb-section md:px-10 lg:px-16 md:pb-section-lg">
-          <Reveal className="mb-8 max-w-xl md:mb-10">
-            <p className="eyebrow">Where to shoot in {loc.city}</p>
-            <h2
-              className="mt-4 font-display text-ink"
-              style={{ fontSize: "clamp(1.75rem,3vw,2.5rem)", lineHeight: 1.14, letterSpacing: "-0.02em" }}
-            >
-              The {loc.city} spots that photograph beautifully.
-            </h2>
-          </Reveal>
-          <div className="border-t border-ink/10">
-            {content.photoSpots.map((s) => (
-              <Reveal
-                key={s.name}
-                className="grid gap-1.5 border-b border-ink/10 py-6 md:grid-cols-12 md:gap-x-8"
-              >
-                <h3 className="font-display text-xl text-ink md:col-span-4">{s.name}</h3>
-                <p className="text-base leading-7 text-ink-soft md:col-span-8">{s.why}</p>
-              </Reveal>
-            ))}
+        <section className="tq-section" aria-labelledby="city-spots-title">
+          <div className="tq-wrap">
+            <header className="tq-head tq-place-head--long">
+              <p className="tq-head__index tq-mono" style={{ margin: 0 }}>{idx("spots", "Where to shoot")}</p>
+              <h2 id="city-spots-title" className="tq-display tq-head__title">
+                The {loc.city} spots that photograph beautifully.
+              </h2>
+            </header>
+            <ol className="tq-place-rows">
+              {content.photoSpots.map((s, i) => (
+                <li key={s.name} className="tq-place-row">
+                  <span className="tq-mono tq-place-row__k">[{pad(i + 1)}]</span>
+                  <h3 className="tq-display tq-place-row__t">{s.name}</h3>
+                  <p className="tq-place-row__b">{s.why}</p>
+                </li>
+              ))}
+            </ol>
           </div>
         </section>
       ) : null}
 
       {/* Compact commissions — full matrix lives on the homepage */}
-      <section className="bg-ivory">
-        <div className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
-          <Reveal>
-            <h2 className="display-2 text-ink text-balance">
-              Published commissions from {commissionsFromLabel}
+      <section className="tq-section" aria-labelledby="city-commissions-title">
+        <div className="tq-wrap">
+          <header className="tq-head tq-place-head--long">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>{idx("commissions", "Commissions")}</p>
+            <h2 id="city-commissions-title" className="tq-display tq-head__title">
+              Published commissions from {commissionsFromLabel}.
             </h2>
-            <p className="mt-5 max-w-xl text-base leading-7 text-ink-soft">
-              Every price for your {loc.city} celebration is published. A {retainerPercentLabel} retainer
-              holds the date and is applied in full. The Full Production brings a stills
-              director, a motion director and a linen monograph to the whole day.
+            <p className="tq-head__dek">
+              Every price for your {loc.city} celebration is published. A {retainerPercentLabel} retainer holds the
+              date and is applied in full. The Full Production brings a stills director, a motion director and a
+              linen monograph to the whole day.
             </p>
-          </Reveal>
-
-          <div className="mt-10 border-t border-line">
+          </header>
+          <ol className="tq-place-tiers">
             {commissions.map((c, i) => (
-              <Reveal
-                key={c.id}
-                delay={i * 60}
-                className="grid gap-y-4 border-b border-line py-8 md:grid-cols-12 md:gap-x-8"
-              >
-                <div className="md:col-span-4">
-                  <div className="flex items-baseline gap-3">
-                    <h3 className="font-display text-2xl text-ink">
-                      {c.numeral} {c.name.en}
-                    </h3>
-                    {c.recommended ? (
-                      <span className="text-sm font-medium text-ink-soft">Recommended</span>
-                    ) : null}
-                  </div>
-                  <p className="mt-2 max-w-xs text-base leading-7 text-ink-soft">{c.summary.en}</p>
-                  <p className="mt-4 font-display text-2xl text-ink">{c.priceLabel}</p>
+              <li key={c.id} className="tq-place-tier" data-rec={c.recommended ? "true" : undefined}>
+                <div className="tq-place-tier__top tq-mono">
+                  <span>[{pad(i + 1)} / {pad(commissions.length)}]</span>
+                  {c.recommended ? <span>Recommended</span> : null}
                 </div>
-                <div className="md:col-span-7 md:col-start-6">
-                  <ul className="grid gap-x-8 gap-y-2 text-base leading-7 text-ink-soft sm:grid-cols-2">
-                    {c.highlights.en.map((item) => (
-                      <li key={item} className="border-b border-line/70 pb-2">
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                  <CTAButton href={commissionLinks.en.book} variant="text" className="mt-5 text-base">
-                    Check your date
-                  </CTAButton>
-                </div>
-              </Reveal>
+                <h3 className="tq-display tq-place-tier__name">
+                  {c.numeral} {c.name.en}
+                </h3>
+                <p className="tq-place-tier__sum">{c.summary.en}</p>
+                <p className="tq-display tq-nums tq-place-tier__price">
+                  {c.priceLabel}
+                  <small>Retainer {c.retainerLabel}</small>
+                </p>
+                <ul>
+                  {c.highlights.en.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+                <Link href={commissionLinks.en.book} className="tq-btn tq-btn--lg tq-btn--ghost tq-btn--block">
+                  Check your date <span className="tq-arrow" aria-hidden>↗</span>
+                </Link>
+              </li>
             ))}
+          </ol>
+          <div className="tq-place-after">
+            <Link href={commissionLinks.en.compare} className="tq-btn tq-btn--ghost">
+              Compare every deliverable <span className="tq-arrow" aria-hidden>→</span>
+            </Link>
+            <Link href="/quinceanera-photoshoot" className="tq-btn tq-btn--ghost">
+              The pre-quince photoshoot <span className="tq-arrow" aria-hidden>→</span>
+            </Link>
           </div>
-
-          <p className="mt-8 text-base">
-            <Link
-              href={commissionLinks.en.compare}
-              className="inline-flex min-h-11 items-center text-ink underline underline-offset-2 hover:text-ink-soft"
-            >
-              Compare every deliverable →
-            </Link>
-          </p>
-          <p className="mt-3 text-base">
-            <Link
-              href="/quinceanera-photoshoot"
-              className="inline-flex min-h-11 items-center text-ink underline underline-offset-2 hover:text-ink-soft"
-            >
-              The pre-quince photoshoot →
-            </Link>
-          </p>
         </div>
       </section>
 
-      <section className="bg-white">
-        <div className="mx-auto max-w-3xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
-          <Reveal>
-            <p className="mb-4 text-sm font-medium text-ink-soft">
-              A {loc.city} quinceañera, hour by hour
-            </p>
-            <h2 className="display-2 text-ink text-balance">
-              The whole day, church to reception.
+      <section className="tq-section" aria-labelledby="city-day-title">
+        <div className="tq-wrap">
+          <header className="tq-head">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>{idx("day", "Hour by hour")}</p>
+            <h2 id="city-day-title" className="tq-display tq-head__title">
+              The whole day, <em>church to reception.</em>
             </h2>
-            <p className="mt-5 max-w-xl text-base leading-7 text-ink-soft">
-              Every collection is built around the full celebration — not a two-hour
-              window. Whether you call it a quinceañera or just her quince, here&apos;s
-              how the day unfolds for most {loc.city} families, and how I cover each part of it.
+            <p className="tq-head__dek">
+              Every commission is built around the full celebration — not a two-hour window. Whether you call it a
+              quinceañera or just her quince, here&apos;s how the day unfolds for most {loc.city} families, and how I
+              cover each part of it.
             </p>
-          </Reveal>
-          <ol className="mt-10 divide-y divide-line border-y border-line">
+          </header>
+          <ol className="tq-place-rows">
             {DAY_TIMELINE.map((t) => (
-              <li key={t.title} className="grid grid-cols-12 gap-4 py-6">
-                <p className="col-span-3 text-sm font-medium text-ink-soft sm:col-span-2">
-                  {t.when}
-                </p>
-                <div className="col-span-9 sm:col-span-10">
-                  <h3 className="font-display text-xl text-ink">{t.title}</h3>
-                  <p className="mt-2 text-base leading-7 text-ink-soft">{t.body}</p>
-                </div>
+              <li key={t.title} className="tq-place-row">
+                <span className="tq-mono tq-place-row__k">{t.when}</span>
+                <h3 className="tq-display tq-place-row__t">{t.title}</h3>
+                <p className="tq-place-row__b">{t.body}</p>
               </li>
             ))}
           </ol>
         </div>
       </section>
 
-      {/* How booking works */}
-      <section className="mx-auto max-w-7xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
-        <HowBookingWorks />
-      </section>
-
-      {/* Recent work — real featured photos (renders nothing if none exist) */}
-      {recentWork.length ? (
-        <section className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
-          <Reveal>
-            <p className="eyebrow mb-5">
-              {isCityWork ? `Recent ${loc.city} work` : "Selected work"}
-            </p>
-          </Reveal>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {recentWork.map((img, i) => (
-              <Reveal
-                key={img.slug ?? i}
-                delay={i * 70}
-                className={i === 0 ? "sm:col-span-2" : ""}
-              >
-                <Link href="/portfolio" className="group block">
-                  <div
-                    className={`relative overflow-hidden ${i === 0 ? "aspect-[16/10]" : "aspect-[4/5]"}`}
-                  >
-                    <Image
-                      src={img.url}
-                      alt={img.alt || `Quinceañera photography in ${loc.city}, TX`}
-                      fill
-                      sizes={i === 0 ? "(max-width: 768px) 100vw, 64rem" : "(max-width: 768px) 100vw, 32rem"}
-                      className="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02]"
-                      style={{
-                        objectPosition: `${img.focus_x != null ? Math.round(img.focus_x * 100) : 50}% ${img.focus_y != null ? Math.round(img.focus_y * 100) : 35}%`,
-                      }}
-                    />
-                  </div>
-                </Link>
-              </Reveal>
+      <section className="tq-section" aria-labelledby="booking-steps-title">
+        <div className="tq-wrap">
+          <header className="tq-head">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>{idx("booking", "How booking works")}</p>
+            <h2 id="booking-steps-title" className="tq-display tq-head__title">
+              From first look <em>to her day.</em>
+            </h2>
+          </header>
+          <ol className="tq-place-rows">
+            {BOOKING_STEPS.map((step, i) => (
+              <li key={step.title} className="tq-place-row">
+                <span className="tq-mono tq-place-row__k">[{pad(i + 1)}]</span>
+                <h3 className="tq-display tq-place-row__t">{step.title}</h3>
+                <p className="tq-place-row__b">{step.body}</p>
+              </li>
             ))}
-          </div>
-          <p className="mt-4 text-sm text-ink-soft">
-            {isCityWork ? `${loc.city}, TX` : "Dallas–Fort Worth, TX"}
-          </p>
-        </section>
-      ) : null}
-
-      <section className="bg-ivory">
-        <div className="mx-auto grid max-w-[78rem] gap-8 px-5 py-20 sm:px-10 sm:py-28 lg:grid-cols-[minmax(0,0.42fr)_minmax(0,0.58fr)] lg:gap-20">
-          <h2 className="font-display text-[clamp(1.85rem,3vw,3rem)] font-light leading-[1.2] text-ink">
-            See full {loc.city} quinceañeras, start to finish.
-          </h2>
-          <div><p className="max-w-xl text-base leading-8 text-ink-soft">
-            Not a highlight reel — complete galleries and films from real DFW
-            celebrations, so you know exactly what you&apos;re reserving.
-          </p>
-          <Link href="/portfolio" className="mt-7 inline-flex min-h-12 items-center gap-5 border-b border-ink text-xs uppercase tracking-[0.16em] text-ink">View the galleries <span aria-hidden="true">↗</span></Link></div>
+          </ol>
         </div>
       </section>
 
-      {/* City FAQ */}
-      <section className="mx-auto max-w-3xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
-        <h2 className="display-2 text-ink">
-          Quinceañera photography in {loc.city} — questions, answered.
-        </h2>
-        <dl className="mt-10 divide-y divide-line border-y border-line">
-          {faqs.map((f) => (
-            <div key={f.q} className="py-7">
-              <dt className="font-display text-xl text-ink">{f.q}</dt>
-              <dd className="mt-3 text-base leading-7 text-ink-soft">{f.a}</dd>
-            </div>
-          ))}
-        </dl>
+      <section className="tq-section" aria-labelledby="city-work-title">
+        <div className="tq-wrap">
+          <header className="tq-head tq-place-head--long">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>
+              {idx("work", isCityWork ? `Recent ${loc.city} work` : "Selected work")}
+            </p>
+            <h2 id="city-work-title" className="tq-display tq-head__title">
+              See full {loc.city} quinceañeras, start to finish.
+            </h2>
+            <p className="tq-head__dek">
+              Not a highlight reel — complete galleries and films from real DFW celebrations, so you know exactly
+              what you&apos;re reserving.
+            </p>
+          </header>
+          {recentWork.length ? (
+            <ul className="tq-place-work">
+              {recentWork.map((img, i) => (
+                <li key={img.key}>
+                  <Link href="/portfolio">
+                    <figure className="tq-place-frame">
+                      <Image
+                        src={img.url}
+                        alt={img.alt}
+                        fill
+                        unoptimized={img.local}
+                        sizes={i === 0 ? "(min-width: 960px) 66vw, 100vw" : "(min-width: 960px) 33vw, 50vw"}
+                        style={{ objectPosition: img.focus }}
+                      />
+                    </figure>
+                    <span className="tq-cap tq-mono">
+                      <span>[{pad(i + 1)}]</span>
+                      <span className="tq-cap__mid">{isCityWork ? `${loc.city}, TX` : "Dallas–Fort Worth, TX"}</span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+          <div className="tq-place-after">
+            <Link href="/portfolio" className="tq-btn tq-btn--ghost">
+              View the galleries <span className="tq-arrow" aria-hidden>↗</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* City FAQ — the homepage Q&A pattern; mirrors the FAQPage schema. */}
+      <section className="tq-section" aria-labelledby="city-faq-title">
+        <div className="tq-wrap">
+          <header className="tq-head tq-place-head--long">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>{idx("faq", "Questions")}</p>
+            <h2 id="city-faq-title" className="tq-display tq-head__title">
+              Quinceañera photography in {loc.city} — questions, answered.
+            </h2>
+          </header>
+          <div className="tq-faq">
+            {faqs.map((f, i) => (
+              <details key={f.q} className="tq-faq__item" open={i === 0}>
+                <summary>
+                  <span className="tq-mono tq-muted">{pad(i + 1)}</span>
+                  <h3 className="tq-faq__q">{f.q}</h3>
+                  <span className="tq-faq__icon" aria-hidden />
+                </summary>
+                <p>{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* Planning guides (closes the city ↔ blog loop) */}
       {guides.length ? (
-        <section className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
-          <p className="eyebrow mb-5">Planning your {loc.city} quinceañera</p>
-          <div className="grid gap-x-12 border-t border-line sm:grid-cols-2">
-            {guides.map((g) => (
-              <Link
-                key={g.slug}
-                href={`/blog/${g.slug}`}
-                className="group block border-b border-line py-7"
-              >
-                <h3 className="font-display text-lg leading-tight text-ink group-hover:text-accent">
-                  {g.title}
-                </h3>
-                <p className="mt-2 text-base leading-7 text-ink-soft">{g.excerpt}</p>
+        <section className="tq-section" aria-labelledby="city-guides-title">
+          <div className="tq-wrap tq-place-block">
+            <header className="tq-head tq-place-head--long">
+              <p className="tq-head__index tq-mono" style={{ margin: 0 }}>{idx("guides", "Guides")}</p>
+              <h2 id="city-guides-title" className="tq-display tq-head__title">
+                Planning your {loc.city} quinceañera.
+              </h2>
+            </header>
+            <ol className="tq-place-guides">
+              {guides.map((g) => (
+                <li key={g.slug}>
+                  <Link href={`/blog/${g.slug}`}>
+                    <span className="tq-mono tq-place-guides__cat">{g.category}</span>
+                    <span className="tq-display tq-place-guides__title"><span>{g.title}</span></span>
+                    <span className="tq-mono tq-muted tq-place-guides__read">{g.readMinutes} min read ↗</span>
+                    <span className="tq-place-guides__ex">{g.excerpt}</span>
+                  </Link>
+                </li>
+              ))}
+            </ol>
+            <div className="tq-place-after" style={{ borderTop: 0, paddingBottom: 0 }}>
+              <Link href="/blog" className="tq-btn tq-btn--ghost">
+                The full quinceañera guide <span className="tq-arrow" aria-hidden>→</span>
               </Link>
-            ))}
+            </div>
           </div>
-          <p className="mt-6 text-base">
-            <Link href="/blog" className="inline-flex min-h-11 items-center text-ink underline underline-offset-2 hover:text-ink-soft">
-              See the full quinceañera guide →
-            </Link>
-          </p>
         </section>
       ) : null}
 
       {/* Venues we shoot in this city — internal links into the venue cluster */}
       {cityVenues.length ? (
-        <section className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
-          <p className="eyebrow mb-5">Quinceañera venues we shoot in {loc.city}</p>
-          <div className="flex flex-wrap gap-3">
-            {cityVenues.map((v) => (
-              <Link
-                key={v.slug}
-                href={`/venues/${v.slug}`}
-                className="inline-flex min-h-11 items-center border-b border-line text-base text-ink transition-colors hover:border-ink"
-              >
-                {v.venue}
-              </Link>
-            ))}
-            <Link
-              href="/venues"
-              className="inline-flex min-h-11 items-center border-b border-line text-base text-ink transition-colors hover:border-ink"
-            >
-              All venues →
-            </Link>
+        <section className="tq-section" aria-labelledby="city-venues-title">
+          <div className="tq-wrap tq-place-block">
+            <header className="tq-head tq-place-head--long">
+              <p className="tq-head__index tq-mono" style={{ margin: 0 }}>{idx("venues", "Venues")}</p>
+              <h2 id="city-venues-title" className="tq-display tq-head__title">
+                Quinceañera venues we shoot in {loc.city}.
+              </h2>
+            </header>
+            <ul className="tq-place-links">
+              {cityVenues.map((v) => (
+                <li key={v.slug}>
+                  <Link href={`/venues/${v.slug}`}>
+                    <span>{v.venue}</span>
+                    <span className="tq-arrow" aria-hidden>↗</span>
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <Link href="/venues">
+                  <span>All venues</span>
+                  <span className="tq-arrow" aria-hidden>→</span>
+                </Link>
+              </li>
+            </ul>
           </div>
         </section>
       ) : null}
 
       {/* Nearby cities — internal link graph */}
-      <section className="bg-ivory">
-        <div className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
-          <p className="eyebrow mb-5">Also serving across DFW</p>
-          <div className="flex flex-wrap gap-3">
+      <section className="tq-section" aria-labelledby="city-nearby-title">
+        <div className="tq-wrap tq-place-block">
+          <header className="tq-head">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>{idx("nearby", "Across DFW")}</p>
+            <h2 id="city-nearby-title" className="tq-display tq-head__title">
+              Also serving <em>across DFW.</em>
+            </h2>
+          </header>
+          <ul className="tq-place-links">
             {nearby.map((n) => (
-              <Link
-                key={n.slug}
-                href={`/quinceanera-photographer/${n.slug}`}
-                className="inline-flex min-h-11 items-center border-b border-line text-base text-ink transition-colors hover:border-ink"
-              >
-                Quinceañera photographer in {n.city}
-              </Link>
+              <li key={n.slug}>
+                <Link href={`/quinceanera-photographer/${n.slug}`}>
+                  <span>Quinceañera photographer in {n.city}</span>
+                  <span className="tq-arrow" aria-hidden>↗</span>
+                </Link>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </section>
 
-      {/* Testimonials — renders only when release-cleared ones exist. */}
-      <Testimonials className="mx-auto max-w-7xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg" />
+      {/* Testimonials — renders only when release-cleared ones exist (never a fabricated quote). */}
+      {quotes.length ? (
+        <section className="tq-section" aria-labelledby="city-quotes-title">
+          <div className="tq-wrap tq-place-block">
+            <header className="tq-head">
+              <p className="tq-head__index tq-mono" style={{ margin: 0 }}>{idx("quotes", "In their words")}</p>
+              <h2 id="city-quotes-title" className="tq-display tq-head__title">
+                Families who trusted me <em>with their day.</em>
+              </h2>
+            </header>
+            <ul className="tq-place-quotes">
+              {quotes.map((t, i) => (
+                <li key={`${t.momName}-${i}`}>
+                  <span className="tq-mono tq-muted">[{pad(i + 1)}]</span>
+                  <blockquote className="tq-display">&ldquo;{t.quote}&rdquo;</blockquote>
+                  <p className="tq-mono tq-muted" style={{ margin: 0 }}>
+                    {t.momName} · {t.daughterName}&apos;s quinceañera{t.location ? ` · ${t.location}` : ""}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      ) : null}
 
+      <section className="tq-section" aria-labelledby="city-next-title">
+        <div className="tq-wrap">
+          <div className="tq-place-cta">
+            <div>
+              <p className="tq-mono tq-muted" style={{ margin: "0 0 20px" }}>{idx("next", "Next")}</p>
+              <h2 id="city-next-title" className="tq-display">
+                Tell us about her day in {loc.city}.
+              </h2>
+            </div>
+            <div className="tq-place-cta__side">
+              <p>Check your date on the live calendar, or request a consultation first and we hold it for 7 days.</p>
+              <div className="tq-place-actions">
+                <Link href={commissionLinks.en.book} className="tq-btn tq-btn--lg">
+                  Check your date <span className="tq-arrow" aria-hidden>↗</span>
+                </Link>
+                <Link href="/quinceanera-photographer" className="tq-btn tq-btn--ghost">All areas</Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </>
   );
 }

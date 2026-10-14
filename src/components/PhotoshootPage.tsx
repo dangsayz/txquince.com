@@ -3,9 +3,9 @@ import Image from "next/image";
 import { site } from "@/content/site";
 import { getImagesBySection } from "@/lib/content-db";
 import { portfolioFallback } from "@/content/portfolio-fallback";
-import { Reveal } from "@/components/Reveal";
 import { commissionLinks, commissions } from "@/content/commissions";
 import { ADD_ON_PRICE_USD, TIER_PRICE_USD, usd } from "@/lib/commission";
+import "@/components/txq/pages/places.css";
 
 /**
  * PRE-QUINCE PHOTOSHOOT landing page (EN /quinceanera-photoshoot, ES
@@ -29,7 +29,7 @@ const COPY = {
     check: "Check your date",
     other: "Ver en español",
     otherHref: "/es/sesion-de-fotos-quinceanera",
-    sessionEyebrow: "The Portrait Study / 01",
+    sessionEyebrow: "01 / The Portrait Study",
     sessionTitle: "Three unhurried hours, one direction.",
     sessionBody: [
       "We plan the session like a magazine sitting: the location, the light, the hour, the two looks. Her own quince gown, a second dress, or both. A director guides posture and light, then steps back so she still looks like herself.",
@@ -43,7 +43,7 @@ const COPY = {
       "1 motion portrait for social",
       "Her own dress, a second look, or both",
     ],
-    whereEyebrow: "Locations / 02",
+    whereEyebrow: "02 / Locations",
     whereTitle: "Where we photograph pre-quince portraits around Dallas",
     where: [
       ["Dallas Arboretum", "Seasonal gardens and fountains. The garden sets its own session fee; we confirm the permit with you."],
@@ -53,7 +53,7 @@ const COPY = {
       ["Fort Worth Stockyards", "Brick streets and western light for a vaquera session."],
       ["Private estates and hotel ballrooms", "Your venue, a family home, or a suite before the celebration."],
     ],
-    waysEyebrow: "Ways to book / 03",
+    waysEyebrow: "03 / Ways to book",
     waysTitle: "On its own, or already included",
     ways: [
       { label: "Portrait Study, on its own", note: "The session alone, no event coverage", price: usd(TIER_PRICE_USD.study) },
@@ -62,6 +62,7 @@ const COPY = {
       { label: "Destination portrait session", note: "A half-day anywhere in Texas, added to any commission", price: `+${usd(ADD_ON_PRICE_USD.destination)}` },
     ],
     compare: "Compare every commission",
+    faqEyebrow: "04 / Questions",
     faqTitle: "Photoshoot questions, answered.",
     faqs: [
       { q: "How much is a quinceañera photoshoot?", a: `The Portrait Study is ${usd(TIER_PRICE_USD.study)} on its own: a 3-hour editorial session with 60 retouched frames and a motion portrait. It is included in The Full Production (${usd(TIER_PRICE_USD.production)}) and the Multi-Day Editorial Archive (${usd(TIER_PRICE_USD.archive)}).` },
@@ -72,11 +73,12 @@ const COPY = {
       { q: "Are you insured?", a: "Yes, insured and venue-compliant. Many DFW parishes, gardens and venues ask for proof of insurance before a session; we have it ready." },
     ],
     crumb: "Pre-quince photoshoot",
+    areasEyebrow: "05 / Areas",
     areas: "Across Dallas–Fort Worth",
     areaLinks: [
       ["/quinceanera-photographer/dallas", "Quinceañera photographer in Dallas"],
       ["/quinceanera-photographer/fort-worth", "Quinceañera photographer in Fort Worth"],
-      ["/quinceanera-photographer", "All DFW areas →"],
+      ["/quinceanera-photographer", "All DFW areas"],
     ],
     alt: "Quinceañera pre-quince portrait session in Dallas–Fort Worth",
   },
@@ -88,7 +90,7 @@ const COPY = {
     check: "Consultar tu fecha",
     other: "View in English",
     otherHref: "/quinceanera-photoshoot",
-    sessionEyebrow: "Estudio de retrato / 01",
+    sessionEyebrow: "01 / Estudio de retrato",
     sessionTitle: "Tres horas sin prisa, una sola dirección.",
     sessionBody: [
       "Planeamos la sesión como una producción de revista: el lugar, la luz, la hora y los dos cambios. Su propio vestido de quince, un segundo vestido, o los dos. Un director guía la postura y la luz, y luego se aparta para que ella siga siendo ella.",
@@ -102,7 +104,7 @@ const COPY = {
       "1 retrato en movimiento para redes",
       "Su propio vestido, un segundo cambio, o los dos",
     ],
-    whereEyebrow: "Lugares / 02",
+    whereEyebrow: "02 / Lugares",
     whereTitle: "Dónde tomamos los retratos pre-quince en Dallas",
     where: [
       ["Dallas Arboretum", "Jardines de temporada y fuentes. El jardín cobra su propia cuota de sesión; confirmamos el permiso contigo."],
@@ -112,7 +114,7 @@ const COPY = {
       ["Stockyards de Fort Worth", "Calles de ladrillo y luz del oeste para una sesión vaquera."],
       ["Residencias privadas y salones de hotel", "Tu salón, la casa de la familia o una suite antes de la celebración."],
     ],
-    waysEyebrow: "Cómo reservar / 03",
+    waysEyebrow: "03 / Cómo reservar",
     waysTitle: "Sola, o ya incluida",
     ways: [
       { label: "Estudio de retrato, por sí solo", note: "Solo la sesión, sin cobertura del evento", price: usd(TIER_PRICE_USD.study) },
@@ -121,6 +123,7 @@ const COPY = {
       { label: "Sesión de retrato en destino", note: "Medio día en cualquier parte de Texas, añadido a cualquier encargo", price: `+${usd(ADD_ON_PRICE_USD.destination)}` },
     ],
     compare: "Comparar todos los encargos",
+    faqEyebrow: "04 / Preguntas",
     faqTitle: "Preguntas sobre la sesión de fotos.",
     faqs: [
       { q: "¿Cuánto cuesta una sesión de fotos de quinceañera?", a: `El Estudio de retrato cuesta ${usd(TIER_PRICE_USD.study)} por sí solo: una sesión editorial de 3 horas con 60 imágenes retocadas y un retrato en movimiento. Está incluido en La producción completa (${usd(TIER_PRICE_USD.production)}) y en el Archivo editorial de varios días (${usd(TIER_PRICE_USD.archive)}).` },
@@ -131,11 +134,12 @@ const COPY = {
       { q: "¿Tienen seguro?", a: "Sí, con seguro y en regla con los salones. Muchas parroquias, jardines y salones de DFW piden comprobante de seguro antes de una sesión; lo tenemos listo." },
     ],
     crumb: "Sesión de fotos pre-quince",
+    areasEyebrow: "05 / Zonas",
     areas: "En todo Dallas–Fort Worth",
     areaLinks: [
       ["/es/fotografo-de-quinceaneras/dallas", "Fotógrafo de quinceañeras en Dallas"],
       ["/es/fotografo-de-quinceaneras/fort-worth", "Fotógrafo de quinceañeras en Fort Worth"],
-      ["/es/fotografo-de-quinceaneras", "Todas las zonas de DFW →"],
+      ["/es/fotografo-de-quinceaneras", "Todas las zonas de DFW"],
     ],
     alt: "Sesión de retratos pre-quince en Dallas–Fort Worth",
   },
@@ -175,11 +179,14 @@ export async function PhotoshootPage({ locale }: { locale: Locale }) {
 
   const imgs = await getImagesBySection("save-the-date");
   const fallback = portfolioFallback.find((image) => image.section === "save-the-date");
-  const hero =
-    imgs.find((i) => (i.width ?? 0) >= (i.height ?? 0)) ??
-    imgs[0] ??
-    (fallback ? { url: fallback.url, alt: fallback.alt, focus_x: null, focus_y: null } : null);
+  const heroImage = imgs.find((i) => (i.width ?? 0) >= (i.height ?? 0)) ?? imgs[0] ?? null;
+  const hero = heroImage
+    ? { url: heroImage.url, alt: heroImage.alt || t.alt, focus: focal(heroImage.focus_x, heroImage.focus_y), local: false }
+    : fallback
+      ? { url: fallback.url, alt: fallback.alt || t.alt, focus: focal(null, null), local: true }
+      : null;
   const supporting = imgs.filter((image) => image.url !== hero?.url).slice(0, 2);
+  const pad = (n: number) => String(n).padStart(2, "0");
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -215,119 +222,199 @@ export async function PhotoshootPage({ locale }: { locale: Locale }) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <header className="relative isolate flex min-h-[70svh] items-end overflow-hidden bg-ink text-white sm:min-h-[80svh]" aria-labelledby="photoshoot-title">
-        <Image src={hero?.url ?? "/portfolio/save-date.webp"} alt={hero?.alt || t.alt} fill unoptimized={!hero} priority sizes="100vw" className="object-cover" style={{ objectPosition: focal(hero?.focus_x, hero?.focus_y) }} />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-black/10" aria-hidden="true" />
-        <div className="relative mx-auto w-full max-w-[90rem] px-5 pb-12 sm:px-10 sm:pb-16 lg:px-16 lg:pb-20">
-          <p className="text-xs uppercase tracking-[0.24em] text-white/85">{t.eyebrow}</p>
-          <h1 id="photoshoot-title" className="mt-5 max-w-[23ch] font-display text-[clamp(2.15rem,4vw,4rem)] font-light leading-[1.14]">{t.h1}</h1>
-        </div>
-      </header>
+      <div className="tq-wrap">
+        <nav className="tq-place-crumbs tq-mono" aria-label={locale === "en" ? "Breadcrumb" : "Ruta de navegación"}>
+          <ol>
+            <li><Link href={locale === "es" ? "/es" : "/"}>{locale === "en" ? "Home" : "Inicio"}</Link></li>
+            <li><span aria-current="page">{t.crumb}</span></li>
+          </ol>
+        </nav>
+      </div>
 
-      <section className="bg-ivory px-5 py-20 sm:px-10 sm:py-28">
-        <div className="mx-auto grid max-w-[78rem] gap-8 lg:grid-cols-[minmax(0,0.42fr)_minmax(0,0.58fr)] lg:gap-20">
-          <p className="text-xs uppercase tracking-[0.2em] text-ink-soft">{study.numeral} {study.name[locale]} · {study.priceLabel}</p>
-          <div>
-            <p className="max-w-[34ch] font-display text-[clamp(1.6rem,2.6vw,2.6rem)] font-light leading-[1.24] text-ink">{t.lead}</p>
-            <div className="mt-7 flex flex-wrap gap-x-8 gap-y-3">
-              <Link href={links.book} className="inline-flex min-h-12 items-center gap-4 border-b border-ink text-xs uppercase tracking-[0.16em] text-ink">{t.check} <span aria-hidden="true">↗</span></Link>
-              <Link href={t.otherHref} hrefLang={locale === "en" ? "es" : "en"} className="inline-flex min-h-12 items-center border-b border-ink text-xs uppercase tracking-[0.16em] text-ink">{t.other} ↗</Link>
+      {hero ? (
+        <div className="tq-place-stage">
+          <figure className="tq-plate" style={{ margin: 0 }}>
+            <div className="tq-plate__loop">
+              <Image
+                src={hero.url}
+                alt={hero.alt}
+                fill
+                preload
+                unoptimized={hero.local}
+                sizes="100vw"
+                style={{ objectPosition: hero.focus }}
+              />
             </div>
-          </div>
+            <figcaption>
+              <span className="tq-tag tq-tag--tl tq-mono">[{study.numeral} {study.name[locale]}]</span>
+              <span className="tq-tag tq-tag--bl tq-mono">Dallas–Fort Worth</span>
+            </figcaption>
+          </figure>
         </div>
-      </section>
-
-      <section className="mx-auto grid max-w-[90rem] gap-8 px-5 py-16 md:px-10 md:py-20 lg:grid-cols-[minmax(0,0.3fr)_minmax(0,0.7fr)] lg:gap-16 lg:px-16">
-        <p className="text-xs font-medium uppercase tracking-[0.14em] text-ink-soft">{t.sessionEyebrow}</p>
-        <Reveal className="flex max-w-3xl flex-col gap-6">
-          <h2 className="font-display text-[clamp(1.75rem,2.8vw,2.5rem)] font-normal leading-tight text-ink text-balance">{t.sessionTitle}</h2>
-          {t.sessionBody.map((para) => (
-            <p key={para} className="text-base leading-relaxed text-ink-soft">{para}</p>
-          ))}
-          <div>
-            <h3 className="text-xs font-medium uppercase tracking-[0.14em] text-ink-soft">{t.includedTitle}</h3>
-            <ul className="mt-4 grid gap-x-8 gap-y-2 text-base leading-7 text-ink sm:grid-cols-2">
-              {t.included.map((item) => (
-                <li key={item} className="border-b border-line/70 pb-2">{item}</li>
-              ))}
-            </ul>
-          </div>
-        </Reveal>
-      </section>
-
-      {supporting.length > 0 ? (
-        <section className="mx-auto max-w-[90rem] px-5 pb-16 md:px-10 md:pb-20 lg:px-16" aria-label={t.crumb}>
-          <div className="grid grid-cols-2 gap-3 sm:gap-5">
-            {supporting.map((image) => (
-              <div key={image.id ?? image.url} className="relative aspect-[4/5] overflow-hidden bg-greige sm:aspect-[3/4]">
-                <Image src={image.url} alt={image.alt || t.alt} fill sizes="50vw" className="object-cover" style={{ objectPosition: focal(image.focus_x, image.focus_y) }} />
-              </div>
-            ))}
-          </div>
-        </section>
       ) : null}
 
-      <section className="bg-[#e9e8e4]">
-        <div className="mx-auto grid max-w-[90rem] gap-8 px-5 py-16 md:px-10 md:py-20 lg:grid-cols-[minmax(0,0.3fr)_minmax(0,0.7fr)] lg:gap-16 lg:px-16">
-          <p className="text-xs font-medium uppercase tracking-[0.14em] text-ink-soft">{t.whereEyebrow}</p>
-          <Reveal>
-            <h2 className="font-display text-[clamp(1.75rem,2.8vw,2.5rem)] font-normal leading-tight text-ink text-balance">{t.whereTitle}</h2>
-            <dl className="mt-8 divide-y divide-ink/15 border-y border-ink/15">
-              {t.where.map(([place, note]) => (
-                <div key={place} className="grid gap-1 py-5 sm:grid-cols-[minmax(0,0.4fr)_minmax(0,0.6fr)] sm:gap-6">
-                  <dt className="font-display text-xl text-ink">{place}</dt>
-                  <dd className="text-base leading-7 text-ink-soft">{note}</dd>
-                </div>
-              ))}
-            </dl>
-          </Reveal>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-[90rem] px-5 py-16 md:px-10 md:py-20 lg:px-16">
-        <p className="text-xs font-medium uppercase tracking-[0.14em] text-ink-soft">{t.waysEyebrow}</p>
-        <Reveal>
-          <h2 className="mt-4 font-display text-[clamp(1.75rem,2.8vw,2.5rem)] leading-tight text-ink text-balance">{t.waysTitle}</h2>
-        </Reveal>
-        <div className="mt-10 border-t border-line">
-          {t.ways.map((w, i) => (
-            <Reveal key={w.label} delay={i * 80} className="grid gap-3 border-b border-line py-7 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-baseline sm:gap-8">
+      <div className="tq-wrap">
+        <div className="tq-ledger tq-place-ledger">
+          <div className="tq-ledger__head">
+            <p className="tq-mono tq-place-eyebrow">{t.eyebrow}</p>
+            <h1 className="tq-display">{t.h1}</h1>
+            <p className="tq-ledger__dek">{t.lead}</p>
+          </div>
+          <div className="tq-ledger__meta">
+            <dl className="tq-meta tq-mono">
               <div>
-                <h3 className="font-display text-[clamp(1.4rem,2.1vw,2rem)] font-normal text-ink">{w.label}</h3>
-                <p className="mt-2 text-base text-ink-soft">{w.note}</p>
+                <dt>{locale === "en" ? "Commission" : "Encargo"}</dt>
+                <dd>{study.numeral} {study.name[locale]}</dd>
               </div>
-              <p className="font-display text-[1.5rem] font-normal text-ink">{w.price}</p>
-            </Reveal>
-          ))}
-        </div>
-        <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3 text-base">
-          <Link href={links.book} className="inline-flex min-h-12 items-center gap-4 border-b border-ink font-medium text-ink">{t.check} <span aria-hidden="true">↗</span></Link>
-          <Link href={links.compare} className="inline-flex min-h-12 items-center text-ink underline underline-offset-2 hover:text-ink-soft">{t.compare} →</Link>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-3xl px-5 py-16 md:px-10 lg:px-16 md:py-20">
-        <h2 className="font-display text-[clamp(1.75rem,2.8vw,2.5rem)] leading-tight text-ink">{t.faqTitle}</h2>
-        <dl className="mt-10 divide-y divide-line border-y border-line">
-          {t.faqs.map((f) => (
-            <div key={f.q} className="py-7">
-              <dt className="font-display text-xl text-ink">{f.q}</dt>
-              <dd className="mt-3 text-base leading-7 text-ink-soft">{f.a}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
-
-      <section className="bg-[#e9e8e4]">
-        <div className="mx-auto max-w-5xl px-5 py-16 md:px-10 lg:px-16 md:py-20">
-          <p className="eyebrow mb-5">{t.areas}</p>
-          <div className="flex flex-wrap gap-x-6 gap-y-3">
-            {t.areaLinks.map(([href, label]) => (
-              <Link key={href} href={href} className="inline-flex min-h-11 items-center border-b border-ink text-base text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">
-                {label}
+              <div>
+                <dt>{locale === "en" ? "Price" : "Precio"}</dt>
+                <dd className="tq-nums">{study.priceLabel}</dd>
+              </div>
+              <div>
+                <dt>{locale === "en" ? "Region" : "Región"}</dt>
+                <dd>DFW</dd>
+              </div>
+            </dl>
+          </div>
+          <div className="tq-action">
+            <Link href={t.otherHref} hrefLang={locale === "en" ? "es" : "en"} lang={locale === "en" ? "es" : "en"} className="tq-mono tq-place-note">
+              {t.other} ↗
+            </Link>
+            <div style={{ display: "grid", gap: 12 }}>
+              <Link href={links.book} className="tq-action__link">
+                <span>{t.check}</span>
+                <span className="tq-arrow" aria-hidden>→</span>
               </Link>
+              <span className="tq-mono tq-muted">{study.numeral} {study.name[locale]} · {study.priceLabel}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section className="tq-section" aria-labelledby="ps-session-title">
+        <div className="tq-wrap">
+          <header className="tq-head">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>[{t.sessionEyebrow}]</p>
+            <h2 id="ps-session-title" className="tq-display tq-head__title">{t.sessionTitle}</h2>
+          </header>
+          <div className="tq-place-prose">
+            {t.sessionBody.map((para) => (
+              <p key={para}>{para}</p>
             ))}
           </div>
+          <div className="tq-head" style={{ paddingTop: 0 }}>
+            <h3 className="tq-head__index tq-mono" style={{ margin: 0 }}>{t.includedTitle}</h3>
+          </div>
+          <ol className="tq-place-rows">
+            {t.included.map((item, i) => (
+              <li key={item} className="tq-place-row">
+                <span className="tq-mono tq-place-row__k">[{pad(i + 1)}]</span>
+                <span className="tq-display tq-place-row__t">{item}</span>
+              </li>
+            ))}
+          </ol>
+          {supporting.length > 0 ? (
+            <ul className="tq-place-duo" aria-label={t.crumb}>
+              {supporting.map((image) => (
+                <li key={image.id ?? image.url}>
+                  <figure className="tq-place-frame">
+                    <Image
+                      src={image.url}
+                      alt={image.alt || t.alt}
+                      fill
+                      sizes="(min-width: 960px) 40vw, 50vw"
+                      style={{ objectPosition: focal(image.focus_x, image.focus_y) }}
+                    />
+                  </figure>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </div>
+      </section>
+
+      <section className="tq-section" aria-labelledby="ps-where-title">
+        <div className="tq-wrap">
+          <header className="tq-head tq-place-head--long">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>[{t.whereEyebrow}]</p>
+            <h2 id="ps-where-title" className="tq-display tq-head__title">{t.whereTitle}</h2>
+          </header>
+          <ol className="tq-place-rows">
+            {t.where.map(([place, note], i) => (
+              <li key={place} className="tq-place-row">
+                <span className="tq-mono tq-place-row__k">[{pad(i + 1)}]</span>
+                <h3 className="tq-display tq-place-row__t">{place}</h3>
+                <p className="tq-place-row__b">{note}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="tq-section" aria-labelledby="ps-ways-title">
+        <div className="tq-wrap">
+          <header className="tq-head">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>[{t.waysEyebrow}]</p>
+            <h2 id="ps-ways-title" className="tq-display tq-head__title">{t.waysTitle}</h2>
+          </header>
+          <ol className="tq-place-rows tq-place-rows--priced" style={{ paddingBottom: 0 }}>
+            {t.ways.map((w, i) => (
+              <li key={w.label} className="tq-place-row">
+                <span className="tq-mono tq-place-row__k">[{pad(i + 1)}]</span>
+                <h3 className="tq-display tq-place-row__t">{w.label}</h3>
+                <p className="tq-place-row__b">{w.note}</p>
+                <p className="tq-display tq-nums tq-place-row__end">{w.price}</p>
+              </li>
+            ))}
+          </ol>
+          <div className="tq-place-after" style={{ borderTop: 0 }}>
+            <Link href={links.book} className="tq-btn tq-btn--lg">
+              {t.check} <span className="tq-arrow" aria-hidden>↗</span>
+            </Link>
+            <Link href={links.compare} className="tq-btn tq-btn--ghost">
+              {t.compare} <span className="tq-arrow" aria-hidden>→</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="tq-section" aria-labelledby="ps-faq-title">
+        <div className="tq-wrap">
+          <header className="tq-head">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>[{t.faqEyebrow}]</p>
+            <h2 id="ps-faq-title" className="tq-display tq-head__title">{t.faqTitle}</h2>
+          </header>
+          <div className="tq-faq">
+            {t.faqs.map((f, i) => (
+              <details key={f.q} className="tq-faq__item" open={i === 0}>
+                <summary>
+                  <span className="tq-mono tq-muted">{pad(i + 1)}</span>
+                  <h3 className="tq-faq__q">{f.q}</h3>
+                  <span className="tq-faq__icon" aria-hidden />
+                </summary>
+                <p>{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="tq-section" aria-labelledby="ps-areas-title">
+        <div className="tq-wrap tq-place-block">
+          <header className="tq-head">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>[{t.areasEyebrow}]</p>
+            <h2 id="ps-areas-title" className="tq-display tq-head__title">{t.areas}</h2>
+          </header>
+          <ul className="tq-place-links">
+            {t.areaLinks.map(([href, label]) => (
+              <li key={href}>
+                <Link href={href}>
+                  <span>{label}</span>
+                  <span className="tq-arrow" aria-hidden>↗</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
     </>

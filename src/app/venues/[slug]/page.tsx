@@ -17,9 +17,9 @@ import { getLocation } from "@/content/locations";
 import { getImagesByVenue, getVenueCopy } from "@/lib/content-db";
 import { igUrl, websiteUrl, websiteLabel } from "@/lib/vendor-links";
 import { PortfolioGallery, type GalleryItem } from "@/components/PortfolioGallery";
-import { Reveal } from "@/components/Reveal";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
+import "@/components/txq/pages/places.css";
 
 export const revalidate = 3600;
 
@@ -171,6 +171,10 @@ export default async function VenuePage({
     ],
   };
 
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const faq = copy?.faq ?? [];
+  const place = copy?.address ?? (copy?.area ? `${copy.area}, ${venue.city}` : null);
+
   return (
     <>
       <script
@@ -178,83 +182,172 @@ export default async function VenuePage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {heroPhoto && (
-        <div className="relative mx-4 mt-5 aspect-[4/5] min-h-80 max-h-[48rem] overflow-hidden bg-cream sm:mx-6 sm:aspect-[16/8] md:mx-10 lg:mx-auto lg:max-w-[92rem]">
-          <Image src={heroPhoto.url} alt={publicPhotoCopy(heroPhoto, altPhraseFor(heroPhoto.section)).alt} fill priority sizes="100vw" className="object-cover" style={{ objectPosition: `${Math.round((heroPhoto.focus_x ?? 0.5) * 100)}% ${Math.round((heroPhoto.focus_y ?? 0.5) * 100)}%` }} />
+      <div className="tq-wrap">
+        <nav className="tq-place-crumbs tq-mono" aria-label="Breadcrumb">
+          <ol>
+            <li><Link href="/">Home</Link></li>
+            <li><Link href="/venues">Venues</Link></li>
+            <li><span aria-current="page">{venue.venue}</span></li>
+          </ol>
+        </nav>
+      </div>
+
+      {heroPhoto ? (
+        <div className="tq-place-stage">
+          <figure className="tq-plate" style={{ margin: 0 }}>
+            <div className="tq-plate__loop">
+              <Image
+                src={heroPhoto.url}
+                alt={publicPhotoCopy(heroPhoto, altPhraseFor(heroPhoto.section)).alt}
+                fill
+                preload
+                sizes="100vw"
+                style={{ objectPosition: `${Math.round((heroPhoto.focus_x ?? 0.5) * 100)}% ${Math.round((heroPhoto.focus_y ?? 0.5) * 100)}%` }}
+              />
+            </div>
+            <figcaption>
+              <span className="tq-tag tq-tag--tl tq-mono">[{venue.venue}]</span>
+              <span className="tq-tag tq-tag--bl tq-mono">{venue.city}, TX</span>
+            </figcaption>
+          </figure>
         </div>
-      )}
-      <section className="bg-white px-5 py-16 md:px-10 md:py-24 lg:px-16">
-        <Reveal className="mx-auto grid max-w-[82rem] gap-8 lg:grid-cols-[minmax(0,0.3fr)_minmax(0,0.7fr)] lg:gap-16">
-          <div>
-            <Link href="/venues" className="inline-flex min-h-11 items-center text-xs uppercase tracking-[0.14em] text-ink-soft hover:text-ink">← Venues</Link>
-            <p className="mt-2 text-xs uppercase tracking-[0.14em] text-ink-soft">{venue.city}, TX</p>
+      ) : null}
+
+      <div className="tq-wrap">
+        <div className="tq-ledger tq-place-ledger">
+          <div className="tq-ledger__head">
+            <p className="tq-mono tq-place-eyebrow">Venue / {venue.city}, TX</p>
+            <h1 className="tq-display">
+              Quinceañera photography at <em>{venue.venue}.</em>
+            </h1>
+            <p className="tq-ledger__dek">{about}</p>
           </div>
-          <div>
-            <h1 className="max-w-[25ch] font-body text-[clamp(2rem,3.5vw,3.25rem)] font-light leading-[1.13] tracking-[-0.035em] text-ink text-balance">Quinceañera photography at {venue.venue}.</h1>
-            <p className="mt-6 max-w-2xl font-serif text-lg leading-8 text-ink-soft">{about}</p>
-            {copy?.address || copy?.area || ig || web || cityLoc ? (
-            <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-2 border-t border-line pt-4 text-base text-ink-soft">
-              {copy?.address ? <span>{copy.address}</span> : copy?.area ? <span>{copy.area}, {venue.city}</span> : null}
+          <div className="tq-ledger__meta">
+            <dl className="tq-meta tq-mono tq-place-meta">
+              <div>
+                <dt>City</dt>
+                <dd>
+                  {cityLoc ? (
+                    <Link href={`/quinceanera-photographer/${cityLoc.slug}`}>{venue.city}, TX</Link>
+                  ) : (
+                    `${venue.city}, TX`
+                  )}
+                </dd>
+              </div>
+              {place ? (
+                <div>
+                  <dt>Address</dt>
+                  <dd>{place}</dd>
+                </div>
+              ) : null}
               {ig ? (
-                <a href={ig} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center text-ink underline decoration-ink/30 underline-offset-[6px] hover:decoration-ink">
-                  @{copy?.ig_handle}
-                </a>
+                <div>
+                  <dt>Instagram</dt>
+                  <dd>
+                    <a href={ig} target="_blank" rel="noopener noreferrer">@{copy?.ig_handle}</a>
+                  </dd>
+                </div>
               ) : null}
               {web ? (
-                <a href={web} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center text-ink underline decoration-ink/30 underline-offset-[6px] hover:decoration-ink">
-                  {websiteLabel(copy?.website)}
-                </a>
+                <div>
+                  <dt>Website</dt>
+                  <dd>
+                    <a href={web} target="_blank" rel="noopener noreferrer">{websiteLabel(copy?.website)}</a>
+                  </dd>
+                </div>
               ) : null}
-              {cityLoc ? (
-                <Link href={`/quinceanera-photographer/${cityLoc.slug}`} className="inline-flex min-h-11 items-center text-ink underline decoration-ink/30 underline-offset-[6px] hover:decoration-ink">
-                  Quinceañera photographer in {cityLoc.city} →
-                </Link>
-              ) : null}
-            </div>
-            ) : null}
-            <Link href="/check-your-date" className="mt-8 inline-flex min-h-12 items-center justify-between gap-6 whitespace-nowrap bg-ink px-5 text-base font-medium text-white hover:bg-[#42423d]">Ask about a date at {venue.venue} <span aria-hidden="true">↗</span></Link>
+              <div>
+                <dt>Frames</dt>
+                <dd className="tq-nums">{items.length}</dd>
+              </div>
+            </dl>
           </div>
-        </Reveal>
-      </section>
+          <div className="tq-action">
+            <span className="tq-mono tq-muted">[ Ask about a date at {venue.venue} ]</span>
+            <div style={{ display: "grid", gap: 12 }}>
+              <Link href={site.cta.href} className="tq-action__link">
+                <span>Ask about a date</span>
+                <span className="tq-arrow" aria-hidden>→</span>
+              </Link>
+              <span className="tq-mono tq-muted">Commissions from {commissionsFromLabel}</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <section className="border-t border-line bg-white">
-        <div className="mx-auto max-w-[90rem] px-5 py-14 md:px-10 lg:px-16 md:py-20">
-          <Reveal className="mb-10 grid gap-5 border-t border-line pt-6 lg:grid-cols-[minmax(0,0.3fr)_minmax(0,0.7fr)]">
-            <p className="text-xs uppercase tracking-[0.14em] text-ink-soft">The work / {venue.city}</p>
-            <h2 className="font-display text-[clamp(1.75rem,3vw,2.5rem)] font-normal leading-tight text-ink">{items.length ? `Quinceañeras at ${venue.venue}` : `Explore the work before your day at ${venue.venue}`}</h2>
-          </Reveal>
+      <section className="tq-section" aria-labelledby="venue-work-title">
+        <div className="tq-wrap">
+          <header className="tq-head tq-place-head--long">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>[01 / The work · {venue.city}]</p>
+            <h2 id="venue-work-title" className="tq-display tq-head__title">
+              {items.length ? `Quinceañeras at ${venue.venue}.` : `Explore the work before your day at ${venue.venue}.`}
+            </h2>
+          </header>
           {items.length ? (
-            <PortfolioGallery images={items} editorial imageSizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw" />
+            <div className="tq-place-gallery">
+              <PortfolioGallery images={items} editorial imageSizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw" />
+            </div>
           ) : (
-            <p className="border-t border-line py-8 text-base leading-7 text-ink-soft">
-              No photographs from this venue are published yet. <Link href="/portfolio" className="font-medium text-ink underline underline-offset-4">Explore the portfolio</Link> to see our work elsewhere.
+            <p className="tq-place-empty">
+              No photographs from this venue are published yet.{" "}
+              <Link href="/portfolio">Explore the portfolio</Link> to see our work elsewhere.
             </p>
           )}
         </div>
       </section>
 
-      {/* FAQ */}
-      {copy?.faq?.length ? (
-        <section className="border-t border-line">
-          <div className="mx-auto max-w-3xl px-5 py-14 md:px-10 md:py-20">
-            <Reveal>
-              <p className="text-sm font-medium text-ink-soft">Good to know</p>
-              <h2 className="mt-3 font-display text-[clamp(1.75rem,3vw,2.5rem)] leading-tight text-ink">
-                Quinceañeras at {venue.venue}
+      {/* FAQ — the homepage Q&A pattern; mirrors the FAQPage schema. */}
+      {faq.length ? (
+        <section className="tq-section" aria-labelledby="venue-faq-title">
+          <div className="tq-wrap">
+            <header className="tq-head tq-place-head--long">
+              <p className="tq-head__index tq-mono" style={{ margin: 0 }}>[02 / Good to know]</p>
+              <h2 id="venue-faq-title" className="tq-display tq-head__title">
+                Quinceañeras at {venue.venue}.
               </h2>
-            </Reveal>
-            <dl className="mt-8 divide-y divide-line border-t border-line">
-              {copy.faq.map((f, i) => (
-                <div key={i} className="py-5">
-                  <dt className="font-display text-lg text-ink">{f.q}</dt>
-                  <dd className="mt-2 text-base leading-7 text-ink-soft">{f.a}</dd>
-                </div>
+            </header>
+            <div className="tq-faq">
+              {faq.map((f, i) => (
+                <details key={i} className="tq-faq__item" open={i === 0}>
+                  <summary>
+                    <span className="tq-mono tq-muted">{pad(i + 1)}</span>
+                    <h3 className="tq-faq__q">{f.q}</h3>
+                    <span className="tq-faq__icon" aria-hidden />
+                  </summary>
+                  <p>{f.a}</p>
+                </details>
               ))}
-            </dl>
+            </div>
           </div>
         </section>
       ) : null}
 
+      <section className="tq-section" aria-labelledby="venue-next-title">
+        <div className="tq-wrap">
+          <div className="tq-place-cta">
+            <div>
+              <p className="tq-mono tq-muted" style={{ margin: "0 0 20px" }}>[{faq.length ? "03" : "02"} / Next]</p>
+              <h2 id="venue-next-title" className="tq-display">
+                Celebrating at {venue.venue}?
+              </h2>
+            </div>
+            <div className="tq-place-cta__side">
+              <p>Tell us your date and the moments your family wants documented. We confirm availability personally.</p>
+              <div className="tq-place-actions">
+                <Link href={site.cta.href} className="tq-btn tq-btn--lg">
+                  Ask about a date <span className="tq-arrow" aria-hidden>↗</span>
+                </Link>
+                {cityLoc ? (
+                  <Link href={`/quinceanera-photographer/${cityLoc.slug}`} className="tq-btn tq-btn--ghost">
+                    Photographer in {cityLoc.city}
+                  </Link>
+                ) : null}
+                <Link href="/venues" className="tq-btn tq-btn--ghost">All venues</Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </>
   );
 }

@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
-import { commissionsFromLabel } from "@/content/commissions";
 import Image from "next/image";
 import Link from "next/link";
+import { commissionsFromLabel } from "@/content/commissions";
 import { locations } from "@/content/locations";
+import { portfolioFallback } from "@/content/portfolio-fallback";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { site } from "@/content/site";
-import { getFeaturedImages, getImagesByCity, getPageHero } from "@/lib/content-db";
+import { getFeaturedImages, getImagesByCity, getPageHero, type PortfolioImage } from "@/lib/content-db";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
+import "@/components/txq/pages/places.css";
 
 export const revalidate = 3600;
 
@@ -14,7 +16,14 @@ export const metadata: Metadata = {
   title: "Quinceañera Photographer — Dallas–Fort Worth",
   description:
     `Luxury quinceañera photography & film across Dallas–Fort Worth — Dallas, Fort Worth, Frisco, Plano, McKinney, Arlington and beyond. Published commissions from ${commissionsFromLabel}.`,
-  alternates: { canonical: "/quinceanera-photographer" },
+  alternates: {
+    canonical: "/quinceanera-photographer",
+    languages: {
+      "en-US": site.url + "/quinceanera-photographer",
+      "es-MX": site.url + "/es/fotografo-de-quinceaneras",
+      "x-default": site.url + "/quinceanera-photographer",
+    },
+  },
   openGraph: {
     title: `Quinceañera Photographer — Dallas–Fort Worth · ${site.brand}`,
     description:
@@ -23,20 +32,28 @@ export const metadata: Metadata = {
   },
 };
 
+/** One photograph, normalized from the DB or the bundled portfolio fallback. */
+type Shot = { url: string; alt: string; focus: string; local: boolean };
+
+const pad = (n: number) => String(n).padStart(2, "0");
+
 function focal(fx?: number | null, fy?: number | null): string {
   return `${Math.round((fx ?? 0.5) * 100)}% ${Math.round((fy ?? 0.32) * 100)}%`;
 }
 
-const fallbackCityPhotos = [
-  "/portfolio/hero.webp",
-  "/portfolio/reception.webp",
-  "/portfolio/red-garden.webp",
-  "/portfolio/lilac-arch.webp",
-  "/portfolio/save-date.webp",
-  "/portfolio/kimberly-reception.webp",
-  "/portfolio/dance.webp",
-  "/portfolio/shoe-ceremony.webp",
-];
+const fromDb = (image: PortfolioImage): Shot => ({
+  url: image.url,
+  alt: publicPhotoCopy(image, altPhraseFor(image.section)).alt,
+  focus: focal(image.focus_x, image.focus_y),
+  local: false,
+});
+
+const fromFallback = (photo: (typeof portfolioFallback)[number]): Shot => ({
+  url: photo.url,
+  alt: photo.alt,
+  focus: "50% 35%",
+  local: true,
+});
 
 export default async function LocationsHub() {
   const [imgs, assignedHero, cityPhotoSets] = await Promise.all([
@@ -44,87 +61,207 @@ export default async function LocationsHub() {
     getPageHero("areas"),
     Promise.all(locations.map((location) => getImagesByCity(location.slug, 2))),
   ]);
-  const hero =
-    assignedHero ??
-    imgs.find((i) => (i.width ?? 0) >= (i.height ?? 0)) ??
-    imgs[0] ??
-    null;
-  const cityImages = imgs.filter((i) => i.url !== hero?.url);
-  const imageFor = (index: number) =>
-    cityPhotoSets[index].find((image) => image.url !== hero?.url) ??
-    (cityImages.length ? cityImages[index % cityImages.length] : (imgs[0] ?? null));
+
+  const heroImage =
+    assignedHero ?? imgs.find((i) => (i.width ?? 0) >= (i.height ?? 0)) ?? imgs[0] ?? null;
+  const fallbackHero = portfolioFallback.find((p) => p.url === "/portfolio/kimberly-reception.webp") ?? portfolioFallback[0];
+  const hero: Shot | null = heroImage ? fromDb(heroImage) : fallbackHero ? { ...fromFallback(fallbackHero), focus: "50% 60%" } : null;
+
+  // Every card gets a real photograph: the city's own tagged work, then a
+  // portfolio photo from that city, then the next unused featured/portfolio
+  // image. Cities without tagged work (Frisco, Plano, McKinney…) never render
+  // an empty <img>; with no photos at all the card falls back to text only.
+  const pool: Shot[] = [...imgs.map(fromDb), ...portfolioFallback.map(fromFallback)];
+  const used = new Set<string>(hero ? [hero.url] : []);
+  const cards = locations.map((location, index) => {
+    const own = cityPhotoSets[index].map(fromDb).find((s) => !used.has(s.url));
+    const sameCity = portfolioFallback
+      .filter((p) => p.city === location.city)
+      .map(fromFallback)
+      .find((s) => !used.has(s.url));
+    const next = pool.find((s) => !used.has(s.url));
+    const shot = own ?? sameCity ?? next ?? (pool.length ? pool[index % pool.length] : null);
+    if (shot) used.add(shot.url);
+    return { location, shot, n: pad(index + 1) };
+  });
 
   return (
     <>
-      <header className="relative isolate flex min-h-[70svh] items-end overflow-hidden bg-ink text-white sm:min-h-[80svh]" aria-labelledby="areas-title">
-        <Image
-          src={hero?.url ?? "/portfolio/kimberly-reception.webp"}
-          alt={hero ? publicPhotoCopy(hero, altPhraseFor(hero.section)).alt : "Quinceañera celebration in Dallas–Fort Worth"}
-          fill
-          unoptimized={!hero}
-          priority
-          sizes="100vw"
-          className="object-cover"
-          style={hero ? { objectPosition: focal(hero.focus_x, hero.focus_y) } : { objectPosition: "center 60%" }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-black/10" aria-hidden="true" />
-        <div className="relative mx-auto w-full max-w-[90rem] px-5 pb-12 sm:px-10 sm:pb-16 lg:px-16 lg:pb-20">
-          <p className="text-xs uppercase tracking-[0.24em] text-white/85">TX Quince / Where we work</p>
-          <h1 id="areas-title" className="mt-5 max-w-3xl font-display text-[clamp(2.15rem,4vw,4rem)] font-light leading-[1.14]">Across Dallas–Fort Worth</h1>
-        </div>
-      </header>
+      <div className="tq-wrap">
+        <nav className="tq-place-crumbs tq-mono" aria-label="Breadcrumb">
+          <ol>
+            <li><Link href="/">Home</Link></li>
+            <li><span aria-current="page">Areas served</span></li>
+          </ol>
+        </nav>
+      </div>
 
-      <section className="bg-ivory px-5 py-20 sm:px-10 sm:py-28">
-        <div className="mx-auto grid max-w-[78rem] gap-8 lg:grid-cols-[minmax(0,0.42fr)_minmax(0,0.58fr)] lg:gap-20">
-          <p className="text-xs uppercase tracking-[0.2em] text-ink-soft">Photographing her day</p>
-          <div><p className="max-w-[29ch] font-display text-[clamp(1.85rem,3vw,3rem)] font-light leading-[1.24] text-ink">From the church to the last dance, wherever the celebration takes you.</p><p className="mt-6 max-w-xl text-base leading-8 text-ink-soft">We photograph and film quinceañeras across Dallas–Fort Worth. Explore the cities where we work and the real celebrations behind the photographs.</p><a href="#cities" className="mt-7 inline-flex min-h-12 items-center gap-4 border-b border-ink text-xs uppercase tracking-[0.16em] text-ink">Find your city <span aria-hidden="true">↓</span></a></div>
-        </div>
-      </section>
-
-      <section id="cities" className="scroll-mt-24 bg-white" aria-labelledby="cities-title">
-        <div className="mx-auto max-w-[90rem] px-5 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-24">
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,0.48fr)_minmax(0,0.52fr)] lg:items-end lg:gap-16">
-            <div>
-              <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">Explore the area</p>
-              <h2 id="cities-title" className="mt-4 max-w-[18ch] font-display text-[clamp(1.875rem,3vw,3rem)] font-normal leading-tight text-ink">Eight cities. One attentive team.</h2>
+      {hero ? (
+        <div className="tq-place-stage">
+          <figure className="tq-plate" style={{ margin: 0 }}>
+            <div className="tq-plate__loop">
+              <Image
+                src={hero.url}
+                alt={hero.alt}
+                fill
+                preload
+                unoptimized={hero.local}
+                sizes="100vw"
+                style={{ objectPosition: hero.focus }}
+              />
             </div>
-            <p className="max-w-lg text-base leading-7 text-ink-soft">Find your city for local portrait ideas and coverage details. Planning is available in English or Spanish, and there is no travel fee within our Dallas–Fort Worth service area.</p>
-          </div>
+            <figcaption>
+              <span className="tq-tag tq-tag--tl tq-mono">[Areas / DFW]</span>
+              <span className="tq-tag tq-tag--bl tq-mono">{pad(locations.length)} cities</span>
+            </figcaption>
+          </figure>
+        </div>
+      ) : null}
 
-          <ol className="mt-12 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4 lg:gap-x-7">
-            {locations.map((location, index) => {
-              const image = imageFor(index);
-              return (
-                <li key={location.slug} className="min-w-0">
-                  <Link href={`/quinceanera-photographer/${location.slug}`} className="group block text-ink" aria-label={`Explore quinceañera photography in ${location.city}`}>
-                    <span className="relative block aspect-[4/5] overflow-hidden bg-greige">
-                      <Image src={image?.url ?? fallbackCityPhotos[index]} alt={image ? publicPhotoCopy(image, altPhraseFor(image.section)).alt : "A quinceañera photographed by TX Quince"} fill unoptimized={!image} sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 25vw" className="object-cover transition-transform duration-700 group-hover:scale-[1.03] motion-reduce:transition-none" style={image ? { objectPosition: focal(image.focus_x, image.focus_y) } : { objectPosition: "center 35%" }} />
+      <div className="tq-wrap">
+        <div className="tq-ledger tq-place-ledger">
+          <div className="tq-ledger__head">
+            <p className="tq-mono tq-place-eyebrow">TX Quince / Where we work</p>
+            <h1 className="tq-display">
+              Across Dallas–Fort Worth. <em>From the church to the last dance.</em>
+            </h1>
+            <p className="tq-ledger__dek">
+              We photograph and film quinceañeras across Dallas–Fort Worth. Explore the cities where we work and
+              the real celebrations behind the photographs.
+            </p>
+          </div>
+          <div className="tq-ledger__meta">
+            <dl className="tq-meta tq-mono">
+              <div>
+                <dt>Cities</dt>
+                <dd className="tq-nums">{pad(locations.length)}</dd>
+              </div>
+              <div>
+                <dt>Travel</dt>
+                <dd>No fee in DFW</dd>
+              </div>
+              <div>
+                <dt>Planning</dt>
+                <dd>English · Español</dd>
+              </div>
+            </dl>
+          </div>
+          <div className="tq-action">
+            <a href="#cities" className="tq-mono tq-place-note">Find your city ↓</a>
+            <div style={{ display: "grid", gap: 12 }}>
+              <Link href="/#intake" className="tq-action__link">
+                <span>Request a date</span>
+                <span className="tq-arrow" aria-hidden>→</span>
+              </Link>
+              <span className="tq-mono tq-muted">Commissions from {commissionsFromLabel}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section id="cities" className="tq-section" aria-labelledby="cities-title">
+        <div className="tq-wrap">
+          <header className="tq-head">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>[01 / Cities]</p>
+            <h2 id="cities-title" className="tq-display tq-head__title">
+              {locations.length} cities. <em>One attentive team.</em>
+            </h2>
+            <p className="tq-head__dek">
+              Find your city for local portrait ideas and coverage details. Planning is available in English or
+              Spanish, and there is no travel fee within our Dallas–Fort Worth service area.
+            </p>
+          </header>
+
+          <ol className="tq-place-cards tq-place-cards--four">
+            {cards.map(({ location, shot, n }) => (
+              <li key={location.slug} className="tq-place-card">
+                <Link
+                  href={`/quinceanera-photographer/${location.slug}`}
+                  className="tq-place-card__link"
+                  aria-label={`Explore quinceañera photography in ${location.city}`}
+                >
+                  <span className="tq-place-card__media">
+                    {shot ? (
+                      <Image
+                        src={shot.url}
+                        alt={shot.alt}
+                        fill
+                        unoptimized={shot.local}
+                        sizes="(min-width: 1280px) 25vw, (min-width: 960px) 33vw, (min-width: 640px) 50vw, 100vw"
+                        style={{ objectPosition: shot.focus }}
+                      />
+                    ) : (
+                      <span className="tq-place-card__blank">
+                        <span className="tq-mono tq-muted">[{n} / DFW]</span>
+                        <span className="tq-display">{location.city}</span>
+                      </span>
+                    )}
+                  </span>
+                  <span className="tq-place-card__row">
+                    <span className="tq-display tq-place-card__name">{location.city}</span>
+                    <span className="tq-mono tq-place-card__idx">
+                      [{n}] <span className="tq-arrow" aria-hidden>↗</span>
                     </span>
-                    <span className="mt-4 flex items-baseline justify-between gap-3 border-b border-ink/25 pb-4">
-                      <span className="font-display text-[clamp(1.5rem,2vw,2rem)] font-light leading-tight">{location.city}</span>
-                      <span className="shrink-0 text-xs uppercase tracking-[0.12em] text-ink-soft">0{index + 1} ↗</span>
-                    </span>
-                    <span className="mt-2 block text-sm leading-5 text-ink-soft">{location.county}</span>
-                  </Link>
-                </li>
-              );
-            })}
+                  </span>
+                  <span className="tq-mono tq-place-card__sub">{location.county}</span>
+                </Link>
+              </li>
+            ))}
           </ol>
         </div>
       </section>
 
-      <section className="bg-white" aria-labelledby="coverage-title">
-        <div className="mx-auto grid max-w-[90rem] gap-10 px-5 py-16 sm:px-10 sm:py-20 lg:grid-cols-[minmax(0,0.55fr)_minmax(0,0.45fr)] lg:gap-20 lg:px-16 lg:py-24">
-          <div>
-            <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">Beyond the map</p>
-            <h2 id="coverage-title" className="mt-4 max-w-[20ch] font-display text-[clamp(1.875rem,3vw,3rem)] font-normal leading-tight text-ink">From the first portrait to the last dance.</h2>
-          </div>
-          <div>
-            <p className="max-w-lg text-base leading-7 text-ink-soft">We plan around your church, portrait location, and venue so the photographs feel like your family and your city. Choose the coverage that fits the day, then tell us the date you have in mind.</p>
-            <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3">
-              <Link href="/portfolio" className="inline-flex min-h-11 items-center gap-3 border-b border-ink text-sm font-medium text-ink">See the work <span aria-hidden="true">↗</span></Link>
-              <Link href="/#commissions" className="inline-flex min-h-11 items-center gap-3 border-b border-ink text-sm font-medium text-ink">Explore commissions <span aria-hidden="true">↗</span></Link>
-              <Link href={site.cta.href} className="inline-flex min-h-11 items-center gap-3 border-b border-ink text-sm font-medium text-ink">Request a date <span aria-hidden="true">↗</span></Link>
+      <section className="tq-section" aria-labelledby="coverage-title">
+        <div className="tq-wrap">
+          <header className="tq-head">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>[02 / Coverage]</p>
+            <h2 id="coverage-title" className="tq-display tq-head__title">
+              Beyond the map.
+            </h2>
+            <p className="tq-head__dek">
+              We plan around your church, portrait location and venue so the photographs feel like your family and
+              your city.
+            </p>
+          </header>
+          <ol className="tq-principles">
+            <li>
+              <span className="tq-mono tq-muted">[01]</span>
+              <h3 className="tq-display">Church, portraits, venue</h3>
+              <p>The whole day is planned around where it actually happens, from la misa to the reception hall.</p>
+            </li>
+            <li>
+              <span className="tq-mono tq-muted">[02]</span>
+              <h3 className="tq-display">English or Spanish</h3>
+              <p>Planning is available in English or Spanish, from the first message to the timeline.</p>
+            </li>
+            <li>
+              <span className="tq-mono tq-muted">[03]</span>
+              <h3 className="tq-display">No travel fee</h3>
+              <p>Every city on this page sits inside our Dallas–Fort Worth service area, so there is no travel fee.</p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section className="tq-section" aria-labelledby="next-title">
+        <div className="tq-wrap">
+          <div className="tq-place-cta">
+            <div>
+              <p className="tq-mono tq-muted" style={{ margin: "0 0 20px" }}>[03 / Next]</p>
+              <h2 id="next-title" className="tq-display">
+                From the first portrait to the last dance.
+              </h2>
+            </div>
+            <div className="tq-place-cta__side">
+              <p>Choose the coverage that fits the day, then tell us the date you have in mind.</p>
+              <div className="tq-place-actions">
+                <Link href={site.cta.href} className="tq-btn tq-btn--lg">
+                  Request a date <span className="tq-arrow" aria-hidden>↗</span>
+                </Link>
+                <Link href="/portfolio" className="tq-btn tq-btn--ghost">See the work</Link>
+                <Link href="/#commissions" className="tq-btn tq-btn--ghost">Explore commissions</Link>
+                <Link href="/venues" className="tq-btn tq-btn--ghost">Venues</Link>
+              </div>
             </div>
           </div>
         </div>
