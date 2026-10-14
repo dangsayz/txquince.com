@@ -2,18 +2,22 @@
  * stripe.ts — minimal, dependency-free Stripe REST client (server-only).
  *
  * We talk to the Stripe API directly over fetch with form-encoded bodies, so
- * there's no `stripe` npm package to install or keep in sync. Only two calls are
- * needed for the deposit flow:
+ * there's no `stripe` npm package to install or keep in sync:
  *   - createStripeCheckoutSession() — one-time payment, price built INLINE via
  *     price_data (no Product/Price objects to manage).
  *   - retrieveStripeCheckoutSession() — read back the session on the success page.
+ *   - expireStripeCheckoutSession() — close a superseded / declined session.
+ *   - createStripeRefund() — ONLY ever called from the owner's refund button,
+ *     always with an Idempotency-Key.
  *
  * SECURITY LAW: STRIPE_SECRET_KEY is server-only. This module is imported only by
- * API routes / server components.
+ * API routes / server components. Outside production only `sk_test_` keys are
+ * accepted, and STRIPE_API_BASE (a local mock, scripts/local/fake-stripe.mjs)
+ * is only honored with a test key outside production.
  */
 import "server-only";
 
-const STRIPE_API_BASE = "https://api.stripe.com/v1";
+const DEFAULT_STRIPE_API_BASE = "https://api.stripe.com/v1";
 
 export interface StripeCheckoutSession {
   id: string;
@@ -25,12 +29,14 @@ export interface StripeCheckoutSession {
   currency: string | null;
   metadata: Record<string, string> | null;
   customer_details: { email: string | null } | null;
+  /** open | complete | expired (present on API responses and webhook payloads). */
+  status?: string | null;
 }
 
 type StripeMetadata = Record<string, string | number | boolean | null | undefined>;
 
 interface StripeErrorResponse {
-  error?: { message?: string };
+  error?: { message?: string; code?: string };
 }
 
 interface CreateCheckoutSessionInput {
@@ -48,6 +54,8 @@ interface CreateCheckoutSessionInput {
   locale?: string;
   /** Statement/receipt line for the PaymentIntent. */
   paymentDescription?: string;
+  /** Stripe Idempotency-Key: a retried request returns the same session. */
+  idempotencyKey?: string;
 }
 
 export function isStripeConfigured(): boolean {
@@ -57,11 +65,33 @@ export function isStripeConfigured(): boolean {
 function getStripeSecretKey(): string {
   const key = process.env.STRIPE_SECRET_KEY;
   if (!key) throw new Error("Missing STRIPE_SECRET_KEY.");
+  // "Stripe test mode only, locally": a live key never moves money from a dev box.
+  if (process.env.NODE_ENV !== "production" && !key.startsWith("sk_test_")) {
+    throw new Error("Refusing a non-test Stripe key outside production.");
+  }
   return key;
+}
+
+function stripeApiBase(): string {
+  const override = process.env.STRIPE_API_BASE;
+  if (override && process.env.NODE_ENV !== "production" && getStripeSecretKey().startsWith("sk_test_")) {
+    return override.replace(/\/+$/, "");
+  }
+  return DEFAULT_STRIPE_API_BASE;
 }
 
 function isStripeErrorResponse(value: unknown): value is StripeErrorResponse {
   return Boolean(value && typeof value === "object" && "error" in value);
+}
+
+export class StripeApiError extends Error {
+  constructor(
+    message: string,
+    readonly status: number,
+    readonly code: string | null,
+  ) {
+    super(message);
+  }
 }
 
 function appendMetadata(
@@ -78,15 +108,16 @@ function appendMetadata(
 
 async function stripeRequest<T>(
   path: string,
-  init: { method: "GET" | "POST"; params?: URLSearchParams },
+  init: { method: "GET" | "POST"; params?: URLSearchParams; idempotencyKey?: string },
 ): Promise<T> {
-  const response = await fetch(`${STRIPE_API_BASE}${path}`, {
+  const response = await fetch(`${stripeApiBase()}${path}`, {
     method: init.method,
     headers: {
       Authorization: `Bearer ${getStripeSecretKey()}`,
       ...(init.method === "POST"
         ? { "Content-Type": "application/x-www-form-urlencoded" }
         : {}),
+      ...(init.idempotencyKey ? { "Idempotency-Key": init.idempotencyKey } : {}),
     },
     body: init.params?.toString(),
     cache: "no-store",
@@ -100,11 +131,8 @@ async function stripeRequest<T>(
   }
 
   if (!response.ok) {
-    const message =
-      isStripeErrorResponse(json) && json.error?.message
-        ? json.error.message
-        : "Stripe request failed.";
-    throw new Error(message);
+    const err = isStripeErrorResponse(json) ? json.error : undefined;
+    throw new StripeApiError(err?.message || "Stripe request failed.", response.status, err?.code ?? null);
   }
 
   return json as T;
@@ -143,6 +171,7 @@ export async function createStripeCheckoutSession(
   return stripeRequest<StripeCheckoutSession>("/checkout/sessions", {
     method: "POST",
     params,
+    idempotencyKey: input.idempotencyKey,
   });
 }
 
@@ -153,4 +182,57 @@ export async function retrieveStripeCheckoutSession(
     `/checkout/sessions/${encodeURIComponent(sessionId)}`,
     { method: "GET" },
   );
+}
+
+/**
+ * Expire an open Checkout session so it can no longer be paid. Returns the
+ * session as Stripe now sees it. Callers must read `status`: a session that
+ * already completed can't be expired (Stripe answers 400), and that is how we
+ * learn a payment is already in flight.
+ */
+export async function expireStripeCheckoutSession(
+  sessionId: string,
+): Promise<{ id: string; status: string | null; payment_status: string | null }> {
+  try {
+    return await stripeRequest(`/checkout/sessions/${encodeURIComponent(sessionId)}/expire`, {
+      method: "POST",
+      params: new URLSearchParams(),
+    });
+  } catch (err) {
+    if (err instanceof StripeApiError && err.status === 400) {
+      return stripeRequest(`/checkout/sessions/${encodeURIComponent(sessionId)}`, { method: "GET" });
+    }
+    throw err;
+  }
+}
+
+export interface StripeRefund {
+  id: string;
+  amount: number;
+  currency: string;
+  status: string | null;
+  payment_intent: string | null;
+}
+
+/**
+ * Refund part or all of a PaymentIntent. Called ONLY from the owner's refund
+ * action. The Idempotency-Key makes a double click (or a retried request)
+ * return the same refund instead of creating a second one.
+ */
+export async function createStripeRefund(input: {
+  paymentIntentId: string;
+  amountCents: number;
+  idempotencyKey: string;
+  metadata?: StripeMetadata;
+}): Promise<StripeRefund> {
+  const params = new URLSearchParams();
+  params.set("payment_intent", input.paymentIntentId);
+  params.set("amount", String(input.amountCents));
+  params.set("reason", "requested_by_customer");
+  appendMetadata(params, input.metadata);
+  return stripeRequest<StripeRefund>("/refunds", {
+    method: "POST",
+    params,
+    idempotencyKey: input.idempotencyKey,
+  });
 }

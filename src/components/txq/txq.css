@@ -2018,6 +2018,9 @@ html:has(.tq-compare[open]) {
   gap: 8px;
   white-space: nowrap;
 }
+.tq-bk .tq-cal__lead {
+  margin-top: 8px;
+}
 .tq-cal__key {
   display: inline-block;
   width: 12px;
@@ -2141,6 +2144,11 @@ html:has(.tq-compare[open]) {
 .tq-bk-done__held {
   font-size: 1.25rem;
   font-weight: var(--weight-semibold);
+}
+.tq-bk-done__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 .tq-bk-done__ref {
   font-family: var(--font-mono);

@@ -53,6 +53,9 @@ export async function GET(req: NextRequest) {
       "id, name, email, phone, event_date, package, collection, notes, status, deposit_amount_cents, currency, metadata",
     )
     .eq("status", "expired")
+    // Client-journey bookings are owner-approved: a "finish reserving" email
+    // would be wrong for them (their own hold-expired email comes from /api/cron/daily).
+    .or("metadata->>flow.is.null,metadata->>flow.neq.journey")
     .is("recovery_sent_at", null)
     .gte("created_at", since)
     .gte("event_date", today)

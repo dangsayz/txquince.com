@@ -19,6 +19,7 @@ import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { getFirstTouch } from "@/components/Tracker";
 import { BASE_CREW, COORDINATOR_INCLUDED, priceBookSchema, type PriceBook } from "@/lib/commission";
 import { HONEYPOT_FIELD } from "@/lib/booking";
+import { MIN_LEAD_DAYS, meetsLeadTime } from "@/lib/journey/policy";
 import { usePriceBook } from "@/components/PriceBookProvider";
 import { ADD_ONS, CITIES, money, pick, tierById, type Lang, type TierId } from "./data";
 import { BOOKING_STEPS, isoDate, useAvailability, useQuote, useSite } from "./state";
@@ -38,7 +39,22 @@ const SHOW_TURNSTILE = Boolean(SITE_KEY) && process.env.NODE_ENV === "production
 /** Link that opens the booking panel at Hours & extras with this package chosen. */
 export const bookHref = (tier: TierId) => `#book-${tier}`;
 
-type Done = { ref: string; holdDays: number; date: string; email: string };
+type Done = { ref: string; holdDays: number; date: string; email: string; link: string | null };
+
+/**
+ * The private booking page from the response, as a path on THIS site (the
+ * server writes it with the canonical site URL; only the path is used, so
+ * the button can never point anywhere but our own /my/booking page).
+ */
+function safeLink(v: unknown): string | null {
+  if (typeof v !== "string" || !v) return null;
+  try {
+    const u = new URL(v, window.location.origin);
+    return /^\/(my\/booking|es\/mi-reserva)\/[A-Za-z0-9_-]+$/.test(u.pathname) ? u.pathname : null;
+  } catch {
+    return null;
+  }
+}
 type Errors = Record<string, string>;
 
 const localeOf = (l: Lang) => (l === "es" ? "es-MX" : "en-US");
@@ -104,7 +120,7 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
   const errorsFor = (s: number): Errors => {
     const e: Errors = {};
     if (s === 2) {
-      if (!b.date) e.date = t.booking.errors.date;
+      if (!b.date || !meetsLeadTime(b.date, new Date())) e.date = t.booking.errors.date;
       if (!b.city) e.city = t.booking.errors.city;
     }
     if (s === 3) {
@@ -266,6 +282,8 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
         error?: string;
         holdDays?: number;
         ref?: string;
+        /** The family's private booking page (/my/booking/…). */
+        link?: string;
         book?: unknown;
       };
 
@@ -277,7 +295,14 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
         requestAnimationFrame(() => noticeRef.current?.focus());
         return;
       }
-      if (res.status === 409 || j.code === "date_taken") {
+      if (j.code === "too_soon") {
+        // Closer than the studio's lead time: back to the calendar, server's words.
+        updateBooking({ step: 2 });
+        setErrors({ date: j.error || t.booking.errors.date });
+        setMoveTick((n) => n + 1);
+        return;
+      }
+      if (j.code === "date_taken") {
         avail.markTaken(b.date);
         avail.refresh();
         setAnchor(b.date);
@@ -291,7 +316,13 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
         return;
       }
       ok = true;
-      setDone({ ref: j.ref ?? "", holdDays: j.holdDays ?? book.holdDays, date: b.date, email: b.email.trim() });
+      setDone({
+        ref: j.ref ?? "",
+        holdDays: j.holdDays ?? book.holdDays,
+        date: b.date,
+        email: b.email.trim(),
+        link: safeLink(j.link),
+      });
       resetBooking();
       avail.refresh();
       setMoveTick((n) => n + 1);
@@ -822,7 +853,12 @@ function Success({
           ))}
         </ol>
       </div>
-      <div>
+      <div className="tq-bk-done__actions">
+        {done.link ? (
+          <a href={done.link} className="tq-btn tq-btn--lg">
+            {t.booking.openPage} <span className="tq-arrow" aria-hidden>→</span>
+          </a>
+        ) : null}
         <button type="button" className="tq-btn tq-btn--ghost tq-btn--lg" onClick={onAgain}>
           {t.booking.again}
         </button>
@@ -914,6 +950,7 @@ function Calendar({
     return { y: d.getFullYear(), m: d.getMonth() };
   });
 
+  const now = useMemo(() => new Date(), []);
   const monthsAhead = (view.y - today.getFullYear()) * 12 + (view.m - today.getMonth());
   const shift = (d: number) =>
     setView(({ y, m }) => {
@@ -981,7 +1018,8 @@ function Calendar({
             const d = new Date(view.y, view.m, i + 1);
             const iso = isoDate(d);
             // Today can't be booked online (the server only accepts future dates).
-            const past = d <= today;
+            // Past days, today, and anything inside the studio's lead time (same rule as the server).
+            const past = d <= today || !meetsLeadTime(iso, now);
             const isTaken = taken.has(iso);
             return (
               <button
@@ -1012,6 +1050,7 @@ function Calendar({
             <i className="tq-cal__key tq-cal__key--picked" /> {t.booking.legendPicked}
           </span>
         </div>
+        <p className="tq-bk-hint tq-cal__lead">{t.booking.leadNote(MIN_LEAD_DAYS)}</p>
       </div>
       <p className="tq-picked" aria-live="polite">
         {value ? (

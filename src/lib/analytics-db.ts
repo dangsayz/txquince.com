@@ -1,4 +1,5 @@
 import "server-only";
+import { BOOKED_STATUSES } from "@/lib/journey/state";
 import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
 import { getBookings, getInquiries } from "@/lib/clients-db";
 import { releasedTestimonials } from "@/content/testimonials";
@@ -194,8 +195,8 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
 
     // ---- bookings / money ----
     const requests = bookings.filter((b) => b.status === "requested").length;
-    const paid = bookings.filter((b) => b.status === "paid").length;
-    const pendingHolds = bookings.filter((b) => b.status === "pending_payment").length;
+    const paid = bookings.filter((b) => BOOKED_STATUSES.has(b.status)).length;
+    const pendingHolds = bookings.filter((b) => b.status === "approved").length;
     // Money collected but NOT auto-confirmed (lost the date race or amount mismatch)
     // — needs the operator to verify or refund. Value = deposit actually charged.
     const reviewBookings = bookings.filter((b) => b.status === "payment_review");
@@ -205,10 +206,10 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     const valueOf = (collection: string | null) =>
       collection ? (collectionById(collection)?.price ?? 0) : 0;
     const bookedValue = bookings
-      .filter((b) => b.status === "paid")
+      .filter((b) => BOOKED_STATUSES.has(b.status))
       .reduce((s, b) => s + valueOf(b.collection), 0);
     const pipelineValue = bookings
-      .filter((b) => b.status === "requested" || b.status === "pending_payment")
+      .filter((b) => b.status === "requested" || b.status === "approved")
       .reduce((s, b) => s + valueOf(b.collection), 0);
 
     // DB constraint allows new | won | lost | unsubscribed — only "new" is open.
@@ -216,7 +217,7 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
       (i) => i.status === "new" && !i.unsubscribed_at,
     ).length;
     const totalInquiries = inquiries.length;
-    const totalBookings = bookings.filter((b) => b.status === "requested" || b.status === "paid" || b.status === "pending_payment").length;
+    const totalBookings = bookings.filter((b) => b.status === "requested" || BOOKED_STATUSES.has(b.status) || b.status === "approved").length;
     const inquiryToBooked = totalInquiries ? Math.round((paid / totalInquiries) * 100) : 0;
 
     const funnel = [
@@ -237,10 +238,10 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     };
     for (const i of inquiries) bump(srcKey(i.attribution)).leads += 1;
     for (const bk of bookings) {
-      if (bk.status === "requested" || bk.status === "pending_payment" || bk.status === "paid") {
+      if (bk.status === "requested" || bk.status === "approved" || BOOKED_STATUSES.has(bk.status)) {
         const row = bump(srcKey(bk.attribution));
         row.requests += 1;
-        if (bk.status === "paid") row.bookedValue += valueOf(bk.collection);
+        if (BOOKED_STATUSES.has(bk.status)) row.bookedValue += valueOf(bk.collection);
       }
     }
     const bySource = Array.from(sourceMap.values())
@@ -308,7 +309,7 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     ).length;
     const intentTotal = ctaClicks + formStarts + dateChecks;
     const totalRequests = bookings.filter((b) =>
-      ["requested", "pending_payment", "paid"].includes(b.status),
+      ["requested", "approved", "confirmed", "paid_in_full", "completed"].includes(b.status),
     ).length;
     const edges: { edge: string; num: number; den: number; baseline: number; action: string }[] = [
       { edge: "Visitors → viewing your work/pricing", num: moneyPageSessions, den: uniqueSessions, baseline: 0.35, action: "The homepage isn't pulling people deeper — strengthen the work section + CTAs above the fold." },
