@@ -7,7 +7,8 @@
  * schema. This is the center of the wheel: homepage/nav → hub → 20+ blog spokes
  * → city/venue pages → packages.
  *
- * Answers use REAL TX Quince facts (packages from the price book in src/lib/commission.ts,
+ * Answers use REAL TX Quince facts (packages from the live price book — price tokens
+ * filled at render time from getPriceBook(),
  * the portrait session, photos + video) — that specificity is what keeps it from
  * reading generic/AI.
  */
@@ -16,8 +17,15 @@ import Link from "next/link";
 import Image from "next/image";
 import { EditOverlay } from "@/components/EditMode";
 import { site } from "@/content/site";
-import { bookingFlow, commissions, commissionsFromLabel, commissionLinks, retainerPercentLabel } from "@/content/commissions";
-import { TIER_PRICE_USD, usd } from "@/lib/commission";
+import {
+  bookingFlow,
+  commissionsFor,
+  commissionsFromLabel as FROM_TOKEN,
+  commissionLinks,
+  retainerPercentLabel as PCT_TOKEN,
+} from "@/content/commissions";
+import { getPriceBook } from "@/lib/pricing";
+import { PT, fillDeep, fillPrices } from "@/lib/price-text";
 import { getPageHero, getPortfolioImages, type PortfolioImage } from "@/lib/content-db";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
@@ -26,10 +34,10 @@ import "@/components/txq/pages/pages.css";
 
 export const revalidate = 3600;
 
-export const metadata: Metadata = {
+const META: Metadata = {
   title: "The Quinceañera Guide: Every Question, Answered",
   description:
-    `Straight answers to the most-asked quinceañera questions — cost, planning timeline, photo vs. film, la misa, el vals, and more — from a Dallas–Fort Worth quinceañera photographer. Commissions from ${commissionsFromLabel}.`,
+    `Straight answers to the most-asked quinceañera questions — cost, planning timeline, photo vs. film, la misa, el vals, and more — from a Dallas–Fort Worth quinceañera photographer. Commissions from ${FROM_TOKEN}.`,
   keywords:
     "quinceañera guide, quinceañera questions, quinceañera planning, quinceañera photographer cost, how much does a quinceañera photographer cost, quinceañera timeline, quinceañera FAQ Dallas Fort Worth",
   alternates: { canonical: "/quinceanera-guide" },
@@ -51,7 +59,7 @@ type Bucket = {
   cta: { label: string; href: string };
 };
 
-const BUCKETS: Bucket[] = [
+const BUCKET_COPY: Bucket[] = [
   {
     id: "planning",
     eyebrow: "Start here",
@@ -93,7 +101,7 @@ const BUCKETS: Bucket[] = [
     qas: [
       {
         q: "How much does a quinceañera photographer cost in Dallas–Fort Worth?",
-        a: `Most DFW quinceañera studios publish packages between about $1,500 and $6,000. TX Quince publishes every price: the Portrait Session is ${usd(TIER_PRICE_USD.study)}, photos and video together start at ${usd(TIER_PRICE_USD.cinema)}, the Full Celebration is ${usd(TIER_PRICE_USD.production)}, and the Two-Day Celebration is ${usd(TIER_PRICE_USD.archive)}. What you pay depends on the hours, the size of the team, and the album and extras you choose.`,
+        a: `Most DFW quinceañera studios publish packages between about $1,500 and $6,000. TX Quince publishes every price: the Portrait Session is ${PT.price.study}, photos and video together start at ${PT.price.cinema}, the Full Celebration is ${PT.price.production}, and the Two-Day Celebration is ${PT.price.archive}. What you pay depends on the hours, the size of the team, and the album and extras you choose.`,
         href: "/blog/quinceanera-photographer-cost-dallas-fort-worth",
         hrefLabel: "What drives the price",
       },
@@ -126,7 +134,7 @@ const BUCKETS: Bucket[] = [
     qas: [
       {
         q: "Photo or video for a quinceañera — which do I need?",
-        a: `If you can, both — they do different jobs. Photos are what you frame and pass down; video is her voice, the music, and the room in motion. From Photo + Video (${usd(TIER_PRICE_USD.cinema)}) up, a photographer and a videographer cover the day together.`,
+        a: `If you can, both — they do different jobs. Photos are what you frame and pass down; video is her voice, the music, and the room in motion. From Photo + Video (${PT.price.cinema}) up, a photographer and a videographer cover the day together.`,
         href: "/blog/quinceanera-photo-vs-video",
         hrefLabel: "Photos vs. video, honestly",
       },
@@ -195,7 +203,7 @@ const BUCKETS: Bucket[] = [
       },
       {
         q: "What's a pre-quince or save-the-date session?",
-        a: `It's a portrait session weeks or months before the celebration — for her invitations, the welcome board, and a calm first look at her in the gown. Book it on its own as the Portrait Session (${usd(TIER_PRICE_USD.study)}), or receive it inside the Full Celebration and the Two-Day Celebration.`,
+        a: `It's a portrait session weeks or months before the celebration — for her invitations, the welcome board, and a calm first look at her in the gown. Book it on its own as the Portrait Session (${PT.price.study}), or receive it inside the Full Celebration and the Two-Day Celebration.`,
         href: "/quinceanera-photoshoot",
         hrefLabel: "About the pre-quince photoshoot",
       },
@@ -211,7 +219,17 @@ const fallbackImages: Record<string, { src: string; alt: string }> = {
   celebration: { src: "/portfolio/kimberly-reception.webp", alt: "Quinceañera celebration and dance" },
 };
 
+export async function generateMetadata(): Promise<Metadata> {
+  return fillDeep(META, await getPriceBook());
+}
+
 export default async function QuinceaneraGuidePage() {
+  // Answers carry price tokens; fill them (body + FAQPage JSON-LD) from the live book.
+  const book = await getPriceBook();
+  const BUCKETS = fillDeep(BUCKET_COPY, book);
+  const commissions = commissionsFor(book);
+  const commissionsFromLabel = fillPrices(FROM_TOKEN, book);
+  const retainerPercentLabel = fillPrices(PCT_TOKEN, book);
   const url = `${site.url}/quinceanera-guide`;
   const allQas = BUCKETS.flatMap((b) => b.qas);
 

@@ -10,8 +10,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { site } from "@/content/site";
-import { commissionsFromLabel } from "@/content/commissions";
-import { PRICE_CEILING_USD, PRICE_FLOOR_USD, usd } from "@/lib/commission";
+import { priceCeiling, priceFloor, usd } from "@/lib/commission";
+import { getPriceBook } from "@/lib/pricing";
 import { venues, getVenue } from "@/content/venues";
 import { getLocation } from "@/content/locations";
 import { getImagesByVenue, getVenueCopy } from "@/lib/content-db";
@@ -35,7 +35,8 @@ export async function generateMetadata({
   const { slug } = await params;
   const venue = getVenue(slug);
   if (!venue) return {};
-  const copy = await getVenueCopy(slug);
+  const [copy, book] = await Promise.all([getVenueCopy(slug), getPriceBook()]);
+  const commissionsFromLabel = usd(priceFloor(book));
   const title = `${venue.venue} Quinceañera Photographer — ${venue.city}, TX`;
   const description =
     copy?.about?.slice(0, 200) ||
@@ -62,7 +63,8 @@ export default async function VenuePage({
   const venue = getVenue(slug);
   if (!venue) notFound();
 
-  const [copy, photos] = await Promise.all([getVenueCopy(slug), getImagesByVenue(slug)]);
+  const [copy, photos, book] = await Promise.all([getVenueCopy(slug), getImagesByVenue(slug), getPriceBook()]);
+  const commissionsFromLabel = usd(priceFloor(book));
   const heroPhoto = photos[0] ?? null;
   const cityLoc = venue.citySlug ? getLocation(venue.citySlug) : undefined;
   const ig = igUrl(copy?.ig_handle);
@@ -106,7 +108,7 @@ export default async function VenuePage({
         image: `${site.url}/opengraph-image`,
         email: site.contact.email,
         areaServed: { "@type": "City", name: `${venue.city}, TX` },
-        priceRange: `${usd(PRICE_FLOOR_USD)}–${usd(PRICE_CEILING_USD)}`,
+        priceRange: `${usd(priceFloor(book))}–${usd(priceCeiling(book))}`,
         knowsLanguage: ["en", "es"],
       },
       {

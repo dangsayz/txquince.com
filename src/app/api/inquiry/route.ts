@@ -11,6 +11,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import {
   inquirySchema,
+  budgetStoredText,
   HONEYPOT_FIELD,
   TURNSTILE_FIELD,
 } from "@/lib/inquiry";
@@ -18,6 +19,7 @@ import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server"
 import { verifyTurnstile } from "@/lib/turnstile";
 import { sendOperatorEmail, sendInquirerEmail } from "@/lib/resend";
 import { sanitizeAttribution } from "@/lib/attribution";
+import { getPriceBook } from "@/lib/pricing";
 
 // Always run server-side at request time.
 export const dynamic = "force-dynamic";
@@ -96,7 +98,8 @@ export async function POST(req: NextRequest) {
       { status: 422 },
     );
   }
-  const data = parsed.data;
+  // Budget arrives as a stable key; store/email it as priced text from the live book.
+  const data = { ...parsed.data, budget_range: budgetStoredText(parsed.data.budget_range, await getPriceBook()) };
 
   // 5) Insert to Supabase (service role; RLS blocks anon entirely).
   if (!isSupabaseConfigured()) {

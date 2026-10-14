@@ -5,25 +5,20 @@ import { forwardRef, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { getFirstTouch } from "@/components/Tracker";
-import {
-  CONSULT_HOLD_DAYS,
-  BASE_CREW,
-  COORDINATOR_INCLUDED,
-  quoteCommission,
-} from "@/lib/commission";
+import { BASE_CREW, COORDINATOR_INCLUDED, priceBookSchema, type PriceBook } from "@/lib/commission";
+import { usePriceBook } from "@/components/PriceBookProvider";
 import { buildAgreement } from "@/lib/agreement";
 import {
   ADD_ONS,
   CITIES,
   TIERS,
-  estimate,
   money,
   pick,
   tierById,
   workById,
   type Lang,
 } from "./data";
-import { isoDate, useAvailability, useSite } from "./state";
+import { isoDate, useAvailability, useQuote, useSite } from "./state";
 import { CrewControl, HoursControl, useTween } from "./Commissions";
 import { SignaturePad } from "./SignaturePad";
 
@@ -56,6 +51,8 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
   const { t, lang, tier, setTier, addOns, toggleAddOn, crew, hours } = useSite();
   const avail = useAvailability();
   const reduce = useReducedMotion();
+  const prices = usePriceBook();
+  const { book } = prices;
 
   const [step, setStep] = useState(0);
   const [done, setDone] = useState<Done | null>(null);
@@ -93,11 +90,11 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
     titleRef.current?.focus({ preventScroll: true });
   }, [step, done, reduce]);
 
-  const total = estimate(tier, addOns, hours);
+  const quote = useQuote();
+  const total = quote.totalUsd;
   const shown = useTween(total);
   const language = prefLang ?? lang;
   const portrait = workById("w02");
-  const quote = quoteCommission(tier, addOns, hours);
 
   const cityLabel = CITIES.find((c) => c.id === city);
   // Package decides what's covered: the Portrait Session is photos only.
@@ -120,9 +117,9 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
             email: email.trim(),
             phone: phone.trim(),
             sharePermission: share,
-          })
+          }, book)
         : null,
-    [step, language, tier, hours, crew, addOns, date, cityLabel, venue, startTime, honoree, name, email, phone, share],
+    [step, language, tier, hours, crew, addOns, date, cityLabel, venue, startTime, honoree, name, email, phone, share, book],
   );
 
   const validate = (s: number) => {
@@ -189,6 +186,9 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
           signed_name: signedName.trim(),
           signature,
           agree,
+          // What the family was shown; the server refuses if its own price differs.
+          quoted_total_usd: quote.totalUsd,
+          quoted_deposit_usd: quote.retainerUsd,
           "cf-turnstile-response": token,
           attribution: getFirstTouch(),
         }),
@@ -199,8 +199,19 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
         error?: string;
         holdDays?: number;
         ref?: string;
+        book?: unknown;
       };
 
+      if (j.code === "prices_changed") {
+        // Prices changed while this tab was open: show the new numbers and ask
+        // them to read and sign again (the agreement above rebuilds itself).
+        const fresh = priceBookSchema.safeParse(j.book);
+        if (fresh.success) prices.adopt(fresh.data as PriceBook);
+        setSignature(null);
+        setAgree(false);
+        setErrors({ form: t.intake.errors.pricesChanged });
+        return;
+      }
       if (res.status === 409 || j.code === "date_taken") {
         avail.markTaken(date);
         avail.refresh();
@@ -214,7 +225,7 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
         setErrors({ form: j.error || t.intake.errors.failed });
         return;
       }
-      setDone({ ref: j.ref ?? "", holdDays: j.holdDays ?? CONSULT_HOLD_DAYS, depositUsd: quote.retainerUsd });
+      setDone({ ref: j.ref ?? "", holdDays: j.holdDays ?? book.holdDays, depositUsd: quote.retainerUsd });
       avail.refresh();
     } catch {
       setErrors({ form: t.intake.errors.failed });
@@ -465,7 +476,7 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
                                     {pick(lang, x.summary)}
                                   </span>
                                 </span>
-                                <span className="tq-mono tq-choice__price tq-nums">{money(x.price)}</span>
+                                <span className="tq-mono tq-choice__price tq-nums">{money(book.packages[x.id].price)}</span>
                               </label>
                             ))}
                           </div>
@@ -499,7 +510,7 @@ export const Intake = forwardRef<HTMLElement>(function Intake(_, ref) {
                                   {addOns.includes(a.id) ? "✓" : ""}
                                 </span>
                                 <span>{pick(lang, a.name)}</span>
-                                <span className="tq-mono tq-choice__price tq-nums">+{money(a.price)}</span>
+                                <span className="tq-mono tq-choice__price tq-nums">+{money(book.addOns[a.id])}</span>
                               </label>
                             ))}
                           </div>
@@ -720,7 +731,7 @@ function Summary({ date, city, total }: { date: string | null; city: string; tot
   const { t, lang, tier, addOns, crew, hours } = useSite();
   const x = tierById(tier);
   const extras = ADD_ONS.filter((a) => addOns.includes(a.id));
-  const q = quoteCommission(tier, addOns, hours);
+  const q = useQuote();
   return (
     <dl className="tq-summary" aria-label={t.intake.summary}>
       <div>

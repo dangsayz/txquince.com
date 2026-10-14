@@ -1,11 +1,11 @@
 import type { BlogPost } from "@/content/blog";
-import { TIER_PRICE_USD, RETAINER, usd } from "@/lib/commission";
+import { PT } from "@/lib/price-text";
 
-const study = usd(TIER_PRICE_USD.study);
-const cinema = usd(TIER_PRICE_USD.cinema);
-const production = usd(TIER_PRICE_USD.production);
-const archive = usd(TIER_PRICE_USD.archive);
-const retainerPct = `${Math.round(RETAINER.rate * 100)}%`;
+const study = PT.price.study;
+const cinema = PT.price.cinema;
+const production = PT.price.production;
+const archive = PT.price.archive;
+const retainerPct = PT.deposit.percent;
 
 const post: BlogPost = {
   slug: "cuanto-cuesta-una-quinceanera-presupuesto-texas",
@@ -134,7 +134,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Es común que se apadrine el pastel, el vestido, la corona y la última muñeca, las flores, el DJ, los gastos de la iglesia, los recuerditos e incluso la fotografía. Asigne a cada padrino un rubro, anótelo, y un total de $20,000 se reparte en una docena de partes manejables. Para la cobertura en particular, [cómo funciona nuestro depósito](/es/blog/planes-de-pago-fotografia-quinceanera-dfw) facilita que un padrino apadrine el depósito del ${retainerPct} mientras usted junta el resto, que se paga ${RETAINER.balanceDueHours} horas antes del evento.`,
+      text: `Es común que se apadrine el pastel, el vestido, la corona y la última muñeca, las flores, el DJ, los gastos de la iglesia, los recuerditos e incluso la fotografía. Asigne a cada padrino un rubro, anótelo, y un total de $20,000 se reparte en una docena de partes manejables. Para la cobertura en particular, [cómo funciona nuestro depósito](/es/blog/planes-de-pago-fotografia-quinceanera-dfw) facilita que un padrino apadrine el depósito del ${retainerPct} mientras usted junta el resto, que se paga ${PT.balanceDays} días antes del evento.`,
     },
     {
       type: "callout",

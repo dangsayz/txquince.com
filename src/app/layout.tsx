@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { commissionsFromLabel } from "@/content/commissions";
+import { getPriceBook } from "@/lib/pricing";
+import { fillDeep } from "@/lib/price-text";
 import { Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { site } from "@/content/site";
@@ -23,7 +25,8 @@ const mono = Geist_Mono({
   display: "swap",
 });
 
-export const metadata: Metadata = {
+// Copy carries price tokens (commissionsFromLabel); filled from the live book.
+const META: Metadata = {
   metadataBase: new URL(site.url),
   title: {
     default: `${site.brand} — Quinceañera Photos & Video | Dallas–Fort Worth`,
@@ -51,15 +54,22 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
+export async function generateMetadata(): Promise<Metadata> {
+  return fillDeep(META, await getPriceBook());
+}
+
 export const viewport: Viewport = {
   themeColor: "#faf8f5",
   width: "device-width",
   initialScale: 1,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  // The live price book (R2, cached ~30s; launch defaults when unreachable).
+  // Handed to every public page's client UI through the site shell.
+  const book = await getPriceBook();
   return (
     <html
       lang="en"
@@ -67,12 +77,12 @@ export default function RootLayout({
       className={`${sans.variable} ${mono.variable} h-full`}
     >
       <body className="flex min-h-dvh flex-col bg-cream">
-        <PublicSiteFrame>{children}</PublicSiteFrame>
+        <PublicSiteFrame book={book}>{children}</PublicSiteFrame>
         <Suspense fallback={null}>
           <Tracker />
         </Suspense>
         <WebAnalytics />
-        <JsonLd />
+        <JsonLd book={book} />
       </body>
     </html>
   );

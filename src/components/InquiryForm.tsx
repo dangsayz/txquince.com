@@ -13,6 +13,7 @@ import {
 import { trackInquirySubmitted } from "@/lib/analytics";
 import { trackEvent, getFirstTouch } from "@/components/Tracker";
 import { useShell } from "@/components/txq/SiteShell";
+import { usePriceBook } from "@/components/PriceBookProvider";
 import "@/components/txq/pages/pages.css";
 
 type Status = "idle" | "submitting" | "error";
@@ -68,6 +69,7 @@ function localizeErrors(errors: FieldErrors): FieldErrors {
 
 export function InquiryForm({ initialDate = "", locale = "en" }: { initialDate?: string; locale?: "en" | "es" }) {
   const es = locale === "es";
+  const { fill } = usePriceBook();
   const router = useRouter();
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -258,7 +260,7 @@ export function InquiryForm({ initialDate = "", locale = "en" }: { initialDate?:
           </legend>
           <div className="tq-choice">
             {BUDGET_OPTIONS.map((o, i) => {
-              const [price, ...rest] = (es ? o.labelEs : o.label).split(" — ");
+              const [price, ...rest] = fill(es ? o.labelEs : o.label).split(" — ");
               return (
                 <label key={o.value}>
                   <input type="radio" name="budget_range" value={o.value} required />

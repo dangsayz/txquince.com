@@ -1,18 +1,9 @@
 import type { BlogPost } from "@/content/blog";
-import {
-  TIER_PRICE_USD,
-  RETAINER,
-  CONSULT_HOLD_DAYS,
-  BASE_HOURS,
-  quoteCommission,
-  usd,
-} from "@/lib/commission";
+import { PT } from "@/lib/price-text";
 
-const retainerPct = `${Math.round(RETAINER.rate * 100)}%`;
-const due = RETAINER.balanceDueHours;
-const hold = CONSULT_HOLD_DAYS;
-const retainerFor = (tier: keyof typeof TIER_PRICE_USD) =>
-  usd(quoteCommission(tier, []).retainerUsd);
+const retainerPct = PT.deposit.percent;
+const due = PT.balanceDays;
+const hold = PT.holdDays;
 
 const post: BlogPost = {
   slug: "planes-de-pago-fotografia-quinceanera-dfw",
@@ -31,7 +22,7 @@ const post: BlogPost = {
     { type: "h2", text: "¿Tiene que pagar todo por adelantado? No" },
     {
       type: "p",
-      text: `La respuesta corta es no. En TX Quince usted aparta su fecha con un depósito del ${retainerPct} de su paquete, y el resto se paga ${due} horas antes del evento. Eso es todo: dos pagos, los dos claros desde el día en que reserva, para que nada del costo la tome por sorpresa después.`,
+      text: `La respuesta corta es no. En TX Quince usted aparta su fecha con un depósito del ${retainerPct} de su paquete, y el resto se paga ${due} días antes del evento. Eso es todo: dos pagos, los dos claros desde el día en que reserva, para que nada del costo la tome por sorpresa después.`,
     },
     {
       type: "callout",
@@ -45,10 +36,10 @@ const post: BlogPost = {
     {
       type: "ul",
       items: [
-        `Sesión de retratos (${usd(TIER_PRICE_USD.study)}): depósito de ${retainerFor("study")} para apartar su fecha.`,
-        `Foto + Video (${usd(TIER_PRICE_USD.cinema)}): depósito de ${retainerFor("cinema")} para apartar su fecha.`,
-        `Celebración completa (${usd(TIER_PRICE_USD.production)}): depósito de ${retainerFor("production")} para apartar su fecha.`,
-        `Celebración de dos días (${usd(TIER_PRICE_USD.archive)}): depósito de ${retainerFor("archive")} para apartar su fecha.`,
+        `Sesión de retratos (${PT.price.study}): depósito de ${PT.deposit.study} para apartar su fecha.`,
+        `Foto + Video (${PT.price.cinema}): depósito de ${PT.deposit.cinema} para apartar su fecha.`,
+        `Celebración completa (${PT.price.production}): depósito de ${PT.deposit.production} para apartar su fecha.`,
+        `Celebración de dos días (${PT.price.archive}): depósito de ${PT.deposit.archive} para apartar su fecha.`,
       ],
     },
     {
@@ -66,12 +57,12 @@ const post: BlogPost = {
         "Elija su paquete y los extras que quiera: el total está publicado, así que lo ve antes de pagar nada.",
         `Llene sus datos, y revise y firme el contrato en línea. Le apartamos la fecha ${hold} días mientras lo revisamos, y todavía no se cobra nada.`,
         `Lo revisamos y aprobamos en un día. Luego paga el depósito del ${retainerPct} para asegurar su fecha.`,
-        `El depósito se abona a su total, y el resto se paga ${due} horas antes del evento.`,
+        `El depósito se abona a su total, y el resto se paga ${due} días antes del evento.`,
       ],
     },
     {
       type: "p",
-      text: `Algunos estudios de DFW ofrecen planes de pago mensuales; si eso le importa, pregunte a cualquier estudio cuántos pagos son, cuándo cae el último y si el plan cuesta más que pagar de contado. Nuestra estructura es sencilla a propósito: un depósito para asegurar su fecha, y el resto ${due} horas antes del evento.`,
+      text: `Algunos estudios de DFW ofrecen planes de pago mensuales; si eso le importa, pregunte a cualquier estudio cuántos pagos son, cuándo cae el último y si el plan cuesta más que pagar de contado. Nuestra estructura es sencilla a propósito: un depósito para asegurar su fecha, y el resto ${due} días antes del evento.`,
     },
     { type: "h2", text: "Qué asegura el depósito (y qué preguntar sobre reembolsos)" },
     {
@@ -102,7 +93,7 @@ const post: BlogPost = {
       type: "ul",
       items: [
         `Firme primero el contrato. Le apartamos la fecha ${hold} días mientras lo revisamos, y no se cobra nada hasta que esté aprobado. ¿Quiere platicarlo? Pida una llamada rápida sobre el horario y qué paquete le conviene.`,
-        `Empiece con la Sesión de retratos. Por ${usd(TIER_PRICE_USD.study)}, es nuestro paquete de solo foto: ${BASE_HOURS.study} horas con un fotógrafo, 60 fotos editadas y un video corto para redes sociales, con un depósito de ${retainerFor("study")}.`,
+        `Empiece con la Sesión de retratos. Por ${PT.price.study}, es nuestro paquete de solo foto: ${PT.hours.study} horas con un fotógrafo, 60 fotos editadas y un video corto para redes sociales, con un depósito de ${PT.deposit.study}.`,
       ],
     },
     {
@@ -122,11 +113,11 @@ const post: BlogPost = {
   faqs: [
     {
       q: "¿Ofrecen planes de pago para la fotografía de quinceañera?",
-      a: `TX Quince usa una estructura sencilla de dos pagos en lugar de mensualidades: un depósito del ${retainerPct} de su paquete aparta su fecha, y el resto se paga ${due} horas antes del evento. El depósito se aplica completo, así que no hay ningún costo adicional.`,
+      a: `TX Quince usa una estructura sencilla de dos pagos en lugar de mensualidades: un depósito del ${retainerPct} de su paquete aparta su fecha, y el resto se paga ${due} días antes del evento. El depósito se aplica completo, así que no hay ningún costo adicional.`,
     },
     {
       q: "¿De cuánto es el depósito para apartar la fecha?",
-      a: `Es el ${retainerPct} de su paquete: ${retainerFor("study")} para la Sesión de retratos (${usd(TIER_PRICE_USD.study)}), ${retainerFor("cinema")} para Foto + Video (${usd(TIER_PRICE_USD.cinema)}), ${retainerFor("production")} para la Celebración completa (${usd(TIER_PRICE_USD.production)}) y ${retainerFor("archive")} para la Celebración de dos días (${usd(TIER_PRICE_USD.archive)}).`,
+      a: `Es el ${retainerPct} de su paquete: ${PT.deposit.study} para la Sesión de retratos (${PT.price.study}), ${PT.deposit.cinema} para Foto + Video (${PT.price.cinema}), ${PT.deposit.production} para la Celebración completa (${PT.price.production}) y ${PT.deposit.archive} para la Celebración de dos días (${PT.price.archive}).`,
     },
     {
       q: "¿El depósito es reembolsable?",
@@ -134,7 +125,7 @@ const post: BlogPost = {
     },
     {
       q: "¿Cuándo se paga el resto?",
-      a: `El resto se paga ${due} horas antes del evento.`,
+      a: `El resto se paga ${due} días antes del evento.`,
     },
     {
       q: "¿Puedo guardar mi fecha antes de pagar?",
