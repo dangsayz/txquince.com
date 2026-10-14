@@ -1,51 +1,45 @@
 "use client";
 
-import { Instrument_Serif, JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { Geist_Mono, Inter } from "next/font/google";
 import { useEffect, useRef, useState } from "react";
 import { MotionConfig } from "motion/react";
 import { Archive } from "./Archive";
 import { CinemaRoom } from "./CinemaRoom";
 import { Commissions } from "./Commissions";
-import { Editorial, Faq, Footer } from "./Editorial";
+import { Editorial, Faq, Footer, type Journal } from "./Editorial";
 import { Header, MobileDock } from "./Header";
 import { Hero } from "./Hero";
 import { Intake } from "./Intake";
 import { AvailabilityProvider, SiteProvider, useSite } from "./state";
 import "./txq.css";
 
-const display = Instrument_Serif({
+// Type system after Linear: Inter (variable — weights 510/590 for display and
+// UI), tight negative tracking, and a precise mono for the index labels.
+const sans = Inter({
   subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
-  variable: "--font-txq-display",
-  display: "swap",
-});
-const sans = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
   variable: "--font-txq-sans",
   display: "swap",
 });
-const mono = JetBrains_Mono({
+const mono = Geist_Mono({
   subsets: ["latin"],
-  weight: ["400"],
+  weight: ["400", "500"],
   variable: "--font-txq-mono",
   display: "swap",
 });
 
-export function TxqSite({ urlLang = "en" }: { urlLang?: "en" | "es" }) {
+export function TxqSite({ urlLang = "en", journal }: { urlLang?: "en" | "es"; journal: Journal }) {
   return (
     <SiteProvider urlLang={urlLang}>
       <AvailabilityProvider>
         <MotionConfig reducedMotion="user">
-          <Shell />
+          <Shell journal={journal} />
         </MotionConfig>
       </AvailabilityProvider>
     </SiteProvider>
   );
 }
 
-function Shell() {
+function Shell({ journal }: { journal: Journal }) {
   const { lang, t } = useSite();
   const cinemaRef = useRef<HTMLElement>(null);
   const intakeRef = useRef<HTMLElement>(null);
@@ -77,7 +71,7 @@ function Shell() {
 
   return (
     <div
-      className={`txq ${display.variable} ${sans.variable} ${mono.variable}`}
+      className={`txq ${sans.variable} ${mono.variable}`}
       data-theme={cinema ? "cinema" : "light"}
       lang={lang}
     >
@@ -90,7 +84,7 @@ function Shell() {
         <Archive />
         <CinemaRoom ref={cinemaRef} />
         <Commissions />
-        <Editorial />
+        <Editorial journal={journal} />
         <Faq />
         <Intake ref={intakeRef} />
       </main>

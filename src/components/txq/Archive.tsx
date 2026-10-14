@@ -55,7 +55,7 @@ export function Archive() {
         </header>
 
         <div className="tq-toolbar">
-          <div className="tq-filters tq-mask-off" role="group" aria-label={t.archive.filterLabel}>
+          <div className="tq-filters" role="group" aria-label={t.archive.filterLabel}>
             {FILTERS.map((f) => (
               <button
                 key={f}

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { TxqSite } from "@/components/txq/TxqSite";
+import { latestJournal } from "@/components/txq/journal";
 import { HomeJsonLd } from "@/components/txq/HomeJsonLd";
 import { PRICE_FLOOR_USD, usd } from "@/lib/commission";
 
@@ -18,7 +19,7 @@ export default function InicioEs() {
   return (
     <>
       <HomeJsonLd lang="es" />
-      <TxqSite urlLang="es" />
+      <TxqSite urlLang="es" journal={latestJournal()} />
     </>
   );
 }

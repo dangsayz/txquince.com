@@ -113,6 +113,16 @@ function checkoutSessionFromEvent(value: unknown): StripeCheckoutSession | null 
   };
 }
 
+/**
+ * The Stripe account is shared with another site, and Stripe sends every
+ * account event to every endpoint. Only act on checkouts this site created
+ * (all of them carry metadata.source); acknowledge the rest untouched.
+ */
+const TXQ_SOURCES = new Set(["commission", "txquince", "txquince-admin"]);
+function isTxQuinceSession(session: StripeCheckoutSession): boolean {
+  return TXQ_SOURCES.has(session.metadata?.source ?? "");
+}
+
 export async function POST(request: NextRequest) {
   const rawBody = await request.text();
   const signature = request.headers.get("stripe-signature");
@@ -133,7 +143,7 @@ export async function POST(request: NextRequest) {
       case "checkout.session.completed":
       case "checkout.session.async_payment_succeeded": {
         const session = checkoutSessionFromEvent(event.data.object);
-        if (session) await fulfillCheckoutSession(session);
+        if (session && isTxQuinceSession(session)) await fulfillCheckoutSession(session);
         break;
       }
 

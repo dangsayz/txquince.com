@@ -1,13 +1,19 @@
 "use client";
 
 import { motion } from "motion/react";
+import Link from "next/link";
 import { site } from "@/content/site";
 import { useSite } from "./state";
 
+/** Latest blog posts, passed in from the server page (keeps post bodies out of the client bundle). */
+export type JournalItem = { href: string; title: string; category: string; readMinutes: number };
+export type Journal = { en: JournalItem[]; es: JournalItem[] };
+
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-export function Editorial() {
-  const { t } = useSite();
+export function Editorial({ journal }: { journal: Journal }) {
+  const { t, lang } = useSite();
+  const items = journal[lang];
   return (
     <section id="editorial" className="tq-section" aria-labelledby="tq-ed-title">
       <div className="tq-wrap">
@@ -44,19 +50,31 @@ export function Editorial() {
         </ol>
 
         <div className="tq-journal">
-          <h3 className="tq-mono" style={{ margin: 0 }}>
-            {t.editorial.journal}
-          </h3>
+          <div className="tq-journal__head">
+            <h3 className="tq-mono" style={{ margin: 0 }}>
+              {t.editorial.journal}
+            </h3>
+            <p className="tq-muted" style={{ margin: 0 }}>
+              {t.editorial.journalDek}
+            </p>
+          </div>
           <ol>
-            {t.editorial.entries.map((e) => (
-              <li key={e.title}>
-                <span className="tq-mono tq-muted">{e.kind}</span>
-                <span className="tq-display tq-journal__title">{e.title}</span>
-                <span className="tq-mono tq-muted">{e.read}</span>
-                <span className="tq-mono tq-journal__soon">{t.editorial.soon}</span>
+            {items.map((e) => (
+              <li key={e.href}>
+                <span className="tq-mono tq-muted">{e.category}</span>
+                <Link href={e.href} className="tq-display tq-journal__title">
+                  {e.title}
+                </Link>
+                <span className="tq-mono tq-muted">{t.editorial.read(e.readMinutes)}</span>
+                <span className="tq-mono tq-journal__soon" aria-hidden>
+                  ↗
+                </span>
               </li>
             ))}
           </ol>
+          <Link href={lang === "es" ? "/es/blog" : "/blog"} className="tq-btn tq-btn--ghost tq-journal__all">
+            {t.editorial.allPosts} <span className="tq-arrow" aria-hidden>→</span>
+          </Link>
         </div>
       </div>
     </section>
