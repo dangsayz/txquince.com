@@ -117,6 +117,18 @@ set balance_cents = greatest(total_cents - deposit_amount_cents, 0),
     balance_due_date = event_date - balance_due_days
 where total_cents is not null and balance_cents is null;
 
+-- Legacy homepage bookings were signed at request time (metadata.agreement).
+-- Lift that signature onto the new columns so the new flow treats them as
+-- signed (and the immutability trigger below protects them too).
+update public.bookings
+set signed_at = (metadata->'agreement'->>'signedAt')::timestamptz,
+    agreement = metadata->'agreement'
+where signed_at is null
+  and metadata->>'flow' = 'agreement'
+  and jsonb_typeof(metadata->'agreement') = 'object'
+  and (metadata->'agreement') ? 'signedName'
+  and (metadata->'agreement'->>'signedAt') ~ '^\d{4}-\d{2}-\d{2}T';
+
 create index if not exists bookings_balance_due_idx
   on public.bookings (balance_due_date) where status = 'confirmed';
 
@@ -182,7 +194,9 @@ drop function if exists public.confirm_booking_payment(text, text, text);
 create table if not exists public.booking_access_tokens (
   token_hash   text primary key check (token_hash ~ '^[0-9a-f]{64}$'),
   booking_id   uuid not null references public.bookings (id) on delete cascade,
-  purpose      text not null check (purpose in ('request', 'magic_link', 'legacy', 'admin')),
+  -- 'email': each email to the family carries its own fresh link (only hashes
+  -- are stored, so a link can't be re-sent — a new one is minted instead).
+  purpose      text not null check (purpose in ('request', 'email', 'magic_link', 'legacy', 'admin')),
   created_at   timestamptz not null default now(),
   expires_at   timestamptz not null,
   revoked_at   timestamptz,
