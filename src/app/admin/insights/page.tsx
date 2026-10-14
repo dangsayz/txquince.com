@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getDashboardStats, getConversionChanges, type RangedStats } from "@/lib/analytics-db";
 import { ChangeLog } from "@/components/admin/ChangeLog";
 import { AutoRefresh } from "@/components/admin/AutoRefresh";
+import { requireAdminPage } from "@/lib/require-admin";
 
 function mins(s: number) {
   return s >= 60 ? `${Math.floor(s / 60)}m ${s % 60}s` : `${s}s`;
@@ -89,6 +90,7 @@ export default async function AdminDashboard({
 }: {
   searchParams: Promise<{ range?: string }>;
 }) {
+  await requireAdminPage("/admin/insights"); // server-side gate; middleware is not enough
   const { range: rangeParam } = await searchParams;
   const range = RANGES.includes(Number(rangeParam) as (typeof RANGES)[number])
     ? (Number(rangeParam) as number)

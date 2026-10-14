@@ -3,6 +3,7 @@ import { AutoRefresh } from "@/components/admin/AutoRefresh";
 import { buildLeadWork, countDue } from "@/lib/admin-workflow";
 import { getBookings, getInquiries, getInquiryActivity } from "@/lib/clients-db";
 import { formatEventDate } from "@/lib/booking";
+import { requireAdminPage } from "@/lib/require-admin";
 
 export const dynamic = "force-dynamic";
 
@@ -15,6 +16,7 @@ const priorityLabel = {
 };
 
 export default async function AdminHome() {
+  await requireAdminPage("/admin"); // server-side gate; middleware is not enough
   const [inquiries, activity, bookings] = await Promise.all([getInquiries(), getInquiryActivity(), getBookings()]);
   const work = buildLeadWork(inquiries, activity);
   const due = countDue(work);
