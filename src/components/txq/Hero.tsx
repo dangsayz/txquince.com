@@ -20,9 +20,8 @@ import { useShell } from "./SiteShell";
 import { useSite } from "./state";
 
 /**
- * Homepage hero — a full-bleed slideshow of featured work. One accent color per
- * slide (see HERO_SLIDES) drives every colored thing on screen; the image is a
- * darkened, softly tinted mood behind a large title in the site face.
+ * Homepage hero — a slideshow of featured work (see HERO_SLIDES): a darkened
+ * photo behind a large title, in the site's flat alabaster-on-obsidian palette.
  */
 
 const SLIDES = HERO_SLIDES.map((s) => ({ ...s, art: workById(s.work) }));
@@ -157,7 +156,7 @@ export const Hero = forwardRef<HTMLElement, { live: boolean }>(function Hero({ l
     if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setFocusHold(false);
   };
 
-  const style = { "--accent": slide.accent, "--pos": (index + 1) / N } as CSSProperties;
+  const style = { "--pos": (index + 1) / N } as CSSProperties;
   const ctaLabel = pick(lang, slide.cta.label);
   const isSaved = saved.split(",").includes(slide.id);
 
@@ -240,7 +239,7 @@ export const Hero = forwardRef<HTMLElement, { live: boolean }>(function Hero({ l
         </a>
       </div>
 
-      {/* Mood: the work, darkened and tinted toward the accent. */}
+      {/* Mood: the work, darkened under a flat scrim. */}
       <div className="tq-cine__media" aria-hidden>
         {SLIDES.map((s, i) => (
           <div key={s.id} className="tq-cine__img" data-active={i === index}>
@@ -257,7 +256,6 @@ export const Hero = forwardRef<HTMLElement, { live: boolean }>(function Hero({ l
             )}
           </div>
         ))}
-        <div className="tq-cine__tint" />
         <div className="tq-cine__shade" />
       </div>
 

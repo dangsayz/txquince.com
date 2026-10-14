@@ -223,13 +223,7 @@ export const workById = (id: string) => WORKS.find((w) => w.id === id)!;
 /* Hero slides                                                         */
 /* ------------------------------------------------------------------ */
 
-/**
- * The homepage hero, one slide per featured work. Swap content here and only
- * here. Each slide owns ONE accent, pulled from its key art: it colors the
- * title, label, icons, floating bar, pagination and progress bar, and nothing
- * else on screen is colored. Accents must stay saturated and pass 4.5:1 both
- * as text on near-black and under black text (the bar).
- */
+/** The homepage hero, one slide per featured work. Swap content here and only here. */
 export type HeroSlide = {
   id: string;
   /** Archive record (image, alt text, crop) the slide is built from. */
@@ -237,7 +231,6 @@ export type HeroSlide = {
   title: L;
   /** Small line under the title: place and year. */
   label: L;
-  accent: string;
   /** Primary action: the play button and the CTA strip under the floating bar. */
   cta: { label: L; href: string };
 };
@@ -250,7 +243,6 @@ export const HERO_SLIDES: HeroSlide[] = [
     work: "w01",
     title: { en: "Gilded Salon", es: "Salón Dorado" },
     label: v("Dallas · 2026"),
-    accent: "#E6D3AE", // champagne of the gilded dome
     cta: { label: v("Check your date", "Consulta tu fecha"), href: "#intake" },
   },
   {
@@ -258,7 +250,6 @@ export const HERO_SLIDES: HeroSlide[] = [
     work: "w02",
     title: { en: "Fuchsia Stair", es: "Escalera Fucsia" },
     label: v("San Antonio · 2026"),
-    accent: "#E8BFCB", // dusty rose of the gown
     cta: { label: v(`Commissions from ${from}`, `Encargos desde ${from}`), href: "#commissions" },
   },
   {
@@ -266,7 +257,6 @@ export const HERO_SLIDES: HeroSlide[] = [
     work: "w09",
     title: { en: "Prickly Pear", es: "Nopalera" },
     label: v("Fort Worth · 2025"),
-    accent: "#C3CFAE", // sage of the cactus wall
     cta: { label: v("View the archive", "Ver el archivo"), href: "#archive" },
   },
   {
@@ -274,7 +264,6 @@ export const HERO_SLIDES: HeroSlide[] = [
     work: "w06",
     title: { en: "The Last Waltz", es: "El Último Vals" },
     label: v("Arlington · 2025"),
-    accent: "#C2CEDA", // the cool stage light
     cta: { label: v("Watch the films", "Ver las películas"), href: "#cinema" },
   },
   {
@@ -282,7 +271,6 @@ export const HERO_SLIDES: HeroSlide[] = [
     work: "w05",
     title: { en: "Crimson Garden", es: "Jardín Carmesí" },
     label: v("Dallas · 2025"),
-    accent: "#E4B8A6", // clay rose of the gown
     cta: { label: v("Check your date", "Consulta tu fecha"), href: "#intake" },
   },
 ];

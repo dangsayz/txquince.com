@@ -709,23 +709,32 @@ a:hover > .tq-arrow {
 }
 
 /* ---------- 6b. Cinematic hero (homepage) ----------
-   Black base, a darkened, softly tinted image, a large title in the site face,
-   and one muted accent (--accent, set per slide) doing every bit of coloring. */
+   A darkened photo, a large title in the site face, and the site's own flat
+   palette: alabaster type and controls on obsidian, warm grey for labels. */
 .tq-cine {
-  --accent: #e6d3ae;
-  --theme-dur: 650ms; /* the accent glides with the slide crossfade */
+  --accent: #faf8f5; /* alabaster */
+  --accent-muted: #cfc9bf; /* warm grey */
+  --accent-on: #111110; /* carbon */
   --bar-top: calc(16px + env(safe-area-inset-top));
+  /* Frame: edge to edge up to MacBook size (1512 × 945), then a centered panel
+     so big monitors don't blow the photo up. --cine-gap is 0 until the
+     viewport is wider than the frame, then 16px. */
+  --cine-w: 1512px;
+  --cine-h: 945px;
+  --cine-gap: clamp(0px, (100vw - var(--cine-w)) * 1000, 16px);
   position: relative;
   display: grid;
   place-items: center;
-  min-height: 100svh;
-  /* Full-bleed from the very top: the global header steps aside over the hero. */
-  margin-top: calc(-1 * var(--header-h));
+  width: min(100%, var(--cine-w));
+  min-height: min(100svh, var(--cine-h));
+  /* From the very top: the global header steps aside over the hero. */
+  margin: calc(var(--cine-gap) - var(--header-h)) auto 0;
+  border-radius: calc(var(--cine-gap) * 0.75);
   /* Clear the floating bar (2 × 50px) above and the pagination below. */
   padding: calc(var(--bar-top) + 132px) 16px calc(120px + env(safe-area-inset-bottom));
   overflow: hidden;
-  background: #000;
-  color: #fff;
+  background: #0d0d0c;
+  color: var(--accent);
   text-align: center;
 }
 @media (min-width: 640px) {
@@ -747,13 +756,13 @@ a:hover > .tq-arrow {
     visibility 0s linear 500ms;
 }
 
-/* Media: the photo, mostly desaturated and washed toward the accent, then shaded down. */
+/* Media: the photo, slightly muted, under a flat dark scrim. */
 .tq-cine__media {
   position: absolute;
   inset: 0;
   isolation: isolate;
   overflow: hidden;
-  background: #000;
+  background: #0d0d0c;
 }
 .tq-cine__img {
   position: absolute;
@@ -766,26 +775,19 @@ a:hover > .tq-arrow {
 }
 .tq-cine__img img {
   object-fit: cover;
-  filter: grayscale(0.6) brightness(0.78);
+  filter: saturate(0.7) brightness(0.85);
 }
 @media (prefers-reduced-motion: no-preference) {
   .tq-cine__img[data-active="true"] img {
     animation: tq-drift 24s var(--ease) infinite alternate;
   }
 }
-.tq-cine__tint {
-  position: absolute;
-  inset: 0;
-  background: var(--accent);
-  mix-blend-mode: color;
-  opacity: 0.45;
-}
 .tq-cine__shade {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 60% 45% at 50% 50%, rgb(0 0 0 / 0.5), rgb(0 0 0 / 0) 100%),
-    linear-gradient(180deg, rgb(0 0 0 / 0.6), rgb(0 0 0 / 0.4) 45%, rgb(0 0 0 / 0.85));
+    radial-gradient(ellipse 55% 40% at 50% 50%, rgb(13 13 12 / 0.55), rgb(13 13 12 / 0) 100%),
+    linear-gradient(180deg, rgb(13 13 12 / 0.55), rgb(13 13 12 / 0.45) 50%, rgb(13 13 12 / 0.7));
 }
 
 /* Title stack: every slide shares one grid cell, so the block's height never
@@ -850,7 +852,7 @@ a:hover > .tq-arrow {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   white-space: nowrap;
-  color: var(--accent);
+  color: var(--accent-muted);
 }
 
 .tq-cine__actions {
@@ -867,7 +869,6 @@ a:hover > .tq-arrow {
   border-radius: 50%;
   color: var(--accent);
   transition:
-    color var(--theme-dur) var(--ease),
     background-color 300ms var(--ease),
     box-shadow 300ms var(--ease);
 }
@@ -891,8 +892,7 @@ a:hover > .tq-arrow {
 }
 @media (hover: hover) and (pointer: fine) {
   .tq-cine__icon:hover {
-    background: color-mix(in srgb, var(--accent) 14%, transparent);
-    box-shadow: 0 0 28px color-mix(in srgb, var(--accent) 40%, transparent);
+    background: rgb(250 248 245 / 0.12);
   }
 }
 .tq-cine :focus-visible,
@@ -933,10 +933,10 @@ a:hover > .tq-arrow {
   padding: 0 3px;
   border-radius: 4px;
   background: var(--accent);
-  color: #000;
+  color: var(--accent-on);
 }
 .tq-cine__nav :focus-visible {
-  outline-color: #000;
+  outline-color: var(--accent-on);
   outline-offset: -4px;
 }
 .tq-cine__menu,
@@ -986,7 +986,7 @@ a:hover > .tq-arrow {
   padding: 0 4px 0 6px;
   border: 1px solid rgb(255 255 255 / 0.1);
   border-radius: 4px;
-  background: #000;
+  background: var(--accent-on);
   color: var(--accent);
 }
 .tq-cine__thumb {
@@ -1041,12 +1041,12 @@ a:hover > .tq-arrow {
   content: "";
   width: 10px;
   height: 10px;
-  border: 1px solid rgb(255 255 255 / 0.75);
+  border: 1px solid rgb(250 248 245 / 0.6);
   border-radius: 999px;
   transition:
     width 500ms var(--ease),
-    background-color var(--theme-dur) var(--ease),
-    border-color var(--theme-dur) var(--ease);
+    background-color 300ms var(--ease),
+    border-color 300ms var(--ease);
 }
 .tq-cine__dots button:hover::before {
   border-color: var(--accent);
