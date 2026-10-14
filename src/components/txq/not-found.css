@@ -52,7 +52,7 @@
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 42% 36% at 50% 48%, rgba(12, 11, 16, 0.58), rgba(12, 11, 16, 0.22) 62%, transparent 100%),
+    radial-gradient(ellipse 48% 42% at 50% 50%, rgba(12, 11, 16, 0.74), rgba(12, 11, 16, 0.4) 58%, transparent 100%),
     linear-gradient(180deg, transparent 72%, rgba(13, 12, 16, 0.5));
 }
 
@@ -170,6 +170,14 @@
 .tq-404__cta:focus-visible {
   outline: 2px solid var(--n-text);
   outline-offset: 3px;
+}
+
+/* Phones: the copy spans the whole frame, so the shade does too. */
+@media (max-width: 639px) {
+  .tq-404__shade {
+    background:
+      linear-gradient(180deg, rgba(12, 11, 16, 0.2) 0%, rgba(12, 11, 16, 0.66) 22%, rgba(12, 11, 16, 0.66) 70%, rgba(12, 11, 16, 0.3) 100%);
+  }
 }
 
 @media (min-width: 640px) {

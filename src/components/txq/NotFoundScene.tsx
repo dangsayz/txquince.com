@@ -13,8 +13,8 @@ import "./not-found.css";
  * on screen. Static (fully assembled, no loop) under prefers-reduced-motion.
  */
 
-const PHOTO = "/portfolio/lilac-arch.webp";
-const FOCUS_Y = 0.6; // cover-crop anchor: keeps the gown in frame on wide screens
+const PHOTO = "/portfolio/gown-overhead.webp";
+const FOCUS_Y = 0.5; // cover-crop anchor (the overhead frame is centered on her)
 
 const COPY = {
   en: {
