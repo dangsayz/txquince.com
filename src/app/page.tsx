@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
 import { TxqSite } from "@/components/txq/TxqSite";
 import { latestJournal } from "@/components/txq/journal";
+import { getCinemaFilms } from "@/components/txq/films";
 import { HomeJsonLd } from "@/components/txq/HomeJsonLd";
 import { PRICE_FLOOR_USD } from "@/lib/commission";
 import { site } from "@/content/site";
 
 const from = `$${PRICE_FLOOR_USD.toLocaleString("en-US")}`;
+
+// Films come from the admin video library; admin edits revalidate at once.
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   // Leads with the highest-intent local phrase families type.
@@ -19,11 +23,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function HomePage() {
+export default async function HomePage() {
   return (
     <>
       <HomeJsonLd lang="en" />
-      <TxqSite journal={latestJournal()} />
+      <TxqSite journal={latestJournal()} films={await getCinemaFilms()} />
     </>
   );
 }

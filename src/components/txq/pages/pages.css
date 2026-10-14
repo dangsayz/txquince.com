@@ -553,7 +553,7 @@
   min-height: 44px;
   color: var(--text-primary);
 }
-/* The gallery reuses .tq-egrid / .tq-card (homepage seven-beat rhythm). */
+/* The gallery reuses .tq-egrid / .tq-card (homepage editorial grid). */
 .txq .tq-pg-gal .tq-egrid {
   list-style: none;
   margin: 0;

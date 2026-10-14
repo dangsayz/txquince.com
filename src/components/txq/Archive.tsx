@@ -13,8 +13,6 @@ import { useSite } from "./state";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const FILTERS: ("all" | Category)[] = ["all", "couture", "ceremony", "fiesta", "editorial"];
-/** Aspect ratios follow the seven-beat grid rhythm defined in txq.css. */
-const ASPECTS = ["5 / 4", "3 / 4", "4 / 5", "3 / 4", "4 / 5", "3 / 4", "4 / 3"];
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
@@ -113,7 +111,6 @@ export function Archive() {
                     >
                       <motion.div
                         className="tq-card__media"
-                        style={{ aspectRatio: ASPECTS[i % ASPECTS.length] }}
                         initial={{ clipPath: "inset(18% 0 0 0)", opacity: 0 }}
                         whileInView={{ clipPath: "inset(0% 0 0 0)", opacity: 1 }}
                         viewport={{ once: true, margin: "0px 0px -10% 0px" }}
@@ -124,7 +121,7 @@ export function Archive() {
                           alt={pick(lang, w.alt)}
                           fill
                           unoptimized
-                          sizes="(min-width: 960px) 50vw, 100vw"
+                          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                           style={{ objectPosition: w.focus }}
                         />
                       </motion.div>

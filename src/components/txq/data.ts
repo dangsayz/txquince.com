@@ -219,52 +219,20 @@ export const workById = (id: string) => WORKS.find((w) => w.id === id)!;
 /* Cinema Room                                                         */
 /* ------------------------------------------------------------------ */
 
-export type Film = {
+/** A real film from the admin video library (see films.ts). */
+export type CinemaFilm = {
   id: string;
-  title: L;
-  kind: L;
-  /** seconds */
-  duration: number;
-  /** stills sequenced into the screening preview */
-  frames: string[];
-  spec: string;
+  /** May be empty — the UI falls back to a generic label. */
+  title: string;
+  provider: "youtube" | "vimeo" | "file" | "link";
+  /** iframe src (YouTube/Vimeo, autoplay on open) or a direct video file URL. */
+  embed: string;
+  poster: string | null;
+  /** Lower-res poster to swap in when the max-res still doesn't exist. */
+  fallbackPoster: string | null;
+  vertical: boolean;
+  feature: boolean;
 };
-
-export const FEATURE: Film = {
-  id: "feature",
-  title: { en: "Sofía, at Fifteen", es: "Sofía, a los quince" },
-  kind: { en: "Feature film", es: "Largometraje" },
-  duration: 6 * 60 + 24,
-  frames: ["w01", "w03", "w06", "w07", "w04"],
-  spec: "4K · 2.39:1 · 24 FPS",
-};
-
-export const REELS: Film[] = [
-  {
-    id: "entrada",
-    title: { en: "La Entrada", es: "La Entrada" },
-    kind: { en: "Vertical cut", es: "Corte vertical" },
-    duration: 42,
-    frames: ["w04", "w02"],
-    spec: "9:16 · 4K",
-  },
-  {
-    id: "teaser",
-    title: { en: "Ximena — Teaser", es: "Ximena — Avance" },
-    kind: { en: "Theatrical teaser", es: "Avance cinematográfico" },
-    duration: 68,
-    frames: ["w02", "w05", "w08"],
-    spec: "2.39:1 · 4K",
-  },
-  {
-    id: "vals",
-    title: { en: "El Vals", es: "El Vals" },
-    kind: { en: "Vertical cut", es: "Corte vertical" },
-    duration: 36,
-    frames: ["w06", "w10"],
-    spec: "9:16 · 4K",
-  },
-];
 
 /* ------------------------------------------------------------------ */
 /* Commissions                                                         */

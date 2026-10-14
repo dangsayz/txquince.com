@@ -13,8 +13,8 @@ import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import brandedImageLoader from "@/lib/image-loader";
 import "@/components/txq/pages/pages.css";
 
-/** Aspect ratios follow the homepage seven-beat grid rhythm (.tq-egrid in txq.css). */
-const ASPECTS = ["5 / 4", "3 / 4", "4 / 5", "3 / 4", "4 / 5", "3 / 4", "4 / 3"];
+/** Editorial tiles share the homepage grid's single portrait ratio (.tq-egrid in txq.css). */
+const EDITORIAL_RATIO = "4 / 5";
 const pad2 = (n: number) => String(n).padStart(2, "0");
 
 export type { GalleryItem } from "@/components/gallery/gallery-model";
@@ -206,7 +206,7 @@ export function PortfolioGallery({
           <ul className="tq-egrid">
             {filtered.map((item, index) => (
               <li key={item.id || `${item.section}-${item.slug}-${index}`} className="tq-card">
-                {tile(item, index, ASPECTS[index % ASPECTS.length])}
+                {tile(item, index, EDITORIAL_RATIO)}
               </li>
             ))}
           </ul>

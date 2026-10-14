@@ -10,7 +10,10 @@ export const dynamic = "force-dynamic";
 
 function bust() {
   revalidatePath("/");
+  revalidatePath("/es");
   revalidatePath("/portfolio");
+  revalidatePath("/quinceanera-videographer");
+  revalidatePath("/es/videografo-de-quinceaneras");
 }
 
 // Add a video from a pasted link.
