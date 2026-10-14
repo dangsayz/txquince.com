@@ -1,5 +1,5 @@
 import type { BlogPost } from "@/content/blog";
-import { RETAINER, CONSULT_HOLD_DAYS, BASE_CREW, usd } from "@/lib/commission";
+import { RETAINER, BASE_CREW } from "@/lib/commission";
 
 const retainerPct = `${Math.round(RETAINER.rate * 100)}%`;
 
@@ -38,7 +38,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Así suena una buena respuesta: una explicación clara de cuál está incluida, si la otra está disponible y cuánto cuesta si la quiere agregar. No hay un único modelo correcto; lo que importa es que se lo digan con claridad, para que no le sorprenda una sesión que daba por incluida (ni un costo que no había contemplado). Nuestras [comisiones](/es#commissions) detallan exactamente qué cubre cada una; La producción completa, por ejemplo, incluye una sesión de retrato en una locación.",
+      text: "Así suena una buena respuesta: una explicación clara de cuál está incluida, si la otra está disponible y cuánto cuesta si la quiere agregar. No hay un único modelo correcto; lo que importa es que se lo digan con claridad, para que no le sorprenda una sesión que daba por incluida (ni un costo que no había contemplado). Nuestros [paquetes](/es#commissions) detallan exactamente qué cubre cada uno; la Celebración completa, por ejemplo, incluye una sesión de retrato en una locación.",
     },
     { type: "h2", text: "3. ¿Cuántas fotos editadas entrega y cómo y cuándo las recibo?" },
     {
@@ -47,7 +47,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Así suena una buena respuesta: un rango de entrega y un tiempo de entrega, por escrito. Una galería privada en línea que usted pueda descargar y compartir, una cantidad de fotos acorde a las horas de cobertura, y una fecha a la que pueda darle seguimiento. En nuestras comisiones de foto y video también recibe un teaser y reels verticales, para que tenga algo que compartir con la familia mientras se terminan la galería completa y la película.",
+      text: "Así suena una buena respuesta: un rango de entrega y un tiempo de entrega, por escrito. Una galería privada en línea que usted pueda descargar y compartir, una cantidad de fotos acorde a las horas de cobertura, y una fecha a la que pueda darle seguimiento. En nuestros paquetes de foto y video también recibe un tráiler corto y videos verticales cortos para redes sociales, para que tenga algo que compartir con la familia mientras se terminan la galería completa y el video completo.",
     },
     {
       type: "callout",
@@ -60,7 +60,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Así suena una buena respuesta: si el segundo fotógrafo va incluido, si está disponible como complemento o si no se ofrece, y en cuáles paquetes. Con nosotros, La producción completa y el Archivo editorial de varios días incluyen ${BASE_CREW.production} y ${BASE_CREW.archive} directores, en la combinación de fotógrafos y videógrafos que usted elija, y puede ver los ángulos inversos y los momentos de doble cobertura que hacen posibles en el [portafolio](/portfolio). Si un fotógrafo no puede mostrarle cobertura de dos cámaras, dé por hecho que trabaja solo.`,
+      text: `Así suena una buena respuesta: si el segundo fotógrafo va incluido, si está disponible como complemento o si no se ofrece, y en cuáles paquetes. Con nosotros, la Celebración completa y la Celebración de dos días traen un equipo de ${BASE_CREW.production} y de ${BASE_CREW.archive} personas, en la combinación de fotógrafos y videógrafos que usted elija, y puede ver los ángulos inversos y los momentos de doble cobertura que hacen posibles en el [portafolio](/portfolio). Si un fotógrafo no puede mostrarle cobertura de dos cámaras, dé por hecho que trabaja solo.`,
     },
     { type: "h2", text: "5. ¿Me da los derechos de uso e impresión de las fotos?" },
     {
@@ -69,7 +69,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Así suena una buena respuesta: «Sí, derechos completos de uso e impresión, archivos en alta resolución, imprima donde usted quiera». Ese es el estándar que debe esperar, y es exactamente lo que está [incluido en cada comisión de TX Quince](/es#commissions). Si la respuesta incluye paquetes de impresión o un cargo por imagen, súmelo al precio real.",
+      text: "Así suena una buena respuesta: «Sí, derechos completos de uso e impresión, archivos en alta resolución, imprima donde usted quiera». Ese es el estándar que debe esperar, y es exactamente lo que está [incluido en cada paquete de TX Quince](/es#commissions). Si la respuesta incluye paquetes de impresión o un cargo por imagen, súmelo al precio real.",
     },
     { type: "h2", text: "6. ¿De cuánto es el depósito, cuál es el calendario de pagos y qué aparta la fecha?" },
     {
@@ -78,12 +78,12 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Así suena una buena respuesta: un depósito específico, un calendario de pagos claro con el saldo cubierto antes del evento, y una frase sencilla que confirme que el acuerdo firmado más el depósito apartan la fecha. Con nosotros, un anticipo del ${retainerPct} de su comisión (mínimo ${usd(RETAINER.floorUsd)}) aparta su fecha y se aplica completo, y el saldo se paga ${RETAINER.balanceDueDays} días antes de la celebración. Puede revisar las cifras en nuestras [comisiones](/es#commissions) y [confirmar si su fecha sigue disponible](/check-your-date) antes de comprometerse.`,
+      text: `Así suena una buena respuesta: un depósito específico, un calendario de pagos claro con el saldo cubierto antes del evento, y una frase sencilla que confirme que el acuerdo firmado más el depósito apartan la fecha. Con nosotros, usted firma el contrato en línea, lo aprobamos en un día, y luego un depósito del ${retainerPct} de su paquete asegura su fecha y se abona a su total. El resto se paga ${RETAINER.balanceDueHours} horas antes del evento. Puede revisar las cifras en nuestros [paquetes](/es#commissions) y [confirmar si su fecha sigue disponible](/check-your-date) antes de comprometerse.`,
     },
     {
       type: "cta",
       heading: "Háganos todas estas preguntas: empecemos a platicar",
-      body: `Traiga esta lista completa. Pida una consulta y le guardamos la fecha ${CONSULT_HOLD_DAYS} días mientras respondemos cada pregunta. Precios reales, políticas reales, galerías reales.`,
+      body: `Traiga esta lista completa. Pida una llamada rápida y respondemos cada pregunta. Precios reales, políticas reales, galerías reales.`,
       href: "/es#intake",
       label: "Empezar a platicar",
     },
@@ -112,7 +112,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Así suena una buena respuesta: un sí o un no directo. Nosotros ofrecemos foto y video como un solo equipo en cada comisión desde Cine y fotografía, con ${BASE_CREW.cinema} a ${BASE_CREW.archive} directores trabajando el mismo día —en la combinación de foto y video que usted elija— y una película, un teaser y reels verticales, no una sola persona haciendo malabares entre la cámara y el tripié. Si todavía está decidiendo si vale la pena el video, [foto o video para la quinceañera](/es/blog/foto-o-video-quinceanera) sopesa esa decisión sin rodeos.`,
+      text: `Así suena una buena respuesta: un sí o un no directo. Nosotros ofrecemos foto y video como un solo equipo en cada paquete desde Foto + Video, con un equipo de ${BASE_CREW.cinema} a ${BASE_CREW.archive} personas trabajando el mismo día —en la combinación de fotógrafos y videógrafos que usted elija— y un video completo, un tráiler corto y videos verticales cortos para redes sociales, no una sola persona haciendo malabares entre la cámara y el tripié. Si todavía está decidiendo si vale la pena el video, [foto o video para la quinceañera](/es/blog/foto-o-video-quinceanera) sopesa esa decisión sin rodeos.`,
     },
     { type: "h2", text: "Para cerrar" },
     {
@@ -131,11 +131,11 @@ const post: BlogPost = {
     },
     {
       q: "¿Incluyen los derechos de las fotos?",
-      a: "No todos lo hacen: algunos entregan archivos de baja resolución o con marca de agua, o cobran por cada impresión. Pregunte siempre de forma directa. En TX Quince, los derechos completos de uso e impresión y los archivos en alta resolución vienen incluidos en cada comisión, así que puede imprimir y armar álbumes donde usted prefiera sin costo adicional.",
+      a: "No todos lo hacen: algunos entregan archivos de baja resolución o con marca de agua, o cobran por cada impresión. Pregunte siempre de forma directa. En TX Quince, los derechos completos de uso e impresión y los archivos en alta resolución vienen incluidos en cada paquete, así que puede imprimir y armar álbumes donde usted prefiera sin costo adicional.",
     },
     {
       q: "¿Cuántas fotos editadas debo esperar?",
-      a: "Depende de las horas de cobertura, pero debe recibir un rango de entrega y un tiempo de entrega claros y por escrito, no un vago «ilimitadas». Espere una galería privada en línea que pueda descargar y compartir y, en las comisiones de foto y video, un teaser y reels para compartir mientras se termina el set completo.",
+      a: "Depende de las horas de cobertura, pero debe recibir un rango de entrega y un tiempo de entrega claros y por escrito, no un vago «ilimitadas». Espere una galería privada en línea que pueda descargar y compartir y, en los paquetes de foto y video, un tráiler corto y videos cortos para redes sociales para compartir mientras se termina todo lo demás.",
     },
     {
       q: "¿Qué pasa si mi fotógrafo se enferma?",

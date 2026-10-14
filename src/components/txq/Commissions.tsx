@@ -16,11 +16,45 @@ import {
 import { useSite } from "./state";
 import {
   BASE_CREW,
+  BASE_HOURS,
   COORDINATOR_INCLUDED,
   CREW_ROLES,
+  EXTRA_HOUR_USD,
+  MAX_HOURS,
   canShift,
   type CrewRole,
 } from "@/lib/commission";
+
+/** Hours on the day: included hours, plus extra hours one at a time up to MAX_HOURS. */
+export function HoursControl() {
+  const { t, tier, hours, setHours } = useSite();
+  const base = BASE_HOURS[tier];
+  if (base >= MAX_HOURS) {
+    return <p className="tq-crew__note">{t.hours.full(base)}</p>;
+  }
+  return (
+    <div className="tq-crew" role="group" aria-label={t.hours.title}>
+      <div className="tq-crew__row">
+        <span className="tq-crew__label">{t.hours.label}</span>
+        <span className="tq-stepper-ctl">
+          <button type="button" aria-label={t.hours.less} disabled={hours <= base} onClick={() => setHours(hours - 1)}>
+            −
+          </button>
+          <output className="tq-nums" aria-live="polite">
+            {hours}
+          </output>
+          <button type="button" aria-label={t.hours.more} disabled={hours >= MAX_HOURS} onClick={() => setHours(hours + 1)}>
+            +
+          </button>
+        </span>
+      </div>
+      <p className="tq-crew__total tq-mono">
+        {t.hours.value(hours)}
+        {hours > base ? <span> · +{money((hours - base) * EXTRA_HOUR_USD[tier])}</span> : null}
+      </p>
+    </div>
+  );
+}
 
 /** Included crew: families set the photographer / videographer mix at no extra cost. */
 export function CrewControl({ compact = false }: { compact?: boolean }) {
@@ -98,8 +132,8 @@ export function useTween(value: number) {
 }
 
 export function Commissions() {
-  const { t, lang, tier, addOns, toggleAddOn, crew } = useSite();
-  const total = estimate(tier, addOns);
+  const { t, lang, tier, addOns, toggleAddOn, crew, hours } = useSite();
+  const total = estimate(tier, addOns, hours);
   const shown = useTween(total);
   const current = tierById(tier);
 
@@ -201,6 +235,13 @@ export function Commissions() {
             <h3 className="tq-display">{t.commissions.tailor}</h3>
             <p>{t.commissions.tailorDek}</p>
             <div className="tq-crew-block">
+              <h4 className="tq-mono">{t.hours.title}</h4>
+              {BASE_HOURS[tier] < MAX_HOURS ? (
+                <p className="tq-crew__dek">{t.hours.dek(BASE_HOURS[tier], money(EXTRA_HOUR_USD[tier]), MAX_HOURS)}</p>
+              ) : null}
+              <HoursControl />
+            </div>
+            <div className="tq-crew-block">
               <h4 className="tq-mono">{t.crew.title}</h4>
               {BASE_CREW[tier] > 1 ? <p className="tq-crew__dek">{t.crew.dek(BASE_CREW[tier])}</p> : null}
               <CrewControl />
@@ -245,6 +286,16 @@ export function Commissions() {
                 </dt>
                 <dd>{money(current.price)}</dd>
               </div>
+              <div>
+                <dt>{t.hours.label}</dt>
+                <dd>{t.hours.value(hours)}</dd>
+              </div>
+              {hours > BASE_HOURS[tier] ? (
+                <div>
+                  <dt>{t.hours.extra(hours - BASE_HOURS[tier])}</dt>
+                  <dd>+{money((hours - BASE_HOURS[tier]) * EXTRA_HOUR_USD[tier])}</dd>
+                </div>
+              ) : null}
               {ADD_ONS.filter((a) => addOns.includes(a.id)).map((a) => (
                 <div key={a.id}>
                   <dt>{pick(lang, a.name)}</dt>
@@ -263,7 +314,7 @@ export function Commissions() {
               ) : null}
               <div>
                 <dt>{t.commissions.retainer}</dt>
-                <dd>{money(retainer(tier, addOns))}</dd>
+                <dd>{money(retainer(tier, addOns, hours))}</dd>
               </div>
             </dl>
             <a href="#intake" className="tq-btn tq-btn--lg tq-btn--block">

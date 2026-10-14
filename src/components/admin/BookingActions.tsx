@@ -11,9 +11,12 @@ import { useRouter } from "next/navigation";
 export function BookingActions({
   id,
   status,
+  signed = false,
 }: {
   id: string;
   status: string;
+  /** A signed homepage agreement: "Approve" emails the family their pay link. */
+  signed?: boolean;
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -24,6 +27,7 @@ export function BookingActions({
   if (!holdsDate) return null;
 
   async function sendDepositLink() {
+    if (signed && status === "requested" && !confirm("Approve this booking? The family will get an email with a link to pay their 25% deposit.")) return;
     setBusy(true);
     setError(null);
     try {
@@ -78,17 +82,30 @@ export function BookingActions({
           onClick={sendDepositLink}
           className="inline-flex min-h-12 items-center justify-center rounded-md bg-ink px-5 text-base font-medium text-white transition-colors hover:bg-ink/85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:opacity-50"
         >
-          {busy ? "Working…" : status === "pending_payment" ? "Resend deposit link" : "Send deposit link"}
+          {busy
+            ? "Working…"
+            : signed
+              ? status === "pending_payment"
+                ? "Resend pay link"
+                : "Approve & send pay link"
+              : status === "pending_payment"
+                ? "Resend deposit link"
+                : "Send deposit link"}
         </button>
         <button
           type="button"
           disabled={busy}
           onClick={() =>
-            patch("cancelled", "Release this date? It frees the calendar so others can book it.")
+            patch(
+              "cancelled",
+              signed
+                ? "Decline this booking? The family is emailed that you can't take the date, and the date is freed."
+                : "Release this date? It frees the calendar so others can book it.",
+            )
           }
           className="inline-flex min-h-11 items-center rounded-md border border-line bg-white px-4 text-base font-medium text-ink transition-colors hover:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:opacity-50"
         >
-          Release date
+          {signed ? "Decline" : "Release date"}
         </button>
         <button
           type="button"
@@ -104,7 +121,7 @@ export function BookingActions({
 
       {sent ? (
         <div role="status" className="mt-4 rounded-lg border border-line bg-ivory p-4 text-base text-ink-soft">
-          {sent.emailed ? "✓ Emailed the deposit link to the family." : "Link created (email not sent — check Resend config)."}
+          {sent.emailed ? "✓ Emailed the pay link to the family." : "Link created (email not sent — check Resend config)."}
           <a href={sent.url} target="_blank" rel="noopener noreferrer" className="mt-1 block break-all text-ink underline underline-offset-4">
             {sent.url}
           </a>

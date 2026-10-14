@@ -15,7 +15,7 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
   title: "Quinceañera Photographer — Dallas–Fort Worth",
   description:
-    `Luxury quinceañera photography & film across Dallas–Fort Worth — Dallas, Fort Worth, Frisco, Plano, McKinney, Arlington and beyond. Published commissions from ${commissionsFromLabel}.`,
+    `Luxury quinceañera photos & video across Dallas–Fort Worth — Dallas, Fort Worth, Frisco, Plano, McKinney, Arlington and beyond. Published commissions from ${commissionsFromLabel}.`,
   alternates: {
     canonical: "/quinceanera-photographer",
     languages: {
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `Quinceañera Photographer — Dallas–Fort Worth · ${site.brand}`,
     description:
-      `Quinceañera photography & film across the DFW metroplex. Published commissions from ${commissionsFromLabel}.`,
+      `Quinceañera photos & video across the DFW metroplex. Published packages from ${commissionsFromLabel}.`,
     url: `${site.url}/quinceanera-photographer`,
   },
 };
@@ -126,7 +126,7 @@ export default async function LocationsHub() {
               Across Dallas–Fort Worth. <em>From the church to the last dance.</em>
             </h1>
             <p className="tq-ledger__dek">
-              We photograph and film quinceañeras across Dallas–Fort Worth. Explore the cities where we work and
+              We capture quinceañeras in photos and video across Dallas–Fort Worth. Explore the cities where we work and
               the real celebrations behind the photographs.
             </p>
           </div>
@@ -153,7 +153,7 @@ export default async function LocationsHub() {
                 <span>Request a date</span>
                 <span className="tq-arrow" aria-hidden>→</span>
               </Link>
-              <span className="tq-mono tq-muted">Commissions from {commissionsFromLabel}</span>
+              <span className="tq-mono tq-muted">Packages from {commissionsFromLabel}</span>
             </div>
           </div>
         </div>
@@ -259,7 +259,7 @@ export default async function LocationsHub() {
                   Request a date <span className="tq-arrow" aria-hidden>↗</span>
                 </Link>
                 <Link href="/portfolio" className="tq-btn tq-btn--ghost">See the work</Link>
-                <Link href="/#commissions" className="tq-btn tq-btn--ghost">Explore commissions</Link>
+                <Link href="/#commissions" className="tq-btn tq-btn--ghost">See packages & prices</Link>
                 <Link href="/venues" className="tq-btn tq-btn--ghost">Venues</Link>
               </div>
             </div>

@@ -45,7 +45,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "You'll see this hand-off — and the full court formation — in the vals clips on our [portfolio](/portfolio#films). Watching a real one is the fastest way to understand how the choreography flows before you start planning your own.",
+      text: "You'll see this hand-off — and the full court formation — in the vals clips on our [portfolio](/portfolio#videos). Watching a real one is the fastest way to understand how the choreography flows before you start planning your own.",
     },
     { type: "h3", text: "The vals and the father-daughter dance are not the same thing" },
     {
@@ -59,7 +59,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Anything goes here: reggaetón, cumbia, hip-hop, banda, a TikTok mashup, a medley that shifts genres halfway through. The 'surprise' is for the guests — they've just watched a graceful waltz, and now the lights drop and the whole court launches into something the family has been rehearsing in secret for months. It's the moment guests film on their phones and talk about for weeks.",
+      text: "Anything goes here: reggaetón, cumbia, hip-hop, banda, a TikTok mashup, a medley that shifts genres halfway through. The 'surprise' is for the guests — they've just watched a graceful waltz, and now the lights drop and the whole court launches into something the family has been rehearsing in secret for months. It's the moment guests video on their phones and talk about for weeks.",
     },
     {
       type: "ul",
@@ -80,27 +80,27 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "The Hora Loca is where the candid, joyful, slightly chaotic footage lives — and it's a big reason full-day coverage matters. The energy at hour six looks nothing like the elegance at hour one, and both deserve to be in the film.",
+      text: "The Hora Loca is where the candid, joyful, slightly chaotic footage lives — and it's a big reason full-day coverage matters. The energy at hour six looks nothing like the elegance at hour one, and both deserve to be in the video.",
     },
-    { type: "h2", text: "Why the dances are the moments most worth filming" },
+    { type: "h2", text: "Why the dances are the moments most worth recording video" },
     {
       type: "p",
-      text: "This is what we tell every family: photos are perfect for the portraits, the gown, the details, and the faces around the room. But the dances are motion — the turn of the vals, your father's hands taking your daughter's, the beat-drop on the surprise dance, the chaos of the Hora Loca. Those don't live in a still frame. They live in sound and movement, and that's film.",
+      text: "This is what we tell every family: photos are perfect for the portraits, the gown, the details, and the faces around the room. But the dances are motion — the turn of the vals, your father's hands taking your daughter's, the beat-drop on the surprise dance, the chaos of the Hora Loca. Those don't live in a still frame. They live in sound and movement, and that's video.",
     },
     {
       type: "p",
-      text: "The surprise dance especially is once-and-done. The court rehearses it in secret for months, performs it one single time, and it's over in three minutes. There is no retake. If it isn't filmed well, it's gone — and that's the one moment families tell us, afterward, they wish they'd had on video. We break down exactly which moments belong to photo and which belong to film in [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video).",
+      text: "The surprise dance especially is once-and-done. The court rehearses it in secret for months, performs it one single time, and it's over in three minutes. There is no retake. If it isn't recorded on video well, it's gone — and that's the one moment families tell us, afterward, they wish they'd had on video. We break down exactly which moments belong to photo and which belong to video in [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video).",
     },
     {
       type: "cta",
-      heading: "See a real vals and surprise dance on film",
+      heading: "See a real vals and surprise dance on video",
       body: "Watch how we capture the father hand-off, the outfit reveal, and the surprise-dance beat drop — then reserve your date.",
       href: "/portfolio",
-      label: "Watch the films",
+      label: "Watch the videos",
     },
     {
       type: "p",
-      text: "If your court is set and you know your date, you can [check if your date is open](/check-your-date) in seconds, compare what each [commission includes](/#commissions) for photo and film, or go ahead and [reserve your date](/#intake). And if you're still building the night's timeline, the [changing of the shoes](/blog/changing-of-the-shoes-quinceanera) is another ceremony moment worth understanding before you finalize the schedule — and [what a quinceañera is and the traditions behind it](/blog/what-is-a-quinceanera) ties the whole celebration together.",
+      text: "If your court is set and you know your date, you can [check if your date is open](/check-your-date) in seconds, compare what each [package includes](/#commissions) for photo and video, or go ahead and [reserve your date](/#intake). And if you're still building the night's timeline, the [changing of the shoes](/blog/changing-of-the-shoes-quinceanera) is another ceremony moment worth understanding before you finalize the schedule — and [what a quinceañera is and the traditions behind it](/blog/what-is-a-quinceanera) ties the whole celebration together.",
     },
   ],
   faqs: [

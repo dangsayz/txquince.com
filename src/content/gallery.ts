@@ -91,13 +91,13 @@ export const gallerySections: GallerySection[] = [
   },
   {
     id: "films",
-    eyebrow: "Motion",
-    title: "Films",
+    eyebrow: "Video",
+    title: "Videos",
     intro:
-      "The day in motion — her voice, the music, the room. A film the family watches for years.",
+      "The day in motion — her voice, the music, the room. A video the family watches for years.",
     images: [
-      { key: "", alt: "Highlight film still: the quinceañera entering the reception.", ratio: "landscape", feature: true },
-      { key: "", alt: "Film still of el vals in slow motion.", ratio: "landscape" },
+      { key: "", alt: "Highlight video still: the quinceañera entering the reception.", ratio: "landscape", feature: true },
+      { key: "", alt: "Video still of el vals in slow motion.", ratio: "landscape" },
     ],
   },
 ];

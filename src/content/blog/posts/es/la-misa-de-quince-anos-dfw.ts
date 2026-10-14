@@ -5,7 +5,7 @@ const post: BlogPost = {
   title:
     "La misa de quince años en Dallas–Fort Worth: qué esperar y cómo prepararse",
   metaTitle:
-    "La misa de quince años en Dallas–Fort Worth: qué esperar | TX Quince",
+    "La misa de quince años en Dallas–Fort Worth: qué esperar",
   description:
     "Una guía cálida y precisa sobre la misa de quince años en Dallas–Fort Worth: qué es, los requisitos más comunes en las parroquias, el orden de la misa, qué se usa, cuánto dura y cómo el fotógrafo se coordina con la iglesia.",
   category: "Traditions",

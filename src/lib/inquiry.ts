@@ -11,20 +11,20 @@ import { TIER_PRICE_USD as P, usd } from "@/lib/commission";
 /** Services offered (req). Mirrors the data model `services` column. */
 export const SERVICE_OPTIONS = [
   { value: "photo", label: "Photography" },
-  { value: "video", label: "Film / Video" },
-  { value: "both", label: "Both — photo + film" },
+  { value: "video", label: "Video" },
+  { value: "both", label: "Both — photo + video" },
 ] as const;
 
 /**
- * Budget ranges (req). Mirror the commission ladder in src/lib/commission.ts —
- * the lowest option is the Portrait Study, so budget shoppers self-select away.
+ * Budget ranges (req). Mirror the package ladder in src/lib/commission.ts —
+ * the lowest option is the Portrait Session, so budget shoppers self-select away.
  * Stored as free text (inquiries.budget_range), so old rows keep their values.
  */
 export const BUDGET_OPTIONS = [
-  { value: `${usd(P.study)} portrait session`, label: `${usd(P.study)} — Portrait session`, labelEs: `${usd(P.study)} — Sesión de retrato` },
-  { value: `${usd(P.cinema)}–${usd(P.production)}`, label: `${usd(P.cinema)} – ${usd(P.production)} — Photo + film`, labelEs: `${usd(P.cinema)} – ${usd(P.production)} — Foto + cine` },
-  { value: `${usd(P.production)}–${usd(P.archive)}`, label: `${usd(P.production)} – ${usd(P.archive)} — Full production`, labelEs: `${usd(P.production)} – ${usd(P.archive)} — Producción completa` },
-  { value: `${usd(P.archive)}+`, label: `${usd(P.archive)}+ — Multi-day archive`, labelEs: `${usd(P.archive)}+ — Archivo de varios días` },
+  { value: `${usd(P.study)} portrait session`, label: `${usd(P.study)} — Portrait Session`, labelEs: `${usd(P.study)} — Sesión de retratos` },
+  { value: `${usd(P.cinema)}–${usd(P.production)}`, label: `${usd(P.cinema)} – ${usd(P.production)} — Photo + video`, labelEs: `${usd(P.cinema)} – ${usd(P.production)} — Foto + video` },
+  { value: `${usd(P.production)}–${usd(P.archive)}`, label: `${usd(P.production)} – ${usd(P.archive)} — Full Celebration`, labelEs: `${usd(P.production)} – ${usd(P.archive)} — Celebración completa` },
+  { value: `${usd(P.archive)}+`, label: `${usd(P.archive)}+ — Two-Day Celebration`, labelEs: `${usd(P.archive)}+ — Celebración de dos días` },
 ] as const;
 
 /** "How did you hear about us?" — keep light, helps attribution. */
@@ -85,7 +85,7 @@ export const inquirySchema = z.object({
     }),
   venue: z.string().trim().max(160).optional().or(z.literal("")),
   services: z.enum(serviceValues, {
-    message: "Please choose photo, film, or both.",
+    message: "Please choose photo, video, or both.",
   }),
   budget_range: z.enum(budgetValues, {
     message: "Please choose a budget range.",

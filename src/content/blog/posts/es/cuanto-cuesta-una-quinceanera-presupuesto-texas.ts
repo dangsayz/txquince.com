@@ -66,7 +66,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Una comisión de foto y video es otro proveedor y otro oficio: los artistas que acompañan a su hija durante todo el día y le devuelven la historia completa. En [TX Quince](/es#commissions) esas comisiones están publicadas: ${study} (solo foto), ${cinema}, ${production} y ${archive}. Un “paquete” de salón y una comisión de foto y video pueden sonar a la misma clase de compra — no lo son, así que no deje que una hoja de cotización las revuelva.`,
+      text: `Un paquete de foto y video es otro proveedor y otro oficio: los artistas que acompañan a su hija durante todo el día y le devuelven la historia completa. En [TX Quince](/es#commissions) esos paquetes están publicados: ${study} (solo foto), ${cinema}, ${production} y ${archive}. Un “paquete” de salón y un paquete de foto y video pueden sonar a la misma clase de compra — no lo son, así que no deje que una hoja de cotización los revuelva.`,
     },
     { type: "h2", text: "Por qué la foto y el video merecen su parte" },
     {
@@ -83,10 +83,10 @@ const post: BlogPost = {
     },
     {
       type: "cta",
-      heading: "Vea exactamente qué incluye cada comisión",
-      body: "Precios publicados, inclusiones completas y cómo funciona el anticipo — todo en una página, sin formulario de cotización.",
+      heading: "Vea exactamente qué incluye cada paquete",
+      body: "Precios publicados, inclusiones completas y cómo funciona el depósito — todo en una página, sin formulario de cotización.",
       href: "/es#commissions",
-      label: "Comparar comisiones",
+      label: "Comparar paquetes",
     },
     {
       type: "h2",
@@ -134,7 +134,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Es común que se apadrine el pastel, el vestido, la corona y la última muñeca, las flores, el DJ, los gastos de la iglesia, los recuerditos e incluso la fotografía. Asigne a cada padrino un rubro, anótelo, y un total de $20,000 se reparte en una docena de partes manejables. Para la cobertura en particular, [cómo funciona nuestro anticipo](/es/blog/planes-de-pago-fotografia-quinceanera-dfw) facilita que un padrino apadrine el anticipo del ${retainerPct} mientras usted junta el saldo, que se paga ${RETAINER.balanceDueDays} días antes de la celebración.`,
+      text: `Es común que se apadrine el pastel, el vestido, la corona y la última muñeca, las flores, el DJ, los gastos de la iglesia, los recuerditos e incluso la fotografía. Asigne a cada padrino un rubro, anótelo, y un total de $20,000 se reparte en una docena de partes manejables. Para la cobertura en particular, [cómo funciona nuestro depósito](/es/blog/planes-de-pago-fotografia-quinceanera-dfw) facilita que un padrino apadrine el depósito del ${retainerPct} mientras usted junta el resto, que se paga ${RETAINER.balanceDueHours} horas antes del evento.`,
     },
     {
       type: "callout",
@@ -165,7 +165,7 @@ const post: BlogPost = {
     },
     {
       q: "¿Los paquetes del salón son lo mismo que las colecciones de fotografía?",
-      a: `No. Los paquetes de salón todo incluido (a menudo de $2,000 a $4,000 en DFW) le compran el lugar, las mesas y a veces el banquete o el DJ. Una comisión de foto y video es otro proveedor y otro oficio — en TX Quince están publicadas en ${study}, ${cinema}, ${production} y ${archive}. “Paquetes” que suenan parecido, compras totalmente distintas.`,
+      a: `No. Los paquetes de salón todo incluido (a menudo de $2,000 a $4,000 en DFW) le compran el lugar, las mesas y a veces el banquete o el DJ. Un paquete de foto y video es otro proveedor y otro oficio — en TX Quince están publicados en ${study}, ${cinema}, ${production} y ${archive}. “Paquetes” que suenan parecido, compras totalmente distintas.`,
     },
   ],
   related: [

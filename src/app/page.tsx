@@ -3,6 +3,7 @@ import { TxqSite } from "@/components/txq/TxqSite";
 import { latestJournal } from "@/components/txq/journal";
 import { getCinemaFilms } from "@/components/txq/films";
 import { HomeJsonLd } from "@/components/txq/HomeJsonLd";
+import { getFeedPage, getHomeOverrides } from "@/lib/photo-dump";
 import { PRICE_FLOOR_USD } from "@/lib/commission";
 import { site } from "@/content/site";
 
@@ -18,16 +19,19 @@ export const metadata: Metadata = {
   alternates: { canonical: "/", languages: { "en-US": "/", "es-MX": "/es" } },
   openGraph: {
     title: "TX Quince — Quinceañera Photography & Film, Dallas–Fort Worth",
-    description: `Editorial portraits and cinema for the quinceañera. Commissions from ${from}.`,
+    description: `Quinceañera photos and videos in Dallas–Fort Worth. Packages from ${from}.`,
     url: site.url,
   },
 };
 
 export default async function HomePage() {
+  // Latest photos + admin image swaps come from the R2 photo manifest; both
+  // are empty (section hidden, original images) when storage is unreachable.
+  const [films, photos, overrides] = await Promise.all([getCinemaFilms(), getFeedPage(0), getHomeOverrides()]);
   return (
     <>
       <HomeJsonLd lang="en" />
-      <TxqSite journal={latestJournal()} films={await getCinemaFilms()} />
+      <TxqSite journal={latestJournal()} films={films} photos={photos} overrides={overrides} />
     </>
   );
 }

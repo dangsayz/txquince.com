@@ -15,11 +15,11 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Portfolio",
-  description: "Quinceañera galleries across Dallas–Fort Worth — save-the-date, la misa, portraits, the celebration, and films.",
+  description: "Quinceañera galleries across Dallas–Fort Worth — save-the-date, la misa, portraits, the celebration, and videos.",
   alternates: { canonical: "/portfolio" },
   openGraph: {
     title: "Portfolio · TX Quince",
-    description: "Quinceañera galleries across Dallas–Fort Worth — church, portraits, the celebration, and films.",
+    description: "Quinceañera galleries across Dallas–Fort Worth — church, portraits, the celebration, and videos.",
     url: `${site.url}/portfolio`,
   },
 };
@@ -114,8 +114,8 @@ async function PortfolioContent({ searchParams }: {
           : video.url;
       return {
         "@type": "VideoObject",
-        name: video.title || "Quinceañera film",
-        description: `Quinceañera film by ${site.brand} — ${video.title || "a Dallas–Fort Worth celebration"}.`,
+        name: video.title || "Quinceañera video",
+        description: `Quinceañera video by ${site.brand} — ${video.title || "a Dallas–Fort Worth celebration"}.`,
         ...(thumb ? { thumbnailUrl: thumb } : {}),
         embedUrl,
         contentUrl: video.url,
@@ -169,7 +169,7 @@ async function PortfolioContent({ searchParams }: {
               </a>
               {videos.length ? (
                 <a href="#films" className="tq-btn tq-btn--lg tq-btn--ghost">
-                  The films <span aria-hidden>↓</span>
+                  The videos <span aria-hidden>↓</span>
                 </a>
               ) : null}
             </div>
@@ -206,9 +206,9 @@ async function PortfolioContent({ searchParams }: {
                 [03 / Motion]
               </p>
               <h2 id="films-title" className="tq-display tq-head__title">
-                Her day in motion.
+                Her day on video.
               </h2>
-              <p className="tq-head__dek">Watch the joy unfold in a film to return to for years.</p>
+              <p className="tq-head__dek">Watch the joy unfold in a video to return to for years.</p>
             </header>
             <div className="tq-inner" style={{ paddingBottom: 72 }}>
               <VideoGallery videos={videos} />

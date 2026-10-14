@@ -1,0 +1,141 @@
+/* ==========================================================================
+   TX QUINCE — Photo dump ("Latest photos" on the homepage + /photos/latest)
+   Builds on txq.css tokens and its .tq-egrid / .tq-card / .tq-cap language:
+   equal columns, one 4:5 crop, one gutter, captions on one line.
+   Every selector is scoped under .txq and prefixed tq-dump-.
+   ========================================================================== */
+
+.txq .tq-dump-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px 12px;
+  padding-bottom: 32px;
+}
+@media (min-width: 640px) {
+  .txq .tq-dump-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 48px 24px; }
+}
+@media (min-width: 1024px) {
+  .txq .tq-dump-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 56px 32px; padding-bottom: 48px; }
+}
+
+/* A photo smaller than its cell is never stretched: the cell stops at the
+   photo's own width (set inline), centred under the caption line. */
+.txq .tq-dump-grid .tq-card__media {
+  margin-inline: auto;
+}
+.txq .tq-dump-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.txq .tq-dump-grid .tq-cap {
+  grid-template-columns: auto minmax(0, 1fr);
+}
+.txq .tq-dump-star {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 2px 8px;
+  background: var(--bg-canvas);
+  color: var(--text-primary);
+}
+
+/* Filter chips (only when the photos carry more than one tag). */
+.txq .tq-dump-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 var(--pad) 8px;
+}
+
+/* View more / See all */
+.txq .tq-dump-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 var(--pad) 72px;
+}
+.txq .tq-dump-foot .tq-btn {
+  min-height: 48px;
+}
+.txq .tq-dump-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  font-size: 1rem;
+  font-weight: var(--weight-medium);
+  white-space: nowrap;
+  border-bottom: 1px solid currentColor;
+}
+@media (max-width: 399px) {
+  .txq .tq-dump-foot { flex-direction: column; align-items: stretch; }
+  .txq .tq-dump-foot .tq-btn { width: 100%; }
+  .txq .tq-dump-all { justify-content: center; }
+}
+
+/* Full-screen viewer (re-uses .tq-viewer chrome from txq.css). */
+.txq .tq-dump-viewer .tq-viewer__stage {
+  overflow: hidden;
+  touch-action: pan-y pinch-zoom;
+}
+/* Centred in the stage; width/height auto + max 100% (and max natural px,
+   set inline): a photo fits the screen but never shows above its own size. */
+.txq .tq-dump-viewer__img {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .txq .tq-dump-viewer__img { animation: tq-dump-in 380ms var(--ease); }
+}
+@keyframes tq-dump-in {
+  from { opacity: 0; transform: scale(0.985); }
+}
+.txq .tq-dump-viewer__cap {
+  margin: 0;
+  min-width: 0;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.txq .tq-dump-viewer .tq-viewer__foot .tq-icon-btn {
+  min-width: 48px;
+  min-height: 48px;
+}
+
+/* /photos/latest — one block per album. */
+.txq .tq-dump-album {
+  border-top: 1px solid var(--border-hairline);
+}
+.txq .tq-dump-album__head {
+  display: grid;
+  gap: 10px;
+  padding: 40px var(--pad) 0;
+}
+.txq .tq-dump-album__title {
+  font-size: clamp(1.75rem, 1.2rem + 1.6vw, 2.75rem);
+  overflow-wrap: break-word;
+}
+.txq .tq-dump-album__cap {
+  margin: 0;
+  max-width: 60ch;
+  font-size: 1.0625rem;
+}
+.txq .tq-dump-album .tq-egrid {
+  padding-top: 32px;
+}
+.txq .tq-dump-empty {
+  padding: 24px var(--pad) 96px;
+  font-size: 1.0625rem;
+}

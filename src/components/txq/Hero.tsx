@@ -3,15 +3,22 @@
 import Image from "next/image";
 import { motion } from "motion/react";
 import { StatusLabel } from "./Header";
-import { pick, workById } from "./data";
+import { pick, workById, type Work } from "./data";
 import { useSite } from "./state";
+import { HERO_SLOTS, type HomeOverrides } from "@/lib/photo-dump-shared";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-export function Hero() {
+/** A plate's image: the admin's Photo dump swap when set, else the original. */
+function plate(work: Work, swap: HomeOverrides[string] | undefined, lang: "en" | "es") {
+  if (!swap) return { src: work.src, alt: pick(lang, work.alt), focus: work.focus };
+  return { src: swap.src, alt: swap.alt[lang] || pick(lang, work.alt), focus: "50% 40%" };
+}
+
+export function Hero({ overrides = {} }: { overrides?: HomeOverrides }) {
   const { t, lang } = useSite();
-  const a = workById("w01");
-  const b = workById("w02");
+  const a = plate(workById("w01"), overrides[HERO_SLOTS[0]], lang);
+  const b = plate(workById("w02"), overrides[HERO_SLOTS[1]], lang);
 
   return (
     <section className="tq-hero" id="top" aria-labelledby="tq-hero-title">
@@ -27,7 +34,7 @@ export function Hero() {
           <div className="tq-plate__loop">
             <Image
               src={a.src}
-              alt={pick(lang, a.alt)}
+              alt={a.alt}
               fill
               priority
               unoptimized
@@ -53,7 +60,7 @@ export function Hero() {
           <div className="tq-plate__loop">
             <Image
               src={b.src}
-              alt={pick(lang, b.alt)}
+              alt={b.alt}
               fill
               priority
               unoptimized
@@ -86,14 +93,14 @@ export function Hero() {
           </div>
 
           <div className="tq-ledger__meta">
-            <dl className="tq-meta tq-mono">
+            <dl className="tq-meta">
               <div>
                 <dt>{t.hero.season}</dt>
                 <dd>{t.hero.seasonValue}</dd>
               </div>
               <div>
                 <dt>{t.hero.regions}</dt>
-                <dd>DFW · HOU · ATX · SATX</dd>
+                <dd>{t.hero.regionsValue}</dd>
               </div>
               <div>
                 <dt>{t.hero.status}</dt>
@@ -113,7 +120,7 @@ export function Hero() {
                   →
                 </span>
               </a>
-              <span className="tq-mono tq-muted">{t.hero.actionNote}</span>
+              <span className="tq-action__note">{t.hero.actionNote}</span>
             </div>
           </div>
         </div>

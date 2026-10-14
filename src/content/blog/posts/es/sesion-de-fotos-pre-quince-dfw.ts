@@ -1,5 +1,5 @@
 import type { BlogPost } from "@/content/blog";
-import { TIER_PRICE_USD, ADD_ON_PRICE_USD, usd } from "@/lib/commission";
+import { TIER_PRICE_USD, ADD_ON_PRICE_USD, BASE_HOURS, usd } from "@/lib/commission";
 
 const post: BlogPost = {
   slug: "sesion-de-fotos-pre-quince-dfw",
@@ -77,7 +77,7 @@ const post: BlogPost = {
     {
       type: "cta",
       heading: "Reserve su sesión de fotos pre-quince",
-      body: `Nuestro Estudio de retrato (${usd(TIER_PRICE_USD.study)}) es una sesión editorial de retrato de tres horas antes de la celebración: 60 fotos retocadas y un retrato en movimiento. Elija su locación y su tema, y nosotros nos encargamos de la luz.`,
+      body: `Nuestra Sesión de retratos (${usd(TIER_PRICE_USD.study)}) son ${BASE_HOURS.study} horas con un fotógrafo: 60 fotos editadas y un video corto para redes sociales. Elija su locación y su tema, y nosotros nos encargamos de la luz.`,
       href: "/es#intake",
       label: "Reservar su sesión",
     },
@@ -117,7 +117,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Cuando esté lista, resérvela por separado como nuestro Estudio de retrato, o vea qué [comisiones](/es#commissions) ya incluyen una sesión de retrato — La producción completa incluye una locación y el Archivo editorial de varios días, dos —, recorra el [portafolio](/portfolio) para tomar ideas y [reserve su fecha](/es#intake). Si todavía está eligiendo fotógrafo, empiece por [cómo elegir un fotógrafo de quinceañera en DFW](/es/blog/como-elegir-fotografo-de-quinceanera-dfw) — y si está reservando toda la celebración, nuestras páginas de [fotógrafo de quinceañeras en Dallas](/es/fotografo-de-quinceaneras/dallas) y [Fort Worth](/es/fotografo-de-quinceaneras/fort-worth) cubren la cobertura completa del evento.",
+      text: "Cuando esté lista, resérvela por separado como nuestra Sesión de retratos, o vea qué [paquetes](/es#commissions) ya incluyen una sesión de retrato — la Celebración completa incluye una locación y la Celebración de dos días, dos —, recorra el [portafolio](/portfolio) para tomar ideas y [reserve su fecha](/es#intake). Si todavía está eligiendo fotógrafo, empiece por [cómo elegir un fotógrafo de quinceañera en DFW](/es/blog/como-elegir-fotografo-de-quinceanera-dfw) — y si está reservando toda la celebración, nuestras páginas de [fotógrafo de quinceañeras en Dallas](/es/fotografo-de-quinceaneras/dallas) y [Fort Worth](/es/fotografo-de-quinceaneras/fort-worth) cubren la cobertura completa del evento.",
     },
   ],
   faqs: [
@@ -143,7 +143,7 @@ const post: BlogPost = {
     },
     {
       q: "¿La sesión va incluida o es aparte?",
-      a: `Depende del estudio y del paquete. En TX Quince, el Estudio de retrato (${usd(TIER_PRICE_USD.study)}) es la sesión de retrato por sí sola; La producción completa incluye una sesión de retrato en una locación y el Archivo editorial de varios días incluye dos. También puede agregar una sesión de retrato en otro destino por ${usd(ADD_ON_PRICE_USD.destination)}. Compare todas las comisiones antes de reservar.`,
+      a: `Depende del estudio y del paquete. En TX Quince, la Sesión de retratos (${usd(TIER_PRICE_USD.study)}) es la sesión de retrato por sí sola; la Celebración completa incluye una sesión de retrato en una locación y la Celebración de dos días incluye dos. También puede agregar una Sesión con el vestido, fotos con su vestido antes del gran día, por ${usd(ADD_ON_PRICE_USD.destination)}. Compare todos los paquetes antes de reservar.`,
     },
   ],
   related: [

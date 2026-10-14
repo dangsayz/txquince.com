@@ -2,21 +2,21 @@ import type { BlogPost } from "@/content/blog";
 
 const post: BlogPost = {
   slug: "quinceanera-themes-and-colors",
-  title: "Quinceañera Themes & Colors: A DFW Film Studio Guide",
+  title: "Quinceañera Themes & Colors: A DFW Video Studio Guide",
   metaTitle:
-    "Quinceañera Themes & Color Schemes — A DFW Film Studio's Guide",
+    "Quinceañera Themes & Color Schemes — A DFW Video Studio's Guide",
   description:
-    "A DFW film studio's guide to quinceañera themes and color schemes — popular themes, how to choose one, and which palettes actually photograph and film well.",
+    "A DFW video studio's guide to quinceañera themes and color schemes — popular themes, how to choose one, and which palettes actually photograph and video well.",
   category: "Planning",
   excerpt:
     "The popular quinceañera themes and color schemes, how to choose one that's actually yours, and the part the theme lists skip: which colors read well on camera and which fight the lighting.",
   publishedAt: "2026-06-27",
   readMinutes: 10,
-  lead: "Your quinceañera theme is the one visual idea your whole day is built around, and your color scheme is what carries it across the dress, the court, the flowers, and the room. This guide covers the popular quinceañera themes, the color schemes that go with them, and how to choose one that feels like you — plus the part every theme list skips: how your colors actually read on camera, since we film these almost every weekend.",
+  lead: "Your quinceañera theme is the one visual idea your whole day is built around, and your color scheme is what carries it across the dress, the court, the flowers, and the room. This guide covers the popular quinceañera themes, the color schemes that go with them, and how to choose one that feels like you — plus the part every theme list skips: how your colors actually read on camera, since we video these almost every weekend.",
   content: [
     {
       type: "p",
-      text: "A quinceañera theme is the single visual idea your whole celebration is built around — princess, garden, charro, masquerade — and the color scheme is the two or three colors that carry it across the dress, the court, the flowers, and the room. The most popular quinceañera themes right now are royal or princess, butterfly, garden and enchanted forest, Paris, masquerade, Hollywood glam, rose gold, and Mexican heritage (charro). This guide walks through those, the color schemes that pair with each, how to choose a quinceañera theme that's actually yours — and, because we film these almost every weekend, the one thing the theme lists never mention: how your colors actually read on camera.",
+      text: "A quinceañera theme is the single visual idea your whole celebration is built around — princess, garden, charro, masquerade — and the color scheme is the two or three colors that carry it across the dress, the court, the flowers, and the room. The most popular quinceañera themes right now are royal or princess, butterfly, garden and enchanted forest, Paris, masquerade, Hollywood glam, rose gold, and Mexican heritage (charro). This guide walks through those, the color schemes that pair with each, how to choose a quinceañera theme that's actually yours — and, because we video these almost every weekend, the one thing the theme lists never mention: how your colors actually read on camera.",
     },
     {
       type: "p",
@@ -44,7 +44,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Whatever theme you land on, it's worth seeing how it translates into real photos and film before you commit thousands to decor. Our [portfolio](/portfolio) is the fastest way to see how different palettes and setups actually look once they're shot — a mood board and a finished film are not the same thing.",
+      text: "Whatever theme you land on, it's worth seeing how it translates into real photos and video before you commit thousands to decor. Our [portfolio](/portfolio) is the fastest way to see how different palettes and setups actually look once they're shot — a mood board and a finished video are not the same thing.",
     },
     { type: "h2", text: "Quinceañera color schemes (and quince colors)" },
     {
@@ -73,7 +73,7 @@ const post: BlogPost = {
       type: "ol",
       items: [
         "Start with the dress. If it's already chosen, its color is your anchor — build the palette around it instead of fighting it.",
-        "Pick what feels like you, not what's trending. You'll rewatch this film for years; a theme you actually love ages better than a viral one you don't.",
+        "Pick what feels like you, not what's trending. You'll rewatch this video for years; a theme you actually love ages better than a viral one you don't.",
         "Match the season. Pastels feel right in spring; jewel tones suit fall and winter. The light and the flowers cooperate when the palette fits the time of year.",
         "Check it against your venue. A ballroom carries draping and crystal; a garden carries greenery and florals. The theme should work with the room, not paper over it.",
         "Set the budget first. Some themes — full winter-wonderland draping, fog, heavy florals — cost noticeably more to pull off than a clean two-color palette. Decide what you're spending before you fall in love with a build.",
@@ -83,10 +83,10 @@ const post: BlogPost = {
       type: "p",
       text: "Once you've got a direction, your [quinceañera planning timeline](/blog/quinceanera-planning-timeline-checklist) tells you when to lock the decor, order flowers, and finalize what the court is wearing so nothing gets rushed in the last month.",
     },
-    { type: "h2", text: "How your theme and colors actually photograph and film" },
+    { type: "h2", text: "How your theme and colors actually photograph and video" },
     {
       type: "p",
-      text: "Here's the part no theme list mentions, and it's the part we watch go sideways most often: a palette that looks perfect on a mood board can fight the camera in a dim reception hall. We film a quince almost every weekend, so here's what actually reads well on photo and video — and what doesn't.",
+      text: "Here's the part no theme list mentions, and it's the part we watch go sideways most often: a palette that looks perfect on a mood board can fight the camera in a dim reception hall. We video a quince almost every weekend, so here's what actually reads well on photo and video — and what doesn't.",
     },
     { type: "h3", text: "Colors that photograph beautifully" },
     {
@@ -115,7 +115,7 @@ const post: BlogPost = {
     { type: "h3", text: "Make the court and decor cohesive on video" },
     {
       type: "p",
-      text: "Your court is in nearly every wide shot of the night, which makes them part of your color scheme whether you planned it that way or not. When the chambelanes' ties or vests and the damas' dresses pull from your two main colors, the room reads as one composed picture on film. Mismatched, random colors are the fastest way to make footage look chaotic. Tie the linens, the flowers, and the backdrop to that same two- or three-color scheme and a wide shot looks intentional instead of accidental.",
+      text: "Your court is in nearly every wide shot of the night, which makes them part of your color scheme whether you planned it that way or not. When the chambelanes' ties or vests and the damas' dresses pull from your two main colors, the room reads as one composed picture on video. Mismatched, random colors are the fastest way to make footage look chaotic. Tie the linens, the flowers, and the backdrop to that same two- or three-color scheme and a wide shot looks intentional instead of accidental.",
     },
     {
       type: "p",
@@ -124,18 +124,18 @@ const post: BlogPost = {
     { type: "h2", text: "Don't overthink it" },
     {
       type: "p",
-      text: "Here's the honest part: you do not need an elaborate, named theme for the day to look beautiful. Some of the best quinces we film are simply a clean two-color palette — say blush and gold — carried consistently through the dress, the flowers, and the court. No castle, no fog machine. If a big themed build is stressing your family or your budget, drop it. A simple palette done consistently photographs better than an ambitious theme done halfway. Pick two colors you love, keep them everywhere, and let the day itself be the story.",
+      text: "Here's the honest part: you do not need an elaborate, named theme for the day to look beautiful. Some of the best quinces we video are simply a clean two-color palette — say blush and gold — carried consistently through the dress, the flowers, and the court. No castle, no fog machine. If a big themed build is stressing your family or your budget, drop it. A simple palette done consistently photographs better than an ambitious theme done halfway. Pick two colors you love, keep them everywhere, and let the day itself be the story.",
     },
     {
       type: "cta",
-      heading: "See how your colors look on film",
-      body: "The fastest way to choose a palette is to watch how different ones actually photograph and film. Browse real DFW quinceañeras, then check if your date is open.",
+      heading: "See how your colors look on video",
+      body: "The fastest way to choose a palette is to watch how different ones actually photograph and video. Browse real DFW quinceañeras, then check if your date is open.",
       href: "/portfolio",
       label: "See the work",
     },
     {
       type: "p",
-      text: "When your colors are close to final, you can [check if your date is open](/check-your-date) in seconds and see what each [commission includes](/#commissions) for photo and film. Bring us your palette early and we'll plan the lighting and the shots around it — so the look you spent months building is the look that ends up in your film.",
+      text: "When your colors are close to final, you can [check if your date is open](/check-your-date) in seconds and see what each [package includes](/#commissions) for photo and video. Bring us your palette early and we'll plan the lighting and the shots around it — so the look you spent months building is the look that ends up in your video.",
     },
   ],
   faqs: [
@@ -161,7 +161,7 @@ const post: BlogPost = {
     },
     {
       q: "Do I need a theme for my quinceañera?",
-      a: "No. A clean two-color palette carried consistently through the dress, the flowers, and the court looks beautiful and often photographs better than an ambitious theme done halfway. A named theme is optional — consistency is what actually makes a day look put-together on film.",
+      a: "No. A clean two-color palette carried consistently through the dress, the flowers, and the court looks beautiful and often photographs better than an ambitious theme done halfway. A named theme is optional — consistency is what actually makes a day look put-together on video.",
     },
   ],
   related: [

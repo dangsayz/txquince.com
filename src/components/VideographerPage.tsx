@@ -12,59 +12,59 @@ import "@/components/txq/pages/pages.css";
 const copy = {
   en: {
     eyebrow: "Quinceañera videographer · Dallas–Fort Worth",
-    title: "Her day, in motion.",
-    intro: "The music, the voices, her first steps into the room — some moments need more than a photograph. See real quinceañera films from Dallas–Fort Worth and choose the coverage that fits her day.",
-    films: "Real celebrations, real films.",
-    filmsIntro: "Watch the work before you ask about your date.",
-    collections: "Film coverage, clearly priced.",
-    one: "Film is part of every commission from Cinema & Stills upward: a dedicated motion director, a 4K feature, a teaser and vertical reels. Need film only? Choose “Motion only” when you check your date and we tailor the commission.",
+    title: "Her day, on video.",
+    intro: "The music, the voices, her first steps into the room — some moments need more than a photo. See real quinceañera videos from Dallas–Fort Worth and choose the package that fits her day.",
+    films: "Real celebrations, real videos.",
+    filmsIntro: "Watch our work before you ask about your date.",
+    collections: "Video packages, clearly priced.",
+    one: "Video comes with every package from Photo + Video up: your own videographer, a full-length video in 4K, a short trailer and short vertical videos for social media. Only need video? Choose video only when you check your date and we'll fit the package to you.",
     faq: "Before you reserve",
     questions: [
-      ["Can we book video without photography?", "Yes. Choose “Motion only” when you check your date and we tailor the commission to film. Most families pair film with photography, which every commission from Cinema & Stills upward includes."],
-      ["How long is the film?", "Cinema & Stills delivers an 8–10 minute 4K feature, The Full Production 12–15 minutes, and the Multi-Day Archive a 20-minute documentary, each with a theatrical teaser and vertical reels."],
-      ["Do you travel across DFW?", "Yes. We cover quinceañeras across Dallas–Fort Worth, from the ceremony through the reception."],
+      ["Can we book video without photos?", "Yes. Choose video only when you check your date and we'll fit the package to video. Most families get both, and every package from Photo + Video up includes photos and video."],
+      ["How long is the video?", "Photo + Video comes with an 8–10 minute full-length video in 4K, the Full Celebration 12–15 minutes, and the Two-Day Celebration 20 minutes, each with a short trailer and short vertical videos for social media."],
+      ["Do you travel across DFW?", "Yes. We cover quinceañeras across Dallas–Fort Worth, from the church through the reception."],
     ],
     cta: "Check her date",
     lede: "Some memories are meant to be heard, too.",
-    watch: "Watch the films",
-    work: "01 / Films",
-    coverage: "02 / Coverage",
+    watch: "Watch the videos",
+    work: "01 / Videos",
+    coverage: "02 / Packages",
     qa: "Q&A",
-    reels: "Vertical reels",
-    retainer: "retainer holds the date",
+    reels: "Short videos for social media",
+    deposit: "deposit holds the date",
     next: "The next step",
     nextTitle: "Let's see if her date is still open.",
-    nextSub: "Share the date and the coverage you have in mind. We reply personally, with no payment to ask.",
+    nextSub: "Share the date and what you have in mind. We reply personally, and asking costs nothing.",
   },
   es: {
     eyebrow: "Video de quinceañeras · Dallas–Fort Worth",
     title: "Su día, en movimiento.",
-    intro: "La música, las voces, su entrada al salón: hay momentos que merecen más que una fotografía. Mira videos reales de quinceañeras en Dallas–Fort Worth y elige la cobertura para su día.",
+    intro: "La música, las voces, su entrada al salón: hay momentos que merecen más que una foto. Mira videos reales de quinceañeras en Dallas–Fort Worth y elige el paquete para su día.",
     films: "Celebraciones reales, videos reales.",
     filmsIntro: "Mira nuestro trabajo antes de consultar tu fecha.",
-    collections: "Cobertura de video, con precios claros.",
-    one: "El cine forma parte de cada encargo desde Cine y fotografía: un director de cine dedicado, una película 4K, un avance y reels verticales. ¿Solo necesitas video? Elige “Solo cine” al consultar tu fecha y adaptamos el encargo.",
+    collections: "Paquetes con video, con precios claros.",
+    one: "El video viene en cada paquete desde Foto + Video: tu propio videógrafo, un video completo en 4K, un tráiler corto y videos verticales cortos para redes sociales. ¿Solo necesitas video? Elige solo video al consultar tu fecha y ajustamos el paquete para ti.",
     faq: "Antes de reservar",
     questions: [
-      ["¿Puedo contratar solo video?", "Sí. Elige “Solo cine” al consultar tu fecha y adaptamos el encargo al video. La mayoría combina cine y fotografía, que incluye cada encargo desde Cine y fotografía."],
-      ["¿Cuánto dura la película?", "Cine y fotografía entrega una película 4K de 8 a 10 minutos, La producción completa de 12 a 15 minutos y el Archivo de varios días un documental de 20 minutos, cada una con avance y reels verticales."],
-      ["¿Trabajan en todo DFW?", "Sí. Cubrimos quinceañeras en todo Dallas–Fort Worth, desde la ceremonia hasta la recepción."],
+      ["¿Puedo contratar solo video?", "Sí. Elige solo video al consultar tu fecha y ajustamos el paquete al video. La mayoría de las familias elige los dos, y cada paquete desde Foto + Video incluye fotos y video."],
+      ["¿Cuánto dura el video?", "Foto + Video trae un video completo en 4K de 8 a 10 minutos, la Celebración completa de 12 a 15 minutos y la Celebración de dos días de 20 minutos, cada uno con un tráiler corto y videos verticales cortos para redes sociales."],
+      ["¿Trabajan en todo DFW?", "Sí. Cubrimos quinceañeras en todo Dallas–Fort Worth, desde la iglesia hasta la recepción."],
     ],
     cta: "Consulta su fecha",
     lede: "Hay recuerdos que también se escuchan.",
     watch: "Ver los videos",
-    work: "01 / Cine",
-    coverage: "02 / Cobertura",
+    work: "01 / Videos",
+    coverage: "02 / Paquetes",
     qa: "Preguntas",
-    reels: "Reels verticales",
-    retainer: "de anticipo para apartar la fecha",
+    reels: "Videos cortos para redes sociales",
+    deposit: "de depósito para apartar la fecha",
     next: "El siguiente paso",
     nextTitle: "Veamos si su fecha sigue libre.",
-    nextSub: "Comparte la fecha y la cobertura que imaginas. Respondemos personalmente y consultar no requiere pago.",
+    nextSub: "Comparte la fecha y lo que tienes en mente. Te respondemos personalmente y preguntar no cuesta nada.",
   },
 } as const;
 
-/** Motion deliverables per commission, straight from the homepage matrix. */
+/** Video deliverables per package, straight from the homepage matrix. */
 const motionRows = MATRIX.find((g) => g.id === "motion")!.rows;
 const filmCommissions = commissions.filter((c) => c.id !== "study");
 
@@ -106,7 +106,7 @@ export async function VideographerPage({ locale }: { locale: "en" | "es" }) {
             style={{ objectPosition: `${Math.round((hero?.focus_x ?? 0.5) * 100)}% ${Math.round((hero?.focus_y ?? 0.4) * 100)}%` }}
           />
           <figcaption>
-            <span className="tq-tag tq-tag--bl tq-mono">[Motion — 4K]</span>
+            <span className="tq-tag tq-tag--bl tq-mono">[Video — 4K]</span>
           </figcaption>
         </figure>
         <div className="tq-manifesto" style={{ paddingTop: 56, borderTop: "1px solid var(--border-hairline)" }}>
@@ -165,7 +165,7 @@ export async function VideographerPage({ locale }: { locale: "en" | "es" }) {
                           .join(" · ")}
                       </p>
                       <p className="tq-pg-index__sub tq-mono">
-                        {cm.retainerLabel} {c.retainer}
+                        {cm.retainerLabel} {c.deposit}
                       </p>
                     </Link>
                   </li>

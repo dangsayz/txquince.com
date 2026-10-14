@@ -91,7 +91,7 @@ export default async function VenuePage({
 
   const about =
     copy?.about ||
-    `Planning a quinceañera at ${venue.venue} in ${venue.city}? Explore our photography and film, then tell us about your date and the moments your family wants documented.`;
+    `Planning a quinceañera at ${venue.venue} in ${venue.city}? Explore our photos and videos, then tell us about your date and the moments your family wants documented.`;
 
   const sameAs = [ig, web].filter(Boolean) as string[];
   const jsonLd = {
@@ -101,7 +101,7 @@ export default async function VenuePage({
         "@type": "ProfessionalService",
         "@id": `${url}#service`,
         name: `${site.brand} — Quinceañera Photography at ${venue.venue}`,
-        description: `Quinceañera photography & film at ${venue.venueFull}, ${venue.city}, TX.`,
+        description: `Quinceañera photos & video at ${venue.venueFull}, ${venue.city}, TX.`,
         url,
         image: `${site.url}/opengraph-image`,
         email: site.contact.email,
@@ -269,7 +269,7 @@ export default async function VenuePage({
                 <span>Ask about a date</span>
                 <span className="tq-arrow" aria-hidden>→</span>
               </Link>
-              <span className="tq-mono tq-muted">Commissions from {commissionsFromLabel}</span>
+              <span className="tq-mono tq-muted">Packages from {commissionsFromLabel}</span>
             </div>
           </div>
         </div>

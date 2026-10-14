@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { site } from "@/content/site";
 import { locations } from "@/content/locations";
-import { getAllPosts, getAllEsPosts } from "@/content/blog";
+import { getAllPosts, getAllEsPosts, esSlugForEn, enSlugForEs } from "@/content/blog";
 import { getVendors } from "@/lib/content-db";
 import { venues } from "@/content/venues";
 
@@ -34,11 +34,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/es/videografo-de-quinceaneras", priority: 0.8 },
     { path: "/quinceanera-photoshoot", priority: 0.8 },
     { path: "/es/sesion-de-fotos-quinceanera", priority: 0.8 },
+    // Latest photo-dump albums (EN ↔ ES pair; both pages carry hreflang).
+    { path: "/photos/latest", priority: 0.7 },
+    { path: "/es/fotos-recientes", priority: 0.7 },
     { path: "/privacy", priority: 0.2 },
     { path: "/venues", priority: 0.7 },
     { path: "/vendors", priority: 0.6 },
-    { path: "/blog", priority: 0.7 },
-    { path: "/es/blog", priority: 0.7 },
     // Venue landing pages — one per venue we shoot at (keyword targets).
     ...venues.map((v) => ({ path: `/venues/${v.slug}`, priority: 0.7 })),
     // Local SEO landing pages — one per DFW city served, EN + ES.
@@ -46,20 +47,55 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...locations.map((l) => ({ path: `/es/fotografo-de-quinceaneras/${l.slug}`, priority: 0.7 })),
   ];
 
-  // Blog posts carry their REAL publish/update dates (honest freshness signal).
+  // Blog posts carry their REAL publish/update dates (honest freshness signal),
+  // and each EN↔ES translation pair lists its hreflang alternates (mirrors the
+  // <link rel="alternate"> tags on the pages).
+  const enPosts = getAllPosts();
+  const esPosts = getAllEsPosts();
+  const newest = (list: typeof enPosts) =>
+    list.reduce((max, p) => {
+      const d = p.updatedAt || p.publishedAt;
+      return d > max ? d : max;
+    }, LASTMOD);
+  const pair = (en: string, es: string) => ({
+    languages: { "en-US": `${site.url}/blog/${en}`, "es-MX": `${site.url}/es/blog/${es}`, "x-default": `${site.url}/blog/${en}` },
+  });
   const blogEntries: MetadataRoute.Sitemap = [
-    ...getAllPosts().map((p) => ({
-      url: `${site.url}/blog/${p.slug}`,
-      lastModified: p.updatedAt || p.publishedAt,
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
-    })),
-    ...getAllEsPosts().map((p) => ({
-      url: `${site.url}/es/blog/${p.slug}`,
-      lastModified: p.updatedAt || p.publishedAt,
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
-    })),
+    // Index pages change whenever a post is added/updated.
+    {
+      url: `${site.url}/blog`,
+      lastModified: newest(enPosts),
+      changeFrequency: "weekly",
+      priority: 0.7,
+      alternates: { languages: { "en-US": `${site.url}/blog`, "es-MX": `${site.url}/es/blog`, "x-default": `${site.url}/blog` } },
+    },
+    {
+      url: `${site.url}/es/blog`,
+      lastModified: newest(esPosts),
+      changeFrequency: "weekly",
+      priority: 0.7,
+      alternates: { languages: { "en-US": `${site.url}/blog`, "es-MX": `${site.url}/es/blog`, "x-default": `${site.url}/blog` } },
+    },
+    ...enPosts.map((p) => {
+      const es = esSlugForEn(p.slug);
+      return {
+        url: `${site.url}/blog/${p.slug}`,
+        lastModified: p.updatedAt || p.publishedAt,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+        ...(es ? { alternates: pair(p.slug, es) } : {}),
+      };
+    }),
+    ...esPosts.map((p) => {
+      const en = enSlugForEs(p.slug);
+      return {
+        url: `${site.url}/es/blog/${p.slug}`,
+        lastModified: p.updatedAt || p.publishedAt,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+        ...(en ? { alternates: pair(en, p.slug) } : {}),
+      };
+    }),
   ];
 
   // One indexable credit page per vendor.

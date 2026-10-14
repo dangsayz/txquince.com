@@ -32,26 +32,57 @@ export const TIER_PRICE_USD: Record<TierId, number> = {
   archive: 6900,
 };
 export const ADD_ON_PRICE_USD: Record<AddOnId, number> = {
-  destination: 650,
-  sameday: 900,
+  destination: 400,
+  sameday: 300,
   super8: 600,
   parents: 550,
 };
 
 /** English names for Stripe line items, receipts and operator email. */
 export const TIER_NAME_EN: Record<TierId, string> = {
-  study: "I. Portrait Study",
-  cinema: "II. Cinema & Stills",
-  production: "III. The Full Production",
-  archive: "IV. Multi-Day Editorial Archive",
+  study: "Portrait Session",
+  cinema: "Photo + Video",
+  production: "Full Celebration",
+  archive: "Two-Day Celebration",
 };
 
 export const ADD_ON_NAME_EN: Record<AddOnId, string> = {
-  destination: "Pre-Event Destination Portrait Session",
-  sameday: "Same-Day Reception Edit",
-  super8: "Super 8mm Film Roll",
-  parents: "Fine Art Parent Albums",
+  destination: "Dress Session",
+  sameday: "Same-Day Edit (ready in 24 hours)",
+  super8: "Vintage Film Clip (Super 8)",
+  parents: "Albums for Mom & Dad",
 };
+
+/* ------------------------------------------------------------------ */
+/* Hours — each package includes a set number of hours on the day;     */
+/* families can add hours, one at a time, up to MAX_HOURS.             */
+/* ------------------------------------------------------------------ */
+
+export const MIN_HOURS = 4;
+export const MAX_HOURS = 8;
+
+/** Hours of coverage included in the package price. */
+export const BASE_HOURS: Record<TierId, number> = {
+  study: 4,
+  cinema: 6,
+  production: 6,
+  archive: 8,
+};
+
+/** Price of each hour added beyond the included hours (scales with the team). */
+export const EXTRA_HOUR_USD: Record<TierId, number> = {
+  study: 150,
+  cinema: 300,
+  production: 400,
+  archive: 0,
+};
+
+/** Fit any requested hours to the package: whole hours, included..MAX_HOURS. */
+export function normalizeHours(tier: TierId, hours?: number | null): number {
+  const base = BASE_HOURS[tier];
+  const want = Number.isFinite(hours) ? Math.round(hours!) : base;
+  return Math.max(base, Math.min(MAX_HOURS, want));
+}
 
 /* ------------------------------------------------------------------ */
 /* Crew — included value. Each commission includes a number of         */
@@ -124,16 +155,16 @@ export const TIER_SERVICE: Record<TierId, "photo" | "both"> = {
 };
 
 /**
- * Retainer to hold the date: a share of the commission, with a floor so a
- * smaller commission still carries a meaningful hold, rounded to a clean
- * figure. Applied in full to the balance.
+ * Deposit: every package is 25% down, paid once we approve the signed
+ * agreement; it goes toward the total. The rest is due 48 hours before the
+ * event. (Named RETAINER for continuity with stored bookings.)
  */
 export const RETAINER = {
-  rate: 0.3,
-  floorUsd: 350,
-  roundToUsd: 50,
-  /** Balance due this many days before the celebration. */
-  balanceDueDays: 30,
+  rate: 0.25,
+  floorUsd: 0,
+  roundToUsd: 1,
+  /** The rest is due this many hours before the event. */
+  balanceDueHours: 48,
 } as const;
 
 /** Unpaid checkout hold, and the consultation-first courtesy hold. */
@@ -142,6 +173,9 @@ export const CONSULT_HOLD_DAYS = 7;
 
 export type Quote = {
   tierUsd: number;
+  /** Hours on the day (included + added). */
+  hours: number;
+  extraHoursUsd: number;
   addOnsUsd: number;
   /** Directors included on the celebration day. */
   crewSize: number;
@@ -150,18 +184,20 @@ export type Quote = {
   balanceUsd: number;
 };
 
-export function quoteCommission(tier: TierId, addOns: readonly AddOnId[]): Quote {
+export function quoteCommission(tier: TierId, addOns: readonly AddOnId[], hoursWanted?: number | null): Quote {
   const tierUsd = TIER_PRICE_USD[tier];
+  const hours = normalizeHours(tier, hoursWanted);
+  const extraHoursUsd = (hours - BASE_HOURS[tier]) * EXTRA_HOUR_USD[tier];
   const unique = Array.from(new Set(addOns));
   const addOnsUsd = unique.reduce((sum, a) => sum + ADD_ON_PRICE_USD[a], 0);
   const crewSize = BASE_CREW[tier];
-  const totalUsd = tierUsd + addOnsUsd;
+  const totalUsd = tierUsd + extraHoursUsd + addOnsUsd;
   const raw = Math.max(totalUsd * RETAINER.rate, RETAINER.floorUsd);
   const retainerUsd = Math.min(
     totalUsd,
     Math.round(raw / RETAINER.roundToUsd) * RETAINER.roundToUsd,
   );
-  return { tierUsd, addOnsUsd, crewSize, totalUsd, retainerUsd, balanceUsd: totalUsd - retainerUsd };
+  return { tierUsd, hours, extraHoursUsd, addOnsUsd, crewSize, totalUsd, retainerUsd, balanceUsd: totalUsd - retainerUsd };
 }
 
 /** "$11,500" — use in prose so copy reads straight from the price book. */
@@ -191,13 +227,13 @@ function isBookableDate(v: string): boolean {
 }
 
 export const commissionSchema = z.object({
-  /** "retainer" → Stripe Checkout now; "consult" → courtesy hold, pay after a call. */
-  path: z.enum(["retainer", "consult"]),
   event_date: z.string().trim().refine(isBookableDate, {
     message: "Choose a future date within the next three years.",
   }),
   city: z.enum(CITY_IDS),
   venue: z.string().trim().max(160).optional().default(""),
+  /** Event start time as the family wrote it ("4:00 PM"); optional. */
+  start_time: z.string().trim().max(40).optional().default(""),
   scope: z.enum(SCOPE_IDS),
   tier: z.enum(TIER_IDS),
   add_ons: z.array(z.enum(ADD_ON_IDS)).max(ADD_ON_IDS.length).default([]),
@@ -208,17 +244,28 @@ export const commissionSchema = z.object({
       motion: z.number().int().min(0).max(MAX_CREW),
     })
     .optional(),
+  /** Requested hours on the day; normalized to the package's included..MAX_HOURS. */
+  hours: z.number().int().min(MIN_HOURS).max(MAX_HOURS).optional(),
   name: z.string().trim().min(2, "Please enter your name.").max(120),
   honoree: z.string().trim().max(80).optional().default(""),
   email: z.string().trim().toLowerCase().email("Please enter a valid email."),
-  phone: z.string().trim().max(40).optional().default(""),
+  phone: z.string().trim().min(7, "Please enter a phone number.").max(40),
   language: z.enum(["en", "es"]),
   note: z.string().trim().max(2000).optional().default(""),
+  /** May we share some photos/videos publicly? */
+  share_permission: z.boolean().default(true),
+  /** The signed agreement: typed full name + drawn signature + consent. */
+  signed_name: z.string().trim().min(2, "Type your full name to sign.").max(120),
+  signature: z
+    .string()
+    .max(400_000)
+    .regex(/^data:image\/png;base64,[A-Za-z0-9+/=]+$/, "Please sign in the box."),
+  agree: z.literal(true, { message: "Please check the box to agree." }),
 });
 
 export type CommissionRequest = z.infer<typeof commissionSchema>;
 
-const CITY_NAME: Record<(typeof CITY_IDS)[number], string> = {
+export const CITY_NAME: Record<(typeof CITY_IDS)[number], string> = {
   dfw: "Dallas–Fort Worth",
   hou: "Houston",
   atx: "Austin",
@@ -228,20 +275,22 @@ const CITY_NAME: Record<(typeof CITY_IDS)[number], string> = {
 
 function crewLine(tier: TierId, mix: Crew): string {
   const n = (k: number, one: string) => `${k} ${one}${k === 1 ? "" : "s"}`;
-  return `Crew (included, ${BASE_CREW[tier]}): ${n(mix.photo, "photographer")} + ${n(mix.motion, "videographer")}`;
+  return `Team (included, ${BASE_CREW[tier]}): ${n(mix.photo, "photographer")} + ${n(mix.motion, "videographer")}`;
 }
 
 /** Human-readable summary stored on the booking and shown to the operator. */
 export function describeCommission(r: CommissionRequest, q: Quote): string {
   const usd = (n: number) => `$${n.toLocaleString("en-US")}`;
   const lines = [
-    `Commission: ${TIER_NAME_EN[r.tier]} — ${usd(q.tierUsd)}`,
+    `Package: ${TIER_NAME_EN[r.tier]} — ${usd(q.tierUsd)} (${BASE_HOURS[r.tier]} hrs included)`,
+    q.extraHoursUsd ? `+ ${q.hours - BASE_HOURS[r.tier]} extra hr(s) — ${usd(q.extraHoursUsd)}` : "",
+    `Hours on the day: ${q.hours}`,
     ...r.add_ons.map((a) => `+ ${ADD_ON_NAME_EN[a]} — ${usd(ADD_ON_PRICE_USD[a])}`),
     crewLine(r.tier, normalizeCrew(r.tier, r.crew_mix)),
     COORDINATOR_INCLUDED[r.tier] ? "Day-of coordinator: included" : "",
     `Total: ${usd(q.totalUsd)} · Retainer: ${usd(q.retainerUsd)} · Balance: ${usd(q.balanceUsd)}`,
-    `Path: ${r.path === "retainer" ? "Paid retainer online" : "Consultation first"}`,
-    `City: ${CITY_NAME[r.city]}${r.venue ? ` · Venue: ${r.venue}` : ""}`,
+    `Signed by: ${r.signed_name}`,
+    `City: ${CITY_NAME[r.city]}${r.venue ? ` · Venue: ${r.venue}` : ""}${r.start_time ? ` · Starts: ${r.start_time}` : ""}`,
     `Scope: ${r.scope}`,
     r.honoree ? `Quinceañera: ${r.honoree}` : "",
     `Preferred language: ${r.language === "es" ? "Español" : "English"}`,

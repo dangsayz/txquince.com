@@ -4,7 +4,7 @@
  * city-specific FAQs that answer the local autocomplete intents) so each page is
  * genuinely distinct — NOT a doorway page. Keyed by the same slug as locations.ts.
  *
- * Prices are NEVER typed here — they interpolate from the commission price book
+ * Prices are NEVER typed here — they interpolate from the package price book
  * (src/lib/commission.ts), so a price change there updates every city page.
  */
 import {
@@ -13,6 +13,7 @@ import {
   RETAINER,
   CONSULT_HOLD_DAYS,
   BASE_CREW,
+  BASE_HOURS,
   usd,
 } from "@/lib/commission";
 
@@ -25,13 +26,17 @@ const SAMEDAY = usd(ADD_ON_PRICE_USD.sameday);
 const SUPER8 = usd(ADD_ON_PRICE_USD.super8);
 const PARENTS = usd(ADD_ON_PRICE_USD.parents);
 const RETAINER_PCT = `${Math.round(RETAINER.rate * 100)}%`;
-const RETAINER_MIN = usd(RETAINER.floorUsd);
-const BALANCE_DAYS = RETAINER.balanceDueDays;
+const BALANCE_HOURS = RETAINER.balanceDueHours;
 const HOLD_DAYS = CONSULT_HOLD_DAYS;
-// Directors included on the celebration day (photo/film mix is the family's choice).
+// Team included on the celebration day (photo/video mix is the family's choice).
 const CREW_CINEMA = BASE_CREW.cinema;
 const CREW_PRODUCTION = BASE_CREW.production;
 const CREW_ARCHIVE = BASE_CREW.archive;
+// Hours included on the day (families can add hours up to MAX_HOURS).
+const HRS_STUDY = BASE_HOURS.study;
+const HRS_CINEMA = BASE_HOURS.cinema;
+const HRS_PRODUCTION = BASE_HOURS.production;
+const HRS_ARCHIVE = BASE_HOURS.archive;
 
 export type CityPhotoSpot = { name: string; why: string; whyEs: string };
 
@@ -48,12 +53,12 @@ export const cityContent: Record<string, CityContent> = {
     "intro": [
       "Grand Prairie is split right down the Dallas–Tarrant county line, and it carries one of the most Mexican neighborhoods in the metroplex along with it. Close to half the city is Hispanic, and the roots run deeper than most people realize — Dalworth, on the northeast side, was its own incorporated town before Grand Prairie annexed it back in 1942, and it has stayed a tight Mexican-American community ever since. You feel that every Cinco de Mayo out at Traders Village, and you feel it in how families here still do a quinceañera the full way: the Mass, the court, the vals, all of it.",
       "A Grand Prairie quince day usually opens with a morning misa at a parish on the north or central side of town, moves into portraits, and lands at a reception hall for the night. Plenty of families shoot pictures out at Joe Pool Lake or in front of the Uptown Theater's old marquee on Main Street, then head to a banquet hall along Pioneer Parkway or out toward the Highway 161 corridor near EpicCentral. Tell me your church and your salón and I'll build the timeline so nothing gets rushed and nobody's chasing the light at the end of the day.",
-      `I shoot one quinceañera a day — never two — so your daughter's celebration isn't a stop on a packed Saturday. Everything runs in English and Spanish, so your tías and your padrinos always know what comes next. Commissions run from ${STUDY} for the Portrait Study to ${ARCHIVE} for the Multi-Day Editorial Archive, and the one I recommend for most celebrations is The Full Production at ${PRODUCTION}: eleven hours of photo and film, a portrait session at one location, a 12–15 minute feature film and a 40-page linen heirloom monograph. There's no travel fee anywhere in DFW, Grand Prairie included.`
+      `I shoot one quinceañera a day — never two — so your daughter's celebration isn't a stop on a packed Saturday. Everything runs in English and Spanish, so your tías and your padrinos always know what comes next. Packages run from ${STUDY} for the Portrait Session to ${ARCHIVE} for the Two-Day Celebration, and the one I recommend for most celebrations is the Full Celebration at ${PRODUCTION}: ${HRS_PRODUCTION} hours of photo and video with a team of ${CREW_PRODUCTION} and a day-of coordinator, a portrait session at one location, a 12–15 minute full-length video and a 40-page printed photo album. There's no travel fee anywhere in DFW, Grand Prairie included.`
     ],
     "introEs": [
       "Grand Prairie está partido justo por la línea de los condados de Dallas y Tarrant, y trae consigo uno de los barrios más mexicanos del metroplex. Casi la mitad de la ciudad es hispana, y la raíz viene de más atrás de lo que muchos creen: Dalworth, por el lado noreste, fue su propio pueblo antes de que Grand Prairie lo anexara en 1942, y desde entonces sigue siendo una comunidad mexicana bien unida. Eso se siente cada Cinco de Mayo en Traders Village, y se siente en cómo las familias de aquí todavía hacen la quinceañera completa: la misa, la corte, el vals, todo.",
       "Un día de quince en Grand Prairie casi siempre empieza con una misa de mañana en una parroquia del norte o del centro de la ciudad, sigue con las fotos y termina en un salón por la noche. Muchas familias toman fotos en Joe Pool Lake o frente a la marquesina vieja del Uptown Theater en Main Street, y luego se van a un salón por Pioneer Parkway o rumbo al corredor de la Highway 161 cerca de EpicCentral. Díme tu iglesia y tu salón y armo el itinerario para que nada se haga a las prisas y nadie ande corriendo por la luz al final del día.",
-      `Fotografío una sola quinceañera al día —nunca dos— para que la celebración de tu hija no sea una parada en un sábado lleno. Todo lo manejo en inglés y español, para que tus tías y tus padrinos siempre sepan qué sigue. Los encargos van de ${STUDY} con el Estudio de retrato a ${ARCHIVE} con el Archivo editorial de varios días, y el que recomiendo para la mayoría de las celebraciones es La producción completa, en ${PRODUCTION}: once horas de foto y cine, una sesión de retrato en una locación, una película de 12 a 15 minutos y una monografía de lino de 40 páginas para heredar. No hay cargo por traslado en ningún lugar de DFW, Grand Prairie incluido.`
+      `Fotografío una sola quinceañera al día —nunca dos— para que la celebración de tu hija no sea una parada en un sábado lleno. Todo lo manejo en inglés y español, para que tus tías y tus padrinos siempre sepan qué sigue. Los paquetes van de ${STUDY} con la Sesión de retratos a ${ARCHIVE} con la Celebración de dos días, y el que recomiendo para la mayoría de las celebraciones es la Celebración completa, en ${PRODUCTION}: ${HRS_PRODUCTION} horas de foto y video con un equipo de ${CREW_PRODUCTION} y una coordinadora del día, una sesión de retrato en una locación, un video completo de 12 a 15 minutos y un álbum de fotos impreso de 40 páginas. No hay cargo por traslado en ningún lugar de DFW, Grand Prairie incluido.`
     ],
     "photoSpots": [
       {
@@ -85,7 +90,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqs": [
       {
         "q": "How much does a quinceañera photographer cost in Grand Prairie?",
-        "a": `Commissions start at ${STUDY} for I. Portrait Study, a photo-only editorial session before the celebration, then ${CINEMA} for II. Cinema & Stills and ${PRODUCTION} for III. The Full Production — the one I recommend for most Grand Prairie celebrations — up to ${ARCHIVE} for IV. Multi-Day Editorial Archive. A ${RETAINER_PCT} retainer (minimum ${RETAINER_MIN}) holds your date and is applied in full, and there's no travel fee anywhere in DFW. Compare all four at /#commissions.`
+        "a": `Packages start at ${STUDY} for the Portrait Session (photos only, ${HRS_STUDY} hours with one photographer), then ${CINEMA} for Photo + Video and ${PRODUCTION} for the Full Celebration — the one I recommend for most Grand Prairie celebrations — up to ${ARCHIVE} for the Two-Day Celebration. Once your signed agreement is approved, a ${RETAINER_PCT} deposit locks in your date and goes toward your total, and there's no travel fee anywhere in DFW. Compare all four on our Packages & Prices page.`
       },
       {
         "q": "Where are the best places to take quince pictures in Grand Prairie?",
@@ -97,7 +102,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer both photo and video for quinceañeras in Grand Prairie?",
-        "a": `Yes — Cinema & Stills, The Full Production and the Multi-Day Editorial Archive all include film alongside photography, shot the same day by one team — ${CREW_CINEMA}, ${CREW_PRODUCTION} or ${CREW_ARCHIVE} directors, in whatever mix of photographers and videographers you choose. Cinema & Stills delivers an 8–10 minute 4K feature and a 60-second teaser; The Full Production extends that to a 12–15 minute feature, a 90-second teaser and four vertical reels. Because I only take one celebration a day, the film never competes with the photos for attention.`
+        "a": `Yes — Photo + Video, the Full Celebration and the Two-Day Celebration all include video alongside the photos, shot the same day by one team: one photographer and one videographer with Photo + Video, or a team of ${CREW_PRODUCTION} or ${CREW_ARCHIVE} with the bigger packages, in whatever mix of photographers and videographers you choose. Photo + Video delivers an 8–10 minute full-length video in 4K and a 1-minute short trailer; the Full Celebration extends that to a 12–15 minute full-length video, a 90-second short trailer and four short vertical videos for social media. Because I only take one celebration a day, the video never competes with the photos for attention.`
       },
       {
         "q": "What areas near Grand Prairie do you serve?",
@@ -107,7 +112,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqsEs": [
       {
         "q": "¿Cuánto cuesta un fotógrafo de quinceañeras en Grand Prairie?",
-        "a": `Los encargos empiezan en ${STUDY} con I. Estudio de retrato, una sesión editorial solo de foto antes de la celebración; siguen ${CINEMA} con II. Cine y fotografía y ${PRODUCTION} con III. La producción completa —la que recomiendo para la mayoría de las celebraciones en Grand Prairie— y llegan a ${ARCHIVE} con IV. Archivo editorial de varios días. Un anticipo del ${RETAINER_PCT} (mínimo ${RETAINER_MIN}) aparta tu fecha y se aplica completo, y no hay cargo por traslado en ningún lugar de DFW. Compara los cuatro en /es#commissions.`
+        "a": `Los paquetes empiezan en ${STUDY} con la Sesión de retratos (solo fotos, ${HRS_STUDY} horas con un fotógrafo); siguen ${CINEMA} con Foto + Video y ${PRODUCTION} con la Celebración completa —la que recomiendo para la mayoría de las celebraciones en Grand Prairie— y llegan a ${ARCHIVE} con la Celebración de dos días. Ya aprobado tu contrato firmado, un depósito del ${RETAINER_PCT} asegura tu fecha y se abona a tu total, y no hay cargo por traslado en ningún lugar de DFW. Compara los cuatro en nuestra página de Paquetes y precios.`
       },
       {
         "q": "¿Cuáles son los mejores lugares para tomar fotos de quince en Grand Prairie?",
@@ -119,7 +124,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video para quinceañeras en Grand Prairie?",
-        "a": `Sí — Cine y fotografía, La producción completa y el Archivo editorial de varios días incluyen cine junto con la fotografía, grabado el mismo día por un solo equipo: ${CREW_CINEMA}, ${CREW_PRODUCTION} o ${CREW_ARCHIVE} directores, en la combinación de fotógrafos y videógrafos que tú elijas. Cine y fotografía entrega una película 4K de 8 a 10 minutos y un avance de 60 segundos; La producción completa sube a una película de 12 a 15 minutos, un avance de 90 segundos y cuatro reels verticales. Como solo tomo una celebración al día, el video nunca compite con las fotos por la atención.`
+        "a": `Sí — Foto + Video, la Celebración completa y la Celebración de dos días incluyen video junto con las fotos, grabado el mismo día por un solo equipo: un fotógrafo y un videógrafo con Foto + Video, o un equipo de ${CREW_PRODUCTION} o ${CREW_ARCHIVE} personas con los paquetes más grandes, en la combinación de fotógrafos y videógrafos que tú elijas. Foto + Video entrega un video completo en 4K de 8 a 10 minutos y un tráiler corto de 1 minuto; la Celebración completa sube a un video completo de 12 a 15 minutos, un tráiler corto de 90 segundos y cuatro videos verticales cortos para redes sociales. Como solo tomo una celebración al día, el video nunca compite con las fotos por la atención.`
       },
       {
         "q": "¿Qué áreas cerca de Grand Prairie cubres?",
@@ -131,12 +136,12 @@ export const cityContent: Record<string, CityContent> = {
     "intro": [
       "Irving is really two cities, and a quinceañera here usually touches both. South of Highway 183 you have the older, Spanish-speaking heart of town — the panaderías and carnicerías along Irving Boulevard, the parishes that have been baptizing and confirming the same families for decades, and the brick storefronts of the Heritage District around Main Street. North of that sit the canals and glass towers of Las Colinas. Irving is roughly 40% Hispanic, mostly families of Mexican origin, and that community is concentrated in exactly those older South Irving neighborhoods where the church-first tradition is still done in full.",
       "A typical day moves across that whole map. We start with the misa in South Irving, then drive ten minutes north so your daughter can stand under the Mustangs at Williams Square or along the Venetian bridges of the Mandalay Canal for portraits — backdrops you genuinely cannot get anywhere else in DFW. From there the reception might be a hotel ballroom near the Irving Convention Center, the entertainment district around the Toyota Music Factory, or a neighborhood salón off Irving Boulevard. I build the timeline around your actual churches and venues, not a template.",
-      "I only photograph one quinceañera a day, and only quinceañeras — no weddings squeezed in, no second event pulling me away at sunset. Everything is fully bilingual, so your grandparents understand every direction during portraits and the toasts get caught in the moment. Every film commission pairs a 4K feature with a teaser cut you can share, and The Full Production adds a 40-page linen monograph made to be handed down."
+      "I only photograph one quinceañera a day, and only quinceañeras — no weddings squeezed in, no second event pulling me away at sunset. Everything is fully bilingual, so your grandparents understand every direction during portraits and the toasts get caught in the moment. Every package with video pairs a full-length video in 4K with a short trailer you can share, and the Full Celebration adds a 40-page printed photo album to keep for years."
     ],
     "introEs": [
       "Irving en realidad son dos ciudades, y una quinceañera casi siempre toca las dos. Al sur de la 183 está el corazón mexicano de la ciudad: las panaderías y carnicerías sobre Irving Boulevard, las parroquias que llevan generaciones bautizando y confirmando a las mismas familias, y los locales de ladrillo del Heritage District por Main Street. Al norte quedan los canales y las torres de cristal de Las Colinas. Irving es casi 40% hispano, en su mayoría familias de origen mexicano, y esa comunidad está concentrada justo en esos barrios del sur de Irving donde todavía se hace la tradición completa, empezando por la iglesia.",
       "Un día típico recorre todo ese mapa. Empezamos con la misa en el sur de Irving y manejamos diez minutos al norte para que tu hija se pare bajo los Mustangs de Williams Square o sobre los puentes venecianos del Mandalay Canal para las fotos — fondos que de verdad no encuentras en ninguna otra parte de DFW. De ahí la recepción puede ser un salón de hotel cerca del Irving Convention Center, la zona de entretenimiento del Toyota Music Factory, o un salón del barrio sobre Irving Boulevard. Armo el itinerario alrededor de tus iglesias y tu salón, no de una plantilla.",
-      "Solo fotografío una quinceañera al día y solo quinceañeras: nada de bodas encimadas ni un segundo evento que me jale al atardecer. Todo es bilingüe, así que tus abuelos entienden cada indicación durante las fotos y los brindis quedan capturados en el momento. Cada encargo con cine trae una película 4K y un avance para compartir, y La producción completa suma una monografía de lino de 40 páginas, hecha para heredarse."
+      "Solo fotografío una quinceañera al día y solo quinceañeras: nada de bodas encimadas ni un segundo evento que me jale al atardecer. Todo es bilingüe, así que tus abuelos entienden cada indicación durante las fotos y los brindis quedan capturados en el momento. Cada paquete con video trae un video completo en 4K y un tráiler corto para compartir, y la Celebración completa suma un álbum de fotos impreso de 40 páginas para guardar por años."
     ],
     "photoSpots": [
       {
@@ -173,7 +178,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqs": [
       {
         "q": "How much does a quinceañera photographer cost in Irving?",
-        "a": `My commissions run from ${STUDY} (I. Portrait Study) to ${ARCHIVE} (IV. Multi-Day Editorial Archive). The one I recommend for most celebrations is III. The Full Production at ${PRODUCTION} — 11 hours with ${CREW_PRODUCTION} directors and a day-of coordinator, a portrait session at one location (the Mandalay Canal is a natural pick), a 12–15 minute feature film and 700+ retouched frames. II. Cinema & Stills, at ${CINEMA}, covers 8 hours of photo and film. There's no travel fee anywhere in Irving or the rest of DFW; see every inclusion at /#commissions.`
+        "a": `My packages run from ${STUDY} (Portrait Session) to ${ARCHIVE} (Two-Day Celebration). The one I recommend for most celebrations is the Full Celebration at ${PRODUCTION} — ${HRS_PRODUCTION} hours with a team of ${CREW_PRODUCTION} and a day-of coordinator, a portrait session at one location (the Mandalay Canal is a natural pick), a 12–15 minute full-length video and 700+ edited photos. Photo + Video, at ${CINEMA}, covers ${HRS_CINEMA} hours with one photographer and one videographer. There's no travel fee anywhere in Irving or the rest of DFW; see every inclusion on our Packages & Prices page.`
       },
       {
         "q": "Where are the best places to take quince pictures in Irving?",
@@ -185,7 +190,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer photo and video for quinceañeras in Irving?",
-        "a": `Yes. II. Cinema & Stills (${CINEMA}), III. The Full Production (${PRODUCTION}) and IV. Multi-Day Editorial Archive (${ARCHIVE}) all include both photography and a 4K feature film, shot the same day by one team of ${CREW_CINEMA} to ${CREW_ARCHIVE} directors, in whatever mix of photographers and videographers you choose. If you'd like a short film screened for your guests that same night, the same-day reception edit is ${SAMEDAY}.`
+        "a": `Yes. Photo + Video (${CINEMA}), Full Celebration (${PRODUCTION}) and Two-Day Celebration (${ARCHIVE}) all include both photography and a full-length video in 4K, shot the same day by one team of ${CREW_CINEMA} to ${CREW_ARCHIVE} people, in whatever mix of photographers and videographers you choose. If you'd like a short highlight video to share right away, the Same-Day Edit (ready in 24 hours) is ${SAMEDAY}.`
       },
       {
         "q": "What areas near Irving do you cover?",
@@ -195,7 +200,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqsEs": [
       {
         "q": "¿Cuánto cuesta un fotógrafo de quinceañera en Irving?",
-        "a": `Mis encargos van de ${STUDY} (I. Estudio de retrato) a ${ARCHIVE} (IV. Archivo editorial de varios días). El que recomiendo para la mayoría de las celebraciones es III. La producción completa, en ${PRODUCTION}: 11 horas con ${CREW_PRODUCTION} directores y una coordinadora del día, una sesión de retrato en una locación (el Mandalay Canal es la opción natural), una película de 12 a 15 minutos y más de 700 imágenes retocadas. II. Cine y fotografía, en ${CINEMA}, cubre 8 horas de foto y video. No hay cargo por traslado en Irving ni en el resto de DFW; mira todo lo que incluye cada uno en /es#commissions.`
+        "a": `Mis paquetes van de ${STUDY} (Sesión de retratos) a ${ARCHIVE} (Celebración de dos días). El que recomiendo para la mayoría de las celebraciones es Celebración completa, en ${PRODUCTION}: ${HRS_PRODUCTION} horas con un equipo de ${CREW_PRODUCTION} y una coordinadora del día, una sesión de retrato en una locación (el Mandalay Canal es la opción natural), un video completo de 12 a 15 minutos y más de 700 fotos editadas. Foto + Video, en ${CINEMA}, cubre ${HRS_CINEMA} horas con un fotógrafo y un videógrafo. No hay cargo por traslado en Irving ni en el resto de DFW; mira todo lo que incluye cada uno en nuestra página de Paquetes y precios.`
       },
       {
         "q": "¿Cuáles son los mejores lugares para tomar fotos de quince en Irving?",
@@ -207,7 +212,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video para quinceañeras en Irving?",
-        "a": `Sí. II. Cine y fotografía (${CINEMA}), III. La producción completa (${PRODUCTION}) y IV. Archivo editorial de varios días (${ARCHIVE}) incluyen fotografía y una película 4K, grabadas el mismo día por un solo equipo de ${CREW_CINEMA} a ${CREW_ARCHIVE} directores, repartidos entre fotógrafos y videógrafos como tú prefieras. Si quieres un video corto proyectado para tus invitados esa misma noche, la edición el mismo día cuesta ${SAMEDAY}.`
+        "a": `Sí. Foto + Video (${CINEMA}), Celebración completa (${PRODUCTION}) y Celebración de dos días (${ARCHIVE}) incluyen fotografía y un video completo en 4K, grabados el mismo día por un solo equipo de ${CREW_CINEMA} a ${CREW_ARCHIVE} personas, repartidas entre fotógrafos y videógrafos como tú prefieras. Si quieres un video corto para compartir enseguida, la Edición el mismo día (lista en 24 horas) cuesta ${SAMEDAY}.`
       },
       {
         "q": "¿Qué zonas cerca de Irving cubres?",
@@ -256,7 +261,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqs": [
       {
         "q": "How much does a quinceañera photographer cost in Garland?",
-        "a": `Commissions run from ${STUDY} for the photo-only I. Portrait Study to ${ARCHIVE} for IV. Multi-Day Editorial Archive. In between are II. Cinema & Stills at ${CINEMA} — 8 hours with a stills director and a motion director — and III. The Full Production at ${PRODUCTION}, the one I recommend for most celebrations. There's no travel fee anywhere in DFW, so your Garland day is priced exactly like one in Dallas — see /#commissions for what's in each.`
+        "a": `Packages run from ${STUDY} for the photo-only Portrait Session to ${ARCHIVE} for the Two-Day Celebration. In between are Photo + Video at ${CINEMA} — ${HRS_CINEMA} hours with one photographer and one videographer — and Full Celebration at ${PRODUCTION}, the one I recommend for most celebrations. There's no travel fee anywhere in DFW, so your Garland day is priced exactly like one in Dallas — see our Packages & Prices page for what's in each.`
       },
       {
         "q": "Where are the best places to take quince pictures in Garland?",
@@ -268,17 +273,17 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer photo and video in Garland?",
-        "a": `Yes. II. Cinema & Stills (${CINEMA}) pairs a stills director with a motion director for an 8–10 minute 4K feature, a 60-second teaser and 400+ retouched frames; III. The Full Production (${PRODUCTION}) brings ${CREW_PRODUCTION} directors and a day-of coordinator, a 12–15 minute feature and a 40-page linen heirloom monograph. If you only want portraits, I. Portrait Study (${STUDY}) is photo only.`
+        "a": `Yes. Photo + Video (${CINEMA}) pairs one photographer with one videographer for an 8–10 minute full-length video in 4K, a 1-minute short trailer and 400+ edited photos; Full Celebration (${PRODUCTION}) brings a team of ${CREW_PRODUCTION} and a day-of coordinator, a 12–15 minute full-length video and a 40-page printed photo album. If you only want portraits, the Portrait Session (${STUDY}) is photo only.`
       },
       {
         "q": "What areas around Garland do you cover?",
-        "a": "All of it, with no travel fee — Garland plus Rowlett, Sachse, Mesquite, Richardson, Sunnyvale, Wylie, Murphy, and Rockwall across the lake, along with the rest of Dallas–Fort Worth. If your quince is anywhere in the metroplex, I can be there — check your date at /#intake."
+        "a": "All of it, with no travel fee — Garland plus Rowlett, Sachse, Mesquite, Richardson, Sunnyvale, Wylie, Murphy, and Rockwall across the lake, along with the rest of Dallas–Fort Worth. If your quince is anywhere in the metroplex, I can be there — check your date on our booking form."
       }
     ],
     "faqsEs": [
       {
         "q": "¿Cuánto cuesta un fotógrafo de quinceañera en Garland?",
-        "a": `Los encargos van de ${STUDY} con I. Estudio de retrato, solo de foto, a ${ARCHIVE} con IV. Archivo editorial de varios días. En medio están II. Cine y fotografía, en ${CINEMA} —8 horas con un director de foto y uno de cine—, y III. La producción completa, en ${PRODUCTION}, la que recomiendo para la mayoría de las celebraciones. No hay cargo por traslado en ningún lugar de DFW, así que tu día en Garland cuesta igual que uno en Dallas — mira /es#commissions para ver qué trae cada uno.`
+        "a": `Los paquetes van de ${STUDY} con la Sesión de retratos, solo de foto, a ${ARCHIVE} con la Celebración de dos días. En medio están Foto + Video, en ${CINEMA} —${HRS_CINEMA} horas con un fotógrafo y un videógrafo—, y la Celebración completa, en ${PRODUCTION}, la que recomiendo para la mayoría de las celebraciones. No hay cargo por traslado en ningún lugar de DFW, así que tu día en Garland cuesta igual que uno en Dallas — mira nuestra página de Paquetes y precios para ver qué trae cada uno.`
       },
       {
         "q": "¿Cuáles son los mejores lugares para tomar fotos de quince en Garland?",
@@ -290,11 +295,11 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video en Garland?",
-        "a": `Sí. II. Cine y fotografía (${CINEMA}) junta a un director de foto con uno de cine para una película 4K de 8 a 10 minutos, un avance de 60 segundos y más de 400 imágenes retocadas; III. La producción completa (${PRODUCTION}) trae ${CREW_PRODUCTION} directores y una coordinadora del día, una película de 12 a 15 minutos y una monografía de lino de 40 páginas. Si solo quieres retratos, I. Estudio de retrato (${STUDY}) es solo de foto.`
+        "a": `Sí. Foto + Video (${CINEMA}) junta a un fotógrafo con un videógrafo para un video completo en 4K de 8 a 10 minutos, un tráiler corto de 1 minuto y más de 400 fotos editadas; Celebración completa (${PRODUCTION}) trae un equipo de ${CREW_PRODUCTION} y una coordinadora del día, un video completo de 12 a 15 minutos y un álbum de fotos impreso de 40 páginas. Si solo quieres retratos, la Sesión de retratos (${STUDY}) es solo de foto.`
       },
       {
         "q": "¿Qué zonas alrededor de Garland cubres?",
-        "a": "Todas, sin cargo por traslado — Garland más Rowlett, Sachse, Mesquite, Richardson, Sunnyvale, Wylie, Murphy y Rockwall al cruzar el lago, junto con el resto de Dallas–Fort Worth. Si tu quince es en cualquier parte del metroplex, ahí estoy — revisa tu fecha en /es#intake."
+        "a": "Todas, sin cargo por traslado — Garland más Rowlett, Sachse, Mesquite, Richardson, Sunnyvale, Wylie, Murphy y Rockwall al cruzar el lago, junto con el resto de Dallas–Fort Worth. Si tu quince es en cualquier parte del metroplex, ahí estoy — revisa tu fecha en nuestro formulario de reservación."
       }
     ]
   },
@@ -302,12 +307,12 @@ export const cityContent: Record<string, CityContent> = {
     "intro": [
       "Walk Jefferson Boulevard in Oak Cliff and you can read the whole tradition straight off the shop windows: bridal stores with quinceañera ball gowns on display, paleterías and taquerías a few doors down, the same blocks Mexican families have kept alive since the 1960s. That stretch is the commercial heart of Mexican-American Dallas, and it tells you everything about how seriously this city takes a girl's fifteenth birthday.",
       "Dallas is big, and the celebrations are spread across it. A morning misa at a parish in Oak Cliff or Pleasant Grove, portraits in Bishop Arts or out by White Rock Lake, then a reception that might land anywhere from a hall off Jefferson to a salón on the east side near Mesquite. Most families here keep the order intact, church first, then the formal portraits, then the vals and the party, and I photograph the day in that sequence, the way it's meant to flow.",
-      "I shoot one quinceañera a day, in English or Spanish, with no travel fee anywhere in Dallas or the wider metroplex. Every commission is delivered as retouched frames, and the film commissions add a teaser cut — 60 seconds with Cinema & Stills, 90 with The Full Production — so you have something to share long before the feature is finished. When you reach out, tell me your church and your venue and I'll build the timeline around both."
+      "I shoot one quinceañera a day, in English or Spanish, with no travel fee anywhere in Dallas or the wider metroplex. Every package comes with edited photos, and the packages with video add a short trailer — 1 minute with Photo + Video, 90 with the Full Celebration — so you have something to share long before the full-length video is finished. When you reach out, tell me your church and your venue and I'll build the timeline around both."
     ],
     "introEs": [
       "Camina por Jefferson Boulevard en Oak Cliff y vas a leer toda la tradición en los aparadores: tiendas de novias con vestidos de quinceañera, paleterías y taquerías a unos pasos, las mismas cuadras que las familias mexicanas han mantenido vivas desde los años sesenta. Ese tramo es el corazón comercial del Dallas mexicano, y te dice todo sobre lo en serio que esta ciudad se toma los quince años de una niña.",
       "Dallas es grande y las celebraciones están repartidas por toda la ciudad. Una misa de mañana en una parroquia de Oak Cliff o Pleasant Grove, las fotos en Bishop Arts o por White Rock Lake, y luego una recepción que lo mismo cae en un salón por Jefferson que en uno del lado este, cerca de Mesquite. Aquí casi todas las familias respetan el orden: primero la iglesia, luego las fotos formales, después el vals y la fiesta. Así fotografío el día, como debe fluir.",
-      "Hago una sola quinceañera al día, en inglés o español, sin cargo por traslado en Dallas ni en todo el metroplex. Cada encargo se entrega en imágenes retocadas, y los encargos con cine suman un avance —de 60 segundos con Cine y fotografía, de 90 con La producción completa— para que tengas algo que compartir mucho antes de que esté lista la película. Cuando me escribas, dime tu iglesia y tu salón y armo el itinerario alrededor de los dos."
+      "Hago una sola quinceañera al día, en inglés o español, sin cargo por traslado en Dallas ni en todo el metroplex. Cada paquete trae fotos editadas, y los paquetes con video suman un tráiler corto —de 1 minuto con Foto + Video, de 90 con la Celebración completa— para que tengas algo que compartir mucho antes de que esté listo el video completo. Cuando me escribas, dime tu iglesia y tu salón y armo el itinerario alrededor de los dos."
     ],
     "photoSpots": [
       {
@@ -344,7 +349,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqs": [
       {
         "q": "How much does a quinceañera photographer cost in Dallas?",
-        "a": `I. Portrait Study is ${STUDY}, II. Cinema & Stills ${CINEMA}, III. The Full Production ${PRODUCTION} — the one I recommend for most celebrations, with photo, film and a linen heirloom monograph — and IV. Multi-Day Editorial Archive ${ARCHIVE}. Enhancements include a destination portrait session (${DESTINATION}) and a roll of Super 8mm film cut into the feature (${SUPER8}). There's no travel fee anywhere in Dallas or DFW, and a ${RETAINER_PCT} retainer (minimum ${RETAINER_MIN}) holds the date.`
+        "a": `Portrait Session is ${STUDY}, Photo + Video ${CINEMA}, Full Celebration ${PRODUCTION} — the one I recommend for most celebrations, with photos, video and a printed photo album — and Two-Day Celebration ${ARCHIVE}. Extras include a Dress Session, photos in her dress before the big day (${DESTINATION}), and a Vintage Film Clip (Super 8) added to the full-length video (${SUPER8}). There's no travel fee anywhere in Dallas or DFW, and a ${RETAINER_PCT} deposit locks in the date once your agreement is approved.`
       },
       {
         "q": "Where are the best places to take quince pictures in Dallas?",
@@ -356,7 +361,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer both photo and video for quinceañeras in Dallas?",
-        "a": "Yes. Cinema & Stills, The Full Production and the Multi-Day Editorial Archive pair photography with a 4K feature film and a teaser — up to a 20-minute documentary and a 2-minute trailer with the Archive. Everything is offered fully in English or Spanish."
+        "a": "Yes. Photo + Video, the Full Celebration and the Two-Day Celebration pair photos with a full-length video in 4K and a short trailer — up to a 20-minute full-length video and a 2-minute short trailer with the Two-Day Celebration. Everything is offered fully in English or Spanish."
       },
       {
         "q": "Do you cover the suburbs around Dallas too?",
@@ -366,7 +371,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqsEs": [
       {
         "q": "¿Cuánto cuesta un fotógrafo de quinceañera en Dallas?",
-        "a": `I. Estudio de retrato cuesta ${STUDY}, II. Cine y fotografía ${CINEMA}, III. La producción completa ${PRODUCTION} —la que recomiendo para la mayoría de las celebraciones, con foto, cine y una monografía de lino— y IV. Archivo editorial de varios días ${ARCHIVE}. Entre los extras están una sesión de retrato en destino (${DESTINATION}) y un rollo de Super 8 dentro de la película (${SUPER8}). No cobro traslado en Dallas ni en todo DFW, y un anticipo del ${RETAINER_PCT} (mínimo ${RETAINER_MIN}) aparta la fecha.`
+        "a": `Sesión de retratos cuesta ${STUDY}, Foto + Video ${CINEMA}, Celebración completa ${PRODUCTION} —la que recomiendo para la mayoría de las celebraciones, con fotos, video y un álbum de fotos impreso— y la Celebración de dos días ${ARCHIVE}. Entre los extras están una Sesión con el vestido, fotos con su vestido antes del gran día (${DESTINATION}), y un Clip de película vintage (Super 8) dentro del video completo (${SUPER8}). No cobro traslado en Dallas ni en todo DFW, y un depósito del ${RETAINER_PCT} asegura la fecha una vez aprobado tu contrato.`
       },
       {
         "q": "¿Cuáles son los mejores lugares para tomar fotos de quince en Dallas?",
@@ -378,7 +383,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video para quinceañeras en Dallas?",
-        "a": "Sí. Cine y fotografía, La producción completa y el Archivo editorial de varios días combinan la fotografía con una película 4K y un avance — hasta un documental de 20 minutos y un tráiler de 2 minutos con el Archivo. Todo se ofrece por completo en inglés o español."
+        "a": "Sí. Foto + Video, la Celebración completa y la Celebración de dos días combinan las fotos con un video completo en 4K y un tráiler corto — hasta un video completo de 20 minutos y un tráiler corto de 2 minutos con la Celebración de dos días. Todo se ofrece por completo en inglés o español."
       },
       {
         "q": "¿También cubres los suburbios alrededor de Dallas?",
@@ -389,13 +394,13 @@ export const cityContent: Record<string, CityContent> = {
   "fort-worth": {
     "intro": [
       "Fort Worth's Mexican heritage didn't start downtown — it started a mile north of the Trinity River, where families came to work the Swift and Armour packing plants in the early 1900s and built the North Side into the city's oldest barrio. More than a century later, North Main Street, Marine Park, and the parishes around them are still where a lot of Fort Worth quinceañeras begin. Cross town to the South Freeway and you hit the other anchor: La Gran Plaza, the Hispanic mercado where families pick out the dress, the cake, and the recuerdos. I know how a quinceañera moves between these two sides of the city, and I build the day around the route your family actually takes.",
-      "Fort Worth gives you a backdrop for whatever look you are after. Want something modern and dramatic? The Fort Worth Water Gardens downtown are free and open daily, all terraced concrete and falling water. Want the classic garden shots in the gown? The Japanese Garden inside the Botanic Garden has the koi ponds, red bridges, and maples for it. Want Fort Worth unmistakable in the frame? The Stockyards' brick streets and Mule Alley do that in a single block. Most days we work portraits in between the misa and the reception, but if your schedule is tight we can make the spot you love a portrait session before the celebration — the heart of the Portrait Study, and included at one location in The Full Production — and keep the day itself relaxed.",
-      "I only photograph one quinceañera a day, and only quinceañeras — this is not a wedding studio fitting yours in on the side. That means the morning at the church, the portraits, the vals, the surprise dance, and the last hour on the floor all get the same attention. Everything runs in English and Spanish, so your tías and your abuelos understand every direction I give. There is no travel fee anywhere in Tarrant County or the rest of DFW, and every film commission comes with a teaser cut and vertical reels alongside the feature."
+      "Fort Worth gives you a backdrop for whatever look you are after. Want something modern and dramatic? The Fort Worth Water Gardens downtown are free and open daily, all terraced concrete and falling water. Want the classic garden shots in the gown? The Japanese Garden inside the Botanic Garden has the koi ponds, red bridges, and maples for it. Want Fort Worth unmistakable in the frame? The Stockyards' brick streets and Mule Alley do that in a single block. Most days we work portraits in between the misa and the reception, but if your schedule is tight we can make the spot you love a portrait session before the celebration — the heart of the Portrait Session, and included at one location in the Full Celebration — and keep the day itself relaxed.",
+      "I only photograph one quinceañera a day, and only quinceañeras — this is not a wedding studio fitting yours in on the side. That means the morning at the church, the portraits, the vals, the surprise dance, and the last hour on the floor all get the same attention. Everything runs in English and Spanish, so your tías and your abuelos understand every direction I give. There is no travel fee anywhere in Tarrant County or the rest of DFW, and every package with video comes with a short trailer and short vertical videos for social media alongside the full-length video."
     ],
     "introEs": [
       "La herencia mexicana de Fort Worth no empezó en el centro, sino una milla al norte del río Trinity, donde las familias llegaron a trabajar a los empacadores de carne Swift y Armour a principios de los 1900 y levantaron el North Side, el barrio más antiguo de la ciudad. Más de cien años después, North Main Street, Marine Park y las parroquias de por ahí siguen siendo donde arrancan muchas quinceañeras de Fort Worth. Del otro lado, por la South Freeway, está el otro punto de reunión: La Gran Plaza, el mercado donde las familias escogen el vestido, el pastel y los recuerdos. Conozco cómo se mueve una quinceañera entre estos dos lados de la ciudad y armo el día según la ruta que de verdad sigue tu familia.",
-      "Fort Worth te da el fondo que quieras. ¿Algo moderno y de impacto? Los Fort Worth Water Gardens, en el centro, son gratis y abren todos los días, puro concreto en terrazas y agua cayendo. ¿Las fotos clásicas de jardín con el vestido? El Japanese Garden, dentro del Botanic Garden, tiene los estanques de koi, los puentes rojos y los maples. ¿Que se note que es Fort Worth? Las calles de ladrillo de los Stockyards y Mule Alley lo logran en una sola cuadra. Casi siempre hacemos las fotos entre la misa y la recepción, pero si el tiempo está apretado podemos hacer en el lugar que más te guste una sesión de retrato antes de la celebración —el corazón del Estudio de retrato, e incluida en una locación con La producción completa— y dejar tranquilo el día de la fiesta.",
-      "Solo fotografío una quinceañera al día, y solo quinceañeras: no soy un estudio de bodas que acomoda la tuya de pasada. Eso quiere decir que la mañana en la iglesia, las fotos, el vals, el baile sorpresa y la última hora en la pista reciben la misma atención. Todo es bilingüe, para que tus tías y tus abuelos entiendan cada indicación que doy. No hay cargo por traslado en todo el condado de Tarrant ni en el resto de DFW, y cada encargo con cine trae un avance y reels verticales junto con la película."
+      "Fort Worth te da el fondo que quieras. ¿Algo moderno y de impacto? Los Fort Worth Water Gardens, en el centro, son gratis y abren todos los días, puro concreto en terrazas y agua cayendo. ¿Las fotos clásicas de jardín con el vestido? El Japanese Garden, dentro del Botanic Garden, tiene los estanques de koi, los puentes rojos y los maples. ¿Que se note que es Fort Worth? Las calles de ladrillo de los Stockyards y Mule Alley lo logran en una sola cuadra. Casi siempre hacemos las fotos entre la misa y la recepción, pero si el tiempo está apretado podemos hacer en el lugar que más te guste una sesión de retrato antes de la celebración —el corazón de la Sesión de retratos, e incluida en una locación con la Celebración completa— y dejar tranquilo el día de la fiesta.",
+      "Solo fotografío una quinceañera al día, y solo quinceañeras: no soy un estudio de bodas que acomoda la tuya de pasada. Eso quiere decir que la mañana en la iglesia, las fotos, el vals, el baile sorpresa y la última hora en la pista reciben la misma atención. Todo es bilingüe, para que tus tías y tus abuelos entiendan cada indicación que doy. No hay cargo por traslado en todo el condado de Tarrant ni en el resto de DFW, y cada paquete con video trae un tráiler corto y videos verticales cortos para redes sociales junto con el video completo."
     ],
     "photoSpots": [
       {
@@ -432,7 +437,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqs": [
       {
         "q": "How much does a quinceañera photographer cost in Fort Worth?",
-        "a": `My commissions are ${STUDY} (I. Portrait Study, photo only), ${CINEMA} (II. Cinema & Stills), ${PRODUCTION} (III. The Full Production — the one I recommend for most celebrations) and ${ARCHIVE} (IV. Multi-Day Editorial Archive). There is no travel fee anywhere in Tarrant County or DFW, so the Fort Worth price is the price. You can see exactly what is in each at /#commissions, then reserve with a ${RETAINER_PCT} retainer or request a consultation at /#intake.`
+        "a": `My packages are ${STUDY} (Portrait Session, photo only), ${CINEMA} (Photo + Video), ${PRODUCTION} (Full Celebration — the one I recommend for most celebrations) and ${ARCHIVE} (Two-Day Celebration). There is no travel fee anywhere in Tarrant County or DFW, so the Fort Worth price is the price. You can see exactly what is in each on our Packages & Prices page, then sign the agreement online and lock in your date with a ${RETAINER_PCT} deposit once it's approved — or email us if you'd like a quick call first.`
       },
       {
         "q": "Where are the best places to take quince pictures in Fort Worth?",
@@ -444,17 +449,17 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer photo and video for Fort Worth quinceañeras?",
-        "a": `Yes. II. Cinema & Stills, III. The Full Production and IV. Multi-Day Editorial Archive include ${CREW_CINEMA}, ${CREW_PRODUCTION} or ${CREW_ARCHIVE} directors — you choose how many shoot photo and how many shoot film — so you get both, with a teaser and vertical reels alongside the feature film. If you only want portraits, I. Portrait Study (${STUDY}) is a photo-only, 3-hour editorial session before the celebration.`
+        "a": `Yes. Photo + Video, Full Celebration and Two-Day Celebration come with a team of ${CREW_CINEMA}, ${CREW_PRODUCTION} or ${CREW_ARCHIVE} — on the bigger packages you choose how many take photos and how many shoot video — so you get both, with a short trailer and short vertical videos for social media alongside the full-length video. If you only want portraits, the Portrait Session (${STUDY}) is photos only: ${HRS_STUDY} hours with one photographer.`
       },
       {
         "q": "What areas around Fort Worth do you cover?",
-        "a": "All of Tarrant County and the wider metroplex — Haltom City, North Richland Hills, Saginaw, White Settlement, Benbrook, Crowley, Burleson, Arlington and beyond — with no travel fee. If your church is in Fort Worth and your reception is a few towns over, that is a normal Fort Worth quinceañera day for me. Reserve your date at /#intake."
+        "a": "All of Tarrant County and the wider metroplex — Haltom City, North Richland Hills, Saginaw, White Settlement, Benbrook, Crowley, Burleson, Arlington and beyond — with no travel fee. If your church is in Fort Worth and your reception is a few towns over, that is a normal Fort Worth quinceañera day for me. Reserve your date on our booking form."
       }
     ],
     "faqsEs": [
       {
         "q": "¿Cuánto cuesta un fotógrafo de quinceañera en Fort Worth?",
-        "a": `Mis encargos son de ${STUDY} (I. Estudio de retrato, solo foto), ${CINEMA} (II. Cine y fotografía), ${PRODUCTION} (III. La producción completa — la que recomiendo para la mayoría de las celebraciones) y ${ARCHIVE} (IV. Archivo editorial de varios días). No hay cargo por traslado en el condado de Tarrant ni en DFW, así que el precio en Fort Worth es el precio. Puedes ver qué incluye cada uno en /es#commissions y luego apartar con un anticipo del ${RETAINER_PCT} o pedir una consulta en /es#intake.`
+        "a": `Mis paquetes son de ${STUDY} (Sesión de retratos, solo foto), ${CINEMA} (Foto + Video), ${PRODUCTION} (Celebración completa — la que recomiendo para la mayoría de las celebraciones) y ${ARCHIVE} (Celebración de dos días). No hay cargo por traslado en el condado de Tarrant ni en DFW, así que el precio en Fort Worth es el precio. Puedes ver qué incluye cada uno en nuestra página de Paquetes y precios y luego firmar el contrato en línea y asegurar tu fecha con un depósito del ${RETAINER_PCT} cuando esté aprobado, o escríbenos si prefieres una llamada rápida primero.`
       },
       {
         "q": "¿Cuáles son los mejores lugares para tomar fotos de quinceañera en Fort Worth?",
@@ -466,11 +471,11 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video para quinceañeras en Fort Worth?",
-        "a": `Sí. II. Cine y fotografía, III. La producción completa y IV. Archivo editorial de varios días incluyen ${CREW_CINEMA}, ${CREW_PRODUCTION} o ${CREW_ARCHIVE} directores —tú eliges cuántos son fotógrafos y cuántos videógrafos— para que tengas los dos, con un avance y reels verticales junto con la película. Si solo quieres retratos, I. Estudio de retrato (${STUDY}) es una sesión editorial de 3 horas, solo de foto, antes de la celebración.`
+        "a": `Sí. Foto + Video, Celebración completa y Celebración de dos días traen un equipo de ${CREW_CINEMA}, ${CREW_PRODUCTION} o ${CREW_ARCHIVE} personas —en los paquetes más grandes tú eliges cuántos son fotógrafos y cuántos videógrafos— para que tengas los dos, con un tráiler corto y videos verticales cortos para redes sociales junto con el video completo. Si solo quieres retratos, la Sesión de retratos (${STUDY}) es solo de fotos: ${HRS_STUDY} horas con un fotógrafo.`
       },
       {
         "q": "¿Qué zonas alrededor de Fort Worth cubres?",
-        "a": "Todo el condado de Tarrant y el resto del metroplex — Haltom City, North Richland Hills, Saginaw, White Settlement, Benbrook, Crowley, Burleson, Arlington y más — sin cargo por traslado. Si tu iglesia está en Fort Worth y tu recepción queda a unos pueblos de distancia, para mí es un día normal de quinceañera en Fort Worth. Aparta tu fecha en /es#intake."
+        "a": "Todo el condado de Tarrant y el resto del metroplex — Haltom City, North Richland Hills, Saginaw, White Settlement, Benbrook, Crowley, Burleson, Arlington y más — sin cargo por traslado. Si tu iglesia está en Fort Worth y tu recepción queda a unos pueblos de distancia, para mí es un día normal de quinceañera en Fort Worth. Aparta tu fecha en nuestro formulario de reservación."
       }
     ]
   },
@@ -520,7 +525,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqs": [
       {
         "q": "How much does a quinceañera photographer cost in Arlington?",
-        "a": `My commissions run from ${STUDY} (I. Portrait Study) to ${ARCHIVE} (IV. Multi-Day Editorial Archive), with III. The Full Production at ${PRODUCTION} the one I recommend for most celebrations — photo, film, a portrait session at one location and a 40-page linen monograph. II. Cinema & Stills is ${CINEMA}. There's no travel fee anywhere in Arlington or the rest of DFW. You can see exactly what's in each one at /#commissions.`
+        "a": `My packages run from ${STUDY} (Portrait Session) to ${ARCHIVE} (Two-Day Celebration), with the Full Celebration at ${PRODUCTION} the one I recommend for most celebrations — photos, video, a portrait session at one location and a 40-page printed photo album. Photo + Video is ${CINEMA}. There's no travel fee anywhere in Arlington or the rest of DFW. You can see exactly what's in each one on our Packages & Prices page.`
       },
       {
         "q": "Where are the best places to take quince pictures in Arlington?",
@@ -532,7 +537,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer photo and video for a quinceañera in Arlington?",
-        "a": `Yes. II. Cinema & Stills (${CINEMA}) pairs photography with an 8–10 minute 4K feature film, and III. The Full Production (${PRODUCTION}) extends it to a 12–15 minute feature, a 90-second teaser and four vertical reels. For a stadium-sized finish, the same-day reception edit (${SAMEDAY}) lets your guests see the film before the night is over.`
+        "a": `Yes. Photo + Video (${CINEMA}) pairs photos with an 8–10 minute full-length video in 4K, and the Full Celebration (${PRODUCTION}) extends it to a 12–15 minute full-length video, a 90-second short trailer and four short vertical videos for social media. And if you can't wait to share it, the Same-Day Edit (${SAMEDAY}) gives you a short highlight video within 24 hours.`
       },
       {
         "q": "What areas around Arlington do you serve?",
@@ -542,7 +547,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqsEs": [
       {
         "q": "¿Cuánto cuesta un fotógrafo de quinceañera en Arlington?",
-        "a": `Mis encargos van de ${STUDY} (I. Estudio de retrato) a ${ARCHIVE} (IV. Archivo editorial de varios días), y III. La producción completa, en ${PRODUCTION}, es la que recomiendo para la mayoría de las celebraciones: foto, cine, una sesión de retrato en una locación y una monografía de lino de 40 páginas. II. Cine y fotografía cuesta ${CINEMA}. No hay cargo por traslado en Arlington ni en el resto de DFW. Puedes ver todo lo que incluye cada uno en /es#commissions.`
+        "a": `Mis paquetes van de ${STUDY} (Sesión de retratos) a ${ARCHIVE} (Celebración de dos días), y la Celebración completa, en ${PRODUCTION}, es la que recomiendo para la mayoría de las celebraciones: fotos, video, una sesión de retrato en una locación y un álbum de fotos impreso de 40 páginas. Foto + Video cuesta ${CINEMA}. No hay cargo por traslado en Arlington ni en el resto de DFW. Puedes ver todo lo que incluye cada uno en nuestra página de Paquetes y precios.`
       },
       {
         "q": "¿Cuáles son los mejores lugares para tomar fotos de quince en Arlington?",
@@ -554,7 +559,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video para una quinceañera en Arlington?",
-        "a": `Sí. II. Cine y fotografía (${CINEMA}) junta la fotografía con una película 4K de 8 a 10 minutos, y III. La producción completa (${PRODUCTION}) la lleva a una película de 12 a 15 minutos, un avance de 90 segundos y cuatro reels verticales. Para un cierre del tamaño de un estadio, la edición el mismo día (${SAMEDAY}) deja que tus invitados vean el video antes de que termine la noche.`
+        "a": `Sí. Foto + Video (${CINEMA}) junta las fotos con un video completo en 4K de 8 a 10 minutos, y Celebración completa (${PRODUCTION}) la lleva a un video completo de 12 a 15 minutos, un tráiler corto de 90 segundos y cuatro videos verticales cortos para redes sociales. Y si no puedes esperar para compartirlo, la Edición el mismo día (${SAMEDAY}) te da un video corto de lo mejor en 24 horas.`
       },
       {
         "q": "¿Qué zonas alrededor de Arlington cubres?",
@@ -566,12 +571,12 @@ export const cityContent: Record<string, CityContent> = {
     "intro": [
       "Mansfield sits at the southeast corner of the metroplex, on the line where Tarrant County slips into Johnson County and the subdivisions give way to creeks, country-club fairways, and one of the largest park systems in this part of DFW. The Mexican-American families here have put down real roots: you'll hear Spanish at the Saturday vigil and Sunday Mass in the bilingual parishes east of downtown, and the panaderías and taquerías along the Broad Street and US-287 corridors stay busy all weekend when there's a quince. When a family in Mansfield plans the day, they tend to give themselves room to do every part of it.",
       "That's a gift for portraits, because the backdrops are here to match. Historic Downtown Mansfield gives you brick storefronts, the 1917 Farr Best Theater marquee, and a run of hand-painted murals along Main Street; ten minutes south, Elmer W. Oliver Nature Park opens up to ponds, a wooden boardwalk, and the windmill the whole city photographs — and by March the meadows fill in with bluebonnets. Add the rose garden at Katherine Rose Memorial Park and the shaded creek bridges of the Walnut Creek Linear Trail and you can build a portrait route that never repeats the same look twice.",
-      "I photograph one quinceañera a day, so the day belongs to your family alone — la misa, the formal portraits, el vals, the baile sorpresa, and the reception, start to finish, with nothing on my calendar after you. Everything runs bilingual. Mansfield is a natural fit for The Full Production and the Multi-Day Editorial Archive, where photo and cinematic film carry the whole night and a linen heirloom monograph holds it afterward — but it's the day, not the package, that drives how I shoot it."
+      "I photograph one quinceañera a day, so the day belongs to your family alone — la misa, the formal portraits, el vals, the baile sorpresa, and the reception, start to finish, with nothing on my calendar after you. Everything runs bilingual. Mansfield is a natural fit for the Full Celebration and the Two-Day Celebration, where photos and video carry the whole night and a printed photo album holds it afterward — but it's the day, not the package, that drives how I shoot it."
     ],
     "introEs": [
       "Mansfield está en el extremo sureste del metroplex, en la línea donde el condado de Tarrant se mete en el de Johnson y los fraccionamientos dan paso a arroyos, los fairways del club de golf y uno de los sistemas de parques más grandes de esta zona de DFW. Las familias mexicanas de aquí ya echaron raíces de verdad: se escucha español en la misa de vigilia del sábado y en las misas del domingo en las parroquias bilingües al este del centro, y las panaderías y taquerías por Broad Street y la US-287 no paran el fin de semana cuando hay quince. Cuando una familia de Mansfield planea el día, se da el tiempo para hacer cada parte como se debe.",
       "Eso es una ventaja para las fotos, porque los fondos están aquí para acompañarlo. El Historic Downtown te da fachadas de ladrillo, la marquesina del Farr Best Theater de 1917 y una serie de murales pintados a mano sobre Main Street; diez minutos al sur, el Elmer W. Oliver Nature Park se abre con lagunas, un puente de madera y el molino de viento que toda la ciudad fotografía — y para marzo los campos se llenan de bluebonnets. Súmale el jardín de rosas del Katherine Rose Memorial Park y los puentes sombreados del Walnut Creek Linear Trail y armas una ruta de fotos que nunca repite el mismo look.",
-      "Fotografío una sola quinceañera al día, así que el día es solo de tu familia: la misa, las fotos formales, el vals, el baile sorpresa y la recepción, de principio a fin, sin nada más en mi agenda después de ustedes. Todo es bilingüe. Mansfield encaja natural con La producción completa y el Archivo editorial de varios días, donde la foto y el cine cargan toda la noche y una monografía de lino la guarda después — pero es el día, no el paquete, lo que define cómo lo fotografío."
+      "Fotografío una sola quinceañera al día, así que el día es solo de tu familia: la misa, las fotos formales, el vals, el baile sorpresa y la recepción, de principio a fin, sin nada más en mi agenda después de ustedes. Todo es bilingüe. Mansfield encaja natural con la Celebración completa y la Celebración de dos días, donde las fotos y el video cargan toda la noche y un álbum de fotos impreso la guarda después — pero es el día, no el paquete, lo que define cómo lo fotografío."
     ],
     "photoSpots": [
       {
@@ -608,7 +613,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqs": [
       {
         "q": "How much does a quinceañera photographer cost in Mansfield?",
-        "a": `Commissions are ${STUDY} (I. Portrait Study), ${CINEMA} (II. Cinema & Stills), ${PRODUCTION} (III. The Full Production, the one I recommend for most celebrations) and ${ARCHIVE} (IV. Multi-Day Editorial Archive). A ${RETAINER_PCT} retainer, minimum ${RETAINER_MIN}, holds the date, with the balance due ${BALANCE_DAYS} days before the celebration. There's no travel fee anywhere in DFW, so Mansfield's southeast-corner location never adds to the price.`
+        "a": `Packages are ${STUDY} (Portrait Session), ${CINEMA} (Photo + Video), ${PRODUCTION} (Full Celebration, the one I recommend for most celebrations) and ${ARCHIVE} (Two-Day Celebration). A ${RETAINER_PCT} deposit locks in the date once your agreement is approved, and the rest is due ${BALANCE_HOURS} hours before the event. There's no travel fee anywhere in DFW, so Mansfield's southeast-corner location never adds to the price.`
       },
       {
         "q": "Where are the best places to take quince pictures in Mansfield?",
@@ -620,7 +625,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer both photo and video for a Mansfield quinceañera?",
-        "a": `Yes. II. Cinema & Stills (${CINEMA}) and III. The Full Production (${PRODUCTION}) pair photography with a 4K feature film, and IV. Multi-Day Editorial Archive (${ARCHIVE}) goes further — ${CREW_ARCHIVE} directors and a day-of coordinator across two days, a 20-minute documentary and a 2-minute trailer. If you don't need video, I. Portrait Study (${STUDY}) is photo only.`
+        "a": `Yes. Photo + Video (${CINEMA}) and Full Celebration (${PRODUCTION}) pair photos with a full-length video in 4K, and the Two-Day Celebration (${ARCHIVE}) goes further — a team of ${CREW_ARCHIVE} and a day-of coordinator, ${HRS_ARCHIVE} hours plus a second day for portraits, a 20-minute full-length video and a 2-minute short trailer. If you don't need video, the Portrait Session (${STUDY}) is photo only.`
       },
       {
         "q": "Which areas near Mansfield do you cover?",
@@ -630,7 +635,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqsEs": [
       {
         "q": "¿Cuánto cuesta un fotógrafo de quinceañera en Mansfield?",
-        "a": `Los encargos son ${STUDY} (I. Estudio de retrato), ${CINEMA} (II. Cine y fotografía), ${PRODUCTION} (III. La producción completa, la que recomiendo para la mayoría de las celebraciones) y ${ARCHIVE} (IV. Archivo editorial de varios días). Un anticipo del ${RETAINER_PCT}, mínimo ${RETAINER_MIN}, aparta la fecha, y el saldo se liquida ${BALANCE_DAYS} días antes de la celebración. No hay cargo por traslado en ningún punto de DFW, así que estar en el extremo sureste del metroplex nunca sube el precio.`
+        "a": `Los paquetes son ${STUDY} (Sesión de retratos), ${CINEMA} (Foto + Video), ${PRODUCTION} (Celebración completa, la que recomiendo para la mayoría de las celebraciones) y ${ARCHIVE} (Celebración de dos días). Un depósito del ${RETAINER_PCT} asegura la fecha una vez aprobado tu contrato, y el resto se paga ${BALANCE_HOURS} horas antes del evento. No hay cargo por traslado en ningún punto de DFW, así que estar en el extremo sureste del metroplex nunca sube el precio.`
       },
       {
         "q": "¿Cuáles son los mejores lugares para tomar fotos de quince en Mansfield?",
@@ -642,7 +647,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video para una quinceañera en Mansfield?",
-        "a": `Sí. II. Cine y fotografía (${CINEMA}) y III. La producción completa (${PRODUCTION}) combinan fotografía con una película 4K, y IV. Archivo editorial de varios días (${ARCHIVE}) va más allá: ${CREW_ARCHIVE} directores y una coordinadora del día durante dos días, un documental de 20 minutos y un tráiler de 2 minutos. Si no necesitas video, I. Estudio de retrato (${STUDY}) es solo de foto.`
+        "a": `Sí. Foto + Video (${CINEMA}) y Celebración completa (${PRODUCTION}) combinan las fotos con un video completo en 4K, y la Celebración de dos días (${ARCHIVE}) va más allá: un equipo de ${CREW_ARCHIVE} y una coordinadora del día, ${HRS_ARCHIVE} horas más un segundo día de retratos, un video completo de 20 minutos y un tráiler corto de 2 minutos. Si no necesitas video, la Sesión de retratos (${STUDY}) es solo de foto.`
       },
       {
         "q": "¿Qué zonas cerca de Mansfield cubres?",
@@ -654,12 +659,12 @@ export const cityContent: Record<string, CityContent> = {
     "intro": [
       "Farmers Branch is compact, but its roots run deep. The City Center neighborhood — the blocks around Webb Chapel and Valley View — holds one of the highest concentrations of Mexican-American families of any neighborhood in the country, where most households speak Spanish at home and a quinceañera is something the whole street helps pull off. This is a town that knows exactly what the day means.",
       "Locals call it “the City in the Park,” and the centerpiece is the 27-acre Farmers Branch Historical Park sitting right in the middle of town. An 1890s white church, an 1885 Queen Anne cottage, brick walkways, a gazebo, and the Ruthan Rogers rose garden out front make it one of the best portrait settings in North Dallas — it looks like a different century, which is exactly the backdrop you want behind a full ballgown. (The city started life as “Mustang Branch” before the farmland gave it its name; the old depot, caboose, and log cabins on the grounds still tell that story.)",
-      "I only book one celebration a day, so your Saturday is the only thing on my calendar — la misa, the portraits, your entrada, the father-daughter vals, the baile sorpresa, and the reception after, all of it documented by one team that is actually present for the whole thing. There is no travel fee anywhere in DFW, and with the film commissions a teaser cut lets you share the day while it is still fresh."
+      "I only book one celebration a day, so your Saturday is the only thing on my calendar — la misa, the portraits, your entrada, the father-daughter vals, the baile sorpresa, and the reception after, all of it documented by one team that is actually present for the whole thing. There is no travel fee anywhere in DFW, and with the packages that include video, a short trailer lets you share the day while it is still fresh."
     ],
     "introEs": [
       "Farmers Branch es chiquito, pero de raíces hondas. El barrio de City Center —las cuadras por Webb Chapel y Valley View— tiene una de las concentraciones de familias mexicanas más altas de cualquier vecindario del país: en la mayoría de las casas se habla español y una quinceañera es algo que saca adelante toda la cuadra. Aquí se sabe muy bien lo que significa el día.",
       "Le dicen “la ciudad en el parque”, y el corazón es el Farmers Branch Historical Park, de 27 acres, justo en el centro del pueblo. Una iglesia blanca de los 1890, una casita Queen Anne de 1885, caminos de ladrillo, un kiosco y el jardín de rosas Ruthan Rogers al frente lo hacen uno de los mejores lugares para fotos de todo el norte de Dallas: parece de otra época, justo el fondo que quieres detrás de un vestido de gala. (El pueblo empezó llamándose “Mustang Branch” antes de que la tierra de cultivo le diera su nombre; la vieja estación de tren, el vagón y las cabañas de troncos del parque todavía lo cuentan.)",
-      "Solo reservo una celebración al día, así que tu sábado es lo único en mi calendario: la misa, las fotos, tu entrada, el vals con tu papá, el baile sorpresa y la recepción, todo documentado por un equipo que de verdad está presente toda la jornada. No hay cargo por traslado en ningún punto de DFW, y con los encargos de cine, un avance te deja compartir el día mientras sigue fresquecito."
+      "Solo reservo una celebración al día, así que tu sábado es lo único en mi calendario: la misa, las fotos, tu entrada, el vals con tu papá, el baile sorpresa y la recepción, todo documentado por un equipo que de verdad está presente toda la jornada. No hay cargo por traslado en ningún punto de DFW, y con los paquetes que incluyen video, un tráiler corto te deja compartir el día mientras sigue fresquecito."
     ],
     "photoSpots": [
       {
@@ -691,7 +696,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqs": [
       {
         "q": "How much does a quinceañera photographer cost in Farmers Branch?",
-        "a": `My commissions run ${STUDY} for I. Portrait Study (photo only), ${CINEMA} for II. Cinema & Stills, ${PRODUCTION} for III. The Full Production — the one I recommend for most celebrations — and ${ARCHIVE} for IV. Multi-Day Editorial Archive. Pricing is the same across DFW with no travel fee to Farmers Branch, and you can reserve online with a ${RETAINER_PCT} retainer or request a consultation first and I'll hold the date for ${HOLD_DAYS} days.`
+        "a": `My packages run ${STUDY} for the Portrait Session (photo only), ${CINEMA} for Photo + Video, ${PRODUCTION} for the Full Celebration — the one I recommend for most celebrations — and ${ARCHIVE} for the Two-Day Celebration. Pricing is the same across DFW with no travel fee to Farmers Branch, and you can sign the agreement online — I'll hold the date for ${HOLD_DAYS} days while we review it, then a ${RETAINER_PCT} deposit locks it in. Want to talk first? Ask for a quick call.`
       },
       {
         "q": "Where are the best places to take quince pictures in Farmers Branch?",
@@ -703,7 +708,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer both photo and video in Farmers Branch?",
-        "a": `Yes. II. Cinema & Stills (${CINEMA}) and III. The Full Production (${PRODUCTION}) both pair photography with film, so you get stills and a 4K feature of the misa, the vals, and the reception. If your family wants real film grain in the edit, a Super 8mm roll is ${SUPER8}.`
+        "a": `Yes. Photo + Video (${CINEMA}) and Full Celebration (${PRODUCTION}) both pair photos with video, so you get the photos and a full-length video in 4K of the misa, the vals, and the reception. If your family wants the look of real old-style video, the Vintage Film Clip (Super 8) is ${SUPER8}.`
       },
       {
         "q": "What areas near Farmers Branch do you serve?",
@@ -713,7 +718,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqsEs": [
       {
         "q": "¿Cuánto cuesta un fotógrafo de quinceañera en Farmers Branch?",
-        "a": `Mis encargos van de ${STUDY} con I. Estudio de retrato (solo foto), ${CINEMA} con II. Cine y fotografía, ${PRODUCTION} con III. La producción completa —la que recomiendo para la mayoría de las celebraciones— y ${ARCHIVE} con IV. Archivo editorial de varios días. El precio es el mismo en todo DFW, sin cargo por traslado a Farmers Branch, y puedes apartar en línea con un anticipo del ${RETAINER_PCT} o pedir primero una consulta y te aparto la fecha ${HOLD_DAYS} días.`
+        "a": `Mis paquetes van de ${STUDY} con la Sesión de retratos (solo foto), ${CINEMA} con Foto + Video, ${PRODUCTION} con la Celebración completa —la que recomiendo para la mayoría de las celebraciones— y ${ARCHIVE} con la Celebración de dos días. El precio es el mismo en todo DFW, sin cargo por traslado a Farmers Branch, y puedes firmar el contrato en línea: te aparto la fecha ${HOLD_DAYS} días mientras lo revisamos, y luego un depósito del ${RETAINER_PCT} la asegura. ¿Quieres platicar primero? Pide una llamada rápida.`
       },
       {
         "q": "¿Cuáles son los mejores lugares para tomar fotos de quince en Farmers Branch?",
@@ -725,7 +730,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video en Farmers Branch?",
-        "a": `Sí. II. Cine y fotografía (${CINEMA}) y III. La producción completa (${PRODUCTION}) combinan fotografía con cine, así te llevas las fotos y una película 4K de la misa, el vals y la recepción. Si tu familia quiere grano de película de verdad en la edición, un rollo de Super 8 cuesta ${SUPER8}.`
+        "a": `Sí. Foto + Video (${CINEMA}) y Celebración completa (${PRODUCTION}) combinan fotos con video, así te llevas las fotos y un video completo en 4K de la misa, el vals y la recepción. Si tu familia quiere el look de video antigua de verdad, el Clip de película vintage (Super 8) cuesta ${SUPER8}.`
       },
       {
         "q": "¿Qué áreas cerca de Farmers Branch cubres?",
@@ -737,12 +742,12 @@ export const cityContent: Record<string, CityContent> = {
     "intro": [
       "Frisco has been one of the fastest-growing cities in the country for two decades, and a quinceañera here is often planned like a destination event: a hotel or resort ballroom, a full court, and relatives driving up from across Texas for the weekend. The city straddles the Collin–Denton county line, and the families who celebrate here keep the whole tradition intact — the misa, the court of honor, the vals with Papá, the baile sorpresa — just set against a newer, more polished backdrop than the older parts of the metroplex.",
       "That backdrop is the point. The Star in Frisco gives you glass, steel and open plazas around the Ford Center; Frisco Square has the civic lawns and tree-lined streets around City Hall; and a few blocks east, the Rail District along Main Street keeps the brick, the murals and the railroad history of the original town. For something green, Frisco Commons Park has water features, a pond and big open lawns a short walk from Frisco Square, so we can move from city to garden without losing the afternoon light.",
-      `I photograph one quinceañera a day, in English and Spanish, with no travel fee anywhere in DFW — Frisco included. For a Frisco celebration I recommend III. The Full Production (${PRODUCTION}): eleven hours with ${CREW_PRODUCTION} directors and a day-of coordinator, a portrait session at one location, a 12–15 minute feature film and a 40-page linen heirloom monograph. If your family is planning a welcome dinner or a second day around the quince, IV. Multi-Day Editorial Archive (${ARCHIVE}) is built for exactly that — ${CREW_ARCHIVE} directors and a day-of coordinator across two days plus twelve hours.`
+      `I photograph one quinceañera a day, in English and Spanish, with no travel fee anywhere in DFW — Frisco included. For a Frisco celebration I recommend the Full Celebration (${PRODUCTION}): ${HRS_PRODUCTION} hours with a team of ${CREW_PRODUCTION} and a day-of coordinator, a portrait session at one location, a 12–15 minute full-length video and a 40-page printed photo album. If your family is planning a welcome dinner or a second day around the quince, the Two-Day Celebration (${ARCHIVE}) is built for exactly that — a team of ${CREW_ARCHIVE} and a day-of coordinator, ${HRS_ARCHIVE} hours on the day plus a second day for portraits.`
     ],
     "introEs": [
       "Frisco lleva dos décadas entre las ciudades que más crecen en el país, y aquí una quinceañera muchas veces se planea como evento de destino: un salón de hotel o de resort, la corte completa y parientes que llegan de todo Texas para el fin de semana. La ciudad está partida entre los condados de Collin y Denton, y las familias que celebran aquí mantienen la tradición completa —la misa, la corte de honor, el vals con papá, el baile sorpresa—, solo que con un fondo más nuevo y pulido que el de las zonas más antiguas del metroplex.",
       "Ese fondo es justo lo especial. The Star in Frisco te da cristal, acero y plazas abiertas alrededor del Ford Center; Frisco Square tiene los jardines cívicos y las calles arboladas alrededor del City Hall; y unas cuadras al este, el Rail District sobre Main Street conserva el ladrillo, los murales y la historia ferroviaria del pueblo original. Si quieres verde, Frisco Commons Park tiene fuentes, un estanque y prados amplios a unos pasos de Frisco Square, así que pasamos de la ciudad al jardín sin perder la luz de la tarde.",
-      `Fotografío una sola quinceañera al día, en inglés y español, sin cargo por traslado en ningún lugar de DFW, Frisco incluido. Para una celebración en Frisco recomiendo III. La producción completa (${PRODUCTION}): once horas con ${CREW_PRODUCTION} directores y una coordinadora del día, una sesión de retrato en una locación, una película de 12 a 15 minutos y una monografía de lino de 40 páginas. Si tu familia planea una cena de bienvenida o un segundo día alrededor del quince, IV. Archivo editorial de varios días (${ARCHIVE}) está hecho justo para eso: ${CREW_ARCHIVE} directores y una coordinadora del día durante dos días más doce horas.`
+      `Fotografío una sola quinceañera al día, en inglés y español, sin cargo por traslado en ningún lugar de DFW, Frisco incluido. Para una celebración en Frisco recomiendo la Celebración completa (${PRODUCTION}): ${HRS_PRODUCTION} horas con un equipo de ${CREW_PRODUCTION} y una coordinadora del día, una sesión de retrato en una locación, un video completo de 12 a 15 minutos y un álbum de fotos impreso de 40 páginas. Si tu familia planea una cena de bienvenida o un segundo día alrededor del quince, la Celebración de dos días (${ARCHIVE}) está hecha justo para eso: un equipo de ${CREW_ARCHIVE} y una coordinadora del día, ${HRS_ARCHIVE} horas el día de la fiesta más un segundo día de retratos.`
     ],
     "photoSpots": [
       {
@@ -774,7 +779,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqs": [
       {
         "q": "How much does a quinceañera photographer cost in Frisco?",
-        "a": `My commissions run from ${STUDY} for I. Portrait Study to ${ARCHIVE} for IV. Multi-Day Editorial Archive, with II. Cinema & Stills at ${CINEMA} and III. The Full Production at ${PRODUCTION} — the one I recommend for most celebrations. For context, most DFW quince studios publish packages between about $1,500 and $6,000; my commissions are built for families who want a stills director, a motion director and a finished heirloom monograph rather than a gallery link. There's no travel fee to Frisco; compare all four at /#commissions.`
+        "a": `My packages run from ${STUDY} for the Portrait Session to ${ARCHIVE} for the Two-Day Celebration, with Photo + Video at ${CINEMA} and Full Celebration at ${PRODUCTION} — the one I recommend for most celebrations. For context, most DFW quince studios publish packages between about $1,500 and $6,000; my packages are built for families who want a photographer, a videographer and a printed photo album, not just a gallery link. There's no travel fee to Frisco; compare all four on our Packages & Prices page.`
       },
       {
         "q": "Where are the best places to take quince pictures in Frisco?",
@@ -786,17 +791,17 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer photo and video for quinceañeras in Frisco?",
-        "a": `Yes. II. Cinema & Stills (${CINEMA}), III. The Full Production (${PRODUCTION}) and IV. Multi-Day Editorial Archive (${ARCHIVE}) all put photographers and videographers on the same day — ${CREW_CINEMA}, ${CREW_PRODUCTION} or ${CREW_ARCHIVE} directors, in the mix you choose. In a big Frisco ballroom, the same-day reception edit (${SAMEDAY}) is a favorite way to let guests see the film before the last dance.`
+        "a": `Yes. Photo + Video (${CINEMA}), Full Celebration (${PRODUCTION}) and Two-Day Celebration (${ARCHIVE}) all put photographers and videographers on the same day — a team of ${CREW_CINEMA}, ${CREW_PRODUCTION} or ${CREW_ARCHIVE}, in the mix you choose. For families who want to share right away, the Same-Day Edit (${SAMEDAY}) is a short highlight video ready within 24 hours.`
       },
       {
         "q": "What areas near Frisco do you serve?",
-        "a": "Frisco sits between Plano, McKinney, Allen, Prosper, Little Elm, The Colony and Celina, and I cover all of them — plus the rest of Dallas–Fort Worth — with no travel fee. Wherever your church and venue land, the commission is the same."
+        "a": "Frisco sits between Plano, McKinney, Allen, Prosper, Little Elm, The Colony and Celina, and I cover all of them — plus the rest of Dallas–Fort Worth — with no travel fee. Wherever your church and venue land, the package is the same."
       }
     ],
     "faqsEs": [
       {
         "q": "¿Cuánto cuesta un fotógrafo de quinceañera en Frisco?",
-        "a": `Mis encargos van de ${STUDY} con I. Estudio de retrato a ${ARCHIVE} con IV. Archivo editorial de varios días, con II. Cine y fotografía en ${CINEMA} y III. La producción completa en ${PRODUCTION}, la que recomiendo para la mayoría de las celebraciones. Como referencia, la mayoría de los estudios de quince en DFW publican paquetes de entre unos $1,500 y $6,000; mis encargos están pensados para familias que quieren un director de foto, uno de cine y una monografía terminada para heredar, no solo un enlace a una galería. No hay cargo por traslado a Frisco; compara los cuatro en /es#commissions.`
+        "a": `Mis paquetes van de ${STUDY} con la Sesión de retratos a ${ARCHIVE} con la Celebración de dos días, con Foto + Video en ${CINEMA} y la Celebración completa en ${PRODUCTION}, la que recomiendo para la mayoría de las celebraciones. Como referencia, la mayoría de los estudios de quince en DFW publican paquetes de entre unos $1,500 y $6,000; mis paquetes están pensados para familias que quieren un fotógrafo, un videógrafo y un álbum de fotos impreso, no solo un enlace a una galería. No hay cargo por traslado a Frisco; compara los cuatro en nuestra página de Paquetes y precios.`
       },
       {
         "q": "¿Cuáles son los mejores lugares para tomar fotos de quince en Frisco?",
@@ -808,11 +813,11 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video para quinceañeras en Frisco?",
-        "a": `Sí. II. Cine y fotografía (${CINEMA}), III. La producción completa (${PRODUCTION}) y IV. Archivo editorial de varios días (${ARCHIVE}) juntan fotógrafos y videógrafos el mismo día: ${CREW_CINEMA}, ${CREW_PRODUCTION} o ${CREW_ARCHIVE} directores, en la combinación que tú elijas. En un salón grande de Frisco, la edición el mismo día (${SAMEDAY}) es una forma preciosa de que los invitados vean el video antes del último baile.`
+        "a": `Sí. Foto + Video (${CINEMA}), Celebración completa (${PRODUCTION}) y Celebración de dos días (${ARCHIVE}) juntan fotógrafos y videógrafos el mismo día: un equipo de ${CREW_CINEMA}, ${CREW_PRODUCTION} o ${CREW_ARCHIVE} personas, en la combinación que tú elijas. Para las familias que quieren compartir enseguida, la Edición el mismo día (${SAMEDAY}) es un video corto de lo mejor, listo en 24 horas.`
       },
       {
         "q": "¿Qué zonas cerca de Frisco cubres?",
-        "a": "Frisco está entre Plano, McKinney, Allen, Prosper, Little Elm, The Colony y Celina, y cubro todas —además del resto de Dallas–Fort Worth— sin cargo por traslado. Donde sea que queden tu iglesia y tu salón, el encargo cuesta lo mismo."
+        "a": "Frisco está entre Plano, McKinney, Allen, Prosper, Little Elm, The Colony y Celina, y cubro todas —además del resto de Dallas–Fort Worth— sin cargo por traslado. Donde sea que queden tu iglesia y tu salón, el paquete cuesta lo mismo."
       }
     ]
   },
@@ -820,12 +825,12 @@ export const cityContent: Record<string, CityContent> = {
     "intro": [
       "Plano is two cities in one, and a quinceañera here often touches both. East of Central Expressway sits the older Plano — Historic Downtown along 15th Street, the DART station, and the east-side neighborhoods that are home to much of the city's Hispanic community. West of the tollway is Legacy: the corporate campuses, Legacy West and the Shops at Legacy, and hotel ballrooms built for big celebrations. Plano families keep the tradition whole — the misa first, then the portraits, then the vals and the fiesta — and they tend to plan every piece of it carefully.",
       "That split gives portraits real range. Historic Downtown Plano has brick storefronts, murals and Haggard Park, where the old interurban railway station still stands; Arbor Hills Nature Preserve on the west side opens into rolling prairie and woodland trails that glow at golden hour; Legacy West gives you modern architecture and landscaped walkways for an editorial, city-at-night look. And if you want wide, quiet frames, Oak Point Park and Nature Preserve in the northeast adds hundreds of acres of ponds and meadows.",
-      `I photograph one quinceañera a day, fully bilingual, with no travel fee anywhere in DFW. If your day runs from a downtown misa to a Legacy ballroom, III. The Full Production (${PRODUCTION}) is the commission I recommend: 11 hours with ${CREW_PRODUCTION} directors and a day-of coordinator, a portrait session at one location, a 12–15 minute feature film and a 40-page linen monograph. Families who want only an editorial portrait session before the day can start with I. Portrait Study (${STUDY}).`
+      `I photograph one quinceañera a day, fully bilingual, with no travel fee anywhere in DFW. If your day runs from a downtown misa to a Legacy ballroom, the Full Celebration (${PRODUCTION}) is the package I recommend: ${HRS_PRODUCTION} hours with a team of ${CREW_PRODUCTION} and a day-of coordinator, a portrait session at one location, a 12–15 minute full-length video and a 40-page printed photo album. Families who only want a portrait session before the day can start with the Portrait Session (${STUDY}).`
     ],
     "introEs": [
       "Plano son dos ciudades en una, y una quinceañera aquí muchas veces toca las dos. Al este de la Central Expressway está el Plano más antiguo: el Historic Downtown sobre la calle 15, la estación del DART y los barrios del lado este, donde vive buena parte de la comunidad hispana de la ciudad. Al oeste del tollway está Legacy: los corporativos, Legacy West y las Shops at Legacy, y salones de hotel hechos para celebraciones grandes. Las familias de Plano hacen la tradición completa —primero la misa, luego las fotos, después el vals y la fiesta— y suelen planear cada detalle con cuidado.",
       "Esa división les da mucha variedad a las fotos. El Historic Downtown de Plano tiene fachadas de ladrillo, murales y el Haggard Park, donde sigue en pie la vieja estación del tren interurbano; Arbor Hills Nature Preserve, del lado oeste, se abre en praderas onduladas y senderos entre árboles que brillan a la hora dorada; Legacy West te da arquitectura moderna y andadores con jardines para un look editorial de ciudad de noche. Y si quieres tomas amplias y tranquilas, Oak Point Park and Nature Preserve, al noreste, suma cientos de acres de lagunas y praderas.",
-      `Fotografío una sola quinceañera al día, todo bilingüe, sin cargo por traslado en ningún lugar de DFW. Si tu día va de una misa en el centro a un salón en Legacy, III. La producción completa (${PRODUCTION}) es el encargo que recomiendo: 11 horas con ${CREW_PRODUCTION} directores y una coordinadora del día, una sesión de retrato en una locación, una película de 12 a 15 minutos y una monografía de lino de 40 páginas. Las familias que solo quieren una sesión editorial de retrato antes del día pueden empezar con I. Estudio de retrato (${STUDY}).`
+      `Fotografío una sola quinceañera al día, todo bilingüe, sin cargo por traslado en ningún lugar de DFW. Si tu día va de una misa en el centro a un salón en Legacy, la Celebración completa (${PRODUCTION}) es el paquete que recomiendo: ${HRS_PRODUCTION} horas con un equipo de ${CREW_PRODUCTION} y una coordinadora del día, una sesión de retrato en una locación, un video completo de 12 a 15 minutos y un álbum de fotos impreso de 40 páginas. Las familias que solo quieren una sesión de retratos antes del día pueden empezar con Sesión de retratos (${STUDY}).`
     ],
     "photoSpots": [
       {
@@ -857,7 +862,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqs": [
       {
         "q": "How much does a quinceañera photographer cost in Plano?",
-        "a": `I. Portrait Study is ${STUDY}, II. Cinema & Stills ${CINEMA}, III. The Full Production ${PRODUCTION} and IV. Multi-Day Editorial Archive ${ARCHIVE}. I recommend The Full Production for most Plano celebrations because it covers the misa through the last dance with photo and film and ends in a linen heirloom monograph. A ${RETAINER_PCT} retainer (minimum ${RETAINER_MIN}) holds the date and the balance is due ${BALANCE_DAYS} days before; compare everything at /#commissions.`
+        "a": `Portrait Session is ${STUDY}, Photo + Video ${CINEMA}, Full Celebration ${PRODUCTION} and Two-Day Celebration ${ARCHIVE}. I recommend the Full Celebration for most Plano celebrations because it covers the misa through the last dance with photos and video and ends in a printed photo album. A ${RETAINER_PCT} deposit locks in the date once your agreement is approved, and the rest is due ${BALANCE_HOURS} hours before the event; compare everything on our Packages & Prices page.`
       },
       {
         "q": "Where are the best places to take quince pictures in Plano?",
@@ -869,7 +874,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer both photo and video for quinceañeras in Plano?",
-        "a": `Yes. II. Cinema & Stills (${CINEMA}) pairs a stills director and a motion director for an 8–10 minute 4K feature; III. The Full Production (${PRODUCTION}) brings ${CREW_PRODUCTION} directors and a day-of coordinator, a 12–15 minute feature and four vertical reels. If you'd rather shoot portraits somewhere beyond DFW, the destination portrait session is ${DESTINATION}.`
+        "a": `Yes. Photo + Video (${CINEMA}) pairs one photographer and one videographer for an 8–10 minute full-length video in 4K; Full Celebration (${PRODUCTION}) brings a team of ${CREW_PRODUCTION} and a day-of coordinator, a 12–15 minute full-length video and four short vertical videos for social media. If you'd like photos of her in her dress before the big day, the Dress Session is ${DESTINATION}.`
       },
       {
         "q": "What areas near Plano do you cover?",
@@ -879,7 +884,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqsEs": [
       {
         "q": "¿Cuánto cuesta un fotógrafo de quinceañera en Plano?",
-        "a": `I. Estudio de retrato cuesta ${STUDY}, II. Cine y fotografía ${CINEMA}, III. La producción completa ${PRODUCTION} y IV. Archivo editorial de varios días ${ARCHIVE}. Para la mayoría de las celebraciones en Plano recomiendo La producción completa porque cubre de la misa al último baile con foto y cine, y termina en una monografía de lino para heredar. Un anticipo del ${RETAINER_PCT} (mínimo ${RETAINER_MIN}) aparta la fecha y el saldo se liquida ${BALANCE_DAYS} días antes; compara todo en /es#commissions.`
+        "a": `Sesión de retratos cuesta ${STUDY}, Foto + Video ${CINEMA}, Celebración completa ${PRODUCTION} y la Celebración de dos días ${ARCHIVE}. Para la mayoría de las celebraciones en Plano recomiendo la Celebración completa porque cubre de la misa al último baile con fotos y video, y termina en un álbum de fotos impreso. Un depósito del ${RETAINER_PCT} asegura la fecha una vez aprobado tu contrato, y el resto se paga ${BALANCE_HOURS} horas antes del evento; compara todo en nuestra página de Paquetes y precios.`
       },
       {
         "q": "¿Cuáles son los mejores lugares para tomar fotos de quince en Plano?",
@@ -891,7 +896,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video para quinceañeras en Plano?",
-        "a": `Sí. II. Cine y fotografía (${CINEMA}) junta a un director de foto y uno de cine para una película 4K de 8 a 10 minutos; III. La producción completa (${PRODUCTION}) trae ${CREW_PRODUCTION} directores y una coordinadora del día, una película de 12 a 15 minutos y cuatro reels verticales. Si prefieres hacer los retratos en algún lugar fuera de DFW, la sesión de retrato en destino cuesta ${DESTINATION}.`
+        "a": `Sí. Foto + Video (${CINEMA}) junta a un fotógrafo y un videógrafo para un video completo en 4K de 8 a 10 minutos; Celebración completa (${PRODUCTION}) trae un equipo de ${CREW_PRODUCTION} y una coordinadora del día, un video completo de 12 a 15 minutos y cuatro videos verticales cortos para redes sociales. Si quieres fotos de ella con su vestido antes del gran día, la Sesión con el vestido cuesta ${DESTINATION}.`
       },
       {
         "q": "¿Qué zonas cerca de Plano cubres?",
@@ -903,12 +908,12 @@ export const cityContent: Record<string, CityContent> = {
     "intro": [
       "McKinney has something most of Collin County doesn't: a real historic downtown, built around the old Collin County courthouse on the square — now the McKinney Performing Arts Center — with more than a century of brick storefronts around it. It's the county seat, with some of its longest-rooted Hispanic families on the east side and newer ones arriving every year as the city grows north and west. A McKinney quinceañera tends to feel like a hometown celebration — the parish, the square, the reception — even as the city has grown up around it.",
       "The portrait options match that hometown-meets-new-growth character. Downtown, the square gives you brick, ironwork and old storefront signs; a few blocks south, Chestnut Square Historic Village has restored 1800s homes, gardens and shaded lawns. Out west near Stonebridge Ranch, Adriatica Village is a Croatian-inspired hillside of stone lanes, archways and a bell tower — the closest thing to a European backdrop in North Texas. For water and open sky, Towne Lake gives you a lakeside trail at sunset, and the Heard Natural Science Museum & Wildlife Sanctuary adds wetland boardwalks and native prairie.",
-      `I photograph one quinceañera a day, fully bilingual, with no travel fee anywhere in DFW. For most McKinney celebrations I recommend III. The Full Production (${PRODUCTION}): 11 hours of photo and film, a portrait session at one location — Adriatica or Chestnut Square are natural picks — a 12–15 minute feature film and a 40-page linen monograph. Families who want a matching keepsake for both households can add fine art parent albums (${PARENTS} for the pair).`
+      `I photograph one quinceañera a day, fully bilingual, with no travel fee anywhere in DFW. For most McKinney celebrations I recommend the Full Celebration (${PRODUCTION}): ${HRS_PRODUCTION} hours of photo and video, a portrait session at one location — Adriatica or Chestnut Square are natural picks — a 12–15 minute full-length video and a 40-page printed photo album. Families who want a matching keepsake for both households can add Albums for Mom & Dad (${PARENTS} for the pair).`
     ],
     "introEs": [
       "McKinney tiene algo que casi nadie más tiene en el condado de Collin: un centro histórico de verdad, construido alrededor del antiguo juzgado del condado en la plaza —hoy el McKinney Performing Arts Center— con más de un siglo de fachadas de ladrillo a su alrededor. Es la cabecera del condado, con algunas de sus familias hispanas de raíces más hondas en el lado este y nuevas que llegan cada año mientras la ciudad crece hacia el norte y el oeste. Una quinceañera en McKinney suele sentirse como fiesta de pueblo —la parroquia, la plaza, la recepción—, aunque la ciudad haya crecido tanto a su alrededor.",
       "Las opciones para fotos van con ese carácter de pueblo que crece. En el centro, la plaza te da ladrillo, herrería y letreros antiguos; unas cuadras al sur, Chestnut Square Historic Village tiene casas restauradas del siglo XIX, jardines y prados con sombra. Hacia el oeste, cerca de Stonebridge Ranch, Adriatica Village es una colina inspirada en Croacia con callejones de piedra, arcos y un campanario: lo más parecido a un fondo europeo en el norte de Texas. Para agua y cielo abierto, Towne Lake te da un sendero junto al lago al atardecer, y el Heard Natural Science Museum & Wildlife Sanctuary suma puentes de madera sobre humedales y pradera nativa.",
-      `Fotografío una sola quinceañera al día, todo bilingüe, sin cargo por traslado en ningún lugar de DFW. Para la mayoría de las celebraciones en McKinney recomiendo III. La producción completa (${PRODUCTION}): 11 horas de foto y cine, una sesión de retrato en una locación —Adriatica o Chestnut Square son opciones naturales—, una película de 12 a 15 minutos y una monografía de lino de 40 páginas. Las familias que quieren un recuerdo igual para cada hogar pueden sumar los álbumes de arte para padres (${PARENTS} el par).`
+      `Fotografío una sola quinceañera al día, todo bilingüe, sin cargo por traslado en ningún lugar de DFW. Para la mayoría de las celebraciones en McKinney recomiendo la Celebración completa (${PRODUCTION}): ${HRS_PRODUCTION} horas de foto y video, una sesión de retrato en una locación —Adriatica o Chestnut Square son opciones naturales—, un video completo de 12 a 15 minutos y un álbum de fotos impreso de 40 páginas. Las familias que quieren un recuerdo igual para cada hogar pueden sumar los Álbumes para mamá y papá (${PARENTS} el par).`
     ],
     "photoSpots": [
       {
@@ -940,7 +945,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqs": [
       {
         "q": "How much does a quinceañera photographer cost in McKinney?",
-        "a": `Commissions begin at ${STUDY} for I. Portrait Study, a 3-hour, photo-only editorial session before the celebration with 60 retouched frames, and run through ${CINEMA} for II. Cinema & Stills and ${PRODUCTION} for III. The Full Production — the one I recommend for most celebrations — to ${ARCHIVE} for IV. Multi-Day Editorial Archive. Reserve online with a ${RETAINER_PCT} retainer, or request a consultation first and I'll hold your date for ${HOLD_DAYS} days. There's no travel fee to McKinney.`
+        "a": `Packages begin at ${STUDY} for the Portrait Session — photos only, ${HRS_STUDY} hours with one photographer and 60 edited photos — and run through ${CINEMA} for Photo + Video and ${PRODUCTION} for the Full Celebration — the one I recommend for most celebrations — to ${ARCHIVE} for the Two-Day Celebration. Sign the agreement online and I'll hold your date for ${HOLD_DAYS} days while we review it; once it's approved, a ${RETAINER_PCT} deposit locks it in. Want to talk first? Ask for a quick call. There's no travel fee to McKinney.`
       },
       {
         "q": "Where are the best places to take quince pictures in McKinney?",
@@ -952,7 +957,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer photo and video for a McKinney quinceañera?",
-        "a": `Yes. II. Cinema & Stills (${CINEMA}) delivers an 8–10 minute 4K feature, a 60-second teaser and 400+ retouched frames; III. The Full Production (${PRODUCTION}) builds that out to 11 hours, a 12–15 minute feature, a 90-second teaser, four reels, 700+ frames and the linen monograph. Super 8mm film can be cut into either feature for ${SUPER8}.`
+        "a": `Yes. Photo + Video (${CINEMA}) delivers an 8–10 minute full-length video in 4K, a 1-minute short trailer and 400+ edited photos; Full Celebration (${PRODUCTION}) builds that out to a team of ${CREW_PRODUCTION} and a coordinator, a 12–15 minute full-length video, a 90-second short trailer, four short videos for social media, 700+ edited photos and the printed photo album. A Vintage Film Clip (Super 8) can be added to either full-length video for ${SUPER8}.`
       },
       {
         "q": "What areas near McKinney do you serve?",
@@ -962,7 +967,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqsEs": [
       {
         "q": "¿Cuánto cuesta un fotógrafo de quinceañera en McKinney?",
-        "a": `Los encargos empiezan en ${STUDY} con I. Estudio de retrato, una sesión editorial de 3 horas, solo de foto, antes de la celebración, con 60 imágenes retocadas; siguen ${CINEMA} con II. Cine y fotografía y ${PRODUCTION} con III. La producción completa —la que recomiendo para la mayoría de las celebraciones— y llegan a ${ARCHIVE} con IV. Archivo editorial de varios días. Puedes apartar en línea con un anticipo del ${RETAINER_PCT}, o pedir primero una consulta y te aparto la fecha ${HOLD_DAYS} días. No hay cargo por traslado a McKinney.`
+        "a": `Los paquetes empiezan en ${STUDY} con la Sesión de retratos —solo fotos, ${HRS_STUDY} horas con un fotógrafo y 60 fotos editadas—; siguen ${CINEMA} con Foto + Video y ${PRODUCTION} con la Celebración completa —la que recomiendo para la mayoría de las celebraciones— y llegan a ${ARCHIVE} con la Celebración de dos días. Firma el contrato en línea y te aparto la fecha ${HOLD_DAYS} días mientras lo revisamos; ya aprobado, un depósito del ${RETAINER_PCT} la asegura. ¿Quieres platicar primero? Pide una llamada rápida. No hay cargo por traslado a McKinney.`
       },
       {
         "q": "¿Cuáles son los mejores lugares para tomar fotos de quince en McKinney?",
@@ -974,7 +979,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video para una quinceañera en McKinney?",
-        "a": `Sí. II. Cine y fotografía (${CINEMA}) entrega una película 4K de 8 a 10 minutos, un avance de 60 segundos y más de 400 imágenes retocadas; III. La producción completa (${PRODUCTION}) lo lleva a 11 horas, una película de 12 a 15 minutos, un avance de 90 segundos, cuatro reels, más de 700 imágenes y la monografía de lino. Se puede sumar película Super 8 a cualquiera de las dos por ${SUPER8}.`
+        "a": `Sí. Foto + Video (${CINEMA}) entrega un video completo en 4K de 8 a 10 minutos, un tráiler corto de 1 minuto y más de 400 fotos editadas; Celebración completa (${PRODUCTION}) lo lleva a un equipo de ${CREW_PRODUCTION} y una coordinadora, un video completo de 12 a 15 minutos, un tráiler corto de 90 segundos, cuatro videos cortos para redes, más de 700 fotos editadas y el álbum de fotos impreso. Se puede sumar un Clip de película vintage (Super 8) a cualquiera de los dos por ${SUPER8}.`
       },
       {
         "q": "¿Qué zonas cerca de McKinney cubres?",

@@ -5,7 +5,7 @@ const post: BlogPost = {
   title:
     "¿Qué pasa en una quinceañera? El orden completo del día (de la misa al último baile)",
   metaTitle:
-    "¿Qué pasa en una quinceañera? El orden completo del día | TX Quince",
+    "¿Qué pasa en una quinceañera? El orden completo del día",
   description:
     "El orden completo del día de una quinceañera en Dallas–Fort Worth: desde el arreglo de la mañana y la misa de acción de gracias hasta el vals, el cambio de zapatillas, el baile sorpresa y el último baile. Cuánto dura y cuántas horas de cobertura necesita.",
   category: "Traditions",
@@ -116,9 +116,9 @@ const post: BlogPost = {
     {
       type: "cta",
       heading: "Que estos momentos los capte gente que conoce el orden del día",
-      body: "Comisiones de foto y video pensadas para el día completo de la quince: del arreglo de la mañana al último baile. Precios publicados, sin formulario de cotización.",
+      body: "Paquetes de foto y video pensados para el día completo de la quince: del arreglo de la mañana al último baile. Precios publicados, sin formulario de cotización.",
       href: "/es#commissions",
-      label: "Comparar comisiones",
+      label: "Comparar paquetes",
     },
     { type: "h2", text: "El brindis, la cena y el pastel" },
     {
@@ -128,7 +128,7 @@ const post: BlogPost = {
     { type: "h2", text: "El baile sorpresa y la hora loca" },
     {
       type: "p",
-      text: "Aquí sube la energía. El baile sorpresa es un número de mucho ritmo, ensayado en secreto, que la festejada hace con su corte al son de música moderna y movida: reggaetón, pop, cumbia, lo que ella ama. Es el favorito del público y casi siempre lo más divertido de filmar en toda la noche. Algunas familias lo siguen con la hora loca: una ráfaga de antifaces, accesorios luminosos, gorros y música sin parar para llenar la pista. Si están armando el suyo, escribimos una guía completa sobre la corte, el vals y el baile sorpresa.",
+      text: "Aquí sube la energía. El baile sorpresa es un número de mucho ritmo, ensayado en secreto, que la festejada hace con su corte al son de música moderna y movida: reggaetón, pop, cumbia, lo que ella ama. Es el favorito del público y casi siempre lo más divertido de grabar en toda la noche. Algunas familias lo siguen con la hora loca: una ráfaga de antifaces, accesorios luminosos, gorros y música sin parar para llenar la pista. Si están armando el suyo, escribimos una guía completa sobre la corte, el vals y el baile sorpresa.",
     },
     { type: "h2", text: "El baile abierto y el último baile" },
     {
@@ -152,7 +152,7 @@ const post: BlogPost = {
     { type: "h2", text: "¿Cuántas horas de cobertura necesita?" },
     {
       type: "p",
-      text: "Si quiere toda la historia, del arreglo de la mañana hasta el baile sorpresa, considere alrededor de 8 a 10 horas de cobertura. Los paquetes más cortos, de 4 a 6 horas, por lo general alcanzan solo para la recepción, lo que deja fuera el arreglo, la misa y las fotos. El arrepentimiento más común que escuchamos es haber reservado muy pocas horas y haberse perdido el baile con el papá o el cambio de zapatillas porque se acabó el tiempo del fotógrafo. Cuando compare opciones, compare lo que [incluye cada comisión](/es#commissions) por sus horas de cobertura, no nada más por el precio.",
+      text: "Si quiere toda la historia, del arreglo de la mañana hasta el baile sorpresa, considere de 6 a 8 horas de cobertura, según qué tan cerca estén la iglesia y el salón. Con menos horas, algo se queda fuera — casi siempre el arreglo o el final de la fiesta. El arrepentimiento más común que escuchamos es haber reservado muy pocas horas y haberse perdido el baile con el papá o el cambio de zapatillas porque se acabó el tiempo del fotógrafo. Cuando compare opciones, compare lo que [incluye cada paquete](/es#commissions) por sus horas de cobertura, no nada más por el precio.",
     },
     {
       type: "p",
@@ -182,7 +182,7 @@ const post: BlogPost = {
     },
     {
       q: "¿Cuántas horas de cobertura fotográfica necesito para una quinceañera?",
-      a: "Para captar el día completo —el arreglo, la misa, las fotos y toda la recepción hasta el baile sorpresa— considere alrededor de 8 a 10 horas. Los paquetes más cortos, de 4 a 6 horas, suelen cubrir solo la recepción y dejan fuera la mañana, la misa y la sesión de fotos.",
+      a: "Para captar el día completo —el arreglo, la misa, las fotos y toda la recepción hasta el baile sorpresa— considere de 6 a 8 horas, según qué tan cerca estén la iglesia y el salón. Con menos horas, casi siempre se queda fuera la mañana o el final de la fiesta. Los paquetes Foto + Video y Celebración completa incluyen 6 horas, y puedes añadir horas hasta 8.",
     },
   ],
   related: [

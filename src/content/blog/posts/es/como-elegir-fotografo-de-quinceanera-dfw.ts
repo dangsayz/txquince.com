@@ -13,7 +13,7 @@ const post: BlogPost = {
   publishedAt: "2026-06-09",
   updatedAt: "2026-10-14",
   readMinutes: 9,
-  lead: "Los quince años de su hija pasan una sola vez. Las fotos y el video son lo que queda cuando se marchitan las flores y el vestido vuelve al clóset; por eso elegir al fotógrafo correcto pesa más que casi cualquier otra decisión de proveedor. Esta guía, pensada para Dallas–Fort Worth, le muestra cómo leer un portafolio, qué significan de verdad los estilos y exactamente qué debe verificar antes de entregar un anticipo.",
+  lead: "Los quince años de su hija pasan una sola vez. Las fotos y el video son lo que queda cuando se marchitan las flores y el vestido vuelve al clóset; por eso elegir al fotógrafo correcto pesa más que casi cualquier otra decisión de proveedor. Esta guía, pensada para Dallas–Fort Worth, le muestra cómo leer un portafolio, qué significan de verdad los estilos y exactamente qué debe verificar antes de entregar un depósito.",
   content: [
     { type: "h2", text: "Empiece por el estilo que de verdad quiere" },
     {
@@ -24,7 +24,7 @@ const post: BlogPost = {
       type: "ul",
       items: [
         "Tradicional: posado, formal, con luz pareja. Es el retrato clásico de la corte, la foto de toda la familia, las tomas de la iglesia que sus tías querrán imprimir. Es seguro, atemporal y fácil de querer para los abuelos.",
-        "Cinematográfico: con luz y color dramáticos, encuadrado como una escena de película. Es el estilo que hace que el vals y el baile sorpresa se sientan de cine, y se apoya en el video tanto como en la foto.",
+        "Cinematográfico: con luz y color dramáticos, encuadrado como una escena de video. Es el estilo que hace que el vals y el baile sorpresa se sientan de video, y se apoya en el video tanto como en la foto.",
         "Editorial: estilo de revista de moda, poses marcadas, locaciones con personalidad. Funciona muy bien para la sesión pre-quince y para la foto principal de su hija con el vestido.",
         "Mixto: una base documental (los momentos reales tal como suceden) con retratos editoriales intercalados. Aquí vive la mayor parte de la fotografía de quince moderna, y es lo que hacemos en TX Quince.",
       ],
@@ -64,7 +64,7 @@ const post: BlogPost = {
     { type: "h2", text: "¿Un solo equipo para foto y video, o dos proveedores?" },
     {
       type: "p",
-      text: "Si quiere foto y video —y la mayoría de las familias lo quiere en cuanto se dan cuenta de que el vals y el baile sorpresa están hechos para filmarse— tiene dos caminos: contratar dos proveedores por separado o contratar un solo equipo que haga ambas cosas. Para unos quince, el equipo único casi siempre gana.",
+      text: "Si quiere foto y video —y la mayoría de las familias lo quiere en cuanto se dan cuenta de que el vals y el baile sorpresa están hechos para grabarse— tiene dos caminos: contratar dos proveedores por separado o contratar un solo equipo que haga ambas cosas. Para unos quince, el equipo único casi siempre gana.",
     },
     {
       type: "ul",
@@ -76,16 +76,16 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Por eso cada comisión de foto y video de TX Quince reúne al menos a un fotógrafo y a un videógrafo —hasta ${BASE_CREW.archive} directores, en la combinación que usted elija— como un solo equipo durante todo el día. Si todavía está decidiendo si necesita video, lea [foto o video para una quinceañera](/es/blog/foto-o-video-quinceanera) antes de elegir: es el arrepentimiento más común después de la fiesta.`,
+      text: `Por eso cada paquete de foto y video de TX Quince reúne al menos a un fotógrafo y a un videógrafo —hasta un equipo de ${BASE_CREW.archive}, en la combinación que usted elija— como un solo equipo durante todo el día. Si todavía está decidiendo si necesita video, lea [foto o video para una quinceañera](/es/blog/foto-o-video-quinceanera) antes de elegir: es el arrepentimiento más común después de la fiesta.`,
     },
     {
       type: "cta",
-      heading: "Vea las cuatro comisiones y qué incluye cada una",
-      body: "Estudio de retrato, Cine y fotografía, La producción completa y Archivo editorial de varios días: precios publicados y todo lo que incluye cada una, en una sola página.",
+      heading: "Vea los cuatro paquetes y qué incluye cada uno",
+      body: "Sesión de retratos, Foto + Video, la Celebración completa y la Celebración de dos días: precios publicados y todo lo que incluye cada uno, en una sola página.",
       href: "/es#commissions",
-      label: "Comparar comisiones",
+      label: "Comparar paquetes",
     },
-    { type: "h2", text: "Qué verificar antes de pagar un anticipo" },
+    { type: "h2", text: "Qué verificar antes de pagar un depósito" },
     {
       type: "p",
       text: "Una vez que el estilo y el portafolio de un fotógrafo lo convencen, la conversación deja de ser de gusto y pasa a ser de condiciones. Estos son los detalles que separan a un estudio claro y honesto de uno impreciso; consiga cada respuesta por escrito antes de que cambie de manos un solo dólar.",
@@ -97,13 +97,13 @@ const post: BlogPost = {
         "Segundo fotógrafo: ¿viene incluido o es aparte? Dos cámaras significan que la misa y la entrada a la recepción quedan cubiertas, con ángulos opuestos que una sola persona no puede lograr.",
         "Número de fotos editadas: pregunte cuántas imágenes finales y editadas recibirá, no cuántas «tomará». Un número concreto (y un tiempo de entrega) le indica que ya lo han hecho antes.",
         "Derechos de uso e impresión: ¿recibe una galería privada con derecho a imprimir y compartir? No debería tener que volver a comprar las fotos de su propia hija.",
-        "Anticipo y qué aparta la fecha: cuánto reserva el día, si es reembolsable y cuándo se paga el saldo. La fecha no es suya hasta que estén el anticipo y el contrato firmado.",
+        "Depósito y qué aparta la fecha: cuánto reserva el día, si es reembolsable y cuándo se paga el saldo. La fecha no es suya hasta que estén el depósito y el contrato firmado.",
         "Respaldo y plan de contingencia: equipo de respaldo, doble tarjeta de memoria y qué pasa si su fotógrafo se enferma. Los profesionales tienen un plan; los aficionados, no.",
       ],
     },
     {
       type: "p",
-      text: "Guardamos una lista más completa en [las preguntas que debe hacerle a su fotógrafo de quinceañera](/es/blog/preguntas-para-tu-fotografo-de-quinceanera): imprímala y llévela a cada consulta para que compare las mismas cosas entre un estudio y otro.",
+      text: "Guardamos una lista más completa en [las preguntas que debe hacerle a su fotógrafo de quinceañera](/es/blog/preguntas-para-tu-fotografo-de-quinceanera): imprímala y llévela a cada llamada para que compare las mismas cosas entre un estudio y otro.",
     },
     { type: "h2", text: "Conocer las locaciones de DFW es señal de calidad" },
     {
@@ -135,7 +135,7 @@ const post: BlogPost = {
     },
     {
       q: "¿Conviene un solo equipo para foto y video?",
-      a: `Para una quinceañera, sí: un solo equipo casi siempre es mejor que dos proveedores por separado. Un equipo coordinado de foto y video planea la cobertura en conjunto para no estorbarse, le da un solo contrato y un solo punto de contacto, y entrega una galería y un video que combinan en estilo y color. En TX Quince, cada comisión de foto y video reúne al menos a un fotógrafo y a un videógrafo como un solo equipo durante todo el día, hasta ${BASE_CREW.archive} directores en la combinación que usted elija.`,
+      a: `Para una quinceañera, sí: un solo equipo casi siempre es mejor que dos proveedores por separado. Un equipo coordinado de foto y video planea la cobertura en conjunto para no estorbarse, le da un solo contrato y un solo punto de contacto, y entrega una galería y un video que combinan en estilo y color. En TX Quince, cada paquete de foto y video reúne al menos a un fotógrafo y a un videógrafo como un solo equipo durante todo el día, hasta un equipo de ${BASE_CREW.archive} personas, en la combinación de fotógrafos y videógrafos que usted elija.`,
     },
     {
       q: "¿Cómo sé si un fotógrafo tiene experiencia en quinceañeras?",

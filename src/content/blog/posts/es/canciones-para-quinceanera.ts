@@ -53,7 +53,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Puede ver cómo se sienten el vals y el cambio de pareja con el papá en los videos de nuestro [portafolio](/portfolio#films). Ver uno de verdad es la forma más rápida de sentir cuál canción le queda al momento antes de decidir.",
+      text: "Puede ver cómo se sienten el vals y el cambio de pareja con el papá en los videos de nuestro [portafolio](/portfolio#videos). Ver uno de verdad es la forma más rápida de sentir cuál canción le queda al momento antes de decidir.",
     },
     { type: "h2", text: "El baile con el papá" },
     {
@@ -71,7 +71,7 @@ const post: BlogPost = {
     },
     {
       type: "callout",
-      text: "Esta es la canción que más probable hace llorar a todo el salón — y la que más vale la pena filmar bien. Pasa una sola vez, es corta, y las caras importan más que los pasos. Avísele a quien esté grabando que este momento es prioridad.",
+      text: "Esta es la canción que más probable hace llorar a todo el salón — y la que más vale la pena grabar bien. Pasa una sola vez, es corta, y las caras importan más que los pasos. Avísele a quien esté grabando que este momento es prioridad.",
     },
     { type: "h2", text: "El baile sorpresa" },
     {
@@ -123,7 +123,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Cuando sus canciones estén listas, puede [revisar si su fecha está libre](/check-your-date) en segundos, ver qué incluye cada [comisión](/es#commissions) de foto y video, o [reservar su fecha](/es#intake). Y si todavía está armando el orden de la noche, nuestra [guía del orden de la quinceañera](/es/blog/que-pasa-en-una-quinceanera-orden) muestra exactamente dónde cae cada una de estas canciones.",
+      text: "Cuando sus canciones estén listas, puede [revisar si su fecha está libre](/check-your-date) en segundos, ver qué incluye cada [paquete](/es#commissions) de foto y video, o [reservar su fecha](/es#intake). Y si todavía está armando el orden de la noche, nuestra [guía del orden de la quinceañera](/es/blog/que-pasa-en-una-quinceanera-orden) muestra exactamente dónde cae cada una de estas canciones.",
     },
   ],
   faqs: [

@@ -6,22 +6,37 @@ import { getFeaturedImages, getPageHero } from "@/lib/content-db";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import { BlogIndexView, type BlogThumb } from "@/components/BlogContent";
+import { blogIndexJsonLd } from "@/app/blog/structured-data";
 
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Quinceañera Planning Guide & Journal",
   description:
-    "Honest, no-guesswork guides to planning a quinceañera in Dallas–Fort Worth — real costs, timelines, traditions, and how to choose your photographer & film team.",
+    "Honest, no-guesswork guides to planning a quinceañera in Dallas–Fort Worth — real costs, timelines, traditions, and how to choose your photo & video team.",
   alternates: {
     canonical: "/blog",
     languages: { "en-US": "/blog", "es-MX": "/es/blog", "x-default": "/blog" },
   },
+  // openGraph/twitter replace the root layout's objects wholesale (shallow
+  // merge), so the index restates siteName/locale/image and its own card copy.
   openGraph: {
+    type: "website",
+    siteName: site.brand,
+    locale: "en_US",
+    alternateLocale: ["es_MX"],
     title: "Quinceañera Planning Guide · TX Quince",
     description:
       "Real costs, timelines, traditions, and how to choose your photographer in Dallas–Fort Worth.",
     url: `${site.url}/blog`,
+    images: [{ url: `${site.url}/opengraph-image`, width: 1200, height: 630, alt: "TX Quince — Quinceañera photos & video in Dallas–Fort Worth" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Quinceañera Planning Guide · TX Quince",
+    description:
+      "Real costs, timelines, traditions, and how to choose your photographer in Dallas–Fort Worth.",
+    images: [`${site.url}/opengraph-image`],
   },
 };
 
@@ -45,19 +60,31 @@ export default async function BlogIndexPage() {
   const tiles = pool.length ? pool : fallbacks.slice(1);
   const thumbs = new Map(posts.map((p, idx) => [p.slug, tiles.length ? tiles[idx % tiles.length] : null]));
 
+  const jsonLd = blogIndexJsonLd({
+    url: `${site.url}/blog`,
+    name: "Journal",
+    description: String(metadata.description ?? ""),
+    lang: "en",
+    posts,
+    crumbs: [{ name: "Home", item: site.url }],
+  });
+
   return (
-    <BlogIndexView
-      lang="en"
-      title={
-        <>
-          Stories around <em>her day.</em>
-        </>
-      }
-      dek="Costs, timelines, photography, film, and the traditions that shape the celebration."
-      aside={{ href: "/quinceanera-guide", label: "Begin with the planning guide" }}
-      posts={posts}
-      featuredImage={featuredImage}
-      thumbs={thumbs}
-    />
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <BlogIndexView
+        lang="en"
+        title={
+          <>
+            Stories around <em>her day.</em>
+          </>
+        }
+        dek="Costs, timelines, photos, video, and the traditions that shape the celebration."
+        aside={{ href: "/quinceanera-guide", label: "Begin with the planning guide" }}
+        posts={posts}
+        featuredImage={featuredImage}
+        thumbs={thumbs}
+      />
+    </>
   );
 }

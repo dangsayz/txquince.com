@@ -13,7 +13,7 @@ const post: BlogPost = {
     "Which songs play at each moment of the night, how to choose the ones that will still mean something in ten years, and why your videographer needs the list early.",
   publishedAt: "2026-06-27",
   readMinutes: 9,
-  lead: "Picking your quinceañera songs is one of the few planning decisions you'll actually relive — every time you rewatch the film. The right vals song is what plays under your father's hands taking yours; the right surprise-dance track is what the room remembers. This guide walks moment by moment through the night — the grand entrance, the vals, the father-daughter dance, and the surprise dance — with real picks in English and Spanish, plus how to choose songs that still feel right years later.",
+  lead: "Picking your quinceañera songs is one of the few planning decisions you'll actually relive — every time you rewatch the video. The right vals song is what plays under your father's hands taking yours; the right surprise-dance track is what the room remembers. This guide walks moment by moment through the night — the grand entrance, the vals, the father-daughter dance, and the surprise dance — with real picks in English and Spanish, plus how to choose songs that still feel right years later.",
   content: [
     {
       type: "p",
@@ -52,7 +52,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "You can hear how the vals and the father hand-off actually play out in the films on our [portfolio](/portfolio#films). Watching a real one is the fastest way to feel which song fits the moment before you commit.",
+      text: "You can hear how the vals and the father hand-off actually play out in the videos on our [portfolio](/portfolio#videos). Watching a real one is the fastest way to feel which song fits the moment before you commit.",
     },
     { type: "h2", text: "The father-daughter dance" },
     {
@@ -70,7 +70,7 @@ const post: BlogPost = {
     },
     {
       type: "callout",
-      text: "This is the song most likely to choke up the whole room — and the one most worth filming well. It happens once, it's short, and the faces matter more than the footwork. Tell whoever is shooting that this moment is a priority.",
+      text: "This is the song most likely to choke up the whole room — and the one most worth recording video well. It happens once, it's short, and the faces matter more than the footwork. Tell whoever is shooting that this moment is a priority.",
     },
     { type: "h2", text: "The surprise dance (el baile sorpresa)" },
     {
@@ -107,22 +107,22 @@ const post: BlogPost = {
     { type: "h2", text: "Give your final song list to your videographer — not just your DJ" },
     {
       type: "p",
-      text: "Most families remember to send the song list to the DJ. The one people forget is the videographer — and it's the one that changes how your film looks. When we know your songs ahead of time, we shoot to the music: we know where the beat drops in the surprise dance, when the father hand-off lands in the vals, where the emotional peak of the father-daughter song sits. The film is edited to those moments instead of guessing at them on the night.",
+      text: "Most families remember to send the song list to the DJ. The one people forget is the videographer — and it's the one that changes how your video looks. When we know your songs ahead of time, we shoot to the music: we know where the beat drops in the surprise dance, when the father hand-off lands in the vals, where the emotional peak of the father-daughter song sits. The video is edited to those moments instead of guessing at them on the night.",
     },
     {
       type: "p",
-      text: "There's one practical heads-up that only comes up with film: if you plan to share your highlight video publicly online, popular commercial songs can be flagged or blocked in some regions by the platform's copyright system. It doesn't affect your private keepsake film at all — but if a public share matters to you, ask your videographer how they handle it before the day. It's a five-minute conversation that saves a surprise later.",
+      text: "There's one practical heads-up that only comes up with video: if you plan to share your highlight video publicly online, popular commercial songs can be flagged or blocked in some regions by the platform's copyright system. It doesn't affect your private keepsake video at all — but if a public share matters to you, ask your videographer how they handle it before the day. It's a five-minute conversation that saves a surprise later.",
     },
     {
       type: "cta",
-      heading: "Hear these moments on real films",
-      body: "Watch how the vals, the father hand-off, and the surprise dance actually sound and look on film — then check if your date is open.",
+      heading: "Hear these moments on real videos",
+      body: "Watch how the vals, the father hand-off, and the surprise dance actually sound and look on video — then check if your date is open.",
       href: "/portfolio",
-      label: "Watch the films",
+      label: "Watch the videos",
     },
     {
       type: "p",
-      text: "Once your songs are set, you can [check if your date is open](/check-your-date) in seconds, see what each [commission includes](/#commissions) for photo and film, or [reserve your date](/#intake). And if you're still building the running order of the night, our [order of events guide](/blog/what-happens-at-a-quinceanera-order-of-events) shows exactly where each of these songs falls.",
+      text: "Once your songs are set, you can [check if your date is open](/check-your-date) in seconds, see what each [package includes](/#commissions) for photo and video, or [reserve your date](/#intake). And if you're still building the running order of the night, our [order of events guide](/blog/what-happens-at-a-quinceanera-order-of-events) shows exactly where each of these songs falls.",
     },
   ],
   faqs: [

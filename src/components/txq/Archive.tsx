@@ -10,25 +10,37 @@ import {
 } from "motion/react";
 import { WORKS, pick, type Category, type Work } from "./data";
 import { useSite } from "./state";
+import { archiveSlot, type HomeOverrides } from "@/lib/photo-dump-shared";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const FILTERS: ("all" | Category)[] = ["all", "couture", "ceremony", "fiesta", "editorial"];
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
-export function Archive() {
+export function Archive({ overrides = {} }: { overrides?: HomeOverrides }) {
   const { t, lang } = useSite();
+  // Frames the admin swapped for a Photo dump photo (Admin → Photo dump).
+  const all = useMemo(
+    () =>
+      WORKS.map((w) => {
+        const swap = overrides[archiveSlot(w.id)];
+        return swap
+          ? { ...w, src: swap.src, width: swap.w, height: swap.h, focus: "50% 40%", alt: { en: swap.alt.en || w.alt.en, es: swap.alt.es || w.alt.es } }
+          : w;
+      }),
+    [overrides],
+  );
   const [filter, setFilter] = useState<"all" | Category>("all");
   const [view, setView] = useState<"grid" | "list">("grid");
   const [viewing, setViewing] = useState<number | null>(null);
   const opener = useRef<HTMLElement | null>(null);
 
   const works = useMemo(
-    () => (filter === "all" ? WORKS : WORKS.filter((w) => w.category === filter)),
-    [filter],
+    () => (filter === "all" ? all : all.filter((w) => w.category === filter)),
+    [filter, all],
   );
   // Index numbers are stable to the archive, not the filtered view.
-  const number = (w: Work) => pad(WORKS.indexOf(w) + 1);
+  const number = (w: Work) => pad(all.indexOf(w) + 1);
 
   const open = (i: number, el: HTMLElement) => {
     opener.current = el;

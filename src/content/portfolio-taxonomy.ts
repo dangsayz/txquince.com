@@ -124,13 +124,13 @@ export const GROUPS: PortfolioGroup[] = [
   },
   {
     id: "films",
-    label: "Films",
-    eyebrow: "Motion",
-    title: "Films",
+    label: "Videos",
+    eyebrow: "Video",
+    title: "Videos",
     hook: "Her voice, the music, the room.",
     intro:
-      "The day in motion — a film the family watches for years.",
-    meta: "quinceañera videographer films Dallas Fort Worth",
+      "The day in motion — a video the family watches for years.",
+    meta: "quinceañera videographer videos Dallas Fort Worth",
   },
 ];
 
@@ -198,7 +198,7 @@ export const CATEGORIES: PortfolioCategory[] = [
   { id: "vendor-planner", label: "Planner", group: "vendors", kind: "vendor", altPhrase: "Quinceañera planner and coordinator" },
 
   // ── Films ───────────────────────────────────────────────────────
-  { id: "films", label: "Films", group: "films", kind: "moment", altPhrase: "Quinceañera film still" }, // legacy
+  { id: "films", label: "Videos", group: "films", kind: "moment", altPhrase: "Quinceañera video still" }, // legacy
 ];
 
 export const CATEGORY_IDS: string[] = CATEGORIES.map((c) => c.id);
@@ -261,7 +261,7 @@ export const VENDOR_CATEGORIES: VendorCategory[] = [
   { id: "transport", label: "Transportation", credit: "Transportation" },
   { id: "planner", label: "Planner", credit: "Planning" },
   { id: "photographer", label: "Photographer", credit: "Photography" },
-  { id: "videographer", label: "Videographer", credit: "Film" },
+  { id: "videographer", label: "Videographer", credit: "Video" },
   { id: "other", label: "Other", credit: "Vendor" },
 ];
 

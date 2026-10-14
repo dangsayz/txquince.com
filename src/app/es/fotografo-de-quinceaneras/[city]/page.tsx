@@ -3,7 +3,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { site } from "@/content/site";
-import { commissions, commissionsFromLabel, commissionLinks, retainerPercentLabel } from "@/content/commissions";
+import {
+  bookingFlow,
+  bookingSteps,
+  commissions,
+  commissionsFromLabel,
+  commissionLinks,
+  retainerPercentLabel,
+} from "@/content/commissions";
 import { PRICE_CEILING_USD, PRICE_FLOOR_USD, TIER_PRICE_USD, usd } from "@/lib/commission";
 import { locations, getLocation, nearbyLocations, cityGeo } from "@/content/locations";
 import { getCityContent } from "@/content/city-content";
@@ -38,7 +45,7 @@ export async function generateMetadata({
   if (!loc) return {};
 
   const title = `Fotógrafo de Quinceañeras en ${loc.city}, TX`;
-  const description = `Fotógrafo y videógrafo de quinceañeras de lujo en ${loc.city}. Encargos publicados desde ${commissionsFromLabel}, en español, de la misa al último baile. Consulta tu fecha en vivo.`;
+  const description = `Fotógrafo y videógrafo de quinceañeras de lujo en ${loc.city}. Paquetes publicados desde ${commissionsFromLabel}, en español, de la misa al último baile. Consulta tu fecha en vivo.`;
   const esUrl = `${site.url}/es/fotografo-de-quinceaneras/${loc.slug}`;
   const enUrl = `${site.url}/quinceanera-photographer/${loc.slug}`;
 
@@ -67,19 +74,19 @@ function sharedFaqsEs(city: string) {
   return [
     {
       q: `¿Cuánto cuesta un fotógrafo de quinceañera en ${city}?`,
-      a: `Todos los encargos están publicados: un Estudio de retrato cuesta ${usd(TIER_PRICE_USD.study)}, foto y cine juntos desde ${usd(TIER_PRICE_USD.cinema)}, y La producción completa, el encargo que recomendamos para la mayoría de las celebraciones en ${city}, cuesta ${usd(TIER_PRICE_USD.production)}. El archivo de varios días cuesta ${usd(TIER_PRICE_USD.archive)}. Puedes consultar tu fecha sin pagar.`,
+      a: `Todos los paquetes están publicados: la Sesión de retratos cuesta ${usd(TIER_PRICE_USD.study)}, fotos y video juntos desde ${usd(TIER_PRICE_USD.cinema)}, y la Celebración completa, el paquete que recomendamos para la mayoría de las celebraciones en ${city}, cuesta ${usd(TIER_PRICE_USD.production)}. La Celebración de dos días cuesta ${usd(TIER_PRICE_USD.archive)}. Puedes consultar tu fecha sin pagar.`,
     },
     {
       q: "¿También ofreces video, o solo fotografía?",
-      a: "Los dos. Desde Cine y fotografía, un director de foto y un director de cine cubren el día como un solo equipo, para que la misa, el vals y la recepción queden en fotografías y en una película 4K sin que dos proveedores se estorben.",
+      a: "Los dos. Desde Foto + Video, un fotógrafo y un videógrafo cubren el día como un solo equipo, para que la misa, el vals y la recepción queden en fotos y en un video completo en 4K sin que dos proveedores se estorben.",
     },
     {
       q: "¿Cobras por traslado?",
-      a: `No — ${city} está dentro de mi área de Dallas–Fort Worth, así que no hay cargo por traslado. Las horas de cobertura son las mismas, esté tu iglesia y salón cerca o al otro lado de la ciudad.`,
+      a: `No — ${city} está dentro de mi área de Dallas–Fort Worth, así que no hay cargo por traslado. Tus horas son las mismas, esté tu iglesia y salón cerca o al otro lado de la ciudad.`,
     },
     {
       q: "¿Cómo apartamos la fecha?",
-      a: `Un anticipo del ${retainerPercentLabel} del encargo aparta la fecha y se aplica completo; el saldo se liquida 30 días antes de la celebración. Puedes pagarlo en línea con pago seguro, o pedir primero una consulta y apartamos la fecha 7 días.`,
+      a: bookingFlow.es,
     },
   ];
 }
@@ -94,20 +101,7 @@ function focal(fx?: number | null, fy?: number | null, dy = 0.35): string {
 }
 
 /** Del primer mensaje al día. */
-const PASOS: { t: string; b: string }[] = [
-  {
-    t: "Cuéntanos tus planes",
-    b: "Comparte la fecha, la ciudad y la cobertura que tienes en mente. Consultar no requiere pago.",
-  },
-  {
-    t: "Confirmamos la disponibilidad",
-    b: "Aparta en línea con el anticipo, o pide primero una consulta y apartamos la fecha 7 días mientras platicamos.",
-  },
-  {
-    t: "Planeamos la cobertura",
-    b: "Organizamos la fotografía y el video alrededor de la ceremonia, los retratos y la recepción.",
-  },
-];
+const PASOS = bookingSteps.es.map((p) => ({ t: p.title, b: p.body }));
 
 export default async function CityPageEs({
   params,
@@ -209,7 +203,7 @@ export default async function CityPageEs({
         knowsLanguage: ["es", "en"],
         hasOfferCatalog: {
           "@type": "OfferCatalog",
-          name: "Encargos de quinceañera",
+          name: "Paquetes de quinceañera",
           itemListElement: commissions.map((c) => ({
             "@type": "Offer",
             name: `${c.numeral} ${c.name.es}`,
@@ -320,7 +314,7 @@ export default async function CityPageEs({
                 <span>Consultar su fecha</span>
                 <span className="tq-arrow" aria-hidden>→</span>
               </Link>
-              <span className="tq-mono tq-muted">Encargos desde {commissionsFromLabel}</span>
+              <span className="tq-mono tq-muted">Paquetes desde {commissionsFromLabel}</span>
             </div>
           </div>
         </div>
@@ -366,17 +360,17 @@ export default async function CityPageEs({
         </section>
       ) : null}
 
-      {/* Encargos */}
+      {/* Paquetes */}
       <section className="tq-section" aria-labelledby="city-collections-title">
         <div className="tq-wrap">
           <header className="tq-head tq-place-head--long">
             <p className="tq-head__index tq-mono" style={{ margin: 0 }}>{idx("commissions", `Foto y video / ${loc.city}`)}</p>
             <h2 id="city-collections-title" className="tq-display tq-head__title">
-              Encargos desde {commissionsFromLabel}.
+              Paquetes desde {commissionsFromLabel}.
             </h2>
             <p className="tq-head__dek">
-              Cuatro encargos con precios publicados. Un anticipo del {retainerPercentLabel} aparta la fecha y se
-              aplica completo; La producción completa reúne foto, cine y una monografía de lino.
+              Cuatro paquetes con precios publicados. Un depósito del {retainerPercentLabel} aparta la fecha y se
+              abona a tu total; la Celebración completa reúne fotos, video y un álbum de fotos impreso.
             </p>
           </header>
           <ol className="tq-place-tiers">
@@ -392,7 +386,7 @@ export default async function CityPageEs({
                 <p className="tq-place-tier__sum">{c.summary.es}</p>
                 <p className="tq-display tq-nums tq-place-tier__price">
                   {c.priceLabel}
-                  <small>Anticipo: {c.retainerLabel}</small>
+                  <small>Depósito: {c.retainerLabel}</small>
                 </p>
                 <ul>
                   {c.highlights.es.map((item) => (
@@ -407,7 +401,7 @@ export default async function CityPageEs({
           </ol>
           <div className="tq-place-after">
             <Link href={commissionLinks.es.compare} className="tq-btn tq-btn--ghost">
-              Comparar todos los encargos <span className="tq-arrow" aria-hidden>→</span>
+              Comparar todos los paquetes <span className="tq-arrow" aria-hidden>→</span>
             </Link>
             <Link href="/es/sesion-de-fotos-quinceanera" className="tq-btn tq-btn--ghost">
               Sesión de fotos pre-quince <span className="tq-arrow" aria-hidden>→</span>
@@ -416,13 +410,13 @@ export default async function CityPageEs({
         </div>
       </section>
 
-      {/* Cómo funciona la consulta */}
+      {/* Cómo funciona reservar */}
       <section className="tq-section" aria-labelledby="city-booking-title">
         <div className="tq-wrap">
           <header className="tq-head">
             <p className="tq-head__index tq-mono" style={{ margin: 0 }}>{idx("booking", "Del primer mensaje al día")}</p>
             <h2 id="city-booking-title" className="tq-display tq-head__title">
-              Cómo funciona <em>la consulta.</em>
+              Cómo <em>reservar.</em>
             </h2>
           </header>
           <ol className="tq-place-rows">
@@ -602,7 +596,7 @@ export default async function CityPageEs({
               </h2>
             </div>
             <div className="tq-place-cta__side">
-              <p>Consultar no requiere pago. Si prefieres platicar primero, apartamos la fecha 7 días.</p>
+              <p>Consultar tu fecha no cuesta nada. Si prefieres platicar primero, hacemos una llamada rápida.</p>
               <div className="tq-place-actions">
                 <Link href={commissionLinks.es.book} className="tq-btn tq-btn--lg">
                   Consultar tu fecha <span className="tq-arrow" aria-hidden>↗</span>

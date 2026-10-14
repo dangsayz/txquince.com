@@ -87,7 +87,7 @@ const post: BlogPost = {
     },
     {
       type: "h2",
-      text: "Why this 30-second moment deserves a second shooter or film",
+      text: "Why this 30-second moment deserves a second shooter or video",
     },
     {
       type: "p",
@@ -95,18 +95,18 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "One photographer has to choose: her face, or his. With a second shooter, you get both at once — the kneel from one angle, her reaction from the other. And film catches what a still never can: the sound of what he says to her, the way her breath changes, the song. This is one of a small handful of moments in the whole day where a second artist or a video pays for itself, because you genuinely cannot do it over.",
+      text: "One photographer has to choose: her face, or his. With a second shooter, you get both at once — the kneel from one angle, her reaction from the other. And video catches what a still never can: the sound of what he says to her, the way her breath changes, the song. This is one of a small handful of moments in the whole day where a second artist or a video pays for itself, because you genuinely cannot do it over.",
     },
     {
       type: "p",
-      text: "If you're deciding between photo and film, this moment is one of the clearest reasons to weigh both — we lay out the trade-offs in [quinceañera photo vs. video](/blog/quinceanera-photo-vs-video). And you can see the kneel and the reaction shots, side by side, throughout our [portfolio](/portfolio).",
+      text: "If you're deciding between photo and video, this moment is one of the clearest reasons to weigh both — we lay out the trade-offs in [quinceañera photo vs. video](/blog/quinceanera-photo-vs-video). And you can see the kneel and the reaction shots, side by side, throughout our [portfolio](/portfolio).",
     },
     {
       type: "cta",
       heading: "Cover both faces, not just one",
-      body: "Our photo + film commissions are built for moments you can't restage — the cambio de zapatos and the vals among them. See what's included.",
+      body: "Our photo + video packages are built for moments you can't restage — the cambio de zapatos and the vals among them. See what's included.",
       href: "/#commissions",
-      label: "Compare commissions",
+      label: "Compare packages",
     },
     {
       type: "p",

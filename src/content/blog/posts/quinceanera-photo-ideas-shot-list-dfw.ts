@@ -142,7 +142,7 @@ const post: BlogPost = {
         "The grand entrance of the court into the reception.",
         "The vals from a few angles — the lineup, a turn mid-dance, and the father hand-off.",
         "The changing of the shoes — the [cambio de zapatos](/blog/changing-of-the-shoes-quinceanera), flats to heels, shot up close at her feet and wide on her face.",
-        "The surprise dance start to finish, ideally on film as well as stills.",
+        "The surprise dance start to finish, ideally on video as well as photos.",
       ],
     },
     {
@@ -157,7 +157,7 @@ const post: BlogPost = {
     { type: "h2", text: "The reception is mostly candids" },
     {
       type: "p",
-      text: "By the reception the posed work is mostly done, and the shot list turns to catching real moments as they happen. The keepers here are reactions, not arrangements — which is also why these are the frames film captures even better than stills.",
+      text: "By the reception the posed work is mostly done, and the shot list turns to catching real moments as they happen. The keepers here are reactions, not arrangements — which is also why these are the frames video captures even better than photos.",
     },
     {
       type: "image",
@@ -203,7 +203,7 @@ const post: BlogPost = {
     },
     {
       q: "Do you need a second photographer for a quinceañera?",
-      a: `It's not required, but a second artist means two angles at once — someone on her face during the vals while the other catches the crowd, or one on getting-ready details while the other shoots her. At TX Quince every photo + film commission includes at least one photographer and one videographer — The Full Production brings ${BASE_CREW.production} directors and the Multi-Day Editorial Archive ${BASE_CREW.archive}, in whatever photo/film mix you choose — which is why nothing important happens off-camera.`,
+      a: `It's not required, but a second artist means two angles at once — someone on her face during the vals while the other catches the crowd, or one on getting-ready details while the other shoots her. At TX Quince every photo + video package includes at least one photographer and one videographer — the Full Celebration brings a team of ${BASE_CREW.production} and the Two-Day Celebration a team of ${BASE_CREW.archive}, in whatever mix of photographers and videographers you choose — which is why nothing important happens off-camera.`,
     },
     {
       q: "How many edited photos do you get from a quinceañera?",

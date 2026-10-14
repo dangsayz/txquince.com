@@ -5,14 +5,14 @@ const post: BlogPost = {
   slug: "how-to-choose-quinceanera-photographer-dfw",
   title: "How to Choose a Quinceañera Photographer in Dallas–Fort Worth (2026 Guide)",
   description:
-    "A clear 2026 guide to choosing a quinceañera photographer in Dallas–Fort Worth — photo styles, what to look for in a portfolio, photo + film as one team, what to verify before you book, and when to lock your date.",
+    "A clear 2026 guide to choosing a quinceañera photographer in Dallas–Fort Worth — photo styles, what to look for in a portfolio, photo + video as one team, what to verify before you book, and when to lock your date.",
   category: "Photography & Film",
   excerpt:
     "How to pick the right photographer for your daughter's quince — styles explained, what a real portfolio shows, and the questions that protect your money and your date.",
   publishedAt: "2026-06-09",
   updatedAt: "2026-10-14",
   readMinutes: 9,
-  lead: "Your daughter's quinceañera happens once. The photos and film are what's left after the flowers wilt and the dress goes in the closet — so choosing the right photographer matters more than almost any other vendor decision. This DFW-specific guide walks you through it: how to read a portfolio, what the styles actually mean, and exactly what to verify before you hand over a deposit.",
+  lead: "Your daughter's quinceañera happens once. The photos and video are what's left after the flowers wilt and the dress goes in the closet — so choosing the right photographer matters more than almost any other vendor decision. This DFW-specific guide walks you through it: how to read a portfolio, what the styles actually mean, and exactly what to verify before you hand over a deposit.",
   content: [
     { type: "h2", text: "Start with the style you actually want" },
     {
@@ -23,7 +23,7 @@ const post: BlogPost = {
       type: "ul",
       items: [
         "Traditional — posed, formal, evenly lit. Think the classic court portrait, the family lineup, the church shots your tías will want printed. Safe, timeless, and easy for grandparents to love.",
-        "Cinematic — moody, dramatic light and color, framed like a film still. This is the look that makes the vals and the surprise dance feel like a movie. It leans on film as much as photo.",
+        "Cinematic — moody, dramatic light and color, framed like a video still. This is the look that makes the vals and the surprise dance feel like a movie. It leans on video as much as photo.",
         "Editorial — fashion-magazine styling, bold poses, strong locations. Great for the pre-quince portrait session and the hero shot of your daughter in her dress.",
         "Hybrid — a documentary spine (real moments as they happen) with editorial portraits worked in. This is where most modern quince photography lives, and it's what we shoot at TX Quince.",
       ],
@@ -35,7 +35,7 @@ const post: BlogPost = {
     { type: "h2", text: "What to actually look for in a portfolio" },
     {
       type: "p",
-      text: "Highlight reels are designed to impress. What you want to see is a single quinceañera shot start to finish — getting ready, la misa, the portraits, the vals, the reception, the surprise dance, the last dance. That's the only way to know a photographer can carry the whole story, not just nail a handful of poses.",
+      text: "Highlight videos are designed to impress. What you want to see is a single quinceañera shot start to finish — getting ready, la misa, the portraits, the vals, the reception, the surprise dance, the last dance. That's the only way to know a photographer can carry the whole story, not just nail a handful of poses.",
     },
     {
       type: "ul",
@@ -49,7 +49,7 @@ const post: BlogPost = {
     },
     {
       type: "callout",
-      text: "Red flag: a photographer who'll only show you a 60-second highlight reel and won't share a full gallery. If they can't show the whole day, they may not be able to shoot the whole day.",
+      text: "Red flag: a photographer who'll only show you a 60-second highlight video and won't share a full gallery. If they can't show the whole day, they may not be able to shoot the whole day.",
     },
     { type: "h2", text: "Why a quince-experienced photographer beats a generalist" },
     {
@@ -60,29 +60,29 @@ const post: BlogPost = {
       type: "p",
       text: "That experience also shows up in the bilingual, family-centered way a quince runs — knowing how to direct a big Hispanic family for the formals, when la misa allows photography and when it doesn't, and how to keep a three-generation portrait moving before anyone loses patience. It's the difference between a photographer who documents your day and one who actually understands it.",
     },
-    { type: "h2", text: "One team for photo and film, or two vendors?" },
+    { type: "h2", text: "One team for photo and video, or two vendors?" },
     {
       type: "p",
-      text: "If you want both photos and video — and most families do once they realize the vals and surprise dance are made for film — you have two choices: hire two separate vendors, or hire one team that does both. The single-team route almost always wins for a quince.",
+      text: "If you want both photos and video — and most families do once they realize the vals and surprise dance are made for video — you have two choices: hire two separate vendors, or hire one team that does both. The single-team route almost always wins for a quince.",
     },
     {
       type: "ul",
       items: [
         "No turf wars — two vendors who've never met will fight for the same angle at the church entrance and block each other during the reception. One coordinated team plans the coverage together.",
         "One point of contact — one contract, one timeline, one person to call. You're not refereeing between a photographer and a videographer on the morning of.",
-        "A unified look — when the photo and film come from the same studio, the color and style match. Two vendors can hand you a warm gallery and a cool, clashing video.",
+        "A unified look — when the photo and video come from the same studio, the color and style match. Two vendors can hand you a warm gallery and a cool, clashing video.",
       ],
     },
     {
       type: "p",
-      text: `This is exactly why every TX Quince photo + film commission puts at least one photographer and one videographer — up to ${BASE_CREW.archive} directors, in the mix you choose — on one team for the whole day. If you're weighing whether you even need video, read [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video) before you decide — it's the most common after-the-fact regret.`,
+      text: `This is exactly why every TX Quince photo + video package puts at least one photographer and one videographer — up to a team of ${BASE_CREW.archive}, in the mix you choose — on one team for the whole day. If you're weighing whether you even need video, read [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video) before you decide — it's the most common after-the-fact regret.`,
     },
     {
       type: "cta",
-      heading: "See the four commissions and what's included",
-      body: "Portrait Study, Cinema & Stills, The Full Production, and the Multi-Day Editorial Archive — published prices and full inclusions on one page.",
+      heading: "See the four packages and what's included",
+      body: "Portrait Session, Photo + Video, the Full Celebration, and the Two-Day Celebration — published prices and full inclusions on one page.",
       href: "/#commissions",
-      label: "Compare commissions",
+      label: "Compare packages",
     },
     { type: "h2", text: "What to verify before you pay a deposit" },
     {
@@ -96,13 +96,13 @@ const post: BlogPost = {
         "Second shooter — is a second artist included or extra? Two cameras mean the misa and the reception entrance are both covered, with reverse angles you can't fake alone.",
         "Edited-photo count — ask how many final, edited images you'll receive, not how many they'll \"take.\" A real number (and a delivery timeline) tells you they've done this before.",
         "Usage and print rights — do you get a private gallery with the rights to print and share? You shouldn't have to buy back photos of your own daughter.",
-        "Deposit or retainer and what locks the date — how much reserves the day, whether it's refundable, and when the balance is due. The date isn't yours until the payment and signed agreement are both in.",
+        "Deposit and what locks the date — how much reserves the day, whether it's refundable, and when the balance is due. The date isn't yours until the payment and signed agreement are both in.",
         "Backup and contingency — backup gear, dual memory cards, and what happens if your photographer is sick. Professionals have a plan; hobbyists don't.",
       ],
     },
     {
       type: "p",
-      text: "We keep a deeper list of these in our [questions to ask a quinceañera photographer](/blog/questions-to-ask-quinceanera-photographer) — print it out and bring it to every consultation so you're comparing the same things across studios.",
+      text: "We keep a deeper list of these in our [questions to ask a quinceañera photographer](/blog/questions-to-ask-quinceanera-photographer) — print it out and bring it to every call so you're comparing the same things across studios.",
     },
     { type: "h2", text: "Local DFW knowledge is a quality signal" },
     {
@@ -126,7 +126,7 @@ const post: BlogPost = {
   faqs: [
     {
       q: "What should I look for in a quinceañera photographer?",
-      a: "Look for a photographer whose style you genuinely love, a full quince gallery shot start to finish (not just a highlight reel), real experience with large events and the quince traditions, recent verifiable reviews, and a personality that puts your daughter at ease. Then verify the practical terms — coverage hours, second shooter, edited-photo count, print rights, and what locks the date — in writing.",
+      a: "Look for a photographer whose style you genuinely love, a full quince gallery shot start to finish (not just a highlight video), real experience with large events and the quince traditions, recent verifiable reviews, and a personality that puts your daughter at ease. Then verify the practical terms — coverage hours, second shooter, edited-photo count, print rights, and what locks the date — in writing.",
     },
     {
       q: "How many photos should I get from a quinceañera?",
@@ -134,7 +134,7 @@ const post: BlogPost = {
     },
     {
       q: "Should I hire one team for photo and video?",
-      a: `For a quinceañera, yes — one team is almost always better than two separate vendors. A coordinated photo-and-film team plans coverage together so they don't block each other, gives you one contract and one point of contact, and delivers a gallery and video that match in style and color. At TX Quince, every photo + film commission puts at least one photographer and one videographer on one team for the whole day — up to ${BASE_CREW.archive} directors, in whatever mix you choose.`,
+      a: `For a quinceañera, yes — one team is almost always better than two separate vendors. A coordinated photo-and-video team plans coverage together so they don't block each other, gives you one contract and one point of contact, and delivers a gallery and video that match in style and color. At TX Quince, every photo + video package puts at least one photographer and one videographer on one team for the whole day — up to a team of ${BASE_CREW.archive}, in whatever mix of photographers and videographers you choose.`,
     },
     {
       q: "How do I know if a photographer is experienced with quinceañeras?",

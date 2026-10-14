@@ -1,5 +1,5 @@
 import type { BlogPost } from "@/content/blog";
-import { TIER_PRICE_USD, ADD_ON_PRICE_USD, usd } from "@/lib/commission";
+import { TIER_PRICE_USD, ADD_ON_PRICE_USD, BASE_HOURS, usd } from "@/lib/commission";
 
 const post: BlogPost = {
   slug: "pre-quince-photo-session-dfw",
@@ -89,7 +89,7 @@ const post: BlogPost = {
     {
       type: "cta",
       heading: "Book your pre-quince portrait session",
-      body: `Our Portrait Study (${usd(TIER_PRICE_USD.study)}) is a three-hour editorial portrait session before the celebration — 60 retouched frames and a motion portrait. Pick your location and theme, and we'll handle the light.`,
+      body: `Our Portrait Session (${usd(TIER_PRICE_USD.study)}) is ${BASE_HOURS.study} hours with one photographer — 60 edited photos and a short video for social media. Pick your location and theme, and we'll handle the light.`,
       href: "/#intake",
       label: "Reserve your session",
     },
@@ -134,7 +134,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "When you're ready, book it on its own as our Portrait Study, or see which [commissions](/#commissions) already include a portrait session — The Full Production includes one location, the Multi-Day Editorial Archive two — browse [session galleries](/portfolio) for ideas, and [reserve your date](/#intake). If you're still choosing a photographer, start with [how to choose a quinceañera photographer in DFW](/blog/how-to-choose-quinceanera-photographer-dfw) — and if you're booking the whole celebration, our [quinceañera photographer in Dallas](/quinceanera-photographer/dallas) and [Fort Worth](/quinceanera-photographer/fort-worth) pages cover full event coverage.",
+      text: "When you're ready, book it on its own as our Portrait Session, or see which [packages](/#commissions) already include a portrait session — the Full Celebration includes one location, the Two-Day Celebration two — browse [session galleries](/portfolio) for ideas, and [reserve your date](/#intake). If you're still choosing a photographer, start with [how to choose a quinceañera photographer in DFW](/blog/how-to-choose-quinceanera-photographer-dfw) — and if you're booking the whole celebration, our [quinceañera photographer in Dallas](/quinceanera-photographer/dallas) and [Fort Worth](/quinceanera-photographer/fort-worth) pages cover full event coverage.",
     },
   ],
   faqs: [
@@ -160,7 +160,7 @@ const post: BlogPost = {
     },
     {
       q: "Is the pre-quince session included or an add-on?",
-      a: `It depends on the studio and the package. At TX Quince, the Portrait Study (${usd(TIER_PRICE_USD.study)}) is the portrait session on its own; The Full Production includes a portrait session at one location and the Multi-Day Editorial Archive includes two. A destination portrait session can be added for ${usd(ADD_ON_PRICE_USD.destination)}. Compare every commission before you reserve.`,
+      a: `It depends on the studio and the package. At TX Quince, the Portrait Session (${usd(TIER_PRICE_USD.study)}) is the portrait session on its own; the Full Celebration includes a portrait session at one location and the Two-Day Celebration includes two. A Dress Session, photos in her dress before the big day, can be added for ${usd(ADD_ON_PRICE_USD.destination)}. Compare every package before you reserve.`,
     },
   ],
   related: [

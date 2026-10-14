@@ -1,8 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import type { BlogBlock, BlogCategory, BlogFaq, BlogPost } from "@/content/blog";
 import { slugifyHeading } from "@/content/blog";
+import { BlogShare } from "@/components/BlogShare";
 import "@/components/txq/pages/blog.css";
 
 /**
@@ -28,6 +29,18 @@ export type BlogImage = {
   height: number | null;
   alt: string;
   caption?: string | null;
+};
+
+/**
+ * The article cover (hero), resolved server-side by src/lib/blog-cover.ts: the
+ * post's own photo, else a high-resolution portfolio photo, else the largest
+ * static fallback. Natural width/height cap the frame so it never upscales.
+ */
+export type BlogCoverImage = BlogImage & {
+  focus_x?: number | null;
+  focus_y?: number | null;
+  /** The `image` block used as the cover — skipped once in the body. */
+  blockSlug?: string;
 };
 
 /** A photo for a list tile / featured slot (portfolio image or static fallback). */
@@ -60,8 +73,13 @@ const CATEGORY_ES: Record<BlogCategory, string> = {
 
 const CATEGORY_ORDER: BlogCategory[] = ["Cost & Budget", "Planning", "Traditions", "Photography & Film", "Locations"];
 
+/** English display labels where the stored category key reads too technical. */
+const CATEGORY_EN: Partial<Record<BlogCategory, string>> = {
+  "Photography & Film": "Photos & Video",
+};
+
 export function categoryLabel(category: BlogCategory, lang: BlogLang): string {
-  return lang === "es" ? CATEGORY_ES[category] : category;
+  return lang === "es" ? CATEGORY_ES[category] : (CATEGORY_EN[category] ?? category);
 }
 
 const COPY = {
@@ -79,7 +97,7 @@ const COPY = {
     readStory: "Read the story",
     all: "All",
     allTitle: "Every guide",
-    allDek: (n: number) => `${n} guides on costs, timelines, traditions, photography and film.`,
+    allDek: (n: number) => `${n} guides on costs, timelines, traditions, photos and video.`,
     filterLabel: "Filter guides by topic",
     tocLabel: "In this guide",
     topic: "Topic",
@@ -91,8 +109,8 @@ const COPY = {
     relatedIndex: "Keep reading",
     relatedTitle: "More from the journal",
     closeIndex: "Your date",
-    closeTitle: ["Her day, photographed", "and filmed."],
-    closeDek: "Share the date and venue. A director writes back personally, within one day, in English or Spanish.",
+    closeTitle: ["Her day, in photos", "and video."],
+    closeDek: "Share the date and venue. We write back personally, within one day, in English or Spanish.",
     closeCta: "Inquire Date",
     closeSecondary: "All guides",
     fallbackAlt: "Quinceañera portrait in Dallas–Fort Worth",
@@ -123,8 +141,8 @@ const COPY = {
     relatedIndex: "Sigue leyendo",
     relatedTitle: "Más del diario",
     closeIndex: "Su fecha",
-    closeTitle: ["Su día, en foto", "y en cine."],
-    closeDek: "Comparta la fecha y el salón. Un director le responde en persona, en un día, en español o en inglés.",
+    closeTitle: ["Su día, en fotos", "y en video."],
+    closeDek: "Comparta la fecha y el salón. Le respondemos en persona, en un día, en español o en inglés.",
     closeCta: "Consultar fecha",
     closeSecondary: "Todas las guías",
     fallbackAlt: "Fotografía de quinceañera en Dallas–Fort Worth",
@@ -266,9 +284,12 @@ export function BlogContent({
             const caption = b.caption ?? img.caption ?? null;
             const w = img.width ?? 1600;
             const h = img.height ?? 1067;
+            // Never wider than the photo's real pixels (no upscaling); centered.
+            const frame: CSSProperties = { aspectRatio: `${w} / ${h}` };
+            if (img.width) frame.maxWidth = `${img.width}px`;
             return (
               <figure key={i} className="tq-blog-fig">
-                <div className="tq-blog-fig__media" style={{ aspectRatio: `${w} / ${h}` }}>
+                <div className="tq-blog-fig__media" style={frame}>
                   <Image
                     src={img.url}
                     alt={b.alt || img.alt || COPY[lang].fallbackAlt}
@@ -473,12 +494,12 @@ export function BlogIndexView({
             <article className="tq-blog-feature">
               <div className="tq-blog-feature__media">
                 <Image
-                  src={featuredImage?.url ?? "/portfolio/save-date.webp"}
+                  src={featuredImage?.url ?? "/portfolio/hero.webp"}
                   alt={featuredImage?.alt || c.fallbackAlt}
                   fill
                   priority
                   sizes="(max-width: 959px) calc(100vw - 48px), 58vw"
-                  unoptimized={isStatic(featuredImage?.url ?? "/portfolio/save-date.webp")}
+                  unoptimized={isStatic(featuredImage?.url ?? "/portfolio/hero.webp")}
                   style={{ objectPosition: focal(featuredImage?.focus_x, featuredImage?.focus_y) }}
                 />
                 <span className="tq-tag tq-tag--tl tq-mono">[02 / {c.featured}]</span>
@@ -556,23 +577,33 @@ export function BlogArticleView({
   lang,
   post,
   images,
+  cover,
   related,
+  shareUrl,
+  shareImage,
 }: {
   lang: BlogLang;
   post: BlogPost;
   images: Record<string, BlogImage>;
+  /** Resolved hero (see BlogCoverImage). */
+  cover: BlogCoverImage;
   related: BlogPost[];
+  /** Absolute canonical URL — what the share buttons send. */
+  shareUrl: string;
+  /** Absolute cover image URL (Pinterest). */
+  shareImage?: string;
 }) {
   const c = COPY[lang];
   const toc = post.content.filter((b): b is { type: "h2"; text: string } => b.type === "h2");
-  // Cover = the first image block that resolved, in reading order (deterministic).
-  const coverBlock = post.content.find(
-    (b): b is Extract<BlogBlock, { type: "image" }> => b.type === "image" && Boolean(images[b.slug]?.url),
-  );
-  const cover = coverBlock ? images[coverBlock.slug] : undefined;
-  const coverUrl = cover?.url ?? "/portfolio/save-date.webp";
-  const coverAlt = coverBlock?.alt || cover?.alt || c.fallbackAlt;
-  const coverCaption = coverBlock?.caption ?? cover?.caption ?? null;
+  const coverUrl = cover.url;
+  const coverAlt = cover.alt || c.fallbackAlt;
+  const coverCaption = cover.caption ?? null;
+  // Cap the cover frame at the photo's natural size (see .tq-blog-cover in
+  // blog.css): a small source is shown at 1:1, centered — never blown up.
+  const coverVars =
+    cover.width && cover.height
+      ? ({ "--tq-nat-w": cover.width, "--tq-nat-h": cover.height } as CSSProperties)
+      : undefined;
   const faqs: BlogFaq[] = post.faqs ?? [];
 
   const tocList = (
@@ -611,6 +642,7 @@ export function BlogArticleView({
                   {post.title}
                 </h1>
                 <p className="tq-blog-post__lead">{post.lead}</p>
+                <BlogShare url={shareUrl} title={post.title} image={shareImage} lang={lang} placement="top" />
               </div>
               <dl className="tq-blog-post__meta tq-mono">
                 <div>
@@ -639,15 +671,16 @@ export function BlogArticleView({
             </div>
           </header>
 
-          <figure className="tq-blog-cover">
+          <figure className="tq-blog-cover" data-capped={coverVars ? "true" : undefined} style={coverVars}>
             <div className="tq-blog-cover__media">
               <Image
                 src={coverUrl}
                 alt={coverAlt}
                 fill
                 priority
-                sizes="(max-width: 959px) calc(100vw - 48px), calc(100vw - 96px)"
+                sizes="(max-width: 639px) calc(100vw - 48px), (max-width: 959px) calc(100vw - 96px), (max-width: 1279px) calc(100vw - 144px), calc(100vw - 160px)"
                 unoptimized={isStatic(coverUrl)}
+                style={{ objectPosition: focal(cover.focus_x, cover.focus_y) }}
               />
             </div>
             {coverCaption ? (
@@ -676,7 +709,7 @@ export function BlogArticleView({
               </aside>
             ) : null}
             <div className="tq-blog-prose">
-              <BlogContent blocks={post.content} images={images} skipSlug={coverBlock?.slug} lang={lang} />
+              <BlogContent blocks={post.content} images={images} skipSlug={cover.blockSlug} lang={lang} />
             </div>
           </div>
 
@@ -697,6 +730,10 @@ export function BlogArticleView({
               </div>
             </section>
           ) : null}
+
+          <div className="tq-blog-share-end">
+            <BlogShare url={shareUrl} title={post.title} image={shareImage} lang={lang} placement="end" />
+          </div>
         </div>
       </article>
 

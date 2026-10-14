@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
@@ -218,6 +219,13 @@ function LoginForm() {
             </button>
           </form>
         )}
+
+        <Link
+          href="/"
+          className="mt-6 inline-flex min-h-11 items-center text-base text-ink underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+        >
+          ← Back to the website
+        </Link>
       </div>
     </div>
   );

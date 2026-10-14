@@ -12,7 +12,7 @@ import {
 } from "react";
 import { COPY, type Copy } from "./copy";
 import type { AddOnId, Lang, TierId } from "./data";
-import { normalizeCrew, type Crew } from "@/lib/commission";
+import { BASE_HOURS, normalizeCrew, normalizeHours, type Crew } from "@/lib/commission";
 
 /* ------------------------------------------------------------------ */
 /* Language + commission selection (shared by Commissions and Intake)  */
@@ -30,6 +30,10 @@ type SiteState = {
   /** Photographer / videographer mix of the tier's included crew. */
   crew: Crew;
   setCrew: (c: Crew) => void;
+  /** Hours on the day: the package's included hours until the family adds more. */
+  hours: number;
+  /** Set hours (for `forTier` when restoring a saved draft; defaults to the current package). */
+  setHours: (h: number, forTier?: TierId) => void;
   /** True on the homepages (/ and /es), where every section lives on one page. */
   isHome: boolean;
   /** Link to a homepage section from anywhere: "#intake" on home, "/#intake" or "/es#intake" elsewhere. */
@@ -103,6 +107,11 @@ export function SiteProvider({
   const crew = useMemo(() => normalizeCrew(tier, crewRaw), [tier, crewRaw]);
   const setAddOns = useCallback((a: AddOnId[]) => setAddOnsRaw(a), []);
   const setCrew = useCallback((c: Crew) => setCrewRaw(c), []);
+  // Hours belong to the package they were chosen on; switching packages starts
+  // again from that package's included hours.
+  const [hoursRaw, setHoursRaw] = useState<{ tier: TierId; h: number } | null>(null);
+  const hours = hoursRaw && hoursRaw.tier === tier ? normalizeHours(tier, hoursRaw.h) : BASE_HOURS[tier];
+  const setHours = useCallback((h: number, forTier?: TierId) => setHoursRaw({ tier: forTier ?? tier, h }), [tier]);
 
   const setLang = useCallback((l: Lang) => {
     try {
@@ -141,10 +150,12 @@ export function SiteProvider({
       setAddOns,
       crew,
       setCrew,
+      hours,
+      setHours,
       isHome,
       homeHref,
     }),
-    [lang, setLang, tier, addOns, toggleAddOn, setAddOns, crew, setCrew, isHome, homeHref],
+    [lang, setLang, tier, addOns, toggleAddOn, setAddOns, crew, setCrew, hours, setHours, isHome, homeHref],
   );
 
   return <SiteCtx.Provider value={value}>{children}</SiteCtx.Provider>;

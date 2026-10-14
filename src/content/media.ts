@@ -44,5 +44,5 @@ export const homeFilm = {
   mp4Key: "" as string, // e.g. "films/highlight-reel.mp4"
   webmKey: "" as string,
   title: "A quinceañera, start to finish",
-  alt: "Highlight film still: la misa, el vals, and the celebration.",
+  alt: "Highlight video still: la misa, el vals, and the celebration.",
 };

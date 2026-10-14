@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
 const mainLinks = [
@@ -14,6 +15,7 @@ const mainLinks = [
 
 const websiteLinks = [
   { href: "/admin/portfolio", label: "Portfolio" },
+  { href: "/admin/photos", label: "Photo dump" },
   { href: "/admin/videos", label: "Films" },
   { href: "/admin/venues", label: "Venues" },
   { href: "/admin/hero", label: "Page imagery" },
@@ -44,7 +46,6 @@ function MainNavigation({ pathname, onNavigate }: { pathname: string; onNavigate
 
 export function AdminWorkspace({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
   const [signOutError, setSignOutError] = useState(false);
@@ -70,10 +71,19 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
     setSigningOut(true);
     setSignOutError(false);
     try {
+      // Clear the session on the server (cookies) AND in the browser client,
+      // drop the "this browser is an admin" hint, then land on the homepage.
       const response = await fetch("/api/admin/signout", { method: "POST" });
       if (!response.ok) throw new Error("Sign out failed");
-      router.replace("/admin/login");
-      router.refresh();
+      const supabase = await createBrowserSupabaseClient();
+      await supabase.auth.signOut().catch(() => undefined);
+      try {
+        window.localStorage.removeItem("txq_admin");
+      } catch {
+        /* ignore */
+      }
+      // Full navigation so no signed-in state survives in memory.
+      window.location.assign("/");
     } catch {
       setSignOutError(true);
       setSigningOut(false);
@@ -97,14 +107,18 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
           </nav>
 
           <div className="ml-auto hidden shrink-0 items-center gap-5 lg:flex">
-            <Link href="/" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center text-sm text-[#62625f] hover:text-[#222] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black">
-              View website <span aria-hidden="true" className="ml-1.5">↗</span>
+            <Link href="/" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center text-sm text-[#242424] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black">
+              View site <span aria-hidden="true" className="ml-1.5">↗</span>
             </Link>
             <span aria-hidden="true" className="h-5 w-px bg-[#e5e5e3]" />
-            <button type="button" disabled={signingOut} onClick={signOut} className="inline-flex min-h-11 items-center text-sm font-medium hover:text-[#62625f] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:opacity-50">
-              {signingOut ? "Leaving…" : "Sign out"}
+            <button type="button" disabled={signingOut} onClick={signOut} className="inline-flex min-h-11 items-center border border-[#242424] px-4 text-sm font-medium hover:bg-[#242424] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:opacity-50">
+              {signingOut ? "Logging out…" : "Log out"}
             </button>
           </div>
+
+          <button type="button" disabled={signingOut} onClick={signOut} className="ml-auto inline-flex min-h-11 shrink-0 items-center border border-[#242424] px-3 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:opacity-50 lg:hidden">
+            {signingOut ? "Logging out…" : "Log out"}
+          </button>
 
           <button
             ref={menuButtonRef}
@@ -113,7 +127,7 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
             aria-expanded={menuOpen}
             aria-controls={menuOpen ? "studio-mobile-navigation" : undefined}
             onClick={() => setMenuOpen((open) => !open)}
-            className="ml-auto inline-flex min-h-11 min-w-11 items-center justify-center border border-[#dededb] text-xl leading-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black lg:hidden"
+            className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center border border-[#dededb] text-xl leading-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black lg:hidden"
           >
             <span aria-hidden="true">{menuOpen ? "×" : "☰"}</span>
           </button>
@@ -144,13 +158,13 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
               ))}
             </div>
             <div className="mt-6 flex items-center justify-between gap-4 border-t border-[#efefed] pt-4 text-sm">
-              <Link href="/" target="_blank" rel="noopener noreferrer" onClick={() => setMenuOpen(false)} className="inline-flex min-h-11 items-center text-[#62625f]">View website ↗</Link>
-              <button type="button" disabled={signingOut} onClick={signOut} className="inline-flex min-h-11 items-center font-medium disabled:opacity-50">{signingOut ? "Leaving…" : "Sign out"}</button>
+              <Link href="/" target="_blank" rel="noopener noreferrer" onClick={() => setMenuOpen(false)} className="inline-flex min-h-11 items-center text-[#242424]">View site ↗</Link>
+              <button type="button" disabled={signingOut} onClick={signOut} className="inline-flex min-h-11 items-center border border-[#242424] px-4 font-medium disabled:opacity-50">{signingOut ? "Logging out…" : "Log out"}</button>
             </div>
           </nav>
         )}
       </header>
-      {signOutError && <p role="alert" className="border-b border-red-200 bg-red-50 px-5 py-3 text-sm text-red-800 sm:px-8">Could not sign out. Please try again.</p>}
+      {signOutError && <p role="alert" className="border-b border-red-200 bg-red-50 px-5 py-3 text-sm text-red-800 sm:px-8">Could not log out. Please try again.</p>}
       {children}
     </div>
   );

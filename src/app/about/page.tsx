@@ -14,11 +14,11 @@ export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "About",
-  description: "Quinceañera photography and film in Dallas–Fort Worth, shaped around the portraits, traditions, and celebrations that matter to your family.",
+  description: "Quinceañera photos and video in Dallas–Fort Worth, shaped around the portraits, traditions, and celebrations that matter to your family.",
   alternates: { canonical: "/about" },
   openGraph: {
     title: "About · TX Quince",
-    description: "Quinceañera photography and film in Dallas–Fort Worth.",
+    description: "Quinceañera photos and video in Dallas–Fort Worth.",
     url: site.url + "/about",
   },
 };
@@ -48,10 +48,10 @@ export default async function AboutPage() {
           <p className="tq-pg-mast__index tq-mono">[About / The studio · DFW]</p>
           <div className="tq-pg-mast__body">
             <h1 id="about-title" className="tq-display tq-pg-mast__title">
-              About TX Quince <em>— photography and film for her fifteen.</em>
+              About TX Quince <em>— photos and video for her fifteen.</em>
             </h1>
             <p className="tq-pg-mast__dek">
-              Quinceañera photography and film centered on the people and traditions that make each celebration her own.
+              Quinceañera photos and video centered on the people and traditions that make each celebration her own.
             </p>
             <div className="tq-pg-actions">
               <Link href="/portfolio" className="tq-btn tq-btn--lg tq-btn--ghost">
@@ -140,11 +140,11 @@ export default async function AboutPage() {
             </li>
             <li>
               <span className="tq-mono tq-muted">[03]</span>
-              <h3 className="tq-display">Published commissions.</h3>
+              <h3 className="tq-display">Published packages.</h3>
               <p>
-                Four commissions with prices on the page, from the portrait session to the multi-day archive.{" "}
+                Four packages with prices on the page, from the Portrait Session to the Two-Day Celebration.{" "}
                 <Link href={commissionLinks.en.compare} className="tq-pg-inline">
-                  Compare commissions
+                  Compare packages
                 </Link>
                 .
               </p>

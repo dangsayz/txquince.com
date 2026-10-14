@@ -24,34 +24,42 @@ Researched October 2026. Prices live in one place, `src/lib/commission.ts`. Chan
 
 **The reality:** most DFW quince budgets are $12–25K all-in, and photo + film takes 8–15% of that, about $1–3.75K. The highest package any DFW quince studio publishes is about $6K. Pricing above that band (the earlier $2.5K–18.5K ladder) prices out the families who actually book. Revised October 2026.
 
-### Commissions (now live in the price book)
+### Packages (now live in the price book)
 
-| Commission | Price | Retainer (30%) | Role |
-|---|---|---|---|
-| I. Portrait Study (photo, editorial session) | **$1,200** | $350 | Entry. Mid-band for DFW pre-quince sessions ($800–1,800). |
-| II. Cinema & Stills (8 h, 1 photo + 1 film) | **$3,500** | $1,050 | Photo + video, in the market's $3–5.5K band. |
-| III. The Full Production (11 h, 4 crew + coordinator, portrait session, linen monograph) | **$4,900** | $1,450 | **The commission to sell.** Under the highest published package, with more crew than any of them. |
-| IV. Multi-Day Editorial Archive (5 crew + coordinator) | **$6,900** | $2,050 | The luxury anchor, inside the market's $5.5–8K top band. |
+Package names are plain words a mom would use (renamed October 2026). Internal tier ids are unchanged: `study`, `cinema`, `production`, `archive`.
 
-| Enhancement | Price | Market reference |
+| Package (EN / ES) | Price | Hours included | Extra hour (up to 8 total) | Deposit (25%) | Role |
+|---|---|---|---|---|---|
+| Portrait Session / Sesión de retratos (photos only) | **$1,200** | 4 | +$150 | $300 | Entry. Mid-band for DFW pre-quince sessions ($800–1,800). |
+| Photo + Video / Foto + Video (1 photographer + 1 videographer) | **$3,500** | 6 | +$300 | $875 | Photos + video, in the market's $3–5.5K band. |
+| Full Celebration / Celebración completa (team of 4 + day-of coordinator, portrait session, printed photo album) | **$4,900** | 6 | +$400 | $1,225 | **The package to sell.** Under the highest published package, with a bigger team than any of them. |
+| Two-Day Celebration / Celebración de dos días (team of 5 + day-of coordinator) | **$6,900** | 8 + a second day for portraits | — (already 8) | $1,725 | The luxury anchor, inside the market's $5.5–8K top band. |
+
+Hours: `BASE_HOURS`, `MAX_HOURS` (8), `MIN_HOURS` and `EXTRA_HOUR_USD` in `src/lib/commission.ts`. Families add hours one at a time, up to 8 in total. Deposits above are 25% of the package price with no minimum (`quoteCommission`); extras and extra hours raise the total and the deposit with it.
+
+| Add-on (EN / ES) | Price | Market reference |
 |---|---|---|
-| Pre-event destination portrait session | $650 | Pre-quince sessions $800–1,800 standalone |
-| Same-day reception edit | $900 | No DFW price published |
-| Super 8mm film roll | $600 | Flat add-on |
-| Fine art parent albums (pair) | $550 | $400–600 each elsewhere |
+| Dress Session / Sesión con el vestido (photos in her dress before the big day) | $400 | Pre-quince sessions $800–1,800 standalone |
+| Same-Day Edit — ready in 24 hours / Edición el mismo día — lista en 24 horas | $300 | No DFW price published |
+| Vintage Film Clip (Super 8) / Clip de película vintage (Super 8) | $600 | Flat add-on |
+| Albums for Mom & Dad / Álbumes para mamá y papá (pair) | $550 | $400–600 each elsewhere |
 
-**Crew and coordinator are included, not sold.** Every commission names its full crew on the day. Families choose the mix of photographers and videographers with a swap control, and the total never changes. Production and Archive also include a day-of coordinator. Nothing about the crew changes the price:
+(Prices here mirror `ADD_ON_PRICE_USD`; if they disagree, the code wins.)
 
-| Commission | Directors on the day | Default mix | Day-of coordinator |
+**Team and coordinator are included, not sold.** Every package names its full team on the day. Families choose the mix of photographers and videographers with a swap control, and the total never changes. Full Celebration and Two-Day Celebration also include a day-of coordinator. Nothing about the team changes the price:
+
+| Package | Team on the day | Default mix | Day-of coordinator |
 |---|---|---|---|
-| I. Portrait Study | 1 photographer | 1 photo | — |
-| II. Cinema & Stills | 2 | 1 photo · 1 film | — |
-| III. The Full Production | 4 | 2 photo · 2 film | Included |
-| IV. Multi-Day Editorial Archive | 5 | 3 photo · 2 film | Included |
+| Portrait Session | 1 photographer | 1 photo | — |
+| Photo + Video | 2 | 1 photographer · 1 videographer | — |
+| Full Celebration | 4 | 2 photographers · 2 videographers | Included |
+| Two-Day Celebration | 5 | 3 photographers · 2 videographers | Included |
 
-Event commissions keep at least one photographer and one videographer. `BASE_CREW`, `DEFAULT_MIX`, `MIN_ROLE` and `COORDINATOR_INCLUDED` are in `src/lib/commission.ts`. The server normalizes the mix that arrives (`normalizeCrew`) and stores it on the booking's metadata, so the crew sheet matches what the family chose.
+Packages with video keep at least one photographer and one videographer. `BASE_CREW`, `DEFAULT_MIX`, `MIN_ROLE` and `COORDINATOR_INCLUDED` are in `src/lib/commission.ts`. The server normalizes the mix that arrives (`normalizeCrew`) and stores it on the booking's metadata, so the team sheet matches what the family chose.
 
-**Retainer:** 30% of the commission, minimum $350, rounded to $50, applied in full. The balance is due 30 days before the celebration. Texas norms are 25–50% with the balance 14–30 days out. Local quince studios take a flat $500; 30% lands close to that on the Portrait Study and scales with the commission.
+**Booking and deposit:** the family picks a package, fills in their details, then reviews and signs the agreement online. We review and approve it within one day, holding the date for 7 days meanwhile; no payment is taken before approval. Then they pay a 25% deposit (no minimum) to lock in the date, and the rest is due 48 hours before the event (`RETAINER.balanceDueHours`). Texas norms are 25–50%; local quince studios take a flat $500.
+
+**Copy rules (customer-facing, EN + ES):** say package/paquete, photographers and videographers/team, deposit to hold your date/depósito para apartar tu fecha, photo album, edited photos, full-length video, short trailer, short vertical videos for social media, all your original files, price/total, and "a quick call" for a consultation. Never "commission", "director", "retainer", "stills", "motion", "cinema" or "film".
 
 **Old pricing retired (done):**
 - **Permanent redirects:**
@@ -75,7 +83,7 @@ Event commissions keep at least one photographer and one videographer. `BASE_CRE
 | Cluster | Example queries (Autocomplete-confirmed) | Target page |
 |---|---|---|
 | Core local, EN | quinceanera photographer dallas · …dallas fort worth · quince photographer near me · quinceanera photographer and videographer | `/` (new title) + `/quinceanera-photographer` hub |
-| Price and packages | how much is a quinceanera photographer · quinceanera photography packages / prices · photo and video packages | `/` commissions + FAQ #1, `/investment` (reprice) |
+| Price and packages | how much is a quinceanera photographer · quinceanera photography packages / prices · photo and video packages | `/` packages + FAQ #1, `/investment` (reprice) |
 | Video | quinceanera videographer dallas / prices | `/quinceanera-videographer` (already #1 on DDG) |
 | City | …fort worth · frisco · plano · mckinney · arlington | `/quinceanera-photographer/[city]`. **Add Frisco, Plano and McKinney**, which the main competitor ranks for. Southlake shows no Autocomplete demand. |
 | Pre-quince session | pre quince photoshoot · quinceanera photoshoot only dallas fort worth · sesión de fotos quinceañera · sesión pre quince | **New page, the biggest gap:** `/quinceanera-photoshoot` + `/es/sesion-de-fotos-quinceanera` |
@@ -86,7 +94,7 @@ Event commissions keep at least one photographer and one videographer. `BASE_CRE
 Avoid: "quince fort worth" (a restaurant), and "video de quinceañera" (mostly viral and invitation videos).
 
 ### Questions parents ask (answered on the homepage FAQ with FAQPage structured data)
-Cost in DFW · whether photo and film come together · how many hours of coverage · how far ahead to book · whether you cover the misa, vals and surprise dance · whether you work in Spanish · how the retainer works · where to take pre-quince portraits around Dallas · whether you travel outside DFW.
+Cost in DFW · whether photos and video come together · how many hours of coverage · how far ahead to book · whether you cover the misa, vals and surprise dance · whether you work in Spanish · how the deposit works · where to take pre-quince portraits around Dallas · whether you travel outside DFW.
 
 ### Where TX Quince already stands (DDG / Bing)
 - #1 for "quinceanera videographer dallas" and "fotografo de quinceañeras dallas"
@@ -97,11 +105,11 @@ Cost in DFW · whether photo and film come together · how many hours of coverag
 ### Done in this change
 - Homepage title: *"Quinceañera Photographer & Videographer in Dallas–Fort Worth | TX Quince"*, with a description naming Highland Park and Southlake, the starting price and live availability.
 - A bilingual, answer-first FAQ section on the homepage, with matching FAQPage structured data. Prices in the answers come from the price book.
-- Service + OfferCatalog structured data with the four commissions. The site-wide ProfessionalService `priceRange` now reads $1,200–$6,900.
+- Service + OfferCatalog structured data with the four packages. The site-wide ProfessionalService `priceRange` now reads $1,200–$6,900.
 
 ### Next, in priority order
 _(Done: the `/quinceanera-photoshoot` + `/es/sesion-de-fotos-quinceanera` pages, Frisco, Plano and McKinney, and repricing `/investment` (now a redirect).)_
-1. **Google Business Profile.** It decides "near me" and the local pack. Link it to the hub page, add the new commissions as Products, and ask every client for a review that names the city and venue.
+1. **Google Business Profile.** It decides "near me" and the local pack. Link it to the hub page, add the new packages as Products, and ask every client for a review that names the city and venue.
 2. Build `/quinceanera-photoshoot` and the Spanish mirror.
 3. Add Frisco, Plano and McKinney city pages, carrying the new pricing.
 4. Single-location pages: Arboretum (confirm the fee policy with them first), Highland Park Village, Stockyards.
@@ -151,6 +159,26 @@ Intake step 3: choose a path
 5. Update the confirmation email templates (`src/lib/resend.ts`). They still say "deposit" and "Collection: —". The commission summary appears in Notes.
 
 **Deliberately not built yet:**
-- Automated balance invoicing at 30 days out (Stripe Invoices or a payment link from `/admin`).
+- Automated invoicing for the rest, due 48 hours before the event (Stripe Invoices or a payment link from `/admin`).
 - Contract e-signature before payment.
 - Live calendar push via Supabase Realtime. The 60-second poll plus the atomic hold is accurate enough for a one-event-per-day calendar.
+
+---
+
+## Booking flow: sign → approve → pay (October 2026)
+
+1. **Family books on the homepage** (`#intake`): date & place → package (hours, team, extras) → their details → **review & sign**. The agreement (`src/lib/agreement.ts`) is written in plain words in their language and lists exactly what they picked. They type their full name, sign with a finger or mouse (or "use my typed name"), and tick "I agree".
+2. **`/api/commission`** re-prices everything server-side, rebuilds the agreement from that quote (never trusting client text), and saves it, with the signature, time, IP and agreement version, on a `requested` booking. That booking **holds the date for 7 days** (`CONSULT_HOLD_DAYS`). Both sides get an email (`src/lib/agreement-email.ts`).
+3. **You review it in `/admin/bookings`.** Expand "Signed agreement" to read it and see the signature.
+   - **Approve & send pay link**: the booking moves to `pending_payment` with a fresh 7-day hold, and the family is emailed a private link, `/booking/[id]?t=…`.
+   - **Decline**: the date is freed and the family is told nothing was charged.
+4. **The family pays 25%** on that page. It opens Stripe Checkout (`/api/booking/pay`) and reuses an open session if one exists. The webhook marks the booking `paid`, which makes it final. An abandoned checkout does *not* release the date; the family can reopen their link until the 7-day hold ends.
+5. **The rest is due 48 hours before the event** (`RETAINER.balanceDueHours`).
+
+**Review before launch.** These agreement terms are a plain-language draft written from the studio's stated policies. Have them checked before relying on them:
+- The deposit is non-refundable if the family cancels.
+- Full refund if the studio cancels.
+- Families keep and share everything delivered.
+- The opt-out for public sharing.
+
+Edit the wording in `src/lib/agreement.ts` and bump `AGREEMENT_VERSION`.

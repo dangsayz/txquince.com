@@ -39,7 +39,7 @@ export async function generateMetadata({
   if (!img || img.section !== category) return {};
 
   const copy = publicPhotoCopy(img, altPhraseFor(img.section));
-  const description = `${copy.description} — quinceañera photography by ${site.brand}, Dallas–Fort Worth. Commissions from ${commissionsFromLabel}; check your date.`;
+  const description = `${copy.description} — quinceañera photography by ${site.brand}, Dallas–Fort Worth. Packages from ${commissionsFromLabel}; check your date.`;
   const pagePath = imagePagePath(img.section, slug);
   const imgUrl = `${site.url}/api/img/${slug}`;
 

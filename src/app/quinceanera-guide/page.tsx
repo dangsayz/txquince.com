@@ -7,8 +7,8 @@
  * schema. This is the center of the wheel: homepage/nav → hub → 20+ blog spokes
  * → city/venue pages → packages.
  *
- * Answers use REAL TX Quince facts (commissions from the price book in src/lib/commission.ts,
- * the portrait session, photo + film) — that specificity is what keeps it from
+ * Answers use REAL TX Quince facts (packages from the price book in src/lib/commission.ts,
+ * the portrait session, photos + video) — that specificity is what keeps it from
  * reading generic/AI.
  */
 import type { Metadata } from "next";
@@ -16,7 +16,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { EditOverlay } from "@/components/EditMode";
 import { site } from "@/content/site";
-import { commissions, commissionsFromLabel, commissionLinks, retainerPercentLabel } from "@/content/commissions";
+import { bookingFlow, commissions, commissionsFromLabel, commissionLinks, retainerPercentLabel } from "@/content/commissions";
 import { TIER_PRICE_USD, usd } from "@/lib/commission";
 import { getPageHero, getPortfolioImages, type PortfolioImage } from "@/lib/content-db";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `The Quinceañera Guide · ${site.brand}`,
     description:
-      "The most-asked quinceañera questions, answered straight — cost, timeline, photo vs. film, the traditions — by a DFW quinceañera photographer.",
+      "The most-asked quinceañera questions, answered straight — cost, timeline, photos vs. video, the traditions — by a DFW quinceañera photographer.",
     url: `${site.url}/quinceanera-guide`,
   },
 };
@@ -93,7 +93,7 @@ const BUCKETS: Bucket[] = [
     qas: [
       {
         q: "How much does a quinceañera photographer cost in Dallas–Fort Worth?",
-        a: `Most DFW quinceañera studios publish packages between about $1,500 and $6,000. TX Quince publishes every price: a Portrait Study is ${usd(TIER_PRICE_USD.study)}, photo and film together start at ${usd(TIER_PRICE_USD.cinema)}, The Full Production is ${usd(TIER_PRICE_USD.production)}, and the multi-day archive is ${usd(TIER_PRICE_USD.archive)}. What you pay tracks coverage hours, crew, and the heirloom pieces you keep.`,
+        a: `Most DFW quinceañera studios publish packages between about $1,500 and $6,000. TX Quince publishes every price: the Portrait Session is ${usd(TIER_PRICE_USD.study)}, photos and video together start at ${usd(TIER_PRICE_USD.cinema)}, the Full Celebration is ${usd(TIER_PRICE_USD.production)}, and the Two-Day Celebration is ${usd(TIER_PRICE_USD.archive)}. What you pay depends on the hours, the size of the team, and the album and extras you choose.`,
         href: "/blog/quinceanera-photographer-cost-dallas-fort-worth",
         hrefLabel: "What drives the price",
       },
@@ -104,31 +104,31 @@ const BUCKETS: Bucket[] = [
         hrefLabel: "Why timing matters",
       },
       {
-        q: "How does the retainer work?",
-        a: `A retainer of ${retainerPercentLabel} of your commission reserves your date exclusively and is applied in full; the balance is due 30 days before the celebration. Pay it online at secure checkout, or request a consultation first and we hold the date for 7 days.`,
+        q: "How does the deposit work?",
+        a: bookingFlow.en,
         href: "/blog/quinceanera-payment-plans-deposits-dfw",
         hrefLabel: "How deposits & plans work",
       },
       {
         q: "How much of my budget should go to photography?",
-        a: "Plan on roughly 8–15% of your total quince budget for photography and film. It's the one thing that outlives the day — the flowers wilt and the food is gone, but the photos and the film are what your family keeps.",
+        a: "Plan on roughly 8–15% of your total quince budget for photos and video. It's the one thing that outlives the day — the flowers wilt and the food is gone, but the photos and the video are what your family keeps.",
         href: "/blog/quinceanera-budget-breakdown-texas",
         hrefLabel: "Where the money goes",
       },
     ],
-    cta: { label: "See commissions & pricing", href: commissionLinks.en.compare },
+    cta: { label: "See packages & prices", href: commissionLinks.en.compare },
   },
   {
     id: "photo-film",
-    eyebrow: "Photo & film",
+    eyebrow: "Photos & video",
     title: "Choosing your photographer",
-    intro: "Photo vs. film, how to choose well, and what to ask before booking.",
+    intro: "Photos vs. video, how to choose well, and what to ask before booking.",
     qas: [
       {
         q: "Photo or video for a quinceañera — which do I need?",
-        a: `If you can, both — they do different jobs. Photographs are what you frame and pass down; film is her voice, the music, and the room in motion. From Cinema & Stills (${usd(TIER_PRICE_USD.cinema)}) upward, a stills director and a motion director cover the full day together.`,
+        a: `If you can, both — they do different jobs. Photos are what you frame and pass down; video is her voice, the music, and the room in motion. From Photo + Video (${usd(TIER_PRICE_USD.cinema)}) up, a photographer and a videographer cover the day together.`,
         href: "/blog/quinceanera-photo-vs-video",
-        hrefLabel: "Photo vs. film, honestly",
+        hrefLabel: "Photos vs. video, honestly",
       },
       {
         q: "How do I choose the right quinceañera photographer?",
@@ -195,7 +195,7 @@ const BUCKETS: Bucket[] = [
       },
       {
         q: "What's a pre-quince or save-the-date session?",
-        a: `It's an editorial portrait session weeks or months before the celebration — for her invitations, the welcome board, and a calm first look at her in the gown. Book it on its own as the Portrait Study (${usd(TIER_PRICE_USD.study)}), or receive it inside The Full Production and the Multi-Day Archive.`,
+        a: `It's a portrait session weeks or months before the celebration — for her invitations, the welcome board, and a calm first look at her in the gown. Book it on its own as the Portrait Session (${usd(TIER_PRICE_USD.study)}), or receive it inside the Full Celebration and the Two-Day Celebration.`,
         href: "/quinceanera-photoshoot",
         hrefLabel: "About the pre-quince photoshoot",
       },
@@ -331,7 +331,7 @@ export default async function QuinceaneraGuidePage() {
               The guide <em>— every quinceañera question, answered.</em>
             </h1>
             <p className="tq-pg-mast__dek">
-              Clear answers on timing, traditions, photography, film, and the investment — the moments, decisions, and traditions that make it hers.
+              Clear answers on timing, traditions, photos, video, and price — the moments, decisions, and traditions that make it hers.
             </p>
             <div className="tq-pg-actions">
               <a href="#guide-topics" className="tq-btn tq-btn--lg tq-btn--ghost">
@@ -445,13 +445,13 @@ export default async function QuinceaneraGuidePage() {
         <div className="tq-wrap">
           <header className="tq-head">
             <p className="tq-head__index tq-mono" style={{ margin: 0 }}>
-              [Four commissions]
+              [Four packages]
             </p>
             <h2 id="guide-collections-title" className="tq-display tq-head__title">
               Coverage for the day you have in mind.
             </h2>
             <p className="tq-head__dek">
-              Published prices begin at {commissionsFromLabel}. A {retainerPercentLabel} retainer holds your date and is applied in full.
+              Published prices begin at {commissionsFromLabel}. A {retainerPercentLabel} deposit locks in your date and goes toward your total.
             </p>
           </header>
           <div className="tq-pg-row" style={{ paddingTop: 0 }}>
@@ -469,7 +469,7 @@ export default async function QuinceaneraGuidePage() {
               </ol>
               <div className="tq-pg-actions">
                 <Link href={commissionLinks.en.compare} className="tq-btn tq-btn--lg tq-btn--ghost">
-                  Compare commissions <span className="tq-arrow" aria-hidden>↗</span>
+                  Compare packages <span className="tq-arrow" aria-hidden>↗</span>
                 </Link>
               </div>
             </div>
