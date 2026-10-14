@@ -7,6 +7,8 @@ import { getFeedPage, getHomeOverrides } from "@/lib/photo-dump";
 import { priceFloor, usd } from "@/lib/commission";
 import { getPriceBook } from "@/lib/pricing";
 import { fillDeep } from "@/lib/price-text";
+import { resolveHomeSlots } from "@/lib/image-slot-home";
+import { SlotProvider } from "@/components/slots/SlotProvider";
 
 // Films come from the admin video library; admin edits revalidate at once.
 export const revalidate = 3600;
@@ -37,7 +39,9 @@ export default async function InicioEs() {
   return (
     <>
       <HomeJsonLd lang="es" book={book} />
-      <TxqSite journal={fillDeep(latestJournal(), book)} films={films} photos={photos} overrides={overrides} />
+      <SlotProvider slots={await resolveHomeSlots(overrides)}>
+        <TxqSite journal={fillDeep(latestJournal(), book)} films={films} photos={photos} overrides={overrides} />
+      </SlotProvider>
     </>
   );
 }

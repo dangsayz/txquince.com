@@ -20,6 +20,7 @@ import { PortfolioGallery, type GalleryItem } from "@/components/PortfolioGaller
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import "@/components/txq/pages/places.css";
+import { jsonLdString } from "@/lib/json-ld";
 
 export const revalidate = 3600;
 
@@ -181,7 +182,7 @@ export default async function VenuePage({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }}
       />
 
       <div className="tq-wrap">

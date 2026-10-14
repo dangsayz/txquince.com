@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "vitest run && npm run test:node",
+    "test:node": "node --conditions=react-server --import ./tests/helpers/register-ts-resolve.mjs --test 'tests/**/!(home-hero-quality).test.mjs' 'src/**/*.test.mjs'",
     "build:cloudflare": "opennextjs-cloudflare build",
     "preview:cloudflare": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy:cloudflare": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
@@ -19,7 +21,8 @@
     "@vercel/analytics": "^2.0.1",
     "ai": "^6.0.199",
     "motion": "^12.43.0",
-    "next": "16.2.7",
+    "next": "16.3.8",
+    "pdf-lib": "1.17.1",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "resend": "^6.12.4",
@@ -30,13 +33,14 @@
   "devDependencies": {
     "@opennextjs/cloudflare": "^1.19.11",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.2.7",
+    "eslint-config-next": "16.3.8",
     "tailwindcss": "^4",
     "typescript": "^5",
+    "vitest": "5.0.4",
     "wrangler": "^4.95.0"
   }
 }

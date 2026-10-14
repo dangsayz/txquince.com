@@ -43,28 +43,14 @@ import {
 import { getSiteUrl } from "@/lib/site-url";
 import { site } from "@/content/site";
 import { getPriceBook } from "@/lib/pricing";
+import { clientIp } from "@/lib/client-ip";
+import { rateLimiter } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const HITS = new Map<string, number[]>();
-const WINDOW_MS = 60_000;
-const MAX_PER_WINDOW = 5;
-
-function rateLimited(ip: string): boolean {
-  const now = Date.now();
-  const arr = (HITS.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
-  arr.push(now);
-  HITS.set(ip, arr);
-  if (HITS.size > 5000) HITS.clear();
-  return arr.length > MAX_PER_WINDOW;
-}
-
-function clientIp(req: NextRequest): string {
-  const xff = req.headers.get("x-forwarded-for");
-  if (xff) return xff.split(",")[0]!.trim();
-  return req.headers.get("x-real-ip") ?? "unknown";
-}
+// Durable per-IP limit (Workers Rate Limiting binding; in-memory in dev).
+const rateLimited = rateLimiter("commission");
 
 const fail = (status: number, code: string, error: string) =>
   NextResponse.json({ ok: false, code, error }, { status });
@@ -85,7 +71,7 @@ export async function POST(req: NextRequest) {
   }
 
   const ip = clientIp(req);
-  if (rateLimited(ip)) return fail(429, "rate_limited", "Too many requests. Please try again in a minute.");
+  if (await rateLimited(ip)) return fail(429, "rate_limited", "Too many requests. Please try again in a minute.");
 
   const token = typeof body[TURNSTILE_FIELD] === "string" ? (body[TURNSTILE_FIELD] as string) : undefined;
   const turnstile = await verifyTurnstile(token, ip);

@@ -20,6 +20,7 @@ const websiteLinks = [
   { href: "/admin/venues", label: "Venues" },
   { href: "/admin/hero", label: "Page imagery" },
   { href: "/admin/prices", label: "Prices" },
+  { href: "/admin/images", label: "Every image" },
 ] as const;
 
 function isActive(pathname: string, href: string) {
@@ -84,6 +85,7 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
         /* ignore */
       }
       // Full navigation so no signed-in state survives in memory.
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- a hard reload is the point here
       window.location.assign("/");
     } catch {
       setSignOutError(true);

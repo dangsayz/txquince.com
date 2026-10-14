@@ -4,6 +4,7 @@ import { formatEventDate, formatMoney, packageLabel } from "@/lib/booking";
 import { BookingActions } from "@/components/admin/BookingActions";
 import { TIER_NAME_EN, type TierId } from "@/lib/commission";
 import { isSignedAgreement } from "@/lib/agreement";
+import { requireAdminPage } from "@/lib/require-admin";
 
 export const dynamic = "force-dynamic";
 
@@ -104,6 +105,7 @@ function BookingRecord({ booking }: { booking: BookingRow }) {
 }
 
 export default async function AdminBookings() {
+  await requireAdminPage("/admin/bookings"); // server-side gate; middleware is not enough
   const bookings = await getBookings();
   const paid = countPaid(bookings);
   const pending = bookings.filter((booking) => booking.status === "pending_payment").length;

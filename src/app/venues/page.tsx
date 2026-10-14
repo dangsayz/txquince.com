@@ -6,6 +6,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import { SlotImage } from "@/components/SlotImage";
 import { site } from "@/content/site";
 import { venues } from "@/content/venues";
 import { portfolioFallback } from "@/content/portfolio-fallback";
@@ -13,6 +14,7 @@ import { getImagesByVenue } from "@/lib/content-db";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import "@/components/txq/pages/places.css";
+import { jsonLdString } from "@/lib/json-ld";
 
 export const revalidate = 3600;
 
@@ -74,7 +76,7 @@ export default async function VenuesPage() {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replaceAll("<", "\\u003c") }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }} />
 
       <div className="tq-wrap">
         <nav className="tq-place-crumbs tq-mono" aria-label="Breadcrumb">
@@ -89,26 +91,18 @@ export default async function VenuesPage() {
         <div className="tq-place-stage">
           <figure className="tq-plate" style={{ margin: 0 }}>
             <div className="tq-plate__loop">
-              {heroPhoto ? (
-                <Image
-                  src={heroPhoto.url}
-                  alt={publicPhotoCopy(heroPhoto, altPhraseFor(heroPhoto.section)).alt}
-                  fill
-                  preload
-                  sizes="100vw"
-                  style={{ objectPosition: `${Math.round((heroPhoto.focus_x ?? 0.5) * 100)}% ${Math.round((heroPhoto.focus_y ?? 0.4) * 100)}%` }}
-                />
-              ) : (
-                <Image
-                  src={fallbackHero.url}
-                  alt={fallbackHero.alt}
-                  fill
-                  preload
-                  unoptimized
-                  sizes="100vw"
-                  style={{ objectPosition: "50% 60%" }}
-                />
-              )}
+              <SlotImage
+                slot="venues.hero"
+                lang="en"
+                fill
+                priority
+                sizes="100vw"
+                fallback={
+                  heroPhoto
+                    ? { src: heroPhoto.url, alt: publicPhotoCopy(heroPhoto, altPhraseFor(heroPhoto.section)).alt, width: heroPhoto.width, height: heroPhoto.height, focus: `${Math.round((heroPhoto.focus_x ?? 0.5) * 100)}% ${Math.round((heroPhoto.focus_y ?? 0.4) * 100)}%` }
+                    : { src: fallbackHero.url, alt: fallbackHero.alt, focus: "50% 60%" }
+                }
+              />
             </div>
             <figcaption>
               <span className="tq-tag tq-tag--tl tq-mono">[Places / DFW]</span>

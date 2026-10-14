@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { SlotImage } from "@/components/SlotImage";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { site } from "@/content/site";
@@ -46,7 +46,7 @@ export async function ConfirmationPage({
         </div>
       </header>
       <figure className="tq-pg-plate tq-pg-plate--short">
-        <Image src={photo?.url ?? "/portfolio/hero.webp"} alt="" fill priority unoptimized={!photo} sizes="100vw" style={{ objectPosition: "center 46%" }} />
+        <SlotImage slot="confirmation.hero" lang={homeHref === "/es" ? "es" : "en"} alt="" fill priority sizes="100vw" fallback={photo ? { src: photo.url, width: photo.width, height: photo.height, focus: "center 46%" } : null} />
       </figure>
       <div className="tq-pg-row" style={{ borderTop: "1px solid var(--border-hairline)" }}>
         <p className="tq-pg-row__index tq-mono">[TX Quince]</p>

@@ -18,7 +18,10 @@ const REMEMBER_KEY = "txq_admin_email";
 function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
-  const next = params.get("next") || "/admin";
+  // Only ever return to an /admin page on this site. A raw "?next=" would let
+  // a crafted link send a freshly signed-in admin to another site.
+  const asked = params.get("next") ?? "";
+  const next = /^\/admin(?:[/?#]|$)/.test(asked) ? asked : "/admin";
 
   const [mode, setMode] = useState<"signin" | "reset">("signin");
   const [email, setEmail] = useState("");

@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { SlotImage } from "@/components/SlotImage";
 import Link from "next/link";
 import { InquiryForm } from "@/components/InquiryForm";
 import { site } from "@/content/site";
@@ -75,14 +75,13 @@ export async function InquiryPage({ locale, initialDate = "" }: { locale: "en" |
           </div>
         </header>
         <figure className="tq-pg-plate tq-pg-plate--short">
-          <Image
-            src={photo?.url ?? "/portfolio/hero.webp"}
-            alt={photo ? publicPhotoCopy(photo, fallbackAlt).alt : fallbackAlt}
+          <SlotImage
+            slot="inquiry.hero"
+            lang={locale}
             fill
             priority
-            unoptimized={!photo}
             sizes="100vw"
-            style={{ objectPosition: "center 39%" }}
+            fallback={photo ? { src: photo.url, alt: publicPhotoCopy(photo, fallbackAlt).alt, width: photo.width, height: photo.height, focus: "center 39%" } : null}
           />
           <figcaption>
             <span className="tq-tag tq-tag--bl tq-mono">[{isSpanish ? "Consulta" : "Inquiry"} — DFW]</span>
