@@ -24,11 +24,11 @@ function ResetForm() {
 
   // Establish the recovery session from the email link, then allow a new password.
   useEffect(() => {
-    const supabase = createBrowserSupabaseClient();
     let active = true;
 
     async function init() {
       try {
+        const supabase = await createBrowserSupabaseClient();
         const code = new URLSearchParams(window.location.search).get("code");
         if (code) {
           const { error } = await supabase.auth.exchangeCodeForSession(code);
@@ -68,8 +68,8 @@ function ResetForm() {
     }
     setBusy(true);
     setError(null);
-    const supabase = createBrowserSupabaseClient();
     try {
+      const supabase = await createBrowserSupabaseClient();
       const { error } = await supabase.auth.updateUser({ password });
       if (error) {
         setError(error.message);
