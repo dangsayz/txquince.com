@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { requireAdminPage } from "@/lib/require-admin";
 import { journeyDeps } from "@/lib/journey/deps";
 import { CANCELLATION_POLICY } from "@/lib/journey/policy";
 import { normalizeOverrides } from "@/lib/journey/contract";
@@ -9,8 +9,8 @@ export const dynamic = "force-dynamic";
 
 /** /admin/bookings/contract — versioned overrides for the agreement families sign. */
 export default async function ContractTemplatePage() {
+  await requireAdminPage("/admin/bookings/contract"); // server-side gate; middleware is not enough
   const deps = journeyDeps();
-  if (!(await deps.adminEmail())) redirect("/admin/login?next=/admin/bookings/contract");
   const t = await deps.db.latestTemplate().catch(() => null);
   const block = (lang: "en" | "es") => {
     const o = t ? normalizeOverrides(t[lang]) : {};

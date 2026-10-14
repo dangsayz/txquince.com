@@ -14,8 +14,7 @@
  */
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
-import { EditOverlay } from "@/components/EditMode";
+import { SlotImage } from "@/components/SlotImage";
 import { site } from "@/content/site";
 import {
   bookingFlow,
@@ -31,6 +30,7 @@ import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import { FinalCTA } from "@/components/FinalCTA";
 import "@/components/txq/pages/pages.css";
+import { jsonLdString } from "@/lib/json-ld";
 
 export const revalidate = 3600;
 
@@ -212,12 +212,7 @@ const BUCKET_COPY: Bucket[] = [
   },
 ];
 
-const fallbackImages: Record<string, { src: string; alt: string }> = {
-  planning: { src: "/portfolio/save-date.webp", alt: "Quinceañera save-the-date portrait" },
-  cost: { src: "/portfolio/reception.webp", alt: "Quinceañera portrait in a pink gown" },
-  "photo-film": { src: "/portfolio/lilac-arch.webp", alt: "Quinceañera portrait in a lilac gown" },
-  celebration: { src: "/portfolio/kimberly-reception.webp", alt: "Quinceañera celebration and dance" },
-};
+// Section photo defaults live in the image-slot registry (guide.section.*).
 
 export async function generateMetadata(): Promise<Metadata> {
   return fillDeep(META, await getPriceBook());
@@ -338,7 +333,7 @@ export default async function QuinceaneraGuidePage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replaceAll("<", "\\u003c") }}
+        dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }}
       />
 
       <div className="tq-wrap">
@@ -360,15 +355,14 @@ export default async function QuinceaneraGuidePage() {
         </header>
         {hero ? (
           <figure className="tq-pg-plate">
-            <Image
-              src={hero.url}
-              alt={publicPhotoCopy(hero, altPhraseFor(hero.section)).alt}
+            <SlotImage
+              slot="guide.hero"
+              lang="en"
               fill
               priority
               sizes="100vw"
-              style={{ objectPosition: `${(hero.focus_x ?? 0.5) * 100}% ${(hero.focus_y ?? 0.5) * 100}%` }}
+              fallback={{ src: hero.url, alt: publicPhotoCopy(hero, altPhraseFor(hero.section)).alt, width: hero.width, height: hero.height, focus: `${(hero.focus_x ?? 0.5) * 100}% ${(hero.focus_y ?? 0.5) * 100}%` }}
             />
-            <EditOverlay image={{ id: hero.id, slug: hero.slug, alt: hero.alt, fx: hero.focus_x, fy: hero.focus_y }} />
             <figcaption>
               <span className="tq-tag tq-tag--bl tq-mono">[The details of the day]</span>
             </figcaption>
@@ -419,12 +413,12 @@ export default async function QuinceaneraGuidePage() {
               <div className={`tq-pg-duo ${index % 2 === 1 ? "tq-pg-duo--flip" : ""}`} style={{ paddingTop: 0 }}>
                 <figure className="tq-pg-duo__media" style={{ margin: 0 }}>
                   <div className="tq-pg-figure">
-                    <Image
-                      src={image?.url ?? fallbackImages[bucket.id].src}
-                      alt={image ? publicPhotoCopy(image, altPhraseFor(image.section)).alt : fallbackImages[bucket.id].alt}
+                    <SlotImage
+                      slot={`guide.section.${bucket.id}`}
+                      lang="en"
                       fill
                       sizes="(max-width: 959px) 100vw, 40vw"
-                      style={{ objectPosition: `${(image?.focus_x ?? 0.5) * 100}% ${(image?.focus_y ?? 0.5) * 100}%` }}
+                      fallback={image ? { src: image.url, alt: publicPhotoCopy(image, altPhraseFor(image.section)).alt, width: image.width, height: image.height, focus: `${(image.focus_x ?? 0.5) * 100}% ${(image.focus_y ?? 0.5) * 100}%` } : null}
                     />
                   </div>
                   <figcaption className="tq-pg-figcap tq-mono">[Plate {String(index + 1).padStart(2, "0")} — {bucket.title}]</figcaption>

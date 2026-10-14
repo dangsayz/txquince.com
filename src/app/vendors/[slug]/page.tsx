@@ -17,6 +17,7 @@ import { Reveal } from "@/components/Reveal";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import { FinalCTA } from "@/components/FinalCTA";
 import "@/components/txq/pages/pages.css";
+import { jsonLdString } from "@/lib/json-ld";
 
 export const revalidate = 3600;
 
@@ -108,7 +109,7 @@ export default async function VendorPage({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replaceAll("<", "\\u003c") }}
+        dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }}
       />
 
       <div className="tq-wrap">

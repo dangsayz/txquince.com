@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import { SlotImage } from "@/components/SlotImage";
 import { site } from "@/content/site";
 import { getImagesBySection } from "@/lib/content-db";
 import { portfolioFallback } from "@/content/portfolio-fallback";
@@ -8,6 +8,7 @@ import { ADD_ON_NAME_EN, usd } from "@/lib/commission";
 import { getPriceBook } from "@/lib/pricing";
 import { PT, fillDeep } from "@/lib/price-text";
 import "@/components/txq/pages/places.css";
+import { jsonLdString } from "@/lib/json-ld";
 
 /**
  * PRE-QUINCE PHOTOSHOOT landing page (EN /quinceanera-photoshoot, ES
@@ -227,7 +228,7 @@ export async function PhotoshootPage({ locale }: { locale: Locale }) {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }} />
 
       <div className="tq-wrap">
         <nav className="tq-place-crumbs tq-mono" aria-label={locale === "en" ? "Breadcrumb" : "Ruta de navegación"}>
@@ -242,14 +243,13 @@ export async function PhotoshootPage({ locale }: { locale: Locale }) {
         <div className="tq-place-stage">
           <figure className="tq-plate" style={{ margin: 0 }}>
             <div className="tq-plate__loop">
-              <Image
-                src={hero.url}
-                alt={hero.alt}
+              <SlotImage
+                slot="photoshoot.hero"
+                lang={locale}
                 fill
-                preload
-                unoptimized={hero.local}
+                priority
                 sizes="100vw"
-                style={{ objectPosition: hero.focus }}
+                fallback={{ src: hero.url, alt: hero.alt, focus: hero.focus }}
               />
             </div>
             <figcaption>
@@ -322,15 +322,15 @@ export async function PhotoshootPage({ locale }: { locale: Locale }) {
           </ol>
           {supporting.length > 0 ? (
             <ul className="tq-place-duo" aria-label={t.crumb}>
-              {supporting.map((image) => (
+              {supporting.map((image, i) => (
                 <li key={image.id ?? image.url}>
                   <figure className="tq-place-frame">
-                    <Image
-                      src={image.url}
-                      alt={image.alt || t.alt}
+                    <SlotImage
+                      slot={`photoshoot.detail.${i + 1}`}
+                      lang={locale}
                       fill
                       sizes="(min-width: 960px) 40vw, 50vw"
-                      style={{ objectPosition: focal(image.focus_x, image.focus_y) }}
+                      fallback={{ src: image.url, alt: image.alt || t.alt, width: image.width, height: image.height, focus: focal(image.focus_x, image.focus_y) }}
                     />
                   </figure>
                 </li>

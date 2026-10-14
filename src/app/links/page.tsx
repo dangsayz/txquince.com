@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { SlotImage } from "@/components/SlotImage";
 import Link from "next/link";
 import { site } from "@/content/site";
 import "@/components/txq/pages/pages.css";
@@ -30,7 +30,7 @@ export default function LinksPage() {
         </div>
       </header>
       <figure className="tq-pg-plate tq-pg-plate--short">
-        <Image src="/portfolio/red-garden.webp" alt="Quinceañera in a red gown among garden greenery" fill priority unoptimized sizes="100vw" style={{ objectPosition: "center 35%" }} />
+        <SlotImage slot="links.hero" lang="en" fill priority sizes="100vw" />
       </figure>
       <div className="tq-pg-row" style={{ borderTop: "1px solid var(--border-hairline)" }}>
         <p className="tq-pg-row__index tq-mono">[Index]</p>

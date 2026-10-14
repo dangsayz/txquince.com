@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import { about } from "@/content/about";
 import { site } from "@/content/site";
 import { getImageBySlug, getImagesBySection, getFeaturedImages, getPageHero } from "@/lib/content-db";
-import { Figure } from "@/components/Figure";
-import { EditOverlay } from "@/components/EditMode";
+import { mediaUrl } from "@/content/media";
+import { SlotImage } from "@/components/SlotImage";
 import { FinalCTA } from "@/components/FinalCTA";
 import { commissionLinks } from "@/content/commissions";
 import "@/components/txq/pages/pages.css";
@@ -32,8 +31,6 @@ export default async function AboutPage() {
     (await getImagesBySection("about"))[0] ??
     (await getImageBySlug("about-portrait")) ??
     null;
-  const sized = (w: number) =>
-    aboutImg ? aboutImg.url + (aboutImg.url.includes("?") ? "&" : "?") + "w=" + w : "";
   const featured = await getFeaturedImages(12);
   const hero =
     (await getPageHero("about")) ??
@@ -61,7 +58,7 @@ export default async function AboutPage() {
           </div>
         </header>
         <figure className="tq-pg-plate">
-          <Image src={hero?.url ?? "/portfolio/stockyards.webp"} alt={hero?.alt || "Quinceañera portrait in Dallas–Fort Worth"} fill unoptimized={!hero} priority sizes="100vw" style={{ objectPosition: hero ? focal(hero.focus_x, hero.focus_y) : "center 58%" }} />
+          <SlotImage slot="about.hero" lang="en" fill priority sizes="100vw" fallback={hero ? { src: hero.url, alt: hero.alt || "Quinceañera portrait in Dallas–Fort Worth", width: hero.width, height: hero.height, focus: focal(hero.focus_x, hero.focus_y) } : null} />
           <figcaption>
             <span className="tq-tag tq-tag--bl tq-mono">[The studio — Dallas–Fort Worth]</span>
           </figcaption>
@@ -85,23 +82,21 @@ export default async function AboutPage() {
           </header>
           <div className="tq-pg-duo">
             <figure className="tq-pg-duo__media" style={{ margin: 0 }}>
-              {aboutImg ? (
-                <div className="tq-pg-figure">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={sized(900)} srcSet={sized(640) + " 640w, " + sized(900) + " 900w, " + sized(1200) + " 1200w"} sizes="(max-width: 960px) 100vw, 40vw" alt={aboutImg.alt || about.portraitAlt} loading="lazy" decoding="async" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: focal(aboutImg.focus_x, aboutImg.focus_y) }} />
-                  <EditOverlay image={{ id: aboutImg.id, slug: aboutImg.slug, alt: aboutImg.alt, fx: aboutImg.focus_x, fy: aboutImg.focus_y }} />
-                </div>
-              ) : about.portraitKey ? (
-                <div style={{ position: "relative" }}>
-                  <Figure imageKey={about.portraitKey} alt={about.portraitAlt} ratio="portrait" sizes="(max-width: 960px) 100vw, 40vw" />
-                  <EditOverlay image={{}} />
-                </div>
-              ) : (
-                <div className="tq-pg-figure">
-                  <Image src="/portfolio/red-garden.webp" alt="Quinceañera in a red gown holding flowers" fill unoptimized sizes="(max-width: 960px) 100vw, 40vw" />
-                  <EditOverlay image={{}} />
-                </div>
-              )}
+              <div className="tq-pg-figure">
+                <SlotImage
+                  slot="about.portrait"
+                  lang="en"
+                  fill
+                  sizes="(max-width: 960px) 100vw, 40vw"
+                  fallback={
+                    aboutImg
+                      ? { src: aboutImg.url, alt: aboutImg.alt || about.portraitAlt, width: aboutImg.width, height: aboutImg.height, focus: focal(aboutImg.focus_x, aboutImg.focus_y) }
+                      : mediaUrl(about.portraitKey)
+                        ? { src: mediaUrl(about.portraitKey)!, alt: about.portraitAlt }
+                        : null
+                  }
+                />
+              </div>
               <figcaption className="tq-pg-figcap tq-mono">
                 [{aboutImg ? "Behind the camera" : "From the TX Quince portfolio"}]
               </figcaption>

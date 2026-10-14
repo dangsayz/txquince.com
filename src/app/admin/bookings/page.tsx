@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { requireAdminPage } from "@/lib/require-admin";
 import { journeyDeps } from "@/lib/journey/deps";
 import { adminList, isStatusParam, LIST_VIEWS, type ListView } from "@/lib/journey/admin-read";
 import { STATUS_LABEL } from "@/lib/journey/state";
@@ -40,6 +41,7 @@ function Chip({ status }: { status: keyof typeof STATUS_LABEL }) {
 }
 
 export default async function AdminBookings({ searchParams }: { searchParams: Promise<{ view?: string; status?: string }> }) {
+  await requireAdminPage("/admin/bookings"); // server-side gate; middleware is not enough
   const sp = await searchParams;
   const view: ListView = (LIST_VIEWS as readonly string[]).includes(sp.view ?? "") ? (sp.view as ListView) : "all";
   const status = isStatusParam(sp.status) ? sp.status : null;

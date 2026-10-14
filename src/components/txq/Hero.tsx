@@ -1,24 +1,27 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "motion/react";
 import { StatusLabel } from "./Header";
 import { pick, workById, type Work } from "./data";
 import { useSite } from "./state";
 import { HERO_SLOTS, type HomeOverrides } from "@/lib/photo-dump-shared";
+import { SlotPicture } from "@/components/slots/SlotPicture";
+import { SlotAdminControl } from "@/components/slots/SlotAdminControl";
+import { useSlot } from "@/components/slots/SlotProvider";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-/** A plate's image: the admin's Photo dump swap when set, else the original. */
-function plate(work: Work, swap: HomeOverrides[string] | undefined, lang: "en" | "es") {
-  if (!swap) return { src: work.src, alt: pick(lang, work.alt), focus: work.focus };
-  return { src: swap.src, alt: swap.alt[lang] || pick(lang, work.alt), focus: "50% 40%" };
+/** A plate's image: the admin's Photo dump swap when set, else the original.
+ *  (An image-slot override, resolved by the page, wins over both.) */
+function plate(work: Work, swap: HomeOverrides[string] | undefined) {
+  if (!swap) return { src: work.src, alt: work.alt, focus: work.focus, width: work.width, height: work.height };
+  return { src: swap.src, alt: { en: swap.alt.en || pick("en", work.alt), es: swap.alt.es || pick("es", work.alt) }, focus: "50% 40%", width: swap.w, height: swap.h };
 }
 
 export function Hero({ overrides = {} }: { overrides?: HomeOverrides }) {
   const { t, lang } = useSite();
-  const a = plate(workById("w01"), overrides[HERO_SLOTS[0]], lang);
-  const b = plate(workById("w02"), overrides[HERO_SLOTS[1]], lang);
+  const a = useSlot(HERO_SLOTS[0], plate(workById("w01"), overrides[HERO_SLOTS[0]]));
+  const b = useSlot(HERO_SLOTS[1], plate(workById("w02"), overrides[HERO_SLOTS[1]]));
 
   return (
     <section className="tq-hero" id="top" aria-labelledby="tq-hero-title">
@@ -32,16 +35,9 @@ export function Hero({ overrides = {} }: { overrides?: HomeOverrides }) {
           transition={{ duration: 1.4, ease: EASE }}
         >
           <div className="tq-plate__loop">
-            <Image
-              src={a.src}
-              alt={a.alt}
-              fill
-              priority
-              unoptimized
-              sizes="(min-width: 640px) 66vw, 100vw"
-              style={{ objectPosition: a.focus }}
-            />
+            <SlotPicture image={a} lang={lang} fill priority sizes="(min-width: 640px) 66vw, 100vw" />
           </div>
+          <SlotAdminControl slot={HERO_SLOTS[0]} />
           <figcaption>
             <span className="tq-tag tq-tag--tl tq-mono">
               [{t.hero.plate} 01 / 02]
@@ -58,16 +54,9 @@ export function Hero({ overrides = {} }: { overrides?: HomeOverrides }) {
           transition={{ duration: 1.4, delay: 0.18, ease: EASE }}
         >
           <div className="tq-plate__loop">
-            <Image
-              src={b.src}
-              alt={b.alt}
-              fill
-              priority
-              unoptimized
-              sizes="33vw"
-              style={{ objectPosition: b.focus }}
-            />
+            <SlotPicture image={b} lang={lang} fill priority sizes="33vw" />
           </div>
+          <SlotAdminControl slot={HERO_SLOTS[1]} />
           <figcaption>
             <span className="tq-tag tq-tag--tl tq-mono">[{t.hero.plate} 02 / 02]</span>
             <span className="tq-tag tq-tag--bl tq-mono">{t.hero.frameB}</span>

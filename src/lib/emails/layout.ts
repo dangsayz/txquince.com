@@ -5,18 +5,13 @@
  */
 import { site } from "@/content/site";
 import type { Agreement } from "@/lib/agreement";
+import { escapeHtml } from "@/lib/html-escape";
 
 export type Lang = "en" | "es";
 export const INK = "#111110";
 
-/** HTML-escape, including quotes (attribute-safe: href="…", tel:…). */
-export const esc = (s: string) =>
-  s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
+/** HTML-escape, including quotes (attribute-safe) — the site-wide helper. */
+export const esc = escapeHtml;
 
 export type Built = { subject: string; html: string; text: string };
 

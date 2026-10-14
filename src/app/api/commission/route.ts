@@ -6,7 +6,7 @@
  * No signature here any more: they sign on their private page after the owner
  * approves. Signing fields from an older intake are accepted and ignored.
  *
- * Defenses: honeypot, per-IP rate limit, Turnstile (required), zod, a
+ * Defenses: honeypot, durable per-IP rate limit, Turnstile (required), zod, a
  * MIN_LEAD_DAYS lead time, one active request per email per date (an existing
  * hold is never replaced), a cap on open requests per email, the partial unique
  * index on the date, and the owner is emailed about every request (audit M1).
@@ -16,13 +16,18 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { HONEYPOT_FIELD, TURNSTILE_FIELD } from "@/lib/booking";
 import { isSupabaseConfigured } from "@/lib/supabase-server";
+import { clientIp } from "@/lib/client-ip";
+import { rateLimiter } from "@/lib/rate-limit";
 import { journeyDeps } from "@/lib/journey/deps";
 import { createRequest } from "@/lib/journey/request";
-import { clientIp, failResponse, readJson, userAgent } from "@/lib/journey/http";
+import { failResponse, readJson, userAgent } from "@/lib/journey/http";
 import { fail } from "@/lib/journey/core";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+// Durable per-IP limit (Workers Rate Limiting binding; in-memory in dev).
+const rateLimited = rateLimiter("commission");
 
 export async function POST(req: NextRequest) {
   const body = await readJson(req);
@@ -37,7 +42,7 @@ export async function POST(req: NextRequest) {
   }
 
   const ip = clientIp(req);
-  if (await deps.rateLimit("request", ip, 5, 60_000)) {
+  if (await rateLimited(ip)) {
     return failResponse(fail(429, "rate_limited", "Too many requests. Please try again in a minute."));
   }
   const token = typeof body[TURNSTILE_FIELD] === "string" ? (body[TURNSTILE_FIELD] as string) : undefined;

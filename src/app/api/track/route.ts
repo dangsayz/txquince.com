@@ -5,22 +5,14 @@
  */
 import { NextResponse, type NextRequest } from "next/server";
 import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
+import { clientIp } from "@/lib/client-ip";
+import { rateLimiter } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const HITS = new Map<string, number[]>();
-const WINDOW_MS = 60_000;
-const MAX_PER_WINDOW = 60;
-
-function rateLimited(ip: string): boolean {
-  const now = Date.now();
-  const arr = (HITS.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
-  arr.push(now);
-  HITS.set(ip, arr);
-  if (HITS.size > 5000) HITS.clear();
-  return arr.length > MAX_PER_WINDOW;
-}
+// Per-IP limit: Workers Rate Limiting binding in production, in-memory in dev.
+const rateLimited = rateLimiter("track");
 
 function clip(v: unknown, max = 512): string | null {
   if (typeof v !== "string") return null;
@@ -36,11 +28,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
 
-  const ip =
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    req.headers.get("x-real-ip") ??
-    "unknown";
-  if (rateLimited(ip)) return NextResponse.json({ ok: true }); // silently drop
+  if (await rateLimited(clientIp(req))) return NextResponse.json({ ok: true }); // silently drop
 
   if (!isSupabaseConfigured()) return NextResponse.json({ ok: true });
 

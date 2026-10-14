@@ -7,16 +7,11 @@ import { site } from "@/content/site";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { getPortfolioImages } from "@/lib/content-db";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
+import { escapeHtml } from "@/lib/html-escape";
 
 export const revalidate = 3600;
 
-function esc(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
+const esc = escapeHtml;
 
 export async function GET() {
   const images = (await getPortfolioImages()).filter((i) => i.slug);

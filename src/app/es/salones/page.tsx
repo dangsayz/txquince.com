@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { SlotImage } from "@/components/SlotImage";
 import Link from "next/link";
 import { venues } from "@/content/venues";
 import { portfolioFallback } from "@/content/portfolio-fallback";
@@ -62,26 +63,18 @@ export default async function SalonesPage() {
         <div className="tq-place-stage">
           <figure className="tq-plate" style={{ margin: 0 }}>
             <div className="tq-plate__loop">
-              {heroPhoto ? (
-                <Image
-                  src={heroPhoto.url}
-                  alt={heroPhoto.alt || "Retrato de quinceañera en Dallas–Fort Worth"}
-                  fill
-                  preload
-                  sizes="100vw"
-                  style={{ objectPosition: `${Math.round((heroPhoto.focus_x ?? 0.5) * 100)}% ${Math.round((heroPhoto.focus_y ?? 0.4) * 100)}%` }}
-                />
-              ) : (
-                <Image
-                  src={fallbackHero.url}
-                  alt="Retrato de quinceañera en Dallas–Fort Worth"
-                  fill
-                  preload
-                  unoptimized
-                  sizes="100vw"
-                  style={{ objectPosition: "50% 40%" }}
-                />
-              )}
+              <SlotImage
+                slot="venues.hero"
+                lang="es"
+                fill
+                priority
+                sizes="100vw"
+                fallback={
+                  heroPhoto
+                    ? { src: heroPhoto.url, alt: heroPhoto.alt || "Retrato de quinceañera en Dallas–Fort Worth", width: heroPhoto.width, height: heroPhoto.height, focus: `${Math.round((heroPhoto.focus_x ?? 0.5) * 100)}% ${Math.round((heroPhoto.focus_y ?? 0.4) * 100)}%` }
+                    : { src: fallbackHero.url, alt: "Retrato de quinceañera en Dallas–Fort Worth", focus: "50% 40%" }
+                }
+              />
             </div>
             <figcaption>
               <span className="tq-tag tq-tag--tl tq-mono">[Salones / DFW]</span>

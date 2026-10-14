@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { requireAdminPage } from "@/lib/require-admin";
 import { journeyDeps } from "@/lib/journey/deps";
 import { adminRecord } from "@/lib/journey/admin-read";
 import { STATUS_LABEL } from "@/lib/journey/state";
@@ -42,6 +43,7 @@ function Rows({ rows }: { rows: [string, React.ReactNode][] }) {
 }
 
 export default async function BookingRecordPage({ params }: { params: Promise<{ id: string }> }) {
+  await requireAdminPage("/admin/bookings"); // server-side gate; middleware is not enough
   const { id } = await params;
   const deps = journeyDeps();
   const rec = await adminRecord(deps, id);

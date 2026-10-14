@@ -1,21 +1,11 @@
 /**
  * http.ts — request helpers shared by the journey routes.
- *
- * clientIp(): Cloudflare's own header first (can't be forged through the
- * edge), then the first X-Forwarded-For hop, then X-Real-IP. The security
- * work is consolidating this into one site-wide helper; swap it in here.
+ * The client IP always comes from the site-wide src/lib/client-ip.ts.
  */
 import { NextResponse } from "next/server";
 import type { Fail } from "./core";
 
-export function clientIp(req: Request): string {
-  const h = req.headers;
-  const cf = h.get("cf-connecting-ip");
-  if (cf) return cf.trim();
-  const xff = h.get("x-forwarded-for");
-  if (xff) return xff.split(",")[0]!.trim();
-  return h.get("x-real-ip") ?? "unknown";
-}
+export { clientIp } from "@/lib/client-ip";
 
 export const userAgent = (req: Request) => (req.headers.get("user-agent") ?? "").slice(0, 300);
 

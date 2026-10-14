@@ -2,6 +2,7 @@ import { COPY } from "./copy";
 import { TIER_IDS, TIER_NAME_EN, type PriceBook } from "@/lib/commission";
 import { fillDeep } from "@/lib/price-text";
 import { site } from "@/content/site";
+import { jsonLdString } from "@/lib/json-ld";
 
 /** Page-level structured data: the FAQ shown on the page, plus the service catalog — both from the live book. */
 export function HomeJsonLd({ lang, book }: { lang: "en" | "es"; book: PriceBook }) {
@@ -36,8 +37,8 @@ export function HomeJsonLd({ lang, book }: { lang: "en" | "es"; book: PriceBook 
   };
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(service) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(faq) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(service) }} />
     </>
   );
 }

@@ -5,6 +5,7 @@
  * objects — the same code paths production runs.
  */
 import { DEFAULT_PRICE_BOOK, type PriceBook } from "@/lib/commission";
+import { resetMemoryRateLimits } from "@/lib/rate-limit";
 import type { OutgoingEmail } from "@/lib/emails/transport";
 import { setJourneyDepsForTests, type JourneyDeps } from "../deps";
 import { signStripePayload } from "../webhook";
@@ -63,6 +64,8 @@ export function makeHarness(start = "2026-10-14T15:00:00Z"): Harness {
   };
   const byKey = new Map<string, unknown>();
 
+  // /api/commission uses the site-wide durable limiter (in-memory under tests).
+  resetMemoryRateLimits();
   process.env.SUPABASE_URL ||= "http://supabase.invalid";
   process.env.SUPABASE_SERVICE_ROLE_KEY ||= "test-service-role";
 

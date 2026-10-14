@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { SlotImage } from "@/components/SlotImage";
 import { Suspense } from "react";
 import { site } from "@/content/site";
 import { getPortfolioImages, getVideos } from "@/lib/content-db";
@@ -10,6 +10,7 @@ import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import { portfolioFallback } from "@/content/portfolio-fallback";
 import { FinalCTA } from "@/components/FinalCTA";
 import "@/components/txq/pages/pages.css";
+import { jsonLdString } from "@/lib/json-ld";
 
 export const dynamic = "force-dynamic";
 
@@ -151,8 +152,8 @@ async function PortfolioContent({ searchParams }: {
 
   return (
     <>
-      {videoJsonLd ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(videoJsonLd).replaceAll("<", "\\u003c") }} /> : null}
-      {imageGalleryJsonLd ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(imageGalleryJsonLd).replaceAll("<", "\\u003c") }} /> : null}
+      {videoJsonLd ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(videoJsonLd) }} /> : null}
+      {imageGalleryJsonLd ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(imageGalleryJsonLd) }} /> : null}
       <div className="tq-wrap">
         <header className="tq-pg-mast" aria-labelledby="portfolio-title">
           <p className="tq-pg-mast__index tq-mono">[01 / Archive — Dallas–Fort Worth]</p>
@@ -176,7 +177,7 @@ async function PortfolioContent({ searchParams }: {
           </div>
         </header>
         <figure className="tq-pg-plate">
-          <Image src={heroPhoto?.url ?? "/portfolio/hero.webp"} alt={heroPhoto?.alt ?? "Quinceañera portrait in Dallas–Fort Worth"} fill priority unoptimized={!heroPhoto?.url || heroPhoto.url.startsWith("/portfolio/")} sizes="100vw" style={heroPhoto ? { objectPosition: `${Math.round((heroPhoto.fx ?? 0.5) * 100)}% ${Math.round((heroPhoto.fy ?? 0.4) * 100)}%` } : undefined} />
+          <SlotImage slot="portfolio.hero" lang="en" fill priority sizes="100vw" fallback={heroPhoto?.url ? { src: heroPhoto.url, alt: heroPhoto.alt || "Quinceañera portrait in Dallas–Fort Worth", width: heroPhoto.width, height: heroPhoto.height, focus: `${Math.round((heroPhoto.fx ?? 0.5) * 100)}% ${Math.round((heroPhoto.fy ?? 0.4) * 100)}%` } : null} />
           <figcaption>
             <span className="tq-tag tq-tag--bl tq-mono">[Plate 01 — {items.length} photographs]</span>
           </figcaption>
