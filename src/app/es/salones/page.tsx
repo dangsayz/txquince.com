@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { venues } from "@/content/venues";
+import { portfolioFallback } from "@/content/portfolio-fallback";
 import { getImagesByVenue } from "@/lib/content-db";
+import "@/components/txq/pages/places.css";
 
 export const revalidate = 3600;
 export const metadata: Metadata = {
@@ -12,52 +14,203 @@ export const metadata: Metadata = {
   openGraph: { locale: "es_MX" },
 };
 
+const pad = (n: number) => String(n).padStart(2, "0");
+
+type Salon = {
+  venue: string;
+  slug: string;
+  count: number;
+  image: string | null;
+  alt: string | null;
+  focus: string;
+};
+
 export default async function SalonesPage() {
   const photos = await Promise.all(venues.map((venue) => getImagesByVenue(venue.slug)));
   const heroPhoto = photos.flat().find((photo) => Boolean(photo.url)) ?? null;
-  const groups = new Map<string, { venue: string; slug: string; count: number; image: string | null; alt: string | null }[]>();
-  venues.forEach((venue, index) => groups.set(venue.city, [
-    ...(groups.get(venue.city) ?? []),
-    { venue: venue.venue, slug: venue.slug, count: photos[index].length, image: photos[index][0]?.url ?? null, alt: photos[index][0]?.alt ?? null },
-  ]));
+  const fallbackHero = portfolioFallback.find((p) => p.url === "/portfolio/canal.webp") ?? portfolioFallback[0];
+  const groups = new Map<string, Salon[]>();
+  venues.forEach((venue, index) => {
+    const first = photos[index][0];
+    groups.set(venue.city, [
+      ...(groups.get(venue.city) ?? []),
+      {
+        venue: venue.venue,
+        slug: venue.slug,
+        count: photos[index].length,
+        image: first?.url ?? null,
+        alt: first?.alt ?? null,
+        focus: `${Math.round((first?.focus_x ?? 0.5) * 100)}% ${Math.round((first?.focus_y ?? 0.4) * 100)}%`,
+      },
+    ]);
+  });
+  const cities = [...groups.entries()];
+  const total = photos.reduce((n, list) => n + list.length, 0);
 
   return (
     <>
-      <header className="bg-white px-4 pt-5 sm:px-6 md:px-10 md:pt-8">
-        <div className="relative mx-auto min-h-[50svh] max-w-[92rem] overflow-hidden bg-ink sm:min-h-[65svh]">
-          <Image src={heroPhoto?.url ?? "/portfolio/canal.webp"} alt={heroPhoto?.alt || "Retrato de quinceañera en Dallas–Fort Worth"} fill priority unoptimized={!heroPhoto} sizes="(max-width: 1472px) 100vw, 1472px" className="object-cover" />
-          <div className="absolute inset-0 bg-black/35" aria-hidden="true" />
-          <div className="relative flex min-h-[50svh] flex-col items-center justify-center px-6 py-20 text-center text-white sm:min-h-[65svh]">
-            <p className="text-[0.6875rem] uppercase tracking-[0.28em]">Salones / Dallas–Fort Worth</p>
-            <h1 className="mt-5 max-w-[19ch] font-body text-[clamp(2.25rem,4.4vw,4rem)] font-light leading-[1.14] tracking-[-0.035em]">El lugar también cuenta su historia.</h1>
-            <a href="#lugares" className="mt-8 inline-flex min-h-11 items-center border-b border-white/80 text-xs uppercase tracking-[0.18em]">Explorar lugares <span className="ml-3" aria-hidden="true">↓</span></a>
+      <div className="tq-wrap">
+        <nav className="tq-place-crumbs tq-mono" aria-label="Ruta de navegación">
+          <ol>
+            <li><Link href="/es">Inicio</Link></li>
+            <li><span aria-current="page">Salones</span></li>
+          </ol>
+        </nav>
+      </div>
+
+      {heroPhoto || fallbackHero ? (
+        <div className="tq-place-stage">
+          <figure className="tq-plate" style={{ margin: 0 }}>
+            <div className="tq-plate__loop">
+              {heroPhoto ? (
+                <Image
+                  src={heroPhoto.url}
+                  alt={heroPhoto.alt || "Retrato de quinceañera en Dallas–Fort Worth"}
+                  fill
+                  preload
+                  sizes="100vw"
+                  style={{ objectPosition: `${Math.round((heroPhoto.focus_x ?? 0.5) * 100)}% ${Math.round((heroPhoto.focus_y ?? 0.4) * 100)}%` }}
+                />
+              ) : (
+                <Image
+                  src={fallbackHero.url}
+                  alt="Retrato de quinceañera en Dallas–Fort Worth"
+                  fill
+                  preload
+                  unoptimized
+                  sizes="100vw"
+                  style={{ objectPosition: "50% 40%" }}
+                />
+              )}
+            </div>
+            <figcaption>
+              <span className="tq-tag tq-tag--tl tq-mono">[Salones / DFW]</span>
+              <span className="tq-tag tq-tag--bl tq-mono">{pad(venues.length)} lugares</span>
+            </figcaption>
+          </figure>
+        </div>
+      ) : null}
+
+      <div className="tq-wrap">
+        <div className="tq-ledger tq-place-ledger">
+          <div className="tq-ledger__head">
+            <p className="tq-mono tq-place-eyebrow">Salones / Dallas–Fort Worth</p>
+            <h1 className="tq-display">
+              El lugar también <em>cuenta su historia.</em>
+            </h1>
+            <p className="tq-ledger__dek">
+              Explora salones, jardines y espacios de celebración. Mira las fotografías disponibles de cada lugar y
+              encuentra ideas para su día.
+            </p>
+          </div>
+          <div className="tq-ledger__meta">
+            <dl className="tq-meta tq-mono">
+              <div>
+                <dt>Lugares</dt>
+                <dd className="tq-nums">{pad(venues.length)}</dd>
+              </div>
+              <div>
+                <dt>Ciudades</dt>
+                <dd className="tq-nums">{pad(cities.length)}</dd>
+              </div>
+              <div>
+                <dt>Fotos</dt>
+                <dd className="tq-nums">{total}</dd>
+              </div>
+            </dl>
+          </div>
+          <div className="tq-action">
+            <a href="#lugares" className="tq-mono tq-place-note">Explorar lugares ↓</a>
+            <div style={{ display: "grid", gap: 12 }}>
+              <Link href="/es#intake" className="tq-action__link">
+                <span>Consultar tu fecha</span>
+                <span className="tq-arrow" aria-hidden>→</span>
+              </Link>
+              <Link href="/venues" hrefLang="en" lang="en" className="tq-mono tq-place-note">View in English ↗</Link>
+            </div>
           </div>
         </div>
-        <p className="mx-auto max-w-[92rem] px-2 py-9 text-center font-serif text-lg leading-relaxed text-ink-soft sm:py-12 sm:text-xl">Explora salones, jardines y espacios de celebración. Mira las fotografías disponibles de cada lugar y encuentra ideas para su día.</p>
-      </header>
-      <div id="lugares" className="scroll-mt-24" />
-      {[...groups.entries()].map(([city, list]) => (
-        <section key={city} className="border-t border-line bg-white py-14 md:py-20">
-          <div className="mx-auto max-w-[88rem] px-5 sm:px-8 lg:px-12">
-            <div className="grid gap-3 border-b border-line pb-7 md:grid-cols-[minmax(0,0.4fr)_minmax(0,1fr)]"><p className="text-xs uppercase tracking-[0.18em] text-ink-soft">Galerías por ciudad</p><h2 className="font-display text-[clamp(1.75rem,2.6vw,2.4rem)] font-normal leading-tight text-ink">{city}, TX</h2></div>
-            <ul className="mt-8 grid gap-x-7 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-              {list.map((venue) => (
-                <li key={venue.slug}>
-                  <Link href={`/venues/${venue.slug}`} hrefLang="en" className="group block focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">
-                    <div className="relative aspect-[4/3] bg-greige">
-                      {venue.image ? <Image src={venue.image} alt={venue.alt || `Quinceañera en ${venue.venue}`} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover" /> : <span className="absolute inset-0 flex items-end p-5 font-serif text-lg italic text-ink-soft">Fotografías próximamente</span>}
-                    </div>
-                    <div className="flex min-h-16 items-start justify-between gap-4 border-b border-line py-4">
-                      <span className="text-base font-medium text-ink group-hover:underline group-hover:underline-offset-4">{venue.venue}</span>
-                      <span className="shrink-0 text-xs uppercase tracking-[0.12em] text-ink-soft">{venue.count ? `${venue.count} fotos` : "Ver lugar"} · EN</span>
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
+      </div>
+
+      <section id="lugares" className="tq-section" aria-labelledby="lugares-title">
+        <div className="tq-wrap">
+          <header className="tq-head">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>[01 / Galerías por ciudad]</p>
+            <h2 id="lugares-title" className="tq-display tq-head__title">
+              Salones, jardines <em>y espacios de celebración.</em>
+            </h2>
+            <p className="tq-head__dek">
+              Cada lugar abre las quinceañeras que hemos fotografiado ahí. Las páginas de cada salón están en inglés.
+            </p>
+          </header>
+
+          {cities.map(([city, list], cityIndex) => (
+            <section key={city} className="tq-section" aria-labelledby={`salon-city-${cityIndex}`}>
+              <div className="tq-place-group">
+                <h3 id={`salon-city-${cityIndex}`} className="tq-display">{city}, TX</h3>
+                <span className="tq-mono">
+                  [{pad(cityIndex + 1)} / {pad(cities.length)}] · {list.length} {list.length === 1 ? "lugar" : "lugares"}
+                </span>
+              </div>
+              <ul className="tq-place-cards tq-place-cards--wide">
+                {list.map((venue) => (
+                  <li key={venue.slug} className="tq-place-card">
+                    <Link href={`/venues/${venue.slug}`} hrefLang="en" className="tq-place-card__link">
+                      <span className="tq-place-card__media">
+                        {venue.image ? (
+                          <Image
+                            src={venue.image}
+                            alt={venue.alt || `Quinceañera en ${venue.venue}`}
+                            fill
+                            sizes="(min-width: 960px) 33vw, (min-width: 640px) 50vw, 100vw"
+                            style={{ objectPosition: venue.focus }}
+                          />
+                        ) : (
+                          <span className="tq-place-card__blank">
+                            <span className="tq-mono tq-muted">[Fotografías próximamente]</span>
+                            <span className="tq-display">{venue.venue}</span>
+                          </span>
+                        )}
+                      </span>
+                      <span className="tq-place-card__row">
+                        <span className="tq-display tq-place-card__name">{venue.venue}</span>
+                        <span className="tq-mono tq-place-card__idx">
+                          EN <span className="tq-arrow" aria-hidden>↗</span>
+                        </span>
+                      </span>
+                      <span className="tq-mono tq-place-card__sub">
+                        {venue.count ? `${venue.count} fotos` : "Ver lugar"}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      </section>
+
+      <section className="tq-section" aria-labelledby="salones-next-title">
+        <div className="tq-wrap">
+          <div className="tq-place-cta">
+            <div>
+              <p className="tq-mono tq-muted" style={{ margin: "0 0 20px" }}>[02 / Siguiente]</p>
+              <h2 id="salones-next-title" className="tq-display">
+                Su salón, <em>su fecha.</em>
+              </h2>
+            </div>
+            <div className="tq-place-cta__side">
+              <p>Cuéntanos dónde será la celebración y qué fecha tienes en mente. Consultar no requiere pago.</p>
+              <div className="tq-place-actions">
+                <Link href="/es#intake" className="tq-btn tq-btn--lg">
+                  Consultar tu fecha <span className="tq-arrow" aria-hidden>↗</span>
+                </Link>
+                <Link href="/es/fotografo-de-quinceaneras" className="tq-btn tq-btn--ghost">Áreas</Link>
+              </div>
+            </div>
           </div>
-        </section>
-      ))}
+        </div>
+      </section>
     </>
   );
 }

@@ -41,7 +41,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "If you want to understand the money side before you divide it up, our [quinceañera budget breakdown for Texas](/blog/quinceanera-budget-breakdown-texas) shows where families actually spend, and the [collection pricing](/investment) page lays out fixed photo and film options with no quote form.",
+      text: "If you want to understand the money side before you divide it up, our [quinceañera budget breakdown for Texas](/blog/quinceanera-budget-breakdown-texas) shows where families actually spend, and our [commissions](/#commissions) lay out published photo and film options with no quote form.",
     },
     { type: "h3", text: "Why the photographer and venue get booked first" },
     {
@@ -149,7 +149,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "When you're ready to start at the top of this list, you can [check your date](/check-your-date) and then [reserve your collection](/reserve) — the two steps that make every month after them easier.",
+      text: "When you're ready to start at the top of this list, you can [check your date](/check-your-date) and then [reserve your commission](/#intake) — the two steps that make every month after them easier.",
     },
   ],
   faqs: [

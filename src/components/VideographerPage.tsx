@@ -1,10 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
-import { packages } from "@/content/packages";
+import { commissionLinks, commissions } from "@/content/commissions";
+import { MATRIX } from "@/components/txq/data";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { getFeaturedImages, getVideos } from "@/lib/content-db";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import { VideoGallery } from "@/components/VideoGallery";
+import { FinalCTA } from "@/components/FinalCTA";
+import "@/components/txq/pages/pages.css";
 
 const copy = {
   en: {
@@ -14,14 +17,24 @@ const copy = {
     films: "Real celebrations, real films.",
     filmsIntro: "Watch the work before you ask about your date.",
     collections: "Film coverage, clearly priced.",
-    one: "Film is available as the single service in Moments and Essential. Signature and Legacy bring photo and film together.",
+    one: "Film is part of every commission from Cinema & Stills upward: a dedicated motion director, a 4K feature, a teaser and vertical reels. Need film only? Choose “Motion only” when you check your date and we tailor the commission.",
     faq: "Before you reserve",
     questions: [
-      ["Can we book video without photography?", "Yes. Moments and Essential let you choose film as your one service. Signature and Legacy include both photography and film."],
-      ["How long is the highlight film?", "The finished film depends on the collection and the story of the day. We will confirm deliverables in writing before you reserve."],
+      ["Can we book video without photography?", "Yes. Choose “Motion only” when you check your date and we tailor the commission to film. Most families pair film with photography, which every commission from Cinema & Stills upward includes."],
+      ["How long is the film?", "Cinema & Stills delivers an 8–10 minute 4K feature, The Full Production 12–15 minutes, and the Multi-Day Archive a 20-minute documentary, each with a theatrical teaser and vertical reels."],
       ["Do you travel across DFW?", "Yes. We cover quinceañeras across Dallas–Fort Worth, from the ceremony through the reception."],
     ],
     cta: "Check her date",
+    lede: "Some memories are meant to be heard, too.",
+    watch: "Watch the films",
+    work: "01 / Films",
+    coverage: "02 / Coverage",
+    qa: "Q&A",
+    reels: "Vertical reels",
+    retainer: "retainer holds the date",
+    next: "The next step",
+    nextTitle: "Let's see if her date is still open.",
+    nextSub: "Share the date and the coverage you have in mind. We reply personally, with no payment to ask.",
   },
   es: {
     eyebrow: "Video de quinceañeras · Dallas–Fort Worth",
@@ -30,98 +43,165 @@ const copy = {
     films: "Celebraciones reales, videos reales.",
     filmsIntro: "Mira nuestro trabajo antes de consultar tu fecha.",
     collections: "Cobertura de video, con precios claros.",
-    one: "En Moments y Essential puedes elegir video como servicio único. Signature y Legacy incluyen fotografía y video.",
+    one: "El cine forma parte de cada encargo desde Cine y fotografía: un director de cine dedicado, una película 4K, un avance y reels verticales. ¿Solo necesitas video? Elige “Solo cine” al consultar tu fecha y adaptamos el encargo.",
     faq: "Antes de reservar",
     questions: [
-      ["¿Puedo contratar solo video?", "Sí. En Moments y Essential puedes elegir video como tu servicio. Signature y Legacy incluyen foto y video."],
-      ["¿Cuánto dura el video final?", "Depende de la colección y de lo que suceda ese día. Confirmamos las entregas por escrito antes de reservar."],
+      ["¿Puedo contratar solo video?", "Sí. Elige “Solo cine” al consultar tu fecha y adaptamos el encargo al video. La mayoría combina cine y fotografía, que incluye cada encargo desde Cine y fotografía."],
+      ["¿Cuánto dura la película?", "Cine y fotografía entrega una película 4K de 8 a 10 minutos, La producción completa de 12 a 15 minutos y el Archivo de varios días un documental de 20 minutos, cada una con avance y reels verticales."],
       ["¿Trabajan en todo DFW?", "Sí. Cubrimos quinceañeras en todo Dallas–Fort Worth, desde la ceremonia hasta la recepción."],
     ],
     cta: "Consulta su fecha",
+    lede: "Hay recuerdos que también se escuchan.",
+    watch: "Ver los videos",
+    work: "01 / Cine",
+    coverage: "02 / Cobertura",
+    qa: "Preguntas",
+    reels: "Reels verticales",
+    retainer: "de anticipo para apartar la fecha",
+    next: "El siguiente paso",
+    nextTitle: "Veamos si su fecha sigue libre.",
+    nextSub: "Comparte la fecha y la cobertura que imaginas. Respondemos personalmente y consultar no requiere pago.",
   },
 } as const;
 
-const spanishTeasers: Record<string, string> = {
-  moments: "Video con un artista durante cinco horas esenciales.",
-  essential: "Video con un artista para los momentos principales, más una sesión previa.",
-  signature: "Foto y video con dos artistas durante el día completo.",
-  legacy: "Todo lo de Signature, más video largo, cobertura aérea y álbum premium.",
-};
+/** Motion deliverables per commission, straight from the homepage matrix. */
+const motionRows = MATRIX.find((g) => g.id === "motion")!.rows;
+const filmCommissions = commissions.filter((c) => c.id !== "study");
 
 export async function VideographerPage({ locale }: { locale: "en" | "es" }) {
   const c = copy[locale];
-  const inquiry = locale === "es" ? "/es/consulta" : "/check-your-date";
+  const book = commissionLinks[locale].book;
   const [videos, images] = await Promise.all([getVideos(), getFeaturedImages(1)]);
   const hero = images[0];
   const films = videos.filter((v) => v.orientation !== "vertical");
   const shorts = videos.filter((v) => v.orientation === "vertical");
   return (
     <>
-      <header className="relative isolate flex min-h-[70svh] items-end overflow-hidden bg-ink text-white sm:min-h-[80svh]" aria-labelledby="film-page-title">
-        <Image src={hero?.url ?? "/portfolio/kimberly-reception.webp"} alt={hero ? publicPhotoCopy(hero, altPhraseFor(hero.section)).alt : "Quinceañera celebration photographed by TX Quince"} fill unoptimized={!hero} priority sizes="100vw" className="object-cover" style={{ objectPosition: `${Math.round((hero?.focus_x ?? 0.5) * 100)}% ${Math.round((hero?.focus_y ?? 0.4) * 100)}%` }} />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-black/10" aria-hidden="true" />
-        <div className="relative mx-auto w-full max-w-[90rem] px-5 pb-12 sm:px-10 sm:pb-16 lg:px-16 lg:pb-20">
-          <p className="text-xs uppercase tracking-[0.24em] text-white/85">{c.eyebrow}</p>
-          <h1 id="film-page-title" className="mt-5 font-display text-[clamp(2.15rem,4vw,4rem)] font-light leading-[1.14]">{c.title}</h1>
-        </div>
-      </header>
-
-      <section className="bg-ivory px-5 py-20 sm:px-10 sm:py-28">
-        <div className="mx-auto grid max-w-[78rem] gap-8 lg:grid-cols-[minmax(0,0.42fr)_minmax(0,0.58fr)] lg:gap-20">
-          <p className="text-xs uppercase tracking-[0.2em] text-ink-soft">{locale === "es" ? "La experiencia" : "The experience"}</p>
-          <div><p className="max-w-[29ch] font-display text-[clamp(1.85rem,3vw,3rem)] font-light leading-[1.24] text-ink">{locale === "es" ? "Hay recuerdos que también se escuchan." : "Some memories are meant to be heard, too."}</p><p className="mt-6 max-w-xl text-base leading-8 text-ink-soft">{c.intro}</p><a href="#films" className="mt-7 inline-flex min-h-12 items-center gap-4 border-b border-ink text-xs uppercase tracking-[0.16em] text-ink">{locale === "es" ? "Ver los videos" : "Watch the films"}<span aria-hidden="true">↓</span></a></div>
-        </div>
-      </section>
-
-      <section id="films" className="scroll-mt-24 bg-white" aria-labelledby="films-heading">
-        <div className="mx-auto max-w-[90rem] px-5 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-24">
-          <div className="grid gap-6 border-t border-line pt-6 lg:grid-cols-[minmax(0,0.4fr)_minmax(0,0.6fr)] lg:gap-16">
-            <div>
-              <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">{locale === "es" ? "El trabajo" : "The work"}</p>
-              <h2 id="films-heading" className="mt-4 max-w-[19ch] font-display text-[clamp(1.875rem,3vw,3rem)] font-normal leading-tight text-ink">{c.films}</h2>
+      <div className="tq-wrap">
+        <header className="tq-pg-mast" aria-labelledby="film-page-title">
+          <p className="tq-pg-mast__index tq-mono">[{c.eyebrow}]</p>
+          <div className="tq-pg-mast__body">
+            <h1 id="film-page-title" className="tq-display tq-pg-mast__title">
+              {c.title}
+            </h1>
+            <p className="tq-pg-mast__dek">{c.intro}</p>
+            <div className="tq-pg-actions">
+              <Link href={book} className="tq-btn tq-btn--lg">
+                {c.cta} <span className="tq-arrow" aria-hidden>→</span>
+              </Link>
+              <a href="#films" className="tq-btn tq-btn--lg tq-btn--ghost">
+                {c.watch} <span aria-hidden>↓</span>
+              </a>
             </div>
-            <p className="max-w-xl text-base leading-7 text-ink-soft lg:pt-9">{c.filmsIntro}</p>
           </div>
-          <div className="mt-10 lg:mt-14"><VideoGallery videos={films} /></div>
-          {shorts.length > 0 && <div className="mt-14 border-t border-line pt-10"><VideoGallery videos={shorts} variant="vertical" /></div>}
+        </header>
+        <figure className="tq-pg-plate">
+          <Image
+            src={hero?.url ?? "/portfolio/kimberly-reception.webp"}
+            alt={hero ? publicPhotoCopy(hero, altPhraseFor(hero.section)).alt : "Quinceañera celebration photographed by TX Quince"}
+            fill
+            unoptimized={!hero}
+            priority
+            sizes="100vw"
+            style={{ objectPosition: `${Math.round((hero?.focus_x ?? 0.5) * 100)}% ${Math.round((hero?.focus_y ?? 0.4) * 100)}%` }}
+          />
+          <figcaption>
+            <span className="tq-tag tq-tag--bl tq-mono">[Motion — 4K]</span>
+          </figcaption>
+        </figure>
+        <div className="tq-manifesto" style={{ paddingTop: 56, borderTop: "1px solid var(--border-hairline)" }}>
+          <p className="tq-display">{c.lede}</p>
+        </div>
+      </div>
+
+      <section id="films" className="tq-section" aria-labelledby="films-heading">
+        <div className="tq-wrap">
+          <header className="tq-head">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>
+              [{c.work}]
+            </p>
+            <h2 id="films-heading" className="tq-display tq-head__title">
+              {c.films}
+            </h2>
+            <p className="tq-head__dek">{c.filmsIntro}</p>
+          </header>
+          <div className="tq-inner" style={{ paddingBottom: 72 }}>
+            <VideoGallery videos={films} />
+            {shorts.length > 0 && (
+              <div style={{ display: "grid", gap: 24, marginTop: 56, paddingTop: 40, borderTop: "1px solid var(--border-hairline)" }}>
+                <h3 className="tq-mono" style={{ margin: 0 }}>[{c.reels}]</h3>
+                <VideoGallery videos={shorts} variant="vertical" />
+              </div>
+            )}
+          </div>
         </div>
       </section>
 
-      <section className="bg-[#f4f2ee]" aria-labelledby="film-pricing-title">
-        <div className="mx-auto grid max-w-[90rem] gap-10 px-5 py-16 sm:px-10 sm:py-20 lg:grid-cols-[minmax(0,0.38fr)_minmax(0,0.62fr)] lg:gap-16 lg:px-16 lg:py-24">
-          <div>
-            <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">{locale === "es" ? "Cobertura" : "Coverage"}</p>
-            <h2 id="film-pricing-title" className="mt-4 max-w-[18ch] font-display text-[clamp(1.875rem,3vw,3rem)] font-normal leading-tight text-ink">{c.collections}</h2>
-            <p className="mt-5 max-w-md text-base leading-7 text-ink-soft">{c.one}</p>
+      <section className="tq-section" aria-labelledby="film-pricing-title">
+        <div className="tq-wrap">
+          <header className="tq-head">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>
+              [{c.coverage}]
+            </p>
+            <h2 id="film-pricing-title" className="tq-display tq-head__title">
+              {c.collections}
+            </h2>
+            <p className="tq-head__dek">{c.one}</p>
+          </header>
+          <div className="tq-pg-row" style={{ paddingTop: 0 }}>
+            <div className="tq-pg-row__body">
+              <ol className="tq-pg-index">
+                {filmCommissions.map((cm) => (
+                  <li key={cm.id}>
+                    <Link href={commissionLinks[locale].compare} className="tq-pg-index__row">
+                      <span className="tq-mono tq-muted">{cm.numeral}</span>
+                      <span className="tq-pg-index__label">{cm.name[locale]}</span>
+                      <span className="tq-mono tq-nums" style={{ whiteSpace: "nowrap" }}>{cm.priceLabel}</span>
+                      <p className="tq-pg-index__sub">
+                        {motionRows
+                          .map((r) => r.values[cm.id])
+                          .filter((v) => v !== null)
+                          .map((v) => v![locale])
+                          .join(" · ")}
+                      </p>
+                      <p className="tq-pg-index__sub tq-mono">
+                        {cm.retainerLabel} {c.retainer}
+                      </p>
+                    </Link>
+                  </li>
+                ))}
+              </ol>
+            </div>
           </div>
-          <ol className="border-t border-line">
-            {packages.map((collection, index) => (
-              <li key={collection.id} className="border-b border-line py-6">
-                <Link href={locale === "es" ? inquiry : `/reserve?collection=${collection.id}`} className="group grid grid-cols-[2rem_minmax(0,1fr)_auto] items-baseline gap-3 text-ink sm:gap-6">
-                  <span className="text-xs text-ink-faint">0{index + 1}</span>
-                  <span className="font-display text-xl font-normal group-hover:underline">{collection.name}</span>
-                  <span className="text-base">{collection.priceLabel}</span>
-                </Link>
-                <p className="ml-11 mt-2 max-w-lg text-base leading-7 text-ink-soft sm:ml-14">{locale === "es" ? spanishTeasers[collection.id] : collection.teaser}</p>
-                <p className="ml-11 mt-2 text-sm text-ink-soft sm:ml-14">{collection.depositLabel} {locale === "es" ? "de depósito tras confirmar la fecha" : "deposit after date confirmation"}</p>
-              </li>
+        </div>
+      </section>
+
+      <section className="tq-section" aria-labelledby="film-faq-title">
+        <div className="tq-wrap">
+          <header className="tq-head">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>
+              [{c.qa}]
+            </p>
+            <h2 id="film-faq-title" className="tq-display tq-head__title">
+              {c.faq}
+            </h2>
+          </header>
+          <div className="tq-faq tq-pg-faq">
+            {c.questions.map(([question, answer], i) => (
+              <details key={question} className="tq-faq__item" open={i === 0}>
+                <summary>
+                  <span className="tq-mono tq-muted">{String(i + 1).padStart(2, "0")}</span>
+                  <h3 className="tq-faq__q">{question}</h3>
+                  <span className="tq-faq__icon" aria-hidden />
+                </summary>
+                <p>{answer}</p>
+              </details>
             ))}
-          </ol>
+          </div>
         </div>
       </section>
 
-      <section className="bg-white" aria-labelledby="film-faq-title">
-        <div className="mx-auto grid max-w-[90rem] gap-10 px-5 py-16 sm:px-10 sm:py-20 lg:grid-cols-[minmax(0,0.38fr)_minmax(0,0.62fr)] lg:gap-16 lg:px-16 lg:py-24">
-          <div>
-            <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">{locale === "es" ? "Preguntas" : "Good to know"}</p>
-            <h2 id="film-faq-title" className="mt-4 max-w-[18ch] font-display text-[clamp(1.875rem,3vw,3rem)] font-normal leading-tight text-ink">{c.faq}</h2>
-          </div>
-          <div className="border-t border-line">
-            {c.questions.map(([question, answer]) => <details key={question} className="group border-b border-line py-5"><summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-5 text-base font-medium text-ink [&::-webkit-details-marker]:hidden">{question}<span aria-hidden="true" className="text-xl font-light group-open:rotate-45">+</span></summary><p className="mt-2 max-w-prose text-base leading-7 text-ink-soft">{answer}</p></details>)}
-            <Link href={inquiry} className="mt-8 inline-flex min-h-12 items-center gap-5 bg-ink px-6 text-sm font-medium text-white hover:bg-ink-soft">{c.cta}<span aria-hidden="true">↗</span></Link>
-          </div>
-        </div>
-      </section>
+      <FinalCTA accent={c.next} headline={c.nextTitle} sub={c.nextSub} href={book} label={c.cta} />
     </>
   );
 }

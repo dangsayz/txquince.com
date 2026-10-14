@@ -44,6 +44,10 @@ interface CreateCheckoutSessionInput {
   cancelUrl: string;
   expiresAt: Date;
   metadata?: StripeMetadata;
+  /** Checkout UI language, e.g. "es" for Spanish-preferring families. */
+  locale?: string;
+  /** Statement/receipt line for the PaymentIntent. */
+  paymentDescription?: string;
 }
 
 export function isStripeConfigured(): boolean {
@@ -129,6 +133,10 @@ export async function createStripeCheckoutSession(
   params.set("success_url", input.successUrl);
   params.set("cancel_url", input.cancelUrl);
   params.set("expires_at", String(Math.floor(input.expiresAt.getTime() / 1000)));
+  if (input.locale) params.set("locale", input.locale);
+  if (input.paymentDescription) {
+    params.set("payment_intent_data[description]", input.paymentDescription);
+  }
   appendMetadata(params, input.metadata);
   appendMetadata(params, input.metadata, "payment_intent_data[metadata]");
 

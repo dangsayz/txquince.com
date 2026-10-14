@@ -3,14 +3,15 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { site } from "@/content/site";
-import { packages } from "@/content/packages";
+import { commissions, commissionsFromLabel, commissionLinks, retainerPercentLabel } from "@/content/commissions";
+import { PRICE_CEILING_USD, PRICE_FLOOR_USD, TIER_PRICE_USD, usd } from "@/lib/commission";
 import { locations, getLocation, nearbyLocations, cityGeo } from "@/content/locations";
 import { getCityContent } from "@/content/city-content";
 import { getEsPost } from "@/content/blog";
 import { portfolioFallback } from "@/content/portfolio-fallback";
 import { getFeaturedImages, getImagesByCity } from "@/lib/content-db";
 import { venuesByCity } from "@/content/venues";
-import { Reveal } from "@/components/Reveal";
+import "@/components/txq/pages/places.css";
 
 /** Curated ES guides surfaced on each city page (closes the city↔blog loop). */
 const ES_CITY_GUIDES = [
@@ -37,7 +38,7 @@ export async function generateMetadata({
   if (!loc) return {};
 
   const title = `Fotógrafo de Quinceañeras en ${loc.city}, TX`;
-  const description = `Fotografía y video de quinceañeras en ${loc.city}. Cuatro colecciones a precio fijo desde $1,800; sesión Save-the-Date incluida desde Essential.`;
+  const description = `Fotógrafo y videógrafo de quinceañeras de lujo en ${loc.city}. Encargos publicados desde ${commissionsFromLabel}, en español, de la misa al último baile. Consulta tu fecha en vivo.`;
   const esUrl = `${site.url}/es/fotografo-de-quinceaneras/${loc.slug}`;
   const enUrl = `${site.url}/quinceanera-photographer/${loc.slug}`;
 
@@ -62,63 +63,51 @@ export async function generateMetadata({
   };
 }
 
-/** Spanish collection blurbs (packages.ts copy is English-only). */
-const TIER_ES: Record<string, string> = {
-  moments: "Foto o video, un artista, cinco horas enfocadas en los momentos clave.",
-  essential: "Foto o video, un artista, los momentos clave del día.",
-  signature:
-    "Foto + video, dos narradores, tu día completo con un adelanto la misma semana.",
-  legacy:
-    "Todo lo de Signature, más video de larga duración, dron y un álbum premium.",
-};
-
-/** Spanish top-4 inclusions per tier (packages.includes is English-only; hand-authored, not auto-translated). */
-const INCLUDES_ES: Record<string, string[]> = {
-  moments: [
-    "Foto O video — un servicio, un artista",
-    "5 horas de cobertura — de la misa a la recepción temprana",
-    "Galería editada O un video de momentos",
-  ],
-  essential: [
-    "Foto O video — un servicio, un artista",
-    "Hasta 6 horas de cobertura (iglesia + recepción)",
-    "Galería editada O un video de momentos",
-    "Sesión Save-the-Date sin costo",
-  ],
-  signature: [
-    "Foto + video — dos narradores, todo el día",
-    "Hasta 7 horas de cobertura del día completo",
-    "Video de momentos + galería completa editada",
-    "Adelanto la misma semana",
-  ],
-  legacy: [
-    "Todo lo de Signature",
-    "Video cinematográfico de larga duración (1–3 horas)",
-    "Cobertura con dron / aérea",
-    "Hasta 8 horas de cobertura y una segunda sesión de retratos",
-  ],
-};
-
 function sharedFaqsEs(city: string) {
   return [
     {
       q: `¿Cuánto cuesta un fotógrafo de quinceañera en ${city}?`,
-      a: `Las cuatro colecciones de foto y video para ${city} tienen precios publicados de $1,800 a $5,500. La sesión Save-the-Date está incluida desde Essential; Moments ofrece cinco horas de foto o video. Puedes consultar tu fecha sin pagar.`,
+      a: `Todos los encargos están publicados: un Estudio de retrato cuesta ${usd(TIER_PRICE_USD.study)}, foto y cine juntos desde ${usd(TIER_PRICE_USD.cinema)}, y La producción completa, el encargo que recomendamos para la mayoría de las celebraciones en ${city}, cuesta ${usd(TIER_PRICE_USD.production)}. El archivo de varios días cuesta ${usd(TIER_PRICE_USD.archive)}. Puedes consultar tu fecha sin pagar.`,
     },
     {
       q: "¿También ofreces video, o solo fotografía?",
-      a: "Los dos — soy fotógrafo y videógrafo de quinceañeras. Las colecciones Signature y Legacy cubren el día con foto y video juntos, un solo equipo, para que la misa, el vals y la recepción queden en fotos y en video cinematográfico sin que dos proveedores se estorben.",
+      a: "Los dos. Desde Cine y fotografía, un director de foto y un director de cine cubren el día como un solo equipo, para que la misa, el vals y la recepción queden en fotografías y en una película 4K sin que dos proveedores se estorben.",
     },
     {
       q: "¿Cobras por traslado?",
       a: `No — ${city} está dentro de mi área de Dallas–Fort Worth, así que no hay cargo por traslado. Las horas de cobertura son las mismas, esté tu iglesia y salón cerca o al otro lado de la ciudad.`,
     },
     {
-      q: "¿Tienen planes de pago?",
-      a: "Sí. Podemos revisar un plan de pagos contigo. Primero confirmamos la fecha y la cobertura; después enviamos el enlace seguro para el depósito, que se aplica al saldo de la colección.",
+      q: "¿Cómo apartamos la fecha?",
+      a: `Un anticipo del ${retainerPercentLabel} del encargo aparta la fecha y se aplica completo; el saldo se liquida 30 días antes de la celebración. Puedes pagarlo en línea con pago seguro, o pedir primero una consulta y apartamos la fecha 7 días.`,
     },
   ];
 }
+
+/** Una fotografía, normalizada desde la base de datos o el portafolio incluido. */
+type Shot = { key: string; url: string; alt: string; focus: string; local: boolean };
+
+const pad = (n: number) => String(n).padStart(2, "0");
+
+function focal(fx?: number | null, fy?: number | null, dy = 0.35): string {
+  return `${fx != null ? Math.round(fx * 100) : 50}% ${fy != null ? Math.round(fy * 100) : Math.round(dy * 100)}%`;
+}
+
+/** Del primer mensaje al día. */
+const PASOS: { t: string; b: string }[] = [
+  {
+    t: "Cuéntanos tus planes",
+    b: "Comparte la fecha, la ciudad y la cobertura que tienes en mente. Consultar no requiere pago.",
+  },
+  {
+    t: "Confirmamos la disponibilidad",
+    b: "Aparta en línea con el anticipo, o pide primero una consulta y apartamos la fecha 7 días mientras platicamos.",
+  },
+  {
+    t: "Planeamos la cobertura",
+    b: "Organizamos la fotografía y el video alrededor de la ceremonia, los retratos y la recepción.",
+  },
+];
 
 export default async function CityPageEs({
   params,
@@ -130,20 +119,60 @@ export default async function CityPageEs({
   if (!loc) notFound();
 
   const content = getCityContent(loc.slug);
-  const faqs = sharedFaqsEs(loc.city);
+  const faqs = content?.faqsEs ?? [...loc.faqsEs, ...sharedFaqsEs(loc.city)];
   const nearby = nearbyLocations(loc.slug);
   const cityVenues = venuesByCity(loc.slug);
   const guides = ES_CITY_GUIDES.map(getEsPost).filter((p) => p !== undefined);
   const esUrl = `${site.url}/es/fotografo-de-quinceaneras/${loc.slug}`;
-  const prices = packages.map((p) => p.price);
-  // Las fotos propias de esta ciudad primero; si no hay, se usan las destacadas.
+  // Las fotos propias de esta ciudad primero; si no hay, las destacadas; si
+  // tampoco hay, el portafolio incluido (primero las de esta ciudad). Así nunca
+  // se muestra un cuadro vacío — Frisco, Plano y McKinney aún no tienen fotos.
   const cityShots = await getImagesByCity(loc.slug, 6);
   const featured = cityShots.length ? cityShots : await getFeaturedImages(6);
   const isCityWork = cityShots.length > 0;
+  const cityAlt = `Fotografía de quinceañera en ${loc.city}, TX`;
+  const dfwAlt = "Fotografía de quinceañera en Dallas–Fort Worth";
+  const shots: Shot[] = featured.length
+    ? featured.map((img) => ({
+        key: img.slug ?? img.id,
+        url: img.url,
+        alt: isCityWork ? cityAlt : dfwAlt,
+        focus: focal(img.focus_x, img.focus_y),
+        local: false,
+      }))
+    : [...portfolioFallback]
+        .sort((a, b) => Number(b.city === loc.city) - Number(a.city === loc.city))
+        .slice(0, 6)
+        .map((p) => ({
+          key: p.slug,
+          url: p.url,
+          alt: p.city === loc.city ? cityAlt : dfwAlt,
+          focus: "50% 35%",
+          local: true,
+        }));
   // El opener recibe su propio cuadro cinematográfico; el resto llena la cuadrícula.
-  const fallbackHero = portfolioFallback.find((image) => image.city === loc.city) ?? portfolioFallback[0];
-  const hero = featured[0] ?? (fallbackHero ? { url: fallbackHero.url, alt: fallbackHero.alt, focus_x: null, focus_y: null } : null);
-  const recentWork = featured.slice(1);
+  const hero = shots[0] ?? null;
+  const recentWork = shots.slice(1);
+
+  // Los índices de sección siguen a las secciones que realmente se muestran.
+  const order = [
+    "intro",
+    content?.photoSpots?.length ? "spots" : null,
+    "commissions",
+    "booking",
+    "work",
+    "faq",
+    guides.length ? "guides" : null,
+    cityVenues.length ? "venues" : null,
+    "nearby",
+    "next",
+  ].filter((s): s is string => s !== null);
+  const idx = (key: string, label: string) => `[${pad(order.indexOf(key) + 1)} / ${label}]`;
+
+  const areasLine =
+    loc.areas.length > 1
+      ? `${loc.areas.slice(0, -1).join(", ")} y ${loc.areas[loc.areas.length - 1]}`
+      : (loc.areas[0] ?? loc.city);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -176,18 +205,18 @@ export default async function CityPageEs({
           addressRegion: "TX",
           addressCountry: "US",
         },
-        priceRange: `$${Math.min(...prices)}–$${Math.max(...prices)}`,
+        priceRange: `${usd(PRICE_FLOOR_USD)}–${usd(PRICE_CEILING_USD)}`,
         knowsLanguage: ["es", "en"],
         hasOfferCatalog: {
           "@type": "OfferCatalog",
-          name: "Colecciones de Quinceañera",
-          itemListElement: packages.map((p) => ({
+          name: "Encargos de quinceañera",
+          itemListElement: commissions.map((c) => ({
             "@type": "Offer",
-            name: p.name,
-            description: TIER_ES[p.id],
-            price: String(p.price),
+            name: `${c.numeral} ${c.name.es}`,
+            description: c.summary.es,
+            price: String(c.price),
             priceCurrency: "USD",
-            url: `${site.url}/es/consulta`,
+            url: `${site.url}${commissionLinks.es.compare}`,
           })),
         },
       },
@@ -225,230 +254,365 @@ export default async function CityPageEs({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <header className="relative isolate min-h-[70svh] overflow-hidden bg-ink text-white sm:min-h-[80svh]" aria-labelledby="city-title">
-        <Image src={hero?.url ?? "/portfolio/kimberly-reception.webp"} alt={isCityWork ? `Fotografía de quinceañera en ${loc.city}, TX` : "Celebración de quinceañera en Dallas–Fort Worth"} fill priority sizes="100vw" unoptimized={(hero?.url ?? "").startsWith("/portfolio/")} className="object-cover" style={{ objectPosition: `${hero?.focus_x != null ? Math.round(hero.focus_x * 100) : 50}% ${hero?.focus_y != null ? Math.round(hero.focus_y * 100) : 38}%` }} />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-black/10" aria-hidden="true" />
-        <div className="relative mx-auto flex min-h-[70svh] max-w-[90rem] flex-col justify-between px-5 pb-12 pt-5 sm:min-h-[80svh] sm:px-10 sm:pb-16 lg:px-16 lg:pb-20">
-          <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 text-xs text-white/85">
-            <Link href="/es" className="inline-flex min-h-11 items-center underline underline-offset-4">Inicio</Link><span aria-hidden="true">/</span>
-            <Link href="/es/fotografo-de-quinceaneras" className="inline-flex min-h-11 items-center underline underline-offset-4">Áreas</Link><span aria-hidden="true">/</span>
-            <span>{loc.city}</span>
-          </nav>
-          <div className="max-w-3xl">
-            <p className="text-xs uppercase tracking-[0.22em] text-white/85">Fotografía y video de quinceañeras / {loc.city}, TX</p>
-            <h1 id="city-title" className="mt-5 max-w-[22ch] font-display text-[clamp(2.15rem,4vw,4rem)] font-light leading-[1.14]">Fotografía de quinceañeras en {loc.city}</h1>
+      <div className="tq-wrap">
+        <nav className="tq-place-crumbs tq-mono" aria-label="Ruta de navegación">
+          <ol>
+            <li><Link href="/es">Inicio</Link></li>
+            <li><Link href="/es/fotografo-de-quinceaneras">Áreas</Link></li>
+            <li><span aria-current="page">{loc.city}</span></li>
+          </ol>
+        </nav>
+      </div>
+
+      {hero ? (
+        <div className="tq-place-stage">
+          <figure className="tq-plate" style={{ margin: 0 }}>
+            <div className="tq-plate__loop">
+              <Image
+                src={hero.url}
+                alt={hero.alt}
+                fill
+                preload
+                unoptimized={hero.local}
+                sizes="100vw"
+                style={{ objectPosition: hero.focus }}
+              />
+            </div>
+            <figcaption>
+              <span className="tq-tag tq-tag--tl tq-mono">[{loc.city}, TX]</span>
+              <span className="tq-tag tq-tag--bl tq-mono">{isCityWork ? `Trabajo en ${loc.city}` : "Dallas–Fort Worth"}</span>
+            </figcaption>
+          </figure>
+        </div>
+      ) : null}
+
+      <div className="tq-wrap">
+        <div className="tq-ledger tq-place-ledger">
+          <div className="tq-ledger__head">
+            <p className="tq-mono tq-place-eyebrow">Fotografía y video de quinceañeras / {loc.city}, TX</p>
+            <h1 className="tq-display">
+              Fotografía de quinceañeras en {loc.city}. <em>De la misa al último baile.</em>
+            </h1>
+            <p className="tq-ledger__dek">{loc.leadEs}</p>
+          </div>
+          <div className="tq-ledger__meta">
+            <dl className="tq-meta tq-mono">
+              <div>
+                <dt>Condado</dt>
+                <dd>{loc.county}</dd>
+              </div>
+              <div>
+                <dt>Cobertura</dt>
+                <dd>Foto y video</dd>
+              </div>
+              <div>
+                <dt>Traslado</dt>
+                <dd>Sin cargo</dd>
+              </div>
+            </dl>
+          </div>
+          <div className="tq-action">
+            <Link href={`/quinceanera-photographer/${loc.slug}`} hrefLang="en" lang="en" className="tq-mono tq-place-note">
+              Read in English ↗
+            </Link>
+            <div style={{ display: "grid", gap: 12 }}>
+              <Link href={commissionLinks.es.book} className="tq-action__link">
+                <span>Consultar su fecha</span>
+                <span className="tq-arrow" aria-hidden>→</span>
+              </Link>
+              <span className="tq-mono tq-muted">Encargos desde {commissionsFromLabel}</span>
+            </div>
           </div>
         </div>
-      </header>
+      </div>
 
-      <section className="bg-ivory px-5 py-20 sm:px-10 sm:py-28" aria-labelledby="city-story-title">
-        <div className="mx-auto grid max-w-[78rem] gap-8 lg:grid-cols-[minmax(0,0.4fr)_minmax(0,0.6fr)] lg:gap-20">
-        <div><p className="text-xs uppercase tracking-[0.2em] text-ink-soft">En {loc.city}</p><h2 id="city-story-title" className="mt-5 max-w-[19ch] font-display text-[clamp(1.85rem,3vw,3rem)] font-light leading-[1.2] text-ink">Un lugar para su historia.</h2></div>
-        <div className="max-w-2xl space-y-6 text-base leading-8 text-ink-soft">
-          <p>{loc.leadEs}</p>
-          {(content?.introEs.slice(0, 2) ?? loc.introEs.slice(0, 1)).map((para) => <p key={para.slice(0, 24)}>{para}</p>)}
-          <p>Cubrimos {loc.areas.slice(0, -1).join(", ")}{loc.areas.length > 1 ? ` y ${loc.areas[loc.areas.length - 1]}` : loc.areas[0]}.</p>
-          <div className="flex flex-wrap items-center gap-x-8 gap-y-3"><Link href="/es/consulta" className="inline-flex min-h-12 items-center gap-4 border-b border-ink text-xs uppercase tracking-[0.15em] text-ink">Consultar su fecha <span aria-hidden="true">↗</span></Link><Link href={`/quinceanera-photographer/${loc.slug}`} hrefLang="en" className="inline-flex min-h-12 items-center border-b border-ink text-xs uppercase tracking-[0.15em] text-ink">Read in English ↗</Link></div>
-        </div>
+      <section className="tq-section" aria-labelledby="city-story-title">
+        <div className="tq-wrap">
+          <header className="tq-head">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>{idx("intro", `En ${loc.city}`)}</p>
+            <h2 id="city-story-title" className="tq-display tq-head__title">
+              Un lugar para <em>su historia.</em>
+            </h2>
+          </header>
+          <div className="tq-place-prose">
+            {(content?.introEs.slice(0, 2) ?? loc.introEs.slice(0, 1)).map((para) => (
+              <p key={para.slice(0, 24)}>{para}</p>
+            ))}
+            <p>Cubrimos {areasLine}.</p>
+          </div>
         </div>
       </section>
 
       {/* Dónde tomar las fotos — lugares reales (único por ciudad) */}
       {content?.photoSpots?.length ? (
-        <section className="mx-auto max-w-5xl px-5 pb-section md:px-10 lg:px-16 md:pb-section-lg">
-          <Reveal className="mb-8 max-w-xl md:mb-10">
-            <p className="eyebrow">Dónde tomar las fotos en {loc.city}</p>
-            <h2 className="mt-4 font-display text-[clamp(1.875rem,2.8vw,2.625rem)] leading-tight text-ink">
-              Los lugares de {loc.city} que se ven increíbles en cámara.
+        <section className="tq-section" aria-labelledby="city-spots-title">
+          <div className="tq-wrap">
+            <header className="tq-head tq-place-head--long">
+              <p className="tq-head__index tq-mono" style={{ margin: 0 }}>{idx("spots", "Dónde tomar las fotos")}</p>
+              <h2 id="city-spots-title" className="tq-display tq-head__title">
+                Los lugares de {loc.city} que se ven increíbles en cámara.
+              </h2>
+            </header>
+            <ol className="tq-place-rows">
+              {content.photoSpots.map((s, i) => (
+                <li key={s.name} className="tq-place-row">
+                  <span className="tq-mono tq-place-row__k">[{pad(i + 1)}]</span>
+                  <h3 className="tq-display tq-place-row__t">{s.name}</h3>
+                  <p className="tq-place-row__b">{s.whyEs}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+      ) : null}
+
+      {/* Encargos */}
+      <section className="tq-section" aria-labelledby="city-collections-title">
+        <div className="tq-wrap">
+          <header className="tq-head tq-place-head--long">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>{idx("commissions", `Foto y video / ${loc.city}`)}</p>
+            <h2 id="city-collections-title" className="tq-display tq-head__title">
+              Encargos desde {commissionsFromLabel}.
             </h2>
-          </Reveal>
-          <div className="border-t border-ink/10">
-            {content.photoSpots.map((s) => (
-              <Reveal
-                key={s.name}
-                className="grid gap-1.5 border-b border-ink/10 py-6 md:grid-cols-12 md:gap-x-8"
-              >
-                <h3 className="font-display text-xl text-ink md:col-span-4">{s.name}</h3>
-                <p className="text-base leading-7 text-ink-soft md:col-span-8">{s.whyEs}</p>
-              </Reveal>
-            ))}
-          </div>
-        </section>
-      ) : null}
-
-      {/* Colecciones */}
-      <section className="bg-ivory" aria-labelledby="city-collections-title">
-        <div className="mx-auto max-w-[88rem] px-5 py-16 sm:px-8 sm:py-20 lg:px-12">
-          <div className="grid gap-5 border-b border-line pb-8 md:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)] md:items-end">
-            <div><p className="text-xs uppercase tracking-[0.18em] text-ink-soft">Foto y video / {loc.city}</p><h2 id="city-collections-title" className="mt-3 font-display text-[clamp(1.75rem,2.7vw,2.5rem)] font-normal leading-tight text-ink">Colecciones desde {packages[0].priceLabel}.</h2></div>
-            <p className="max-w-md text-base leading-7 text-ink-soft">Cuatro opciones con precios publicados. Moments cubre cinco horas; Signature reúne foto y video. Confirmamos disponibilidad antes de pedir un depósito.</p>
-          </div>
-          <div className="divide-y divide-line">
-            {packages.map((p, i) => <article key={p.id} className="grid gap-5 py-8 md:grid-cols-[minmax(0,0.42fr)_minmax(0,0.58fr)] md:gap-10">
-              <div><p className="text-xs uppercase tracking-[0.16em] text-ink-soft">0{i + 1} / 04</p><h3 className="mt-3 font-display text-[clamp(1.55rem,2.3vw,2.1rem)] font-normal text-ink">{p.name}</h3><p className="mt-2 max-w-sm text-base leading-7 text-ink-soft">{TIER_ES[p.id]}</p></div>
-              <div><div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 border-b border-line pb-4"><p className="font-display text-2xl font-normal text-ink">{p.priceLabel}</p><p className="text-base text-ink-soft">Depósito: {p.depositLabel}</p></div><ul className="mt-4 grid gap-x-6 gap-y-2 text-base leading-7 text-ink-soft sm:grid-cols-2">{(INCLUDES_ES[p.id] ?? p.includes).map((item) => <li key={item} className="flex gap-2"><span aria-hidden="true">—</span><span>{item}</span></li>)}</ul><Link href="/es/consulta" className="mt-5 inline-flex min-h-12 items-center gap-5 border-b border-ink text-base text-ink">Consultar {p.name} <span aria-hidden="true">↗</span></Link></div>
-            </article>)}
-          </div>
-          <div className="flex flex-wrap gap-x-8 gap-y-2 border-t border-line pt-6 text-base"><Link href="/es/paquetes" className="inline-flex min-h-11 items-center text-ink underline underline-offset-4">Comparar todas las colecciones ↗</Link><Link href="/es/save-the-date-quinceanera" className="inline-flex min-h-11 items-center text-ink underline underline-offset-4">Sobre la sesión Save-the-Date ↗</Link></div>
-        </div>
-      </section>
-
-      {/* Cómo funciona la reserva */}
-      <section className="mx-auto max-w-[88rem] px-5 py-16 sm:px-8 sm:py-20 lg:px-12" aria-labelledby="city-booking-title">
-        <div className="grid gap-5 border-b border-line pb-8 md:grid-cols-[minmax(0,0.38fr)_minmax(0,0.62fr)]"><p className="text-xs uppercase tracking-[0.18em] text-ink-soft">Del primer mensaje al día</p><h2 id="city-booking-title" className="font-display text-[clamp(1.75rem,2.7vw,2.5rem)] font-normal leading-tight text-ink">Cómo funciona la consulta.</h2></div>
-        <ol className="divide-y divide-line">
-          {[
-            {
-              t: "Cuéntanos tus planes",
-              b: "Comparte la fecha, la ciudad y la cobertura que tienes en mente. Consultar no requiere pago.",
-            },
-            {
-              t: "Confirmamos la disponibilidad",
-              b: "Revisamos los detalles contigo antes de enviarte un enlace para el depósito de la colección elegida.",
-            },
-            {
-              t: "Planeamos la cobertura",
-              b: "Organizamos la fotografía y el video alrededor de la ceremonia, los retratos y la recepción.",
-            },
-          ].map((step, i) => (
-            <li key={step.t} className="grid gap-3 py-6 md:grid-cols-[minmax(0,0.38fr)_minmax(0,0.62fr)] md:gap-8">
-              <span className="text-xs uppercase tracking-[0.16em] text-ink-soft">0{i + 1}</span>
-              <div><h3 className="font-display text-xl font-normal text-ink">{step.t}</h3><p className="mt-2 max-w-xl text-base leading-7 text-ink-soft">{step.b}</p></div>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      {/* Trabajo reciente — fotos destacadas reales (no renderiza nada si no hay) */}
-      {recentWork.length ? (
-        <section className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
-          <Reveal>
-            <p className="eyebrow mb-5">
-              {isCityWork ? `Trabajo reciente en ${loc.city}` : "Trabajo seleccionado"}
+            <p className="tq-head__dek">
+              Cuatro encargos con precios publicados. Un anticipo del {retainerPercentLabel} aparta la fecha y se
+              aplica completo; La producción completa reúne foto, cine y una monografía de lino.
             </p>
-          </Reveal>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {recentWork.map((img, i) => (
-              <Reveal
-                key={img.slug ?? i}
-                delay={i * 70}
-                className={i === 0 ? "sm:col-span-2" : ""}
-              >
-                <Link href="/portfolio" className="group block">
-                  <div className={`relative overflow-hidden bg-greige ${i === 0 ? "aspect-[16/10]" : "aspect-[4/5]"}`}>
-                    <Image
-                      src={img.url}
-                      alt={isCityWork ? `Fotografía de quinceañera en ${loc.city}, TX` : "Fotografía de quinceañera en Dallas–Fort Worth"}
-                      fill
-                      sizes={i === 0 ? "(max-width: 768px) 100vw, 64rem" : "(max-width: 768px) 100vw, 32rem"}
-                      className="object-cover transition-transform duration-500 group-hover:scale-[1.035] motion-reduce:transition-none"
-                      style={{
-                        objectPosition: `${img.focus_x != null ? Math.round(img.focus_x * 100) : 50}% ${img.focus_y != null ? Math.round(img.focus_y * 100) : 35}%`,
-                      }}
-                    />
-                  </div>
+          </header>
+          <ol className="tq-place-tiers">
+            {commissions.map((c, i) => (
+              <li key={c.id} className="tq-place-tier" data-rec={c.recommended ? "true" : undefined}>
+                <div className="tq-place-tier__top tq-mono">
+                  <span>[{pad(i + 1)} / {pad(commissions.length)}]</span>
+                  {c.recommended ? <span>Recomendado</span> : null}
+                </div>
+                <h3 className="tq-display tq-place-tier__name">
+                  {c.numeral} {c.name.es}
+                </h3>
+                <p className="tq-place-tier__sum">{c.summary.es}</p>
+                <p className="tq-display tq-nums tq-place-tier__price">
+                  {c.priceLabel}
+                  <small>Anticipo: {c.retainerLabel}</small>
+                </p>
+                <ul>
+                  {c.highlights.es.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+                <Link href={commissionLinks.es.book} className="tq-btn tq-btn--lg tq-btn--ghost tq-btn--block">
+                  Consultar tu fecha <span className="tq-arrow" aria-hidden>↗</span>
                 </Link>
-              </Reveal>
+              </li>
             ))}
+          </ol>
+          <div className="tq-place-after">
+            <Link href={commissionLinks.es.compare} className="tq-btn tq-btn--ghost">
+              Comparar todos los encargos <span className="tq-arrow" aria-hidden>→</span>
+            </Link>
+            <Link href="/es/sesion-de-fotos-quinceanera" className="tq-btn tq-btn--ghost">
+              Sesión de fotos pre-quince <span className="tq-arrow" aria-hidden>→</span>
+            </Link>
           </div>
-          <p className="mt-4 text-sm text-ink-soft">
-            {isCityWork
-              ? `Fotografía de quinceañera en ${loc.city}`
-              : "Fotografía de quinceañera en Dallas–Fort Worth"}
-          </p>
-        </section>
-      ) : null}
-
-      <section className="border-y border-line bg-ivory" aria-labelledby="city-work-title">
-        <div className="mx-auto grid max-w-[88rem] gap-6 px-5 py-16 sm:px-8 sm:py-20 md:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)] md:items-end lg:px-12">
-          <div><p className="text-xs uppercase tracking-[0.18em] text-ink-soft">El trabajo</p><h2 id="city-work-title" className="mt-3 max-w-2xl font-display text-[clamp(1.75rem,2.7vw,2.5rem)] font-normal leading-tight text-ink">Mira los retratos y las celebraciones.</h2></div>
-          <div><p className="max-w-xl text-base leading-7 text-ink-soft">Explora fotografías y videos de quinceañeras de Dallas–Fort Worth antes de elegir tu cobertura.</p><Link href="/portfolio" className="mt-5 inline-flex min-h-12 items-center gap-5 border-b border-ink text-base text-ink">Ver las galerías <span aria-hidden="true">↗</span></Link></div>
         </div>
       </section>
 
-      {/* Preguntas */}
-      <section className="mx-auto max-w-3xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
-        <h2 className="display-2 text-ink">
-          Fotografía de quinceañeras en {loc.city} — preguntas, respondidas.
-        </h2>
-        <dl className="mt-10 divide-y divide-line border-y border-line">
-          {faqs.map((f) => (
-            <div key={f.q} className="py-7">
-              <dt className="font-display text-xl text-ink">{f.q}</dt>
-              <dd className="mt-3 text-base leading-7 text-ink-soft">{f.a}</dd>
-            </div>
-          ))}
-        </dl>
+      {/* Cómo funciona la consulta */}
+      <section className="tq-section" aria-labelledby="city-booking-title">
+        <div className="tq-wrap">
+          <header className="tq-head">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>{idx("booking", "Del primer mensaje al día")}</p>
+            <h2 id="city-booking-title" className="tq-display tq-head__title">
+              Cómo funciona <em>la consulta.</em>
+            </h2>
+          </header>
+          <ol className="tq-place-rows">
+            {PASOS.map((step, i) => (
+              <li key={step.t} className="tq-place-row">
+                <span className="tq-mono tq-place-row__k">[{pad(i + 1)}]</span>
+                <h3 className="tq-display tq-place-row__t">{step.t}</h3>
+                <p className="tq-place-row__b">{step.b}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* El trabajo — fotos reales (de la ciudad, destacadas o del portafolio) */}
+      <section className="tq-section" aria-labelledby="city-work-title">
+        <div className="tq-wrap">
+          <header className="tq-head tq-place-head--long">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>
+              {idx("work", isCityWork ? `Trabajo reciente en ${loc.city}` : "Trabajo seleccionado")}
+            </p>
+            <h2 id="city-work-title" className="tq-display tq-head__title">
+              Mira los retratos y las celebraciones.
+            </h2>
+            <p className="tq-head__dek">
+              Explora fotografías y videos de quinceañeras de Dallas–Fort Worth antes de elegir tu cobertura.
+            </p>
+          </header>
+          {recentWork.length ? (
+            <ul className="tq-place-work">
+              {recentWork.map((img, i) => (
+                <li key={img.key}>
+                  <Link href="/portfolio">
+                    <figure className="tq-place-frame">
+                      <Image
+                        src={img.url}
+                        alt={img.alt}
+                        fill
+                        unoptimized={img.local}
+                        sizes={i === 0 ? "(min-width: 960px) 66vw, 100vw" : "(min-width: 960px) 33vw, 50vw"}
+                        style={{ objectPosition: img.focus }}
+                      />
+                    </figure>
+                    <span className="tq-cap tq-mono">
+                      <span>[{pad(i + 1)}]</span>
+                      <span className="tq-cap__mid">
+                        {isCityWork ? `Quinceañera en ${loc.city}` : "Quinceañera en Dallas–Fort Worth"}
+                      </span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+          <div className="tq-place-after">
+            <Link href="/portfolio" className="tq-btn tq-btn--ghost">
+              Ver las galerías <span className="tq-arrow" aria-hidden>↗</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Preguntas — el patrón de preguntas de la portada; refleja el FAQPage. */}
+      <section className="tq-section" aria-labelledby="city-faq-title">
+        <div className="tq-wrap">
+          <header className="tq-head tq-place-head--long">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>{idx("faq", "Preguntas")}</p>
+            <h2 id="city-faq-title" className="tq-display tq-head__title">
+              Fotografía de quinceañeras en {loc.city} — preguntas, respondidas.
+            </h2>
+          </header>
+          <div className="tq-faq">
+            {faqs.map((f, i) => (
+              <details key={f.q} className="tq-faq__item" open={i === 0}>
+                <summary>
+                  <span className="tq-mono tq-muted">{pad(i + 1)}</span>
+                  <h3 className="tq-faq__q">{f.q}</h3>
+                  <span className="tq-faq__icon" aria-hidden />
+                </summary>
+                <p>{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* Guías para planear (cierra el círculo ciudad ↔ blog) */}
       {guides.length ? (
-        <section className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
-          <p className="eyebrow mb-5">Para planear su quinceañera en {loc.city}</p>
-          <div className="divide-y divide-line border-t border-line">
-            {guides.map((g) => (
-              <Link
-                key={g.slug}
-                href={`/es/blog/${g.slug}`}
-                className="group block py-6"
-              >
-                <h3 className="font-display text-lg font-normal leading-tight text-ink group-hover:underline group-hover:underline-offset-4">
-                  {g.title}
-                </h3>
-                <p className="mt-2 text-base leading-7 text-ink-soft">{g.excerpt}</p>
+        <section className="tq-section" aria-labelledby="city-guides-title">
+          <div className="tq-wrap tq-place-block">
+            <header className="tq-head tq-place-head--long">
+              <p className="tq-head__index tq-mono" style={{ margin: 0 }}>{idx("guides", "Guías")}</p>
+              <h2 id="city-guides-title" className="tq-display tq-head__title">
+                Para planear su quinceañera en {loc.city}.
+              </h2>
+            </header>
+            <ol className="tq-place-guides">
+              {guides.map((g) => (
+                <li key={g.slug}>
+                  <Link href={`/es/blog/${g.slug}`}>
+                    <span className="tq-mono tq-place-guides__cat">Guía</span>
+                    <span className="tq-display tq-place-guides__title"><span>{g.title}</span></span>
+                    <span className="tq-mono tq-muted tq-place-guides__read">{g.readMinutes} min ↗</span>
+                    <span className="tq-place-guides__ex">{g.excerpt}</span>
+                  </Link>
+                </li>
+              ))}
+            </ol>
+            <div className="tq-place-after" style={{ borderTop: 0, paddingBottom: 0 }}>
+              <Link href="/es/blog" className="tq-btn tq-btn--ghost">
+                Guía completa de quinceañera <span className="tq-arrow" aria-hidden>→</span>
               </Link>
-            ))}
+            </div>
           </div>
-          <p className="mt-6 text-base">
-            <Link href="/es/blog" className="inline-flex min-h-11 items-center text-ink underline underline-offset-4 hover:text-accent-strong">
-              Ver toda la guía de quinceañera →
-            </Link>
-          </p>
         </section>
       ) : null}
 
       {/* Sedes que fotografiamos en esta ciudad — enlaces al clúster de sedes */}
       {cityVenues.length ? (
-        <section className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
-          <p className="eyebrow mb-5">Sedes de quinceañera en {loc.city}</p>
-          <div className="flex flex-wrap gap-3">
-            {cityVenues.map((v) => (
-              <Link
-                key={v.slug}
-                href={`/venues/${v.slug}`}
-                className="inline-flex min-h-11 items-center border-b border-line text-base text-ink transition-colors hover:border-ink"
-              >
-                {v.venue}
-              </Link>
-            ))}
-            <Link
-              href="/venues"
-              className="inline-flex min-h-11 items-center border-b border-line text-base text-ink transition-colors hover:border-ink"
-            >
-              Todas las sedes →
-            </Link>
+        <section className="tq-section" aria-labelledby="city-venues-title">
+          <div className="tq-wrap tq-place-block">
+            <header className="tq-head tq-place-head--long">
+              <p className="tq-head__index tq-mono" style={{ margin: 0 }}>{idx("venues", "Sedes")}</p>
+              <h2 id="city-venues-title" className="tq-display tq-head__title">
+                Sedes de quinceañera en {loc.city}.
+              </h2>
+            </header>
+            <ul className="tq-place-links">
+              {cityVenues.map((v) => (
+                <li key={v.slug}>
+                  <Link href={`/venues/${v.slug}`} hrefLang="en">
+                    <span>{v.venue}</span>
+                    <span className="tq-arrow" aria-hidden>↗</span>
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <Link href="/es/salones">
+                  <span>Todas las sedes</span>
+                  <span className="tq-arrow" aria-hidden>→</span>
+                </Link>
+              </li>
+            </ul>
           </div>
         </section>
       ) : null}
 
       {/* Ciudades cercanas */}
-      <section className="bg-ivory">
-        <div className="mx-auto max-w-5xl px-5 py-section md:px-10 lg:px-16 md:py-section-lg">
-          <p className="eyebrow mb-5">También en todo DFW</p>
-          <div className="flex flex-wrap gap-3">
+      <section className="tq-section" aria-labelledby="city-nearby-title">
+        <div className="tq-wrap tq-place-block">
+          <header className="tq-head">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>{idx("nearby", "Todo DFW")}</p>
+            <h2 id="city-nearby-title" className="tq-display tq-head__title">
+              También en <em>todo DFW.</em>
+            </h2>
+          </header>
+          <ul className="tq-place-links">
             {nearby.map((n) => (
-              <Link
-                key={n.slug}
-                href={`/es/fotografo-de-quinceaneras/${n.slug}`}
-                className="inline-flex min-h-11 items-center border-b border-line text-base text-ink transition-colors hover:border-ink"
-              >
-                Fotógrafo de quinceañeras en {n.city}
-              </Link>
+              <li key={n.slug}>
+                <Link href={`/es/fotografo-de-quinceaneras/${n.slug}`}>
+                  <span>Fotógrafo de quinceañeras en {n.city}</span>
+                  <span className="tq-arrow" aria-hidden>↗</span>
+                </Link>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </section>
 
+      <section className="tq-section" aria-labelledby="city-next-title">
+        <div className="tq-wrap">
+          <div className="tq-place-cta">
+            <div>
+              <p className="tq-mono tq-muted" style={{ margin: "0 0 20px" }}>{idx("next", "Siguiente")}</p>
+              <h2 id="city-next-title" className="tq-display">
+                Cuéntanos de su día en {loc.city}.
+              </h2>
+            </div>
+            <div className="tq-place-cta__side">
+              <p>Consultar no requiere pago. Si prefieres platicar primero, apartamos la fecha 7 días.</p>
+              <div className="tq-place-actions">
+                <Link href={commissionLinks.es.book} className="tq-btn tq-btn--lg">
+                  Consultar tu fecha <span className="tq-arrow" aria-hidden>↗</span>
+                </Link>
+                <Link href="/es/fotografo-de-quinceaneras" className="tq-btn tq-btn--ghost">Todas las áreas</Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </>
   );
 }

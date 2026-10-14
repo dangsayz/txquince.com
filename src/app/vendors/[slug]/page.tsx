@@ -15,6 +15,8 @@ import { igUrl, websiteUrl, websiteLabel } from "@/lib/vendor-links";
 import { PortfolioGallery, type GalleryItem } from "@/components/PortfolioGallery";
 import { Reveal } from "@/components/Reveal";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
+import { FinalCTA } from "@/components/FinalCTA";
+import "@/components/txq/pages/pages.css";
 
 export const revalidate = 3600;
 
@@ -106,71 +108,81 @@ export default async function VendorPage({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replaceAll("<", "\\u003c") }}
       />
 
-      {heroPhoto && (
-        <div className="relative mx-4 mt-5 aspect-[4/5] min-h-80 max-h-[48rem] overflow-hidden bg-cream sm:mx-6 sm:aspect-[16/8] md:mx-10 lg:mx-auto lg:max-w-[92rem]">
-          <Image src={heroPhoto.url} alt={publicPhotoCopy(heroPhoto, altPhraseFor(heroPhoto.section)).alt} fill priority sizes="100vw" className="object-cover" style={{ objectPosition: `${Math.round((heroPhoto.focus_x ?? 0.5) * 100)}% ${Math.round((heroPhoto.focus_y ?? 0.5) * 100)}%` }} />
-        </div>
-      )}
-      <section className="bg-white px-5 py-16 md:px-10 md:py-24 lg:px-16">
-        <Reveal className="mx-auto grid max-w-[82rem] gap-8 lg:grid-cols-[minmax(0,0.3fr)_minmax(0,0.7fr)] lg:gap-16">
-          <div>
-            <Link href="/vendors" className="inline-flex min-h-11 items-center text-xs uppercase tracking-[0.14em] text-ink-soft hover:text-ink">← Vendors</Link>
-            <p className="mt-2 text-xs uppercase tracking-[0.14em] text-ink-soft">{kind} / Dallas–Fort Worth</p>
-          </div>
-          <div>
-            <h1 className="max-w-[25ch] font-body text-[clamp(2rem,3.5vw,3.25rem)] font-light leading-[1.13] tracking-[-0.035em] text-ink text-balance">{name}</h1>
-            <p className="mt-6 max-w-2xl font-serif text-lg leading-8 text-ink-soft">{credit} for quinceañeras in Dallas–Fort Worth.</p>
-          {ig || web ? (
-            <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-2 border-t border-line pt-4 text-base">
-              {ig ? (
-                <a
-                  href={ig}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex min-h-11 items-center text-ink underline decoration-ink/30 underline-offset-[6px] transition-colors hover:decoration-ink"
-                >
-                  @{vendor.ig_handle}
-                </a>
-              ) : null}
-              {web ? (
-                <a
-                  href={web}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex min-h-11 items-center text-ink underline decoration-ink/30 underline-offset-[6px] transition-colors hover:decoration-ink"
-                >
-                  {websiteLabel(vendor.website)}
-                </a>
-              ) : null}
-            </div>
-          ) : null}
+      <div className="tq-wrap">
+        <nav className="tq-pg-crumbs tq-mono" aria-label="Breadcrumb">
+          <Link href="/vendors">
+            <span aria-hidden="true">←</span> Vendors
+          </Link>
+          <span>{kind} / Dallas–Fort Worth</span>
+        </nav>
+        <Reveal as="header" className="tq-pg-mast">
+          <p className="tq-pg-mast__index tq-mono">[{kind}]</p>
+          <div className="tq-pg-mast__body">
+            <h1 className="tq-display tq-pg-mast__title tq-pg-mast__title--sm">{name}</h1>
+            <p className="tq-pg-mast__dek">{credit} for quinceañeras in Dallas–Fort Worth.</p>
+            {ig || web ? (
+              <div className="tq-pg-actions">
+                {ig ? (
+                  <a href={ig} target="_blank" rel="noopener noreferrer" className="tq-btn tq-btn--ghost">
+                    @{vendor.ig_handle} <span className="tq-arrow" aria-hidden>↗</span>
+                  </a>
+                ) : null}
+                {web ? (
+                  <a href={web} target="_blank" rel="noopener noreferrer" className="tq-btn tq-btn--ghost">
+                    {websiteLabel(vendor.website)} <span className="tq-arrow" aria-hidden>↗</span>
+                  </a>
+                ) : null}
+              </div>
+            ) : null}
           </div>
         </Reveal>
-      </section>
+        {heroPhoto && (
+          <figure className="tq-pg-plate">
+            <Image src={heroPhoto.url} alt={publicPhotoCopy(heroPhoto, altPhraseFor(heroPhoto.section)).alt} fill priority sizes="100vw" style={{ objectPosition: `${Math.round((heroPhoto.focus_x ?? 0.5) * 100)}% ${Math.round((heroPhoto.focus_y ?? 0.5) * 100)}%` }} />
+            <figcaption>
+              <span className="tq-tag tq-tag--bl tq-mono">[Vendor credit — {kind}]</span>
+            </figcaption>
+          </figure>
+        )}
+      </div>
 
-      <section className="border-t border-line bg-white">
-        <div className="mx-auto max-w-[90rem] px-5 py-14 md:px-10 lg:px-16 md:py-20">
-          <Reveal className="mb-10 grid gap-5 border-t border-line pt-6 lg:grid-cols-[minmax(0,0.3fr)_minmax(0,0.7fr)]">
-            <p className="text-xs uppercase tracking-[0.14em] text-ink-soft">The collaboration</p>
-            <h2 className="font-display text-[clamp(1.75rem,3vw,2.5rem)] font-normal leading-tight text-ink">
-              {photos.length
-                ? `Photographed with ${name}`
-                : `Explore the work of TX Quince`}
+      <section className="tq-section" aria-labelledby="vendor-work-title">
+        <div className="tq-wrap">
+          <Reveal as="header" className="tq-head">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>
+              [The collaboration]
+            </p>
+            <h2 id="vendor-work-title" className="tq-display tq-head__title">
+              {photos.length ? `Photographed with ${name}` : `Explore the work of TX Quince`}
             </h2>
+            {photos.length ? (
+              <p className="tq-head__dek tq-mono">
+                {photos.length} {photos.length === 1 ? "photograph" : "photographs"}
+              </p>
+            ) : null}
           </Reveal>
           {items.length ? (
-            <PortfolioGallery images={items} editorial imageSizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw" />
+            <PortfolioGallery images={items} editorial imageSizes="(max-width: 639px) 100vw, (max-width: 959px) 50vw, 40vw" />
           ) : (
-            <p className="border-t border-line py-8 text-base leading-7 text-ink-soft">
-              No photographs crediting {name} are published yet. <Link href="/portfolio" className="font-medium text-ink underline underline-offset-4">Explore the portfolio</Link>.
-            </p>
+            <div className="tq-pg-row" style={{ paddingTop: 0 }}>
+              <div className="tq-pg-row__body">
+                <p className="tq-muted" style={{ margin: 0 }}>
+                  No photographs crediting {name} are published yet.{" "}
+                  <Link href="/portfolio" className="tq-pg-inline">
+                    Explore the portfolio
+                  </Link>
+                  .
+                </p>
+              </div>
+            </div>
           )}
         </div>
       </section>
 
+      <FinalCTA />
     </>
   );
 }

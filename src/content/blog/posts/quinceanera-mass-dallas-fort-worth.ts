@@ -161,7 +161,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "When you're ready to secure your day around the church, you can [reserve your date](/reserve) with us — and we'll take care of the parish coordination so the Mass stays exactly what it's meant to be: yours.",
+      text: "When you're ready to secure your day around the church, you can [reserve your date](/#intake) with us — and we'll take care of the parish coordination so the Mass stays exactly what it's meant to be: yours.",
     },
   ],
   faqs: [

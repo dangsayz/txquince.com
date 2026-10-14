@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import { Reveal } from "@/components/Reveal";
+import "@/components/txq/pages/pages.css";
 
+/** Mono index label over an Inter display h2 — the homepage section head. */
 export function SectionHeading({
   eyebrow,
   children,
@@ -13,15 +15,9 @@ export function SectionHeading({
   className?: string;
 }) {
   return (
-    <Reveal
-      className={`${align === "center" ? "text-center" : ""} ${className}`}
-    >
-      {eyebrow ? (
-        <div className="mb-5">
-          <span className="tag">{eyebrow}</span>
-        </div>
-      ) : null}
-      <h2 className="display-2 text-balance text-ink">{children}</h2>
+    <Reveal className={`tq-pg-sh ${align === "center" ? "tq-pg-sh--center" : ""} ${className}`}>
+      {eyebrow ? <p className="tq-mono tq-pg-sh__eyebrow">[{eyebrow}]</p> : null}
+      <h2 className="tq-display tq-pg-sh__title">{children}</h2>
     </Reveal>
   );
 }

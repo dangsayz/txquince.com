@@ -8,9 +8,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { site } from "@/content/site";
 import { venues } from "@/content/venues";
+import { portfolioFallback } from "@/content/portfolio-fallback";
 import { getImagesByVenue } from "@/lib/content-db";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
+import "@/components/txq/pages/places.css";
 
 export const revalidate = 3600;
 
@@ -18,7 +20,14 @@ export const metadata: Metadata = {
   title: "Quinceañera Venues We Photograph in Dallas–Fort Worth",
   description:
     "Quinceañera venues across Dallas–Fort Worth we've photographed — ballrooms, gardens, and event centers. See real quinceañeras at each, and reserve your date.",
-  alternates: { canonical: "/venues" },
+  alternates: {
+    canonical: "/venues",
+    languages: {
+      "en-US": `${site.url}/venues`,
+      "es-MX": `${site.url}/es/salones`,
+      "x-default": `${site.url}/venues`,
+    },
+  },
   openGraph: {
     title: `Quinceañera Venues · ${site.brand}`,
     description:
@@ -27,10 +36,14 @@ export const metadata: Metadata = {
   },
 };
 
+const pad = (n: number) => String(n).padStart(2, "0");
+
 export default async function VenuesPage() {
   const counts = await Promise.all(venues.map((v) => getImagesByVenue(v.slug)));
   const withCounts = venues.map((v, i) => ({ ...v, count: counts[i].length, image: counts[i][0] ?? null }));
   const heroPhoto = withCounts.find((venue) => venue.image?.url)?.image ?? null;
+  const fallbackHero = portfolioFallback.find((p) => p.url === "/portfolio/kimberly-reception.webp") ?? portfolioFallback[0];
+  const totalPhotos = withCounts.reduce((n, v) => n + v.count, 0);
 
   // Group by city, cities ordered by total photos (busiest first).
   const byCity = new Map<string, typeof withCounts>();
@@ -62,45 +75,171 @@ export default async function VenuesPage() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replaceAll("<", "\\u003c") }} />
-      <header className="bg-white px-4 pt-5 sm:px-6 md:px-10 md:pt-8">
-        <div className="relative mx-auto min-h-[50svh] max-w-[92rem] overflow-hidden bg-ink sm:min-h-[65svh]">
-          <Image src={heroPhoto?.url ?? "/portfolio/kimberly-reception.webp"} alt={heroPhoto ? publicPhotoCopy(heroPhoto, altPhraseFor(heroPhoto.section)).alt : "Quinceañera celebration in Dallas–Fort Worth"} fill priority unoptimized={!heroPhoto} sizes="(max-width: 1472px) 100vw, 1472px" className="object-cover" style={heroPhoto ? { objectPosition: `${Math.round((heroPhoto.focus_x ?? 0.5) * 100)}% ${Math.round((heroPhoto.focus_y ?? 0.4) * 100)}%` } : undefined} />
-          <div className="absolute inset-0 bg-black/30" aria-hidden="true" />
-          <div className="relative flex min-h-[50svh] flex-col items-center justify-center px-6 py-20 text-center text-white sm:min-h-[65svh]">
-            <p className="text-[0.6875rem] uppercase tracking-[0.28em]">TX Quince / Places</p>
-            <h1 className="mt-5 max-w-[18ch] font-body text-[clamp(2.25rem,4.4vw,4rem)] font-light leading-[1.14] tracking-[-0.035em]">The places where her day unfolds.</h1>
-            <a href="#venues-list" className="mt-8 inline-flex min-h-11 items-center border-b border-white/80 text-xs uppercase tracking-[0.18em]">Browse by city <span className="ml-3" aria-hidden="true">↓</span></a>
+
+      <div className="tq-wrap">
+        <nav className="tq-place-crumbs tq-mono" aria-label="Breadcrumb">
+          <ol>
+            <li><Link href="/">Home</Link></li>
+            <li><span aria-current="page">Venues</span></li>
+          </ol>
+        </nav>
+      </div>
+
+      {heroPhoto || fallbackHero ? (
+        <div className="tq-place-stage">
+          <figure className="tq-plate" style={{ margin: 0 }}>
+            <div className="tq-plate__loop">
+              {heroPhoto ? (
+                <Image
+                  src={heroPhoto.url}
+                  alt={publicPhotoCopy(heroPhoto, altPhraseFor(heroPhoto.section)).alt}
+                  fill
+                  preload
+                  sizes="100vw"
+                  style={{ objectPosition: `${Math.round((heroPhoto.focus_x ?? 0.5) * 100)}% ${Math.round((heroPhoto.focus_y ?? 0.4) * 100)}%` }}
+                />
+              ) : (
+                <Image
+                  src={fallbackHero.url}
+                  alt={fallbackHero.alt}
+                  fill
+                  preload
+                  unoptimized
+                  sizes="100vw"
+                  style={{ objectPosition: "50% 60%" }}
+                />
+              )}
+            </div>
+            <figcaption>
+              <span className="tq-tag tq-tag--tl tq-mono">[Places / DFW]</span>
+              <span className="tq-tag tq-tag--bl tq-mono">{pad(venues.length)} venues</span>
+            </figcaption>
+          </figure>
+        </div>
+      ) : null}
+
+      <div className="tq-wrap">
+        <div className="tq-ledger tq-place-ledger">
+          <div className="tq-ledger__head">
+            <p className="tq-mono tq-place-eyebrow">TX Quince / Places</p>
+            <h1 className="tq-display">
+              The places where <em>her day unfolds.</em>
+            </h1>
+            <p className="tq-ledger__dek">
+              Explore venues across Dallas–Fort Worth through the celebrations photographed there.
+            </p>
+          </div>
+          <div className="tq-ledger__meta">
+            <dl className="tq-meta tq-mono">
+              <div>
+                <dt>Venues</dt>
+                <dd className="tq-nums">{pad(venues.length)}</dd>
+              </div>
+              <div>
+                <dt>Cities</dt>
+                <dd className="tq-nums">{pad(cities.length)}</dd>
+              </div>
+              <div>
+                <dt>Frames</dt>
+                <dd className="tq-nums">{totalPhotos}</dd>
+              </div>
+            </dl>
+          </div>
+          <div className="tq-action">
+            <a href="#venues-list" className="tq-mono tq-place-note">Browse by city ↓</a>
+            <div style={{ display: "grid", gap: 12 }}>
+              <Link href={site.cta.href} className="tq-action__link">
+                <span>Request a date</span>
+                <span className="tq-arrow" aria-hidden>→</span>
+              </Link>
+              <Link href="/es/salones" hrefLang="es" lang="es" className="tq-mono tq-place-note">Ver en español ↗</Link>
+            </div>
           </div>
         </div>
-        <p className="mx-auto max-w-[92rem] px-2 py-9 text-center font-serif text-lg leading-relaxed text-ink-soft sm:py-12 sm:text-xl">Explore venues across Dallas–Fort Worth through the celebrations photographed there.</p>
-      </header>
-
-      <div id="venues-list" className="scroll-mt-24 bg-white">
-        {cities.map(({ city, list }, cityIndex) => (
-          <section key={city} className="border-t border-line" aria-labelledby={`venue-city-${cityIndex}`}>
-            <div className="mx-auto max-w-[92rem] px-4 py-16 sm:px-6 md:px-10 md:py-24 lg:px-14">
-              <div>
-                <p className="text-[0.6875rem] uppercase tracking-[0.22em] text-ink-soft">0{cityIndex + 1} / Dallas–Fort Worth</p>
-                <h2 id={`venue-city-${cityIndex}`} className="mt-3 font-body text-[clamp(1.75rem,2.7vw,2.5rem)] font-light leading-tight text-ink">{city}, TX</h2>
-              </div>
-              <ul className="mt-10 grid gap-x-5 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-7">
-                {list.map((venue) => <li key={venue.slug}>
-                  <Link href={`/venues/${venue.slug}`} className="group block text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">
-                    <span className="relative block aspect-[4/5] overflow-hidden bg-cream sm:aspect-[4/3]">
-                      {venue.image?.url ? <Image src={venue.image.url} alt={publicPhotoCopy(venue.image, altPhraseFor(venue.image.section)).alt} fill sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw" className="object-cover transition-transform duration-700 group-hover:scale-[1.025] motion-reduce:transition-none" /> : <span className="absolute inset-0 flex items-end p-6 font-serif text-lg italic text-ink-soft">Photographs coming soon</span>}
-                    </span>
-                    <span className="mt-4 flex items-start justify-between gap-3 border-b border-line pb-4">
-                      <span className="font-body text-xl font-light leading-tight sm:text-2xl">{venue.venue}</span>
-                      <span className="shrink-0 text-sm text-ink-soft" aria-hidden="true">↗</span>
-                    </span>
-                    <span className="mt-2 block text-xs uppercase tracking-[0.15em] text-ink-soft">{venue.count > 0 ? `${venue.count} ${venue.count === 1 ? "photograph" : "photographs"}` : "Explore venue"}</span>
-                  </Link>
-                </li>)}
-              </ul>
-            </div>
-          </section>
-        ))}
       </div>
+
+      <section id="venues-list" className="tq-section" aria-labelledby="venues-list-title">
+        <div className="tq-wrap">
+          <header className="tq-head">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>[01 / Venues]</p>
+            <h2 id="venues-list-title" className="tq-display tq-head__title">
+              Ballrooms, gardens <em>and event centers.</em>
+            </h2>
+            <p className="tq-head__dek">
+              Each venue opens to the quinceañeras we have photographed there, grouped by city.
+            </p>
+          </header>
+
+          {cities.map(({ city, list, total }, cityIndex) => (
+            <section key={city} className="tq-section" aria-labelledby={`venue-city-${cityIndex}`}>
+              <div className="tq-place-group">
+                <h3 id={`venue-city-${cityIndex}`} className="tq-display">{city}, TX</h3>
+                <span className="tq-mono">
+                  [{pad(cityIndex + 1)} / {pad(cities.length)}] · {list.length} {list.length === 1 ? "venue" : "venues"}
+                  {total ? ` · ${total} ${total === 1 ? "photograph" : "photographs"}` : ""}
+                </span>
+              </div>
+              <ul className="tq-place-cards tq-place-cards--wide">
+                {list.map((venue) => (
+                  <li key={venue.slug} className="tq-place-card">
+                    <Link href={`/venues/${venue.slug}`} className="tq-place-card__link">
+                      <span className="tq-place-card__media">
+                        {venue.image?.url ? (
+                          <Image
+                            src={venue.image.url}
+                            alt={publicPhotoCopy(venue.image, altPhraseFor(venue.image.section)).alt}
+                            fill
+                            sizes="(min-width: 960px) 33vw, (min-width: 640px) 50vw, 100vw"
+                            style={{ objectPosition: `${Math.round((venue.image.focus_x ?? 0.5) * 100)}% ${Math.round((venue.image.focus_y ?? 0.4) * 100)}%` }}
+                          />
+                        ) : (
+                          <span className="tq-place-card__blank">
+                            <span className="tq-mono tq-muted">[Photographs coming soon]</span>
+                            <span className="tq-display">{venue.venue}</span>
+                          </span>
+                        )}
+                      </span>
+                      <span className="tq-place-card__row">
+                        <span className="tq-display tq-place-card__name">{venue.venue}</span>
+                        <span className="tq-mono tq-place-card__idx">
+                          <span className="tq-arrow" aria-hidden>↗</span>
+                        </span>
+                      </span>
+                      <span className="tq-mono tq-place-card__sub">
+                        {venue.count > 0
+                          ? `${venue.count} ${venue.count === 1 ? "photograph" : "photographs"}`
+                          : "Explore venue"}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      </section>
+
+      <section className="tq-section" aria-labelledby="venues-next-title">
+        <div className="tq-wrap">
+          <div className="tq-place-cta">
+            <div>
+              <p className="tq-mono tq-muted" style={{ margin: "0 0 20px" }}>[02 / Next]</p>
+              <h2 id="venues-next-title" className="tq-display">
+                Your venue, <em>your date.</em>
+              </h2>
+            </div>
+            <div className="tq-place-cta__side">
+              <p>Tell us where the celebration is and the date you have in mind. There is no travel fee within our Dallas–Fort Worth service area.</p>
+              <div className="tq-place-actions">
+                <Link href={site.cta.href} className="tq-btn tq-btn--lg">
+                  Request a date <span className="tq-arrow" aria-hidden>↗</span>
+                </Link>
+                <Link href="/quinceanera-photographer" className="tq-btn tq-btn--ghost">Areas served</Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </>
   );
 }

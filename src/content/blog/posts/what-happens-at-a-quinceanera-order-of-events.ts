@@ -125,9 +125,9 @@ const post: BlogPost = {
     {
       type: "cta",
       heading: "Have these moments captured by people who know the order",
-      body: "Photo and film collections built around the full quince day — getting ready through the last dance. Fixed pricing, no quote form.",
-      href: "/investment",
-      label: "See collections & pricing",
+      body: "Photo and film commissions built around the full quince day — getting ready through the last dance. Published pricing, no quote form.",
+      href: "/#commissions",
+      label: "Compare commissions",
     },
     { type: "h2", text: "Toast, dinner, and cake" },
     {
@@ -171,11 +171,11 @@ const post: BlogPost = {
     { type: "h2", text: "How many hours of photo coverage do you need?" },
     {
       type: "p",
-      text: "If you want the whole story — getting ready through the surprise dance — plan for roughly 8–10 hours of coverage. Shorter packages (4–6 hours) typically pick up the reception only, which means the getting-ready, the Mass, and the portraits get cut. The single most common regret we hear is booking too few hours and missing the father-daughter dance or the cambio de zapatos because the photographer's time ran out. When you're comparing options, look at the [collection inclusions](/investment) by coverage hours, not just by price, and use a [planning timeline checklist](/blog/quinceanera-planning-timeline-checklist) to make sure your schedule and your coverage line up.",
+      text: "If you want the whole story — getting ready through the surprise dance — plan for roughly 8–10 hours of coverage. Shorter packages (4–6 hours) typically pick up the reception only, which means the getting-ready, the Mass, and the portraits get cut. The single most common regret we hear is booking too few hours and missing the father-daughter dance or the cambio de zapatos because the photographer's time ran out. When you're comparing options, look at the [commission inclusions](/#commissions) by coverage hours, not just by price, and use a [planning timeline checklist](/blog/quinceanera-planning-timeline-checklist) to make sure your schedule and your coverage line up.",
     },
     {
       type: "p",
-      text: "When you've got your date, you can [check if it's open](/check-your-date) in a few seconds and [reserve it](/reserve) before someone else takes your Saturday.",
+      text: "When you've got your date, you can [check if it's open](/check-your-date) in a few seconds and [reserve it](/#intake) before someone else takes your Saturday.",
     },
   ],
   faqs: [

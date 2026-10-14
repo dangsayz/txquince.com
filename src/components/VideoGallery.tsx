@@ -4,6 +4,7 @@ import { useState } from "react";
 import { embedSrc, type VideoProvider } from "@/lib/video";
 import { InlineCaption } from "@/components/InlineCaption";
 import { useIsAdmin } from "@/components/EditMode";
+import "@/components/txq/pages/pages.css";
 
 /** Admin-only: persist an edited video caption (its title). */
 async function saveVideoTitle(id: string, title: string) {
@@ -31,11 +32,10 @@ function posterFor(v: DisplayVideo): string | null {
 }
 
 /**
- * Films as a calm, even grid — each a quiet still with a single hairline
- * play affordance. No gradients, no clickbait titles burned over the frame:
- * a short editorial caption sits below, matching the photo captions on the page.
- * The whole frame is the tap target (well past the 44px floor); the play glyph
- * is decorative.
+ * Films as a calm, even grid on the hairline system — each a still in a
+ * reserved 16:9 (or 9:16) frame with the homepage's round hairline play mark,
+ * and a mono-indexed caption below. The whole frame is the tap target; the
+ * heavy embed only mounts on play (facade pattern).
  *
  * `variant="vertical"` renders the same cards at 9:16 (shorts/reels) in a
  * denser grid instead of the default 16:9 film layout.
@@ -48,107 +48,82 @@ export function VideoGallery({
   variant?: "landscape" | "vertical";
 }) {
   if (!videos.length) return null;
-  const gridClass =
-    variant === "vertical"
-      ? "grid grid-cols-2 gap-x-4 gap-y-9 sm:grid-cols-3 lg:grid-cols-4"
-      : "grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3";
   return (
-    <div className={gridClass}>
-      {videos.map((v) => (
-        <VideoCard key={v.id} video={v} variant={variant} />
+    <ul className={`tq-pg-films ${variant === "vertical" ? "tq-pg-films--vertical" : ""}`}>
+      {videos.map((v, i) => (
+        <li key={v.id}>
+          <VideoCard video={v} variant={variant} index={i} />
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }
 
-function PlayGlyph({ compact = false }: { compact?: boolean }) {
-  const size = compact ? "h-11 w-11 md:h-12 md:w-12" : "h-12 w-12 md:h-14 md:w-14";
+function PlayGlyph() {
   return (
-    <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
-      <span
-        className={`flex items-center justify-center rounded-full border border-cream/70 bg-ink/20 backdrop-blur-sm transition-all duration-300 group-hover:scale-105 group-hover:bg-ink/30 ${size}`}
-      >
-        <span className="ml-0.5 h-0 w-0 border-y-[7px] border-l-[11px] border-y-transparent border-l-cream" />
+    <span className="tq-pg-play" aria-hidden>
+      <span>
+        <svg width="14" height="16" viewBox="0 0 14 16" fill="currentColor">
+          <path d="M1 1.5v13L13 8z" />
+        </svg>
       </span>
     </span>
   );
 }
 
 function Thumb({ poster, title }: { poster: string | null; title: string }) {
-  return (
-    <>
-      {poster ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={poster}
-          alt={title || "Quinceañera film still"}
-          className="h-full w-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
-        />
-      ) : (
-        <div
-          className="absolute inset-0"
-          style={{ background: "radial-gradient(120% 100% at 50% 40%,#2a2420,#161412)" }}
-        />
-      )}
-      <span className="absolute inset-0 bg-ink/10" />
-    </>
+  return poster ? (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={poster} alt={title || "Quinceañera film still"} loading="lazy" decoding="async" />
+  ) : (
+    <span className="tq-pg-film__blank" />
   );
 }
 
 function VideoCard({
   video,
   variant = "landscape",
+  index,
 }: {
   video: DisplayVideo;
   variant?: "landscape" | "vertical";
+  index: number;
 }) {
   const [playing, setPlaying] = useState(false);
   const admin = useIsAdmin();
   const poster = posterFor(video);
   const src = embedSrc(video.provider, video.video_id, video.url);
   const canEmbed = Boolean(src) && video.provider !== "link";
-  const frameClass = variant === "vertical" ? "aspect-[9/16]" : "aspect-video";
 
   return (
-    <figure className="group">
-      <div className={`relative overflow-hidden bg-ink ${frameClass}`}>
+    <figure className="tq-pg-film">
+      <div className={`tq-pg-film__frame ${variant === "vertical" ? "tq-pg-film__frame--vertical" : ""}`}>
         {playing && canEmbed ? (
           video.provider === "file" ? (
-            <video src={src!} controls autoPlay playsInline className="h-full w-full object-cover" />
+            <video src={src!} controls autoPlay playsInline />
           ) : (
             <iframe
               src={src!}
               title={video.title || "Film"}
               allow="autoplay; fullscreen; picture-in-picture"
               allowFullScreen
-              className="h-full w-full"
             />
           )
         ) : canEmbed ? (
-          <button
-            type="button"
-            onClick={() => setPlaying(true)}
-            aria-label={`Play ${video.title || "film"}`}
-            className="absolute inset-0 block"
-          >
+          <button type="button" onClick={() => setPlaying(true)} aria-label={`Play ${video.title || "film"}`}>
             <Thumb poster={poster} title={video.title} />
-            <PlayGlyph compact={variant === "vertical"} />
+            <PlayGlyph />
           </button>
         ) : (
-          <a
-            href={video.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`Watch ${video.title || "film"}`}
-            className="absolute inset-0 block"
-          >
+          <a href={video.url} target="_blank" rel="noopener noreferrer" aria-label={`Watch ${video.title || "film"}`}>
             <Thumb poster={poster} title={video.title} />
-            <PlayGlyph compact={variant === "vertical"} />
+            <PlayGlyph />
           </a>
         )}
       </div>
       {video.title || admin ? (
-        <figcaption className="mt-3 text-sm leading-relaxed text-ink-soft">
+        <figcaption className="tq-pg-film__cap">
+          <span className="tq-mono">[{String(index + 1).padStart(2, "0")}]</span>
           <InlineCaption
             value={video.title}
             placeholder="Add caption"

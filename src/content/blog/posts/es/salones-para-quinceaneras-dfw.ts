@@ -1,4 +1,10 @@
 import type { BlogPost } from "@/content/blog";
+import { TIER_PRICE_USD, usd } from "@/lib/commission";
+
+const study = usd(TIER_PRICE_USD.study);
+const cinema = usd(TIER_PRICE_USD.cinema);
+const production = usd(TIER_PRICE_USD.production);
+const archive = usd(TIER_PRICE_USD.archive);
 
 const post: BlogPost = {
   slug: "salones-para-quinceaneras-dfw",
@@ -11,6 +17,7 @@ const post: BlogPost = {
   excerpt:
     "Salones reales del área de DFW organizados por ciudad y por capacidad, todo incluido vs. por separado, y las preguntas que de verdad protegen sus fotos y su video.",
   publishedAt: "2026-06-09",
+  updatedAt: "2026-10-14",
   readMinutes: 8,
   lang: "es",
   lead: "Empiece por la capacidad: cuánta gente va a venir. Esa cifra descarta la mayoría de los salones antes de que pise el primero, mucho antes de pensar en candiles o pistas de mármol. Esta guía reúne salones reales para quinceañera en todo Dallas–Fort Worth, agrupados por ciudad y por número de invitados, con las preguntas que protegen su celebración y la forma en que se va a fotografiar.",
@@ -107,13 +114,13 @@ const post: BlogPost = {
       type: "cta",
       heading: "¿Ya tiene su salón? Aparte ahora a su fotógrafo.",
       body: "Reserve su fecha con TX Quince antes de que se vayan los mejores sábados; confirmamos que conocemos su salón y cómo iluminarlo.",
-      href: "/reserve",
+      href: "/es#intake",
       label: "Reservar su fecha",
     },
     { type: "h2", text: "Combine el salón con un fotógrafo que lo conozca" },
     {
       type: "p",
-      text: "Un fotógrafo que ya filmó su salón llega sabiendo dónde está la buena luz, dónde se ve mejor el baile sorpresa y cómo se transforma el lugar de la misa a la recepción. Por eso las familias reservan el salón y al fotógrafo casi al mismo tiempo; vea cómo se ve todo junto en nuestro [portafolio](/portfolio) y luego [reserve su fecha](/reserve) cuando ya tenga su salón.",
+      text: "Un fotógrafo que ya filmó su salón llega sabiendo dónde está la buena luz, dónde se ve mejor el baile sorpresa y cómo se transforma el lugar de la misa a la recepción. Por eso las familias reservan el salón y al fotógrafo casi al mismo tiempo; vea cómo se ve todo junto en nuestro [portafolio](/portfolio) y luego [reserve su fecha](/es#intake) cuando ya tenga su salón.",
     },
     {
       type: "p",
@@ -121,7 +128,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Una última nota sobre el dinero: el salón y el banquete son su propia partida del presupuesto, completamente aparte de la fotografía. Nuestras colecciones de foto y video tienen precio fijo de $1,800, $2,500, $3,900 y $5,500, así que una vez que elija su salón, el costo de su cobertura ya es un número conocido.",
+      text: `Una última nota sobre el dinero: el salón y el banquete son su propia partida del presupuesto, completamente aparte de la fotografía. Nuestras [comisiones](/es#commissions) están publicadas en ${study} (solo foto), ${cinema}, ${production} y ${archive}, así que una vez que elija su salón, el costo de su cobertura ya es un número conocido.`,
     },
   ],
   faqs: [
@@ -139,7 +146,7 @@ const post: BlogPost = {
     },
     {
       q: "¿Cuánto cuestan los salones para quinceañera en Dallas?",
-      a: "El costo del salón varía mucho según el lugar, la temporada, el día de la semana y si incluye banquete, así que pida una cotización vigente a cada salón directamente; ese número es aparte de la fotografía. Como referencia, las colecciones de foto y video de TX Quince tienen precio fijo de $1,800, $2,500, $3,900 y $5,500, sin importar qué salón reserve.",
+      a: `El costo del salón varía mucho según el lugar, la temporada, el día de la semana y si incluye banquete, así que pida una cotización vigente a cada salón directamente; ese número es aparte de la fotografía. Como referencia, las comisiones de TX Quince están publicadas en ${study}, ${cinema}, ${production} y ${archive}, sin importar qué salón reserve.`,
     },
     {
       q: "¿Puedo llevar a mi propio fotógrafo a un salón de DFW?",

@@ -6,6 +6,8 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Gracias por tu Consulta",
   description: "Recibimos tu consulta sobre su quinceañera.",
+  alternates: { canonical: "/es/gracias", languages: { "en-US": "/thank-you", "es-MX": "/es/gracias" } },
+  openGraph: { locale: "es_MX" },
   robots: { index: false, follow: false },
 };
 

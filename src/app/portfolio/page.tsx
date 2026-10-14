@@ -8,7 +8,8 @@ import { VideoGallery } from "@/components/VideoGallery";
 import { altPhraseFor, categoryLabel } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import { portfolioFallback } from "@/content/portfolio-fallback";
-import PortfolioLoading from "./loading";
+import { FinalCTA } from "@/components/FinalCTA";
+import "@/components/txq/pages/pages.css";
 
 export const dynamic = "force-dynamic";
 
@@ -28,10 +29,26 @@ export default function PortfolioPage({ searchParams }: {
 }) {
   return (
     <>
-      <Suspense fallback={<PortfolioLoading />}>
+      <Suspense fallback={<PortfolioFallback />}>
         <PortfolioContent searchParams={searchParams} />
       </Suspense>
     </>
+  );
+}
+
+function PortfolioFallback() {
+  return (
+    <div className="tq-wrap" role="status" aria-label="Loading portfolio">
+      <div className="tq-pg-mast" aria-hidden="true">
+        <span className="tq-pg-skel tq-pg-skel-line" style={{ width: 160 }} />
+        <div className="tq-pg-mast__body">
+          <span className="tq-pg-skel" style={{ display: "block", height: 64, maxWidth: 420 }} />
+          <span className="tq-pg-skel tq-pg-skel-line" style={{ maxWidth: 360 }} />
+        </div>
+      </div>
+      <div className="tq-pg-plate tq-pg-skel" aria-hidden="true" />
+      <span className="tq-sr">Loading photographs</span>
+    </div>
   );
 }
 
@@ -136,34 +153,71 @@ async function PortfolioContent({ searchParams }: {
     <>
       {videoJsonLd ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(videoJsonLd).replaceAll("<", "\\u003c") }} /> : null}
       {imageGalleryJsonLd ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(imageGalleryJsonLd).replaceAll("<", "\\u003c") }} /> : null}
-      <header className="bg-white px-4 pt-5 sm:px-6 md:px-10 md:pt-8">
-        <div className="relative mx-auto min-h-[55svh] max-w-[92rem] overflow-hidden bg-ink sm:min-h-[70svh]">
-          <Image src={heroPhoto?.url ?? "/portfolio/hero.webp"} alt={heroPhoto?.alt ?? "Quinceañera portrait in Dallas–Fort Worth"} fill priority unoptimized={!heroPhoto?.url || heroPhoto.url.startsWith("/portfolio/")} sizes="(max-width: 1472px) 100vw, 1472px" className="object-cover" style={heroPhoto ? { objectPosition: `${Math.round((heroPhoto.fx ?? 0.5) * 100)}% ${Math.round((heroPhoto.fy ?? 0.4) * 100)}%` } : undefined} />
-          <div className="absolute inset-0 bg-black/30" aria-hidden="true" />
-          <div className="relative flex min-h-[55svh] flex-col items-center justify-center px-6 py-20 text-center text-white sm:min-h-[70svh]">
-            <p className="text-[0.6875rem] uppercase tracking-[0.28em]">The photographs</p>
-            <h1 className="mt-5 font-body text-[clamp(2.5rem,5vw,4.25rem)] font-light leading-[1.1] tracking-[-0.035em]">Portfolio</h1>
-            <p className="mt-5 max-w-[37rem] text-[0.6875rem] uppercase leading-5 tracking-[0.2em]">Quinceañera portraits, traditions & celebration in Dallas–Fort Worth</p>
+      <div className="tq-wrap">
+        <header className="tq-pg-mast" aria-labelledby="portfolio-title">
+          <p className="tq-pg-mast__index tq-mono">[01 / Archive — Dallas–Fort Worth]</p>
+          <div className="tq-pg-mast__body">
+            <h1 id="portfolio-title" className="tq-display tq-pg-mast__title">
+              Portfolio <em>— portraits, traditions &amp; celebration.</em>
+            </h1>
+            <p className="tq-pg-mast__dek">
+              The dress, the quiet moments before, the room when everyone is together. Every photograph belongs to her story.
+            </p>
+            <div className="tq-pg-actions">
+              <a href="#photographs" className="tq-btn tq-btn--lg tq-btn--ghost">
+                The photographs <span aria-hidden>↓</span>
+              </a>
+              {videos.length ? (
+                <a href="#films" className="tq-btn tq-btn--lg tq-btn--ghost">
+                  The films <span aria-hidden>↓</span>
+                </a>
+              ) : null}
+            </div>
           </div>
-        </div>
-        <p className="mx-auto max-w-2xl px-2 py-9 text-center font-serif text-lg leading-relaxed text-ink-soft sm:py-12 sm:text-xl">The dress, the quiet moments before, the room when everyone is together. Every photograph belongs to her story.</p>
-      </header>
-      <section id="photographs" className="scroll-mt-24 bg-white" aria-label="Photograph gallery">
-        <div className="mx-auto max-w-[92rem] px-4 pb-24 pt-5 sm:px-6 md:px-10 md:pb-32 md:pt-16 lg:px-14">
-          <PortfolioGallery key={initialQuery} images={items} sections={sections} initialQuery={initialQuery} editorial imageSizes="(max-width: 639px) calc(100vw - 2rem), (max-width: 1023px) 45vw, 42vw" />
+        </header>
+        <figure className="tq-pg-plate">
+          <Image src={heroPhoto?.url ?? "/portfolio/hero.webp"} alt={heroPhoto?.alt ?? "Quinceañera portrait in Dallas–Fort Worth"} fill priority unoptimized={!heroPhoto?.url || heroPhoto.url.startsWith("/portfolio/")} sizes="100vw" style={heroPhoto ? { objectPosition: `${Math.round((heroPhoto.fx ?? 0.5) * 100)}% ${Math.round((heroPhoto.fy ?? 0.4) * 100)}%` } : undefined} />
+          <figcaption>
+            <span className="tq-tag tq-tag--bl tq-mono">[Plate 01 — {items.length} photographs]</span>
+          </figcaption>
+        </figure>
+      </div>
+
+      <section id="photographs" className="tq-section" aria-labelledby="photographs-title">
+        <div className="tq-wrap">
+          <header className="tq-head">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>
+              [02 / Photographs]
+            </p>
+            <h2 id="photographs-title" className="tq-display tq-head__title">
+              Every moment, <em>from la misa to the last dance.</em>
+            </h2>
+            <p className="tq-head__dek">Filter by moment, search a place, and save the frames that feel most like her.</p>
+          </header>
+          <PortfolioGallery key={initialQuery} images={items} sections={sections} initialQuery={initialQuery} editorial imageSizes="(max-width: 639px) 100vw, (max-width: 959px) 50vw, 40vw" />
         </div>
       </section>
 
       {videos.length ? (
-        <section id="films" className="scroll-mt-24 bg-cream">
-          <div className="mx-auto max-w-[92rem] px-4 py-20 sm:px-6 md:px-10 md:py-28 lg:px-14">
-            <p className="text-center text-[0.6875rem] font-medium uppercase tracking-[0.28em] text-ink-soft">Photography & film</p>
-            <h2 className="mt-4 text-center font-body text-[clamp(2.25rem,4vw,3.25rem)] font-light tracking-[-0.04em] text-ink">Her day in motion</h2>
-            <p className="mx-auto mb-12 mt-4 max-w-lg text-center font-serif text-lg leading-relaxed text-ink-soft">Watch the joy unfold in a film to return to for years.</p>
-            <VideoGallery videos={videos} />
+        <section id="films" className="tq-section" aria-labelledby="films-title">
+          <div className="tq-wrap">
+            <header className="tq-head">
+              <p className="tq-head__index tq-mono" style={{ margin: 0 }}>
+                [03 / Motion]
+              </p>
+              <h2 id="films-title" className="tq-display tq-head__title">
+                Her day in motion.
+              </h2>
+              <p className="tq-head__dek">Watch the joy unfold in a film to return to for years.</p>
+            </header>
+            <div className="tq-inner" style={{ paddingBottom: 72 }}>
+              <VideoGallery videos={videos} />
+            </div>
           </div>
         </section>
       ) : null}
+
+      <FinalCTA headline="Picture her here. Let's check the date." />
     </>
   );
 }

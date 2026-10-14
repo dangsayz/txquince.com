@@ -1,4 +1,5 @@
 import type { BlogPost } from "@/content/blog";
+import { BASE_CREW } from "@/lib/commission";
 
 const post: BlogPost = {
   slug: "quinceanera-photo-ideas-shot-list-dfw",
@@ -11,6 +12,7 @@ const post: BlogPost = {
   excerpt:
     "The must-have quinceañera photos, organized by when they actually happen — the dress and the tiara, the first look, la misa, golden hour, the court, the reception. Plus one plain posing tip per moment.",
   publishedAt: "2026-06-15",
+  updatedAt: "2026-10-14",
   readMinutes: 9,
   lang: "en",
   lead: "Most quinceañera photo ideas you'll find online are a pile of poses with no order to them. That's backwards. The photos you'll actually keep are tied to the day's moments — the dress before anyone's seen it, your face when your dad turns around, the vals turning across the floor. So here's the shot list the way the day really runs: getting ready, first look, la misa, golden-hour portraits, the court, the reception. Each moment lists the must-have quinceañera photos you'll walk away with, plus one plain posing tip so they don't come out stiff.",
@@ -179,7 +181,7 @@ const post: BlogPost = {
     { type: "h2", text: "Build the list around your day, then let us run it" },
     {
       type: "p",
-      text: "That's the full quinceañera shot list, in the order it happens: details, first look, la misa, golden-hour portraits, the court and vals, the reception. Pick the few moments your family can't lose, make sure they're on the plan, and leave the rest to the people holding the cameras. When you're ready, [check if your date is open](/check-your-date) or [reserve your date](/reserve), and we'll build the timeline so every photo on this list has its moment.",
+      text: "That's the full quinceañera shot list, in the order it happens: details, first look, la misa, golden-hour portraits, the court and vals, the reception. Pick the few moments your family can't lose, make sure they're on the plan, and leave the rest to the people holding the cameras. When you're ready, [check if your date is open](/check-your-date) or [reserve your date](/#intake), and we'll build the timeline so every photo on this list has its moment.",
     },
   ],
   faqs: [
@@ -201,7 +203,7 @@ const post: BlogPost = {
     },
     {
       q: "Do you need a second photographer for a quinceañera?",
-      a: "It's not required, but a second artist means two angles at once — someone on her face during the vals while the other catches the crowd, or one on getting-ready details while the other shoots her. At TX Quince the Signature and Legacy collections include two of us covering the full day, which is why nothing important happens off-camera.",
+      a: `It's not required, but a second artist means two angles at once — someone on her face during the vals while the other catches the crowd, or one on getting-ready details while the other shoots her. At TX Quince every photo + film commission includes at least one photographer and one videographer — The Full Production brings ${BASE_CREW.production} directors and the Multi-Day Editorial Archive ${BASE_CREW.archive}, in whatever photo/film mix you choose — which is why nothing important happens off-camera.`,
     },
     {
       q: "How many edited photos do you get from a quinceañera?",

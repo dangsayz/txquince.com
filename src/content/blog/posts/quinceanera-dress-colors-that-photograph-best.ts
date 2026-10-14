@@ -8,6 +8,7 @@ const post: BlogPost = {
   "category": "Photography & Film",
   "excerpt": "Saturated jewel tones, royal blue, and burgundy hold their richness through a lens; stark white and pale blush fight you in bright light. A DFW quince photographer on which colors actually photograph best — and why.",
   "publishedAt": "2026-06-27",
+  "updatedAt": "2026-10-14",
   "readMinutes": 6,
   "lead": "Ask any working photographer and the answer is consistent: the quinceañera dress colors that photograph best are saturated, true colors that hold their richness in any light — jewel tones like emerald and sapphire, a deep red or burgundy, royal blue. They keep their detail instead of washing out under a ballroom spotlight or blowing out in the Texas sun. The hardest are the pale extremes — stark white, the palest blush, heavy silver — stunning in person but a fight through a lens. The truest answer, though, is that the best color suits her skin tone, her venue's light, and the backdrop she'll stand against. Here's how the colors render, from a DFW quinceañera-only studio.",
   "content": [
@@ -115,7 +116,7 @@ const post: BlogPost = {
     {
       "type": "cta",
       "heading": "Choosing the color and the photographer at the same time?",
-      "body": "They're the same decision, made early. See what each collection includes, then check whether your date is still open.",
+      "body": "They're the same decision, made early. See what each commission includes, then check whether your date is still open.",
       "href": "/check-your-date",
       "label": "Check your date"
     },
@@ -151,7 +152,7 @@ const post: BlogPost = {
     },
     {
       "type": "p",
-      "text": "And decide it early. The color and the photographer get chosen in the same window — your save-the-date session uses the gown or a stand-in, so settle the color first; many families lock it nine to twelve months out. See what each collection includes — the free save-the-date starts at the Essential collection — on our [investment page](/investment), then [reserve your date](/reserve) once the Saturday is yours."
+      "text": "And decide it early. The color and the photographer get chosen in the same window — your pre-celebration portrait session uses the gown or a stand-in, so settle the color first; many families lock it nine to twelve months out. See what each commission includes — the Portrait Study and The Full Production both include an editorial portrait session — in our [commissions](/#commissions), then [reserve your date](/#intake) once the Saturday is yours."
     }
   ],
   "faqs": [
@@ -181,7 +182,7 @@ const post: BlogPost = {
     },
     {
       "q": "How early should I decide on my dress color?",
-      "a": "Around the same time you book your photographer — both are early decisions. Your save-the-date session uses the gown or a stand-in, so the color should be settled before then, and many families lock it nine to twelve months out. Deciding early also gives you time to swatch-test the fabric in real light before buying."
+      "a": "Around the same time you book your photographer — both are early decisions. Your pre-celebration portrait session uses the gown or a stand-in, so the color should be settled before then, and many families lock it nine to twelve months out. Deciding early also gives you time to swatch-test the fabric in real light before buying."
     }
   ],
   "related": [

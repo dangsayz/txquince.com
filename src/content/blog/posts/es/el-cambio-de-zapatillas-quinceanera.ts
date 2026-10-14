@@ -105,13 +105,13 @@ const post: BlogPost = {
     {
       type: "cta",
       heading: "Cubra los dos rostros, no solo uno",
-      body: "Nuestras colecciones con dos artistas y con video están pensadas para los momentos que no se pueden repetir: el cambio de zapatillas y el vals entre ellos. Vea qué incluye cada una.",
-      href: "/investment",
-      label: "Ver colecciones y precios",
+      body: "Nuestras comisiones de foto y video están pensadas para los momentos que no se pueden repetir: el cambio de zapatillas y el vals entre ellos. Vea qué incluye cada una.",
+      href: "/es#commissions",
+      label: "Comparar comisiones",
     },
     {
       type: "p",
-      text: "Cuando ya tenga una fecha en mente, puede [ver si está libre](/check-your-date) en unos segundos, o [apartar su fecha](/reserve) para asegurar a su fotógrafo y el precio de hoy.",
+      text: "Cuando ya tenga una fecha en mente, puede [ver si está libre](/check-your-date) en unos segundos, o [apartar su fecha](/es#intake) para asegurar a su fotógrafo y el precio de hoy.",
     },
   ],
   faqs: [

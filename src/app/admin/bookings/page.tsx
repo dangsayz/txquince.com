@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getBookings, countPaid, type BookingRow } from "@/lib/clients-db";
 import { formatEventDate, formatMoney, packageLabel } from "@/lib/booking";
 import { BookingActions } from "@/components/admin/BookingActions";
+import { TIER_NAME_EN, type TierId } from "@/lib/commission";
 
 export const dynamic = "force-dynamic";
 
@@ -33,7 +34,15 @@ function shortDateTime(iso: string): string {
 
 function BookingRecord({ booking }: { booking: BookingRow }) {
   const pill = statusPill(booking.status);
-  const collection = booking.collection ? COLLECTION_LABEL[booking.collection] : null;
+  // Homepage commissions carry their tier + total in metadata; older rows use collection.
+  const tier = booking.metadata?.tier;
+  const total = booking.metadata?.total_usd;
+  const collection =
+    typeof tier === "string" && tier in TIER_NAME_EN
+      ? `${TIER_NAME_EN[tier as TierId]}${typeof total === "number" ? ` · $${total.toLocaleString("en-US")}` : ""}`
+      : booking.collection
+        ? COLLECTION_LABEL[booking.collection]
+        : null;
 
   return (
     <article className="border-b border-[#ededeb] bg-white px-5 py-6 last:border-0 sm:px-6">
@@ -90,7 +99,7 @@ export default async function AdminBookings() {
 
       {bookings.length === 0 ? <div className="border-b border-[#e5e5e3] px-5 py-16 text-center">
         <h2 className="text-lg font-medium tracking-[-0.02em]">No bookings yet</h2>
-        <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[#696965]">When a client reserves a date, their collection, deposit, and contact details will appear here.</p>
+        <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[#696965]">When a client reserves a date, their commission, retainer, and contact details will appear here.</p>
       </div> : <section aria-label="Bookings" className="mt-7 border-y border-[#e5e5e3] bg-white">
         <div aria-hidden="true" className="hidden grid-cols-[minmax(0,1.5fr)_minmax(0,1.2fr)_minmax(0,1.2fr)_minmax(0,0.9fr)_auto] gap-5 border-b border-[#e5e5e3] px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#62625f] lg:grid">
           <span>Client</span><span>Celebration</span><span>Collection</span><span>Deposit</span><span>Status</span>

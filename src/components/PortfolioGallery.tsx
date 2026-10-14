@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { EditOverlay } from "@/components/EditMode";
@@ -11,6 +11,11 @@ import { selectGalleryItems, type GalleryItem, type GallerySection } from "@/com
 import { altPhraseFor, vendorCreditLabel } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import brandedImageLoader from "@/lib/image-loader";
+import "@/components/txq/pages/pages.css";
+
+/** Aspect ratios follow the homepage seven-beat grid rhythm (.tq-egrid in txq.css). */
+const ASPECTS = ["5 / 4", "3 / 4", "4 / 5", "3 / 4", "4 / 5", "3 / 4", "4 / 3"];
+const pad2 = (n: number) => String(n).padStart(2, "0");
 
 export type { GalleryItem } from "@/components/gallery/gallery-model";
 
@@ -40,8 +45,8 @@ export function PortfolioGallery({
   const dialogRef = useRef<HTMLDialogElement>(null);
   const touchStart = useRef<number | null>(null);
   const { saved } = useSavedPhotos();
-  const showRail = !editorial && sections.length > 1 && (!savedOnly || images.length > 0);
   const useNaturalRatio = Boolean(columns);
+  const fieldId = useId();
 
   const filtered = useMemo(() => selectGalleryItems(images, sections, { query, category, sort, savedOnly, saved }), [images, saved, savedOnly, category, query, sections, sort]);
 
@@ -81,217 +86,204 @@ export function PortfolioGallery({
     setShare({ url: `${window.location.origin}${pathFor(item)}`, title: `${labelFor(item)} · TX Quince` });
   };
 
+  const sectionTitle = (item: GalleryItem) => sections.find((section) => section.id === item.section)?.title;
+  const step = (delta: number) => {
+    setZoomed(false);
+    setActiveIndex((index) => index === null ? null : (index + delta + filtered.length) % filtered.length);
+  };
+  const close = () => { setActiveIndex(null); setZoomed(false); };
+
+  const tile = (item: (typeof filtered)[number], index: number, ratio?: string) => {
+    const hasDetail = item.detailAvailable !== false && item.slug && item.section;
+    const label = editorial
+      ? `${sectionTitle(item) || "Photograph"}${item.city ? ` / ${item.city}` : ""}`
+      : labelFor(item);
+    return (
+      <>
+        <div style={{ position: "relative" }}>
+          <button
+            type="button"
+            onClick={() => { setZoomed(false); setActiveIndex(index); }}
+            className={`tq-pg-tile__media ${useNaturalRatio ? "tq-pg-tile__media--natural" : ""}`}
+            style={ratio ? { aspectRatio: ratio } : undefined}
+            aria-label={`View ${labelFor(item)}`}
+          >
+            {item.width && item.height ? (
+              useNaturalRatio ? (
+                <Image src={item.url} alt={copyFor(item).alt} width={item.width} height={item.height} sizes={imageSizes} unoptimized={item.url.startsWith("/portfolio/")} />
+              ) : (
+                <Image src={item.url} alt={copyFor(item).alt} fill sizes={imageSizes} unoptimized={item.url.startsWith("/portfolio/")} style={{ objectPosition: `${Math.round((item.fx ?? 0.5) * 100)}% ${Math.round((item.fy ?? 0.4) * 100)}%` }} />
+              )
+            ) : (
+              <ProtectedImg src={item.url} alt={copyFor(item).alt} loading="lazy" className={useNaturalRatio ? "" : "tq-pg-tile__abs"} />
+            )}
+          </button>
+          <EditOverlay image={{ id: item.id, slug: item.slug, alt: item.alt, fx: item.fx, fy: item.fy }} />
+        </div>
+        <div className="tq-pg-tile__cap">
+          <span className="tq-mono tq-muted">[{pad2(index + 1)}]</span>
+          {hasDetail ? (
+            <Link href={pathFor(item)} aria-label={`Open the page for ${labelFor(item)}`} className="tq-pg-tile__label tq-mono">
+              <span>{label}</span>
+              <span aria-hidden>↗</span>
+            </Link>
+          ) : (
+            <span className="tq-pg-tile__label tq-mono"><span>{label}</span></span>
+          )}
+          {item.slug && item.section ? <FavoriteButton section={item.section} slug={item.slug} compact /> : <span />}
+        </div>
+        {item.vendors?.length ? (
+          <p className="tq-pg-tile__credits">
+            {item.vendors.map((vendor, vendorIndex) => (
+              <span key={`${vendor.slug}-${vendorIndex}`}>
+                {vendorIndex > 0 ? <span aria-hidden="true"> · </span> : null}
+                {vendor.role || vendorCreditLabel(vendor.category)}:{" "}
+                <Link href={`/vendors/${vendor.slug}`}>{vendor.business || vendor.name}</Link>
+              </span>
+            ))}
+          </p>
+        ) : null}
+      </>
+    );
+  };
+
   return (
-    <>
-      {sections.map((section) => <span key={section.id} id={section.id} className="block h-0 scroll-mt-28" aria-hidden="true" />)}
-      <div className={showRail ? "grid items-start gap-8 lg:grid-cols-[minmax(0,13rem)_minmax(0,1fr)] lg:gap-10" : ""}>
-        {showRail ? (
-          <aside className="hidden lg:sticky lg:top-28 lg:block" aria-label="Portfolio categories">
-            <p className="mb-4 text-xs font-medium uppercase tracking-[0.16em] text-ink-soft">Browse moments</p>
-            <nav className="flex flex-col gap-1" aria-label="Filter by moment">
-              {[{ id: "all", title: "All moments" }, ...sections].map((section) => (
+    <div className="tq-pg-gal">
+      {sections.map((section) => <span key={section.id} id={section.id} style={{ display: "block", height: 0 }} aria-hidden="true" />)}
+      {!savedOnly || images.length ? (
+        <div className="tq-pg-gal__bar">
+          {sections.length > 1 ? (
+            <div className="tq-filters" role="group" aria-label="Filter by moment">
+              {[{ id: "all", title: editorial ? "All photographs" : "All moments" }, ...sections].map((section) => (
                 <button
                   key={section.id}
                   type="button"
+                  className="tq-pill"
                   aria-pressed={category === section.id}
                   onClick={() => { setCategory(section.id); setActiveIndex(null); }}
-                  className={`min-h-11 rounded-lg px-3 text-left text-base transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${category === section.id ? "bg-accent-soft font-medium text-ink" : "text-ink-soft hover:bg-greige hover:text-ink"}`}
                 >
                   {section.title}
                 </button>
               ))}
-            </nav>
-          </aside>
-        ) : null}
-        <div className="min-w-0">
-          {!savedOnly || images.length ? (
-            <div className={editorial ? "border-b border-line" : "border-b border-line pb-6"}>
-              {editorial && sections.length > 1 ? (
-                <nav className="flex max-w-full items-center gap-x-8 overflow-x-auto border-b border-line [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Filter by moment">
-                  {[{ id: "all", title: "All photographs" }, ...sections].map((section) => (
-                    <button
-                      key={section.id}
-                      type="button"
-                      aria-pressed={category === section.id}
-                      onClick={() => { setCategory(section.id); setActiveIndex(null); }}
-                      className={`min-h-12 shrink-0 whitespace-nowrap border-b-2 pt-1 font-body text-sm font-medium uppercase tracking-[0.12em] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink ${category === section.id ? "border-ink text-ink" : "border-transparent text-ink-soft hover:text-ink"}`}
-                    >
-                      {section.title}
-                    </button>
-                  ))}
-                </nav>
-              ) : null}
-              {editorial ? (
-                <details open={Boolean(initialQuery)} className="group py-2 text-ink">
-                  <summary className="inline-flex min-h-11 cursor-pointer list-none items-center gap-3 text-sm font-medium underline decoration-line underline-offset-4 transition-colors hover:decoration-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink [&::-webkit-details-marker]:hidden">
-                    Search & sort <span aria-hidden="true" className="text-lg font-light group-open:rotate-45">+</span>
-                  </summary>
-                  <div className="grid gap-4 pb-5 pt-2 sm:grid-cols-[minmax(0,1fr)_minmax(10rem,14rem)] sm:items-end">
-                    <label className="block min-w-0 text-sm text-ink">
-                      Search photographs
-                      <input type="search" value={query} onChange={(event) => { setQuery(event.target.value); setActiveIndex(null); }} placeholder="Search moments or places" className="mt-2 min-h-12 w-full border border-line bg-white px-4 text-base text-ink placeholder:text-ink-faint focus:border-ink focus:outline-2 focus:outline-offset-2 focus:outline-ink" />
-                    </label>
-                    <label className="block text-sm text-ink">
-                      Sort by
-                      <select value={sort} onChange={(event) => setSort(event.target.value === "title" ? "title" : "curated")} className="mt-2 min-h-12 w-full border border-line bg-white px-4 text-base text-ink focus:outline-2 focus:outline-offset-2 focus:outline-ink">
-                        <option value="curated">Curated order</option>
-                        <option value="title">Title A–Z</option>
-                      </select>
-                    </label>
-                  </div>
-                </details>
-              ) : (
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:gap-8">
-                <label className="block min-w-0 flex-1 text-sm font-medium text-ink">
-                  Search photographs
-                  <input
-                    type="search"
-                    value={query}
-                    onChange={(event) => { setQuery(event.target.value); setActiveIndex(null); }}
-                    placeholder="Search moments or places"
-                    className="mt-2 min-h-12 w-full rounded-lg border border-line bg-white px-4 text-base font-normal text-ink placeholder:text-ink-faint focus:border-accent focus:outline-2 focus:outline-offset-2 focus:outline-accent"
-                  />
-                </label>
-                <label className="block text-sm font-medium text-ink">
-                  Sort by
-                  <select
-                    value={sort}
-                    onChange={(event) => setSort(event.target.value === "title" ? "title" : "curated")}
-                    className="mt-2 min-h-12 w-full rounded-lg border border-line bg-white px-4 text-base font-normal text-ink focus:outline-2 focus:outline-offset-2 focus:outline-accent sm:min-w-44"
-                  >
-                    <option value="curated">Curated order</option>
-                    <option value="title">Title A–Z</option>
-                  </select>
-                </label>
-              </div>
-              )}
-              {!editorial && sections.length > 1 ? (
-                <nav className="mt-6 flex max-w-full gap-2 overflow-x-auto pb-1 lg:hidden" aria-label="Filter by moment">
-                  {[{ id: "all", title: "All moments" }, ...sections].map((section) => (
-                    <button
-                      key={section.id}
-                      type="button"
-                      aria-pressed={category === section.id}
-                      onClick={() => { setCategory(section.id); setActiveIndex(null); }}
-                      className={`min-h-11 shrink-0 whitespace-nowrap rounded-lg border px-4 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${category === section.id ? "border-accent bg-accent text-white" : "border-line bg-white text-ink hover:border-accent"}`}
-                    >
-                      {section.title}
-                    </button>
-                  ))}
-                </nav>
-              ) : null}
             </div>
           ) : null}
+          <details open={Boolean(initialQuery) || !editorial} className="tq-pg-gal__tools" style={{ display: "block" }}>
+            <summary className="tq-mono">
+              Search &amp; sort <span className="tq-faq__icon" aria-hidden />
+            </summary>
+            <div className="tq-pg-gal__search">
+              <div className="tq-field">
+                <label htmlFor={`${fieldId}-q`} className="tq-mono tq-muted">Search photographs</label>
+                <input id={`${fieldId}-q`} type="search" value={query} onChange={(event) => { setQuery(event.target.value); setActiveIndex(null); }} placeholder="Search moments or places" className="tq-input" />
+              </div>
+              <div className="tq-field">
+                <label htmlFor={`${fieldId}-s`} className="tq-mono tq-muted">Sort by</label>
+                <select id={`${fieldId}-s`} value={sort} onChange={(event) => setSort(event.target.value === "title" ? "title" : "curated")} className="tq-input tq-pg-select">
+                  <option value="curated">Curated order</option>
+                  <option value="title">Title A–Z</option>
+                </select>
+              </div>
+            </div>
+          </details>
+        </div>
+      ) : null}
 
-          <div className={`flex flex-wrap items-center justify-between gap-2 text-sm text-ink-soft ${editorial ? "py-7" : "py-5"}`} aria-live="polite">
-            <span>{filtered.length} {filtered.length === 1 ? "photograph" : "photographs"}</span>
-            {savedOnly ? <span>Saved in this browser</span> : <Link href="/saved" className="inline-flex min-h-11 items-center font-medium text-ink underline underline-offset-4 hover:text-ink-soft">Saved photographs ↗</Link>}
-          </div>
+      <div className="tq-pg-gal__count tq-mono" aria-live="polite">
+        <span>[{filtered.length} {filtered.length === 1 ? "photograph" : "photographs"}]</span>
+        {savedOnly ? <span>Saved in this browser</span> : <Link href="/saved">Saved photographs <span aria-hidden>↗</span></Link>}
+      </div>
 
       {filtered.length ? (
-        <div className={columns ?? (editorial ? "grid grid-cols-1 items-start gap-x-3 gap-y-12 sm:grid-cols-2 md:gap-x-4 md:gap-y-16" : "grid grid-cols-1 items-start gap-x-5 gap-y-9 sm:grid-cols-2 xl:grid-cols-3 xl:gap-x-6")}>
-          {filtered.map((item, index) => (
-            <article key={item.id || `${item.section}-${item.slug}-${index}`} className="min-w-0">
-              <div className={`group relative overflow-hidden bg-greige ${editorial ? "" : "rounded-lg border border-line"}`}>
-                <button
-                  type="button"
-                  onClick={() => { setZoomed(false); setActiveIndex(index); }}
-                  className={`block w-full cursor-zoom-in focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-accent ${useNaturalRatio ? "" : "aspect-[4/5]"}`}
-                  aria-label={`View ${labelFor(item)}`}
-                >
-                  {item.width && item.height ? (
-                    <Image src={item.url} alt={copyFor(item).alt} width={item.width} height={item.height} sizes={imageSizes} unoptimized={item.url.startsWith("/portfolio/")} className={`block w-full transition-transform duration-300 motion-reduce:transition-none group-hover:scale-[1.025] ${useNaturalRatio ? "h-auto" : "h-full object-cover"}`} style={useNaturalRatio ? undefined : { objectPosition: `${Math.round((item.fx ?? 0.5) * 100)}% ${Math.round((item.fy ?? 0.4) * 100)}%` }} />
-                  ) : (
-                    <ProtectedImg src={item.url} alt={copyFor(item).alt} loading="lazy" className={`block w-full transition-transform duration-300 motion-reduce:transition-none group-hover:scale-[1.025] ${useNaturalRatio ? "h-auto" : "aspect-[4/5] object-cover"}`} />
-                  )}
-                </button>
-                <EditOverlay image={{ id: item.id, slug: item.slug, alt: item.alt, fx: item.fx, fy: item.fy }} />
-              </div>
-              <div className="mt-3 flex items-start justify-between gap-2">
-                <div className="min-w-0">
-                  {editorial ? (
-                    item.detailAvailable !== false && item.slug && item.section ? <Link href={pathFor(item)} aria-label={`View ${labelFor(item)}`} className="inline-flex min-h-11 items-center text-[0.6875rem] font-medium uppercase leading-snug tracking-[0.14em] text-ink hover:underline hover:underline-offset-4">{sections.find((section) => section.id === item.section)?.title || "Photograph"}{item.city ? ` / ${item.city}` : ""} <span className="ml-2 text-base" aria-hidden="true">↗</span></Link> : <p className="flex min-h-11 items-center text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-ink">{sections.find((section) => section.id === item.section)?.title || "Photograph"}{item.city ? ` / ${item.city}` : ""}</p>
-                  ) : (
-                    <>
-                      {item.detailAvailable !== false && item.slug && item.section ? (
-                        <Link href={pathFor(item)} className="inline-flex min-h-11 items-center text-base font-medium leading-snug text-ink hover:underline hover:underline-offset-4">{labelFor(item)}</Link>
-                      ) : <p className="text-base font-medium leading-snug text-ink">{labelFor(item)}</p>}
-                      <p className="text-sm text-ink-soft">{sections.find((section) => section.id === item.section)?.title || item.city || "TX Quince"}</p>
-                    </>
-                  )}
-                </div>
-                {item.slug && item.section ? <FavoriteButton section={item.section} slug={item.slug} className="!min-h-11 !w-11 shrink-0 !px-0 [&]:text-[0]" /> : null}
-              </div>
-              {item.vendors?.length ? (
-                <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-                  {item.vendors.map((vendor, vendorIndex) => (
-                    <span key={`${vendor.slug}-${vendorIndex}`}>
-                      {vendorIndex > 0 ? <span aria-hidden="true"> · </span> : null}
-                      {vendor.role || vendorCreditLabel(vendor.category)}:{" "}
-                      <Link href={`/vendors/${vendor.slug}`} className="inline-flex min-h-11 items-center text-ink underline decoration-ink/30 underline-offset-2 hover:text-accent">
-                        {vendor.business || vendor.name}
-                      </Link>
-                    </span>
-                  ))}
-                </p>
-              ) : null}
-            </article>
-          ))}
-        </div>
+        columns ? (
+          <div className={columns}>
+            {filtered.map((item, index) => (
+              <article key={item.id || `${item.section}-${item.slug}-${index}`} style={{ breakInside: "avoid", marginBottom: 32, minWidth: 0 }}>
+                {tile(item, index)}
+              </article>
+            ))}
+          </div>
+        ) : editorial ? (
+          <ul className="tq-egrid">
+            {filtered.map((item, index) => (
+              <li key={item.id || `${item.section}-${item.slug}-${index}`} className="tq-card">
+                {tile(item, index, ASPECTS[index % ASPECTS.length])}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <ul className="tq-pg-thumbs">
+            {filtered.map((item, index) => (
+              <li key={item.id || `${item.section}-${item.slug}-${index}`} style={{ minWidth: 0 }}>
+                {tile(item, index, "4 / 5")}
+              </li>
+            ))}
+          </ul>
+        )
       ) : (
-        <div className={`${editorial ? "border-y border-line" : "rounded-lg border border-line"} bg-white px-6 py-16 text-center`}>
-          <h2 className="font-display text-2xl text-ink">{images.length === 0 ? "Portfolio photos are unavailable." : savedOnly && !query && category === "all" ? "Your inspiration starts here." : "No photographs found."}</h2>
-          <p className="mx-auto mt-3 max-w-md text-base leading-relaxed text-ink-soft">
+        <div className="tq-pg-empty">
+          <span className="tq-mono tq-muted">[{savedOnly ? "Saved" : "Archive"}]</span>
+          <h2 className="tq-display">{images.length === 0 ? "Portfolio photos are unavailable." : savedOnly && !query && category === "all" ? "Your inspiration starts here." : "No photographs found."}</h2>
+          <p>
             {images.length === 0 ? "Please check back soon, or ask us about photography and film for your date." : savedOnly && !query && category === "all" ? "Save photographs you love while browsing. They’ll appear here on this device." : "Try a different search or moment to see more of the collection."}
           </p>
-          {images.length === 0 ? <Link href="/check-your-date" className="mt-6 inline-flex min-h-12 items-center rounded-lg bg-accent px-5 text-base font-medium text-white hover:bg-accent-strong">Ask about your date</Link> : query || category !== "all" ? <button type="button" onClick={() => { setQuery(""); setCategory("all"); }} className="mt-6 min-h-11 rounded-lg border border-ink px-5 text-base font-medium text-ink">Clear filters</button> : savedOnly ? <Link href="/portfolio" className="mt-6 inline-flex min-h-12 items-center rounded-lg bg-accent px-5 text-base font-medium text-white hover:bg-accent-strong">Explore the portfolio</Link> : null}
+          {images.length === 0 ? (
+            <Link href="/#intake" className="tq-btn tq-btn--lg">Ask about your date <span className="tq-arrow" aria-hidden>→</span></Link>
+          ) : query || category !== "all" ? (
+            <button type="button" onClick={() => { setQuery(""); setCategory("all"); }} className="tq-btn tq-btn--ghost">Clear filters</button>
+          ) : savedOnly ? (
+            <Link href="/portfolio" className="tq-btn tq-btn--lg">Explore the portfolio <span className="tq-arrow" aria-hidden>→</span></Link>
+          ) : null}
         </div>
       )}
-        </div>
-      </div>
 
       <dialog
         ref={dialogRef}
-        onClose={() => { setActiveIndex(null); setZoomed(false); }}
-        onCancel={() => { setActiveIndex(null); setZoomed(false); }}
+        onClose={close}
+        onCancel={close}
         aria-label="Photograph viewer"
-        className="fixed inset-0 m-auto max-h-[96dvh] w-[min(96vw,1100px)] max-w-none border border-line bg-white p-0 text-ink shadow-2xl backdrop:bg-ink/85"
+        className="tq-pg-viewer"
       >
         {active ? (
-          <div className="relative">
-            <div className="flex items-center justify-between gap-3 border-b border-line px-4 py-3 sm:px-6">
-              <p className="min-w-0 truncate text-sm font-medium">{editorial ? sections.find((section) => section.id === active.section)?.title || "Photograph" : labelFor(active)}</p>
-              <button type="button" onClick={() => { setActiveIndex(null); setZoomed(false); }} className="min-h-11 rounded-full px-4 text-sm hover:bg-greige" aria-label="Close photograph viewer">Close ×</button>
+          <div className="tq-pg-viewer__inner">
+            <div className="tq-pg-viewer__bar">
+              <span className="tq-mono">
+                [{pad2((activeIndex ?? 0) + 1)} / {pad2(filtered.length)}] {editorial ? sectionTitle(active) || "Photograph" : labelFor(active)}
+              </span>
+              <button type="button" onClick={close} className="tq-icon-btn tq-mono" aria-label="Close photograph viewer">
+                Close ×
+              </button>
             </div>
             <div
-              className="max-h-[68dvh] overflow-auto bg-[#f5f5f5] p-3 sm:p-5"
+              className="tq-pg-viewer__stage"
+              data-zoomed={zoomed || undefined}
               onTouchStart={(event) => { touchStart.current = event.touches.length === 1 ? event.touches[0].clientX : null; }}
               onTouchEnd={(event) => {
                 if (zoomed || touchStart.current === null || event.changedTouches.length !== 1 || filtered.length < 2) return;
                 const distance = event.changedTouches[0].clientX - touchStart.current;
                 touchStart.current = null;
                 if (Math.abs(distance) < 50) return;
-                setZoomed(false);
-                setActiveIndex((index) => index === null ? null : (index + (distance < 0 ? 1 : -1) + filtered.length) % filtered.length);
+                step(distance < 0 ? 1 : -1);
               }}
             >
-              <ProtectedImg src={brandedImageLoader({ src: active.url, width: 2400 })} alt={copyFor(active).alt} width={active.width} height={active.height} className={zoomed ? "mx-auto block h-auto w-[160vw] max-w-[1440px] object-contain" : "mx-auto block max-h-[68dvh] w-auto max-w-full object-contain"} />
+              <ProtectedImg src={brandedImageLoader({ src: active.url, width: 2400 })} alt={copyFor(active).alt} width={active.width} height={active.height} className="tq-pg-viewer__img" />
             </div>
-            <div className="flex flex-wrap items-center gap-2 border-t border-line p-3 sm:p-5">
-              {filtered.length > 1 ? <>
-                <button type="button" onClick={() => { setZoomed(false); setActiveIndex((index) => index === null ? null : (index - 1 + filtered.length) % filtered.length); }} className="min-h-11 rounded-full border border-line px-4 text-sm hover:border-ink" aria-label="Previous photograph">←</button>
-                <button type="button" onClick={() => { setZoomed(false); setActiveIndex((index) => index === null ? null : (index + 1) % filtered.length); }} className="min-h-11 rounded-full border border-line px-4 text-sm hover:border-ink" aria-label="Next photograph">→</button>
-                <span className="mr-auto text-xs text-ink-soft">{(activeIndex ?? 0) + 1} / {filtered.length}</span>
-              </> : <span className="mr-auto" />}
-              <button type="button" aria-pressed={zoomed} onClick={() => setZoomed((value) => !value)} className="min-h-11 rounded-full border border-line px-4 text-sm font-medium hover:border-ink">{zoomed ? "Fit image" : "Zoom in"}</button>
+            <div className="tq-pg-viewer__foot">
+              {filtered.length > 1 ? (
+                <>
+                  <button type="button" onClick={() => step(-1)} className="tq-icon-btn" aria-label="Previous photograph">←</button>
+                  <button type="button" onClick={() => step(1)} className="tq-icon-btn" aria-label="Next photograph">→</button>
+                </>
+              ) : null}
+              <span className="tq-pg-viewer__count" />
+              <button type="button" aria-pressed={zoomed} onClick={() => setZoomed((value) => !value)} className="tq-btn tq-btn--ghost">{zoomed ? "Fit image" : "Zoom in"}</button>
               {active.slug && active.section ? <FavoriteButton section={active.section} slug={active.slug} onToggle={savedOnly ? () => setActiveIndex(null) : undefined} /> : null}
-              {active.detailAvailable !== false ? <button type="button" onClick={() => shareItem(active)} className="min-h-11 rounded-full border border-line px-4 text-sm font-medium hover:border-ink">Share</button> : null}
-              {active.detailAvailable !== false && active.slug && active.section ? <Link href={pathFor(active)} className="inline-flex min-h-11 items-center rounded-full bg-accent px-4 text-sm font-medium text-white hover:bg-accent-strong">View photo</Link> : null}
+              {active.detailAvailable !== false ? <button type="button" onClick={() => shareItem(active)} className="tq-btn tq-btn--ghost">Share</button> : null}
+              {active.detailAvailable !== false && active.slug && active.section ? <Link href={pathFor(active)} className="tq-btn">View photo <span className="tq-arrow" aria-hidden>→</span></Link> : null}
             </div>
           </div>
         ) : null}
       </dialog>
       <ShareModal open={share !== null} url={share?.url || ""} title={share?.title || ""} onClose={() => setShare(null)} />
-    </>
+    </div>
   );
 }

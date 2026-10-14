@@ -56,15 +56,19 @@ npx wrangler secret put CRON_SECRET              # see §5
 | `0003_inquiry_followups.sql` | follow-up columns | ✅ applied |
 | `0004_booking_holds_cron.sql` | pg_cron hold cleanup | ⬜ optional — apply if you want the safety net |
 
-## 4. Stripe (deposit booking)
+## 4. Stripe (commission retainers)
 
-1. Create / choose the Stripe account; copy the **secret** key → `STRIPE_SECRET_KEY`.
-2. Add webhook endpoint: `https://txquince.com/api/stripe/webhook`, event
-   `checkout.session.completed`. Copy signing secret → `STRIPE_WEBHOOK_SECRET`.
-3. Dashboard → Settings → Payment methods: enable **Card + Affirm/Klarna/Afterpay**
-   (auto-surfaces "pay $500 now or in installments").
-- Until both secrets are set, `/reserve` shows a graceful "deposits not live yet"
-  notice and steers to the inquiry form. Nothing breaks.
+Checkout prices every retainer inline from `src/lib/commission.ts`, so there are no Stripe products or prices to create.
+
+1. Copy the **secret** key into the Worker: `npx wrangler secret put STRIPE_SECRET_KEY`.
+2. Create the webhook endpoint, with every event the app handles:
+   ```
+   STRIPE_SECRET_KEY=sk_test_... node scripts/stripe-setup.mjs https://txquince.com
+   ```
+   It prints the signing secret once; store it with `npx wrangler secret put STRIPE_WEBHOOK_SECRET`. Run it again with the live key at launch, since test and live endpoints are separate. Re-running is safe: it updates the existing endpoint's events.
+3. Dashboard → Settings → Payment methods: enable **ACH Direct Debit**, so large retainers aren't charged card fees, plus **Affirm/Klarna**. Checkout shows whatever is enabled.
+4. Test: `stripe listen --forward-to localhost:3000/api/stripe/webhook`, then book on the homepage with card `4242 4242 4242 4242`.
+- Until the key is set, "Reserve now" answers with a friendly "online retainers aren't live yet" message, and "Consultation first" still works.
 
 ## 5. Lead nurture + booking recovery (optional but recommended)
 

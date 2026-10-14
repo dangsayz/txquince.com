@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import "@/components/txq/pages/pages.css";
 
 const STORAGE_KEY = "txq-saved-photos";
 const CHANGE_EVENT = "txq-saved-photos-change";
@@ -52,11 +53,13 @@ export function useSavedPhotos() {
   return { saved, toggle, available };
 }
 
-export function FavoriteButton({ section, slug, className = "", onToggle }: {
+export function FavoriteButton({ section, slug, className = "", onToggle, compact = false }: {
   section: string;
   slug: string;
   className?: string;
   onToggle?: () => void;
+  /** Icon-only 44px square (the accessible name stays on aria-label). */
+  compact?: boolean;
 }) {
   const { saved, toggle, available } = useSavedPhotos();
   const key = photoKey(section, slug);
@@ -69,10 +72,10 @@ export function FavoriteButton({ section, slug, className = "", onToggle }: {
       aria-pressed={active}
       aria-label={active ? "Remove from saved photos" : "Save photo"}
       title={available ? undefined : "Saving is unavailable in this browser"}
-      className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-line bg-white px-4 text-sm font-medium text-ink transition-colors hover:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${className}`}
+      className={`tq-pg-fav ${compact ? "tq-pg-fav--compact" : ""} ${className}`}
     >
-      <span aria-hidden className="text-lg leading-none">{active ? "♥" : "♡"}</span>
-      {active ? "Saved" : "Save"}
+      <span aria-hidden className="tq-pg-fav__glyph">{active ? "♥" : "♡"}</span>
+      {compact ? null : <span aria-hidden>{active ? "Saved" : "Save"}</span>}
     </button>
   );
 }

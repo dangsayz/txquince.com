@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Thank You",
   description: "Your inquiry has been received.",
-  alternates: { canonical: "/thank-you" },
+  alternates: { canonical: "/thank-you", languages: { "en-US": "/thank-you", "es-MX": "/es/gracias" } },
   robots: { index: false, follow: false },
 };
 

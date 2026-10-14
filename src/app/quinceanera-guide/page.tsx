@@ -7,8 +7,8 @@
  * schema. This is the center of the wheel: homepage/nav → hub → 20+ blog spokes
  * → city/venue pages → packages.
  *
- * Answers use REAL TX Quince facts (collections $1,800–$5,500, Signature pairs
- * photo + film, save-the-date included) — that specificity is what keeps it from
+ * Answers use REAL TX Quince facts (commissions from the price book in src/lib/commission.ts,
+ * the portrait session, photo + film) — that specificity is what keeps it from
  * reading generic/AI.
  */
 import type { Metadata } from "next";
@@ -16,17 +16,20 @@ import Link from "next/link";
 import Image from "next/image";
 import { EditOverlay } from "@/components/EditMode";
 import { site } from "@/content/site";
-import { packages } from "@/content/packages";
+import { commissions, commissionsFromLabel, commissionLinks, retainerPercentLabel } from "@/content/commissions";
+import { TIER_PRICE_USD, usd } from "@/lib/commission";
 import { getPageHero, getPortfolioImages, type PortfolioImage } from "@/lib/content-db";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
+import { FinalCTA } from "@/components/FinalCTA";
+import "@/components/txq/pages/pages.css";
 
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "The Quinceañera Guide: Every Question, Answered",
   description:
-    "Straight answers to the most-asked quinceañera questions — cost, planning timeline, photo vs. film, la misa, el vals, and more — from a Dallas–Fort Worth quinceañera photographer. Collections from $1,800.",
+    `Straight answers to the most-asked quinceañera questions — cost, planning timeline, photo vs. film, la misa, el vals, and more — from a Dallas–Fort Worth quinceañera photographer. Commissions from ${commissionsFromLabel}.`,
   keywords:
     "quinceañera guide, quinceañera questions, quinceañera planning, quinceañera photographer cost, how much does a quinceañera photographer cost, quinceañera timeline, quinceañera FAQ Dallas Fort Worth",
   alternates: { canonical: "/quinceanera-guide" },
@@ -80,7 +83,7 @@ const BUCKETS: Bucket[] = [
         hrefLabel: "The full Texas budget breakdown",
       },
     ],
-    cta: { label: "See how we cover the full day", href: "/portfolio" },
+    cta: { label: "See full-day coverage", href: "/portfolio" },
   },
   {
     id: "cost",
@@ -90,7 +93,7 @@ const BUCKETS: Bucket[] = [
     qas: [
       {
         q: "How much does a quinceañera photographer cost in Dallas–Fort Worth?",
-        a: "In DFW, professional quinceañera photography generally runs about $1,800–$5,500. Our collections start at $1,800 (Moments — one artist, five focused hours) and reach $5,500 (Legacy — photo, film, drone, and a premium album). What you pay tracks coverage hours and whether you want photo, film, or both.",
+        a: `Most DFW quinceañera studios publish packages between about $1,500 and $6,000. TX Quince works at the top of the market: a Portrait Study is ${usd(TIER_PRICE_USD.study)}, photo and film together start at ${usd(TIER_PRICE_USD.cinema)}, The Full Production is ${usd(TIER_PRICE_USD.production)}, and the multi-day archive is ${usd(TIER_PRICE_USD.archive)}. What you pay tracks coverage hours, crew, and the heirloom pieces you keep.`,
         href: "/blog/quinceanera-photographer-cost-dallas-fort-worth",
         hrefLabel: "What drives the price",
       },
@@ -101,19 +104,19 @@ const BUCKETS: Bucket[] = [
         hrefLabel: "Why timing matters",
       },
       {
-        q: "Do you offer payment plans, and what's the deposit?",
-        a: "Yes. A deposit reserves your date and the balance is due before the celebration — you can split it into manageable payments along the way. The deposit holds your date exclusively, so no one else can book it.",
+        q: "How does the retainer work?",
+        a: `A retainer of ${retainerPercentLabel} of your commission reserves your date exclusively and is applied in full; the balance is due 30 days before the celebration. Pay it online at secure checkout, or request a consultation first and we hold the date for 7 days.`,
         href: "/blog/quinceanera-payment-plans-deposits-dfw",
         hrefLabel: "How deposits & plans work",
       },
       {
         q: "How much of my budget should go to photography?",
-        a: "Plan on 10–20% of your total quince budget for photography and film. It's the one thing that outlives the day — the flowers wilt and the food is gone, but the photos and the film are what your family keeps. Our collections span $1,800–$5,500 to fit different budgets.",
+        a: "Plan on roughly 8–15% of your total quince budget for photography and film. It's the one thing that outlives the day — the flowers wilt and the food is gone, but the photos and the film are what your family keeps.",
         href: "/blog/quinceanera-budget-breakdown-texas",
         hrefLabel: "Where the money goes",
       },
     ],
-    cta: { label: "See collections & pricing", href: "/investment" },
+    cta: { label: "See commissions & pricing", href: commissionLinks.en.compare },
   },
   {
     id: "photo-film",
@@ -123,7 +126,7 @@ const BUCKETS: Bucket[] = [
     qas: [
       {
         q: "Photo or video for a quinceañera — which do I need?",
-        a: "If you can, both — they do different jobs. Photographs are what you frame and pass down; film is her voice, the music, and the room in motion. Our Signature collection ($3,900) pairs two storytellers so you get both across the full day. On a tighter budget, choose the one she'll relive most.",
+        a: `If you can, both — they do different jobs. Photographs are what you frame and pass down; film is her voice, the music, and the room in motion. From Cinema & Stills (${usd(TIER_PRICE_USD.cinema)}) upward, a stills director and a motion director cover the full day together.`,
         href: "/blog/quinceanera-photo-vs-video",
         hrefLabel: "Photo vs. film, honestly",
       },
@@ -192,12 +195,12 @@ const BUCKETS: Bucket[] = [
       },
       {
         q: "What's a pre-quince or save-the-date session?",
-        a: "It's a relaxed portrait session weeks or months before the celebration — for her invitations, social posts, and a calm first look at her in a gown before the big day. It's complimentary with Essential, Signature, and Legacy; families choosing Moments can add a session separately.",
-        href: "/quinceanera-save-the-date",
-        hrefLabel: "About the save-the-date session",
+        a: `It's an editorial portrait session weeks or months before the celebration — for her invitations, the welcome board, and a calm first look at her in the gown. Book it on its own as the Portrait Study (${usd(TIER_PRICE_USD.study)}), or receive it inside The Full Production and the Multi-Day Archive.`,
+        href: "/quinceanera-photoshoot",
+        hrefLabel: "About the pre-quince photoshoot",
       },
     ],
-    cta: { label: "Reserve your date", href: "/reserve" },
+    cta: { label: "Check your date", href: commissionLinks.en.book },
   },
 ];
 
@@ -320,90 +323,117 @@ export default async function QuinceaneraGuidePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replaceAll("<", "\\u003c") }}
       />
 
-      <header className="relative isolate flex min-h-[70svh] items-end overflow-hidden bg-ink text-white sm:min-h-[80svh]" aria-labelledby="guide-title">
-        <figure className="absolute inset-0 bg-greige">
-          <Image
-            src={hero?.url ?? "/portfolio/hero.webp"}
-            alt={hero ? publicPhotoCopy(hero, altPhraseFor(hero.section)).alt : "Quinceañera portrait in Dallas–Fort Worth"}
-            fill
-            unoptimized={!hero}
-            priority
-            sizes="100vw"
-            className="object-cover"
-            style={{ objectPosition: `${(hero?.focus_x ?? 0.5) * 100}% ${(hero?.focus_y ?? 0.5) * 100}%` }}
-          />
-          {hero ? <EditOverlay image={{ id: hero.id, slug: hero.slug, alt: hero.alt, fx: hero.focus_x, fy: hero.focus_y }} /> : null}
-        </figure>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-black/10" aria-hidden="true" />
-        <div className="relative mx-auto w-full max-w-[90rem] px-5 pb-12 sm:px-10 sm:pb-16 lg:px-16 lg:pb-20">
-          <p className="text-xs uppercase tracking-[0.24em] text-white/85">The quinceañera guide / Dallas–Fort Worth</p>
-          <h1 id="guide-title" className="mt-5 font-display text-[clamp(2.15rem,4vw,4rem)] font-light leading-[1.13]">The guide</h1>
-        </div>
-      </header>
-
-      <section className="bg-ivory px-5 py-20 sm:px-10 sm:py-28">
-        <div className="mx-auto grid max-w-[78rem] gap-8 lg:grid-cols-[minmax(0,0.42fr)_minmax(0,0.58fr)] lg:gap-20">
-          <p className="text-xs uppercase tracking-[0.2em] text-ink-soft">The details of the day</p>
-          <div><p className="max-w-[27ch] font-display text-[clamp(1.85rem,3vw,3rem)] font-light leading-[1.24] text-ink">The moments, decisions, and traditions that make it hers.</p><p className="mt-6 max-w-xl text-base leading-8 text-ink-soft">Clear answers on timing, traditions, photography, film, and the investment.</p><a href="#guide-topics" className="mt-7 inline-flex min-h-12 items-center gap-4 border-b border-ink text-xs uppercase tracking-[0.16em] text-ink">Explore the guide <span aria-hidden="true">↓</span></a></div>
-        </div>
-      </section>
-
-      <nav id="guide-topics" aria-label="Guide topics" className="scroll-mt-24 bg-white">
-        <div className="mx-auto grid max-w-[90rem] gap-8 px-5 py-12 sm:px-10 lg:grid-cols-[minmax(0,0.42fr)_minmax(0,1fr)] lg:gap-16 lg:px-16 lg:py-16">
-          <div>
-            <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">Contents</p>
-            <h2 className="mt-3 max-w-[18ch] font-display text-[clamp(1.5rem,2.5vw,2.25rem)] font-normal leading-tight">Everything before, during, and after the day.</h2>
+      <div className="tq-wrap">
+        <header className="tq-pg-mast" aria-labelledby="guide-title">
+          <p className="tq-pg-mast__index tq-mono">[The quinceañera guide / Dallas–Fort Worth]</p>
+          <div className="tq-pg-mast__body">
+            <h1 id="guide-title" className="tq-display tq-pg-mast__title">
+              The guide <em>— every quinceañera question, answered.</em>
+            </h1>
+            <p className="tq-pg-mast__dek">
+              Clear answers on timing, traditions, photography, film, and the investment — the moments, decisions, and traditions that make it hers.
+            </p>
+            <div className="tq-pg-actions">
+              <a href="#guide-topics" className="tq-btn tq-btn--lg tq-btn--ghost">
+                Explore the guide <span aria-hidden>↓</span>
+              </a>
+            </div>
           </div>
-          <ol className="border-t border-line">
-            {BUCKETS.map((bucket, index) => (
-              <li key={bucket.id}>
-                <a href={`#${bucket.id}`} className="group grid min-h-16 grid-cols-[2.5rem_minmax(0,1fr)_1.5rem] items-center gap-4 border-b border-line py-3 text-base text-ink hover:text-ink-soft sm:min-h-20 sm:text-lg">
-                  <span className="text-xs text-ink-faint">0{index + 1}</span>
-                  <span>{bucket.title}</span>
-                  <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">↗</span>
-                </a>
-              </li>
-            ))}
-          </ol>
+        </header>
+        {hero ? (
+          <figure className="tq-pg-plate">
+            <Image
+              src={hero.url}
+              alt={publicPhotoCopy(hero, altPhraseFor(hero.section)).alt}
+              fill
+              priority
+              sizes="100vw"
+              style={{ objectPosition: `${(hero.focus_x ?? 0.5) * 100}% ${(hero.focus_y ?? 0.5) * 100}%` }}
+            />
+            <EditOverlay image={{ id: hero.id, slug: hero.slug, alt: hero.alt, fx: hero.focus_x, fy: hero.focus_y }} />
+            <figcaption>
+              <span className="tq-tag tq-tag--bl tq-mono">[The details of the day]</span>
+            </figcaption>
+          </figure>
+        ) : null}
+      </div>
+
+      <nav id="guide-topics" className="tq-section" aria-labelledby="guide-topics-title">
+        <div className="tq-wrap">
+          <div className="tq-pg-row">
+            <p className="tq-pg-row__index tq-mono">[Contents]</p>
+            <div className="tq-pg-row__body">
+              <h2 id="guide-topics-title" className="tq-display tq-pg-row__title">
+                Everything before, during, and after the day.
+              </h2>
+              <ol className="tq-pg-index">
+                {BUCKETS.map((bucket, index) => (
+                  <li key={bucket.id}>
+                    <a href={`#${bucket.id}`} className="tq-pg-index__row">
+                      <span className="tq-mono tq-muted">{String(index + 1).padStart(2, "0")}</span>
+                      <span className="tq-pg-index__label">{bucket.title}</span>
+                      <span className="tq-mono tq-pg-index__end">
+                        {bucket.qas.length} Q <span aria-hidden>↓</span>
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
         </div>
       </nav>
 
       {BUCKETS.map((bucket, index) => {
         const image = bucketImg[bucket.id];
         return (
-          <section key={bucket.id} id={bucket.id} className={`scroll-mt-24 ${index % 2 === 0 ? "bg-[#f4f2ee]" : "bg-white"}`} aria-labelledby={`${bucket.id}-title`}>
-            <div className="mx-auto max-w-[90rem] px-5 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-28">
-              <div className="grid gap-8 border-t border-ink/20 pt-6 lg:grid-cols-[minmax(0,0.25fr)_minmax(0,0.75fr)] lg:gap-14">
-                <p className="text-xs uppercase tracking-[0.18em] text-ink-soft">0{index + 1} / {bucket.eyebrow}</p>
-                <div>
-                  <h2 id={`${bucket.id}-title`} className="font-display text-[clamp(1.875rem,3vw,3rem)] font-normal leading-[1.12] tracking-[-0.03em] text-ink">{bucket.title}</h2>
-                  <p className="mt-4 max-w-xl text-base leading-7 text-ink-soft">{bucket.intro}</p>
-                </div>
-              </div>
-
-              <div className={`mt-10 grid gap-10 lg:mt-16 lg:grid-cols-[minmax(0,0.46fr)_minmax(0,0.54fr)] lg:items-start lg:gap-16 ${index % 2 === 1 ? "lg:[&>figure]:order-2" : ""}`}>
-                <figure className="relative min-h-[23rem] overflow-hidden bg-greige sm:min-h-[36rem] lg:sticky lg:top-24 lg:min-h-[43rem]">
-                  <Image
-                    src={image?.url ?? fallbackImages[bucket.id].src}
-                    alt={image ? publicPhotoCopy(image, altPhraseFor(image.section)).alt : fallbackImages[bucket.id].alt}
-                    fill
-                    sizes="(max-width: 1023px) 100vw, 42vw"
-                    className="object-cover"
-                    style={{ objectPosition: `${(image?.focus_x ?? 0.5) * 100}% ${(image?.focus_y ?? 0.5) * 100}%` }}
-                  />
+          <section key={bucket.id} id={bucket.id} className="tq-section" aria-labelledby={`${bucket.id}-title`}>
+            <div className="tq-wrap">
+              <header className="tq-head">
+                <p className="tq-head__index tq-mono" style={{ margin: 0 }}>
+                  [{String(index + 1).padStart(2, "0")} / {bucket.eyebrow}]
+                </p>
+                <h2 id={`${bucket.id}-title`} className="tq-display tq-head__title">
+                  {bucket.title}
+                </h2>
+                <p className="tq-head__dek">{bucket.intro}</p>
+              </header>
+              <div className={`tq-pg-duo ${index % 2 === 1 ? "tq-pg-duo--flip" : ""}`} style={{ paddingTop: 0 }}>
+                <figure className="tq-pg-duo__media" style={{ margin: 0 }}>
+                  <div className="tq-pg-figure">
+                    <Image
+                      src={image?.url ?? fallbackImages[bucket.id].src}
+                      alt={image ? publicPhotoCopy(image, altPhraseFor(image.section)).alt : fallbackImages[bucket.id].alt}
+                      fill
+                      sizes="(max-width: 959px) 100vw, 40vw"
+                      style={{ objectPosition: `${(image?.focus_x ?? 0.5) * 100}% ${(image?.focus_y ?? 0.5) * 100}%` }}
+                    />
+                  </div>
+                  <figcaption className="tq-pg-figcap tq-mono">[Plate {String(index + 1).padStart(2, "0")} — {bucket.title}]</figcaption>
                 </figure>
-                <div className="border-t border-line">
-                  {bucket.qas.map((qa, qaIndex) => (
-                    <article key={qa.q} className="grid gap-3 border-b border-line py-7 sm:grid-cols-[2.5rem_minmax(0,1fr)] sm:gap-5 sm:py-9">
-                      <span className="text-xs text-ink-faint">{String(qaIndex + 1).padStart(2, "0")}</span>
-                      <div>
-                        <h3 className="max-w-[30ch] font-display text-[clamp(1.125rem,1.8vw,1.5rem)] font-normal leading-snug text-ink">{qa.q}</h3>
-                        <p className="guide-answer mt-4 max-w-prose text-base leading-7 text-ink-soft">{qa.a}</p>
-                        {qa.href && <Link href={qa.href} className="mt-4 inline-flex min-h-11 items-center gap-3 border-b border-ink text-sm font-medium text-ink">{qa.hrefLabel ?? "Read more"}<span aria-hidden="true">↗</span></Link>}
-                      </div>
-                    </article>
-                  ))}
-                  <Link href={bucket.cta.href} className="mt-7 inline-flex min-h-12 items-center gap-4 bg-ink px-6 text-sm font-medium text-white hover:bg-ink-soft">{bucket.cta.label}<span aria-hidden="true">↗</span></Link>
+                <div className="tq-pg-duo__text" style={{ display: "grid", gap: 32 }}>
+                  <ol className="tq-pg-qa">
+                    {bucket.qas.map((qa, qaIndex) => (
+                      <li key={qa.q}>
+                        <span className="tq-mono tq-muted">{String(qaIndex + 1).padStart(2, "0")}</span>
+                        <article className="tq-pg-qa__body">
+                          <h3>{qa.q}</h3>
+                          <p className="guide-answer">{qa.a}</p>
+                          {qa.href && (
+                            <Link href={qa.href} className="tq-pg-link">
+                              <span>{qa.hrefLabel ?? "Read more"}</span>
+                              <span className="tq-arrow" aria-hidden>↗</span>
+                            </Link>
+                          )}
+                        </article>
+                      </li>
+                    ))}
+                  </ol>
+                  <div className="tq-pg-actions">
+                    <Link href={bucket.cta.href} className="tq-btn tq-btn--lg">
+                      {bucket.cta.label} <span className="tq-arrow" aria-hidden>→</span>
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
@@ -411,25 +441,43 @@ export default async function QuinceaneraGuidePage() {
         );
       })}
 
-      <section className="bg-ink text-white" aria-labelledby="guide-collections-title">
-        <div className="mx-auto grid max-w-[90rem] gap-10 px-5 py-16 sm:px-10 sm:py-20 lg:grid-cols-[minmax(0,0.55fr)_minmax(0,0.45fr)] lg:gap-20 lg:px-16 lg:py-24">
-          <div>
-            <p className="text-xs uppercase tracking-[0.18em] text-white/65">Four collections</p>
-            <h2 id="guide-collections-title" className="mt-4 max-w-[20ch] font-display text-[clamp(1.875rem,3vw,3rem)] font-normal leading-tight">Coverage for the day you have in mind.</h2>
-            <p className="mt-5 max-w-md text-base leading-7 text-white/75">Published prices begin at {packages[0].priceLabel}. Your date and collection are confirmed before a deposit is due.</p>
-            <Link href="/investment" className="mt-8 inline-flex min-h-12 items-center gap-4 border-b border-white pb-1 text-sm font-medium">Compare collections <span aria-hidden="true">↗</span></Link>
+      <section className="tq-section" aria-labelledby="guide-collections-title">
+        <div className="tq-wrap">
+          <header className="tq-head">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>
+              [Four commissions]
+            </p>
+            <h2 id="guide-collections-title" className="tq-display tq-head__title">
+              Coverage for the day you have in mind.
+            </h2>
+            <p className="tq-head__dek">
+              Published prices begin at {commissionsFromLabel}. A {retainerPercentLabel} retainer holds your date and is applied in full.
+            </p>
+          </header>
+          <div className="tq-pg-row" style={{ paddingTop: 0 }}>
+            <div className="tq-pg-row__body">
+              <ol className="tq-pg-index">
+                {commissions.map((c) => (
+                  <li key={c.id}>
+                    <Link href={commissionLinks.en.compare} className="tq-pg-index__row">
+                      <span className="tq-mono tq-muted">{c.numeral}</span>
+                      <span className="tq-pg-index__label">{c.name.en}</span>
+                      <span className="tq-mono tq-nums" style={{ whiteSpace: "nowrap" }}>{c.priceLabel}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ol>
+              <div className="tq-pg-actions">
+                <Link href={commissionLinks.en.compare} className="tq-btn tq-btn--lg tq-btn--ghost">
+                  Compare commissions <span className="tq-arrow" aria-hidden>↗</span>
+                </Link>
+              </div>
+            </div>
           </div>
-          <ol className="border-t border-white/30">
-            {packages.map((collection, index) => (
-              <li key={collection.id} className="grid grid-cols-[2rem_minmax(0,1fr)_auto] items-baseline gap-3 border-b border-white/30 py-5 sm:gap-6">
-                <span className="text-xs text-white/55">0{index + 1}</span>
-                <Link href={`/reserve?collection=${collection.id}`} className="min-h-11 text-lg hover:underline">{collection.name}</Link>
-                <span className="text-base text-white/85">{collection.priceLabel}</span>
-              </li>
-            ))}
-          </ol>
         </div>
       </section>
+
+      <FinalCTA href={commissionLinks.en.book} />
     </>
   );
 }

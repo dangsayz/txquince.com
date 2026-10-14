@@ -160,7 +160,7 @@ const post: BlogPost = {
     { type: "h2", text: "Usted elige el lugar; nosotros hacemos el resto" },
     {
       type: "p",
-      text: "Ya sean los canales de Las Colinas, los murales de Bishop Arts o el skyline del centro de Dallas, el lugar debe sentirse como su hija. Elija el que la haga brillar y nosotros nos encargamos de los permisos, los horarios y la luz. Cuando esté lista, [aparte su fecha](/reserve) y empezamos a planear juntos los lugares.",
+      text: "Ya sean los canales de Las Colinas, los murales de Bishop Arts o el skyline del centro de Dallas, el lugar debe sentirse como su hija. Elija el que la haga brillar y nosotros nos encargamos de los permisos, los horarios y la luz. Cuando esté lista, [aparte su fecha](/es#intake) y empezamos a planear juntos los lugares.",
     },
   ],
   faqs: [

@@ -1,4 +1,10 @@
 import type { BlogPost } from "@/content/blog";
+import { TIER_PRICE_USD, BASE_CREW, usd } from "@/lib/commission";
+
+const study = usd(TIER_PRICE_USD.study);
+const cinema = usd(TIER_PRICE_USD.cinema);
+const production = usd(TIER_PRICE_USD.production);
+const archive = usd(TIER_PRICE_USD.archive);
 
 const post: BlogPost = {
   slug: "quinceanera-photo-vs-video",
@@ -10,13 +16,14 @@ const post: BlogPost = {
   excerpt:
     "Photos hold the still, perfect frames. Film holds the sound and the motion — the vals, the speeches, the surprise dance. How to decide between them, and what each costs in DFW.",
   publishedAt: "2026-06-09",
+  updatedAt: "2026-10-14",
   readMinutes: 8,
   lead: "Almost every parent planning a quinceañera asks the same question: do we really need video, or is a photographer enough? It's a fair question, and the answer depends on which moments you can't imagine losing. This walks through what photos capture, what film captures, what quince videography actually includes, and the real cost picture in Dallas–Fort Worth so you can decide without guessing.",
   content: [
     { type: "h2", text: "The short answer" },
     {
       type: "p",
-      text: "You don't technically need both. Plenty of families book photo-only and are happy. But photo and film capture two different things, and the moments that move — the vals, the speeches, the surprise dance, your daughter's face when the music starts — only fully live on video. If your budget can stretch to both, a single team that does photo + film is the easiest and usually the cheapest way to get there. At [TX Quince](/investment), the Essential collection is photo or film; Signature and Legacy include both.",
+      text: "You don't technically need both. Plenty of families book photo-only and are happy. But photo and film capture two different things, and the moments that move — the vals, the speeches, the surprise dance, your daughter's face when the music starts — only fully live on video. If your budget can stretch to both, a single team that does photo + film is the easiest way to get there. At [TX Quince](/#commissions), the Portrait Study is our photo-only commission; Cinema & Stills, The Full Production, and the Multi-Day Editorial Archive all include both.",
     },
     { type: "h2", text: "What photos capture that film can't" },
     {
@@ -25,7 +32,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Photos are also how most of the day gets shared — the gallery your relatives in Mexico will open the next morning, the prints for the abuelos, the image that becomes the thank-you card. If you only ever do one thing, professional photography is the foundation. That's why every [TX Quince collection](/investment) includes it.",
+      text: "Photos are also how most of the day gets shared — the gallery your relatives in Mexico will open the next morning, the prints for the abuelos, the image that becomes the thank-you card. If you only ever do one thing, professional photography is the foundation. That's why every [TX Quince commission](/#commissions) includes it.",
     },
     { type: "h2", text: "What film captures that a photo never will" },
     {
@@ -68,14 +75,14 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "On our Signature and Legacy collections, film also comes with audio from the key moments and a same-week sneak peek, so you have something to share while the day is still fresh instead of waiting months.",
+      text: "On our photo + film commissions, the feature film comes with a short teaser and vertical reels cut for sharing — and the Multi-Day Editorial Archive adds a 48-hour preview — so you have something to post while the day is still fresh instead of waiting months.",
     },
     {
       type: "cta",
-      heading: "See exactly which collections include film",
-      body: "Essential is photo or film. Signature and Legacy include both — photo + film, two artists, full day. Compare them side by side.",
-      href: "/investment",
-      label: "View collections & pricing",
+      heading: "See exactly which commissions include film",
+      body: `The Portrait Study is photo only. Cinema & Stills, The Full Production, and the Multi-Day Editorial Archive pair photographers with videographers — ${BASE_CREW.cinema}, ${BASE_CREW.production} or ${BASE_CREW.archive} directors, in the mix you choose. Compare them side by side.`,
+      href: "/#commissions",
+      label: "Compare commissions",
     },
     { type: "h2", text: "One team for both vs. two separate vendors" },
     {
@@ -86,19 +93,19 @@ const post: BlogPost = {
       type: "ul",
       items: [
         "Coordination — two vendors who've never met have to negotiate angles, lighting, and who stands where during the vals. One team has already worked that out. You won't see two strangers blocking each other's shots.",
-        "One point of contact — one contract, one timeline, one deposit, one person who knows your whole day. Not two email threads and two invoices to chase.",
+        "One point of contact — one contract, one timeline, one retainer, one person who knows your whole day. Not two email threads and two invoices to chase.",
         "A matched look — the photos and the film share an eye, so the gallery and the film feel like the same day, not two different events shot by people with different taste.",
-        "Cost — and this is the part most families don't expect. Booking both from one team is almost always cheaper than hiring two solo vendors separately.",
+        "Cost — and this is the part most families don't expect. At the same level of craft, booking both from one team usually costs less than hiring two solo vendors separately.",
       ],
     },
     { type: "h2", text: "The real DFW cost picture" },
     {
       type: "p",
-      text: "In Dallas–Fort Worth, a solo quince photographer often runs $1,500–$3,000, and a separate videographer another $1,500–$3,000 on top. Hire them separately and you're easily past $4,000–$5,000 for two people who don't coordinate. A combined photo + film team is usually less than that sum, because the team is already on-site and the day is planned once.",
+      text: "In Dallas–Fort Worth, most quince studios publish photo-only packages around $1,500–$3,000, and a separate videographer can add a similar amount on top. Combined photo + video packages usually run about $3,000–$5,500, and luxury quince collections $5,500–$8,000 and up — usually less than hiring the same caliber of photographer and videographer separately, because the team is already on-site and the day is planned once. Across a whole celebration, photo and film typically take about 8–15% of the budget.",
     },
     {
       type: "p",
-      text: "Anchored to our collections, the math is simple: Moments is $1,800 and Essential is $2,500 — both photo or film with one artist. Signature is $3,900 for photo + film — two artists, full-day coverage, a same-week sneak peek. Legacy is $5,500 for the most coverage of both. So the moment you want both, a Signature collection at $3,900 typically beats stitching together two separate vendors. For the full breakdown of every inclusion, see [which collections include film](/investment), and for a wider look at pricing read our [quinceañera photographer cost guide for DFW](/blog/quinceanera-photographer-cost-dallas-fort-worth).",
+      text: `Anchored to our commissions: the Portrait Study is ${study} — photo only, a three-hour editorial portrait session before the celebration. Cinema & Stills is ${cinema} for photo + film — eight hours with a stills director and a motion director, an 8–10 minute 4K feature, a teaser, and reels. The Full Production, at ${production}, is the one we recommend for most celebrations — eleven hours, ${BASE_CREW.production} directors and a day-of coordinator, a portrait session, a 12–15 minute feature, and a linen-bound monograph. The Multi-Day Editorial Archive, at ${archive}, covers two days with ${BASE_CREW.archive} directors and a day-of coordinator. For the full breakdown of every inclusion, see [which commissions include film](/#commissions), and for a wider look at pricing read our [quinceañera photographer cost guide for DFW](/blog/quinceanera-photographer-cost-dallas-fort-worth).`,
     },
     { type: "h2", text: "If your budget only stretches one way" },
     {
@@ -110,12 +117,12 @@ const post: BlogPost = {
       items: [
         "If you want something to hold, print, and display — choose photo. It's the durable keepsake, and it's the foundation we'd start everyone on.",
         "If the moments that matter most to you move and make sound — the vals, the surprise dance, the toasts — lean film, because those don't survive as stills.",
-        "If you can stretch a little, choose the collection that includes both rather than adding a second vendor — it's the better value and the smoother day.",
+        "If you can stretch a little, choose a commission that includes both rather than adding a second vendor — it's the better value and the smoother day.",
       ],
     },
     {
       type: "p",
-      text: "Still weighing it? Read [how to choose a quinceañera photographer in DFW](/blog/how-to-choose-quinceanera-photographer-dfw) so you know what to look for in either one, then run through [the questions to ask before you book](/blog/questions-to-ask-quinceanera-photographer). When you're ready, you can [check if your date is open](/check-your-date) in a few seconds, or [reserve your date](/reserve) to lock today's price.",
+      text: "Still weighing it? Read [how to choose a quinceañera photographer in DFW](/blog/how-to-choose-quinceanera-photographer-dfw) so you know what to look for in either one, then run through [the questions to ask before you book](/blog/questions-to-ask-quinceanera-photographer). When you're ready, you can [check if your date is open](/check-your-date) in a few seconds, or [reserve your date](/#intake) to lock today's price.",
     },
   ],
   faqs: [
@@ -129,19 +136,19 @@ const post: BlogPost = {
     },
     {
       q: "What's included in quinceañera videography?",
-      a: "A proper quince film isn't a raw recording — it's an edited story, usually delivered in two pieces: a documentary-style edit that walks through the full day in order, and a 3–5 minute cinematic highlight film cut to music. On TX Quince Signature and Legacy collections it also includes audio from the key moments and a same-week sneak peek so you have something to share while the day is fresh.",
+      a: "A proper quince film isn't a raw recording — it's an edited story, usually delivered in two pieces: a documentary-style edit that walks through the full day in order, and a 3–5 minute cinematic highlight film cut to music. On TX Quince photo + film commissions it also includes a short teaser and vertical reels, so you have something to share while the day is fresh.",
     },
     {
       q: "Is it cheaper to book photo and video together?",
-      a: "Almost always, yes. Hiring a separate photographer and a separate videographer in DFW can easily run $4,000–$5,000+ for two people who don't coordinate. A combined photo + film team is typically less, because they're already on-site and the day is planned once. TX Quince's Signature collection includes both at $3,900 — usually cheaper than two solo vendors.",
+      a: "Usually, yes — at the same level of craft. In DFW, combined photo + video packages commonly run about $3,000–$5,500, typically less than booking a comparable photographer and videographer separately, because the team is already on-site and the day is planned once.",
     },
     {
-      q: "Which TX Quince collections include both photo and film?",
-      a: "Moments ($1,800) and Essential ($2,500) are photo or film with one artist. Signature ($3,900) and Legacy ($5,500) both include photo + film with two artists. Signature adds full-day coverage and a same-week sneak peek; Legacy adds the most coverage of both. You can compare every inclusion on the investment page.",
+      q: "Which TX Quince commissions include both photo and film?",
+      a: `The Portrait Study (${study}) is photo only. Cinema & Stills (${cinema}), The Full Production (${production}), and the Multi-Day Editorial Archive (${archive}) all include photo + film, with ${BASE_CREW.cinema}, ${BASE_CREW.production} or ${BASE_CREW.archive} directors in whatever mix of photographers and videographers you choose. The Full Production is the one we recommend for most celebrations. You can compare every inclusion in the commissions on our homepage.`,
     },
     {
       q: "Can one team shoot both the photos and the video?",
-      a: "Yes — and it's usually the better choice. One team means coordinated angles during the vals and surprise dance, a single point of contact and contract, a matched visual style between gallery and film, and lower cost than hiring two separate vendors. TX Quince's Signature and Legacy collections are built exactly this way.",
+      a: "Yes — and it's usually the better choice. One team means coordinated angles during the vals and surprise dance, a single point of contact and contract, a matched visual style between gallery and film, and lower cost than hiring two separate vendors. Every TX Quince photo + film commission is built exactly this way.",
     },
   ],
   related: [

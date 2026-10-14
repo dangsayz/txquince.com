@@ -1,4 +1,11 @@
 import type { BlogPost } from "@/content/blog";
+import { TIER_PRICE_USD, RETAINER, usd } from "@/lib/commission";
+
+const study = usd(TIER_PRICE_USD.study);
+const cinema = usd(TIER_PRICE_USD.cinema);
+const production = usd(TIER_PRICE_USD.production);
+const archive = usd(TIER_PRICE_USD.archive);
+const retainerPct = `${Math.round(RETAINER.rate * 100)}%`;
 
 const post: BlogPost = {
   slug: "quinceanera-budget-breakdown-texas",
@@ -9,13 +16,14 @@ const post: BlogPost = {
   excerpt:
     "A real line-item breakdown — venue, food, dress, DJ, photo + film — plus where families overspend, where they cut too deep, and how padrinos lighten the load.",
   publishedAt: "2026-06-09",
+  updatedAt: "2026-10-14",
   readMinutes: 8,
   lead: "Before you book a single vendor, you need one honest number: what a quinceañera actually costs in Texas. Not the dreamy Pinterest version, not the lowball one a salesperson hands you — the real range, broken down line by line, so you can plan instead of react.",
   content: [
     { type: "h2", text: "The realistic Texas range" },
     {
       type: "p",
-      text: "Across Texas, a quinceañera usually lands somewhere between $5,000 and $20,000 — and the spread is that wide because two families can throw very different parties under the same word. A backyard celebration for 60 guests is a different animal than a 300-guest hall with a live band. Most families in the Dallas–Fort Worth area we talk to are planning somewhere in the $8,000–$15,000 middle, and the number is driven almost entirely by two things: how many people you invite and where you host them.",
+      text: "In Dallas–Fort Worth, most quinceañeras land somewhere between $12,000 and $25,000, and luxury celebrations run $25,000–$50,000 and up — and the spread is that wide because two families can throw very different parties under the same word. A backyard celebration for 60 guests is a different animal than a 300-guest hall with a live band or a hotel ballroom. Wherever your family lands, the number is driven almost entirely by two things: how many people you invite and where you host them.",
     },
     {
       type: "callout",
@@ -33,7 +41,7 @@ const post: BlogPost = {
         "Catering / food — roughly one-third (≈30%) of the budget, and the line that scales hardest with guest count. Every extra plate is real money.",
         "Dress, court attire & accessories — 8–12%. The gown, the shoes, the crown, plus outfitting the chambelanes and damas.",
         "DJ / entertainment — about 12%. DJ, sound, sometimes a live band, MC, or a choreographer for the vals and surprise dance.",
-        "Photography + video — 10–15%. The team that turns one night into something you can hold afterward.",
+        "Photography + video — 8–15%. The team that turns one night into something you can hold afterward.",
         "Cake & dessert — 3–5%. The traditional tiered cake, plus a dessert table if you want one.",
         "Decor & flowers — 8–12%. Centerpieces, the head table, the ceremony, balloons, linens.",
         "Invitations & stationery — 2–4%. Invites, RSVPs, the guest book, programs.",
@@ -51,7 +59,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "A photo and film collection is a separate vendor and a separate craft: the artists who follow your daughter through the whole day and hand you back the story of it. At [TX Quince](/investment) those collections are fixed at $1,800, $2,500, $3,900, and $5,500. A $3,000 venue package and a $3,900 film collection are two different purchases that happen to look like similar numbers — don't let a sales sheet blur them together.",
+      text: `A photo and film commission is a separate vendor and a separate craft: the artists who follow your daughter through the whole day and hand you back the story of it. At [TX Quince](/#commissions) those commissions are published at ${study} (photo only), ${cinema}, ${production}, and ${archive}. A venue "package" and a photo + film commission can sound like the same kind of purchase — they aren't, so don't let a sales sheet blur them together.`,
     },
     { type: "h2", text: "Why photo and film deserve their slice" },
     {
@@ -64,14 +72,14 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "That's the case for protecting that 10–15% even when the budget gets tight. It's also why, if you have to choose, families regret cutting coverage far more than they regret a smaller cake. You can see what full coverage looks like in our [portfolio](/portfolio), and if you're weighing one over the other, [photo vs. video](/blog/quinceanera-photo-vs-video) walks through the trade-offs honestly.",
+      text: "That's the case for protecting that 8–15% even when the budget gets tight. It's also why, if you have to choose, families regret cutting coverage far more than they regret a smaller cake. You can see what full coverage looks like in our [portfolio](/portfolio), and if you're weighing one over the other, [photo vs. video](/blog/quinceanera-photo-vs-video) walks through the trade-offs honestly.",
     },
     {
       type: "cta",
-      heading: "See exactly what each collection includes",
-      body: "Fixed prices, full inclusions, deposits, and payment plans — all published on one page, no quote form.",
-      href: "/investment",
-      label: "View collections & pricing",
+      heading: "See exactly what each commission includes",
+      body: "Published prices, full inclusions, and how the retainer works — all on one page, no quote form.",
+      href: "/#commissions",
+      label: "Compare commissions",
     },
     { type: "h2", text: "Where families overspend — and where they cut too deep" },
     {
@@ -104,7 +112,7 @@ const post: BlogPost = {
       items: [
         "Set the total you can truly afford first — then your guest count to match it, not the other way around.",
         "Reserve one-third for food and 15–20% for the venue before anything else; those two anchor everything.",
-        "Protect 10–15% for photo + film and don't raid it for decor — it's the only line you keep.",
+        "Protect 8–15% for photo + film and don't raid it for decor — it's the only line you keep.",
         "Build in a real 10% contingency line and pretend it doesn't exist until you need it.",
         "Book the date-sensitive vendors (venue, photographer) early — the best Saturdays go 9–12 months out, and locking the date often locks the price.",
       ],
@@ -116,7 +124,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Common sponsorships include the cake, the dress, the tiara and last doll, the flowers, the DJ, the church ceremony fees, the favors, even the photography. Assign each padrino one line, write it down, and your $12,000 total can split into a dozen manageable pieces. For coverage specifically, our [deposits and payment plans](/blog/quinceanera-payment-plans-deposits-dfw) make it simple for a padrino to sponsor a deposit while you handle the balance over time.",
+      text: `Common sponsorships include the cake, the dress, the tiara and last doll, the flowers, the DJ, the church ceremony fees, the favors, even the photography. Assign each padrino one line, write it down, and a $20,000 total can split into a dozen manageable pieces. For coverage specifically, [how our retainer works](/blog/quinceanera-payment-plans-deposits-dfw) makes it simple for a padrino to sponsor the ${retainerPct} retainer while you set aside the balance, due ${RETAINER.balanceDueDays} days before the celebration.`,
     },
     {
       type: "callout",
@@ -125,17 +133,17 @@ const post: BlogPost = {
     { type: "h2", text: "Your next step" },
     {
       type: "p",
-      text: "Once you know your number, the date is what makes it real — Saturdays in spring and fall book out first across the metroplex. You can [check if your date is open](/check-your-date) in a few seconds, browse photo and film coverage in [Dallas](/quinceanera-photographer/dallas) or [Fort Worth](/quinceanera-photographer/fort-worth), or [reserve your date](/reserve) when you're ready to lock it in.",
+      text: "Once you know your number, the date is what makes it real — Saturdays in spring and fall book out first across the metroplex. You can [check if your date is open](/check-your-date) in a few seconds, browse photo and film coverage in [Dallas](/quinceanera-photographer/dallas) or [Fort Worth](/quinceanera-photographer/fort-worth), or [reserve your date](/#intake) when you're ready to lock it in.",
     },
   ],
   faqs: [
     {
       q: "How much does a quinceañera cost in Texas?",
-      a: "Most quinceañeras in Texas cost between $5,000 and $20,000, with the typical Dallas–Fort Worth celebration landing in the $8,000–$15,000 range. The two biggest factors are your guest count and your venue — food and venue together often make up about half the total.",
+      a: "Most Dallas–Fort Worth quinceañeras cost between $12,000 and $25,000, with luxury celebrations running $25,000–$50,000 and up. The two biggest factors are your guest count and your venue — food and venue together often make up about half the total.",
     },
     {
       q: "What percentage of the budget should go to photography?",
-      a: "Plan for roughly 10–15% of your total quinceañera budget for photography and video combined. It's worth protecting that slice because photos and film are the only things that outlast the day — everything else is rented for a night.",
+      a: "Plan for roughly 8–15% of your total quinceañera budget for photography and video combined. It's worth protecting that slice because photos and film are the only things that outlast the day — everything else is rented for a night.",
     },
     {
       q: "How can I save money on a quinceañera?",
@@ -147,7 +155,7 @@ const post: BlogPost = {
     },
     {
       q: "Are venue packages the same as photography packages?",
-      a: "No. All-inclusive venue packages (often $2,000–$4,000 in DFW) buy you the room, tables, and sometimes catering or a DJ. A photography and film collection is a separate vendor and craft — at TX Quince those are fixed at $1,800, $2,500, $3,900, and $5,500. Similar-looking prices, completely different purchases.",
+      a: `No. All-inclusive venue packages (often $2,000–$4,000 in DFW) buy you the room, tables, and sometimes catering or a DJ. A photography and film commission is a separate vendor and craft — at TX Quince those are published at ${study}, ${cinema}, ${production}, and ${archive}. Similar-sounding "packages," completely different purchases.`,
     },
   ],
   related: [

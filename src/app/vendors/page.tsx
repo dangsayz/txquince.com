@@ -10,6 +10,8 @@ import { site } from "@/content/site";
 import { getVendors, getPortfolioImages } from "@/lib/content-db";
 import { VENDOR_CATEGORIES, altPhraseFor, vendorCategoryLabel } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
+import { FinalCTA } from "@/components/FinalCTA";
+import "@/components/txq/pages/pages.css";
 
 export const revalidate = 3600;
 
@@ -78,55 +80,89 @@ export default async function VendorsPage() {
   return (
     <>
       {jsonLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replaceAll("<", "\\u003c") }} />}
-      <header className="bg-white px-4 pt-5 sm:px-6 md:px-10 md:pt-8">
-        <div className="relative mx-auto min-h-[50svh] max-w-[92rem] overflow-hidden bg-ink sm:min-h-[65svh]">
-          <Image src={heroPhoto?.url ?? "/portfolio/reception.webp"} alt={heroPhoto ? publicPhotoCopy(heroPhoto, altPhraseFor(heroPhoto.section)).alt : "Quinceañera celebration in Dallas–Fort Worth"} fill priority unoptimized={!heroPhoto} sizes="(max-width: 1472px) 100vw, 1472px" className="object-cover" style={heroPhoto ? { objectPosition: `${Math.round((heroPhoto.focus_x ?? 0.5) * 100)}% ${Math.round((heroPhoto.focus_y ?? 0.4) * 100)}%` } : undefined} />
-          <div className="absolute inset-0 bg-black/35" aria-hidden="true" />
-          <div className="relative flex min-h-[50svh] flex-col items-center justify-center px-6 py-20 text-center text-white sm:min-h-[65svh]">
-            <p className="text-[0.6875rem] uppercase tracking-[0.28em]">TX Quince / Community</p>
-            <h1 className="mt-5 max-w-[18ch] font-body text-[clamp(2.25rem,4.4vw,4rem)] font-light leading-[1.14] tracking-[-0.035em]">The people behind the celebration.</h1>
-            <a href="#vendor-directory" className="mt-8 inline-flex min-h-11 items-center border-b border-white/80 text-xs uppercase tracking-[0.18em]">Explore the directory <span className="ml-3" aria-hidden="true">↓</span></a>
+      <div className="tq-wrap">
+        <header className="tq-pg-mast" aria-labelledby="vendors-title">
+          <p className="tq-pg-mast__index tq-mono">[TX Quince / Community]</p>
+          <div className="tq-pg-mast__body">
+            <h1 id="vendors-title" className="tq-display tq-pg-mast__title">
+              The people behind the celebration.
+            </h1>
+            <p className="tq-pg-mast__dek">Explore the vendors credited in TX Quince photographs across Dallas–Fort Worth.</p>
+            <div className="tq-pg-actions">
+              <a href="#vendor-directory" className="tq-btn tq-btn--lg tq-btn--ghost">
+                Explore the directory <span aria-hidden>↓</span>
+              </a>
+            </div>
           </div>
-        </div>
-        <p className="mx-auto max-w-[92rem] px-2 py-9 text-center font-serif text-lg leading-relaxed text-ink-soft sm:py-12 sm:text-xl">Explore the vendors credited in TX Quince photographs across Dallas–Fort Worth.</p>
-      </header>
+        </header>
+        <figure className="tq-pg-plate tq-pg-plate--short">
+          <Image src={heroPhoto?.url ?? "/portfolio/reception.webp"} alt={heroPhoto ? publicPhotoCopy(heroPhoto, altPhraseFor(heroPhoto.section)).alt : "Quinceañera celebration in Dallas–Fort Worth"} fill priority unoptimized={!heroPhoto} sizes="100vw" style={heroPhoto ? { objectPosition: `${Math.round((heroPhoto.focus_x ?? 0.5) * 100)}% ${Math.round((heroPhoto.focus_y ?? 0.4) * 100)}%` } : undefined} />
+          <figcaption>
+            <span className="tq-tag tq-tag--bl tq-mono">[{vendors.length} vendors credited]</span>
+          </figcaption>
+        </figure>
+      </div>
 
-      <div id="vendor-directory" className="scroll-mt-24 bg-white">
+      <div id="vendor-directory">
         {sections.length === 0 ? (
-          <div className="mx-auto max-w-[90rem] px-5 py-20 sm:px-10 lg:px-16">
-            <h2 className="font-display text-2xl font-normal text-ink">No vendor credits yet.</h2>
-            <p className="mt-3 max-w-md text-base leading-7 text-ink-soft">Explore the photographs while this directory is being curated.</p>
-            <Link href="/portfolio" className="mt-6 inline-flex min-h-11 items-center gap-3 border-b border-ink text-sm font-medium text-ink">View the portfolio <span aria-hidden="true">↗</span></Link>
-          </div>
-        ) : sections.map((section, sectionIndex) => (
-          <section key={section.id} className="border-t border-line" aria-labelledby={`vendor-category-${sectionIndex}`}>
-            <div className="mx-auto max-w-[92rem] px-4 py-16 sm:px-6 md:px-10 md:py-24 lg:px-14">
-              <div>
-                <p className="text-[0.6875rem] uppercase tracking-[0.22em] text-ink-soft">0{sectionIndex + 1} / Vendor credits</p>
-                <h2 id={`vendor-category-${sectionIndex}`} className="mt-3 font-body text-[clamp(1.75rem,2.7vw,2.5rem)] font-light leading-tight text-ink">{section.label}</h2>
+          <section className="tq-section" aria-labelledby="vendor-empty">
+            <div className="tq-wrap">
+              <div className="tq-pg-empty" style={{ borderBottom: 0 }}>
+                <span className="tq-mono tq-muted">[Directory]</span>
+                <h2 id="vendor-empty" className="tq-display">No vendor credits yet.</h2>
+                <p>Explore the photographs while this directory is being curated.</p>
+                <Link href="/portfolio" className="tq-btn tq-btn--lg tq-btn--ghost">
+                  View the portfolio <span className="tq-arrow" aria-hidden>↗</span>
+                </Link>
               </div>
-              <ul className="mt-10 grid gap-x-5 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-7">
+            </div>
+          </section>
+        ) : sections.map((section, sectionIndex) => (
+          <section key={section.id} className="tq-section" aria-labelledby={`vendor-category-${sectionIndex}`}>
+            <div className="tq-wrap">
+              <header className="tq-head">
+                <p className="tq-head__index tq-mono" style={{ margin: 0 }}>
+                  [{String(sectionIndex + 1).padStart(2, "0")} / Vendor credits]
+                </p>
+                <h2 id={`vendor-category-${sectionIndex}`} className="tq-display tq-head__title">
+                  {section.label}
+                </h2>
+                <p className="tq-head__dek tq-mono">
+                  {section.vendors.length} {section.vendors.length === 1 ? "vendor" : "vendors"}
+                </p>
+              </header>
+              <ul className="tq-pg-cards">
                 {section.vendors.map((vendor) => {
                   const count = counts.get(vendor.id) ?? 0;
                   const image = covers.get(vendor.id);
-                  return <li key={vendor.id}>
-                    <Link href={`/vendors/${vendor.slug}`} className="group block text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">
-                      <span className="relative block aspect-[4/5] overflow-hidden bg-cream sm:aspect-[4/3]">
-                        {image?.url ? <Image src={image.url} alt={publicPhotoCopy(image, altPhraseFor(image.section)).alt} fill sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw" className="object-cover transition-transform duration-700 group-hover:scale-[1.025] motion-reduce:transition-none" /> : <span className="absolute inset-0 flex items-end p-6 font-serif text-lg italic text-ink-soft">Photographs coming soon</span>}
-                      </span>
-                      <span className="mt-4 flex items-start justify-between gap-3 border-b border-line pb-4">
-                        <span className="font-body text-xl font-light leading-tight sm:text-2xl">{vendor.business || vendor.name}</span>
-                        <span className="shrink-0 text-sm text-ink-soft" aria-hidden="true">↗</span>
-                      </span>
-                      <span className="mt-2 block text-xs uppercase tracking-[0.15em] text-ink-soft">{count > 0 ? `${count} ${count === 1 ? "photograph" : "photographs"}` : "See vendor"}</span>
-                    </Link>
-                  </li>;
+                  return (
+                    <li key={vendor.id}>
+                      <Link href={`/vendors/${vendor.slug}`} className="tq-pg-card">
+                        <span className="tq-pg-card__media">
+                          {image?.url ? (
+                            <Image src={image.url} alt={publicPhotoCopy(image, altPhraseFor(image.section)).alt} fill sizes="(max-width: 639px) 100vw, (max-width: 1039px) 50vw, 33vw" />
+                          ) : (
+                            <span className="tq-pg-card__empty tq-mono">[Photographs coming soon]</span>
+                          )}
+                        </span>
+                        <span className="tq-pg-card__name">
+                          <span>{vendor.business || vendor.name}</span>
+                          <span className="tq-arrow tq-muted" aria-hidden>↗</span>
+                        </span>
+                        <span className="tq-pg-card__meta tq-mono">
+                          {count > 0 ? `${count} ${count === 1 ? "photograph" : "photographs"}` : "See vendor"}
+                        </span>
+                      </Link>
+                    </li>
+                  );
                 })}
               </ul>
             </div>
           </section>
         ))}
       </div>
+
+      <FinalCTA headline="Planning with your favorite vendors? Let's check the date." />
     </>
   );
 }

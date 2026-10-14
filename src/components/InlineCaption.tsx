@@ -12,6 +12,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useIsAdmin } from "@/components/EditMode";
+import "@/components/txq/pages/pages.css";
 
 export function InlineCaption({
   value,
@@ -59,6 +60,7 @@ export function InlineCaption({
       <input
         ref={inputRef}
         value={draft}
+        aria-label="Caption"
         onChange={(e) => setDraft(e.target.value)}
         onBlur={commit}
         onKeyDown={(e) => {
@@ -70,7 +72,7 @@ export function InlineCaption({
             setEditing(false);
           }
         }}
-        className={`${className ?? ""} w-full max-w-full border-b border-wine bg-transparent outline-none`}
+        className={`tq-pg-icap-input ${className ?? ""}`}
       />
     );
   }
@@ -82,18 +84,14 @@ export function InlineCaption({
         setEditing(true);
       }}
       title="Double-click to edit (admin only)"
-      className={`${className ?? ""} group/cap inline-flex cursor-text items-center gap-1.5 rounded-sm px-0.5 transition-colors hover:bg-wine/10 ${
-        value ? "" : "italic text-ink-faint"
-      }`}
+      data-empty={value ? undefined : "true"}
+      className={`tq-pg-icap ${className ?? ""}`}
     >
       {value || placeholder}
-      <span
-        aria-hidden
-        className="opacity-0 transition-opacity group-hover/cap:opacity-100"
-      >
+      <span aria-hidden className="tq-pg-icap__pen">
         ✎
       </span>
-      {saving ? <span className="text-[0.85em] not-italic text-ink-faint">saving…</span> : null}
+      {saving ? <span className="tq-mono tq-muted">saving…</span> : null}
     </span>
   );
 }

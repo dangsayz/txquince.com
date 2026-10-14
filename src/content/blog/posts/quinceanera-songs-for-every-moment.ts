@@ -122,7 +122,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Once your songs are set, you can [check if your date is open](/check-your-date) in seconds, see what each [collection includes](/investment) for photo and film, or [reserve your date](/reserve). And if you're still building the running order of the night, our [order of events guide](/blog/what-happens-at-a-quinceanera-order-of-events) shows exactly where each of these songs falls.",
+      text: "Once your songs are set, you can [check if your date is open](/check-your-date) in seconds, see what each [commission includes](/#commissions) for photo and film, or [reserve your date](/#intake). And if you're still building the running order of the night, our [order of events guide](/blog/what-happens-at-a-quinceanera-order-of-events) shows exactly where each of these songs falls.",
     },
   ],
   faqs: [

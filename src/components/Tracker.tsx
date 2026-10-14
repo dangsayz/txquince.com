@@ -100,11 +100,11 @@ export function Tracker() {
     });
   }, [pathname, search]);
 
-  // Delegated CTA tracking: any click on a link to /reserve is booking intent.
+  // Delegated CTA tracking: any click on a link to the intake is booking intent.
   useEffect(() => {
     function onClick(e: MouseEvent) {
-      const a = (e.target as HTMLElement | null)?.closest?.('a[href*="/reserve"]');
-      if (a) trackEvent("cta_clicked", a.getAttribute("href") || "/reserve");
+      const a = (e.target as HTMLElement | null)?.closest?.('a[href*="#intake"]');
+      if (a) trackEvent("cta_clicked", a.getAttribute("href") || "/#intake");
     }
     document.addEventListener("click", onClick, { capture: true });
     return () => document.removeEventListener("click", onClick, { capture: true });
