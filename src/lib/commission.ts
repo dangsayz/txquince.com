@@ -434,13 +434,18 @@ export const commissionSchema = z.object({
   note: z.string().trim().max(2000).optional().default(""),
   /** May we share some photos/videos publicly? */
   share_permission: z.boolean().default(true),
-  /** The signed agreement: typed full name + drawn signature + consent. */
-  signed_name: z.string().trim().min(2, "Type your full name to sign.").max(120),
+  /**
+   * The signed agreement: typed full name + drawn signature + consent.
+   * Optional at request time — the homepage sends a REQUEST; the family signs
+   * later, on their private booking page, once the studio confirms the date.
+   */
+  signed_name: z.string().trim().min(2, "Type your full name to sign.").max(120).optional(),
   signature: z
     .string()
     .max(400_000)
-    .regex(/^data:image\/png;base64,[A-Za-z0-9+/=]+$/, "Please sign in the box."),
-  agree: z.literal(true, { message: "Please check the box to agree." }),
+    .regex(/^data:image\/png;base64,[A-Za-z0-9+/=]+$/, "Please sign in the box.")
+    .optional(),
+  agree: z.literal(true, { message: "Please check the box to agree." }).optional(),
 });
 
 export type CommissionRequest = z.infer<typeof commissionSchema>;
@@ -468,7 +473,7 @@ export function describeCommission(r: CommissionRequest, q: Quote, book: PriceBo
     crewLine(r.tier, normalizeCrew(r.tier, r.crew_mix)),
     COORDINATOR_INCLUDED[r.tier] ? "Day-of coordinator: included" : "",
     `Total: ${usd(q.totalUsd)} · Deposit (${q.depositPercent}%): ${usd(q.retainerUsd)} · Balance: ${usd(q.balanceUsd)}`,
-    `Signed by: ${r.signed_name}`,
+    r.signed_name ? `Signed by: ${r.signed_name}` : "Request — not signed yet",
     `City: ${CITY_NAME[r.city]}${r.venue ? ` · Venue: ${r.venue}` : ""}${r.start_time ? ` · Starts: ${r.start_time}` : ""}`,
     `Scope: ${r.scope}`,
     r.honoree ? `Quinceañera: ${r.honoree}` : "",

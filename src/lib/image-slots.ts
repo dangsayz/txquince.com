@@ -156,23 +156,8 @@ const homeSlots: SlotDef[] = [
       sizes: SIZES.third,
     }),
   ),
-  (() => {
-    const w = work("w02");
-    return {
-      id: "home.intake.portrait",
-      group: "Homepage",
-      page: "/#intake",
-      paths: HOME,
-      label: "Homepage — portrait beside the date form",
-      defaultSrc: w.src,
-      defaultAlt: w.alt,
-      defaultWidth: w.width,
-      defaultHeight: w.height,
-      defaultFocus: w.focus,
-      crops: F.card,
-      sizes: "(min-width: 960px) 40vw, 100vw",
-    } satisfies SlotDef;
-  })(),
+  // (The intake portrait slot is gone: booking is now one panel inside
+  // Packages & Prices, with no portrait beside it.)
 ];
 
 /* --------------------------- marketing pages -------------------------- */

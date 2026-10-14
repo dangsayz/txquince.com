@@ -243,6 +243,10 @@ export type Tier = {
   numeral: string;
   name: L;
   summary: L;
+  /** Three or four plain-language points for the package card (prices and hours come from the book). */
+  bullets: L[];
+  /** The package we suggest to most families (badge on its card). */
+  recommended?: boolean;
   scope: "stills" | "both";
 };
 
@@ -255,6 +259,11 @@ export const TIERS: Tier[] = [
       en: "Photos only. A relaxed session before the big day — her dress, her style, beautiful light.",
       es: "Solo fotos. Una sesión tranquila antes del gran día — su vestido, su estilo, luz hermosa.",
     },
+    bullets: [
+      { en: "Photos only — no video", es: "Solo fotos — sin video" },
+      { en: "A relaxed session in her dress, before the big day", es: "Una sesión tranquila con su vestido, antes del gran día" },
+      { en: "60 edited photos", es: "60 fotos editadas" },
+    ],
     scope: "stills",
   },
   {
@@ -265,6 +274,12 @@ export const TIERS: Tier[] = [
       en: "One photographer and one videographer for the celebration, so you get the photos and the video.",
       es: "Un fotógrafo y un videógrafo en la celebración, para que tengas las fotos y el video.",
     },
+    bullets: [
+      { en: "Photos and video of the celebration", es: "Fotos y video de la celebración" },
+      { en: "An 8–10 minute video and a 1-minute trailer", es: "Un video de 8–10 minutos y un tráiler de 1 minuto" },
+      { en: "400+ edited photos", es: "Más de 400 fotos editadas" },
+      { en: "2 short videos for social media", es: "2 videos cortos para redes" },
+    ],
     scope: "both",
   },
   {
@@ -275,6 +290,13 @@ export const TIERS: Tier[] = [
       en: "The one we recommend most. A team of four plus a coordinator who runs the day, so you can enjoy it. Includes a portrait session and a printed album.",
       es: "La que más recomendamos. Un equipo de cuatro más una coordinadora que lleva el día, para que tú lo disfrutes. Incluye sesión de retratos y álbum impreso.",
     },
+    bullets: [
+      { en: "A coordinator who runs the day", es: "Una coordinadora que lleva el día" },
+      { en: "A portrait session at 1 location", es: "Una sesión de retratos en 1 lugar" },
+      { en: "A 12–15 minute video and a 90-second trailer", es: "Un video de 12–15 minutos y un tráiler de 90 segundos" },
+      { en: "700+ photos and a printed album", es: "Más de 700 fotos y un álbum impreso" },
+    ],
+    recommended: true,
     scope: "both",
   },
   {
@@ -285,6 +307,12 @@ export const TIERS: Tier[] = [
       en: "Everything in the Full Celebration, plus a second day for portraits, a team of five, and a larger album.",
       es: "Todo lo de la Celebración completa, más un segundo día de retratos, un equipo de cinco y un álbum más grande.",
     },
+    bullets: [
+      { en: "Everything in the Full Celebration", es: "Todo lo de la Celebración completa" },
+      { en: "A second day for portraits at 2 locations", es: "Un segundo día de retratos en 2 lugares" },
+      { en: "A 20-minute video and a 2-minute trailer", es: "Un video de 20 minutos y un tráiler de 2 minutos" },
+      { en: "1,000+ photos and a large album in a gift box", es: "Más de 1,000 fotos y un álbum grande en caja de regalo" },
+    ],
     scope: "both",
   },
 ];
