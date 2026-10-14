@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { FavoriteButton } from "@/components/gallery/Favorites";
 import { ShareModal } from "@/components/ShareModal";
+import "@/components/txq/pages/pages.css";
 
 export function PhotoActions({ section, slug, title, pageUrl, bookingHref }: {
   section: string;
@@ -16,10 +17,14 @@ export function PhotoActions({ section, slug, title, pageUrl, bookingHref }: {
 
   return (
     <>
-      <div className="flex flex-wrap gap-2" aria-label="Photo actions">
+      <div className="tq-pg-actions" role="group" aria-label="Photo actions">
+        <Link href={bookingHref} className="tq-btn tq-btn--lg">
+          Ask about your date <span className="tq-arrow" aria-hidden>→</span>
+        </Link>
         <FavoriteButton section={section} slug={slug} />
-        <button type="button" onClick={() => setShareOpen(true)} className="min-h-11 rounded-full border border-line bg-white px-4 text-sm font-medium text-ink hover:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">Share</button>
-        <Link href={bookingHref} className="inline-flex min-h-11 items-center rounded-full bg-ink px-5 text-sm font-medium text-white hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">Ask about your date ↗</Link>
+        <button type="button" onClick={() => setShareOpen(true)} className="tq-btn tq-btn--ghost">
+          Share
+        </button>
       </div>
       <ShareModal open={shareOpen} url={pageUrl} title={`${title} · TX Quince`} onClose={() => setShareOpen(false)} />
     </>

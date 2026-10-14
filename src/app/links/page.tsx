@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { site } from "@/content/site";
+import "@/components/txq/pages/pages.css";
 
 export const metadata: Metadata = {
   title: "Links",
@@ -20,25 +21,47 @@ const links = [
 
 export default function LinksPage() {
   return (
-    <section className="bg-white px-5 pb-24 pt-10 sm:px-8 sm:pt-16">
-      <div className="mx-auto max-w-xl">
-        <div className="relative aspect-[4/3] overflow-hidden bg-ink sm:aspect-[16/9]">
-          <Image src="/portfolio/red-garden.webp" alt="Quinceañera in a red gown among garden greenery" fill priority unoptimized sizes="(max-width: 640px) 100vw, 576px" className="object-cover object-[center_35%]" />
+    <div className="tq-wrap">
+      <header className="tq-pg-mast">
+        <p className="tq-pg-mast__index tq-mono">[Photography &amp; film / Dallas–Fort Worth]</p>
+        <div className="tq-pg-mast__body">
+          <h1 className="tq-display tq-pg-mast__title">{site.brand}</h1>
+          <p className="tq-pg-mast__dek">{site.tagline}</p>
         </div>
-        <p className="mt-10 text-xs uppercase tracking-[0.22em] text-ink-soft">Photography & film / Dallas–Fort Worth</p>
-        <h1 className="mt-4 font-body text-[clamp(2.5rem,5vw,3.5rem)] font-light leading-[1.1] tracking-[-0.04em] text-ink">{site.brand}</h1>
-        <p className="mt-4 font-serif text-lg leading-7 text-ink-soft">{site.tagline}</p>
-        <nav aria-label="Quick links" className="mt-9 border-t border-line">
-          {links.map((link) => (
-            <Link key={link.href} href={link.href} className="flex min-h-16 items-center justify-between border-b border-line py-3 text-left text-base text-ink transition-colors hover:text-ink-soft">
-              {link.label}<span aria-hidden="true">↗</span>
-            </Link>
-          ))}
-          <a href={site.social.instagram} target="_blank" rel="noopener noreferrer" className="flex min-h-16 items-center justify-between border-b border-line py-3 text-base text-ink transition-colors hover:text-ink-soft">Follow on Instagram<span aria-hidden="true">↗</span></a>
-          <a href={`mailto:${site.contact.email}`} className="flex min-h-16 items-center justify-between border-b border-line py-3 text-base text-ink transition-colors hover:text-ink-soft">Email us<span aria-hidden="true">↗</span></a>
+      </header>
+      <figure className="tq-pg-plate tq-pg-plate--short">
+        <Image src="/portfolio/red-garden.webp" alt="Quinceañera in a red gown among garden greenery" fill priority unoptimized sizes="100vw" style={{ objectPosition: "center 35%" }} />
+      </figure>
+      <div className="tq-pg-row" style={{ borderTop: "1px solid var(--border-hairline)" }}>
+        <p className="tq-pg-row__index tq-mono">[Index]</p>
+        <nav aria-label="Quick links" className="tq-pg-row__body tq-pg-row__body--narrow">
+          <ol className="tq-pg-index">
+            {links.map((link, i) => (
+              <li key={link.href}>
+                <Link href={link.href} className="tq-pg-index__row">
+                  <span className="tq-mono tq-muted">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="tq-pg-index__label">{link.label}</span>
+                  <span className="tq-pg-index__end" aria-hidden>↗</span>
+                </Link>
+              </li>
+            ))}
+            <li>
+              <a href={site.social.instagram} target="_blank" rel="noopener noreferrer" className="tq-pg-index__row">
+                <span className="tq-mono tq-muted">{String(links.length + 1).padStart(2, "0")}</span>
+                <span className="tq-pg-index__label">Follow on Instagram</span>
+                <span className="tq-pg-index__end" aria-hidden>↗</span>
+              </a>
+            </li>
+            <li>
+              <a href={`mailto:${site.contact.email}`} className="tq-pg-index__row">
+                <span className="tq-mono tq-muted">{String(links.length + 2).padStart(2, "0")}</span>
+                <span className="tq-pg-index__label">Email us</span>
+                <span className="tq-pg-index__end" aria-hidden>↗</span>
+              </a>
+            </li>
+          </ol>
         </nav>
-        <p className="mt-9 text-xs uppercase tracking-[0.16em] text-ink-soft">Dallas–Fort Worth, Texas</p>
       </div>
-    </section>
+    </div>
   );
 }

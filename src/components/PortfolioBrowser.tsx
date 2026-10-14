@@ -6,6 +6,7 @@ import { PortfolioGallery, type GalleryItem } from "@/components/PortfolioGaller
 import { VideoGallery } from "@/components/VideoGallery";
 import { groupForCategory } from "@/content/portfolio-taxonomy";
 import type { VideoRow } from "@/lib/content-db";
+import "@/components/txq/pages/pages.css";
 
 export type TabGroup = {
   id: string;
@@ -37,21 +38,17 @@ const TYPE_HINT: Record<string, string> = {
   films: "The day in motion",
 };
 
-/** The editorial header that introduces whichever type is showing on the right. */
+/** The editorial header that introduces whichever type is showing. */
 function GroupHeader({ group, count }: { group: Omit<TabGroup, "items">; count: number }) {
   return (
-    <header className="mb-9 md:mb-12">
-      <div className="flex items-center justify-between gap-4">
-        <p className="text-xs font-medium uppercase tracking-[0.2em] text-ink-soft">{group.eyebrow}</p>
-        <p className="text-xs tabular-nums text-ink-faint">
-          {count} {group.id === "films" ? (count === 1 ? "film" : "films") : (count === 1 ? "photograph" : "photographs")}
-        </p>
-      </div>
-      <h2 className="mt-4 font-serif text-[clamp(3rem,6vw,5.75rem)] leading-[0.95] tracking-[-0.035em] text-ink">
-        {group.title}
+    <header className="tq-head">
+      <p className="tq-head__index tq-mono" style={{ margin: 0 }}>
+        [{group.eyebrow} — {count} {group.id === "films" ? (count === 1 ? "film" : "films") : (count === 1 ? "photograph" : "photographs")}]
+      </p>
+      <h2 className="tq-display tq-head__title">
+        {group.title} <em>{group.hook}</em>
       </h2>
-      <p className="mt-4 font-serif text-2xl italic leading-tight text-wine-deep md:text-3xl">{group.hook}</p>
-      <p className="mt-4 max-w-xl font-body text-base leading-[1.7] text-ink-soft">{group.intro}</p>
+      <p className="tq-head__dek">{group.intro}</p>
     </header>
   );
 }
@@ -127,85 +124,57 @@ export function PortfolioBrowser({
   const showFilms = hasFilms && (active === "all" || active === "films");
 
   return (
-    <section className="mx-auto max-w-[90rem] px-5 pb-24 md:px-10 md:pb-32 lg:px-16">
-      <div className="lg:grid lg:grid-cols-12 lg:gap-14">
-        <aside className="sticky top-[72px] z-20 self-start lg:top-36 lg:col-span-3">
-          <div className="-mx-5 border-b border-line bg-cream/95 px-5 backdrop-blur supports-[backdrop-filter]:bg-cream/85 md:-mx-10 md:px-10 lg:mx-0 lg:border-0 lg:bg-transparent lg:px-0 lg:pr-4 lg:backdrop-blur-none lg:supports-[backdrop-filter]:bg-transparent">
-            <p className="mb-6 hidden text-xs font-medium uppercase tracking-[0.2em] text-ink-soft lg:block">
-              Explore the collection
-            </p>
-            <nav aria-label="Filter portfolio by type" className="flex gap-1 overflow-x-auto py-2 [scrollbar-width:none] lg:flex-col lg:gap-0 lg:overflow-visible lg:py-0 [&::-webkit-scrollbar]:hidden">
-              {choices.map((c) => {
-                const isActive = c.id === active;
-                return (
-                  <button
-                    key={c.id}
-                    type="button"
-                    aria-pressed={isActive}
-                    onClick={() => select(c.id)}
-                    className={`flex min-h-11 shrink-0 items-center gap-2 whitespace-nowrap border-b-2 px-4 font-body text-base transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wine lg:w-full lg:justify-between lg:gap-3 lg:border-b lg:border-line lg:px-0 lg:py-3 ${
-                      isActive
-                        ? "border-wine font-medium text-ink lg:border-wine"
-                        : "border-transparent text-ink-soft hover:text-ink lg:border-line"
-                    }`}
-                  >
-                    <span className="flex min-w-0 flex-col items-start leading-tight">
-                      <span>{c.label}</span>
-                      <span className="mt-1 hidden text-sm font-normal text-ink-faint lg:block">
-                        {TYPE_HINT[c.id] ?? "The collection"}
-                      </span>
-                    </span>
-                    <span className="hidden shrink-0 text-sm tabular-nums text-ink-faint lg:inline">
-                      {c.count}
-                    </span>
-                  </button>
-                );
-              })}
-            </nav>
-          </div>
-        </aside>
-
-        <div className="min-w-0 pt-10 lg:col-span-9 lg:pt-0">
-          {shownGroups.map((g, idx) => (
-            <section
-              key={g.id}
-              id={g.id}
-              className={`scroll-mt-36 ${idx > 0 ? "mt-20 border-t border-line pt-16 md:mt-28 md:pt-20" : ""}`}
+    <section className="tq-wrap">
+      <div className="tq-toolbar">
+        <div className="tq-filters" role="group" aria-label="Filter portfolio by type">
+          {choices.map((c) => (
+            <button
+              key={c.id}
+              type="button"
+              className="tq-pill"
+              aria-pressed={c.id === active}
+              title={TYPE_HINT[c.id] ?? "The collection"}
+              onClick={() => select(c.id)}
             >
-              <Reveal>
-                <GroupHeader group={g} count={g.items.length} />
-              </Reveal>
-              {g.items.length ? (
-                <PortfolioGallery
-                  images={g.items}
-                  columns="columns-1 md:columns-2 md:gap-6 xl:gap-8"
-                  imageSizes="(max-width: 767px) 90vw, (max-width: 1023px) 44vw, (max-width: 1440px) 31vw, 39rem"
-                />
-              ) : (
-                <p className="accent text-xl text-ink-faint">Coming soon.</p>
-              )}
-            </section>
+              {c.label} <span className="tq-mono" style={{ marginLeft: 8 }}>{c.count}</span>
+            </button>
           ))}
-
-          {showFilms ? (
-            <section
-              id="films"
-              className={`scroll-mt-36 ${
-                shownGroups.length ? "mt-20 border-t border-line pt-16 md:mt-28 md:pt-20" : ""
-              }`}
-            >
-              <Reveal>
-                <GroupHeader group={FILMS_GROUP} count={videos.length} />
-              </Reveal>
-              <VideoGallery videos={videos} />
-            </section>
-          ) : null}
-
-          {shownGroups.length === 0 && !showFilms ? (
-            <p className="accent text-xl text-ink-faint">Coming soon.</p>
-          ) : null}
         </div>
       </div>
+
+      {shownGroups.map((g) => (
+        <section key={g.id} id={g.id} className="tq-section">
+          <Reveal>
+            <GroupHeader group={g} count={g.items.length} />
+          </Reveal>
+          <div className="tq-inner" style={{ paddingBottom: 72 }}>
+            {g.items.length ? (
+              <PortfolioGallery
+                images={g.items}
+                columns="columns-1 md:columns-2 md:gap-6 xl:gap-8"
+                imageSizes="(max-width: 767px) 90vw, (max-width: 1023px) 44vw, (max-width: 1440px) 31vw, 39rem"
+              />
+            ) : (
+              <p className="tq-muted">Coming soon.</p>
+            )}
+          </div>
+        </section>
+      ))}
+
+      {showFilms ? (
+        <section id="films" className="tq-section">
+          <Reveal>
+            <GroupHeader group={FILMS_GROUP} count={videos.length} />
+          </Reveal>
+          <div className="tq-inner" style={{ paddingBottom: 72 }}>
+            <VideoGallery videos={videos} />
+          </div>
+        </section>
+      ) : null}
+
+      {shownGroups.length === 0 && !showFilms ? (
+        <p className="tq-muted tq-inner" style={{ paddingBlock: 48 }}>Coming soon.</p>
+      ) : null}
     </section>
   );
 }

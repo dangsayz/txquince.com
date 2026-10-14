@@ -5,6 +5,7 @@ import { getPortfolioImages } from "@/lib/content-db";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import { PortfolioGallery, type GalleryItem } from "@/components/PortfolioGallery";
 import { portfolioFallback } from "@/content/portfolio-fallback";
+import "@/components/txq/pages/pages.css";
 
 export const dynamic = "force-dynamic";
 
@@ -50,19 +51,25 @@ export default async function SavedPage() {
 
   return (
     <>
-      <header className="bg-white px-4 pt-5 sm:px-6 md:px-10 md:pt-8">
-        <div className="mx-auto flex max-w-[92rem] flex-col items-center bg-cream px-6 pb-20 pt-20 text-center md:pb-28 md:pt-28">
-          <p className="text-[0.6875rem] font-medium uppercase tracking-[0.28em] text-ink-soft">Your collection</p>
-          <h1 className="mt-5 font-body text-[clamp(2.5rem,5vw,4rem)] font-light leading-[1.1] tracking-[-0.045em] text-ink">Saved photographs</h1>
-          <p className="mt-6 max-w-[32rem] font-serif text-lg leading-[1.6] text-ink-soft">Keep the images that feel most like her. They stay in this browser while you plan.</p>
-          <Link href="/portfolio" className="mt-7 inline-flex min-h-12 items-center text-sm text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">← Back to the portfolio</Link>
-        </div>
-      </header>
-      <section className="bg-white" aria-label="Saved photograph gallery">
-        <div className="mx-auto max-w-[92rem] px-4 pb-24 pt-12 sm:px-6 md:px-10 md:pb-32 md:pt-16 lg:px-14">
-          <PortfolioGallery images={items} sections={sections} savedOnly editorial imageSizes="(max-width: 639px) calc(100vw - 2rem), (max-width: 1023px) 45vw, 42vw" />
-        </div>
-      </section>
+      <div className="tq-wrap">
+        <header className="tq-pg-mast" aria-labelledby="saved-title">
+          <p className="tq-pg-mast__index tq-mono">[Your collection]</p>
+          <div className="tq-pg-mast__body">
+            <h1 id="saved-title" className="tq-display tq-pg-mast__title">
+              Saved photographs
+            </h1>
+            <p className="tq-pg-mast__dek">Keep the images that feel most like her. They stay in this browser while you plan.</p>
+            <div className="tq-pg-actions">
+              <Link href="/portfolio" className="tq-btn tq-btn--lg tq-btn--ghost">
+                <span aria-hidden>←</span> Back to the portfolio
+              </Link>
+            </div>
+          </div>
+        </header>
+        <section aria-label="Saved photograph gallery">
+          <PortfolioGallery images={items} sections={sections} savedOnly editorial imageSizes="(max-width: 639px) 100vw, (max-width: 959px) 50vw, 40vw" />
+        </section>
+      </div>
     </>
   );
 }

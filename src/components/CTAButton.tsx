@@ -1,9 +1,10 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { ButtonLink } from "@/components/ui";
+import "@/components/txq/pages/pages.css";
 
 type Variant = "primary" | "onDark" | "ink" | "text";
 
+/** Homepage button system: tq-btn (48px primary), a light fill for dark media, or an underlined text link. */
 export function CTAButton({
   href,
   children,
@@ -16,10 +17,17 @@ export function CTAButton({
   className?: string;
 }) {
   if (variant === "text") {
-    return <Link href={href} className={`inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-accent transition-colors hover:text-accent-strong ${className}`}>{children}<span aria-hidden="true">↗</span></Link>;
+    return (
+      <Link href={href} className={`tq-pg-link ${className}`}>
+        <span>{children}</span>
+        <span className="tq-arrow" aria-hidden>↗</span>
+      </Link>
+    );
   }
-  if (variant === "onDark") {
-    return <Link href={href} className={`inline-flex min-h-11 items-center justify-center rounded-lg border border-white bg-white px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-ivory ${className}`}>{children}</Link>;
-  }
-  return <ButtonLink href={href} tone="primary" className={className}>{children}</ButtonLink>;
+  const tone = variant === "onDark" ? " tq-pg-btn--light" : "";
+  return (
+    <Link href={href} className={`tq-btn tq-btn--lg${tone} ${className}`}>
+      {children} <span className="tq-arrow" aria-hidden>→</span>
+    </Link>
+  );
 }

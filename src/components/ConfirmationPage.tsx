@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { site } from "@/content/site";
 import { getFeaturedImages } from "@/lib/content-db";
 import { selectFullBleedPhoto } from "@/lib/quality-photo";
+import "@/components/txq/pages/pages.css";
 
 type ConfirmationPageProps = {
   eyebrow: string;
@@ -26,20 +27,39 @@ export async function ConfirmationPage({
 }: ConfirmationPageProps) {
   const photo = selectFullBleedPhoto(await getFeaturedImages(12), 2);
   return (
-    <section className="bg-white">
-      <div className="relative h-[32svh] min-h-64 overflow-hidden bg-greige sm:h-[40svh]">
-        <Image src={photo?.url ?? "/portfolio/hero.webp"} alt="" fill priority unoptimized={!photo} sizes="100vw" className="object-cover object-[center_46%]" />
-      </div>
-      <div className="mx-auto max-w-[55rem] px-5 py-20 sm:px-10 sm:py-28">
-        <p className="text-[.7rem] uppercase tracking-[.2em] text-ink-soft">{eyebrow}</p>
-        <h1 className="mt-7 max-w-[22ch] font-display text-[clamp(2.1rem,3.3vw,3.3rem)] font-light leading-tight tracking-[-.035em] text-ink">{title}</h1>
-        <div className="mt-7 max-w-2xl font-serif text-lg leading-8 text-ink-soft">{children}</div>
-        <div className="mt-10 flex flex-wrap items-center gap-x-10 gap-y-2 border-t border-line pt-6">
-          <Link href="/portfolio" className="inline-flex min-h-12 items-center gap-6 border-b border-ink text-xs uppercase tracking-[.14em] text-ink">{primaryLabel}<span aria-hidden="true">↗</span></Link>
-          <Link href={homeHref} className="inline-flex min-h-12 items-center text-xs uppercase tracking-[.14em] text-ink-soft">{homeLabel}</Link>
+    <div className="tq-wrap">
+      <header className="tq-pg-mast">
+        <p className="tq-pg-mast__index tq-mono" style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <span className="tq-dot" aria-hidden /> [{eyebrow}]
+        </p>
+        <div className="tq-pg-mast__body">
+          <h1 className="tq-display tq-pg-mast__title tq-pg-mast__title--sm">{title}</h1>
+          <div className="tq-pg-mast__dek">{children}</div>
+          <div className="tq-pg-actions">
+            <Link href="/portfolio" className="tq-btn tq-btn--lg">
+              {primaryLabel} <span className="tq-arrow" aria-hidden>↗</span>
+            </Link>
+            <Link href={homeHref} className="tq-btn tq-btn--lg tq-btn--ghost">
+              {homeLabel}
+            </Link>
+          </div>
         </div>
-        <p className="mt-12 text-sm leading-7 text-ink-soft">{contactLabel} <a href={`mailto:${site.contact.email}`} className="text-ink underline underline-offset-4">{site.contact.email}</a>.</p>
+      </header>
+      <figure className="tq-pg-plate tq-pg-plate--short">
+        <Image src={photo?.url ?? "/portfolio/hero.webp"} alt="" fill priority unoptimized={!photo} sizes="100vw" style={{ objectPosition: "center 46%" }} />
+      </figure>
+      <div className="tq-pg-row" style={{ borderTop: "1px solid var(--border-hairline)" }}>
+        <p className="tq-pg-row__index tq-mono">[TX Quince]</p>
+        <div className="tq-pg-row__body">
+          <p className="tq-muted" style={{ margin: 0 }}>
+            {contactLabel}{" "}
+            <a href={`mailto:${site.contact.email}`} className="tq-pg-inline">
+              {site.contact.email}
+            </a>
+            .
+          </p>
+        </div>
       </div>
-    </section>
+    </div>
   );
 }

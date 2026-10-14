@@ -20,6 +20,7 @@ import { igUrl, websiteUrl } from "@/lib/vendor-links";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import { venueForLocation } from "@/content/venues";
 import { PhotoActions } from "@/components/gallery/PhotoActions";
+import "@/components/txq/pages/pages.css";
 
 /** Branded serve URL at an explicit derivative width. */
 function at(url: string, w: number): string {
@@ -121,111 +122,137 @@ export default async function PhotoPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replaceAll("<", "\\u003c") }}
       />
-      <article className="bg-white">
-        <div className="mx-auto flex max-w-[92rem] flex-wrap items-center justify-between gap-3 px-4 py-5 text-xs uppercase tracking-[0.12em] text-ink-soft sm:px-6 md:px-10 lg:px-14">
-          <Link href={`/portfolio#${img.section}`} className="inline-flex min-h-11 items-center gap-3 text-ink transition-colors hover:text-ink-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">
+      <article className="tq-wrap">
+        <nav className="tq-pg-crumbs tq-mono" aria-label="Breadcrumb">
+          <Link href={`/portfolio#${img.section}`}>
             <span aria-hidden="true">←</span> Portfolio
           </Link>
-          <span>{label} <span aria-hidden="true">/</span> TX Quince</span>
-        </div>
+          <span>
+            {label} <span aria-hidden="true">/</span> TX Quince
+          </span>
+        </nav>
 
-        <header className="mx-4 border-t border-line bg-white px-5 py-12 text-center sm:mx-6 md:mx-10 md:py-16 lg:mx-auto lg:max-w-[92rem]">
-          <p className="text-[0.6875rem] font-medium uppercase tracking-[0.28em] text-ink-soft">{label}</p>
-          <h1 className="mx-auto mt-5 max-w-[50rem] font-body text-[clamp(2rem,4vw,3.25rem)] font-light leading-[1.12] tracking-[-0.03em] text-ink">{copy.title}</h1>
-          <p className="mt-5 text-[0.6875rem] font-medium uppercase tracking-[0.18em] text-ink-soft">Photography by {site.brand}</p>
+        <header className="tq-pg-mast">
+          <p className="tq-pg-mast__index tq-mono">[{label}]</p>
+          <div className="tq-pg-mast__body">
+            <h1 className="tq-display tq-pg-mast__title tq-pg-mast__title--sm">{copy.title}</h1>
+            <p className="tq-mono tq-muted" style={{ margin: 0 }}>Photography by {site.brand}</p>
+          </div>
         </header>
 
-        <figure className="mx-auto max-w-[92rem] bg-white px-4 pt-6 sm:px-6 md:px-10 md:pt-10 lg:px-14">
-          <div className="relative flex min-h-[40svh] items-center justify-center bg-[#f5f4f0] p-3 sm:p-8 lg:min-h-[65svh] lg:p-12">
+        <figure style={{ margin: 0 }}>
+          <div className="tq-pg-photo">
             <ProtectedImg
               src={at(img.url, 1920)}
               alt={copy.alt}
               width={img.width}
               height={img.height}
               loading="eager"
-              className="block h-auto max-h-[82svh] max-w-full object-contain"
+              className="tq-pg-photo__img"
             />
             <EditOverlay image={{ id: img.id, slug: img.slug, alt: img.alt, fx: img.focus_x, fy: img.focus_y }} />
           </div>
-          <figcaption className="flex justify-between gap-4 py-4 text-[0.6875rem] uppercase tracking-[0.15em] text-ink-soft">
-            <span>{label}</span>
+          <figcaption className="tq-pg-cap tq-mono">
+            <span>[{label}]</span>
             <span>Photography by {site.brand}</span>
           </figcaption>
         </figure>
 
-        <div className="mx-auto grid max-w-[92rem] gap-12 px-4 pb-24 pt-14 sm:px-6 md:grid-cols-[minmax(0,1fr)_minmax(16rem,0.7fr)] md:gap-20 md:px-10 md:pb-32 md:pt-20 lg:px-14">
-          <div className="max-w-2xl">
-            <p className="text-[0.6875rem] font-medium uppercase tracking-[0.2em] text-ink-soft">The photograph</p>
-            {img.hook ? <p className="mt-5 font-serif text-[clamp(1.375rem,2.25vw,2rem)] leading-[1.5] text-ink">{img.hook}</p> : null}
-            {img.caption && copy.description !== copy.alt ? <p className="mt-5 text-base leading-8 text-ink-soft">{copy.description}</p> : null}
-            <div className="mt-8">
-              <PhotoActions section={img.section} slug={slug} title={copy.title} pageUrl={pageUrl} bookingHref={site.cta.href} />
-            </div>
+        <section className="tq-pg-row" style={{ borderTop: "1px solid var(--border-hairline)" }} aria-labelledby="photo-about">
+          <h2 id="photo-about" className="tq-pg-row__index tq-mono">[The photograph]</h2>
+          <div className="tq-pg-row__body tq-pg-row__body--narrow">
+            {img.hook ? <p className="tq-display tq-pg-lede">{img.hook}</p> : null}
+            {img.caption && copy.description !== copy.alt ? (
+              <div className="tq-pg-prose">
+                <p>{copy.description}</p>
+              </div>
+            ) : null}
+            <PhotoActions section={img.section} slug={slug} title={copy.title} pageUrl={pageUrl} bookingHref={site.cta.href} />
           </div>
+        </section>
 
-          <div className="border-t border-line pt-7 md:pt-0">
-            <p className="text-[0.6875rem] font-medium uppercase tracking-[0.2em] text-ink-soft">The details</p>
-            <dl className="mt-5 grid gap-x-8 gap-y-6 text-base sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
+        <section className="tq-pg-row" aria-labelledby="photo-details">
+          <h2 id="photo-details" className="tq-pg-row__index tq-mono">[The details]</h2>
+          <div className="tq-pg-row__body tq-pg-row__body--narrow">
+            <dl className="tq-pg-dl">
               <div>
-                <dt className="text-[0.6875rem] uppercase tracking-[0.15em] text-ink-soft">Photographer</dt>
-                <dd className="mt-1 text-ink">{site.brand}</dd>
+                <dt className="tq-mono">Photographer</dt>
+                <dd>{site.brand}</dd>
               </div>
               {venue ? (
                 <div>
-                  <dt className="text-[0.6875rem] uppercase tracking-[0.15em] text-ink-soft">Venue</dt>
-                  <dd className="mt-1"><Link href={`/venues/${venue.slug}`} className="text-ink underline decoration-line underline-offset-4 hover:decoration-ink">{venue.venue}</Link></dd>
+                  <dt className="tq-mono">Venue</dt>
+                  <dd>
+                    <Link href={`/venues/${venue.slug}`}>{venue.venue}</Link>
+                  </dd>
                 </div>
               ) : null}
               <div>
-                <dt className="text-[0.6875rem] uppercase tracking-[0.15em] text-ink-soft">Location</dt>
-                <dd className="mt-1 text-ink">{img.city ? `${img.city}, TX` : "Dallas–Fort Worth, TX"}</dd>
+                <dt className="tq-mono">Location</dt>
+                <dd>{img.city ? `${img.city}, TX` : "Dallas–Fort Worth, TX"}</dd>
               </div>
               <div>
-                <dt className="text-[0.6875rem] uppercase tracking-[0.15em] text-ink-soft">Series</dt>
-                <dd className="mt-1"><Link href={`/portfolio#${img.section}`} className="text-ink underline decoration-line underline-offset-4 hover:decoration-ink">{label}</Link></dd>
+                <dt className="tq-mono">Series</dt>
+                <dd>
+                  <Link href={`/portfolio#${img.section}`}>{label}</Link>
+                </dd>
               </div>
               {(img.vendors ?? []).map((v) => {
                 const ig = igUrl(v.ig_handle);
                 const out = ig || websiteUrl(v.website);
                 return (
                   <div key={v.vendor_id}>
-                    <dt className="text-[0.6875rem] uppercase tracking-[0.15em] text-ink-soft">{v.role || vendorCreditLabel(v.category)}</dt>
-                    <dd className="mt-1 flex items-center gap-2">
-                      <Link href={`/vendors/${v.slug}`} className="text-ink underline decoration-line underline-offset-4 hover:decoration-ink">{v.business || v.name}</Link>
-                      {out ? <a href={out} target="_blank" rel="noopener noreferrer" aria-label={`Open ${v.business || v.name} ${ig ? "Instagram" : "website"}`} className="inline-flex min-h-11 min-w-11 items-center justify-center text-ink-soft hover:text-ink">↗</a> : null}
+                    <dt className="tq-mono">{v.role || vendorCreditLabel(v.category)}</dt>
+                    <dd>
+                      <Link href={`/vendors/${v.slug}`}>{v.business || v.name}</Link>
+                      {out ? (
+                        <a href={out} target="_blank" rel="noopener noreferrer" aria-label={`Open ${v.business || v.name} ${ig ? "Instagram" : "website"}`} className="tq-icon-btn">
+                          ↗
+                        </a>
+                      ) : null}
                     </dd>
                   </div>
                 );
               })}
             </dl>
           </div>
-        </div>
+        </section>
 
         {related.length ? (
-          <section className="border-t border-line bg-white" aria-labelledby="more-from-series">
-            <div className="mx-auto max-w-[92rem] px-4 py-20 sm:px-6 md:px-10 md:py-28 lg:px-14">
-              <div className="flex flex-wrap items-end justify-between gap-4">
-                <div>
-                  <p className="text-[0.6875rem] font-medium uppercase tracking-[0.2em] text-ink-soft">Continue looking</p>
-                  <h2 id="more-from-series" className="mt-3 font-body text-[clamp(2rem,3vw,3rem)] font-light text-ink">More from {label}</h2>
-                </div>
-                <Link href={`/portfolio#${img.section}`} className="inline-flex min-h-11 items-center text-base text-ink underline underline-offset-4 hover:text-ink-soft">View the collection ↗</Link>
-              </div>
-              <div className="mt-9 grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3">
-                {related.map((r) => (
-                  <Link key={r.id} href={imagePagePath(r.section, r.slug as string)} aria-label={`View ${publicPhotoCopy(r, altPhraseFor(r.section)).title}`} className="group relative block aspect-[4/5] overflow-hidden bg-greige focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">
-                    <ProtectedImg
-                      src={at(r.url, 640)}
-                      alt={publicPhotoCopy(r, altPhraseFor(r.section)).alt}
-                      loading="lazy"
-                      width={r.width}
-                      height={r.height}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.025] motion-reduce:transition-none"
-                    />
-                  </Link>
-                ))}
-              </div>
-            </div>
+          <section className="tq-section" aria-labelledby="more-from-series">
+            <header className="tq-head">
+              <p className="tq-head__index tq-mono" style={{ margin: 0 }}>
+                [Continue looking]
+              </p>
+              <h2 id="more-from-series" className="tq-display tq-head__title">
+                More from {label}
+              </h2>
+              <p className="tq-head__dek">
+                <Link href={`/portfolio#${img.section}`} className="tq-pg-link">
+                  <span>View the collection</span>
+                  <span className="tq-arrow" aria-hidden>↗</span>
+                </Link>
+              </p>
+            </header>
+            <ul className="tq-pg-thumbs">
+              {related.map((r, i) => {
+                const rc = publicPhotoCopy(r, altPhraseFor(r.section));
+                return (
+                  <li key={r.id}>
+                    <Link href={imagePagePath(r.section, r.slug as string)} aria-label={`View ${rc.title}`}>
+                      <span className="tq-pg-thumb">
+                        <ProtectedImg src={at(r.url, 640)} alt={rc.alt} loading="lazy" width={r.width} height={r.height} />
+                      </span>
+                      <span className="tq-cap tq-mono">
+                        <span>[{String(i + 1).padStart(2, "0")}]</span>
+                        <span className="tq-cap__mid">{rc.title}</span>
+                        <span className="tq-cap__end" aria-hidden>↗</span>
+                      </span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
           </section>
         ) : null}
       </article>

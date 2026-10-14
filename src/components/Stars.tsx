@@ -1,6 +1,7 @@
 import { site } from "@/content/site";
+import "@/components/txq/pages/pages.css";
 
-/** Five-star rating mark, brand-toned. Decorative + labeled for a11y. */
+/** Five-star rating mark in the ink tone. Decorative glyphs, labeled for a11y. */
 export function Stars({
   count = site.proof.stars,
   className = "",
@@ -9,16 +10,11 @@ export function Stars({
   className?: string;
 }) {
   return (
-    <span
-      className={`inline-flex items-center gap-0.5 text-accent ${className}`}
-      role="img"
-      aria-label={`${count} out of 5 stars`}
-    >
+    <span className={`tq-pg-stars ${className}`} role="img" aria-label={`${count} out of 5 stars`}>
       {Array.from({ length: 5 }).map((_, i) => (
         <svg
           key={i}
           viewBox="0 0 20 20"
-          className="h-4 w-4"
           fill={i < count ? "currentColor" : "none"}
           stroke="currentColor"
           strokeWidth="1"

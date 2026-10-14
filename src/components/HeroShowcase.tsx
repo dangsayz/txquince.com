@@ -3,12 +3,13 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import type { HeroMedia } from "@/lib/content-db";
+import "@/components/txq/pages/pages.css";
 
 /**
  * HeroShowcase — the framed visual on the right of the hero. Renders, in order
  * of preference: an admin-set video (YouTube/Vimeo as a silent ambient loop, or
  * a direct .mp4), an admin-set photo, the top featured portfolio photo, or a
- * soft Claura gradient. For embeds we paint the poster first and defer mounting
+ * quiet linen frame. For embeds we paint the poster first and defer mounting
  * the heavy iframe (LCP protection — facade pattern). Set it in /admin/hero.
  */
 function ytEmbed(id: string): string {
@@ -35,7 +36,7 @@ export function HeroShowcase({
     return () => window.clearTimeout(t);
   }, [isEmbed]);
 
-  // ---- Video (16:9 cinematic card) ----
+  // ---- Video (16:9 frame) ----
   if (media?.kind === "video") {
     const { provider, videoId, videoUrl, posterUrl } = media;
     const iframeSrc =
@@ -45,41 +46,25 @@ export function HeroShowcase({
           ? vimeoEmbed(videoId)
           : null;
     return (
-      <div className="relative flex min-h-[16rem] items-center justify-center md:min-h-[34rem]">
-        <div className="fade-in-soft relative aspect-video w-full max-w-[22rem] overflow-hidden rounded-[2rem] bg-ink shadow-[0_30px_70px_-30px_rgba(28,26,23,0.5)] md:ml-auto md:max-w-[34rem]">
-          {provider === "file" ? (
-            <video
-              src={videoUrl ?? undefined}
-              autoPlay
-              muted
-              loop
-              playsInline
-              poster={posterUrl ?? undefined}
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-          ) : (
-            <>
-              {posterUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={posterUrl} alt="" className="absolute inset-0 h-full w-full object-cover" />
-              ) : null}
-              {showIframe && iframeSrc ? (
-                <iframe
-                  src={iframeSrc}
-                  title="Quinceañera film"
-                  allow="autoplay; fullscreen; picture-in-picture"
-                  className="fade-in-soft absolute inset-0 h-full w-full"
-                  style={{ border: 0 }}
-                />
-              ) : null}
-            </>
-          )}
-        </div>
+      <div className="tq-pg-show tq-pg-show--video">
+        {provider === "file" ? (
+          <video src={videoUrl ?? undefined} autoPlay muted loop playsInline poster={posterUrl ?? undefined} />
+        ) : (
+          <>
+            {posterUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={posterUrl} alt="" />
+            ) : null}
+            {showIframe && iframeSrc ? (
+              <iframe src={iframeSrc} title="Quinceañera film" allow="autoplay; fullscreen; picture-in-picture" />
+            ) : null}
+          </>
+        )}
       </div>
     );
   }
 
-  // ---- Photo (tall portrait card) ----
+  // ---- Photo (4:5 portrait frame) ----
   const img =
     media?.kind === "image" && media.imageUrl
       ? { url: media.imageUrl, alt: media.imageAlt }
@@ -87,28 +72,19 @@ export function HeroShowcase({
 
   if (img?.url) {
     return (
-      <div className="relative min-h-[18rem] md:min-h-[34rem]">
-        <div className="fade-in-soft absolute left-1/2 top-1/2 h-[20rem] w-[18rem] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-[2rem] shadow-[0_30px_70px_-30px_rgba(28,26,23,0.5)] md:left-auto md:right-[-6%] md:h-[36rem] md:w-[30rem] md:translate-x-0">
-          <Image
-            src={img.url}
-            alt={img.alt || "Quinceañera portrait"}
-            fill
-            priority
-            sizes="(max-width: 768px) 90vw, 32rem"
-            className="ken-burns object-cover"
-          />
-        </div>
+      <div className="tq-pg-show">
+        <Image
+          src={img.url}
+          alt={img.alt || "Quinceañera portrait"}
+          fill
+          priority
+          sizes="(max-width: 768px) 100vw, 40vw"
+          style={{ objectFit: "cover" }}
+        />
       </div>
     );
   }
 
-  // ---- Empty: soft Claura gradient ----
-  return (
-    <div className="relative min-h-[18rem] md:min-h-[34rem]">
-      <div
-        className="claura-art fade-in-soft absolute left-1/2 top-1/2 h-[20rem] w-[20rem] -translate-x-1/2 -translate-y-1/2 opacity-95 blur-[0.5px] md:left-auto md:right-[-12%] md:h-[34rem] md:w-[34rem] md:translate-x-0"
-        style={{ borderRadius: "46% 54% 52% 48% / 56% 44% 56% 44%" }}
-      />
-    </div>
-  );
+  // ---- Empty: linen frame, ratio reserved ----
+  return <div className="tq-pg-show" aria-hidden />;
 }

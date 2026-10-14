@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useId, useMemo, useState } from "react";
 import { trackEvent } from "@/components/Tracker";
+import "@/components/txq/pages/pages.css";
 
 function isoDate(date: Date): string {
   const pad = (value: number) => String(value).padStart(2, "0");
@@ -21,17 +22,19 @@ export function DateChecker({ heading, body }: { heading: string; body: string }
   const href = date ? `/check-your-date?date=${encodeURIComponent(date)}` : "/check-your-date";
 
   return (
-    <div className="mx-auto max-w-3xl text-center">
-      <p className="text-xs font-medium uppercase tracking-[0.2em] text-wine-deep">Availability</p>
-      <h2 className="mt-5 font-serif text-[clamp(3rem,5vw,4.5rem)] leading-[0.95] text-ink text-balance">
-        {heading}
-      </h2>
-      <p className="mx-auto mt-5 max-w-[52ch] text-base leading-7 text-ink-soft">
+    <div className="tq-pg-datecheck">
+      <p className="tq-mono" style={{ margin: 0 }}>
+        [Availability]
+      </p>
+      <h2 className="tq-display tq-pg-row__title">{heading}</h2>
+      <p className="tq-muted" style={{ margin: 0, maxWidth: "52ch" }}>
         {body}
       </p>
-      <div className="mx-auto mt-9 flex max-w-xl flex-col items-stretch gap-4 text-left sm:flex-row sm:items-end">
-        <div className="min-w-0 flex-1">
-          <label htmlFor={inputId} className="block text-base font-medium text-ink">Her quinceañera date</label>
+      <div className="tq-pg-datecheck__row">
+        <div className="tq-field">
+          <label htmlFor={inputId} className="tq-mono tq-muted">
+            Her quinceañera date
+          </label>
           <input
             id={inputId}
             type="date"
@@ -39,14 +42,20 @@ export function DateChecker({ heading, body }: { heading: string; body: string }
             min={min}
             max={max}
             onChange={(event) => setDate(event.target.value)}
-            className="mt-2 min-h-12 w-full border border-[#8c8377] bg-white px-4 py-3 text-base text-ink focus:border-ink focus:outline-none focus:ring-2 focus:ring-ink/20"
+            className="tq-input"
           />
         </div>
-        <Link href={href} onClick={() => trackEvent("date_checked", date ? `${date}:requested` : "unspecified:requested")} className="inline-flex min-h-12 items-center justify-center whitespace-nowrap rounded-full bg-ink px-6 text-base font-semibold text-white hover:bg-ink/85">
-          Check her date <span aria-hidden className="ml-2">→</span>
+        <Link
+          href={href}
+          onClick={() => trackEvent("date_checked", date ? `${date}:requested` : "unspecified:requested")}
+          className="tq-btn tq-btn--lg"
+        >
+          Check her date <span className="tq-arrow" aria-hidden>→</span>
         </Link>
       </div>
-      <p className="mt-5 text-sm text-ink-soft">Still deciding on a date? You can ask us anyway. No payment to inquire.</p>
+      <p className="tq-hint" style={{ margin: 0 }}>
+        Still deciding on a date? You can ask us anyway. No payment to inquire.
+      </p>
     </div>
   );
 }

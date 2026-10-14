@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import "@/components/txq/pages/pages.css";
 
 export type SelectOption = { value: string; label: string };
 
@@ -96,7 +97,7 @@ export function Select({
   }
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="tq-pg-sel">
       <button
         type="button"
         role="combobox"
@@ -107,36 +108,16 @@ export function Select({
         aria-label={ariaLabel ?? (selected?.label ? undefined : placeholder)}
         onClick={() => (open ? setOpen(false) : openList())}
         onKeyDown={onKeyDown}
-        className="flex min-h-12 w-full items-center justify-between gap-3 rounded-none border border-line bg-white px-4 py-3 text-left text-base font-normal transition-colors hover:border-accent-strong focus:border-accent-strong focus:outline-none focus:ring-2 focus:ring-accent/20"
+        className="tq-pg-sel__btn"
       >
-        <span className={selected ? "text-ink" : "text-ink-faint"}>
-          {selected?.label ?? placeholder}
-        </span>
-        <svg
-          width="12"
-          height="8"
-          viewBox="0 0 12 8"
-          fill="none"
-          aria-hidden
-          className={`shrink-0 text-ink-faint transition-transform ${open ? "rotate-180" : ""}`}
-        >
-          <path
-            d="M1 1.5L6 6.5L11 1.5"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
+        <span className={selected ? undefined : "tq-muted"}>{selected?.label ?? placeholder}</span>
+        <svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden>
+          <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" strokeWidth="1.25" />
         </svg>
       </button>
 
       {open ? (
-        <ul
-          id={listboxId}
-          role="listbox"
-          aria-label={ariaLabel}
-          className="absolute left-0 right-0 z-30 mt-1 overflow-hidden rounded-none border border-line bg-white p-1 shadow-[0_20px_50px_-18px_rgba(0,0,0,0.15)]"
-        >
+        <ul id={listboxId} role="listbox" aria-label={ariaLabel} className="tq-pg-sel__list">
           {options.map((o, i) => {
             const isSelected = o.value === value;
             const isActive = i === active;
@@ -150,21 +131,14 @@ export function Select({
                     e.preventDefault(); // keep focus on the combobox
                     commit(i);
                   }}
-                  className={`flex min-h-11 w-full items-center justify-between gap-3 rounded-none px-3 py-2.5 text-left text-base font-normal transition-colors ${
-                    isSelected ? "bg-accent-soft text-ink" : "text-ink-soft"
-                  } ${isActive && !isSelected ? "bg-ivory" : ""}`}
+                  data-active={isActive || undefined}
+                  data-selected={isSelected || undefined}
+                  className="tq-pg-sel__opt"
                 >
                   <span>{o.label}</span>
                   {isSelected ? (
                     <svg width="14" height="11" viewBox="0 0 14 11" fill="none" aria-hidden>
-                      <path
-                        d="M1 5.5L5 9.5L13 1.5"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="text-accent"
-                      />
+                      <path d="M1 5.5L5 9.5L13 1.5" stroke="currentColor" strokeWidth="1.5" />
                     </svg>
                   ) : null}
                 </button>

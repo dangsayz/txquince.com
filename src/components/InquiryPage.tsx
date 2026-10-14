@@ -5,6 +5,8 @@ import { site } from "@/content/site";
 import { getFeaturedImages } from "@/lib/content-db";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import { selectFullBleedPhoto } from "@/lib/quality-photo";
+import { commissionLinks } from "@/content/commissions";
+import "@/components/txq/pages/pages.css";
 
 const copy = {
   en: {
@@ -50,52 +52,99 @@ export async function InquiryPage({ locale, initialDate = "" }: { locale: "en" |
   const isSpanish = locale === "es";
   const formId = isSpanish ? "formulario" : "inquiry-form";
   const photo = selectFullBleedPhoto(await getFeaturedImages(12), 0);
+  const fallbackAlt = isSpanish ? "Retrato de quinceañera" : "Quinceañera portrait";
 
   return (
     <>
-      <header className="grid bg-white lg:grid-cols-[minmax(0,1.1fr)_minmax(0,.9fr)]" aria-labelledby="inquiry-title">
-        <div className="relative min-h-[60svh] bg-greige sm:min-h-[42rem] lg:min-h-[min(84svh,55rem)]">
+      <div className="tq-wrap">
+        <header className="tq-pg-mast" aria-labelledby="inquiry-title">
+          <p className="tq-pg-mast__index tq-mono">[{c.eyebrow}]</p>
+          <div className="tq-pg-mast__body">
+            <h1 id="inquiry-title" className="tq-display tq-pg-mast__title">
+              {c.title}
+            </h1>
+            <p className="tq-pg-mast__dek">{c.intro}</p>
+            <div className="tq-pg-actions">
+              <a href={`#${formId}`} className="tq-btn tq-btn--lg">
+                {c.anchor} <span className="tq-arrow" aria-hidden>↓</span>
+              </a>
+              <Link href={commissionLinks[locale].compare} className="tq-btn tq-btn--lg tq-btn--ghost">
+                {c.price}
+              </Link>
+            </div>
+          </div>
+        </header>
+        <figure className="tq-pg-plate tq-pg-plate--short">
           <Image
             src={photo?.url ?? "/portfolio/hero.webp"}
-            alt={photo ? publicPhotoCopy(photo, isSpanish ? "Retrato de quinceañera" : "Quinceañera portrait").alt : isSpanish ? "Retrato de quinceañera" : "Quinceañera portrait"}
+            alt={photo ? publicPhotoCopy(photo, fallbackAlt).alt : fallbackAlt}
             fill
             priority
             unoptimized={!photo}
-            sizes="(max-width: 1023px) 100vw, 55vw"
-            className="object-cover object-[center_39%]"
+            sizes="100vw"
+            style={{ objectPosition: "center 39%" }}
           />
-        </div>
-        <div className="flex flex-col justify-center px-6 py-16 sm:px-12 sm:py-20 lg:px-[clamp(3rem,7vw,8rem)]">
-          <p className="text-[.7rem] uppercase tracking-[.22em] text-ink-soft">{c.eyebrow}</p>
-          <h1 id="inquiry-title" className="mt-8 max-w-[14ch] font-display text-[clamp(2.3rem,3.8vw,3.8rem)] font-light leading-[1.13] tracking-[-.035em] text-ink">{c.title}</h1>
-          <p className="mt-7 max-w-md font-serif text-[clamp(1.15rem,1.5vw,1.45rem)] leading-[1.6] text-ink-soft">{c.intro}</p>
-          <a href={`#${formId}`} className="mt-9 inline-flex min-h-12 w-fit items-center gap-12 border-b border-ink text-xs uppercase tracking-[.14em] text-ink">{c.anchor}<span aria-hidden="true">↓</span></a>
-        </div>
-      </header>
+          <figcaption>
+            <span className="tq-tag tq-tag--bl tq-mono">[{isSpanish ? "Consulta" : "Inquiry"} — DFW]</span>
+          </figcaption>
+        </figure>
+      </div>
 
-      <section id={formId} className="scroll-mt-20 bg-ivory px-5 py-20 sm:px-10 sm:py-28 lg:px-16" aria-labelledby="inquiry-form-title">
-        <div className="mx-auto grid max-w-[90rem] gap-12 lg:grid-cols-[minmax(0,.38fr)_minmax(0,.62fr)] lg:gap-20">
-          <div className="lg:sticky lg:top-28 lg:self-start">
-            <p className="text-[.7rem] uppercase tracking-[.2em] text-ink-soft">{c.details}</p>
-            <h2 id="inquiry-form-title" className="mt-5 font-display text-[clamp(1.9rem,2.8vw,2.8rem)] font-light leading-tight text-ink">{c.formTitle}</h2>
-            <p className="mt-7 max-w-md font-serif text-lg leading-8 text-ink-soft">{c.formIntro}</p>
-            <p className="mt-8 max-w-md border-t border-line pt-6 text-sm leading-7 text-ink-soft">{c.formNote}</p>
-            <Link href={isSpanish ? "/es#commissions" : "/#commissions"} className="mt-5 inline-flex min-h-12 items-center gap-6 border-b border-ink text-xs uppercase tracking-[.14em] text-ink">{c.price}<span aria-hidden="true">↗</span></Link>
+      <section id={formId} className="tq-section" aria-labelledby="inquiry-form-title">
+        <div className="tq-wrap">
+          <div className="tq-intake" style={{ borderTop: 0 }}>
+            <aside className="tq-intake__aside" style={{ paddingTop: 40 }}>
+              <div style={{ display: "grid", gap: 20 }}>
+                <p className="tq-mono" style={{ margin: 0 }}>[{c.details}]</p>
+                <h2 id="inquiry-form-title" className="tq-display tq-pg-row__title">
+                  {c.formTitle}
+                </h2>
+                <p className="tq-muted" style={{ margin: 0, maxWidth: "40ch", fontSize: "1.0625rem" }}>
+                  {c.formIntro}
+                </p>
+              </div>
+              <p className="tq-mono tq-muted" style={{ margin: 0, paddingTop: 16, borderTop: "1px solid var(--border-hairline)", maxWidth: "48ch" }}>
+                {c.formNote}
+              </p>
+            </aside>
+            <div className="tq-intake__flow" style={{ paddingTop: 40 }}>
+              <InquiryForm initialDate={initialDate} locale={locale} />
+            </div>
           </div>
-          <div className="min-w-0"><InquiryForm initialDate={initialDate} locale={locale} /></div>
         </div>
       </section>
 
-      <section className="bg-white px-5 py-20 sm:px-10 sm:py-28 lg:px-16" aria-labelledby="inquiry-process-title">
-        <div className="mx-auto max-w-[90rem]">
-          <p className="text-[.7rem] uppercase tracking-[.2em] text-ink-soft">{isSpanish ? "Después de escribirnos" : "After you write"}</p>
-          <h2 id="inquiry-process-title" className="mt-4 font-display text-[clamp(1.9rem,2.8vw,2.8rem)] font-light text-ink">{c.process}</h2>
-          <ol className="mt-12 grid gap-8 border-t border-line pt-9 md:grid-cols-3 md:gap-12">
-            {c.steps.map(([number, title, body]) => <li key={number}><span className="text-xs tracking-[.14em] text-ink-faint">{number}</span><h3 className="mt-6 font-display text-xl font-light text-ink">{title}</h3><p className="mt-3 max-w-sm text-base leading-7 text-ink-soft">{body}</p></li>)}
+      <section className="tq-section" aria-labelledby="inquiry-process-title">
+        <div className="tq-wrap">
+          <header className="tq-head">
+            <p className="tq-head__index tq-mono" style={{ margin: 0 }}>
+              [{isSpanish ? "Después de escribirnos" : "After you write"}]
+            </p>
+            <h2 id="inquiry-process-title" className="tq-display tq-head__title">
+              {c.process}
+            </h2>
+          </header>
+          <ol className="tq-principles">
+            {c.steps.map(([number, title, body]) => (
+              <li key={number}>
+                <span className="tq-mono tq-muted">[{number}]</span>
+                <h3 className="tq-display">{title}</h3>
+                <p>{body}</p>
+              </li>
+            ))}
           </ol>
-          <div className="mt-14 flex flex-wrap items-center gap-6 border-t border-line pt-7">
-            <Link href="/portfolio" className="inline-flex min-h-12 items-center gap-5 border-b border-ink text-xs uppercase tracking-[.14em] text-ink">{c.work} <span aria-hidden="true">↗</span></Link>
-            <a href={`mailto:${site.contact.email}`} className="inline-flex min-h-12 items-center text-sm text-ink-soft underline underline-offset-4">{site.contact.email}</a>
+          <div className="tq-pg-row">
+            <p className="tq-pg-row__index tq-mono">[{isSpanish ? "Contacto" : "Contact"}]</p>
+            <div className="tq-pg-row__body">
+              <div className="tq-pg-actions">
+                <Link href="/portfolio" className="tq-btn tq-btn--ghost">
+                  {c.work} <span className="tq-arrow" aria-hidden>↗</span>
+                </Link>
+                <a href={`mailto:${site.contact.email}`} className="tq-pg-link">
+                  <span>{site.contact.email}</span>
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </section>

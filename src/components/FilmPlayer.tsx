@@ -3,11 +3,12 @@
 import Image from "next/image";
 import { useState } from "react";
 import { mediaUrl } from "@/content/media";
+import "@/components/txq/pages/pages.css";
 
 /**
  * FilmPlayer — one strong highlight reel (R2). Click-to-play so the heavy video
- * never loads until the visitor asks for it (PERF LAW). Shows the poster + a
- * restrained play affordance until then.
+ * never loads until the visitor asks for it (PERF LAW). Shows the poster in a
+ * reserved 16:9 frame with the homepage's hairline play mark until then.
  */
 export function FilmPlayer({
   posterKey,
@@ -27,53 +28,33 @@ export function FilmPlayer({
   const hasVideo = Boolean(mp4 || webm);
 
   return (
-    <div className="relative aspect-video w-full overflow-hidden bg-ink">
+    <div className="tq-pg-film__frame">
       {playing && hasVideo ? (
-        <video
-          autoPlay
-          controls
-          playsInline
-          poster={poster ?? undefined}
-          className="absolute inset-0 h-full w-full object-cover"
-        >
+        <video autoPlay controls playsInline poster={poster ?? undefined}>
           {webm ? <source src={webm} type="video/webm" /> : null}
           {mp4 ? <source src={mp4} type="video/mp4" /> : null}
         </video>
       ) : (
-        <>
+        <button
+          type="button"
+          onClick={() => setPlaying(true)}
+          disabled={!hasVideo}
+          aria-label={hasVideo ? "Play highlight film" : "Highlight film coming soon"}
+        >
           {poster ? (
-            <Image src={poster} alt={alt} fill sizes="100vw" className="object-cover" />
+            <Image src={poster} alt={alt} fill sizes="100vw" style={{ objectFit: "cover" }} />
           ) : (
-            <div
-              className="absolute inset-0"
-              style={{
-                background:
-                  "radial-gradient(120% 100% at 50% 40%, #2a2420 0%, #161412 70%)",
-              }}
-              aria-hidden
-            />
+            <span className="tq-pg-film__blank" aria-hidden />
           )}
-          <div className="absolute inset-0 bg-ink/25" aria-hidden />
-          <button
-            type="button"
-            onClick={() => setPlaying(true)}
-            disabled={!hasVideo}
-            aria-label={hasVideo ? "Play highlight film" : "Highlight film coming soon"}
-            className="group absolute inset-0 flex items-center justify-center"
-          >
-            <span className="flex h-20 w-20 items-center justify-center rounded-full border border-cream/70 bg-cream/10 backdrop-blur-sm transition-all duration-300 group-hover:scale-105 group-hover:bg-cream/20">
-              <span
-                className="ml-1 block h-0 w-0 border-y-[10px] border-l-[16px] border-y-transparent border-l-cream"
-                aria-hidden
-              />
+          <span className="tq-pg-play tq-pg-play--lg" aria-hidden>
+            <span>
+              <svg width="18" height="20" viewBox="0 0 14 16" fill="currentColor">
+                <path d="M1 1.5v13L13 8z" />
+              </svg>
             </span>
-            {!hasVideo ? (
-              <span className="absolute bottom-6 text-[0.72rem] font-medium uppercase tracking-[0.22em] text-cream/70">
-                Film coming soon
-              </span>
-            ) : null}
-          </button>
-        </>
+          </span>
+          {!hasVideo ? <span className="tq-mono tq-pg-play__note">Film coming soon</span> : null}
+        </button>
       )}
     </div>
   );
