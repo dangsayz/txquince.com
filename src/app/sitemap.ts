@@ -34,6 +34,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/es/videografo-de-quinceaneras", priority: 0.8 },
     { path: "/quinceanera-photoshoot", priority: 0.8 },
     { path: "/es/sesion-de-fotos-quinceanera", priority: 0.8 },
+    // Latest photo-dump albums (EN ↔ ES pair; both pages carry hreflang).
+    { path: "/photos/latest", priority: 0.7 },
+    { path: "/es/fotos-recientes", priority: 0.7 },
     { path: "/privacy", priority: 0.2 },
     { path: "/venues", priority: 0.7 },
     { path: "/vendors", priority: 0.6 },
