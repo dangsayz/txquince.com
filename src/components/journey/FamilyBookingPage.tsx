@@ -85,6 +85,35 @@ export function FamilyBookingPage({
               </li>
             </ol>
           )}
+          {/* The amount sits above the button, which also keeps the main
+              action out of the top third on phones (design law, gate 2). */}
+          {(v.canPayDeposit || v.canPayBalance) && !waitingOnStripe && (
+            <dl className="tq-pay__lines tq-nums">
+              {v.canPayDeposit ? (
+                <>
+                  <div>
+                    <dt>{c.total}</dt>
+                    <dd>{money(m.totalCents)}</dd>
+                  </div>
+                  <div>
+                    <dt>{c.deposit(m.depositPercent)}</dt>
+                    <dd>{money(m.depositDueCents)}</dd>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <dt>{c.paid}</dt>
+                    <dd>{money(m.paidCents)}</dd>
+                  </div>
+                  <div>
+                    <dt>{m.balanceDueDate ? `${c.left} · ${c.dueBy(longDate(m.balanceDueDate, lang))}` : c.left}</dt>
+                    <dd>{money(m.remainingCents)}</dd>
+                  </div>
+                </>
+              )}
+            </dl>
+          )}
           {v.canPayDeposit && !waitingOnStripe && (
             <div className="tq-pay__cta">
               <JourneyPayButton token={token} kind="deposit" label={c.payDeposit(money(m.depositDueCents))} busyLabel={c.opening} errorLabel={c.payError} />
@@ -173,7 +202,7 @@ export function FamilyBookingPage({
             {v.canSign && (
               <SignPanel
                 token={token}
-                copy={c}
+                lang={lang}
                 consentText={ESIGN_CONSENT[lang]}
                 consentVersion={ESIGN_CONSENT.version}
                 defaultName={v.name}
@@ -326,7 +355,7 @@ export function FamilyBookingPage({
               ))}
             </ol>
           )}
-          <MessageForm token={token} copy={c} />
+          <MessageForm token={token} lang={lang} />
         </div>
       </section>
 

@@ -188,7 +188,7 @@ export default async function BookingRecordPage({ params }: { params: Promise<{ 
               {events.map((e) => (
                 <li key={e.id} className="grid gap-x-3 text-base sm:grid-cols-[11rem_minmax(0,1fr)]">
                   <span className="text-sm tabular-nums">{when(e.at)}</span>
-                  <span className="break-words">
+                  <span className="min-w-0 break-all">
                     <strong className="font-medium">{e.event}</strong> · {e.actor}
                     {e.actor_email ? ` (${e.actor_email})` : ""}
                     {e.ip ? ` · IP ${e.ip}` : ""}

@@ -61,7 +61,7 @@ export default async function AdminBookings({ searchParams }: { searchParams: Pr
         </Link>
       </header>
 
-      <nav aria-label="Filter bookings" className="-mx-1 mt-5 flex flex-wrap gap-2">
+      <nav aria-label="Filter bookings" className="mt-5 flex flex-wrap gap-2">
         {LIST_VIEWS.map((v) => (
           <Link
             key={v}
@@ -97,7 +97,7 @@ export default async function AdminBookings({ searchParams }: { searchParams: Pr
               <li key={b.id} className="border-b border-[#e5e5e3]">
                 <Link
                   href={`/admin/bookings/${b.id}`}
-                  className="grid min-h-16 gap-2 px-1 py-4 hover:bg-[#f7f7f5] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#111110] sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1.1fr)_minmax(0,1fr)_auto] sm:items-center sm:gap-5 sm:px-4"
+                  className="grid min-h-16 gap-2 px-1 py-4 hover:bg-[#f7f7f5] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#111110] sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.3fr)] sm:items-center sm:gap-5 sm:px-4"
                 >
                   <span className="min-w-0">
                     <span className="block break-words text-base font-medium">{b.name}</span>
@@ -110,13 +110,13 @@ export default async function AdminBookings({ searchParams }: { searchParams: Pr
                   <span className="text-base">{day(b.event_date)}</span>
                   <span className="text-base tabular-nums">
                     {money(ledger.totalCents)}
-                    {ledger.remainingCents > 0 && b.status !== "requested" ? (
+                    {ledger.remainingCents > 0 && ["approved", "confirmed", "payment_review"].includes(b.status) ? (
                       <span className="block text-sm">
                         {money(ledger.remainingCents)} left{b.balance_due_date && b.status === "confirmed" ? ` · due ${day(b.balance_due_date)}` : ""}
                       </span>
                     ) : null}
                   </span>
-                  <span className="flex flex-wrap items-center gap-2">
+                  <span className="flex flex-wrap items-center gap-2 sm:justify-end">
                     <Chip status={b.status} />
                     {unread > 0 && (
                       <span className="inline-flex min-h-7 items-center whitespace-nowrap bg-[#111110] px-2.5 text-sm font-medium text-white">

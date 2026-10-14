@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { JourneyCopy } from "./copy";
+import { JOURNEY_COPY } from "./copy";
 
 const KINDS = ["message", "change_date", "change_time", "change_package", "cancel"] as const;
 
 /** A question or a change / cancel request. Only a message — nothing changes on its own. */
-export function MessageForm({ token, copy }: { token: string; copy: JourneyCopy }) {
+export function MessageForm({ token, lang }: { token: string; lang: "en" | "es" }) {
+  const copy = JOURNEY_COPY[lang];
   const router = useRouter();
   const [kind, setKind] = useState<(typeof KINDS)[number]>("message");
   const [body, setBody] = useState("");
@@ -71,7 +72,7 @@ export function MessageForm({ token, copy }: { token: string; copy: JourneyCopy 
         />
       </div>
       <div className="tq-pg-actions">
-        <button type="submit" className="tq-btn tq-btn--lg" disabled={state === "busy" || !body.trim()}>
+        <button type="submit" className="tq-btn tq-btn--lg" disabled={state === "busy"}>
           {state === "busy" ? copy.sending : copy.send}
         </button>
       </div>

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { SignaturePad } from "@/components/txq/SignaturePad";
-import type { JourneyCopy } from "./copy";
+import { JOURNEY_COPY } from "./copy";
 
 /**
  * Step 1: ESIGN consent + typed full name + finger signature → /api/my/sign.
@@ -11,17 +11,18 @@ import type { JourneyCopy } from "./copy";
  */
 export function SignPanel({
   token,
-  copy,
+  lang,
   consentText,
   consentVersion,
   defaultName,
 }: {
   token: string;
-  copy: JourneyCopy;
+  lang: "en" | "es";
   consentText: string;
   consentVersion: string;
   defaultName: string;
 }) {
+  const copy = JOURNEY_COPY[lang];
   const router = useRouter();
   const [name, setName] = useState(defaultName);
   const [signature, setSignature] = useState<string | null>(null);

@@ -53,4 +53,6 @@ for (const f of files) {
   psql(target.href, ["-1", "-f", p]);
   process.stdout.write("ok\n");
 }
+// A running PostgREST may have cached an empty schema while we rebuilt; tell it to reload.
+psql(target.href, ["-c", "notify pgrst, 'reload schema'"]);
 console.log(`\n${files.length} migrations applied to ${db}.`);

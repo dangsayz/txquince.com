@@ -9,7 +9,7 @@ import { useId, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const btn =
-  "inline-flex min-h-12 items-center justify-center whitespace-nowrap px-5 text-base font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#111110] disabled:opacity-50";
+  "inline-flex min-h-12 items-center justify-center whitespace-nowrap px-5 text-base font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#111110] disabled:cursor-progress";
 export const primaryBtn = `${btn} bg-[#111110] text-white hover:bg-[#333331]`;
 export const secondaryBtn = `${btn} border border-[#8c877f] bg-white text-[#111110] hover:border-[#111110]`;
 const input =
@@ -212,7 +212,7 @@ export function OfflinePaymentForm({ id, remainingCents }: { id: string; remaini
         </label>
         <input id={`${uid}-n`} className={input} value={note} onChange={(e) => setNote(e.target.value)} maxLength={500} />
       </div>
-      <button type="submit" className={primaryBtn} disabled={busy || !amount}>
+      <button type="submit" className={primaryBtn} disabled={busy}>
         Record payment
       </button>
       <div className="sm:col-span-4">
@@ -243,7 +243,7 @@ export function RefundForm({ id, paymentId, maxCents, label: what }: { id: strin
         </label>
         <input id={`${uid}-r`} className={`${input} max-w-[12rem]`} inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} />
       </div>
-      <button type="submit" className={secondaryBtn} disabled={busy || !amount}>
+      <button type="submit" className={secondaryBtn} disabled={busy}>
         Refund…
       </button>
       <div className="w-full">
@@ -272,7 +272,7 @@ export function TextPostForm({ url, cta, fieldLabel, confirmMsg, done }: { url: 
       </label>
       <textarea id={`${uid}-b`} className={`${input} min-h-28 py-2`} value={body} onChange={(e) => setBody(e.target.value)} maxLength={4000} />
       <div>
-        <button type="submit" className={primaryBtn} disabled={busy || !body.trim()}>
+        <button type="submit" className={primaryBtn} disabled={busy}>
           {cta}
         </button>
       </div>
