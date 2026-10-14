@@ -1,0 +1,194 @@
+/* ==========================================================================
+   Client journey — the few pieces the page idioms don't already have.
+   Tokens only (txq.css). All text is ink (--text-primary); hierarchy comes
+   from size, weight and the mono face. 44px+ targets, 16px+ text and inputs.
+   ========================================================================== */
+
+.txq .tq-jr-index {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+.txq .tq-jr-lead {
+  margin: 0;
+  max-width: 62ch;
+  font-size: 1.0625rem;
+}
+.txq .tq-jr-fine {
+  margin: 0;
+  font-size: 1rem;
+}
+.txq .tq-jr-note {
+  margin: 0;
+  padding: 12px 16px;
+  border-left: 2px solid var(--text-primary);
+  background: var(--bg-surface);
+  max-width: 46ch;
+}
+.txq .tq-jr-h3 {
+  margin: 0 0 8px;
+  font-size: 1.125rem;
+  font-weight: var(--weight-semibold);
+}
+
+/* Two steps: sign, then deposit. */
+.txq .tq-jr-steps {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-width: 420px;
+}
+.txq .tq-jr-steps li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  min-height: 48px;
+  padding: 8px 0;
+  border-top: 1px solid var(--border-hairline);
+}
+.txq .tq-jr-steps li:last-child {
+  border-bottom: 1px solid var(--border-hairline);
+}
+.txq .tq-jr-steps li[data-current="true"] {
+  font-weight: var(--weight-semibold);
+}
+.txq .tq-jr-steps li[data-done="true"] > span:last-child::before {
+  content: "✓ ";
+}
+
+.txq .tq-jr-sign,
+.txq .tq-jr-form {
+  display: grid;
+  gap: 24px;
+  max-width: 640px;
+}
+.txq .tq-jr-consent {
+  padding: 16px 20px;
+  border: 1px solid var(--border-control);
+  background: var(--bg-surface);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.txq .tq-jr-consent p {
+  margin: 0;
+}
+.txq .tq-jr-consent p + p {
+  margin-top: 6px;
+}
+.txq .tq-jr-pay {
+  display: grid;
+  gap: 12px;
+}
+.txq .tq-jr-pdf {
+  width: fit-content;
+  max-width: 100%;
+  white-space: normal;
+  text-align: center;
+}
+.txq .tq-jr-money .tq-jr-strong {
+  font-weight: var(--weight-semibold);
+}
+.txq .tq-jr-money dt {
+  min-width: 0;
+}
+
+.txq .tq-jr-list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-width: 560px;
+}
+.txq .tq-jr-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 16px;
+  min-height: 48px;
+  align-items: center;
+  padding: 10px 0;
+  border-top: 1px solid var(--border-hairline);
+}
+.txq .tq-jr-list li > span:nth-child(2) {
+  grid-column: 1;
+  grid-row: 2;
+  font-size: 0.9375rem;
+}
+.txq .tq-jr-list li > span:nth-child(3) {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  font-weight: var(--weight-medium);
+}
+
+/* Album: not started → shipped. */
+.txq .tq-jr-track {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.txq .tq-jr-track li {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 4px 12px;
+  border: 1px solid var(--border-control);
+  font-size: 0.9375rem;
+  white-space: nowrap;
+}
+.txq .tq-jr-track li[data-done="true"] {
+  background: var(--text-primary);
+  border-color: var(--text-primary);
+  color: var(--bg-canvas);
+}
+.txq .tq-jr-review {
+  display: grid;
+  gap: 12px;
+  padding: 20px;
+  border: 1px solid var(--border-hairline);
+  background: var(--bg-surface);
+}
+.txq .tq-jr-review p {
+  margin: 0;
+}
+
+/* Message thread. */
+.txq .tq-jr-thread {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-width: 640px;
+}
+.txq .tq-jr-thread li {
+  padding: 12px 16px;
+  border-left: 2px solid var(--border-control);
+}
+.txq .tq-jr-thread li[data-author="owner"] {
+  border-left-color: var(--text-primary);
+  background: var(--bg-surface);
+}
+.txq .tq-jr-thread p {
+  margin: 0;
+}
+.txq .tq-jr-body {
+  margin-top: 4px !important;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.txq .tq-jr-bullets {
+  margin: 0;
+  padding-left: 20px;
+  max-width: 62ch;
+}
+.txq .tq-jr-bullets li + li {
+  margin-top: 6px;
+}
+.txq .tq-jr select.tq-input {
+  background-color: transparent;
+}

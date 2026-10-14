@@ -97,6 +97,14 @@ const T = {
       "Your booking is final once your deposit is paid.",
       "If we can't take your date, we'll let you know and you won't be charged anything.",
     ],
+    depositJourney: (amt: string, pct: number) =>
+      `Deposit: ${amt} (${pct}%). You pay it after you sign. It locks in your date and goes toward your total.`,
+    howJourney: [
+      "You sent us your request and we approved your date.",
+      "Sign this agreement, then pay your deposit. Your booking is final once both are done.",
+      "We hold your date while you do this. If the hold runs out, write to us and we'll help if the date is still free.",
+      "We'll remind you by email before the rest is due. You can pay it from your booking page.",
+    ],
     changes: "Changes and cancellations",
     changesLines: [
       "Want more hours or an extra later? Just ask — if we're available, we'll add it and update your total.",
@@ -147,6 +155,14 @@ const T = {
       "Tu reservación queda confirmada en cuanto pagas el depósito.",
       "Si no podemos tomar tu fecha, te avisamos y no se te cobra nada.",
     ],
+    depositJourney: (amt: string, pct: number) =>
+      `Depósito: ${amt} (${pct}%). Lo pagas después de firmar. Aparta tu fecha y se abona a tu total.`,
+    howJourney: [
+      "Nos enviaste tu solicitud y aprobamos tu fecha.",
+      "Firma este contrato y luego paga tu depósito. Tu reservación queda confirmada cuando hayas hecho las dos cosas.",
+      "Apartamos tu fecha mientras tanto. Si el plazo se vence, escríbenos y te ayudamos si la fecha sigue libre.",
+      "Te recordaremos por correo antes de que se venza el resto. Puedes pagarlo desde tu página de reservación.",
+    ],
     changes: "Cambios y cancelaciones",
     changesLines: [
       "¿Quieres más horas o un extra después? Solo pídelo — si estamos disponibles, lo añadimos y actualizamos tu total.",
@@ -174,8 +190,28 @@ function longDate(iso: string, lang: Lang) {
   }).format(d);
 }
 
-export function buildAgreement(input: AgreementInput, book: PriceBook): Agreement {
+/** Wording version for agreements signed on the family's booking page (sign after approval). */
+export const JOURNEY_AGREEMENT_VERSION = `${AGREEMENT_VERSION}+journey.1`;
+
+/**
+ * Options for the post-approval agreement (src/lib/journey). Absent = the
+ * homepage's sign-first wording, unchanged.
+ *  - flow "journey": the family signs AFTER we approve, from their own page.
+ *  - book: pass the booking's SNAPSHOT book (bookings.price_book), never the
+ *    live one, so a price change after the request can't change the contract.
+ *  - changes: replaces "Changes and cancellations" (the cancellation policy).
+ *  - extra: owner-added sections from the contract template.
+ */
+export type AgreementOptions = {
+  flow?: "request" | "journey";
+  changes?: string[];
+  changesTitle?: string;
+  extra?: AgreementSection[];
+};
+
+export function buildAgreement(input: AgreementInput, book: PriceBook, opts: AgreementOptions = {}): Agreement {
   const t = T[input.lang];
+  const journey = opts.flow === "journey";
   const q = quoteCommission(book, input.tier, input.addOns, input.hours);
   const crew = normalizeCrew(input.tier, input.crew);
   const tier = TIERS.find((x) => x.id === input.tier)!;
@@ -219,18 +255,19 @@ export function buildAgreement(input: AgreementInput, book: PriceBook): Agreemen
         ...(extraHours > 0 ? [`${t.extraHours(extraHours)}: ${usd(q.extraHoursUsd)}`] : []),
         ...(extras.length ? [`${t.extras}: ${usd(q.addOnsUsd)}`] : []),
         `${t.total}: ${usd(q.totalUsd)}`,
-        t.deposit(usd(q.retainerUsd), q.depositPercent),
+        journey ? t.depositJourney(usd(q.retainerUsd), q.depositPercent) : t.deposit(usd(q.retainerUsd), q.depositPercent),
         t.balance(usd(q.balanceUsd), book.balanceDueDays),
         t.tax,
       ],
     },
-    { title: t.how, lines: [...t.howLines(book.holdDays)] },
-    { title: t.changes, lines: [...t.changesLines] },
+    { title: t.how, lines: journey ? [...t.howJourney] : [...t.howLines(book.holdDays)] },
+    { title: opts.changesTitle ?? t.changes, lines: opts.changes?.length ? [...opts.changes] : [...t.changesLines] },
+    ...(opts.extra ?? []).filter((s) => s.title.trim() && s.lines.length),
     { title: t.media, lines: [...t.mediaLines(input.sharePermission)] },
   ];
 
   return {
-    version: AGREEMENT_VERSION,
+    version: journey ? JOURNEY_AGREEMENT_VERSION : AGREEMENT_VERSION,
     lang: input.lang,
     title: t.title,
     intro: t.intro(input.name, input.honoree),
