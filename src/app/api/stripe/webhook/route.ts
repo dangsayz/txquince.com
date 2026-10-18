@@ -114,13 +114,24 @@ function checkoutSessionFromEvent(value: unknown): StripeCheckoutSession | null 
 }
 
 /**
- * The Stripe account is shared with another site, and Stripe sends every
- * account event to every endpoint. Only act on checkouts this site created
- * (all of them carry metadata.source); acknowledge the rest untouched.
+ * The Stripe account is shared with other sites, and Stripe sends every
+ * account event to every endpoint. A checkout is ours only when it carries
+ * metadata.source or metadata.booking_id. Payment Links do neither.
  */
 const TXQ_SOURCES = new Set(["commission", "txquince", "txquince-admin"]);
-function isTxQuinceSession(session: StripeCheckoutSession): boolean {
-  return TXQ_SOURCES.has(session.metadata?.source ?? "");
+
+function isTxQuinceMetadata(metadata: Record<string, string> | null | undefined): boolean {
+  if (!metadata) return false;
+  if (TXQ_SOURCES.has(metadata.source ?? "")) return true;
+  return Boolean(metadata.booking_id);
+}
+
+function stringMetadata(value: unknown): Record<string, string> | null {
+  if (!isRecord(value)) return null;
+  const entries = Object.entries(value).filter(
+    (entry): entry is [string, string] => typeof entry[1] === "string",
+  );
+  return Object.fromEntries(entries);
 }
 
 export async function POST(request: NextRequest) {
@@ -143,7 +154,7 @@ export async function POST(request: NextRequest) {
       case "checkout.session.completed":
       case "checkout.session.async_payment_succeeded": {
         const session = checkoutSessionFromEvent(event.data.object);
-        if (session && isTxQuinceSession(session)) await fulfillCheckoutSession(session);
+        if (session && isTxQuinceMetadata(session.metadata)) await fulfillCheckoutSession(session);
         break;
       }
 
@@ -152,31 +163,78 @@ export async function POST(request: NextRequest) {
       case "checkout.session.expired":
       case "checkout.session.async_payment_failed": {
         const session = checkoutSessionFromEvent(event.data.object);
+        if (!session?.id) break;
+        // A Supabase throw on a Payment Link becomes a 500, and Stripe disables
+        // the endpoint after repeated failures.
+        if (!isTxQuinceMetadata(session.metadata)) {
+          console.info(
+            `[stripe-webhook] ignoring ${event.type} ${event.id}: session ${session.id} has no txquince booking_id or source`,
+          );
+          break;
+        }
         // An approved agreement's pay link opens a fresh checkout whenever the
         // family returns, so an abandoned session must NOT release their date —
         // the approval hold (expires_at) governs that instead.
-        if (session?.id && session.metadata?.flow !== "agreement") {
-          const { error } = await getServiceSupabase()
-            .from("bookings")
-            .update({ status: "expired" })
-            .eq("stripe_checkout_session_id", session.id)
-            .eq("status", "pending_payment");
-          if (error) console.error("[stripe-webhook] release failed:", error.message);
+        if (session.metadata?.flow === "agreement") break;
+        const { data, error } = await getServiceSupabase()
+          .from("bookings")
+          .update({ status: "expired" })
+          .eq("stripe_checkout_session_id", session.id)
+          .eq("status", "pending_payment")
+          .select("id");
+        if (error) console.error("[stripe-webhook] release failed:", error.message);
+        else if (!data?.length) {
+          console.info(
+            `[stripe-webhook] ignoring ${event.type} ${event.id}: session ${session.id} is not a pending booking`,
+          );
         }
         break;
       }
 
       // A refund in Stripe frees the date and corrects the dashboard.
       case "charge.refunded": {
-        const charge = event.data.object as { payment_intent?: unknown; refunded?: unknown };
+        if (!isRecord(event.data.object)) break;
+        const charge = event.data.object;
+        const metadata = stringMetadata(charge.metadata);
         const pi = typeof charge.payment_intent === "string" ? charge.payment_intent : null;
-        if (pi && charge.refunded === true) {
-          const { error } = await getServiceSupabase()
+        if (!pi || charge.refunded !== true) break;
+
+        const owned = isTxQuinceMetadata(metadata);
+        const foreignSource =
+          Boolean(metadata?.source) && !TXQ_SOURCES.has(metadata?.source ?? "") && !metadata?.booking_id;
+        if (foreignSource) {
+          console.info(
+            `[stripe-webhook] ignoring charge.refunded ${event.id}: charge ${typeof charge.id === "string" ? charge.id : "unknown"} has no txquince booking_id or source`,
+          );
+          break;
+        }
+
+        // Charges on this account do not copy PaymentIntent metadata, so an
+        // empty map can still be our deposit. A throw is fatal only when the
+        // charge itself proves it is ours. Otherwise acknowledge it.
+        const syncRefund = async () => {
+          const { data, error } = await getServiceSupabase()
             .from("bookings")
             .update({ status: "refunded" })
             .eq("stripe_payment_intent_id", pi)
-            .in("status", ["paid", "payment_review"]);
+            .in("status", ["paid", "payment_review"])
+            .select("id");
           if (error) console.error("[stripe-webhook] refund-sync failed:", error.message);
+          else if (!data?.length) {
+            console.info(
+              `[stripe-webhook] ignoring charge.refunded ${event.id}: payment_intent ${pi} is not a paid booking`,
+            );
+          }
+        };
+
+        try {
+          await syncRefund();
+        } catch (err) {
+          if (owned) throw err;
+          console.info(
+            `[stripe-webhook] ignoring charge.refunded ${event.id}: payment_intent ${pi} could not be matched`,
+            err,
+          );
         }
         break;
       }
