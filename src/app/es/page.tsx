@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { TxqSite } from "@/components/txq/TxqSite";
+import { HomeSite } from "@/components/home/HomeSite";
 import { latestJournal } from "@/components/txq/journal";
 import { getCinemaFilms } from "@/components/txq/films";
 import { HomeJsonLd } from "@/components/txq/HomeJsonLd";
@@ -47,7 +47,7 @@ export default async function InicioEs() {
     <>
       <HomeJsonLd lang="es" book={book} />
       <SlotProvider slots={await resolveHomeSlots(overrides)}>
-        <TxqSite journal={fillDeep(latestJournal(), book)} films={films} photos={photos} overrides={overrides} galleries={galleriesFromImages(portfolio)} cities={homeCities()} />
+        <HomeSite journal={fillDeep(latestJournal(), book)} films={films} photos={photos} overrides={overrides} galleries={galleriesFromImages(portfolio)} cities={homeCities()} />
       </SlotProvider>
     </>
   );
