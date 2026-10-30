@@ -236,12 +236,14 @@ export function feedPage(feed: FeedPhoto[], cursor = 0, tag?: string | null, lim
 /**
  * Homepage image spots the admin can swap for a photo from the dump:
  *   home.hero.a / home.hero.b   the two hero plates
- *   home.archive.w01 … w99       the Archive frames (by data.ts work id)
+ *
+ * (The old home.archive.wNN frames are gone: the homepage gallery shows the
+ * real portfolio galleries, so a swap can no longer dress a placeholder up as
+ * a client. Any stale archive entry left in a manifest is simply ignored.)
  */
 export const HERO_SLOTS = ["home.hero.a", "home.hero.b"] as const;
-export const archiveSlot = (workId: string) => `home.archive.${workId}`;
 export function isHomeSlot(slot: string): boolean {
-  return /^home\.(hero\.(a|b)|archive\.w\d{2})$/.test(slot);
+  return /^home\.hero\.(a|b)$/.test(slot);
 }
 
 export type SlotImage = { src: string; full: string; w: number; h: number; alt: L };

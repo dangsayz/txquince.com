@@ -1,6 +1,7 @@
 import { SlotImage } from "@/components/SlotImage";
 import Link from "next/link";
 import { InquiryForm } from "@/components/InquiryForm";
+import { ContactButtons, ContactLine } from "@/components/ContactButtons";
 import { site } from "@/content/site";
 import { getFeaturedImages } from "@/lib/content-db";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
@@ -26,6 +27,7 @@ const copy = {
       ["03", "Plan together", "If the date is open, we help you choose a collection and explain how to reserve it."],
     ],
     work: "View the photographs",
+    textFirst: "Rather text? Send us her date and we'll text you back.",
   },
   es: {
     eyebrow: "Una invitación / Dallas–Fort Worth",
@@ -44,6 +46,7 @@ const copy = {
       ["03", "Planeamos juntos", "Si la fecha está libre, te ayudamos a elegir una colección y explicamos cómo reservarla."],
     ],
     work: "Ver las fotografías",
+    textFirst: "¿Prefieres un mensaje? Mándanos su fecha y te contestamos por mensaje.",
   },
 } as const;
 
@@ -72,6 +75,7 @@ export async function InquiryPage({ locale, initialDate = "" }: { locale: "en" |
                 {c.price}
               </Link>
             </div>
+            <ContactLine lang={locale} placement="inquiry-hero" />
           </div>
         </header>
         <figure className="tq-pg-plate tq-pg-plate--short">
@@ -101,6 +105,10 @@ export async function InquiryPage({ locale, initialDate = "" }: { locale: "en" |
                 <p className="tq-muted" style={{ margin: 0, maxWidth: "40ch", fontSize: "1.0625rem" }}>
                   {c.formIntro}
                 </p>
+              </div>
+              <div style={{ display: "grid", gap: 12, maxWidth: "26rem" }}>
+                <p style={{ margin: 0, fontSize: "1rem", fontWeight: 590 }}>{c.textFirst}</p>
+                <ContactButtons lang={locale} placement="inquiry-aside" primary={false} />
               </div>
               <p className="tq-mono tq-muted" style={{ margin: 0, paddingTop: 16, borderTop: "1px solid var(--border-hairline)", maxWidth: "48ch" }}>
                 {c.formNote}

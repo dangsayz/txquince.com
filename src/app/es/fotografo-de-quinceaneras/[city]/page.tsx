@@ -22,7 +22,10 @@ import { portfolioFallback } from "@/content/portfolio-fallback";
 import { getFeaturedImages, getImagesByCity } from "@/lib/content-db";
 import { venuesByCity } from "@/content/venues";
 import "@/components/txq/pages/places.css";
+import { ContactButtons, ContactLine } from "@/components/ContactButtons";
+import { businessContactJsonLd } from "@/lib/contact";
 import { jsonLdString } from "@/lib/json-ld";
+import { languageAlternates, OG_LOCALE } from "@/lib/hreflang";
 
 /** Curated ES guides surfaced on each city page (closes the city↔blog loop). */
 const ES_CITY_GUIDES = [
@@ -59,13 +62,13 @@ export async function generateMetadata({
     description,
     alternates: {
       canonical: `/es/fotografo-de-quinceaneras/${loc.slug}`,
-      languages: { "en-US": enUrl, "es-MX": esUrl, "x-default": enUrl },
+      languages: languageAlternates(enUrl, esUrl),
     },
     openGraph: {
       title: `${title} · ${site.brand}`,
       description,
       url: esUrl,
-      locale: "es_MX",
+      locale: OG_LOCALE.es,
     },
     twitter: {
       card: "summary_large_image",
@@ -192,7 +195,7 @@ export default async function CityPageEs({
         url: esUrl,
         image: `${site.url}/opengraph-image`,
         email: site.contact.email,
-        ...(site.contact.phoneE164 ? { telephone: site.contact.phoneE164 } : {}),
+        ...businessContactJsonLd(),
         areaServed: [
           { "@type": "City", name: `${loc.city}, TX` },
           { "@type": "AdministrativeArea", name: "Dallas–Fort Worth, TX" },
@@ -327,6 +330,7 @@ export default async function CityPageEs({
                 <span className="tq-arrow" aria-hidden>→</span>
               </Link>
               <span className="tq-mono tq-muted">Paquetes desde {commissionsFromLabel}</span>
+              <ContactLine lang="es" placement="city-hero" />
             </div>
           </div>
         </div>
@@ -608,13 +612,14 @@ export default async function CityPageEs({
               </h2>
             </div>
             <div className="tq-place-cta__side">
-              <p>Consultar tu fecha no cuesta nada. Si prefieres platicar primero, hacemos una llamada rápida.</p>
+              <p>Consultar tu fecha no cuesta nada. Si prefieres, mándanos un texto o un WhatsApp, o hacemos una llamada rápida.</p>
               <div className="tq-place-actions">
                 <Link href={commissionLinks.es.book} className="tq-btn tq-btn--lg">
                   Consultar tu fecha <span className="tq-arrow" aria-hidden>↗</span>
                 </Link>
                 <Link href="/es/fotografo-de-quinceaneras" className="tq-btn tq-btn--ghost">Todas las áreas</Link>
               </div>
+              <ContactButtons lang="es" placement="city-cta" primary={false} />
             </div>
           </div>
         </div>

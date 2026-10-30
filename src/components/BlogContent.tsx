@@ -1,9 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
-import type { CSSProperties, ReactNode } from "react";
+import { Fragment, type CSSProperties, type ReactNode } from "react";
 import type { BlogBlock, BlogCategory, BlogFaq, BlogPost } from "@/content/blog";
 import { slugifyHeading } from "@/content/blog";
 import { BlogShare } from "@/components/BlogShare";
+import { BlogPlanCta } from "@/components/BlogPlanCta";
 import { SlotImage } from "@/components/SlotImage";
 import { blogCoverSlotId } from "@/lib/image-slots";
 import "@/components/txq/pages/blog.css";
@@ -205,13 +206,19 @@ export function BlogContent({
   images,
   skipSlug,
   lang = "en",
+  midSlot,
 }: {
   blocks: BlogBlock[];
   images?: Record<string, BlogImage>;
   /** Image slug already shown as the cover — skipped once so it never repeats. */
   skipSlug?: string;
   lang?: BlogLang;
+  /** Rendered once, after roughly the middle section (just before that h2). */
+  midSlot?: ReactNode;
 }) {
+  // "After the middle section": before h2 number ceil(n/2)+1 (needs ≥2 sections).
+  const h2Count = blocks.filter((b) => b.type === "h2").length;
+  const midBefore = midSlot && h2Count >= 2 ? Math.ceil(h2Count / 2) + 1 : -1;
   // Precompute running numbers (h2 index, figure number) and which image block
   // is the cover, so rendering stays a pure map.
   const skipAt = skipSlug ? blocks.findIndex((b) => b.type === "image" && b.slug === skipSlug) : -1;
@@ -231,12 +238,15 @@ export function BlogContent({
         switch (b.type) {
           case "h2":
             return (
-              <h2 key={i} id={slugifyHeading(b.text)} className="tq-display tq-blog-flow__h2">
-                <span className="tq-mono tq-muted" aria-hidden>
-                  [{pad(numbers.h2[i])}]
-                </span>
-                {b.text}
-              </h2>
+              <Fragment key={i}>
+                {numbers.h2[i] === midBefore ? midSlot : null}
+                <h2 id={slugifyHeading(b.text)} className="tq-display tq-blog-flow__h2">
+                  <span className="tq-mono tq-muted" aria-hidden>
+                    [{pad(numbers.h2[i])}]
+                  </span>
+                  {b.text}
+                </h2>
+              </Fragment>
             );
           case "h3":
             return (
@@ -709,7 +719,14 @@ export function BlogArticleView({
               </aside>
             ) : null}
             <div className="tq-blog-prose">
-              <BlogContent blocks={post.content} images={images} skipSlug={cover.blockSlug} lang={lang} />
+              <BlogContent
+                blocks={post.content}
+                images={images}
+                skipSlug={cover.blockSlug}
+                lang={lang}
+                midSlot={<BlogPlanCta lang={lang} placement="mid" />}
+              />
+              <BlogPlanCta lang={lang} placement="end" />
             </div>
           </div>
 

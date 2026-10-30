@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { useAvailability, useSite } from "./state";
+import { ContactButtons } from "@/components/ContactButtons";
 import type { Lang } from "./data";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -46,7 +47,7 @@ export function StatusLabel() {
 }
 
 export function Header() {
-  const { t, homeHref } = useSite();
+  const { t, lang, homeHref } = useSite();
   const [open, setOpen] = useState(false);
   const menuBtn = useRef<HTMLButtonElement>(null);
   const closeBtn = useRef<HTMLButtonElement>(null);
@@ -154,6 +155,8 @@ export function Header() {
                 <StatusLabel />
               </div>
               <LangSwitch id="menu" />
+              {/* Families text more than they fill in forms: the phone, one tap away. */}
+              <ContactButtons lang={lang} placement="menu" primary={false} note={false} />
               <a href={homeHref("#intake")} className="tq-btn tq-btn--lg tq-btn--block" onClick={() => setOpen(false)}>
                 {t.nav.cta} <span className="tq-arrow" aria-hidden>↗</span>
               </a>
