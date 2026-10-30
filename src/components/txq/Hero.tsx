@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import { StatusLabel } from "./Header";
-import { pick, workById, type Work } from "./data";
+import { HERO_PLATES, pick, type HeroPlate } from "./data";
 import { useSite } from "./state";
 import { HERO_SLOTS, type HomeOverrides } from "@/lib/photo-dump-shared";
 import { SlotPicture } from "@/components/slots/SlotPicture";
@@ -13,15 +13,15 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 
 /** A plate's image: the admin's Photo dump swap when set, else the original.
  *  (An image-slot override, resolved by the page, wins over both.) */
-function plate(work: Work, swap: HomeOverrides[string] | undefined) {
+function plate(work: HeroPlate, swap: HomeOverrides[string] | undefined) {
   if (!swap) return { src: work.src, alt: work.alt, focus: work.focus, width: work.width, height: work.height };
   return { src: swap.src, alt: { en: swap.alt.en || pick("en", work.alt), es: swap.alt.es || pick("es", work.alt) }, focus: "50% 40%", width: swap.w, height: swap.h };
 }
 
 export function Hero({ overrides = {} }: { overrides?: HomeOverrides }) {
   const { t, lang } = useSite();
-  const a = useSlot(HERO_SLOTS[0], plate(workById("w01"), overrides[HERO_SLOTS[0]]));
-  const b = useSlot(HERO_SLOTS[1], plate(workById("w02"), overrides[HERO_SLOTS[1]]));
+  const a = useSlot(HERO_SLOTS[0], plate(HERO_PLATES.a, overrides[HERO_SLOTS[0]]));
+  const b = useSlot(HERO_SLOTS[1], plate(HERO_PLATES.b, overrides[HERO_SLOTS[1]]));
 
   return (
     <section className="tq-hero" id="top" aria-labelledby="tq-hero-title">
@@ -68,16 +68,21 @@ export function Hero({ overrides = {} }: { overrides?: HomeOverrides }) {
       <div className="tq-wrap">
         <div className="tq-ledger">
           <div className="tq-ledger__head">
-            <motion.h1
-              id="tq-hero-title"
+            {/* The H1 says what the page is (the search phrase families type);
+                the poetic line below stays the big display type. Not animated,
+                so it is in the first paint exactly as served. */}
+            <h1 id="tq-hero-title" className="tq-hero__h1">
+              {t.hero.h1}
+            </h1>
+            <motion.p
               key={lang}
-              className="tq-display"
+              className="tq-display tq-hero__line"
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9, delay: 0.35, ease: EASE }}
             >
               {t.hero.headA} {t.hero.headB} <em>{t.hero.headC}</em>
-            </motion.h1>
+            </motion.p>
             <p className="tq-ledger__dek">{t.hero.dek}</p>
           </div>
 

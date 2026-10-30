@@ -633,7 +633,7 @@ a:hover > .tq-arrow {
 .tq-ledger > * + * {
   border-top: 1px solid var(--border-hairline);
 }
-.tq-ledger__head h1 {
+.tq-ledger__head .tq-hero__line {
   font-size: clamp(2.375rem, 1.1rem + 3.2vw, 4.5rem);
   line-height: 1.02;
   text-wrap: balance;

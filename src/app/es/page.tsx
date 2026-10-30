@@ -9,6 +9,9 @@ import { getPriceBook } from "@/lib/pricing";
 import { fillDeep } from "@/lib/price-text";
 import { resolveHomeSlots } from "@/lib/image-slot-home";
 import { SlotProvider } from "@/components/slots/SlotProvider";
+import { getPortfolioImages } from "@/lib/content-db";
+import { galleriesFromImages } from "@/lib/home-galleries";
+import { homeCities } from "@/content/home-places";
 
 // Films come from the admin video library; admin edits revalidate at once.
 export const revalidate = 3600;
@@ -30,17 +33,20 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function InicioEs() {
   // Latest photos + admin image swaps come from the R2 photo manifest; both
   // are empty (section hidden, original images) when storage is unreachable.
-  const [films, photos, overrides, book] = await Promise.all([
+  // The gallery section is the real portfolio, grouped by shoot (empty when
+  // the database is unreachable; the section then shows real photos instead).
+  const [films, photos, overrides, book, portfolio] = await Promise.all([
     getCinemaFilms(),
     getFeedPage(0),
     getHomeOverrides(),
     getPriceBook(),
+    getPortfolioImages(),
   ]);
   return (
     <>
       <HomeJsonLd lang="es" book={book} />
       <SlotProvider slots={await resolveHomeSlots(overrides)}>
-        <TxqSite journal={fillDeep(latestJournal(), book)} films={films} photos={photos} overrides={overrides} />
+        <TxqSite journal={fillDeep(latestJournal(), book)} films={films} photos={photos} overrides={overrides} galleries={galleriesFromImages(portfolio)} cities={homeCities()} />
       </SlotProvider>
     </>
   );
