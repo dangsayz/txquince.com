@@ -25,6 +25,7 @@ import "@/components/txq/pages/places.css";
 import { ContactButtons, ContactLine } from "@/components/ContactButtons";
 import { businessContactJsonLd } from "@/lib/contact";
 import { jsonLdString } from "@/lib/json-ld";
+import { languageAlternates, OG_LOCALE } from "@/lib/hreflang";
 
 /** Curated ES guides surfaced on each city page (closes the city↔blog loop). */
 const ES_CITY_GUIDES = [
@@ -61,13 +62,13 @@ export async function generateMetadata({
     description,
     alternates: {
       canonical: `/es/fotografo-de-quinceaneras/${loc.slug}`,
-      languages: { "en-US": enUrl, "es-MX": esUrl, "x-default": enUrl },
+      languages: languageAlternates(enUrl, esUrl),
     },
     openGraph: {
       title: `${title} · ${site.brand}`,
       description,
       url: esUrl,
-      locale: "es_MX",
+      locale: OG_LOCALE.es,
     },
     twitter: {
       card: "summary_large_image",

@@ -8,6 +8,12 @@ import { securityHeaders } from "./src/lib/security-headers";
  * (private bucket behind it). next/image uses a custom loader (below) so the
  * route gets explicit widths and the client gets a real responsive srcset.
  */
+const WWW_HOST = [{ type: "host" as const, value: "www\\.txquince\\.com" }];
+const WWW_REDIRECTS = [
+  { source: "/", has: WWW_HOST, destination: "https://txquince.com/", permanent: true },
+  { source: "/:path+", has: WWW_HOST, destination: "https://txquince.com/:path+", permanent: true },
+];
+
 const nextConfig: NextConfig = {
   images: {
     // Every site image is served by /api/img (protected derivatives). A custom
@@ -23,6 +29,13 @@ const nextConfig: NextConfig = {
   // commission model on the homepage; keep their search equity with 308s.
   async redirects() {
     return [
+      // One host: www.txquince.com → https://txquince.com, same path + query
+      // (Next carries the query string over). Runs in the routing layer
+      // (OpenNext implements `has: host`), so the public pages' middleware-free
+      // fast path stays as is. http → https is Cloudflare's "Always Use HTTPS".
+      // The root gets its own rule: OpenNext compiles an empty `/:path*` match
+      // into a literal ":path*" in the Location header.
+      ...WWW_REDIRECTS,
       { source: "/investment", destination: "/#commissions", permanent: true },
       { source: "/payment-plans", destination: "/#commissions", permanent: true },
       { source: "/reserve", destination: "/#intake", permanent: true },
@@ -46,6 +59,12 @@ const nextConfig: NextConfig = {
         }),
       },
     ];
+  },
+  // Two root layouts (app/(en) and app/es, so each language renders its own
+  // <html lang>) means no single layout for unmatched URLs; app/global-not-found.tsx
+  // is the 404 for those.
+  experimental: {
+    globalNotFound: true,
   },
   // Premium perception dies on a slow site (PERFORMANCE BUDGET LAW).
   poweredByHeader: false,

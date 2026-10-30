@@ -13,6 +13,7 @@ import { getPortfolioImages } from "@/lib/content-db";
 import { galleriesFromImages } from "@/lib/home-galleries";
 import { homeCities } from "@/content/home-places";
 import { site } from "@/content/site";
+import { languageAlternates } from "@/lib/hreflang";
 
 // Films come from the admin video library; admin edits revalidate at once.
 export const revalidate = 3600;
@@ -23,7 +24,7 @@ export async function generateMetadata(): Promise<Metadata> {
     // Leads with the highest-intent local phrase families type.
     title: { absolute: "Quinceañera Photographer & Videographer in Dallas–Fort Worth | TX Quince" },
     description: `Luxury quinceañera photography and film across Dallas–Fort Worth, from Highland Park to Southlake. Published commissions from ${from}, bilingual from first call to final film. Check your date live.`,
-    alternates: { canonical: "/", languages: { "en-US": "/", "es-MX": "/es" } },
+    alternates: { canonical: "/", languages: languageAlternates("/", "/es") },
     openGraph: {
       title: "TX Quince — Quinceañera Photography & Film, Dallas–Fort Worth",
       description: `Quinceañera photos and videos in Dallas–Fort Worth. Packages from ${from}.`,

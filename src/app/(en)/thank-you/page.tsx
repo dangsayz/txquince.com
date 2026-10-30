@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { ConfirmationPage } from "@/components/ConfirmationPage";
+import { languageAlternates } from "@/lib/hreflang";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Thank You",
   description: "Your inquiry has been received.",
-  alternates: { canonical: "/thank-you", languages: { "en-US": "/thank-you", "es-MX": "/es/gracias" } },
+  alternates: { canonical: "/thank-you", languages: languageAlternates("/thank-you", "/es/gracias") },
   robots: { index: false, follow: false },
 };
 

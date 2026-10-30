@@ -156,8 +156,8 @@ describe("/api/admin/upload — guards beyond the session", () => {
 });
 
 describe("every protected /admin page gates itself on the server", () => {
-  const PUBLIC_PAGES = new Set(["app/admin/login/page.tsx", "app/admin/reset-password/page.tsx"]);
-  const pages = walk(join(SRC, "app/admin"), "page.tsx").map((f) => relative(SRC, f));
+  const PUBLIC_PAGES = new Set(["app/(en)/admin/login/page.tsx", "app/(en)/admin/reset-password/page.tsx"]);
+  const pages = walk(join(SRC, "app/(en)/admin"), "page.tsx").map((f) => relative(SRC, f));
 
   it("finds the admin pages", () => {
     expect(pages.length).toBeGreaterThanOrEqual(10);

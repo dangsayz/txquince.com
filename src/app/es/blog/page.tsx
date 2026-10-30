@@ -6,8 +6,9 @@ import { fillDeep } from "@/lib/price-text";
 import { portfolioFallback } from "@/content/portfolio-fallback";
 import { getFeaturedImages, getPageHero } from "@/lib/content-db";
 import { BlogIndexView, type BlogThumb } from "@/components/BlogContent";
-import { blogIndexJsonLd } from "@/app/blog/structured-data";
+import { blogIndexJsonLd } from "@/lib/blog-structured-data";
 import { jsonLdString } from "@/lib/json-ld";
+import { languageAlternates, OG_LOCALE } from "@/lib/hreflang";
 
 export const revalidate = 3600;
 
@@ -17,14 +18,14 @@ export const metadata: Metadata = {
     "Guías honestas para planear una quinceañera en Dallas–Fort Worth: costos reales, fechas, tradiciones y cómo elegir a tu fotógrafo y equipo de video.",
   alternates: {
     canonical: "/es/blog",
-    languages: { "es-MX": "/es/blog", "en-US": "/blog", "x-default": "/blog" },
+    languages: languageAlternates("/blog", "/es/blog"),
   },
   // openGraph/twitter replace the root layout's objects wholesale (shallow
   // merge), so the index restates siteName/locale/image and its own card copy.
   openGraph: {
     type: "website",
     siteName: site.brand,
-    locale: "es_MX",
+    locale: OG_LOCALE.es,
     alternateLocale: ["en_US"],
     title: "Guía de Quinceañera · TX Quince",
     description: "Costos reales, fechas, tradiciones y cómo elegir a tu fotógrafo en Dallas–Fort Worth.",

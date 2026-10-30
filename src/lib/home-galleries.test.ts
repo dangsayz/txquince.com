@@ -117,7 +117,9 @@ describe("Where we work", () => {
     ]);
     for (const s of [...COPY.en.places.services, ...COPY.es.places.services]) {
       const route = s.href.replace(/^\//, "");
-      expect(readFileSync(join(process.cwd(), "src/app", route, "page.tsx"), "utf8").length).toBeGreaterThan(0);
+      // English routes live in the (en) route group; Spanish ones under es/.
+      const dir = route.startsWith("es/") ? join("src/app", route) : join("src/app/(en)", route);
+      expect(readFileSync(join(process.cwd(), dir, "page.tsx"), "utf8").length).toBeGreaterThan(0);
     }
   });
 });

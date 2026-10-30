@@ -9,6 +9,7 @@ import { getPriceBook } from "@/lib/pricing";
 import { PT, fillDeep } from "@/lib/price-text";
 import "@/components/txq/pages/places.css";
 import { jsonLdString } from "@/lib/json-ld";
+import { HREFLANG, OG_LOCALE, languageAlternates } from "@/lib/hreflang";
 
 /**
  * PRE-QUINCE PHOTOSHOOT landing page (EN /quinceanera-photoshoot, ES
@@ -167,9 +168,9 @@ export async function photoshootMetadata(locale: Locale) {
     description,
     alternates: {
       canonical: t.path,
-      languages: { "en-US": en, "es-MX": es, "x-default": en },
+      languages: languageAlternates(en, es),
     },
-    openGraph: { title: `${title} · ${site.brand}`, description, url: `${site.url}${t.path}`, ...(locale === "es" ? { locale: "es_MX" } : {}) },
+    openGraph: { title: `${title} · ${site.brand}`, description, url: `${site.url}${t.path}`, ...(locale === "es" ? { locale: OG_LOCALE.es } : {}) },
   };
 }
 
@@ -207,7 +208,7 @@ export async function PhotoshootPage({ locale }: { locale: Locale }) {
         provider: { "@id": `${site.url}/#business` },
         areaServed: { "@type": "AdministrativeArea", name: "Dallas–Fort Worth, TX" },
         offers: { "@type": "Offer", price: String(study.price), priceCurrency: "USD", url },
-        inLanguage: locale === "en" ? "en-US" : "es-MX",
+        inLanguage: HREFLANG[locale],
         url,
       },
       {

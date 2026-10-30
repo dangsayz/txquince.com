@@ -11,6 +11,7 @@ import { site } from "@/content/site";
 import { getFeaturedImages, getImagesByCity, getPageHero, type PortfolioImage } from "@/lib/content-db";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import "@/components/txq/pages/places.css";
+import { languageAlternates } from "@/lib/hreflang";
 
 export const revalidate = 3600;
 
@@ -21,11 +22,7 @@ const META: Metadata = {
     `Luxury quinceañera photos & video across Dallas–Fort Worth — Dallas, Fort Worth, Frisco, Plano, McKinney, Arlington and beyond. Published commissions from ${FROM_TOKEN}.`,
   alternates: {
     canonical: "/quinceanera-photographer",
-    languages: {
-      "en-US": site.url + "/quinceanera-photographer",
-      "es-MX": site.url + "/es/fotografo-de-quinceaneras",
-      "x-default": site.url + "/quinceanera-photographer",
-    },
+    languages: languageAlternates(site.url + "/quinceanera-photographer", site.url + "/es/fotografo-de-quinceaneras"),
   },
   openGraph: {
     title: `Quinceañera Photographer — Dallas–Fort Worth · ${site.brand}`,

@@ -1,5 +1,7 @@
 import { site } from "@/content/site";
 import type { BlogPost } from "@/content/blog";
+import { blogAuthor } from "@/content/author";
+import { HREFLANG } from "@/lib/hreflang";
 
 /** Search results show ~60–65 characters of a title. */
 const TITLE_BUDGET = 65;
@@ -12,6 +14,21 @@ const TITLE_BUDGET = 65;
 export function postMetaTitle(post: BlogPost): string | { absolute: string } {
   const t = post.metaTitle ?? post.title;
   return `${t} · ${site.brand}`.length <= TITLE_BUDGET ? t : { absolute: t };
+}
+
+/**
+ * The post's `author`: the named person from src/content/author.ts when the
+ * owner has filled it in, otherwise the business (the Organization node).
+ */
+function postAuthor(org: Record<string, unknown>) {
+  const name = blogAuthor.name.trim();
+  if (!name) return org;
+  return {
+    "@type": "Person",
+    name,
+    url: new URL(blogAuthor.url, site.url).href,
+    worksFor: { "@id": `${site.url}/#business` },
+  };
 }
 
 /**
@@ -38,7 +55,7 @@ export function blogPostingJsonLd({
   /** Home + journal crumbs (the post itself is appended). */
   crumbs: { name: string; item: string }[];
 }) {
-  const inLanguage = lang === "es" ? "es-MX" : "en-US";
+  const inLanguage = HREFLANG[lang];
   const org = {
     "@type": "Organization",
     "@id": `${site.url}/#business`,
@@ -56,9 +73,11 @@ export function blogPostingJsonLd({
         headline: post.title,
         description: post.description,
         datePublished: post.publishedAt,
+        // `updatedAt` is set by hand when a post's substance changes; a post
+        // that has only had link/CTA tweaks since launch keeps its publish date.
         dateModified: post.updatedAt ?? post.publishedAt,
         inLanguage,
-        author: org,
+        author: postAuthor(org),
         publisher: org,
         mainEntityOfPage: { "@type": "WebPage", "@id": url },
         url,
@@ -115,7 +134,7 @@ export function blogIndexJsonLd({
   /** Home crumb(s); the index itself is appended. */
   crumbs: { name: string; item: string }[];
 }) {
-  const inLanguage = lang === "es" ? "es-MX" : "en-US";
+  const inLanguage = HREFLANG[lang];
   return {
     "@context": "https://schema.org",
     "@graph": [

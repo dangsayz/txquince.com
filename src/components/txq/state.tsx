@@ -14,6 +14,7 @@ import { COPY, type Copy } from "./copy";
 import type { AddOnId, Lang, TierId } from "./data";
 import { ADD_ON_IDS, TIER_IDS, normalizeCrew, type Crew } from "@/lib/commission";
 import { usePriceBook } from "@/components/PriceBookProvider";
+import { HREFLANG } from "@/lib/hreflang";
 
 /* ------------------------------------------------------------------ */
 /* Language + package selection + the booking panel's answers           */
@@ -124,7 +125,7 @@ function subscribeLang(cb: () => void) {
 
 /** The other language's version of this page, from the hreflang links Next renders in <head>. */
 function alternateHref(l: Lang): string | null {
-  const tag = l === "es" ? "es-MX" : "en-US";
+  const tag = HREFLANG[l];
   const link = document.querySelector<HTMLLinkElement>(`link[rel="alternate"][hreflang="${tag}"]`);
   if (!link?.href) return null;
   try {

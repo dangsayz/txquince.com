@@ -1,15 +1,18 @@
+import type { Metadata } from "next";
+import { RootDocument, rootMetadata, rootViewport } from "../_shell/root";
+
 /**
- * /es segment layout — declares every Spanish route as Spanish for assistive tech
- * and browsers.
- *
- * Next's App Router allows only one <html> element (the root layout, which is
- * lang="en"), and reading the pathname in the root layout would force `headers()`
- * and de-opt the whole site from static rendering. So instead we scope the Spanish
- * language to this subtree with a lang="es" wrapper: screen readers switch to a
- * Spanish voice for descendants, and combined with each page's hreflang alternates
- * the bilingual SEO signals stay correct. (A future full `/[lang]` route refactor
- * could move `lang` onto <html> itself.)
+ * Root layout for every Spanish route (/es and /es/*): renders <html lang="es">
+ * in the server HTML, so browsers, screen readers and crawlers see the page's
+ * language on the document itself. The English subtree's root layout is
+ * app/(en)/layout.tsx; both share app/_shell/root.tsx.
  */
-export default function EsLayout({ children }: { children: React.ReactNode }) {
-  return <div lang="es">{children}</div>;
+export async function generateMetadata(): Promise<Metadata> {
+  return rootMetadata("es");
+}
+
+export const viewport = rootViewport;
+
+export default function EsRootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  return <RootDocument lang="es">{children}</RootDocument>;
 }

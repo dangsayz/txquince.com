@@ -4,6 +4,7 @@ import { locations } from "@/content/locations";
 import { getAllPosts, getAllEsPosts, esSlugForEn, enSlugForEs } from "@/content/blog";
 import { getVendors } from "@/lib/content-db";
 import { venues } from "@/content/venues";
+import { languageAlternates } from "@/lib/hreflang";
 
 /**
  * Stable last-modified for the structural/marketing pages. Bump this only when
@@ -11,9 +12,10 @@ import { venues } from "@/content/venues";
  * (Stamping every URL with `new Date()` each build teaches Google our lastmod is
  * noise, so it stops trusting it. Blog posts carry their own real dates below.)
  *
- * Photograph pages are intentionally NOT listed here — they live in
- * /image-sitemap.xml (URL + image), so duplicating them here would only dilute
- * the crawl signal of the pages that actually need to rank.
+ * Single-photograph pages (/photos/[category]/[slug]) are NOT listed here or in
+ * /image-sitemap.xml: they are `noindex, follow` share targets. The images
+ * themselves are in /image-sitemap.xml under /portfolio, the gallery that shows
+ * them. Only list a URL here if it is indexable and canonical to itself.
  */
 const LASTMOD = "2026-06-28";
 
@@ -58,7 +60,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       return d > max ? d : max;
     }, LASTMOD);
   const pair = (en: string, es: string) => ({
-    languages: { "en-US": `${site.url}/blog/${en}`, "es-MX": `${site.url}/es/blog/${es}`, "x-default": `${site.url}/blog/${en}` },
+    languages: languageAlternates(`${site.url}/blog/${en}`, `${site.url}/es/blog/${es}`),
   });
   const blogEntries: MetadataRoute.Sitemap = [
     // Index pages change whenever a post is added/updated.
@@ -67,14 +69,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: newest(enPosts),
       changeFrequency: "weekly",
       priority: 0.7,
-      alternates: { languages: { "en-US": `${site.url}/blog`, "es-MX": `${site.url}/es/blog`, "x-default": `${site.url}/blog` } },
+      alternates: { languages: languageAlternates(`${site.url}/blog`, `${site.url}/es/blog`) },
     },
     {
       url: `${site.url}/es/blog`,
       lastModified: newest(esPosts),
       changeFrequency: "weekly",
       priority: 0.7,
-      alternates: { languages: { "en-US": `${site.url}/blog`, "es-MX": `${site.url}/es/blog`, "x-default": `${site.url}/blog` } },
+      alternates: { languages: languageAlternates(`${site.url}/blog`, `${site.url}/es/blog`) },
     },
     ...enPosts.map((p) => {
       const es = esSlugForEn(p.slug);
