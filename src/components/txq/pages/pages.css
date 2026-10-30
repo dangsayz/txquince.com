@@ -1268,7 +1268,7 @@
 }
 
 /* ---------- 17. Status / skeleton ---------- */
-/* The route loading fallback (app/(en)/loading.tsx) fills the viewport so the
+/* The route loading fallback (app/loading.tsx) fills the viewport so the
    footer behind it is off-screen at first paint: when the page streams in, the
    footer moves from below the fold to further below, which is not a layout
    shift. Shorter, it painted mid-screen and jumped away (homepage CLS 0.17-0.29). */

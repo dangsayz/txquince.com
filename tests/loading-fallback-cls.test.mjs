@@ -4,7 +4,7 @@ import test from "node:test";
 import { runInNewContext } from "node:vm";
 import ts from "typescript";
 
-// The homepage renders inside app/(en)/loading.tsx's Suspense boundary, and
+// The homepage renders inside app/loading.tsx's Suspense boundary, and
 // React streams the large page behind it: the prerendered HTML paints the
 // skeleton and the footer first, then swaps the page in. A skeleton shorter
 // than the viewport put the footer mid-screen at first paint and it jumped
@@ -38,7 +38,7 @@ function loadComponent(path) {
 }
 
 test("the route loading fallback carries the viewport-reserving class", () => {
-  const { default: LoadingPage } = loadComponent("../src/app/(en)/loading.tsx");
+  const { default: LoadingPage } = loadComponent("../src/app/loading.tsx");
   const root = LoadingPage();
   assert.equal(root.props.role, "status");
   assert.ok(root.props.className.split(/\s+/).includes("tq-pg-loading"), root.props.className);
