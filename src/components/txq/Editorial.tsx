@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { site } from "@/content/site";
 import { useIsAdmin } from "@/components/EditMode";
+import { ContactButtons } from "@/components/ContactButtons";
 import { useSite } from "./state";
 import "./footer-admin.css";
 
@@ -136,7 +137,7 @@ function FooterAdmin() {
 }
 
 export function Footer() {
-  const { t, homeHref } = useSite();
+  const { t, lang, homeHref } = useSite();
   const handle = site.social.instagram.replace(/\/$/, "").split("/").pop();
   return (
     <footer className="tq-footer">
@@ -151,6 +152,7 @@ export function Footer() {
           </div>
           <div>
             <span className="tq-mono tq-muted">{t.footer.contact}</span>
+            <ContactButtons lang={lang} placement="footer" />
             <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
             <a href={site.social.instagram} target="_blank" rel="noopener noreferrer">
               Instagram — @{handle}

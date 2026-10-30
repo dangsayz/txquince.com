@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
+import { attributedSearch } from "@/lib/bio-utm";
 
 const FIRST_TOUCH_KEY = "txq_first_touch";
 
@@ -84,7 +85,10 @@ export function Tracker() {
 
   useEffect(() => {
     if (pathname.startsWith("/admin")) return;
-    captureFirstTouch(pathname, new URLSearchParams(search.toString()));
+    // A campaign landing page (the Instagram bio, /links) implies its UTM when
+    // the visit arrives without one — Instagram often strips the referrer.
+    const params = attributedSearch(pathname, new URLSearchParams(search.toString()));
+    captureFirstTouch(pathname, params);
     const key = `${pathname}?${search.toString()}`;
     if (last.current === key) return;
     last.current = key;
@@ -94,9 +98,9 @@ export function Tracker() {
       path: pathname,
       ref: document.referrer || null,
       sid: sessionId(),
-      us: search.get("utm_source"),
-      um: search.get("utm_medium"),
-      uc: search.get("utm_campaign"),
+      us: params.get("utm_source"),
+      um: params.get("utm_medium"),
+      uc: params.get("utm_campaign"),
     });
   }, [pathname, search]);
 

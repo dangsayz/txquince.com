@@ -2,6 +2,7 @@ import { SlotImage } from "@/components/SlotImage";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { site } from "@/content/site";
+import { ContactLine } from "@/components/ContactButtons";
 import { getFeaturedImages } from "@/lib/content-db";
 import { selectFullBleedPhoto } from "@/lib/quality-photo";
 import "@/components/txq/pages/pages.css";
@@ -58,6 +59,7 @@ export async function ConfirmationPage({
             </a>
             .
           </p>
+          <ContactLine lang={homeHref === "/es" ? "es" : "en"} placement="confirmation" />
         </div>
       </div>
     </div>

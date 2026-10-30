@@ -25,6 +25,8 @@ import { venuesByCity } from "@/content/venues";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import "@/components/txq/pages/places.css";
+import { ContactButtons, ContactLine } from "@/components/ContactButtons";
+import { businessContactJsonLd } from "@/lib/contact";
 import { jsonLdString } from "@/lib/json-ld";
 
 /** Curated guides surfaced on each city page (closes the city↔blog loop). */
@@ -221,7 +223,7 @@ export default async function CityPage({
         url,
         image: `${site.url}/opengraph-image`,
         email: site.contact.email,
-        ...(site.contact.phoneE164 ? { telephone: site.contact.phoneE164 } : {}),
+        ...businessContactJsonLd(),
         areaServed: [
           { "@type": "City", name: `${loc.city}, TX` },
           ...nearby.map((n) => ({ "@type": "City", name: `${n.city}, TX` })),
@@ -361,6 +363,7 @@ export default async function CityPage({
                 <span className="tq-arrow" aria-hidden>→</span>
               </Link>
               <span className="tq-mono tq-muted">Packages from {commissionsFromLabel}</span>
+              <ContactLine lang="en" placement="city-hero" />
             </div>
           </div>
         </div>
@@ -696,13 +699,14 @@ export default async function CityPage({
               </h2>
             </div>
             <div className="tq-place-cta__side">
-              <p>Check your date on the live calendar, or ask for a quick call first.</p>
+              <p>Check your date on the live calendar, or text us first. A quick call is fine too.</p>
               <div className="tq-place-actions">
                 <Link href={commissionLinks.en.book} className="tq-btn tq-btn--lg">
                   Check your date <span className="tq-arrow" aria-hidden>↗</span>
                 </Link>
                 <Link href="/quinceanera-photographer" className="tq-btn tq-btn--ghost">All areas</Link>
               </div>
+              <ContactButtons lang="en" placement="city-cta" primary={false} />
             </div>
           </div>
         </div>

@@ -21,6 +21,7 @@ import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import "@/components/txq/pages/places.css";
 import { jsonLdString } from "@/lib/json-ld";
+import { businessContactJsonLd } from "@/lib/contact";
 
 export const revalidate = 3600;
 
@@ -108,6 +109,7 @@ export default async function VenuePage({
         url,
         image: `${site.url}/opengraph-image`,
         email: site.contact.email,
+        ...businessContactJsonLd(),
         areaServed: { "@type": "City", name: `${venue.city}, TX` },
         priceRange: `${usd(priceFloor(book))}–${usd(priceCeiling(book))}`,
         knowsLanguage: ["en", "es"],
