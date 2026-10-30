@@ -60,12 +60,6 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  // Two root layouts (app/(en) and app/es, so each language renders its own
-  // <html lang>) means no single layout for unmatched URLs; app/global-not-found.tsx
-  // is the 404 for those.
-  experimental: {
-    globalNotFound: true,
-  },
   // Premium perception dies on a slow site (PERFORMANCE BUDGET LAW).
   poweredByHeader: false,
   compress: true,
