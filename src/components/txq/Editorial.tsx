@@ -90,7 +90,7 @@ export function Editorial({ journal }: { journal: Journal }) {
  * /api/admin/me confirms a signed-in admin (useIsAdmin — free for visitors), it
  * becomes "Admin" (→ /admin) + "Log out" (signs out, returns to the homepage).
  */
-function FooterAdmin() {
+export function FooterAdmin() {
   const { lang } = useSite();
   const isAdmin = useIsAdmin();
   const [busy, setBusy] = useState(false);

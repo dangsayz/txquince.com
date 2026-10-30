@@ -3,8 +3,8 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { MotionConfig } from "motion/react";
-import { Footer } from "./Editorial";
-import { Header, MobileDock } from "./Header";
+import { MobileDock } from "./Header";
+import { SiteFooter, SiteHeader } from "@/components/home/Chrome";
 import { NoUpscale } from "./NoUpscale";
 import { AvailabilityProvider, SiteProvider, useSite } from "./state";
 import { PriceBookProvider } from "@/components/PriceBookProvider";
@@ -63,11 +63,11 @@ function Frame({ children }: { children: ReactNode }) {
         <a href="#content" className="tq-skip">
           {t.meta.skip}
         </a>
-        <Header />
+        <SiteHeader />
         <main id="content" className="tq-main">
           {children}
         </main>
-        <Footer />
+        <SiteFooter />
         <MobileDock hidden={dockHidden} />
         {/* Global rule: no photo is ever displayed larger than its real pixels. */}
         <NoUpscale />
