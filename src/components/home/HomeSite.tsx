@@ -19,7 +19,7 @@ import { HERO_SLOTS, type FeedPage, type HomeOverrides } from "@/lib/photo-dump-
 import type { HomeGallery } from "@/lib/home-galleries";
 import type { HomeCity } from "@/content/home-places";
 import { site } from "@/content/site";
-import { FAQ_TAGS, HERO_PRINTS, HOME, PACKAGE_DETAIL, type HomePrint } from "./home-copy";
+import { FAQ_TAGS, HERO_PRINTS, HOME, PACKAGE_DETAIL, SWAP_CAPTION, type HomePrint } from "./home-copy";
 import "./home.css";
 
 /**
@@ -186,7 +186,9 @@ function Hero({ overrides }: { overrides: HomeOverrides }) {
                   </>
                 )}
               </span>
-              <figcaption>{p.cap[lang]}</figcaption>
+              <figcaption>
+                {slot !== undefined && slots[slot].src !== p.src ? SWAP_CAPTION[slot][lang] : p.cap[lang]}
+              </figcaption>
             </figure>
           );
         })}
@@ -233,7 +235,11 @@ function Stories({ galleries }: { galleries: HomeGallery[] }) {
   const s = HOME[lang].stories;
   const allHref = "/portfolio";
   if (!galleries.length) return <div id="archive" />;
-  const [lead, ...rest] = galleries;
+  // Some portfolio locations are stored as a bare lowercase word ("irving");
+  // lead with properly named venues, biggest gallery first.
+  const named = (g: HomeGallery) => /[A-Z]/.test(g.title);
+  const ordered = [...galleries].sort((a, b) => Number(named(b)) - Number(named(a)) || b.count - a.count);
+  const [lead, ...rest] = ordered.map((g) => (named(g) ? g : { ...g, title: titleCase(g.title) }));
   const label = (g: HomeGallery) => [g.city, s.photos(g.count)].filter(Boolean).join(" · ");
   return (
     <section id="archive" className="th-sec th-stories" aria-labelledby="th-stories-title">
@@ -300,6 +306,9 @@ function Stories({ galleries }: { galleries: HomeGallery[] }) {
     </section>
   );
 }
+
+/** "fort worth" → "Fort Worth". */
+const titleCase = (s: string) => s.replace(/\b\p{Ll}/gu, (c) => c.toUpperCase());
 
 /* ------------------------------------------------------------------ */
 /* Films                                                               */

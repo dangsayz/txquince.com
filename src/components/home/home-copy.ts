@@ -98,6 +98,12 @@ export const HERO_PRINTS: HomePrint[] = [
   },
 ];
 
+/** Caption for a hero slot print the admin swapped for another photo. */
+export const SWAP_CAPTION = [
+  { en: "Portraits", es: "Retratos" },
+  { en: "Her day", es: "Su día" },
+] as const;
+
 /** Package rows: the chips beside each price (hours and team come from the book). */
 export const PACKAGE_DETAIL: Record<TierId, { en: string; es: string }> = {
   study: { en: "Photos only · 60 edited photos", es: "Solo fotos · 60 fotos editadas" },
@@ -157,7 +163,7 @@ export const HOME = {
       pick: "Most families choose this",
       book: "Book",
       bookAria: (name: string) => `Book the ${name}`,
-      hours: (h: number) => `${h} hours`,
+      hours: (h: number) => (h === 1 ? "1 hour" : `${h} hours`),
       hoursTwoDays: (h: number) => `${h} hrs · 2 days`,
       team: (n: number) => (n === 1 ? "1 photographer" : `Team of ${n}`),
       after: "Add hours, a Dress Session or a Same-Day Edit in the next step.",
@@ -230,7 +236,7 @@ export const HOME = {
       pick: "La que más eligen las familias",
       book: "Reservar",
       bookAria: (name: string) => `Reservar ${name}`,
-      hours: (h: number) => `${h} horas`,
+      hours: (h: number) => (h === 1 ? "1 hora" : `${h} horas`),
       hoursTwoDays: (h: number) => `${h} h · 2 días`,
       team: (n: number) => (n === 1 ? "1 fotógrafo" : `Equipo de ${n}`),
       after: "En el siguiente paso puedes agregar horas, una sesión con el vestido o un video del mismo día.",

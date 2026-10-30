@@ -212,7 +212,7 @@ const en = {
     choose: "Choose",
     chosen: "Chosen",
     recommended: "Our pick",
-    hoursIncluded: (h: number) => `${h} hours included`,
+    hoursIncluded: (h: number) => (h === 1 ? "1 hour included" : `${h} hours included`),
     hoursBothDays: (h: number) => `${h} hours, both days`,
     team: (n: number, coordinator: boolean) =>
       n === 1 ? "1 photographer" : `Team of ${n}${coordinator ? " + coordinator" : ""}`,
@@ -513,7 +513,7 @@ const es: Copy = {
     choose: "Elegir",
     chosen: "Elegido",
     recommended: "Recomendado",
-    hoursIncluded: (h: number) => `${h} horas incluidas`,
+    hoursIncluded: (h: number) => (h === 1 ? "1 hora incluida" : `${h} horas incluidas`),
     hoursBothDays: (h: number) => `${h} horas, ambos días`,
     team: (n: number, coordinator: boolean) =>
       n === 1 ? "1 fotógrafo" : `Equipo de ${n}${coordinator ? " + coordinadora" : ""}`,

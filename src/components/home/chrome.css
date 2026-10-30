@@ -103,7 +103,8 @@
   .txq .sh-brand { align-items: center; }
   .txq .sh-brand__mark { font-size: 19px; }
   .txq .sh-right { justify-content: flex-end; }
-  .txq .sh-right .tq-lang { display: inline-flex; height: 44px; }
+  .txq .sh-right .tq-lang { display: inline-flex; height: 48px; }
+  .txq .sh-right .tq-lang button { min-height: 46px; }
   .txq .sh-cta { display: inline-flex; }
   .txq .sh-sm { display: none; }
 }
