@@ -26,6 +26,7 @@ import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import "@/components/txq/pages/places.css";
 import { jsonLdString } from "@/lib/json-ld";
+import { languageAlternates } from "@/lib/hreflang";
 
 /** Curated guides surfaced on each city page (closes the city↔blog loop). */
 const CITY_GUIDES = [
@@ -98,7 +99,7 @@ export async function generateMetadata({
     description,
     alternates: {
       canonical: `/quinceanera-photographer/${loc.slug}`,
-      languages: { "en-US": url, "es-MX": esUrl, "x-default": url },
+      languages: languageAlternates(url, esUrl),
     },
     openGraph: {
       title: `${title} · ${site.brand}`,

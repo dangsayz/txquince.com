@@ -9,6 +9,7 @@ import { getPriceBook } from "@/lib/pricing";
 import { fillDeep } from "@/lib/price-text";
 import { resolveHomeSlots } from "@/lib/image-slot-home";
 import { SlotProvider } from "@/components/slots/SlotProvider";
+import { languageAlternates, OG_LOCALE } from "@/lib/hreflang";
 
 // Films come from the admin video library; admin edits revalidate at once.
 export const revalidate = 3600;
@@ -18,9 +19,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: { absolute: "Fotógrafo y Videógrafo de Quinceañeras en Dallas–Fort Worth | TX Quince" },
     description: `Fotografía y cine de quinceañera de lujo en Dallas–Fort Worth, de Highland Park a Southlake. Encargos publicados desde ${from}, en español de la primera llamada a la película final. Consulta tu fecha en vivo.`,
-    alternates: { canonical: "/es", languages: { "en-US": "/", "es-MX": "/es" } },
+    alternates: { canonical: "/es", languages: languageAlternates("/", "/es") },
     openGraph: {
-      locale: "es_MX",
+      locale: OG_LOCALE.es,
       title: "TX Quince — Fotografía y cine de quinceañera, Dallas–Fort Worth",
       description: `Retratos editoriales y cine para la quinceañera. Encargos desde ${from}.`,
     },

@@ -1,5 +1,5 @@
 /**
- * /photos/[category]/[slug] — the shareable, indexable page for one photograph.
+ * /photos/[category]/[slug] — the shareable page for one photograph (noindex, follow).
  * Sharing an image shares THIS page (rich branded preview), never a file.
  * Editorial-system layout; ImageObject JSON-LD; quiet CTA to book.
  */
@@ -50,6 +50,11 @@ export async function generateMetadata({
     description,
     ...(img.tags ? { keywords: img.tags } : {}),
     alternates: { canonical: pagePath },
+    // A single photograph is a share target, not a search landing page: ~200
+    // words of templated copy per photo, ~100 near-identical pages. Keep them
+    // out of the index (and out of both sitemaps) but let their links count.
+    // The images themselves are listed under /portfolio in /image-sitemap.xml.
+    robots: { index: false, follow: true },
     openGraph: {
       title: `${copy.title} · ${site.brand}`,
       description,

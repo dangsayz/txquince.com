@@ -8,8 +8,9 @@ import { getFeaturedImages, getPageHero } from "@/lib/content-db";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import { BlogIndexView, type BlogThumb } from "@/components/BlogContent";
-import { blogIndexJsonLd } from "@/app/blog/structured-data";
+import { blogIndexJsonLd } from "@/lib/blog-structured-data";
 import { jsonLdString } from "@/lib/json-ld";
+import { languageAlternates, OG_LOCALE } from "@/lib/hreflang";
 
 export const revalidate = 3600;
 
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
     "Honest, no-guesswork guides to planning a quinceañera in Dallas–Fort Worth — real costs, timelines, traditions, and how to choose your photo & video team.",
   alternates: {
     canonical: "/blog",
-    languages: { "en-US": "/blog", "es-MX": "/es/blog", "x-default": "/blog" },
+    languages: languageAlternates("/blog", "/es/blog"),
   },
   // openGraph/twitter replace the root layout's objects wholesale (shallow
   // merge), so the index restates siteName/locale/image and its own card copy.
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
     type: "website",
     siteName: site.brand,
     locale: "en_US",
-    alternateLocale: ["es_MX"],
+    alternateLocale: [OG_LOCALE.es],
     title: "Quinceañera Planning Guide · TX Quince",
     description:
       "Real costs, timelines, traditions, and how to choose your photographer in Dallas–Fort Worth.",

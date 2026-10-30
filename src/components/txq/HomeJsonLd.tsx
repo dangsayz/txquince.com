@@ -3,13 +3,14 @@ import { TIER_IDS, TIER_NAME_EN, type PriceBook } from "@/lib/commission";
 import { fillDeep } from "@/lib/price-text";
 import { site } from "@/content/site";
 import { jsonLdString } from "@/lib/json-ld";
+import { HREFLANG } from "@/lib/hreflang";
 
 /** Page-level structured data: the FAQ shown on the page, plus the service catalog — both from the live book. */
 export function HomeJsonLd({ lang, book }: { lang: "en" | "es"; book: PriceBook }) {
   const faq = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    inLanguage: lang === "es" ? "es-MX" : "en-US",
+    inLanguage: HREFLANG[lang],
     mainEntity: fillDeep(COPY[lang].faq.items, book).map((i) => ({
       "@type": "Question",
       name: i.q,

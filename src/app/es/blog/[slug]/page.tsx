@@ -9,11 +9,12 @@ import {
 } from "@/content/blog";
 import { getBlogImages } from "@/lib/content-db";
 import { absoluteImageUrl, ogImageFor, resolveBlogCover } from "@/lib/blog-cover";
-import { blogPostingJsonLd, postMetaTitle } from "@/app/blog/structured-data";
+import { blogPostingJsonLd, postMetaTitle } from "@/lib/blog-structured-data";
 import { BlogArticleView } from "@/components/BlogContent";
 import { getPriceBook } from "@/lib/pricing";
 import { fillDeep } from "@/lib/price-text";
 import { jsonLdString } from "@/lib/json-ld";
+import { languageAlternates, OG_LOCALE } from "@/lib/hreflang";
 
 export const revalidate = 3600;
 
@@ -42,11 +43,7 @@ export async function generateMetadata({
       canonical: `/es/blog/${post.slug}`,
       ...(enSlug
         ? {
-            languages: {
-              "es-MX": `/es/blog/${post.slug}`,
-              "en-US": `/blog/${enSlug}`,
-              "x-default": `/blog/${enSlug}`,
-            },
+            languages: languageAlternates(`/blog/${enSlug}`, `/es/blog/${post.slug}`),
           }
         : {}),
     },
@@ -55,7 +52,7 @@ export async function generateMetadata({
     openGraph: {
       type: "article",
       siteName: site.brand,
-      locale: "es_MX",
+      locale: OG_LOCALE.es,
       ...(enSlug ? { alternateLocale: ["en_US"] } : {}),
       title: post.title,
       description: post.description,

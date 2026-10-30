@@ -6,13 +6,14 @@ import { venues } from "@/content/venues";
 import { portfolioFallback } from "@/content/portfolio-fallback";
 import { getImagesByVenue } from "@/lib/content-db";
 import "@/components/txq/pages/places.css";
+import { languageAlternates, OG_LOCALE } from "@/lib/hreflang";
 
 export const revalidate = 3600;
 export const metadata: Metadata = {
   title: "Salones de Quinceañera en Dallas–Fort Worth",
   description: "Explora salones de quinceañera en Dallas–Fort Worth donde hemos fotografiado celebraciones reales. Encuentra tu lugar y consulta tu fecha.",
-  alternates: { canonical: "/es/salones", languages: { "en-US": "/venues", "es-MX": "/es/salones" } },
-  openGraph: { locale: "es_MX" },
+  alternates: { canonical: "/es/salones", languages: languageAlternates("/venues", "/es/salones") },
+  openGraph: { locale: OG_LOCALE.es },
 };
 
 const pad = (n: number) => String(n).padStart(2, "0");

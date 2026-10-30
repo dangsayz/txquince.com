@@ -4,11 +4,12 @@ import { site } from "@/content/site";
 import { getAllPosts, getPost, relatedPosts, esSlugForEn } from "@/content/blog";
 import { getBlogImages } from "@/lib/content-db";
 import { absoluteImageUrl, ogImageFor, resolveBlogCover } from "@/lib/blog-cover";
-import { blogPostingJsonLd, postMetaTitle } from "@/app/blog/structured-data";
+import { blogPostingJsonLd, postMetaTitle } from "@/lib/blog-structured-data";
 import { BlogArticleView } from "@/components/BlogContent";
 import { getPriceBook } from "@/lib/pricing";
 import { fillDeep } from "@/lib/price-text";
 import { jsonLdString } from "@/lib/json-ld";
+import { languageAlternates, OG_LOCALE } from "@/lib/hreflang";
 
 export const revalidate = 3600;
 
@@ -37,11 +38,7 @@ export async function generateMetadata({
       canonical: `/blog/${post.slug}`,
       ...(esSlug
         ? {
-            languages: {
-              "en-US": `/blog/${post.slug}`,
-              "es-MX": `/es/blog/${esSlug}`,
-              "x-default": `/blog/${post.slug}`,
-            },
+            languages: languageAlternates(`/blog/${post.slug}`, `/es/blog/${esSlug}`),
           }
         : {}),
     },
@@ -51,7 +48,7 @@ export async function generateMetadata({
       type: "article",
       siteName: site.brand,
       locale: "en_US",
-      ...(esSlug ? { alternateLocale: ["es_MX"] } : {}),
+      ...(esSlug ? { alternateLocale: [OG_LOCALE.es] } : {}),
       title: post.title,
       description: post.description,
       url,

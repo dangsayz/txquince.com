@@ -15,6 +15,7 @@ import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import "@/components/txq/pages/places.css";
 import { jsonLdString } from "@/lib/json-ld";
+import { languageAlternates } from "@/lib/hreflang";
 
 export const revalidate = 3600;
 
@@ -24,11 +25,7 @@ export const metadata: Metadata = {
     "Quinceañera venues across Dallas–Fort Worth we've photographed — ballrooms, gardens, and event centers. See real quinceañeras at each, and reserve your date.",
   alternates: {
     canonical: "/venues",
-    languages: {
-      "en-US": `${site.url}/venues`,
-      "es-MX": `${site.url}/es/salones`,
-      "x-default": `${site.url}/venues`,
-    },
+    languages: languageAlternates(`${site.url}/venues`, `${site.url}/es/salones`),
   },
   openGraph: {
     title: `Quinceañera Venues · ${site.brand}`,
