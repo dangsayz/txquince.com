@@ -5,7 +5,7 @@ import { getLocation } from "@/content/locations";
 /** /quinceanera-photographer/<city> and /es/fotografo-de-quinceaneras/<city> (page only). */
 const CITY_PAGE = /^\/(?:quinceanera-photographer|es\/fotografo-de-quinceaneras)\/([^/]+)\/?$/;
 
-/** No route matches this path, so a rewrite to it renders app/global-not-found.tsx with a 404. */
+/** No route matches this path, so a rewrite to it renders app/not-found.tsx with a 404. */
 const NOT_FOUND_PATH = "/_txq-not-found";
 
 /**
@@ -13,7 +13,7 @@ const NOT_FOUND_PATH = "/_txq-not-found";
  * only; the rest of the public site stays untouched (and fast).
  *
  * City pages: a slug that is not in src/content/locations.ts must be a real
- * 404. The page's own notFound() is too late for that: the (en) loading.tsx
+ * 404. The page's own notFound() is too late for that: the root loading.tsx
  * boundary has already started streaming, so the response goes out as a 200
  * with a noindex tag (a soft 404 — /quinceanera-photographer/houston was one).
  * `dynamicParams = false` would also do it under `next start`, but under

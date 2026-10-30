@@ -3,7 +3,7 @@
 import Link from "next/link";
 import "@/components/txq/pages/pages.css";
 
-/** Error boundary for the Spanish root layout (mirrors app/(en)/error.tsx). */
+/** Error boundary for the Spanish subtree (mirrors app/error.tsx). */
 export default function ErrorPageEs({ reset }: { error: Error & { digest?: string }; reset: () => void }) {
   return (
     <div className="tq-wrap">
