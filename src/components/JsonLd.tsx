@@ -2,6 +2,7 @@ import { site } from "@/content/site";
 import { TIER_IDS, TIER_NAME_EN, priceCeiling, priceFloor, usd, type PriceBook } from "@/lib/commission";
 import { locations } from "@/content/locations";
 import { jsonLdString } from "@/lib/json-ld";
+import { businessContactJsonLd } from "@/lib/contact";
 
 /**
  * LocalBusiness structured data (SEO BASELINE). Driven from content so it stays
@@ -26,7 +27,8 @@ export function JsonLd({ book }: { book: PriceBook }) {
     url: site.url,
     image: `${site.url}/opengraph-image`,
     email: site.contact.email,
-    ...(site.contact.phoneE164 ? { telephone: site.contact.phoneE164 } : {}),
+    // telephone + bilingual customer-service ContactPoint (src/lib/contact.ts).
+    ...businessContactJsonLd(),
     areaServed,
     // Service-area business footprint (no storefront): metroplex center
     // (Arlington) + 50km covers every served city.

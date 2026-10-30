@@ -18,6 +18,7 @@ import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState }
 import { motion } from "motion/react";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { getFirstTouch } from "@/components/Tracker";
+import { ContactLine } from "@/components/ContactButtons";
 import { BASE_CREW, COORDINATOR_INCLUDED } from "@/lib/commission";
 import { HONEYPOT_FIELD } from "@/lib/inquiry";
 import { usePriceBook } from "@/components/PriceBookProvider";
@@ -558,6 +559,8 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
                       </ol>
                       <p className="tq-bk-nocharge">{t.booking.noCharge}</p>
                     </div>
+                    <ContactLine lang={lang} placement="booking-send" />
+
                     {SHOW_TURNSTILE && SITE_KEY ? (
                       <Turnstile
                         ref={turnstileRef}
@@ -794,6 +797,7 @@ function Success({
           ))}
         </ol>
       </div>
+      <ContactLine lang={lang} placement="booking-done" />
       <div>
         <button type="button" className="tq-btn tq-btn--ghost tq-btn--lg" onClick={onAgain}>
           {t.booking.again}

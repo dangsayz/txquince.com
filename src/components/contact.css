@@ -1,0 +1,166 @@
+/* ==========================================================================
+   ContactButtons + ContactLine (src/components/ContactButtons.tsx)
+   Built on the shell's .tq-btn and tokens; scoped under .txq like the rest.
+   Web design standard: 48px targets, ≥8px apart, 16px text, ink-black text,
+   nowrap labels, re-flow by available width (0 overflow at 360px).
+   ========================================================================== */
+
+.txq .tq-contact {
+  container-type: inline-size;
+  display: grid;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+}
+
+.txq .tq-contact__btns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Wide enough for two side by side: Text on its own row, then WhatsApp + Call. */
+@container (min-width: 18rem) {
+  .txq .tq-contact__btns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .txq .tq-contact__btns > li[data-kind="text"] {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Wide: all three on one row, sized to their labels. */
+@container (min-width: 34rem) {
+  .txq .tq-contact__btns {
+    grid-template-columns: repeat(3, max-content);
+  }
+  .txq .tq-contact__btns > li[data-kind="text"] {
+    grid-column: auto;
+  }
+}
+
+/* Reset list-item styling from hosts (e.g. the mobile menu's `li` rules). */
+.txq .tq-contact .tq-contact__btns > li {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.txq .tq-contact .tq-contact__btn {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 0 20px;
+  gap: 10px;
+  font-size: 1rem;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.txq .tq-contact .tq-contact__btn:hover {
+  text-decoration: none;
+}
+.txq .tq-contact__icon {
+  flex: none;
+}
+
+/* Link-in-bio: bigger buttons, easy thumbs. */
+.txq .tq-contact[data-size="xl"] .tq-contact__btn {
+  min-height: 56px;
+  font-size: 1.0625rem;
+}
+@container (min-width: 34rem) {
+  .txq .tq-contact[data-size="xl"] .tq-contact__btns {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.txq .tq-contact__note {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* One-line prompt: "Prefer to text? (945) 200-1939 or WhatsApp". */
+.txq .tq-contact-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 8px;
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.txq .tq-contact-line__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--text-primary);
+  font-weight: var(--weight-semibold);
+  white-space: nowrap;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+}
+.txq .tq-contact-line__link:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* ---------- Journal: "Planning your quince in DFW?" (BlogPlanCta) ---------- */
+.txq .tq-blog-plan {
+  display: grid;
+  gap: 16px;
+  margin-block: 2.5em;
+  padding: 28px 0;
+  border-block: 1px solid var(--border-hairline);
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+@media (min-width: 640px) {
+  .txq .tq-blog-plan {
+    padding: 32px;
+    border: 1px solid var(--border-hairline);
+    background: var(--bg-surface);
+  }
+}
+.txq .tq-blog-plan > * {
+  margin: 0;
+}
+.txq .tq-blog-plan__index {
+  color: var(--text-primary);
+}
+.txq .tq-blog-plan__title {
+  font-size: clamp(1.5rem, 1.15rem + 1vw, 2rem);
+  line-height: 1.15;
+  text-wrap: balance;
+}
+.txq .tq-blog-plan__price {
+  max-width: 52ch;
+  font-size: 1.0625rem;
+}
+.txq .tq-blog-plan__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.txq .tq-blog-plan__links .tq-btn {
+  max-width: 100%;
+}
+@media (max-width: 479px) {
+  .txq .tq-blog-plan__links .tq-btn {
+    width: 100%;
+  }
+}
+/* Mid-article: beat the flow's own `> * + *` spacing whatever the CSS order. */
+.txq .tq-blog-flow > .tq-blog-plan {
+  margin-block: 2.5em;
+}
+/* The end block sits after the last paragraph, outside the flow's spacing. */
+.txq .tq-blog-plan[data-placement="end"] {
+  margin-bottom: 0;
+}
