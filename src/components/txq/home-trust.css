@@ -1,0 +1,179 @@
+/* ==========================================================================
+   TX QUINCE — homepage trust sections
+   · the hero H1 (the plain "what we are" line above the display type)
+   · "Real quinceañeras, full galleries" cards (Archive.tsx)
+   · "Where we work" link row (WhereWeWork.tsx)
+   Builds on txq.css tokens; all text is --text-primary (#111110) at ≥16px,
+   every link is ≥44px tall (48px for the primary button) with ≥8px between.
+   ========================================================================== */
+
+/* ---------- Hero H1 ---------- */
+.txq .tq-hero__h1 {
+  margin: 0 0 16px;
+  max-width: 34ch;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: var(--weight-medium);
+  line-height: 1.4;
+  letter-spacing: 0;
+  color: var(--text-primary);
+  text-wrap: balance;
+}
+@media (min-width: 960px) {
+  .txq .tq-hero__h1 { font-size: 1.0625rem; margin-bottom: 20px; }
+}
+
+/* ---------- Gallery cards ---------- */
+.txq .tq-gal-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px 12px;
+  padding-bottom: 40px;
+}
+@media (min-width: 640px) {
+  .txq .tq-gal-grid { gap: 48px 24px; }
+}
+@media (min-width: 1024px) {
+  .txq .tq-gal-grid {
+    grid-template-columns: repeat(var(--gal-cols-md, 3), minmax(0, 1fr));
+    gap: 56px 32px;
+    padding-bottom: 56px;
+  }
+}
+@media (min-width: 1280px) {
+  .txq .tq-gal-grid { grid-template-columns: repeat(var(--gal-cols, 3), minmax(0, 1fr)); }
+}
+
+.txq .tq-gal-card {
+  display: grid;
+  gap: 6px;
+  min-height: 44px;
+  color: var(--text-primary);
+}
+.txq .tq-gal-card__media {
+  display: block;
+  margin-bottom: 6px;
+}
+.txq .tq-gal-card__media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.txq .tq-gal-card:hover .tq-gal-card__media img {
+  transform: scale(1.02);
+}
+.txq .tq-gal-card__title {
+  font-size: 1rem;
+  font-weight: var(--weight-medium);
+  line-height: 1.3;
+  text-wrap: balance;
+}
+.txq .tq-gal-card__meta {
+  font-size: 1rem;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+.txq .tq-gal-card__meta .tq-nowrap {
+  white-space: nowrap;
+}
+.txq .tq-gal-card__meta--clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+@media (min-width: 1024px) {
+  .txq .tq-gal-card__title { font-size: 1.125rem; }
+}
+.txq .tq-gal-card:focus-visible {
+  outline-offset: 6px;
+}
+
+.txq .tq-gal-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 0 var(--pad) 72px;
+}
+@media (max-width: 639px) {
+  /* Thumb-reach: the primary action is a full-width bar on phones. */
+  .txq .tq-gal-foot .tq-btn { width: 100%; }
+}
+@media (min-width: 1024px) {
+  .txq .tq-gal-foot { padding-bottom: 112px; }
+}
+
+/* ---------- Where we work ---------- */
+.txq .tq-where__inner {
+  display: grid;
+  gap: 28px;
+  padding: 48px var(--pad) 56px;
+}
+.txq .tq-where__title {
+  font-size: clamp(1.875rem, 1.3rem + 1.8vw, 2.75rem);
+}
+.txq .tq-where__dek {
+  margin: 14px 0 0;
+  max-width: 40ch;
+  color: var(--text-primary);
+}
+.txq .tq-where__nav {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+.txq .tq-where__label {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+}
+.txq .tq-where__label + .tq-where__links + .tq-where__label {
+  margin-top: 12px;
+}
+.txq .tq-where__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.txq .tq-where__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--border-control);
+  border-radius: 999px;
+  font-size: 1rem;
+  line-height: 1.2;
+  color: var(--text-primary);
+  white-space: nowrap;
+  transition: background-color 250ms var(--ease), border-color 250ms var(--ease);
+}
+.txq .tq-where__link:hover {
+  background: color-mix(in srgb, var(--accent-hover) 45%, transparent);
+}
+.txq .tq-where__link--service {
+  border-color: var(--text-primary);
+}
+@media (min-width: 960px) {
+  .txq .tq-where__inner {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 0 24px;
+    padding-block: 72px 80px;
+  }
+  .txq .tq-where__head { grid-column: span 4; }
+  .txq .tq-where__nav { grid-column: 6 / span 7; align-content: start; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .txq .tq-gal-card__media img,
+  .txq .tq-where__link { transition: none; }
+  .txq .tq-gal-card:hover .tq-gal-card__media img { transform: none; }
+}

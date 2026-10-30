@@ -735,7 +735,7 @@ function HomeSlots({ manifest, slots, patch }: { manifest: DumpManifest; slots: 
           Change homepage pictures
         </h2>
         <p className="mt-1 max-w-[60ch] text-base text-neutral-950">
-          Swap any picture at the top of the homepage or in the Archive for one of your uploaded photos. &ldquo;Use original&rdquo; puts it back.
+          Swap either picture at the top of the homepage for one of your uploaded photos. &ldquo;Use original&rdquo; puts it back.
         </p>
       </div>
       {groups.map(([group, rows]) => (

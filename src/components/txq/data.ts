@@ -5,8 +5,7 @@
  * is stored as { en, es } so the language toggle swaps it in place. UI chrome
  * strings live in ./copy.ts.
  *
- * Subjects, places and prices below are launch placeholders: swap in real
- * client credits (with consent) and final pricing before going live.
+ * Prices are not here: every price lives in the live price book.
  */
 
 export type Lang = "en" | "es";
@@ -17,18 +16,19 @@ export const pick = (lang: Lang, v: L) => v[lang];
 import { canAddHours, type AddOnId, type PriceBook, type TierId } from "@/lib/commission";
 
 /* ------------------------------------------------------------------ */
-/* Archive                                                             */
+/* Hero plates                                                          */
 /* ------------------------------------------------------------------ */
 
-export type Category = "couture" | "ceremony" | "fiesta" | "editorial";
-
-export type Work = {
-  id: string;
-  subject: string;
-  place: L;
-  medium: L;
-  year: number;
-  category: Category;
+/**
+ * The two built-in hero photographs (real TX Quince frames from the public
+ * portfolio, see src/content/portfolio-fallback.ts). An image-slot override
+ * or a Photo dump swap replaces either one.
+ *
+ * There is deliberately no client name or invented place here: the homepage
+ * gallery comes from the real portfolio (src/lib/home-galleries.ts), never
+ * from hand-written records.
+ */
+export type HeroPlate = {
   src: string;
   width: number;
   height: number;
@@ -37,22 +37,8 @@ export type Work = {
   alt: L;
 };
 
-/** What each work is, in plain words (shown at the end of its caption). */
-const M = {
-  medium: { en: "Portrait", es: "Retrato" },
-  film: { en: "Portrait", es: "Retrato" },
-  motion: { en: "Photo + video", es: "Foto + video" },
-  digital: { en: "Photo", es: "Foto" },
-} satisfies Record<string, L>;
-
-export const WORKS: Work[] = [
-  {
-    id: "w01",
-    subject: "Sofía M.",
-    place: { en: "Gilded Salon, Dallas", es: "Salón Dorado, Dallas" },
-    medium: M.medium,
-    year: 2026,
-    category: "couture",
+export const HERO_PLATES = {
+  a: {
     src: "/portfolio/hero.webp",
     width: 1440,
     height: 1920,
@@ -62,153 +48,17 @@ export const WORKS: Work[] = [
       es: "Quinceañera con vestido rosa palo bajo una cúpula dorada pintada a mano y un candelabro de cristal",
     },
   },
-  {
-    id: "w02",
-    subject: "Ximena R.",
-    place: { en: "Limestone Stair, San Antonio", es: "Escalera de piedra, San Antonio" },
-    medium: M.film,
-    year: 2026,
-    category: "editorial",
+  b: {
     src: "/portfolio/canal.webp",
     width: 720,
     height: 1080,
     focus: "34% 55%",
     alt: {
-      en: "Quinceañera in a fuchsia gown with a long train seated on a limestone stair",
-      es: "Quinceañera con vestido fucsia de cola larga sentada en una escalera de piedra caliza",
+      en: "Quinceañera in a bright pink gown posing by a stone railing at the Mandalay Canal Walk in Irving",
+      es: "Quinceañera con vestido rosa junto a un barandal de piedra en el Mandalay Canal de Irving",
     },
   },
-  {
-    id: "w03",
-    subject: "Familia Torres",
-    place: { en: "Folklórico Hall, Houston", es: "Salón folclórico, Houston" },
-    medium: M.motion,
-    year: 2025,
-    category: "fiesta",
-    src: "/portfolio/dance.webp",
-    width: 719,
-    height: 1080,
-    focus: "50% 42%",
-    alt: {
-      en: "Folklórico dancers mid-turn, striped skirts fanned wide under papel picado",
-      es: "Bailarinas de folclor girando, faldas a rayas abiertas bajo papel picado",
-    },
-  },
-  {
-    id: "w04",
-    subject: "Renata G.",
-    place: { en: "Stone Portico, Fort Worth", es: "Pórtico de piedra, Fort Worth" },
-    medium: M.medium,
-    year: 2026,
-    category: "ceremony",
-    src: "/portfolio/lilac-arch.webp",
-    width: 810,
-    height: 1080,
-    focus: "45% 62%",
-    alt: {
-      en: "Quinceañera in a lilac gown walking toward an arched stone doorway",
-      es: "Quinceañera con vestido lila caminando hacia una puerta de piedra en arco",
-    },
-  },
-  {
-    id: "w05",
-    subject: "Camila S.",
-    place: { en: "Garden Terrace, Dallas", es: "Terraza jardín, Dallas" },
-    medium: M.film,
-    year: 2025,
-    category: "editorial",
-    src: "/portfolio/red-garden.webp",
-    width: 720,
-    height: 1080,
-    focus: "50% 60%",
-    alt: {
-      en: "Quinceañera in a crimson gown and sarape shawl holding a bright bouquet in a garden",
-      es: "Quinceañera con vestido carmesí y rebozo de sarape sosteniendo un ramo en un jardín",
-    },
-  },
-  {
-    id: "w06",
-    subject: "Kimberly",
-    place: { en: "Father–Daughter Waltz, Arlington", es: "Vals con papá, Arlington" },
-    medium: M.motion,
-    year: 2025,
-    category: "fiesta",
-    src: "/portfolio/kimberly-reception.webp",
-    width: 719,
-    height: 1080,
-    focus: "60% 60%",
-    alt: {
-      en: "Father embracing his daughter in a black gown on the dance floor beneath marquee letters",
-      es: "Un padre abraza a su hija con vestido negro en la pista bajo letras luminosas",
-    },
-  },
-  {
-    id: "w07",
-    subject: "Valeria T.",
-    place: { en: "The Shoe Ceremony, Grand Prairie", es: "Cambio de zapatilla, Grand Prairie" },
-    medium: M.digital,
-    year: 2026,
-    category: "ceremony",
-    src: "/portfolio/shoe-ceremony.webp",
-    width: 719,
-    height: 1080,
-    focus: "50% 62%",
-    alt: {
-      en: "Quinceañera in a black gown during the shoe ceremony under stage lights",
-      es: "Quinceañera con vestido negro durante el cambio de zapatilla bajo luces de escenario",
-    },
-  },
-  {
-    id: "w08",
-    subject: "Daniela P.",
-    place: { en: "Limestone Garden, Austin", es: "Jardín de piedra, Austin" },
-    medium: M.medium,
-    year: 2026,
-    category: "couture",
-    src: "/portfolio/save-date.webp",
-    width: 810,
-    height: 1080,
-    focus: "50% 70%",
-    alt: {
-      en: "Quinceañera in a red gown seated on a stone wall beneath tall oaks and open sky",
-      es: "Quinceañera con vestido rojo sentada en un muro de piedra bajo robles y cielo abierto",
-    },
-  },
-  {
-    id: "w09",
-    subject: "Ariana L.",
-    place: { en: "Prickly Pear Garden, Fort Worth", es: "Jardín de nopales, Fort Worth" },
-    medium: M.film,
-    year: 2025,
-    category: "couture",
-    src: "/portfolio/stockyards.webp",
-    width: 720,
-    height: 1080,
-    focus: "50% 64%",
-    alt: {
-      en: "Quinceañera in a rose-gold gown and tiara seated before a wall of prickly pear cactus at dusk",
-      es: "Quinceañera con vestido oro rosa y tiara frente a un muro de nopales al atardecer",
-    },
-  },
-  {
-    id: "w10",
-    subject: "Natalia C.",
-    place: { en: "White Gallery, Houston", es: "Galería blanca, Houston" },
-    medium: M.digital,
-    year: 2026,
-    category: "editorial",
-    src: "/portfolio/reception.webp",
-    width: 719,
-    height: 1080,
-    focus: "50% 40%",
-    alt: {
-      en: "Quinceañera in a pale pink corseted gown in a bright white corridor",
-      es: "Quinceañera con vestido rosa pálido de corsé en un pasillo blanco y luminoso",
-    },
-  },
-];
-
-export const workById = (id: string) => WORKS.find((w) => w.id === id)!;
+} as const satisfies Record<"a" | "b", HeroPlate>;
 
 /* ------------------------------------------------------------------ */
 /* Cinema Room                                                         */

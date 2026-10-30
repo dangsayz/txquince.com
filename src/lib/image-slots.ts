@@ -15,7 +15,7 @@
  * Pure data + helpers: safe for server code and tests. Never import this from
  * a client component (it pulls in the blog and city content).
  */
-import { WORKS } from "@/components/txq/data";
+import { HERO_PLATES } from "@/components/txq/data";
 import { locations } from "@/content/locations";
 import { portfolioFallback } from "@/content/portfolio-fallback";
 import { posts, esPosts, enSlugForEs } from "@/content/blog";
@@ -119,11 +119,9 @@ function staticSlot(
 
 const HOME = ["/", "/es"];
 const pad = (n: number) => String(n).padStart(2, "0");
-const work = (id: string) => WORKS.find((w) => w.id === id) ?? WORKS[0];
-
 const homeSlots: SlotDef[] = [
   ...(["a", "b"] as const).map((which): SlotDef => {
-    const w = work(which === "a" ? "w01" : "w02");
+    const w = HERO_PLATES[which];
     return {
       id: `home.hero.${which}`,
       group: "Homepage",
@@ -140,22 +138,8 @@ const homeSlots: SlotDef[] = [
       lcp: true,
     };
   }),
-  ...WORKS.map(
-    (w, i): SlotDef => ({
-      id: `home.archive.${w.id}`,
-      group: "Homepage",
-      page: "/#archive",
-      paths: HOME,
-      label: `Homepage — gallery photo ${pad(i + 1)} (${w.subject})`,
-      defaultSrc: w.src,
-      defaultAlt: w.alt,
-      defaultWidth: w.width,
-      defaultHeight: w.height,
-      defaultFocus: w.focus,
-      crops: F.card,
-      sizes: SIZES.third,
-    }),
-  ),
+  // The homepage gallery is not a slot: it shows the real portfolio galleries
+  // (src/lib/home-galleries.ts; manage them in Admin → Portfolio).
   // (The intake portrait slot is gone: booking is now one panel inside
   // Packages & Prices, with no portrait beside it.)
 ];

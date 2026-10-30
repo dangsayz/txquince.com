@@ -4,7 +4,6 @@ import { describe, expect, it } from "vitest";
 import { SLOTS, SLOT_ID_RE, getSlot, isSlotId, slotGroups, blogCoverSlotId } from "@/lib/image-slots";
 import { posts, esPosts } from "@/content/blog";
 import { locations } from "@/content/locations";
-import { WORKS } from "@/components/txq/data";
 
 const PUBLIC = join(process.cwd(), "public");
 
@@ -45,7 +44,8 @@ describe("image slot registry", () => {
   it("covers the homepage, every city, every blog story and the share card", () => {
     expect(isSlotId("home.hero.a")).toBe(true);
     expect(isSlotId("home.hero.b")).toBe(true);
-    for (const w of WORKS) expect(isSlotId(`home.archive.${w.id}`)).toBe(true);
+    // The homepage gallery is real portfolio data, never hand-placed slots.
+    expect(SLOTS.some((s) => s.id.startsWith("home.archive."))).toBe(false);
     for (const l of locations) {
       expect(isSlotId(`city.${l.slug}.hero`)).toBe(true);
       expect(isSlotId(`city.${l.slug}.card`)).toBe(true);

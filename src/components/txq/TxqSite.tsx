@@ -8,9 +8,13 @@ import { Editorial, Faq, type Journal } from "./Editorial";
 import { Hero } from "./Hero";
 import { Intake } from "./Intake";
 import { PhotoDump } from "./PhotoDump";
+import { WhereWeWork } from "./WhereWeWork";
 import { useShell } from "./SiteShell";
 import type { CinemaFilm } from "./data";
 import type { FeedPage, HomeOverrides } from "@/lib/photo-dump-shared";
+import type { HomeGallery } from "@/lib/home-galleries";
+import type { HomeCity } from "@/content/home-places";
+import "./home-trust.css";
 
 /**
  * The homepage sections (EN at /, ES at /es). The global header, footer, dock,
@@ -21,13 +25,19 @@ export function TxqSite({
   films,
   photos = null,
   overrides = {},
+  galleries = [],
+  cities = [],
 }: {
   journal: Journal;
   films: CinemaFilm[];
   /** First page of the Photo dump ("Latest photos"); null = storage unreachable. */
   photos?: FeedPage | null;
-  /** Admin swaps for hero/archive images, chosen from the Photo dump. */
+  /** Admin swaps for the hero images, chosen from the Photo dump. */
   overrides?: HomeOverrides;
+  /** Real portfolio galleries for the homepage gallery section (server-grouped). */
+  galleries?: HomeGallery[];
+  /** City pages for the "Where we work" row. */
+  cities?: HomeCity[];
 }) {
   const { setCinema, setDockHidden } = useShell();
   const cinemaRef = useRef<HTMLElement>(null);
@@ -66,7 +76,7 @@ export function TxqSite({
   return (
     <>
       <Hero overrides={overrides} />
-      <Archive overrides={overrides} />
+      <Archive galleries={galleries} photos={photos?.photos ?? null} />
       <PhotoDump initial={photos} />
       <CinemaRoom ref={cinemaRef} films={films} />
       {/* Packages & Prices and the booking steps are one panel. */}
@@ -75,6 +85,7 @@ export function TxqSite({
       </Commissions>
       <Editorial journal={journal} />
       <Faq />
+      <WhereWeWork cities={cities} />
     </>
   );
 }
