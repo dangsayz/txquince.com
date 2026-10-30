@@ -1,14 +1,8 @@
 /**
- * The site's two root layouts share this module: `app/(en)/layout.tsx` (every
- * English route, admin included) and `app/es/layout.tsx` (every Spanish route).
- *
- * There are two root layouts so each language can declare itself on <html>
- * (`lang="en"` / `lang="es"`) in the server HTML. Next allows only one <html>
- * per root layout, and reading the URL in a single root layout would need
- * `headers()`, which would de-opt every static/ISR page to dynamic rendering.
- * Route groups give each subtree its own root layout instead, with no runtime
- * cost. The trade-off Next documents: navigating between the two root layouts
- * (switching language) is a full page load rather than a client transition.
+ * Shared by the root layout (`app/layout.tsx`, which renders the document with
+ * <html lang="en">) and the nested Spanish layout (`app/es/layout.tsx`, which
+ * only takes the Spanish metadata defaults from here): fonts, the site shell,
+ * analytics, business JSON-LD and the per-language metadata defaults.
  *
  * `_shell` is a private folder (the underscore keeps it out of routing).
  */
@@ -81,8 +75,11 @@ const META: Record<SiteLang, Metadata> = {
   },
   es: {
     metadataBase: new URL(site.url),
+    // `absolute`, not `default`: app/es/layout.tsx is nested under the root
+    // layout, whose "%s · TX Quince" template would otherwise be applied to this
+    // (already branded) default as well, e.g. on the Spanish 404.
     title: {
-      default: `${site.brand} — Fotos y video de quinceañera | Dallas–Fort Worth`,
+      absolute: `${site.brand} — Fotos y video de quinceañera | Dallas–Fort Worth`,
       template: `%s · ${site.brand}`,
     },
     description:
@@ -116,16 +113,13 @@ export const rootViewport: Viewport = {
   initialScale: 1,
 };
 
-export async function RootDocument({
-  lang,
-  children,
-}: Readonly<{ lang: SiteLang; children: React.ReactNode }>) {
+export async function RootDocument({ children }: Readonly<{ children: React.ReactNode }>) {
   // The live price book (read from R2 per request; launch defaults when unreachable).
   // Handed to every public page's client UI through the site shell.
   const book = await getPriceBook();
   return (
     <html
-      lang={lang}
+      lang="en"
       data-scroll-behavior="smooth"
       className={`${sans.variable} ${mono.variable} h-full`}
     >
