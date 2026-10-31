@@ -8,7 +8,7 @@
  */
 import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
-import { Geist_Mono, Inter } from "next/font/google";
+import { Geist_Mono, Inter, Jost } from "next/font/google";
 import "../globals.css";
 import { commissionsFromLabel } from "@/content/commissions";
 import { site } from "@/content/site";
@@ -25,6 +25,14 @@ import { Tracker } from "@/components/Tracker";
 const sans = Inter({
   subsets: ["latin"],
   variable: "--font-txq-sans",
+  display: "swap",
+});
+// Jost (a Futura-style geometric sans) for uppercase display lines, labels and
+// the header wordmark. One weight, so pages preload a single extra file.
+const display = Jost({
+  subsets: ["latin"],
+  weight: "500",
+  variable: "--font-ed-display",
   display: "swap",
 });
 const mono = Geist_Mono({
@@ -121,7 +129,7 @@ export async function RootDocument({ children }: Readonly<{ children: React.Reac
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`${sans.variable} ${mono.variable} h-full`}
+      className={`${sans.variable} ${display.variable} ${mono.variable} h-full`}
     >
       <body className="flex min-h-dvh flex-col bg-cream">
         <PublicSiteFrame book={book}>{children}</PublicSiteFrame>

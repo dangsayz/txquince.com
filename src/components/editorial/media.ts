@@ -166,3 +166,16 @@ export const FEATURE_STILL: Still = {
 
 /** Optional ambient clip for the dark band; without it the band shows the newest film's poster. */
 export const BAND_VIDEO: Clip | null = null;
+
+/**
+ * A real photo to sit on each journal card, by the post's category (the posts
+ * carry no images of their own). Decorative: the card's title says what it is.
+ */
+export const JOURNAL_PHOTO: Record<string, { src: string; width: number; height: number }> = {
+  "Cost & Budget": { src: "/portfolio/shoe-ceremony.webp", width: 719, height: 1080 },
+  Planning: { src: "/portfolio/save-date.webp", width: 810, height: 1080 },
+  Traditions: { src: "/portfolio/dance.webp", width: 719, height: 1080 },
+  "Photography & Film": { src: "/portfolio/kimberly-reception.webp", width: 719, height: 1080 },
+  Locations: { src: "/portfolio/lilac-arch.webp", width: 810, height: 1080 },
+};
+export const JOURNAL_PHOTO_FALLBACK = { src: "/portfolio/red-garden.webp", width: 720, height: 1080 };

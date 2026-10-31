@@ -1,28 +1,19 @@
 /**
- * Homepage-only type: Oswald (condensed uppercase display, with accents for
- * Spanish; one weight, 500, so the page preloads a single display file) and Instrument Serif italic
- * (the one serif accent). Body text stays Inter from the site shell.
+ * Homepage-only type: PT Serif, the one serif accent (roman numerals and small
+ * uppercase index lines). Jost (display) and Inter (body) come from the site
+ * shell, because the header and footer use them on every page.
  *
- * Loaded by the homepage routes only, so other pages never download them.
- * next/font self-hosts the files and adjusts the fallback metrics, so the
- * swap causes no layout shift.
+ * next/font self-hosts the file and adjusts the fallback metrics, so the swap
+ * causes no layout shift. Not preloaded: it is only used below the fold.
  */
-import { Instrument_Serif, Oswald } from "next/font/google";
+import { PT_Serif } from "next/font/google";
 
-export const display = Oswald({
-  subsets: ["latin"],
-  weight: "500",
-  variable: "--font-ed-display",
-  display: "swap",
-});
-
-export const serif = Instrument_Serif({
+export const serif = PT_Serif({
   subsets: ["latin"],
   weight: "400",
-  style: "italic",
   variable: "--font-ed-serif",
   display: "swap",
   preload: false,
 });
 
-export const editorialFonts = `${display.variable} ${serif.variable}`;
+export const editorialFonts = serif.variable;

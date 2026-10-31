@@ -10,7 +10,15 @@ import { useSite } from "./state";
 import "./footer-admin.css";
 
 /** Latest blog posts, passed in from the server page (keeps post bodies out of the client bundle). */
-export type JournalItem = { href: string; title: string; category: string; readMinutes: number };
+export type JournalItem = {
+  href: string;
+  title: string;
+  category: string;
+  readMinutes: number;
+  /** ISO publish date (YYYY-MM-DD). */
+  date?: string;
+  excerpt?: string;
+};
 export type Journal = { en: JournalItem[]; es: JournalItem[] };
 
 const EASE = [0.22, 1, 0.36, 1] as const;
