@@ -152,7 +152,7 @@ const post: BlogPost = {
     },
     {
       "type": "p",
-      "text": "And decide it early. The color and the photographer get chosen in the same window — your pre-celebration portrait session uses the gown or a stand-in, so settle the color first; many families lock it nine to twelve months out. See what each package includes — the Portrait Session and the Full Celebration both include a portrait session — in our [packages](/#commissions), then [reserve your date](/#intake) once the Saturday is yours."
+      "text": "And decide it early. The color and the photographer get chosen in the same window — your pre-celebration portrait session uses the gown or a stand-in, so settle the color first; many families lock it nine to twelve months out. See what each package includes — the Portrait Session is a portrait session on its own, and the Duo and the Trio include a dress or save-the-date session after the deposit — in our [packages](/#commissions), then [reserve your date](/#intake) once the Saturday is yours."
     }
   ],
   "faqs": [

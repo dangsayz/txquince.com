@@ -5,7 +5,6 @@ import { PT } from "@/lib/price-text";
 const study = PT.price.study;
 const cinema = PT.price.cinema;
 const trio = PT.price.trio;
-const production = PT.price.production;
 const retainerPct = PT.deposit.percent;
 
 const post: BlogPost = {
@@ -27,7 +26,7 @@ const post: BlogPost = {
     { type: "h2", text: "La respuesta corta" },
     {
       type: "p",
-      text: `En Dallas–Fort Worth, la mayoría de los estudios de quinceañera publican paquetes de solo foto de unos $1,500 a $3,000, y de foto y video de unos $3,000 a $5,500. Las colecciones de lujo para quinceañera van de $5,500 a $8,000 o más, y como referencia, la foto y el video de una boda de lujo en Dallas promedian unos $10,000. En [TX Quince](/es#commissions) los paquetes están publicados en el sitio, sin formulario de cotización: Sesión de retratos (${study}), El Dúo (${cinema}), El Trío (${trio}) y Celebración completa (${production}).`,
+      text: `En Dallas–Fort Worth, la mayoría de los estudios de quinceañera publican paquetes de solo foto de unos $1,500 a $3,000, y de foto y video de unos $3,000 a $5,500. Las colecciones de lujo para quinceañera van de $5,500 a $8,000 o más, y como referencia, la foto y el video de una boda de lujo en Dallas promedian unos $10,000. En [TX Quince](/es#commissions) los paquetes están publicados en el sitio, sin formulario de cotización: Sesión de retratos (${study}), El Dúo (${cinema}) y El Trío (${trio}).`,
     },
     {
       type: "p",
@@ -46,15 +45,15 @@ const post: BlogPost = {
       type: "ul",
       items: [
         "Horas de cobertura — el día de unos quince es largo: el arreglo, la misa de acción de gracias, las fotos formales y la fiesta. La cobertura de día completo es la diferencia entre un resumen y la historia entera.",
-        `Un artista o un equipo — un fotógrafo y un videógrafo en El Dúo (${BASE_CREW.cinema} en total), dos fotógrafos y un videógrafo en El Trío (${BASE_CREW.trio}), un equipo de ${BASE_CREW.production} más una coordinadora que dirige el día en la Celebración completa — significa que la iglesia y la entrada al salón quedan cubiertas al mismo tiempo, con ángulos opuestos que una sola cámara no puede inventar.`,
+        `Un artista o un equipo — un fotógrafo y un videógrafo en El Dúo (${BASE_CREW.cinema} en total), dos fotógrafos y un videógrafo en El Trío (${BASE_CREW.trio}) — significa que la iglesia y la entrada al salón quedan cubiertas al mismo tiempo, con ángulos opuestos que una sola cámara no puede inventar. Una coordinadora que dirige el día se puede agregar por ${PT.addon.coordinator} al día.`,
         "Foto, o foto y video — el video es un oficio aparte y una edición aparte. Un paquete con ambos son dos narradores, no una persona haciendo malabares con la cámara y el tripié.",
-        "Entrega — una galería privada en línea y, en los paquetes con video, la película completa de su día entero más un resumen corto. La Celebración completa suma un álbum impreso.",
+        "Entrega — una galería privada en línea y, en los paquetes con video, la película completa de su día entero más un resumen (de 1 minuto en El Dúo, de 3 a 5 minutos en El Trío). El Trío suma un álbum impreso.",
       ],
     },
     { type: "h2", text: "¿Solo foto, o foto y video?" },
     {
       type: "p",
-      text: `Esta es la decisión que más mueve el precio — y el arrepentimiento más común. Las familias que reservan solo foto, después, suelen desear haber tenido [el vals y el baile sorpresa](/portfolio) en video. El vals, los chambelanes y las damas, el cambio de zapatillas, el brindis: son momentos que se viven en movimiento. Nuestra Sesión de retratos (${study}) es solo foto — ${PT.hours.study} horas con un fotógrafo — y todos los paquetes desde ${cinema} combinan las fotos con la película completa de su día y un resumen corto. Compárelos lado a lado en [los paquetes](/es#commissions); para la mayoría de las familias, nuestra recomendación es El Trío (${trio}). Y si quiere profundizar, lea [foto o video para la quinceañera](/es/blog/foto-o-video-quinceanera).`,
+      text: `Esta es la decisión que más mueve el precio — y el arrepentimiento más común. Las familias que reservan solo foto, después, suelen desear haber tenido [el vals y el baile sorpresa](/portfolio) en video. El vals, los chambelanes y las damas, el cambio de zapatillas, el brindis: son momentos que se viven en movimiento. Nuestra Sesión de retratos (${study}) es solo foto — una sesión de ${PT.hours.study} hora con un fotógrafo — y todos los paquetes desde ${cinema} combinan las fotos con la película completa de su día y un resumen corto. Compárelos lado a lado en [los paquetes](/es#commissions); para la mayoría de las familias, nuestra recomendación es El Trío (${trio}). Y si quiere profundizar, lea [foto o video para la quinceañera](/es/blog/foto-o-video-quinceanera).`,
     },
     { type: "h2", text: "El depósito y el saldo" },
     {
@@ -72,7 +71,7 @@ const post: BlogPost = {
     {
       type: "ul",
       items: [
-        `Sube: agregar video, un equipo más grande, más horas el día de la fiesta (desde ${PT.extra.from} por hora extra con nosotros, hasta ${PT.hours.max} horas en total), un Segundo día de retratos (${PT.addon.secondday}), o extras como una Sesión con el vestido (${PT.addon.destination}) o una Edición el mismo día, lista en 24 horas (${PT.addon.sameday}).`,
+        `Sube: agregar video, un equipo más grande, más horas el día de la fiesta (desde ${PT.extra.from} por hora extra con nosotros, hasta ${PT.hours.max} horas en total), un Segundo día de retratos (${PT.addon.secondday}), o extras como una Edición el mismo día, lista en 24 horas (${PT.addon.sameday}).`,
         "Sube un poco: viajar lejos del área metropolitana (dentro de DFW normalmente no hay cargo por traslado).",
         "No cambia el precio con un estudio honesto: su salón, el número de invitados o el día de la semana — desconfíe de quien cotice por eso.",
       ],
@@ -99,7 +98,7 @@ const post: BlogPost = {
   faqs: [
     {
       q: "¿Cuánto debo presupuestar para la fotografía de quinceañera en DFW?",
-      a: `La mayoría de los estudios de DFW publican solo foto entre unos $1,500 y $3,000, y foto y video entre unos $3,000 y $5,500; las colecciones de lujo van de $5,500 a $8,000 o más. TX Quince publica cuatro paquetes: Sesión de retratos (${study}, solo foto), El Dúo (${cinema}), El Trío (${trio}) y Celebración completa (${production}).`,
+      a: `La mayoría de los estudios de DFW publican solo foto entre unos $1,500 y $3,000, y foto y video entre unos $3,000 y $5,500; las colecciones de lujo van de $5,500 a $8,000 o más. TX Quince publica tres paquetes: Sesión de retratos (${study}, solo foto), El Dúo (${cinema}) y El Trío (${trio}).`,
     },
     {
       q: "¿Necesito fotógrafo y videógrafo?",

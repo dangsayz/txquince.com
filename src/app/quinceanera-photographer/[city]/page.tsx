@@ -121,7 +121,7 @@ function sharedFaqs(city: string) {
   return [
     {
       q: `How much does a quinceañera photographer cost in ${city}?`,
-      a: `Every package is published: the Portrait Session is ${PT.price.study}, photos and video together start at ${PT.price.cinema} with the Duo, the Trio, the package we recommend for most ${city} celebrations, is ${PT.price.trio}, and the Full Celebration is ${PT.price.production}.`,
+      a: `Every package is published: the Portrait Session is ${PT.price.study}, photos and video together start at ${PT.price.cinema} with the Duo, the Trio, the package we recommend for most ${city} celebrations and the one with a printed album, is ${PT.price.trio}.`,
     },
     {
       q: "Do you offer video too, or only photography?",
@@ -427,8 +427,8 @@ export default async function CityPage({
             <p className="tq-head__dek">
               Every price for your {loc.city} celebration is published. A {retainerPercentLabel} deposit holds the
               date and goes toward your total. The Trio, our pick for most families, puts a team of {BASE_CREW.trio} on her day — two
-              photographers and a videographer. The Full Celebration brings a team of {BASE_CREW.production}, a coordinator who runs the
-              day and a printed photo album.
+              photographers and a videographer — and adds a printed photo album. The Duo and the Trio both include a dress or
+              save-the-date session, booked after the deposit.
             </p>
           </header>
           <ol className="tq-place-tiers">

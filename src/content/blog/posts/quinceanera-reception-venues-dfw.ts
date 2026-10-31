@@ -4,7 +4,6 @@ import { PT } from "@/lib/price-text";
 const study = PT.price.study;
 const cinema = PT.price.cinema;
 const trio = PT.price.trio;
-const production = PT.price.production;
 
 const post: BlogPost = {
   slug: "quinceanera-reception-venues-dfw",
@@ -146,7 +145,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `One last note on money: venue and catering are their own line in your budget — completely separate from photography. Our [packages](/#commissions) are published at ${study} (photo only), ${cinema}, ${trio}, and ${production}, so once your hall is chosen, your coverage cost is already a known number.`,
+      text: `One last note on money: venue and catering are their own line in your budget — completely separate from photography. Our [packages](/#commissions) are published at ${study} (photo only), ${cinema}, and ${trio}, so once your hall is chosen, your coverage cost is already a known number.`,
     },
   ],
   faqs: [
@@ -164,7 +163,7 @@ const post: BlogPost = {
     },
     {
       q: "How much do quinceañera venues cost in Dallas?",
-      a: `Venue cost varies widely by hall, season, day of the week, and whether catering is bundled, so request a current quote from each venue directly — that number is separate from photography. For reference, TX Quince packages are published at ${study}, ${cinema}, ${trio}, and ${production}, independent of which hall you book.`,
+      a: `Venue cost varies widely by hall, season, day of the week, and whether catering is bundled, so request a current quote from each venue directly — that number is separate from photography. For reference, TX Quince packages are published at ${study}, ${cinema}, and ${trio}, independent of which hall you book.`,
     },
     {
       q: "Can I bring my own photographer to a DFW quinceañera hall?",

@@ -101,7 +101,7 @@ const BUCKET_COPY: Bucket[] = [
     qas: [
       {
         q: "How much does a quinceañera photographer cost in Dallas–Fort Worth?",
-        a: `Most DFW quinceañera studios publish packages between about $1,500 and $6,000. TX Quince publishes every price: the Portrait Session is ${PT.price.study}, photos and video together start at ${PT.price.cinema} with the Duo, the Trio (our pick for most families) is ${PT.price.trio}, and the Full Celebration is ${PT.price.production}. What you pay depends on the hours, the size of the team, and the album and extras you choose.`,
+        a: `Most DFW quinceañera studios publish packages between about $1,500 and $6,000. TX Quince publishes every price: the Portrait Session is ${PT.price.study}, photos and video together start at ${PT.price.cinema} with the Duo, and the Trio (our pick for most families) is ${PT.price.trio}. What you pay depends on the hours, the size of the team, and the album and extras you choose.`,
         href: "/blog/quinceanera-photographer-cost-dallas-fort-worth",
         hrefLabel: "What drives the price",
       },
@@ -203,7 +203,7 @@ const BUCKET_COPY: Bucket[] = [
       },
       {
         q: "What's a pre-quince or save-the-date session?",
-        a: `It's a portrait session weeks or months before the celebration — for her invitations, the welcome board, and a calm first look at her in the gown. Book it on its own as the Portrait Session (${PT.price.study}), or receive it inside the Full Celebration.`,
+        a: `It's a portrait session weeks or months before the celebration — for her invitations, the welcome board, and a calm first look at her in the gown. Book it on its own as the Portrait Session (${PT.price.study}), or receive it with the Duo or the Trio, which include a dress or save-the-date session booked after the deposit.`,
         href: "/quinceanera-photoshoot",
         hrefLabel: "About the pre-quince photoshoot",
       },
@@ -457,7 +457,7 @@ export default async function QuinceaneraGuidePage() {
         <div className="tq-wrap">
           <header className="tq-head">
             <p className="tq-head__index tq-mono" style={{ margin: 0 }}>
-              [Four packages]
+              [Three packages]
             </p>
             <h2 id="guide-collections-title" className="tq-display tq-head__title">
               Coverage for the day you have in mind.
