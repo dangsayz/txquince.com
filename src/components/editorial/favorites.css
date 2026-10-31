@@ -34,6 +34,7 @@
 }
 .fv-filter {
   min-height: 44px;
+  min-width: 44px;
   padding: 0;
   border: 0;
   background: none;

@@ -17,7 +17,7 @@ import { jsonLdString } from "@/lib/json-ld";
 
 export const revalidate = 3600;
 
-export const metadata: Metadata = {
+const baseMetadata: Metadata = {
   title: "Quinceañera Vendors in Dallas–Fort Worth",
   description:
     "The venues, florists, glam artists, bakers, DJs, and planners we love working with on quinceañeras across Dallas–Fort Worth.",
@@ -29,6 +29,12 @@ export const metadata: Metadata = {
     url: `${site.url}/vendors`,
   },
 };
+
+/** An empty directory reads as abandoned — keep it out of search until vendors are credited. */
+export async function generateMetadata(): Promise<Metadata> {
+  const vendors = await getVendors();
+  return vendors.length ? baseMetadata : { ...baseMetadata, robots: { index: false, follow: true } };
+}
 
 export default async function VendorsPage() {
   const [vendors, images] = await Promise.all([getVendors(), getPortfolioImages()]);

@@ -29,7 +29,7 @@ export const BUDGET_OPTIONS = [
   { value: "portrait", stored: `${P.study} portrait session`, label: `${P.study} — Portrait Session`, labelEs: `${P.study} — Sesión de retratos` },
   { value: "solo", stored: `${P.solo} The Solo`, label: `${P.solo} — The Solo (1 shooter, photo + video)`, labelEs: `${P.solo} — El Solo (1 persona, foto + video)` },
   { value: "photo_video", stored: `${P.cinema} The Duo`, label: `${P.cinema} — The Duo (photo + video)`, labelEs: `${P.cinema} — El Dúo (foto + video)` },
-  { value: "trio", stored: `${P.trio}+ The Trio`, label: `${P.trio}+ — The Trio`, labelEs: `${P.trio}+ — El Trío` },
+  { value: "trio", stored: `${P.trio} The Trio`, label: `${P.trio} — The Trio (2 photographers + 1 videographer)`, labelEs: `${P.trio} — El Trío (2 fotógrafos + 1 videógrafo)` },
 ] as const;
 
 /** The text saved on the inquiry for a chosen budget key, priced with the server's book. */

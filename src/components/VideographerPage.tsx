@@ -23,7 +23,7 @@ const copy = {
     questions: [
       ["Can we book video without photos?", "Yes. Choose video only when you check your date and we'll fit the package to video. Most families get both, and every package from the Solo up includes photos and video."],
       ["How long is the video?", "The full-length film follows her day, so it has no set length. It's her whole day as it happened: la misa, the venue details and the guests, every presentation in full (the grand entrance, el vals, the surprise dance), every toast in full and 15–20 minutes of the dance floor. A highlight comes with the Duo and the Trio — 1 minute in the Duo, a 3–5 minute highlight film in the Trio — plus short vertical videos for social media. With the Solo, the 3–5 minute Highlight Film can be added."],
-      ["Who films her day?", "TX Quince's own team of photographers and videographers, assigned by date and availability, so we can't take requests for specific people, the owners included. Every gallery and every film is edited by the owners."],
+      ["Who films her day?", "TX Quince's own team of photographers and videographers, assigned by date and availability, so we can't promise a specific person. Every gallery and every film is edited by the owners."],
       ["Do you travel across DFW?", "Yes. We cover quinceañeras across Dallas–Fort Worth, from the church through the reception."],
     ],
     cta: "Check her date",
@@ -50,7 +50,7 @@ const copy = {
     questions: [
       ["¿Puedo contratar solo video?", "Sí. Elige solo video al consultar tu fecha y ajustamos el paquete al video. La mayoría de las familias elige los dos, y cada paquete desde el Solo incluye fotos y video."],
       ["¿Cuánto dura el video?", "El video completo sigue su día, así que no tiene una duración fija. Es todo su día tal como pasó: la misa, los detalles del salón y los invitados, cada presentación completa (la entrada, el vals, el baile sorpresa), cada brindis completo y de 15 a 20 minutos de la pista de baile. El Dúo y el Trío traen un resumen —de 1 minuto en el Dúo y de 3 a 5 minutos en el Trío— y videos verticales cortos para redes sociales. Con el Solo, se puede agregar el video resumen de 3 a 5 minutos."],
-      ["¿Quién graba su día?", "El equipo propio de TX Quince, de fotógrafos y videógrafos, asignado según la fecha y la disponibilidad; por eso no podemos aceptar solicitudes de personas específicas, ni siquiera de los dueños. Los dueños editan cada galería y cada video."],
+      ["¿Quién graba su día?", "El equipo propio de TX Quince, de fotógrafos y videógrafos, asignado según la fecha y la disponibilidad; así que no podemos prometer a una persona en específico. Los dueños editan cada galería y cada video."],
       ["¿Trabajan en todo DFW?", "Sí. Cubrimos quinceañeras en todo Dallas–Fort Worth, desde la iglesia hasta la recepción."],
     ],
     cta: "Consulta su fecha",
@@ -162,9 +162,8 @@ export async function VideographerPage({ locale }: { locale: "en" | "es" }) {
                       <span className="tq-mono tq-nums" style={{ whiteSpace: "nowrap" }}>{cm.priceLabel}</span>
                       <p className="tq-pg-index__sub">
                         {motionRows
-                          .map((r) => r.values[cm.id])
-                          .filter((v) => v !== null)
-                          .map((v) => v![locale])
+                          .filter((r) => r.values[cm.id] !== null)
+                          .map((r) => `${r.label[locale]}: ${r.values[cm.id]![locale]}`)
                           .join(" · ")}
                       </p>
                       <p className="tq-pg-index__sub tq-mono">

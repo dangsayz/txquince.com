@@ -190,11 +190,11 @@ const en = {
       },
       {
         q: "Can we choose who photographs our quinceañera?",
-        a: "TX Quince is a team. Your day is covered by our own photographers and videographers, not freelancers we find last-minute, and we assign them by date and availability. We can't take requests for specific people, including the owners. Every photo and every film comes back to the two of us: we edit all of it ourselves, so your gallery and film look like TX Quince no matter who's behind the camera.",
+        a: "TX Quince is a team. Your day is covered by our own photographers and videographers, not freelancers we find last-minute, and we assign them by date and availability, so we can't promise a specific person. Every photo and every film comes back to the two of us: we edit all of it ourselves, so your gallery and film look like TX Quince no matter who's behind the camera.",
       },
       {
         q: "How does the deposit work?",
-        a: `Pick your package online and send it to us — nothing is charged. We reply within a day to confirm your date, then send your agreement and a secure link to pay the ${PCT} deposit, which locks in your date. All of it goes toward your total, and the rest is due ${PT.balanceDays} days before the event.`,
+        a: `Pick your package online and send it to us — nothing is charged. We reply within a day to confirm your date, then send your agreement and a secure link to pay the ${PCT} deposit, which locks in your date. All of it goes toward your total, and the rest is due ${PT.balanceDays} days before the event. If we ever have to cancel, your deposit is refunded in full. We're insured and can send your church or venue a certificate of insurance.`,
       },
       {
         q: "Where do you take pre-quince portraits around Dallas?",
@@ -267,7 +267,7 @@ const en = {
     legendPicked: "Your date",
     pickedPrefix: "Your date:",
     noDate: "No date picked yet.",
-    openCount: (n: number) => `${n} Saturdays still open this year.`,
+    openCount: (n: number) => `${n} Saturdays still open in the next 12 months.`,
     city: "Where is it?",
     venue: "Venue or hall",
     venueHint: "If you have one. You can leave this blank.",
@@ -309,7 +309,7 @@ const en = {
       `The rest is due ${PT.balanceDays} days before your event.`,
     ],
     noCharge: "Nothing is charged today.",
-    teamNote: "Your day is covered by the TX Quince team. We assign photographers and videographers by date and can't take requests for specific people. Every gallery and film is edited by the owners.",
+    teamNote: "Your day is covered by the TX Quince team, assigned by date. Every gallery and film is edited by the owners.",
     // After sending
     reference: "Reference",
     doneTitle: "Thank you!",
@@ -514,11 +514,11 @@ const es: Copy = {
       },
       {
         q: "¿Podemos escoger quién fotografía la quinceañera?",
-        a: "TX Quince es un equipo. Tu día lo cubren nuestros propios fotógrafos y videógrafos, no gente que conseguimos a última hora, y los asignamos según la fecha y la disponibilidad. No podemos aceptar peticiones de personas específicas, incluidos los dueños. Cada foto y cada video regresa a nosotros dos: todo lo editamos nosotros mismos, así que tu galería y tu video se ven como TX Quince sin importar quién esté detrás de la cámara.",
+        a: "TX Quince es un equipo. Tu día lo cubren nuestros propios fotógrafos y videógrafos, no gente que conseguimos a última hora, y los asignamos según la fecha y la disponibilidad, así que no podemos prometer a una persona en específico. Cada foto y cada video regresa a nosotros dos: todo lo editamos nosotros mismos, así que tu galería y tu video se ven como TX Quince sin importar quién esté detrás de la cámara.",
       },
       {
         q: "¿Cómo funciona el depósito?",
-        a: `Elige tu paquete en línea y envíanoslo — no se cobra nada. Te respondemos en un día para confirmar tu fecha y te mandamos tu contrato y un enlace seguro para pagar el depósito del ${PCT}, que asegura tu fecha. Todo se abona a tu total, y el resto se paga ${PT.balanceDays} días antes del evento.`,
+        a: `Elige tu paquete en línea y envíanoslo — no se cobra nada. Te respondemos en un día para confirmar tu fecha y te mandamos tu contrato y un enlace seguro para pagar el depósito del ${PCT}, que asegura tu fecha. Todo se abona a tu total, y el resto se paga ${PT.balanceDays} días antes del evento. Si alguna vez tuviéramos que cancelar, te devolvemos el depósito completo. Tenemos seguro y podemos mandarle a tu iglesia o salón un certificado de seguro.`,
       },
       {
         q: "¿Dónde toman los retratos pre-quince en Dallas?",
@@ -590,7 +590,7 @@ const es: Copy = {
     legendPicked: "Tu fecha",
     pickedPrefix: "Tu fecha:",
     noDate: "Aún no eliges fecha.",
-    openCount: (n: number) => `Quedan ${n} sábados libres este año.`,
+    openCount: (n: number) => `Quedan ${n} sábados libres en los próximos 12 meses.`,
     city: "¿Dónde es?",
     venue: "Salón o lugar",
     venueHint: "Si ya lo tienes. Puedes dejarlo en blanco.",
@@ -632,7 +632,7 @@ const es: Copy = {
       `El resto se paga ${PT.balanceDays} días antes de tu evento.`,
     ],
     noCharge: "Hoy no se cobra nada.",
-    teamNote: "Tu día lo cubre el equipo de TX Quince. Asignamos fotógrafos y videógrafos según la fecha y no podemos aceptar peticiones de personas específicas. Cada galería y cada video lo editan los dueños.",
+    teamNote: "Tu día lo cubre el equipo de TX Quince, asignado según la fecha. Cada galería y cada video lo editan los dueños.",
     // Después de enviar
     reference: "Referencia",
     doneTitle: "¡Gracias!",

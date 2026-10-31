@@ -108,7 +108,7 @@ export default async function AboutPage() {
                 ))}
                 <p>
                   Her day is covered by TX Quince&apos;s own team of photographers and videographers, assigned by date and
-                  availability, so we can&apos;t take requests for specific people, the owners included. Every gallery and
+                  availability, so we can&apos;t promise a specific person. Every gallery and
                   every film is edited by the owners.
                 </p>
               </div>

@@ -285,6 +285,10 @@ export function SiteProvider({
       window.location.assign(alternateHref(l) ?? (l === "es" ? "/es" : "/"));
       return;
     }
+    if (isHome) {
+      // Keep the address in step so a link copied from here opens in this language.
+      window.history.replaceState(window.history.state, "", `${l === "es" ? "/es" : "/"}${window.location.search}${window.location.hash}`);
+    }
     window.dispatchEvent(new Event(LANG_EVENT));
   }, [isHome, urlLang]);
 
