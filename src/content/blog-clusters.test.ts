@@ -16,7 +16,7 @@ describe("blog clusters", () => {
     const s = seriesFor("hire-quinceanera-vendors-without-getting-burned-texas", "en")!;
     expect(s.position).toBe(1);
     expect(s.items[0].pillar).toBe(true);
-    expect(s.next?.slug).toBe("questions-to-ask-quinceanera-photographer");
+    expect(s.next?.slug).toBe("how-long-to-get-quinceanera-photos-video-back");
     const last = seriesFor(s.items.at(-1)!.slug, "en")!;
     expect(last.next?.slug).toBe(s.items[0].slug);
   });

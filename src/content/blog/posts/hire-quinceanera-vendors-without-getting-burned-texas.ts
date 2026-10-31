@@ -65,7 +65,7 @@ const post: BlogPost = {
       type: "ol",
       items: [
         "Get a written agreement before you pay anything. It should name the business, your date, the hours, exactly what you receive, and when you receive it.",
-        "Get the delivery date in writing. \"A few months\" isn't a date. Ask what you'll have in the meantime, like a preview to share with family.",
+        "Get the delivery date in writing. \"A few months\" isn't a date. Here's [what a normal turnaround looks like](/blog/how-long-to-get-quinceanera-photos-video-back).",
         "Pay a deposit to hold the date, not the whole thing months early. A deposit is normal for every kind of quince vendor; paying 100% long before the party is where families get stuck.",
         "Pay in a way that leaves a record and gives you options. Card payments come with dispute rights that cash and most app transfers don't. Keep every receipt and screenshot.",
         "Hire the real vendor, not a bundle. If a hall, limo or planner package \"includes\" photo and video, ask for the photographer's name and contract, and confirm with them directly that they're booked and paid.",
@@ -112,7 +112,7 @@ const post: BlogPost = {
     { type: "h2", text: "How we handle it at TX Quince" },
     {
       type: "p",
-      text: `You sign a written agreement before any payment. A ${PT.deposit.percent} deposit locks in your date, and the rest is due ${PT.balanceDays} days before the party, never months early. Your day is covered by our own team, not freelancers we find last minute, and every gallery and film is edited by the two owners. Everything we deliver is yours to keep, print and share. Our [prices are published](/#commissions) and so are the [questions we think you should ask any photographer](/blog/questions-to-ask-quinceanera-photographer), including us.`,
+      text: `You sign a written agreement before any payment. A ${PT.deposit.percent} deposit locks in your date, and the rest is due ${PT.balanceDays} days before the party, never months early. Your day is covered by our own team, not freelancers we find last minute, and every gallery and film is edited by the two owners. If anyone on the team can't make it, one of us covers your day ourselves, no exceptions. Photos and video arrive 30 to 90 days after the party, depending on the season. Everything we deliver is yours to keep, print and share. Our [prices are published](/#commissions) and so are the [questions we think you should ask any photographer](/blog/questions-to-ask-quinceanera-photographer), including us.`,
     },
     {
       type: "cta",

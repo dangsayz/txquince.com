@@ -34,7 +34,7 @@ Worry: "What if we pay and never get what we paid for?"
 - ✅ Questions to ask your photographer
 - ✅ Payment plans and deposits
 - ✍️ What a quince photo and video contract should say (EN/ES)
-- ⚠️ When should you get your photos and video back? Needs your real delivery weeks.
+- ✅ How long to get quince photos and video back (30–90 days by season)
 - ✍️ Buying photo and video through a hall, limo or planner package: what to check
 - ✍️ My quince vendor disappeared: a Texas step-by-step (expands the pillar's last section)
 - ✍️ Dress shop deposits: red flags and what to get in writing
@@ -44,7 +44,7 @@ Worry: "How do we pick the right photographer without regretting it?"
 - ✅ Cost in DFW · ✅ When to book · ✅ Photo vs video · ✅ Pre-quince session · ✅ Dress colors · ✅ Shot list · ✅ Locations
 - ✍️ "Is phone video enough?" What families say after the party
 - ✍️ Why dark halls, LED lights and fog ruin photos, and how pros handle it
-- ⚠️ Do we need a second shooter? Needs your backup and crew policy.
+- ✍️ Do we need a second shooter? (backup policy now known: an owner covers any absence, no exceptions)
 
 ### 3. Budget and planning (pillar ✅ `quinceanera-budget-breakdown-texas`)
 Worry: "How much is this really going to cost, and where do we start?"
@@ -65,7 +65,7 @@ Worry: "What happens when, and what can't we forget?"
 4. Write EN and ES together and add the pair to `EN_ES_PAIRS` in `src/content/blog.ts`; the Spanish series appears automatically.
 5. A new spoke = one question, answered in the first paragraph, with one concrete number.
 
-## Owner facts needed (these block three articles and the homepage questions section)
-1. Photo delivery: how many weeks? Video delivery: how many weeks?
-2. Backup plan if a team member is sick on the date.
-3. Do you post families' photos by default, or only with permission?
+## Owner facts (answered 2026-10-31)
+1. Delivery: 30 to 90 days after the party, depending on the season.
+2. Backup: if anyone on the team can't make it, one of the two owners covers the day, no exceptions.
+3. Sharing: the agreement includes permission to share photos publicly. Note: the agreement the site generates (`src/lib/agreement.ts`) lets a family opt out at signing ("We will not share your photos or videos publicly"), so public copy says sharing is the default with an opt-out. If you want sharing to be non-negotiable, the agreement and booking form must change first.

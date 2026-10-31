@@ -37,7 +37,11 @@ export const BLOG_CLUSTERS: BlogCluster[] = [
       es: "“¿Y si pagamos y nunca nos entregan lo que pagamos?”",
     },
     pillar: "hire-quinceanera-vendors-without-getting-burned-texas",
-    spokes: ["questions-to-ask-quinceanera-photographer", "quinceanera-payment-plans-deposits-dfw"],
+    spokes: [
+      "how-long-to-get-quinceanera-photos-video-back",
+      "questions-to-ask-quinceanera-photographer",
+      "quinceanera-payment-plans-deposits-dfw",
+    ],
   },
   {
     id: "photo-and-video",

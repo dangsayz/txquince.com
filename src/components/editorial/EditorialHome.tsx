@@ -3,20 +3,18 @@
 import { useEffect, useRef, useState, type ReactNode, type SyntheticEvent } from "react";
 import Link from "next/link";
 import { Intake, bookHref } from "@/components/txq/Intake";
-import { PhotoDump } from "@/components/txq/PhotoDump";
 import { useShell } from "@/components/txq/SiteShell";
 import { useSite } from "@/components/txq/state";
 import { TIERS, money, type CinemaFilm } from "@/components/txq/data";
 import type { Journal } from "@/components/txq/Editorial";
 import { usePriceBook } from "@/components/PriceBookProvider";
-import { trackEvent } from "@/components/Tracker";
 import { SlotPicture } from "@/components/slots/SlotPicture";
 import { SlotAdminControl } from "@/components/slots/SlotAdminControl";
 import { useSlot } from "@/components/slots/SlotProvider";
-import { FAQ_TAGS, PACKAGE_DETAIL } from "@/components/home/home-copy";
+import { PACKAGE_DETAIL } from "@/components/home/home-copy";
+import { MomsAsk } from "./MomsAsk";
 import { BASE_CREW, priceFloor } from "@/lib/commission";
-import { CONTACT_EVENT, smsHref } from "@/lib/contact";
-import { HERO_SLOTS, type FeedPage, type HomeOverrides } from "@/lib/photo-dump-shared";
+import { HERO_SLOTS, type HomeOverrides } from "@/lib/photo-dump-shared";
 import type { HomeGallery } from "@/lib/home-galleries";
 import type { HomeCity } from "@/content/home-places";
 import { site } from "@/content/site";
@@ -43,7 +41,6 @@ import "./editorial.css";
 export function EditorialHome({
   journal,
   films,
-  photos = null,
   overrides = {},
   galleries = [],
   cities = [],
@@ -51,8 +48,6 @@ export function EditorialHome({
 }: {
   journal: Journal;
   films: CinemaFilm[];
-  /** First page of the Photo dump ("Latest photos"); null = storage unreachable. */
-  photos?: FeedPage | null;
   /** Admin swaps for the hero image slot, chosen from the Photo dump. */
   overrides?: HomeOverrides;
   /** Real portfolio galleries (server-grouped). */
@@ -93,9 +88,9 @@ export function EditorialHome({
       <Packages>
         <Intake ref={intakeRef} />
       </Packages>
-      <PhotoDump initial={photos} />
+      <MomsAsk />
       <JournalRow journal={journal} />
-      <Questions cities={cities} />
+      <WhereWeWork cities={cities} />
     </div>
   );
 }
@@ -597,42 +592,13 @@ function JournalRow({ journal }: { journal: Journal }) {
 /* Questions + where we work                                           */
 /* ------------------------------------------------------------------ */
 
-function Questions({ cities }: { cities: HomeCity[] }) {
+/** "Where we work": the city pages and services (the questions moved up to MomsAsk). */
+function WhereWeWork({ cities }: { cities: HomeCity[] }) {
   const { t, lang } = useSite();
   const q = ED[lang].faq;
-  const tags = FAQ_TAGS[lang];
   return (
-    <section id="questions" className="ed-faq" aria-labelledby="ed-faq-title">
-      <div className="ed-wrap ed-faq__grid">
-        <div className="ed-faq__side">
-          <p className="ed-label">{q.label}</p>
-          <h2 id="ed-faq-title" className="ed-display ed-display--md">
-            {t.faq.title}
-          </h2>
-          <div className="ed-ask">
-            <p className="ed-ask__t">{q.askTitle}</p>
-            <p>{q.askBody}</p>
-            <a href={smsHref()} className="ed-btn" onClick={() => trackEvent(CONTACT_EVENT.text, "faq")}>
-              {ED[lang].text} {site.contact.phone}
-            </a>
-          </div>
-        </div>
-        <div className="ed-faq__main">
-          <div className="ed-faq__list">
-            {t.faq.items.map((item, i) => (
-              <details key={item.q} open={i === 0}>
-                <summary>
-                  <span className="ed-q">
-                    {tags[i] && <span className="ed-q__tag">{tags[i]}</span>}
-                    <h3 className="ed-q__text">{item.q}</h3>
-                  </span>
-                  <span className="ed-toggle" aria-hidden />
-                </summary>
-                <p className="ed-q__a">{item.a}</p>
-              </details>
-            ))}
-          </div>
-
+    <section className="ed-faq ed-faq--where" aria-labelledby="ed-where-title">
+      <div className="ed-wrap">
           <nav id="where-we-work" className="ed-where" aria-labelledby="ed-where-title">
             <h2 id="ed-where-title" className="ed-label">
               {q.where}
@@ -656,7 +622,6 @@ function Questions({ cities }: { cities: HomeCity[] }) {
               ))}
             </ul>
           </nav>
-        </div>
       </div>
     </section>
   );

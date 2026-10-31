@@ -65,7 +65,7 @@ const post: BlogPost = {
       type: "ol",
       items: [
         "Pida un contrato por escrito antes de pagar cualquier cosa. Debe tener el nombre del negocio, su fecha, las horas, exactamente lo que recibe y cuándo lo recibe.",
-        "Pida la fecha de entrega por escrito. \"En unos meses\" no es una fecha. Pregunte qué tendrá mientras tanto, como un adelanto para compartir con la familia.",
+        "Pida la fecha de entrega por escrito. \"En unos meses\" no es una fecha. Aquí está [cuánto es normal esperar](/es/blog/cuanto-tardan-las-fotos-y-video-de-quinceanera).",
         "Pague un depósito para apartar la fecha, no todo con meses de anticipación. El depósito es normal con cualquier proveedor; pagar el 100% mucho antes de la fiesta es donde las familias se quedan atoradas.",
         "Pague de una forma que deje registro y le dé opciones. Los pagos con tarjeta permiten disputar el cargo; el efectivo y la mayoría de las transferencias por app no. Guarde cada recibo y captura de pantalla.",
         "Contrate al proveedor real, no un paquete. Si un salón, una limusina o un organizador \"incluye\" foto y video, pida el nombre y el contrato del fotógrafo, y confirme directamente con él que está reservado y pagado.",
@@ -112,7 +112,7 @@ const post: BlogPost = {
     { type: "h2", text: "Cómo lo hacemos en TX Quince" },
     {
       type: "p",
-      text: `Usted firma un contrato por escrito antes de cualquier pago. Un depósito del ${PT.deposit.percent} asegura su fecha y el resto se paga ${PT.balanceDays} días antes de la fiesta, nunca con meses de anticipación. Su día lo cubre nuestro propio equipo, no personas que conseguimos a última hora, y los dos dueños editan cada galería y cada película. Todo lo que entregamos es suyo para guardar, imprimir y compartir. Nuestros [precios están publicados](/es#commissions) y también las [preguntas que creemos que debe hacerle a cualquier fotógrafo](/es/blog/preguntas-para-tu-fotografo-de-quinceanera), incluso a nosotros.`,
+      text: `Usted firma un contrato por escrito antes de cualquier pago. Un depósito del ${PT.deposit.percent} asegura su fecha y el resto se paga ${PT.balanceDays} días antes de la fiesta, nunca con meses de anticipación. Su día lo cubre nuestro propio equipo, no personas que conseguimos a última hora, y los dos dueños editan cada galería y cada película. Si alguien del equipo no puede ir, uno de nosotros cubre su día, sin excepción. Las fotos y el video llegan entre 30 y 90 días después de la fiesta, según la temporada. Todo lo que entregamos es suyo para guardar, imprimir y compartir. Nuestros [precios están publicados](/es#commissions) y también las [preguntas que creemos que debe hacerle a cualquier fotógrafo](/es/blog/preguntas-para-tu-fotografo-de-quinceanera), incluso a nosotros.`,
     },
     {
       type: "cta",
