@@ -134,7 +134,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "When you're ready, book it on its own as our Portrait Session, or see which [packages](/#commissions) already include a portrait session — the Full Celebration includes one location, the Two-Day Celebration two — browse [session galleries](/portfolio) for ideas, and [reserve your date](/#intake). If you're still choosing a photographer, start with [how to choose a quinceañera photographer in DFW](/blog/how-to-choose-quinceanera-photographer-dfw) — and if you're booking the whole celebration, our [quinceañera photographer in Dallas](/quinceanera-photographer/dallas) and [Fort Worth](/quinceanera-photographer/fort-worth) pages cover full event coverage.",
+      text: `When you're ready, book it on its own as our Portrait Session, or see which [packages](/#commissions) already include a portrait session — the Full Celebration includes one location, and a Second Portrait Day (${PT.addon.secondday}) adds a separate day of photos and video at up to two locations — browse [session galleries](/portfolio) for ideas, and [reserve your date](/#intake). If you're still choosing a photographer, start with [how to choose a quinceañera photographer in DFW](/blog/how-to-choose-quinceanera-photographer-dfw) — and if you're booking the whole celebration, our [quinceañera photographer in Dallas](/quinceanera-photographer/dallas) and [Fort Worth](/quinceanera-photographer/fort-worth) pages cover full event coverage.`,
     },
   ],
   faqs: [
@@ -160,7 +160,7 @@ const post: BlogPost = {
     },
     {
       q: "Is the pre-quince session included or an add-on?",
-      a: `It depends on the studio and the package. At TX Quince, the Portrait Session (${PT.price.study}) is the portrait session on its own; the Full Celebration includes a portrait session at one location and the Two-Day Celebration includes two. A Dress Session, photos in her dress before the big day, can be added for ${PT.addon.destination}. Compare every package before you reserve.`,
+      a: `It depends on the studio and the package. At TX Quince, the Portrait Session (${PT.price.study}) is the portrait session on its own; the Full Celebration includes a portrait session at one location, and a Second Portrait Day — a separate day for portraits in her dress, photos and video, at up to two locations — can be added for ${PT.addon.secondday}. A Dress Session, photos in her dress before the big day, can be added for ${PT.addon.destination}. Compare every package before you reserve.`,
     },
   ],
   related: [

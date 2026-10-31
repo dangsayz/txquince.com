@@ -47,7 +47,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "What a good answer sounds like: a delivery range and a turnaround time, in writing. A private online gallery you can download and share, an honest edit count tied to your coverage hours, and a date you can hold them to. On our photo + video packages you also get a short trailer and short vertical videos for social media so you have something to share with family while the full gallery and full-length video are being finished.",
+      text: "What a good answer sounds like: a delivery range and a turnaround time, in writing. A private online gallery you can download and share, an honest edit count tied to your coverage hours, and a date you can hold them to. On our video packages the full-length film also comes with a short highlight — 1 minute with the Duo and the Trio, 3–5 minutes with the Full Celebration — the quick version you'll want to share with family.",
     },
     {
       type: "callout",
@@ -60,7 +60,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `What a good answer sounds like: whether a second shooter is included, available as an add-on, or not offered — and on which packages. With us, the Full Celebration and the Two-Day Celebration come with a team of ${BASE_CREW.production} and ${BASE_CREW.archive}, in whatever mix of photographers and videographers you choose, and you can see the reverse angles and dual-coverage moments they make possible across the [portfolio](/portfolio). If a photographer can't show you two-camera coverage, assume they work solo.`,
+      text: `What a good answer sounds like: whether a second shooter is included, available as an add-on, or not offered — and on which packages. With us, the Trio comes with two photographers and a videographer, and the Full Celebration with a team of ${BASE_CREW.production} plus a coordinator who runs the day. They're TX Quince's own team photographers and videographers, assigned by date and availability — families can't request specific people, the owners included — and every gallery and film is edited by the owners. You can see the reverse angles and dual-coverage moments they make possible across the [portfolio](/portfolio). If a photographer can't show you two-camera coverage, assume they work solo.`,
     },
     { type: "h2", text: "5. Do I get full usage and print rights to the images?" },
     {
@@ -112,7 +112,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `What a good answer sounds like: a direct yes or no. We offer photo + video as one team on every package from Photo + Video up, including a full-length video, a short trailer, and short vertical videos for social media — a team of ${BASE_CREW.cinema} to ${BASE_CREW.archive} working the same day, in whatever mix of photographers and videographers you choose, not one person juggling a camera and a tripod. If you're weighing whether video is worth it at all, [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video) walks through the tradeoff honestly.`,
+      text: `What a good answer sounds like: a direct yes or no. We offer photo + video as one team on every package from the Duo up — the full-length film of her whole day plus a short highlight — with a team of ${BASE_CREW.cinema} to ${BASE_CREW.production} working the same day, not one person juggling a camera and a tripod. If you're weighing whether video is worth it at all, [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video) walks through the tradeoff honestly.`,
     },
     { type: "h2", text: "Putting it together" },
     {
@@ -135,7 +135,7 @@ const post: BlogPost = {
     },
     {
       q: "How many edited photos should I expect?",
-      a: "It depends on coverage hours, but you should get a clear delivery range and turnaround time in writing rather than a vague \"unlimited.\" Expect a private online gallery you can download and share, plus — on photo + video packages — a short trailer and short videos for social media to share while the full set is finished.",
+      a: "It depends on coverage hours, but you should get a clear delivery range and turnaround time in writing rather than a vague \"unlimited.\" Expect a private online gallery you can download and share, plus — on packages with video — the full-length film of her day and a short highlight to share.",
     },
     {
       q: "What happens if my photographer gets sick?",

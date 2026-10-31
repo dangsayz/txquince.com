@@ -203,7 +203,7 @@ const post: BlogPost = {
     },
     {
       q: "Do you need a second photographer for a quinceañera?",
-      a: `It's not required, but a second artist means two angles at once — someone on her face during the vals while the other catches the crowd, or one on getting-ready details while the other shoots her. At TX Quince every photo + video package includes at least one photographer and one videographer — the Full Celebration brings a team of ${BASE_CREW.production} and the Two-Day Celebration a team of ${BASE_CREW.archive}, in whatever mix of photographers and videographers you choose — which is why nothing important happens off-camera.`,
+      a: `It's not required, but a second artist means two angles at once — someone on her face during the vals while the other catches the crowd, or one on getting-ready details while the other shoots her. At TX Quince every photo + video package includes at least one photographer and one videographer — the Trio brings two photographers and a videographer, and the Full Celebration a team of ${BASE_CREW.production} plus a coordinator who runs the day — which is why nothing important happens off-camera.`,
     },
     {
       q: "How many edited photos do you get from a quinceañera?",

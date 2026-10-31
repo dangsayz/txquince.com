@@ -10,17 +10,29 @@
  */
 import { z } from "zod";
 
-export const TIER_IDS = ["study", "cinema", "production", "archive"] as const;
-export const ADD_ON_IDS = ["destination", "sameday", "super8", "parents"] as const;
+export const TIER_IDS = ["study", "cinema", "trio", "production", "archive"] as const;
+export const ADD_ON_IDS = ["destination", "sameday", "super8", "parents", "secondday"] as const;
 export type TierId = (typeof TIER_IDS)[number];
 export type AddOnId = (typeof ADD_ON_IDS)[number];
+
+/**
+ * The packages families can choose today, in the order they are shown. The
+ * Two-Day Celebration (`archive`) is retired — its second day is now the
+ * `secondday` extra — but stays in TIER_IDS so older inquiries, bookings and
+ * agreements still read and re-price exactly as they were made. New requests
+ * are refused for a retired package on the server (isBookableTier).
+ */
+export const PUBLIC_TIER_IDS = ["study", "cinema", "trio", "production"] as const satisfies readonly TierId[];
+export type PublicTierId = (typeof PUBLIC_TIER_IDS)[number];
+export const isBookableTier = (id: TierId): id is PublicTierId => (PUBLIC_TIER_IDS as readonly TierId[]).includes(id);
 
 /** English names for Stripe line items, receipts and operator email. */
 export const TIER_NAME_EN: Record<TierId, string> = {
   study: "Portrait Session",
-  cinema: "Photo + Video",
+  cinema: "The Duo",
+  trio: "The Trio",
   production: "Full Celebration",
-  archive: "Two-Day Celebration",
+  archive: "Two-Day Celebration (retired)",
 };
 
 export const ADD_ON_NAME_EN: Record<AddOnId, string> = {
@@ -28,6 +40,7 @@ export const ADD_ON_NAME_EN: Record<AddOnId, string> = {
   sameday: "Same-Day Edit (ready in 24 hours)",
   super8: "Vintage Film Clip (Super 8)",
   parents: "Albums for Mom & Dad",
+  secondday: "Second Portrait Day",
 };
 
 
@@ -40,9 +53,9 @@ export const ADD_ON_NAME_EN: Record<AddOnId, string> = {
  *  - Most DFW quince budgets are $12–25K all-in; photo + film takes 8–15%.
  *  - Published DFW quince packages: photo-only $1.5–3K, photo + video
  *    $3–5.5K, luxury collections $5.5–8K (highest published ~$6K).
- *  - II sits in the photo + video band, III (the intended sale, with 4 crew
- *    and a coordinator included) stays under the highest published package,
- *    IV is the luxury anchor inside the market's top band.
+ * The Oct 2026 lineup: Portrait Session, The Duo (1 photographer + 1
+ * videographer), The Trio (2 + 1, the most-chosen offer) and the Full
+ * Celebration (team of 4 + coordinator); each event package adds one hour.
  *
  * These constants are NOT read anywhere else. The live prices are the
  * runtime price book (src/lib/pricing.ts → R2 config/pricing.json, edited at
@@ -50,31 +63,37 @@ export const ADD_ON_NAME_EN: Record<AddOnId, string> = {
  * saved yet or storage is unreachable (local dev, `next build`).
  */
 const DEFAULT_TIER_PRICE_USD: Record<TierId, number> = {
-  study: 1200,
-  cinema: 3500,
-  production: 4900,
-  archive: 6900,
+  study: 400,
+  cinema: 1500,
+  trio: 2000,
+  production: 2800,
+  archive: 3500,
 };
 const DEFAULT_ADD_ON_PRICE_USD: Record<AddOnId, number> = {
   destination: 400,
   sameday: 300,
   super8: 600,
   parents: 550,
+  secondday: 600,
 };
 /** Hours of coverage included in the package price. */
 const DEFAULT_BASE_HOURS: Record<TierId, number> = {
-  study: 4,
-  cinema: 6,
-  production: 6,
-  archive: 8,
+  study: 1,
+  cinema: 5,
+  trio: 6,
+  production: 7,
+  archive: 7,
 };
 /** Price of each hour added beyond the included hours (0 = hours can't be added). */
 const DEFAULT_EXTRA_HOUR_USD: Record<TierId, number> = {
   study: 150,
   cinema: 300,
-  production: 400,
+  trio: 350,
+  production: 450,
   archive: 0,
 };
+/** The Trio launch offer: this many dates at the Trio price, counted down by hand in admin. */
+const DEFAULT_TRIO_SPOTS_TOTAL = 5;
 const DEFAULT_MAX_HOURS = 8;
 /** Deposit: 25% down once we approve the signed agreement; the rest 14 days before. */
 const DEFAULT_DEPOSIT_PERCENT = 25;
@@ -110,6 +129,15 @@ export type PriceBook = {
   updatedAt: string | null;
   /** Who saved it (admin email). */
   updatedBy: string | null;
+  /**
+   * The Trio launch offer ("only 5 dates at this price"). The owner counts
+   * `trioSpotsLeft` down in admin as Trio dates are confirmed; the site shows
+   * "N of total left" while it is above 0 and says nothing once it reaches 0.
+   * It never changes a price by itself: the owner raises the Trio price in
+   * admin when the offer is over.
+   */
+  trioSpotsTotal: number;
+  trioSpotsLeft: number;
 };
 
 const mapTiers = <T,>(f: (id: TierId) => T) =>
@@ -139,6 +167,8 @@ export const DEFAULT_PRICE_BOOK: PriceBook = deepFreeze({
   holdDays: DEFAULT_HOLD_DAYS,
   updatedAt: null,
   updatedBy: null,
+  trioSpotsTotal: DEFAULT_TRIO_SPOTS_TOTAL,
+  trioSpotsLeft: DEFAULT_TRIO_SPOTS_TOTAL,
 });
 
 /** Hard limits for every editable number (the admin form shows the same). */
@@ -150,6 +180,7 @@ export const PRICE_LIMITS = {
   depositPercent: { min: 5, max: 100 },
   balanceDueDays: { min: 1, max: 90 },
   holdDays: { min: 1, max: 30 },
+  trioSpots: { min: 0, max: 50 },
 } as const;
 
 const whole = (min: number, max: number, what: string) =>
@@ -180,9 +211,18 @@ export const priceBookSchema = z
     holdDays: whole(L.holdDays.min, L.holdDays.max, "Hold days"),
     updatedAt: z.string().max(40).nullable().default(null),
     updatedBy: z.string().max(200).nullable().default(null),
+    trioSpotsTotal: whole(L.trioSpots.min, L.trioSpots.max, "Trio offer dates"),
+    trioSpotsLeft: whole(L.trioSpots.min, L.trioSpots.max, "Trio offer dates left"),
   })
   .strict()
   .superRefine((b, ctx) => {
+    if (b.trioSpotsLeft > b.trioSpotsTotal) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["trioSpotsLeft"],
+        message: `Trio dates left (${b.trioSpotsLeft}) can't be more than the offer's total (${b.trioSpotsTotal}).`,
+      });
+    }
     for (const id of TIER_IDS) {
       if (b.packages[id].hours > b.maxHours) {
         ctx.addIssue({
@@ -231,6 +271,7 @@ export type Crew = Record<CrewRole, number>;
 export const BASE_CREW: Record<TierId, number> = {
   study: 1,
   cinema: 2,
+  trio: 3,
   production: 4,
   archive: 5,
 };
@@ -242,6 +283,7 @@ export const MAX_CREW = Math.max(...Object.values(BASE_CREW));
 export const COORDINATOR_INCLUDED: Record<TierId, boolean> = {
   study: false,
   cinema: false,
+  trio: false,
   production: true,
   archive: true,
 };
@@ -250,6 +292,7 @@ export const COORDINATOR_INCLUDED: Record<TierId, boolean> = {
 const MIN_ROLE: Record<TierId, Crew> = {
   study: { photo: 1, motion: 0 },
   cinema: { photo: 1, motion: 1 },
+  trio: { photo: 1, motion: 1 },
   production: { photo: 1, motion: 1 },
   archive: { photo: 1, motion: 1 },
 };
@@ -257,6 +300,7 @@ const MIN_ROLE: Record<TierId, Crew> = {
 const DEFAULT_MIX: Record<TierId, Crew> = {
   study: { photo: 1, motion: 0 },
   cinema: { photo: 1, motion: 1 },
+  trio: { photo: 2, motion: 1 },
   production: { photo: 2, motion: 2 },
   archive: { photo: 3, motion: 2 },
 };
@@ -282,6 +326,7 @@ export const canShift = (tier: TierId, mix: Crew, to: CrewRole) => {
 export const TIER_SERVICE: Record<TierId, "photo" | "both"> = {
   study: "photo",
   cinema: "both",
+  trio: "both",
   production: "both",
   archive: "both",
 };
@@ -347,13 +392,13 @@ export const quoteWithDefaults = (tier: TierId, addOns: readonly AddOnId[] = [],
 /** "$11,500" — use in prose so copy reads straight from the price book. */
 export const usd = (n: number) => `$${n.toLocaleString("en-US")}`;
 
-/** Lowest and highest published package — for "from $X" copy and schema. */
-export const priceFloor = (book: PriceBook) => Math.min(...TIER_IDS.map((id) => book.packages[id].price));
-export const priceCeiling = (book: PriceBook) => Math.max(...TIER_IDS.map((id) => book.packages[id].price));
+/** Lowest and highest package families can choose — for "from $X" copy and schema. */
+export const priceFloor = (book: PriceBook) => Math.min(...PUBLIC_TIER_IDS.map((id) => book.packages[id].price));
+export const priceCeiling = (book: PriceBook) => Math.max(...PUBLIC_TIER_IDS.map((id) => book.packages[id].price));
 
 /** Cheapest price per added hour across packages that allow it (null = none do). */
 export function extraHourFrom(book: PriceBook): number | null {
-  const rates = TIER_IDS.filter((id) => canAddHours(book, id)).map((id) => book.packages[id].extraHour);
+  const rates = PUBLIC_TIER_IDS.filter((id) => canAddHours(book, id)).map((id) => book.packages[id].extraHour);
   return rates.length ? Math.min(...rates) : null;
 }
 
@@ -375,6 +420,8 @@ export function describeChanges(before: PriceBook, after: PriceBook): string[] {
   if (before.depositPercent !== after.depositPercent) out.push(`Deposit: ${before.depositPercent}% → ${after.depositPercent}%`);
   num("Rest due before the event", before.balanceDueDays, after.balanceDueDays, "days");
   num("Date hold while reviewing", before.holdDays, after.holdDays, "days");
+  num("Trio offer dates", before.trioSpotsTotal, after.trioSpotsTotal, "dates");
+  num("Trio offer dates left", before.trioSpotsLeft, after.trioSpotsLeft, "dates");
   return out;
 }
 

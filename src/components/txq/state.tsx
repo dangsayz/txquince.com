@@ -12,7 +12,7 @@ import {
 } from "react";
 import { COPY, type Copy } from "./copy";
 import type { AddOnId, Lang, TierId } from "./data";
-import { ADD_ON_IDS, TIER_IDS, normalizeCrew, type Crew } from "@/lib/commission";
+import { ADD_ON_IDS, PUBLIC_TIER_IDS, normalizeCrew, type Crew } from "@/lib/commission";
 import { usePriceBook } from "@/components/PriceBookProvider";
 import { HREFLANG } from "@/lib/hreflang";
 
@@ -148,7 +148,8 @@ type Draft = {
 };
 
 const str = (v: unknown, max = 200) => (typeof v === "string" ? v.slice(0, max) : "");
-const isTier = (v: unknown): v is TierId => typeof v === "string" && (TIER_IDS as readonly string[]).includes(v);
+// Only packages families can choose today (a saved draft may still name a retired one).
+const isTier = (v: unknown): v is TierId => typeof v === "string" && (PUBLIC_TIER_IDS as readonly string[]).includes(v);
 const clampStep = (v: unknown) => (Number.isInteger(v) ? Math.max(0, Math.min(BOOKING_STEPS - 1, v as number)) : 0);
 
 function readDraft(): Draft | null {
@@ -216,7 +217,8 @@ export function SiteProvider({
   );
   const lang = isHome ? stored : urlLang;
   const prices = usePriceBook();
-  const [tier, setTier] = useState<TierId>("cinema");
+  // The booking panel opens on our pick (the Trio).
+  const [tier, setTier] = useState<TierId>("trio");
   const [addOns, setAddOnsRaw] = useState<AddOnId[]>([]);
   const [crewRaw, setCrewRaw] = useState<Crew | null>(null);
   // The mix always fits the chosen tier's included crew (default mix until chosen).

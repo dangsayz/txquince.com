@@ -37,9 +37,9 @@ const post: BlogPost = {
       type: "ul",
       items: [
         `Sesión de retratos (${PT.price.study}): depósito de ${PT.deposit.study} para apartar su fecha.`,
-        `Foto + Video (${PT.price.cinema}): depósito de ${PT.deposit.cinema} para apartar su fecha.`,
+        `El Dúo (${PT.price.cinema}): depósito de ${PT.deposit.cinema} para apartar su fecha.`,
+        `El Trío (${PT.price.trio}): depósito de ${PT.deposit.trio} para apartar su fecha.`,
         `Celebración completa (${PT.price.production}): depósito de ${PT.deposit.production} para apartar su fecha.`,
-        `Celebración de dos días (${PT.price.archive}): depósito de ${PT.deposit.archive} para apartar su fecha.`,
       ],
     },
     {
@@ -117,7 +117,7 @@ const post: BlogPost = {
     },
     {
       q: "¿De cuánto es el depósito para apartar la fecha?",
-      a: `Es el ${retainerPct} de su paquete: ${PT.deposit.study} para la Sesión de retratos (${PT.price.study}), ${PT.deposit.cinema} para Foto + Video (${PT.price.cinema}), ${PT.deposit.production} para la Celebración completa (${PT.price.production}) y ${PT.deposit.archive} para la Celebración de dos días (${PT.price.archive}).`,
+      a: `Es el ${retainerPct} de su paquete: ${PT.deposit.study} para la Sesión de retratos (${PT.price.study}), ${PT.deposit.cinema} para El Dúo (${PT.price.cinema}), ${PT.deposit.trio} para El Trío (${PT.price.trio}) y ${PT.deposit.production} para la Celebración completa (${PT.price.production}).`,
     },
     {
       q: "¿El depósito es reembolsable?",

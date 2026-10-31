@@ -7,7 +7,7 @@
  * signed or charged; the owner follows up and handles payment.
  */
 import { z } from "zod";
-import { commissionSchema, describeCommission, quoteCommission, type PriceBook, type TierId } from "@/lib/commission";
+import { commissionSchema, describeCommission, isBookableTier, quoteCommission, type PriceBook, type TierId } from "@/lib/commission";
 
 export const inquiryPackageSchema = commissionSchema
   .pick({
@@ -23,16 +23,21 @@ export const inquiryPackageSchema = commissionSchema
     language: true,
     share_permission: true,
   })
-  .strict();
+  .strict()
+  // A retired package (the Two-Day Celebration) can't be requested any more,
+  // whatever an old tab or a hand-built request sends.
+  .refine((p) => isBookableTier(p.tier), { path: ["tier"], message: "That package is no longer offered." });
 
 export type InquiryPackage = z.infer<typeof inquiryPackageSchema>;
 
 /** Package → the inquiry's budget key (lib/inquiry BUDGET_OPTIONS). */
-export const BUDGET_FOR_TIER: Record<TierId, "portrait" | "photo_video" | "full" | "two_day"> = {
+export const BUDGET_FOR_TIER: Record<TierId, "portrait" | "photo_video" | "trio" | "full"> = {
   study: "portrait",
   cinema: "photo_video",
+  trio: "trio",
   production: "full",
-  archive: "two_day",
+  // Retired; never sent by the picker any more (the server refuses it).
+  archive: "full",
 };
 
 /** Package → the inquiry's services value: the Portrait Session is photos only. */

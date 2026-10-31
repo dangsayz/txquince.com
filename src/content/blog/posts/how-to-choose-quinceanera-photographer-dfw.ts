@@ -75,12 +75,12 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `This is exactly why every TX Quince photo + video package puts at least one photographer and one videographer — up to a team of ${BASE_CREW.archive}, in the mix you choose — on one team for the whole day. If you're weighing whether you even need video, read [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video) before you decide — it's the most common after-the-fact regret.`,
+      text: `This is exactly why every TX Quince photo + video package puts at least one photographer and one videographer — up to a team of ${BASE_CREW.production} plus a coordinator with the Full Celebration — on one team for the whole day. They're TX Quince's own team photographers and videographers, assigned by date and availability (families can't request specific people, the owners included), and every gallery and film is edited by the owners. If you're weighing whether you even need video, read [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video) before you decide — it's the most common after-the-fact regret.`,
     },
     {
       type: "cta",
       heading: "See the four packages and what's included",
-      body: "Portrait Session, Photo + Video, the Full Celebration, and the Two-Day Celebration — published prices and full inclusions on one page.",
+      body: "Portrait Session, the Duo, the Trio, and the Full Celebration — published prices and full inclusions on one page.",
       href: "/#commissions",
       label: "Compare packages",
     },
@@ -134,7 +134,7 @@ const post: BlogPost = {
     },
     {
       q: "Should I hire one team for photo and video?",
-      a: `For a quinceañera, yes — one team is almost always better than two separate vendors. A coordinated photo-and-video team plans coverage together so they don't block each other, gives you one contract and one point of contact, and delivers a gallery and video that match in style and color. At TX Quince, every photo + video package puts at least one photographer and one videographer on one team for the whole day — up to a team of ${BASE_CREW.archive}, in whatever mix of photographers and videographers you choose.`,
+      a: `For a quinceañera, yes — one team is almost always better than two separate vendors. A coordinated photo-and-video team plans coverage together so they don't block each other, gives you one contract and one point of contact, and delivers a gallery and video that match in style and color. At TX Quince, every photo + video package puts at least one photographer and one videographer on one team for the whole day — up to a team of ${BASE_CREW.production} plus a coordinator with the Full Celebration.`,
     },
     {
       q: "How do I know if a photographer is experienced with quinceañeras?",

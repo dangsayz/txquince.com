@@ -18,10 +18,11 @@ import { PT, fillDeep, fillPrices, hasPriceToken } from "../src/lib/price-text.t
 const clone = (b) => structuredClone({ ...b });
 
 test("defaults reproduce the launch quote", () => {
-  const q = quoteWithDefaults("production", ["sameday"], 7);
-  assert.equal(q.totalUsd, 4900 + 400 + 300);
-  assert.equal(q.retainerUsd, Math.round(5600 * 0.25));
-  assert.equal(q.balanceUsd, 5600 - 1400);
+  // Full Celebration (7 hrs included) + an 8th hour + Same-Day Edit.
+  const q = quoteWithDefaults("production", ["sameday"], 8);
+  assert.equal(q.totalUsd, 2800 + 450 + 300);
+  assert.equal(q.retainerUsd, Math.round(3550 * 0.25));
+  assert.equal(q.balanceUsd, 3550 - Math.round(3550 * 0.25));
   assert.equal(DEFAULT_PRICE_BOOK.balanceDueDays, 14);
 });
 
@@ -31,7 +32,7 @@ test("a changed book changes every number", () => {
   b.packages.production.extraHour = 111;
   b.addOns.sameday = 333;
   b.depositPercent = 30;
-  const q = quoteCommission(b, "production", ["sameday", "sameday"], 7);
+  const q = quoteCommission(b, "production", ["sameday", "sameday"], 8);
   assert.equal(q.totalUsd, 5555 + 111 + 333);
   assert.equal(q.retainerUsd, Math.round(5999 * 0.3));
   assert.equal(q.depositPercent, 30);
@@ -40,9 +41,9 @@ test("a changed book changes every number", () => {
 test("hours are clamped to the package; $0 extra hour means none can be added", () => {
   const b = clone(DEFAULT_PRICE_BOOK);
   assert.equal(normalizeHours(b, "cinema", 99), 8);
-  assert.equal(normalizeHours(b, "cinema", 1), 6);
+  assert.equal(normalizeHours(b, "cinema", 1), 5);
   b.packages.cinema.extraHour = 0;
-  assert.equal(normalizeHours(b, "cinema", 8), 6);
+  assert.equal(normalizeHours(b, "cinema", 8), 5);
 });
 
 test("schema refuses nonsense", () => {
@@ -81,7 +82,7 @@ test("describeChanges lists only what moved", () => {
   b.packages.cinema.price = 3600;
   b.holdDays = 10;
   assert.deepEqual(describeChanges(DEFAULT_PRICE_BOOK, b), [
-    "Photo + Video price: $3,500 → $3,600",
+    "The Duo price: $1,500 → $3,600",
     "Date hold while reviewing: 7 → 10 days",
   ]);
 });
@@ -105,7 +106,7 @@ test("savePriceBook (called directly): validates, refuses stale versions, record
   const saved = await savePriceBook(next, "none", "owner@test");
   assert.equal(saved.book.packages.production.price, 5200);
   assert.equal(saved.book.updatedBy, "owner@test");
-  assert.deepEqual(saved.changes, ["Full Celebration price: $4,900 → $5,200"]);
+  assert.deepEqual(saved.changes, ["Full Celebration price: $2,800 → $5,200"]);
 
   // A form loaded before that save (baseVersion "none") is refused — nothing written.
   const stale = clone(DEFAULT_PRICE_BOOK);

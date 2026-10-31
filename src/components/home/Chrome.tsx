@@ -213,6 +213,9 @@ export function SiteFooter() {
               <a href={site.social.instagram} target="_blank" rel="noopener noreferrer">
                 Instagram @{handle}
               </a>
+              <a href={site.social.youtube} target="_blank" rel="noopener noreferrer">
+                YouTube
+              </a>
             </div>
             <nav className="sf-col" aria-label={f.cities}>
               <p className="sf-h">{f.cities}</p>

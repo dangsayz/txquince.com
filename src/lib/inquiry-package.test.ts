@@ -26,6 +26,17 @@ describe("inquiry package", () => {
     expect(servicesForTier("archive")).toBe("both");
   });
 
+  it("accepts the Trio and the Second Portrait Day extra", () => {
+    const r = inquiryPackageSchema.safeParse({ ...pick, tier: "trio", hours: 6, add_ons: ["secondday"] });
+    expect(r.success).toBe(true);
+    expect(BUDGET_FOR_TIER.trio).toBe("trio");
+  });
+
+  it("refuses the retired Two-Day Celebration on a new request, called directly", () => {
+    const r = inquiryPackageSchema.safeParse({ ...pick, tier: "archive" });
+    expect(r.success).toBe(false);
+  });
+
   it("refuses unknown packages, extras and smuggled fields such as a client total", () => {
     expect(inquiryPackageSchema.safeParse({ ...pick, tier: "platinum" }).success).toBe(false);
     expect(inquiryPackageSchema.safeParse({ ...pick, add_ons: ["drone"] }).success).toBe(false);

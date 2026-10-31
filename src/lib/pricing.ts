@@ -163,6 +163,8 @@ export function parseStoredBook(raw: unknown): PriceBook | null {
     holdDays: o.holdDays ?? DEFAULT_PRICE_BOOK.holdDays,
     updatedAt: typeof o.updatedAt === "string" ? o.updatedAt : null,
     updatedBy: typeof o.updatedBy === "string" ? o.updatedBy : null,
+    trioSpotsTotal: o.trioSpotsTotal ?? DEFAULT_PRICE_BOOK.trioSpotsTotal,
+    trioSpotsLeft: o.trioSpotsLeft ?? DEFAULT_PRICE_BOOK.trioSpotsLeft,
   };
   const parsed = priceBookSchema.safeParse(merged);
   return parsed.success ? (Object.freeze(parsed.data) as PriceBook) : null;

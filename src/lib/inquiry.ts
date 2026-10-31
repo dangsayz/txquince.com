@@ -27,9 +27,9 @@ export const SERVICE_OPTIONS = [
 const P = PT.price;
 export const BUDGET_OPTIONS = [
   { value: "portrait", stored: `${P.study} portrait session`, label: `${P.study} — Portrait Session`, labelEs: `${P.study} — Sesión de retratos` },
-  { value: "photo_video", stored: `${P.cinema}–${P.production}`, label: `${P.cinema} – ${P.production} — Photo + video`, labelEs: `${P.cinema} – ${P.production} — Foto + video` },
-  { value: "full", stored: `${P.production}–${P.archive}`, label: `${P.production} – ${P.archive} — Full Celebration`, labelEs: `${P.production} – ${P.archive} — Celebración completa` },
-  { value: "two_day", stored: `${P.archive}+`, label: `${P.archive}+ — Two-Day Celebration`, labelEs: `${P.archive}+ — Celebración de dos días` },
+  { value: "photo_video", stored: `${P.cinema} The Duo`, label: `${P.cinema} — The Duo (photo + video)`, labelEs: `${P.cinema} — El Dúo (foto + video)` },
+  { value: "trio", stored: `${P.trio} The Trio`, label: `${P.trio} — The Trio`, labelEs: `${P.trio} — El Trío` },
+  { value: "full", stored: `${P.production}+ Full Celebration`, label: `${P.production}+ — Full Celebration`, labelEs: `${P.production}+ — Celebración completa` },
 ] as const;
 
 /** The text saved on the inquiry for a chosen budget key, priced with the server's book. */

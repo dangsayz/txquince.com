@@ -155,19 +155,23 @@ const en = {
     items: [
       {
         q: "How much does a quinceañera photographer and videographer cost in Dallas–Fort Worth?",
-        a: `Most DFW quinceañera studios charge between about $1,500 and $6,000. Our prices are all shown above: a Portrait Session is ${P.study}, Photo + Video starts at ${P.cinema}, and the Full Celebration, the package we recommend for most families, is ${P.production}.`,
+        a: `Most DFW quinceañera studios charge between about $1,500 and $6,000. Our prices are all shown above: a Portrait Session is ${P.study}, The Duo (one photographer and one videographer) is ${P.cinema}, The Trio, the package we recommend for most families, is ${P.trio}, and the Full Celebration is ${P.production}.`,
       },
       {
         q: "Is photography and film included together?",
-        a: "Yes, from the Photo + Video package up. A photographer and a videographer cover the day together, so you get both the photos and the video. The Portrait Session is photos only.",
+        a: "Yes, in The Duo, The Trio and the Full Celebration. Photographers and a videographer cover the day together, so you get the photos and the full-length film of her day. The Portrait Session is photos only.",
       },
       {
         q: "How many photographers and videographers do we get?",
-        a: `It's included in the price: Photo + Video comes with ${BASE_CREW.cinema} people, the Full Celebration with ${BASE_CREW.production}, and the Two-Day Celebration with ${BASE_CREW.archive}. You choose how many take photos and how many take video. The Full Celebration and Two-Day Celebration also include a coordinator who runs the schedule and lines up the court, so your family can just enjoy the day.`,
+        a: `It's included in the price: The Duo comes with ${BASE_CREW.cinema} people, The Trio with ${BASE_CREW.trio} (two photographers and a videographer) and the Full Celebration with ${BASE_CREW.production}. You choose how many take photos and how many take video. The Full Celebration also includes a coordinator who runs the schedule and lines up the court, so your family can just enjoy the day.`,
       },
       {
         q: "How many hours of coverage does a quinceañera need?",
-        a: `Most families choose ${PT.hours.typicalLow} to ${PT.hours.max} hours: getting ready at home, the misa (about an hour), photos between church and the party, then the grand entrance, vals, surprise dance and toasts. Our packages include ${PT.hours.study} to ${PT.hours.archive} hours, and you can add hours up to ${PT.hours.max} (from ${PT.extra.from} an hour).`,
+        a: `Most families choose ${PT.hours.typicalLow} to ${PT.hours.max} hours: getting ready at home, the misa (about an hour), photos between church and the party, then the grand entrance, vals, surprise dance and toasts. The Duo includes ${PT.hours.cinema} hours, The Trio ${PT.hours.trio} and the Full Celebration ${PT.hours.production}, and you can add hours up to ${PT.hours.max} (from ${PT.extra.from} an hour).`,
+      },
+      {
+        q: "What is in the full-length film?",
+        a: "Her whole day, as it happened: the misa, the venue and the guests arriving, every presentation in full (the grand entrance, the vals, the surprise dance), every toast in full, and 15 to 20 minutes of the dance floor. Its length follows her day. A short highlight to share comes with it: 1 minute with The Duo and The Trio, 3 to 5 minutes with the Full Celebration.",
       },
       {
         q: "How far in advance should we book?",
@@ -180,6 +184,10 @@ const en = {
       {
         q: "Do you work in Spanish?",
         a: "Yes. Every call, plan and delivery can be in English or Spanish, and our team speaks with grandparents and padrinos in whichever language is most comfortable.",
+      },
+      {
+        q: "Can we choose who photographs our quinceañera?",
+        a: "TX Quince is a team. Your day is covered by our own photographers and videographers, not freelancers we find last-minute, and we assign them by date and availability. We can't take requests for specific people, including the owners. Every photo and every film comes back to the two of us: we edit all of it ourselves, so your gallery and film look like TX Quince no matter who's behind the camera.",
       },
       {
         q: "How does the deposit work?",
@@ -284,6 +292,7 @@ const en = {
       `The rest is due ${PT.balanceDays} days before your event.`,
     ],
     noCharge: "Nothing is charged today.",
+    teamNote: "Your day is covered by the TX Quince team. We assign photographers and videographers by date and can't take requests for specific people. Every gallery and film is edited by the owners.",
     // After sending
     reference: "Reference",
     doneTitle: "Thank you!",
@@ -456,19 +465,23 @@ const es: Copy = {
     items: [
       {
         q: "¿Cuánto cuesta un fotógrafo y videógrafo de quinceañera en Dallas–Fort Worth?",
-        a: `La mayoría de los estudios de quinceañera en DFW cobran entre $1,500 y $6,000. Todos nuestros precios están arriba: la Sesión de retratos cuesta ${P.study}, Foto + Video desde ${P.cinema}, y la Celebración completa, el paquete que recomendamos para la mayoría de las familias, ${P.production}.`,
+        a: `La mayoría de los estudios de quinceañera en DFW cobran entre $1,500 y $6,000. Todos nuestros precios están arriba: la Sesión de retratos cuesta ${P.study}, El Dúo (un fotógrafo y un videógrafo) ${P.cinema}, El Trío, el paquete que recomendamos para la mayoría de las familias, ${P.trio}, y la Celebración completa ${P.production}.`,
       },
       {
         q: "¿La foto y el video vienen juntos?",
-        a: "Sí, desde el paquete Foto + Video. Un fotógrafo y un videógrafo cubren el día juntos, así que tienes las fotos y el video. La Sesión de retratos es solo de fotos.",
+        a: "Sí, en El Dúo, El Trío y la Celebración completa. Fotógrafos y un videógrafo cubren el día juntos, así que tienes las fotos y el video completo de su día. La Sesión de retratos es solo de fotos.",
       },
       {
         q: "¿Cuántos fotógrafos y videógrafos incluye?",
-        a: `Viene incluido en el precio: Foto + Video trae ${BASE_CREW.cinema} personas, la Celebración completa ${BASE_CREW.production} y la Celebración de dos días ${BASE_CREW.archive}. Tú escoges cuántas toman fotos y cuántas graban video. La Celebración completa y la de dos días también incluyen una coordinadora que lleva el horario y organiza a la corte, para que tu familia solo disfrute.`,
+        a: `Viene incluido en el precio: El Dúo trae ${BASE_CREW.cinema} personas, El Trío ${BASE_CREW.trio} (dos fotógrafos y un videógrafo) y la Celebración completa ${BASE_CREW.production}. Tú escoges cuántas toman fotos y cuántas graban video. La Celebración completa también incluye una coordinadora que lleva el horario y organiza a la corte, para que tu familia solo disfrute.`,
       },
       {
         q: "¿Cuántas horas de cobertura necesita una quinceañera?",
-        a: `La mayoría de las familias escogen de ${PT.hours.typicalLow} a ${PT.hours.max} horas: el arreglo en casa, la misa (alrededor de una hora), fotos entre la iglesia y la fiesta, y luego la entrada, el vals, el baile sorpresa y los brindis. Nuestros paquetes incluyen de ${PT.hours.study} a ${PT.hours.archive} horas, y puedes añadir horas hasta ${PT.hours.max} (desde ${PT.extra.from} la hora).`,
+        a: `La mayoría de las familias escogen de ${PT.hours.typicalLow} a ${PT.hours.max} horas: el arreglo en casa, la misa (alrededor de una hora), fotos entre la iglesia y la fiesta, y luego la entrada, el vals, el baile sorpresa y los brindis. El Dúo incluye ${PT.hours.cinema} horas, El Trío ${PT.hours.trio} y la Celebración completa ${PT.hours.production}, y puedes añadir horas hasta ${PT.hours.max} (desde ${PT.extra.from} la hora).`,
+      },
+      {
+        q: "¿Qué incluye el video completo?",
+        a: "Todo su día, tal como pasó: la misa, el salón y la llegada de los invitados, cada presentación completa (la entrada, el vals, el baile sorpresa), cada brindis completo y de 15 a 20 minutos de baile. Su duración depende de su día. También recibes un resumen corto para compartir: de 1 minuto con El Dúo y El Trío, y de 3 a 5 minutos con la Celebración completa.",
       },
       {
         q: "¿Con cuánta anticipación debemos reservar?",
@@ -481,6 +494,10 @@ const es: Copy = {
       {
         q: "¿Trabajan en español?",
         a: "Sí. Cada llamada, plan y entrega puede ser en español o en inglés, y nuestro equipo habla con abuelos y padrinos en el idioma que les sea más cómodo.",
+      },
+      {
+        q: "¿Podemos escoger quién fotografía la quinceañera?",
+        a: "TX Quince es un equipo. Tu día lo cubren nuestros propios fotógrafos y videógrafos, no gente que conseguimos a última hora, y los asignamos según la fecha y la disponibilidad. No podemos aceptar peticiones de personas específicas, incluidos los dueños. Cada foto y cada video regresa a nosotros dos: todo lo editamos nosotros mismos, así que tu galería y tu video se ven como TX Quince sin importar quién esté detrás de la cámara.",
       },
       {
         q: "¿Cómo funciona el depósito?",
@@ -585,6 +602,7 @@ const es: Copy = {
       `El resto se paga ${PT.balanceDays} días antes de tu evento.`,
     ],
     noCharge: "Hoy no se cobra nada.",
+    teamNote: "Tu día lo cubre el equipo de TX Quince. Asignamos fotógrafos y videógrafos según la fecha y no podemos aceptar peticiones de personas específicas. Cada galería y cada video lo editan los dueños.",
     // Después de enviar
     reference: "Referencia",
     doneTitle: "¡Gracias!",

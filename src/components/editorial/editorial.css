@@ -288,6 +288,19 @@
 .ed-pkg__pick { font-size: 11px; letter-spacing: 0.08em; padding: 5px 8px; border: 1px solid var(--ed-ink); line-height: 1; white-space: nowrap; }
 .ed-pkg__desc { color: var(--ed-ink); }
 .ed-pkg__meta { font-size: 14px; color: var(--ed-mute); }
+.ed-offer {
+  align-self: flex-start;
+  font-family: var(--ed-display);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: #000000;
+  padding: 6px 10px;
+  line-height: 1.2;
+}
+.ed-crew { margin-top: 20px !important; font-size: 14px; color: var(--ed-mute); }
 .ed-pkg__price { font-family: var(--ed-display); font-size: 28px; letter-spacing: 0.02em; text-align: right; font-variant-numeric: tabular-nums; line-height: 1; }
 .ed-pkg__btn { width: 140px; padding: 0 12px; }
 .ed-panel { margin-top: clamp(48px, 6vw, 80px); border: 1px solid var(--ed-line); padding: clamp(20px, 3vw, 40px); display: flex; flex-direction: column; gap: 12px; min-width: 0; }

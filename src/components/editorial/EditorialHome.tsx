@@ -335,6 +335,9 @@ function Band({ films }: { films: CinemaFilm[] }) {
             <Link href={allHref} className="ed-textlink ed-textlink--light">
               {b.all}
             </Link>
+            <a href={site.social.youtube} target="_blank" rel="noopener noreferrer" className="ed-textlink ed-textlink--light">
+              {b.youtube}
+            </a>
           </div>
         </div>
       )}
@@ -459,6 +462,9 @@ function Feature() {
             {tier.name[lang]}
           </h2>
           <p className="ed-card__price">{money(p.price)}</p>
+          {tier.id === "trio" && book.trioSpotsLeft > 0 && (
+            <p className="ed-offer">{e.packages.offer(book.trioSpotsLeft, book.trioSpotsTotal, money(p.price))}</p>
+          )}
           <ul className="ed-card__list">
             {tier.bullets.map((b) => (
               <li key={b.en}>{b[lang]}</li>
@@ -519,8 +525,11 @@ function Packages({ children }: { children: ReactNode }) {
                   </h3>
                   <p className="ed-pkg__desc">{PACKAGE_DETAIL[x.id][lang]}</p>
                   <p className="ed-pkg__meta">
-                    {x.id === "archive" ? p.hoursTwoDays(pp.hours) : p.hours(pp.hours)} · {p.team(BASE_CREW[x.id])}
+                    {p.hours(pp.hours)} · {p.team(BASE_CREW[x.id])}
                   </p>
+                  {x.id === "trio" && book.trioSpotsLeft > 0 && (
+                    <p className="ed-offer">{p.offer(book.trioSpotsLeft, book.trioSpotsTotal, money(pp.price))}</p>
+                  )}
                 </div>
                 <span className="ed-pkg__price">{money(pp.price)}</span>
                 <a
@@ -539,6 +548,7 @@ function Packages({ children }: { children: ReactNode }) {
             );
           })}
         </ul>
+        <p className="ed-crew">{p.crew}</p>
         <div className="ed-panel">
           <h3 className="ed-display ed-display--sm">{p.panelTitle}</h3>
           <p className="ed-dek">{p.panelDek}</p>

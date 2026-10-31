@@ -1,4 +1,5 @@
 import type { BlogPost } from "@/content/blog";
+import { PT } from "@/lib/price-text";
 
 const post: BlogPost = {
   slug: "que-pasa-en-una-quinceanera-orden",
@@ -182,7 +183,7 @@ const post: BlogPost = {
     },
     {
       q: "¿Cuántas horas de cobertura fotográfica necesito para una quinceañera?",
-      a: "Para captar el día completo —el arreglo, la misa, las fotos y toda la recepción hasta el baile sorpresa— considere de 6 a 8 horas, según qué tan cerca estén la iglesia y el salón. Con menos horas, casi siempre se queda fuera la mañana o el final de la fiesta. Los paquetes Foto + Video y Celebración completa incluyen 6 horas, y puedes añadir horas hasta 8.",
+      a: `Para captar el día completo —el arreglo, la misa, las fotos y toda la recepción hasta el baile sorpresa— considere de 6 a 8 horas, según qué tan cerca estén la iglesia y el salón. Con menos horas, casi siempre se queda fuera la mañana o el final de la fiesta. El Dúo incluye ${PT.hours.cinema} horas, El Trío ${PT.hours.trio} y la Celebración completa ${PT.hours.production}, y puede agregar horas, desde ${PT.extra.from} la hora, hasta ${PT.hours.max} en total.`,
     },
   ],
   related: [

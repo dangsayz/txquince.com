@@ -2126,6 +2126,11 @@ html:has(.tq-compare[open]) {
 .tq-bk-nocharge {
   font-weight: var(--weight-semibold);
 }
+.tq-bk-team {
+  margin: 12px 0 0;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
 
 /* Sent */
 .tq-bk-done {

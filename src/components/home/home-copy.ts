@@ -9,18 +9,19 @@ import type { TierId } from "@/lib/commission";
 /** Package rows: the chips beside each price (hours and team come from the book). */
 export const PACKAGE_DETAIL: Record<TierId, { en: string; es: string }> = {
   study: { en: "Photos only · 60 edited photos", es: "Solo fotos · 60 fotos editadas" },
-  cinema: { en: "8–10 min video + trailer · 400+ photos", es: "Video de 8–10 min + tráiler · 400+ fotos" },
+  cinema: { en: "Full-length film + 1-min highlight · 400+ photos", es: "Video completo + resumen de 1 min · 400+ fotos" },
+  trio: { en: "Full-length film + 1-min highlight · 600+ photos", es: "Video completo + resumen de 1 min · 600+ fotos" },
   production: {
-    en: "Coordinator · portraits · 12–15 min video · 700+ photos · album",
-    es: "Coordinadora · retratos · video de 12–15 min · 700+ fotos · álbum",
+    en: "Coordinator · portraits · full-length film + 3–5 min highlight · 700+ photos · album",
+    es: "Coordinadora · retratos · video completo + resumen de 3–5 min · 700+ fotos · álbum",
   },
   archive: { en: "20 min video · 1,000+ photos · large album", es: "Video de 20 min · 1,000+ fotos · álbum grande" },
 };
 
 /** Topic tag per FAQ item in copy.ts, in the same order. */
 export const FAQ_TAGS = {
-  en: ["Prices", "Packages", "Your team", "The day", "Booking", "The day", "En español", "Booking", "Photoshoot", "Travel"],
-  es: ["Precios", "Paquetes", "Tu equipo", "El día", "Reservar", "El día", "Idioma", "Reservar", "Sesión de fotos", "Viajes"],
+  en: ["Prices", "Packages", "Your team", "The day", "Video", "Booking", "The day", "En español", "Your team", "Booking", "Photoshoot", "Travel"],
+  es: ["Precios", "Paquetes", "Tu equipo", "El día", "Video", "Reservar", "El día", "Idioma", "Tu equipo", "Reservar", "Sesión de fotos", "Viajes"],
 } as const;
 
 export const HOME = {

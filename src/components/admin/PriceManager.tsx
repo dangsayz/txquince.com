@@ -11,6 +11,7 @@ import { useMemo, useState } from "react";
 import {
   ADD_ON_IDS,
   PRICE_LIMITS,
+  PUBLIC_TIER_IDS,
   TIER_IDS,
   describeChanges,
   priceBookSchema,
@@ -41,6 +42,8 @@ type Form = {
   depositPercent: string;
   balanceDueDays: string;
   holdDays: string;
+  trioSpotsTotal: string;
+  trioSpotsLeft: string;
 };
 
 const toForm = (b: PriceBook): Form => ({
@@ -59,6 +62,8 @@ const toForm = (b: PriceBook): Form => ({
   depositPercent: String(b.depositPercent),
   balanceDueDays: String(b.balanceDueDays),
   holdDays: String(b.holdDays),
+  trioSpotsTotal: String(b.trioSpotsTotal),
+  trioSpotsLeft: String(b.trioSpotsLeft),
 });
 
 /** "$4,900" / "4900" / " 4,900 " → 4900; anything else → NaN (zod reports it). */
@@ -79,6 +84,8 @@ const fromForm = (f: Form, base: PriceBook): unknown => ({
   depositPercent: num(f.depositPercent),
   balanceDueDays: num(f.balanceDueDays),
   holdDays: num(f.holdDays),
+  trioSpotsTotal: num(f.trioSpotsTotal),
+  trioSpotsLeft: num(f.trioSpotsLeft),
   updatedAt: base.updatedAt,
   updatedBy: base.updatedBy,
 });
@@ -202,7 +209,7 @@ function Preview({ book }: { book: PriceBook | null }) {
             onChange={(e) => setTier(e.target.value as TierId)}
             className="mt-1.5 min-h-12 w-full rounded-lg border border-[#c9cac7] bg-white px-3 text-base text-ink"
           >
-            {TIER_IDS.map((id) => (
+            {PUBLIC_TIER_IDS.map((id) => (
               <option key={id} value={id}>
                 {name(id)}
               </option>
@@ -380,7 +387,9 @@ export function PriceManager({ initial }: { initial: PricesSnapshot }) {
       >
         <Section title="Packages" dek="The price of each package and how many hours of coverage it includes. Each extra hour is what families pay for every hour they add.">
           <div className="grid gap-4 md:grid-cols-2">
-            {TIER_IDS.map((id) => (
+            {/* Retired packages (the Two-Day Celebration) keep their saved
+                numbers for old bookings but are no longer edited here. */}
+            {PUBLIC_TIER_IDS.map((id) => (
               <fieldset key={id} className="min-w-0 rounded-xl border border-line p-4 sm:p-5">
                 <legend className="px-1 text-base font-medium text-ink">{tierName(id)}</legend>
                 <div className="grid gap-4 sm:grid-cols-3">
@@ -451,6 +460,36 @@ export function PriceManager({ initial }: { initial: PricesSnapshot }) {
                 error={err(`addOns.${a.id}`)}
               />
             ))}
+          </div>
+        </Section>
+
+        <Section
+          title="Trio launch offer"
+          dek="The homepage says “only N of 5 Trio dates left at this price” while dates are left. Lower “dates left” by one each time you confirm a Trio. At 0 the message disappears; raise the Trio price above when you're ready."
+        >
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field
+              id="trio-total"
+              label="Dates at the launch price"
+              suffix="dates"
+              hint={`Between ${L.trioSpots.min} and ${L.trioSpots.max}.`}
+              value={form.trioSpotsTotal}
+              onChange={(v) => edit((f) => {
+                      f.trioSpotsTotal = v;
+                    })}
+              error={err("trioSpotsTotal")}
+            />
+            <Field
+              id="trio-left"
+              label="Dates left"
+              suffix="left"
+              hint="0 hides the offer."
+              value={form.trioSpotsLeft}
+              onChange={(v) => edit((f) => {
+                      f.trioSpotsLeft = v;
+                    })}
+              error={err("trioSpotsLeft")}
+            />
           </div>
         </Section>
 
