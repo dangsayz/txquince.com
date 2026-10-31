@@ -48,7 +48,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Así suena una buena respuesta: un rango de entrega y un tiempo de entrega, por escrito. Una galería privada en línea que usted pueda descargar y compartir, una cantidad de fotos acorde a las horas de cobertura, y una fecha a la que pueda darle seguimiento. En nuestros paquetes de foto y video también recibe un tráiler corto y videos verticales cortos para redes sociales, para que tenga algo que compartir con la familia mientras se terminan la galería completa y el video completo.",
+      text: "Así suena una buena respuesta: un rango de entrega y un tiempo de entrega, por escrito. Una galería privada en línea que usted pueda descargar y compartir, una cantidad de fotos acorde a las horas de cobertura, y una fecha a la que pueda darle seguimiento. En nuestros paquetes con video, la película completa viene además con un resumen corto — de 1 minuto en El Dúo y El Trío, de 3 a 5 minutos en la Celebración completa —, la versión rápida que va a querer compartir con la familia.",
     },
     {
       type: "callout",
@@ -61,7 +61,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Así suena una buena respuesta: si el segundo fotógrafo va incluido, si está disponible como complemento o si no se ofrece, y en cuáles paquetes. Con nosotros, la Celebración completa y la Celebración de dos días traen un equipo de ${BASE_CREW.production} y de ${BASE_CREW.archive} personas, en la combinación de fotógrafos y videógrafos que usted elija, y puede ver los ángulos inversos y los momentos de doble cobertura que hacen posibles en el [portafolio](/portfolio). Si un fotógrafo no puede mostrarle cobertura de dos cámaras, dé por hecho que trabaja solo.`,
+      text: `Así suena una buena respuesta: si el segundo fotógrafo va incluido, si está disponible como complemento o si no se ofrece, y en cuáles paquetes. Con nosotros, El Trío trae dos fotógrafos y un videógrafo, y la Celebración completa un equipo de ${BASE_CREW.production} personas más una coordinadora que dirige el día. Son fotógrafos y videógrafos del propio equipo de TX Quince, asignados según la fecha y la disponibilidad — las familias no pueden pedir a personas específicas, ni siquiera a los dueños —, y cada galería y cada película la editan los dueños. Puede ver los ángulos inversos y los momentos de doble cobertura que hacen posibles en el [portafolio](/portfolio). Si un fotógrafo no puede mostrarle cobertura de dos cámaras, dé por hecho que trabaja solo.`,
     },
     { type: "h2", text: "5. ¿Me da los derechos de uso e impresión de las fotos?" },
     {
@@ -113,7 +113,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Así suena una buena respuesta: un sí o un no directo. Nosotros ofrecemos foto y video como un solo equipo en cada paquete desde Foto + Video, con un equipo de ${BASE_CREW.cinema} a ${BASE_CREW.archive} personas trabajando el mismo día —en la combinación de fotógrafos y videógrafos que usted elija— y un video completo, un tráiler corto y videos verticales cortos para redes sociales, no una sola persona haciendo malabares entre la cámara y el tripié. Si todavía está decidiendo si vale la pena el video, [foto o video para la quinceañera](/es/blog/foto-o-video-quinceanera) sopesa esa decisión sin rodeos.`,
+      text: `Así suena una buena respuesta: un sí o un no directo. Nosotros ofrecemos foto y video como un solo equipo en cada paquete desde El Dúo, con un equipo de ${BASE_CREW.cinema} a ${BASE_CREW.production} personas trabajando el mismo día, y la película completa de su día más un resumen corto, no una sola persona haciendo malabares entre la cámara y el tripié. Si todavía está decidiendo si vale la pena el video, [foto o video para la quinceañera](/es/blog/foto-o-video-quinceanera) sopesa esa decisión sin rodeos.`,
     },
     { type: "h2", text: "Para cerrar" },
     {
@@ -136,7 +136,7 @@ const post: BlogPost = {
     },
     {
       q: "¿Cuántas fotos editadas debo esperar?",
-      a: "Depende de las horas de cobertura, pero debe recibir un rango de entrega y un tiempo de entrega claros y por escrito, no un vago «ilimitadas». Espere una galería privada en línea que pueda descargar y compartir y, en los paquetes de foto y video, un tráiler corto y videos cortos para redes sociales para compartir mientras se termina todo lo demás.",
+      a: "Depende de las horas de cobertura, pero debe recibir un rango de entrega y un tiempo de entrega claros y por escrito, no un vago «ilimitadas». Espere una galería privada en línea que pueda descargar y compartir y, en los paquetes con video, la película completa de su día y un resumen corto para compartir.",
     },
     {
       q: "¿Qué pasa si mi fotógrafo se enferma?",

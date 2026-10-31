@@ -25,7 +25,7 @@ import {
 import { ADD_ONS, matrixFor, TIERS, type Lang } from "@/components/txq/data";
 
 /** Bump when the wording below changes; stored with every signature. */
-export const AGREEMENT_VERSION = "2026-10-14.2";
+export const AGREEMENT_VERSION = "2026-10-31.1";
 
 export type AgreementInput = {
   lang: Lang;
@@ -103,6 +103,11 @@ const T = {
       "If you cancel, your deposit is not refundable, because we save your date and turn other families away.",
       "If we ever have to cancel, we refund everything you've paid.",
     ],
+    crew: "Who covers your day",
+    crewLines: [
+      "Your day is covered by TX Quince team photographers and videographers, assigned by the studio. Requests for specific team members, including the owners, are not accepted.",
+      "Every gallery and film is edited by the owners.",
+    ],
     media: "Your photos and videos",
     mediaLines: (share: boolean) => [
       "Everything we deliver is yours to keep, print and share with family and friends.",
@@ -152,6 +157,11 @@ const T = {
       "¿Quieres más horas o un extra después? Solo pídelo — si estamos disponibles, lo añadimos y actualizamos tu total.",
       "Si cancelas, el depósito no es reembolsable, porque apartamos tu fecha y rechazamos a otras familias.",
       "Si nosotros tuviéramos que cancelar, te devolvemos todo lo que hayas pagado.",
+    ],
+    crew: "Quién cubre tu día",
+    crewLines: [
+      "Tu día lo cubren fotógrafos y videógrafos del equipo de TX Quince, asignados por el estudio. No se aceptan peticiones de miembros específicos del equipo, incluidos los dueños.",
+      "Cada galería y cada video lo editan los dueños.",
     ],
     media: "Tus fotos y videos",
     mediaLines: (share: boolean) => [
@@ -225,6 +235,7 @@ export function buildAgreement(input: AgreementInput, book: PriceBook): Agreemen
       ],
     },
     { title: t.how, lines: [...t.howLines(book.holdDays)] },
+    { title: t.crew, lines: [...t.crewLines] },
     { title: t.changes, lines: [...t.changesLines] },
     { title: t.media, lines: [...t.mediaLines(input.sharePermission)] },
   ];

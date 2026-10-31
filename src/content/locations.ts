@@ -6,7 +6,7 @@
  * household income that supports a package (prices live in src/lib/commission.ts
  * — never hardcode them here). "volume" cities are the booking engine; "premium"
  * cities (Mansfield, Farmers Branch and the Collin County trio of Frisco, Plano
- * and McKinney) skew to the Full Celebration and the Two-Day Celebration.
+ * and McKinney) skew to the larger packages, the Trio and the Full Celebration.
  * (Source: 2024 Census/ACS city estimates — see the cities chosen and why in the
  * project notes.)
  *
@@ -318,7 +318,7 @@ export const locations: Location[] = [
     ],
     lead: "Where DFW families go all-out on the celebration.",
     intro: [
-      `Mansfield families tend to do a quinceañera in full — the complete day, the larger court, the video and the photo album to match. It's exactly the celebration the Full Celebration and the Two-Day Celebration are built for: a team of ${BASE_CREW.production} or ${BASE_CREW.archive} plus a day-of coordinator, a full-length video and a printed photo album that do a milestone like this justice.`,
+      `Mansfield families tend to do a quinceañera in full — the complete day, the larger court, the video and the photo album to match. It's exactly the celebration the Full Celebration is built for: a team of ${BASE_CREW.production} plus a coordinator who runs the day, the full-length film of her whole day and a printed photo album that do a milestone like this justice.`,
       "I book one quinceañera a day, so your celebration gets everything — la misa, portraits around Historic Downtown Mansfield or the Mansfield National area, el vals, and a reception captured start to finish, nothing rushed.",
     ],
     faqs: [
@@ -328,12 +328,12 @@ export const locations: Location[] = [
       },
       {
         q: "Which package do you recommend for a Mansfield quinceañera?",
-        a: `For most celebrations, the Full Celebration (${PT.price.production}) — ${PT.hours.production} hours with a team of ${BASE_CREW.production} and a day-of coordinator, a portrait session at one location, a 12–15 minute full-length video, 700+ edited photos and a 40-page printed photo album. Families planning more than one day of celebrating can step up to the Two-Day Celebration (${PT.price.archive}). Compare all four on our Packages & Prices page.`,
+        a: `For most celebrations, the Trio (${PT.price.trio}) — ${PT.hours.trio} hours with a team of ${BASE_CREW.trio} (two photographers and a videographer), the full-length film of her whole day with a 1-minute highlight, and 600+ edited photos. Families who want the day in full can step up to the Full Celebration (${PT.price.production}) — ${PT.hours.production} hours with a team of ${BASE_CREW.production} plus a coordinator who runs the day, a portrait session at one location, a 3–5 minute highlight film, 700+ edited photos and a 40-page printed photo album. For a separate day of portraits in her dress, add the Second Portrait Day (${PT.addon.secondday}). Compare all four on our Packages & Prices page.`,
       },
     ],
     leadEs: "Donde las familias de DFW se lucen con la celebración.",
     introEs: [
-      `Las familias de Mansfield suelen hacer la quinceañera en grande: el día completo, la corte más grande, el video y el álbum a la altura. Es justo la celebración para la que están hechas la Celebración completa y la Celebración de dos días: un equipo de ${BASE_CREW.production} o ${BASE_CREW.archive} personas más una coordinadora del día, un video completo y un álbum de fotos impreso que le hacen justicia a un momento así.`,
+      `Las familias de Mansfield suelen hacer la quinceañera en grande: el día completo, la corte más grande, el video y el álbum a la altura. Es justo la celebración para la que está hecha la Celebración completa: un equipo de ${BASE_CREW.production} personas más una coordinadora que lleva el día, el video completo de todo su día y un álbum de fotos impreso que le hacen justicia a un momento así.`,
       "Reservo una quinceañera al día, así que tu celebración lo tiene todo: la misa, fotos por el Historic Downtown Mansfield o la zona de Mansfield National, el vals y una recepción capturada de principio a fin, sin prisas.",
     ],
     faqsEs: [
@@ -343,7 +343,7 @@ export const locations: Location[] = [
       },
       {
         q: "¿Qué paquete recomiendas para una quinceañera en Mansfield?",
-        a: `Para la mayoría de las celebraciones, la Celebración completa (${PT.price.production}): ${PT.hours.production} horas con un equipo de ${BASE_CREW.production} y una coordinadora del día, una sesión de retrato en una locación, un video completo de 12 a 15 minutos, más de 700 fotos editadas y un álbum de fotos impreso de 40 páginas. Si van a celebrar más de un día, pueden subir a la Celebración de dos días (${PT.price.archive}). Compara los cuatro en nuestra página de Paquetes y precios.`,
+        a: `Para la mayoría de las celebraciones, el Trío (${PT.price.trio}): ${PT.hours.trio} horas con un equipo de ${BASE_CREW.trio} (dos fotógrafos y un videógrafo), el video completo de todo su día con un resumen de 1 minuto y más de 600 fotos editadas. Si quieren el día en grande, pueden subir a la Celebración completa (${PT.price.production}): ${PT.hours.production} horas con un equipo de ${BASE_CREW.production} más una coordinadora que lleva el día, una sesión de retrato en una locación, un resumen de 3 a 5 minutos, más de 700 fotos editadas y un álbum de fotos impreso de 40 páginas. Para un día aparte de retratos con su vestido, suma el Segundo día de retratos (${PT.addon.secondday}). Compara los cuatro en nuestra página de Paquetes y precios.`,
       },
     ],
   },
@@ -362,7 +362,7 @@ export const locations: Location[] = [
     lead: "An established community that celebrates in full.",
     intro: [
       "Farmers Branch pairs a strong, settled Mexican-American community with the means to do a quinceañera properly — and the families here tend to. From the church to portraits at the Historical Park or rose gardens and a full reception, I document the complete day the way it's meant to be remembered.",
-      "One celebration per day means your quinceañera gets my full attention — la misa, el vals, the baile sorpresa, and the whole night. The Full Celebration — the package I recommend for most celebrations — is built for exactly this kind of all-day celebration.",
+      "One celebration per day means your quinceañera gets my full attention — la misa, el vals, the baile sorpresa, and the whole night. The Trio — the package I recommend for most celebrations — puts two photographers and a videographer on exactly this kind of all-day celebration, and the Full Celebration adds a coordinator who runs the day.",
     ],
     faqs: [
       {
@@ -377,7 +377,7 @@ export const locations: Location[] = [
     leadEs: "Una comunidad establecida que celebra en grande.",
     introEs: [
       "Farmers Branch combina una comunidad mexicana fuerte y arraigada con los medios para hacer la quinceañera como se debe, y aquí las familias lo hacen. De la iglesia a las fotos en el Historical Park o los jardines de rosas y una recepción completa, documento todo el día como merece recordarse.",
-      "Una celebración al día significa que tu quinceañera tiene toda mi atención: la misa, el vals, el baile sorpresa y toda la noche. La Celebración completa —el paquete que recomiendo para la mayoría de las celebraciones— está hecha justo para este tipo de celebración de día completo.",
+      "Una celebración al día significa que tu quinceañera tiene toda mi atención: la misa, el vals, el baile sorpresa y toda la noche. El Trío —el paquete que recomiendo para la mayoría de las celebraciones— pone a dos fotógrafos y un videógrafo justo en este tipo de celebración de día completo, y la Celebración completa suma una coordinadora que lleva el día.",
     ],
     faqsEs: [
       {
@@ -405,7 +405,7 @@ export const locations: Location[] = [
     lead: "Where the quinceañera is planned like a destination celebration.",
     intro: [
       "Frisco families tend to plan a quinceañera the way other cities plan a destination wedding — a hotel or resort ballroom, a full court, relatives driving up from across Texas for the weekend. From a morning misa to portraits around The Star or Frisco Square and a reception off the Dallas North Tollway, I photograph the whole tradition, set against the newest backdrops in the metroplex.",
-      `Because I take one quinceañera a day, a Frisco celebration gets the full crew and the full day. The Full Celebration (${PT.price.production}) is the package I recommend for most families here — ${PT.hours.production} hours of photo and video, a portrait session at one location, and a printed photo album.`,
+      `Because I take one quinceañera a day, a Frisco celebration gets the full crew and the full day. The Trio (${PT.price.trio}) is the package I recommend for most families here — ${PT.hours.trio} hours of photo and video with two photographers and a videographer — and the Full Celebration (${PT.price.production}) adds a coordinator who runs the day, a portrait session at one location and a printed photo album.`,
     ],
     faqs: [
       {
@@ -420,7 +420,7 @@ export const locations: Location[] = [
     leadEs: "Donde la quinceañera se planea como una celebración de destino.",
     introEs: [
       "Las familias de Frisco suelen planear la quinceañera como en otras ciudades se planea una boda de destino: un salón de hotel o de resort, la corte completa y parientes que llegan de todo Texas para el fin de semana. Desde la misa de la mañana hasta las fotos por The Star o Frisco Square y una recepción junto al Dallas North Tollway, fotografío la tradición completa con los fondos más nuevos del metroplex.",
-      `Como tomo una sola quinceañera al día, una celebración en Frisco tiene al equipo completo todo el día. La Celebración completa (${PT.price.production}) es el paquete que recomiendo para la mayoría de las familias aquí: ${PT.hours.production} horas de foto y video, una sesión de retrato en una locación y un álbum de fotos impreso.`,
+      `Como tomo una sola quinceañera al día, una celebración en Frisco tiene al equipo completo todo el día. El Trío (${PT.price.trio}) es el paquete que recomiendo para la mayoría de las familias aquí: ${PT.hours.trio} horas de foto y video con dos fotógrafos y un videógrafo; la Celebración completa (${PT.price.production}) suma una coordinadora que lleva el día, una sesión de retrato en una locación y un álbum de fotos impreso.`,
     ],
     faqsEs: [
       {
@@ -491,7 +491,7 @@ export const locations: Location[] = [
     lead: "A hometown square, a growing city, and a celebration done in full.",
     intro: [
       "McKinney has what most of Collin County doesn't: a real historic downtown, built around the old county courthouse on the square, with long-rooted families on the east side and newer ones arriving every year. A McKinney quinceañera often feels like a hometown celebration — the parish, portraits on the square or at Chestnut Square, a reception out toward Craig Ranch — and I photograph every part of it.",
-      `I book one quinceañera a day, so your celebration gets the whole crew from the first church frame to the last dance. For most McKinney families I recommend the Full Celebration (${PT.price.production}); for portraits alone, the Portrait Session (${PT.price.study}) is ${PT.hours.study} hours with one photographer.`,
+      `I book one quinceañera a day, so your celebration gets the whole crew from the first church frame to the last dance. For most McKinney families I recommend the Trio (${PT.price.trio}), and the Full Celebration (${PT.price.production}) when you want a coordinator and a printed album; for portraits alone, the Portrait Session (${PT.price.study}) is ${PT.hours.study} hours with one photographer.`,
     ],
     faqs: [
       {
@@ -506,7 +506,7 @@ export const locations: Location[] = [
     leadEs: "Una plaza de pueblo, una ciudad que crece y una celebración completa.",
     introEs: [
       "McKinney tiene lo que casi nadie más tiene en el condado de Collin: un centro histórico de verdad, alrededor del antiguo juzgado del condado en la plaza, con familias de raíces hondas en el lado este y nuevas que llegan cada año. Una quinceañera en McKinney muchas veces se siente como una fiesta de pueblo —la parroquia, fotos en la plaza o en Chestnut Square, la recepción rumbo a Craig Ranch— y yo fotografío cada parte.",
-      `Reservo una quinceañera al día, así que tu celebración tiene al equipo completo desde la primera foto en la iglesia hasta el último baile. Para la mayoría de las familias de McKinney recomiendo la Celebración completa (${PT.price.production}); si solo quieres retratos, la Sesión de retratos (${PT.price.study}) son ${PT.hours.study} horas con un fotógrafo.`,
+      `Reservo una quinceañera al día, así que tu celebración tiene al equipo completo desde la primera foto en la iglesia hasta el último baile. Para la mayoría de las familias de McKinney recomiendo el Trío (${PT.price.trio}), y la Celebración completa (${PT.price.production}) si quieres una coordinadora y un álbum impreso; si solo quieres retratos, la Sesión de retratos (${PT.price.study}) son ${PT.hours.study} horas con un fotógrafo.`,
     ],
     faqsEs: [
       {

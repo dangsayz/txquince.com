@@ -117,7 +117,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Cuando esté lista, resérvela por separado como nuestra Sesión de retratos, o vea qué [paquetes](/es#commissions) ya incluyen una sesión de retrato — la Celebración completa incluye una locación y la Celebración de dos días, dos —, recorra el [portafolio](/portfolio) para tomar ideas y [reserve su fecha](/es#intake). Si todavía está eligiendo fotógrafo, empiece por [cómo elegir un fotógrafo de quinceañera en DFW](/es/blog/como-elegir-fotografo-de-quinceanera-dfw) — y si está reservando toda la celebración, nuestras páginas de [fotógrafo de quinceañeras en Dallas](/es/fotografo-de-quinceaneras/dallas) y [Fort Worth](/es/fotografo-de-quinceaneras/fort-worth) cubren la cobertura completa del evento.",
+      text: `Cuando esté lista, resérvela por separado como nuestra Sesión de retratos, o vea qué [paquetes](/es#commissions) ya incluyen una sesión de retrato — la Celebración completa incluye una locación, y un Segundo día de retratos (${PT.addon.secondday}) suma un día aparte de foto y video en hasta dos locaciones —, recorra el [portafolio](/portfolio) para tomar ideas y [reserve su fecha](/es#intake). Si todavía está eligiendo fotógrafo, empiece por [cómo elegir un fotógrafo de quinceañera en DFW](/es/blog/como-elegir-fotografo-de-quinceanera-dfw) — y si está reservando toda la celebración, nuestras páginas de [fotógrafo de quinceañeras en Dallas](/es/fotografo-de-quinceaneras/dallas) y [Fort Worth](/es/fotografo-de-quinceaneras/fort-worth) cubren la cobertura completa del evento.`,
     },
   ],
   faqs: [
@@ -143,7 +143,7 @@ const post: BlogPost = {
     },
     {
       q: "¿La sesión va incluida o es aparte?",
-      a: `Depende del estudio y del paquete. En TX Quince, la Sesión de retratos (${PT.price.study}) es la sesión de retrato por sí sola; la Celebración completa incluye una sesión de retrato en una locación y la Celebración de dos días incluye dos. También puede agregar una Sesión con el vestido, fotos con su vestido antes del gran día, por ${PT.addon.destination}. Compare todos los paquetes antes de reservar.`,
+      a: `Depende del estudio y del paquete. En TX Quince, la Sesión de retratos (${PT.price.study}) es la sesión de retrato por sí sola; la Celebración completa incluye una sesión de retrato en una locación, y puede agregar un Segundo día de retratos —un día aparte para fotos con su vestido, con foto y video, en hasta dos locaciones— por ${PT.addon.secondday}. También puede agregar una Sesión con el vestido, fotos con su vestido antes del gran día, por ${PT.addon.destination}. Compare todos los paquetes antes de reservar.`,
     },
   ],
   related: [

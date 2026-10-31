@@ -7,6 +7,8 @@ const pick = (posts: BlogPost[], base: string) =>
     title: p.title,
     category: p.category,
     readMinutes: p.readMinutes,
+    date: p.publishedAt,
+    excerpt: p.excerpt,
   }));
 
 /** The four newest posts per language, for the homepage journal (server-only). */

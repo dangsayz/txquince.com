@@ -5,7 +5,7 @@ import { getBookings, getInquiries, getInquiryActivity } from "@/lib/clients-db"
 import { formatEventDate } from "@/lib/booking";
 import { requireAdminPage } from "@/lib/require-admin";
 import { getPriceBook } from "@/lib/pricing";
-import { TIER_IDS, TIER_NAME_EN, usd } from "@/lib/commission";
+import { PUBLIC_TIER_IDS, TIER_NAME_EN, usd } from "@/lib/commission";
 
 export const dynamic = "force-dynamic";
 
@@ -74,7 +74,7 @@ export default async function AdminHome() {
           </Link>
         </div>
         <dl className="grid grid-cols-2 lg:grid-cols-4">
-          {TIER_IDS.map((id, index) => (
+          {PUBLIC_TIER_IDS.map((id, index) => (
             <div key={id} className={`px-5 py-4 sm:px-6 ${index % 2 === 0 ? "border-r border-[#e6e6e4]" : "lg:border-r lg:border-[#e6e6e4]"} ${index < 2 ? "border-b border-[#e6e6e4] lg:border-b-0" : ""} ${index === 3 ? "lg:border-r-0" : ""}`}>
               <dt className="text-sm">{TIER_NAME_EN[id]}</dt>
               <dd className="mt-1 text-2xl tabular-nums tracking-[-0.04em]">{usd(book.packages[id].price)}</dd>

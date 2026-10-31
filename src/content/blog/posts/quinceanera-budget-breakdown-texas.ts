@@ -3,8 +3,8 @@ import { PT } from "@/lib/price-text";
 
 const study = PT.price.study;
 const cinema = PT.price.cinema;
+const trio = PT.price.trio;
 const production = PT.price.production;
-const archive = PT.price.archive;
 const retainerPct = PT.deposit.percent;
 
 const post: BlogPost = {
@@ -59,7 +59,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `A photo and video package is a separate vendor and a separate craft: the artists who follow your daughter through the whole day and hand you back the story of it. At [TX Quince](/#commissions) those packages are published at ${study} (photo only), ${cinema}, ${production}, and ${archive}. A venue "package" and a photo + video package can sound like the same kind of purchase — they aren't, so don't let a sales sheet blur them together.`,
+      text: `A photo and video package is a separate vendor and a separate craft: the artists who follow your daughter through the whole day and hand you back the story of it. At [TX Quince](/#commissions) those packages are published at ${study} (photo only), ${cinema}, ${trio}, and ${production}. A venue "package" and a photo + video package can sound like the same kind of purchase — they aren't, so don't let a sales sheet blur them together.`,
     },
     { type: "h2", text: "Why photo and video deserve their slice" },
     {
@@ -155,7 +155,7 @@ const post: BlogPost = {
     },
     {
       q: "Are venue packages the same as photography packages?",
-      a: `No. All-inclusive venue packages (often $2,000–$4,000 in DFW) buy you the room, tables, and sometimes catering or a DJ. A photography and video package is a separate vendor and craft — at TX Quince those are published at ${study}, ${cinema}, ${production}, and ${archive}. Similar-sounding "packages," completely different purchases.`,
+      a: `No. All-inclusive venue packages (often $2,000–$4,000 in DFW) buy you the room, tables, and sometimes catering or a DJ. A photography and video package is a separate vendor and craft — at TX Quince those are published at ${study}, ${cinema}, ${trio}, and ${production}. Similar-sounding "packages," completely different purchases.`,
     },
   ],
   related: [

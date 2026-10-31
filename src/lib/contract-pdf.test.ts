@@ -115,13 +115,19 @@ function extractText(pdf: Uint8Array): string[] {
   const C1 = "€\u0081‚ƒ„…†‡ˆ‰Š‹Œ\u008dŽ\u008f\u0090‘’“”•–—˜™š›œ\u009džŸ";
   const decode = (bytes: Buffer) =>
     Array.from(bytes, (b) => (b >= 0x80 && b <= 0x9f ? C1[b - 0x80] : String.fromCharCode(b))).join("");
-  for (const m of raw.matchAll(/stream\r?\n([\s\S]*?)\r?\nendstream/g)) {
-    let body: string;
-    try {
-      body = inflateSync(Buffer.from(m[1], "latin1")).toString("latin1");
-    } catch {
-      continue;
+  // The stream's last byte can itself be 0x0D, so don't eat a "\r" before
+  // "endstream" up front: try the data as-is, then without a trailing "\r".
+  for (const m of raw.matchAll(/stream\r?\n([\s\S]*?)\nendstream/g)) {
+    let body: string | null = null;
+    for (const data of [m[1], m[1].replace(/\r$/, "")]) {
+      try {
+        body = inflateSync(Buffer.from(data, "latin1")).toString("latin1");
+        break;
+      } catch {
+        /* try the next reading */
+      }
     }
+    if (body === null) continue;
     const strings = Array.from(body.matchAll(/<([0-9A-Fa-f]*)> Tj/g), (t) =>
       decode(Buffer.from(t[1], "hex")),
     );

@@ -106,6 +106,11 @@ export default async function AboutPage() {
                 {about.story.map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>
                 ))}
+                <p>
+                  Her day is covered by TX Quince&apos;s own team of photographers and videographers, assigned by date and
+                  availability, so we can&apos;t take requests for specific people, the owners included. Every gallery and
+                  every film is edited by the owners.
+                </p>
               </div>
             </div>
           </div>
@@ -137,7 +142,7 @@ export default async function AboutPage() {
               <span className="tq-mono tq-muted">[03]</span>
               <h3 className="tq-display">Published packages.</h3>
               <p>
-                Four packages with prices on the page, from the Portrait Session to the Two-Day Celebration.{" "}
+                Four packages with prices on the page, from the Portrait Session to the Full Celebration.{" "}
                 <Link href={commissionLinks.en.compare} className="tq-pg-inline">
                   Compare packages
                 </Link>

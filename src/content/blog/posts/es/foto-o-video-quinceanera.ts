@@ -4,8 +4,8 @@ import { PT } from "@/lib/price-text";
 
 const study = PT.price.study;
 const cinema = PT.price.cinema;
+const trio = PT.price.trio;
 const production = PT.price.production;
-const archive = PT.price.archive;
 
 const post: BlogPost = {
   slug: "foto-o-video-quinceanera",
@@ -26,7 +26,7 @@ const post: BlogPost = {
     { type: "h2", text: "La respuesta corta" },
     {
       type: "p",
-      text: "Técnicamente no necesita los dos. Muchísimas familias reservan solo foto y quedan felices. Pero la foto y el video guardan cosas distintas, y los momentos que se viven en movimiento — el vals, los discursos, el baile sorpresa, la cara de su hija cuando arranca la música — solo quedan completos en video. Si el presupuesto alcanza para ambos, un mismo equipo que haga foto y video es la forma más sencilla de lograrlo. En [TX Quince](/es#commissions), la Sesión de retratos es nuestro paquete de solo foto; Foto + Video, la Celebración completa y la Celebración de dos días incluyen los dos.",
+      text: "Técnicamente no necesita los dos. Muchísimas familias reservan solo foto y quedan felices. Pero la foto y el video guardan cosas distintas, y los momentos que se viven en movimiento — el vals, los discursos, el baile sorpresa, la cara de su hija cuando arranca la música — solo quedan completos en video. Si el presupuesto alcanza para ambos, un mismo equipo que haga foto y video es la forma más sencilla de lograrlo. En [TX Quince](/es#commissions), la Sesión de retratos es nuestro paquete de solo foto; El Dúo, El Trío y la Celebración completa incluyen los dos.",
     },
     { type: "h2", text: "Qué guarda la foto que el video no puede" },
     {
@@ -78,12 +78,12 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "En nuestros paquetes de foto y video, el video completo viene con un tráiler corto y videos verticales cortos para redes sociales — y con la Celebración de dos días el primero llega en 48 horas — para que tenga algo que publicar mientras el día sigue fresco, en lugar de esperar meses.",
+      text: "En nuestros paquetes con video, la película completa es su día entero tal como pasó — la misa, los detalles del salón y los invitados, cada presentación completa (la entrada, el vals, el baile sorpresa), cada brindis completo y de 15 a 20 minutos de la pista de baile. Dura lo que dura su día, así que nunca la recortamos a un número fijo de minutos. Con ella viene un resumen corto — de 1 minuto en El Dúo y El Trío, de 3 a 5 minutos en la Celebración completa —, la versión corta que va a compartir con todos.",
     },
     {
       type: "cta",
       heading: "Vea exactamente cuáles paquetes incluyen video",
-      body: `La Sesión de retratos es solo foto. Foto + Video, la Celebración completa y la Celebración de dos días combinan fotógrafos y videógrafos: uno de cada uno con Foto + Video, o un equipo de ${BASE_CREW.production} o ${BASE_CREW.archive} personas con los paquetes más grandes, en la combinación que usted elija. Compárelos lado a lado.`,
+      body: `La Sesión de retratos es solo foto. El Dúo, El Trío y la Celebración completa combinan fotógrafos y videógrafos: uno de cada uno con El Dúo (${BASE_CREW.cinema} en total), dos fotógrafos y un videógrafo con El Trío (${BASE_CREW.trio}), o un equipo de ${BASE_CREW.production} personas más una coordinadora con la Celebración completa. Compárelos lado a lado.`,
       href: "/es#commissions",
       label: "Comparar paquetes",
     },
@@ -108,7 +108,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Anclado a nuestros paquetes: la Sesión de retratos cuesta ${study} — solo fotos, ${PT.hours.study} horas con un fotógrafo. Foto + Video cuesta ${cinema} — ${PT.hours.cinema} horas con un fotógrafo y un videógrafo, un video completo en 4K de 8 a 10 minutos, un tráiler corto y videos cortos para redes sociales. La Celebración completa, por ${production}, es la que recomendamos para la mayoría de las celebraciones — ${PT.hours.production} horas, un equipo de ${BASE_CREW.production} y una coordinadora del día, una sesión de retratos, un video completo de 12 a 15 minutos y un álbum de fotos impreso. La Celebración de dos días, por ${archive}, le da ${PT.hours.archive} horas más un segundo día de retratos, con un equipo de ${BASE_CREW.archive} y una coordinadora del día. ¿Necesita más tiempo el día de la fiesta? Puede agregar horas, una a la vez, hasta ${PT.hours.max} en total. Para ver qué incluye cada paquete y [cuáles incluyen ambos](/es#commissions), revise los paquetes; y para una mirada más amplia al costo, lea [cuánto cuesta un fotógrafo de quinceañera en DFW](/es/blog/cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth).`,
+      text: `Anclado a nuestros paquetes: la Sesión de retratos cuesta ${study} — solo fotos, ${PT.hours.study} horas con un fotógrafo. El Dúo cuesta ${cinema} — ${PT.hours.cinema} horas con un fotógrafo y un videógrafo, la película completa más un resumen de 1 minuto, y más de 400 fotos editadas. El Trío, por ${trio}, es nuestra recomendación para la mayoría de las familias — ${PT.hours.trio} horas con dos fotógrafos y un videógrafo, la película completa más un resumen de 1 minuto, y más de 600 fotos editadas. La Celebración completa, por ${production}, le da ${PT.hours.production} horas, un equipo de ${BASE_CREW.production} más una coordinadora que dirige el día, una sesión de retratos en un lugar, la película completa más un resumen de 3 a 5 minutos, más de 700 fotos editadas y un álbum impreso. ¿Quiere fotos con el vestido en otro día? Agregue un Segundo día de retratos (${PT.addon.secondday}) — foto y video en hasta dos lugares. ¿Necesita más tiempo el día de la fiesta? Puede agregar horas, desde ${PT.extra.from} la hora, hasta ${PT.hours.max} en total. Para ver qué incluye cada paquete y [cuáles incluyen ambos](/es#commissions), revise los paquetes; y para una mirada más amplia al costo, lea [cuánto cuesta un fotógrafo de quinceañera en DFW](/es/blog/cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth).`,
     },
     { type: "h2", text: "Si el presupuesto solo alcanza para uno" },
     {
@@ -139,7 +139,7 @@ const post: BlogPost = {
     },
     {
       q: "¿Qué incluye el video de quinceañera?",
-      a: "Un buen video es una historia editada, no una grabación cruda, casi siempre entregada en dos piezas: una edición documental que recorre el día completo en orden, y un video resumen de 3 a 5 minutos editado con música. En los paquetes de foto y video de TX Quince también incluye un tráiler corto y videos verticales cortos para redes sociales, para que tenga algo que compartir mientras el día sigue fresco.",
+      a: "Un buen video es una historia editada, no una grabación cruda, casi siempre entregada en dos piezas: una edición documental que recorre el día completo en orden, y un video resumen de 3 a 5 minutos editado con música. En los paquetes con video de TX Quince, la película completa es su día entero tal como pasó — la misa, cada presentación y cada brindis completos, y de 15 a 20 minutos de la pista de baile —, así que dura lo que dura su día, y viene con un resumen corto (de 1 minuto en El Dúo y El Trío, de 3 a 5 minutos en la Celebración completa).",
     },
     {
       q: "¿Sale más barato contratar foto y video juntos?",
@@ -147,7 +147,7 @@ const post: BlogPost = {
     },
     {
       q: "¿Cuáles paquetes de TX Quince incluyen foto y video?",
-      a: `La Sesión de retratos (${study}) es solo foto. Foto + Video (${cinema}), la Celebración completa (${production}) y la Celebración de dos días (${archive}) incluyen foto y video, con un equipo de ${BASE_CREW.cinema}, ${BASE_CREW.production} o ${BASE_CREW.archive} personas en la combinación de fotógrafos y videógrafos que usted elija. La Celebración completa es la que recomendamos para la mayoría de las celebraciones. Puede comparar todo lo que incluye cada uno en los paquetes de nuestra página principal.`,
+      a: `La Sesión de retratos (${study}) es solo foto. El Dúo (${cinema}), El Trío (${trio}) y la Celebración completa (${production}) incluyen foto y video: un fotógrafo y un videógrafo en El Dúo, dos fotógrafos y un videógrafo en El Trío, y un equipo de ${BASE_CREW.production} personas más una coordinadora en la Celebración completa. El Trío es nuestra recomendación para la mayoría de las familias. Puede comparar todo lo que incluye cada uno en los paquetes de nuestra página principal.`,
     },
     {
       q: "¿Un mismo equipo puede hacer la foto y el video?",

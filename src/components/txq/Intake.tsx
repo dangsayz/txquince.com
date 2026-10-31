@@ -558,6 +558,7 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
                         ))}
                       </ol>
                       <p className="tq-bk-nocharge">{t.booking.noCharge}</p>
+                      <p className="tq-bk-team">{t.booking.teamNote}</p>
                     </div>
                     <ContactLine lang={lang} placement="booking-send" />
 

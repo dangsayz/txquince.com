@@ -3,8 +3,8 @@ import { PT } from "@/lib/price-text";
 
 const study = PT.price.study;
 const cinema = PT.price.cinema;
+const trio = PT.price.trio;
 const production = PT.price.production;
-const archive = PT.price.archive;
 
 const post: BlogPost = {
   "slug": "quinceanera-en-vm-ballroom-balch-springs",
@@ -62,7 +62,7 @@ const post: BlogPost = {
     },
     {
       "type": "p",
-      "text": `Le cotice lo que le cotice VM Ballroom, la fotografía y el video son una línea aparte y fija. Nuestros [paquetes](/es#commissions) están publicados en ${study}, ${cinema}, ${production} y ${archive}, y un depósito del ${PT.deposit.percent} asegura la fecha una vez aprobado su contrato, y el resto se paga ${PT.balanceDays} días antes del evento. El presupuesto del salón es el que se mueve; la cobertura no tiene por qué moverse.`
+      "text": `Le cotice lo que le cotice VM Ballroom, la fotografía y el video son una línea aparte y fija. Nuestros [paquetes](/es#commissions) están publicados en ${study}, ${cinema}, ${trio} y ${production}, y un depósito del ${PT.deposit.percent} asegura la fecha una vez aprobado su contrato, y el resto se paga ${PT.balanceDays} días antes del evento. El presupuesto del salón es el que se mueve; la cobertura no tiene por qué moverse.`
     },
     {
       "type": "h2",

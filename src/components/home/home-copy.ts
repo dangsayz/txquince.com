@@ -6,119 +6,22 @@
  */
 import type { TierId } from "@/lib/commission";
 
-export type HomePrint = {
-  src: string;
-  width: number;
-  height: number;
-  cap: { en: string; es: string };
-  alt: { en: string; es: string };
-};
-
-/** The eight keepsake prints scattered around the hero (real TX Quince photos). */
-export const HERO_PRINTS: HomePrint[] = [
-  {
-    src: "/home/shoe-change.webp",
-    width: 480,
-    height: 719,
-    cap: { en: "The shoe change", es: "El cambio de zapatos" },
-    alt: {
-      en: "A father changes his daughter's shoes during her quinceañera reception",
-      es: "Un papá le cambia los zapatos a su hija en la recepción de su quinceañera",
-    },
-  },
-  {
-    src: "/home/balloons.webp",
-    width: 480,
-    height: 720,
-    cap: { en: "Pink balloons", es: "Globos rosas" },
-    alt: {
-      en: "Quinceañera in a blush gown holding pink heart balloons in front of a historic stone building",
-      es: "Quinceañera con vestido rosa palo y globos de corazón frente a un edificio histórico de piedra",
-    },
-  },
-  {
-    src: "/home/papa-dance.webp",
-    width: 480,
-    height: 721,
-    cap: { en: "Dancing with Papá", es: "El vals con papá" },
-    alt: {
-      en: "Quinceañera in a black gown dancing with her father beneath lighted marquee letters",
-      es: "Quinceañera con vestido negro bailando con su papá bajo letras iluminadas",
-    },
-  },
-  {
-    src: "/home/under-trees.webp",
-    width: 480,
-    height: 640,
-    cap: { en: "Under the trees", es: "Bajo los árboles" },
-    alt: {
-      en: "Quinceañera in a red gown seated on a stone wall beneath tall trees",
-      es: "Quinceañera con vestido rojo sentada en un muro de piedra bajo árboles altos",
-    },
-  },
-  {
-    src: "/home/ballroom.webp",
-    width: 480,
-    height: 640,
-    cap: { en: "The ballroom", es: "El salón" },
-    alt: {
-      en: "Quinceañera in a blush gown beneath a gilded dome and crystal chandelier",
-      es: "Quinceañera con vestido rosa palo bajo una cúpula dorada y un candelabro de cristal",
-    },
-  },
-  {
-    src: "/home/golden-hour.webp",
-    width: 480,
-    height: 720,
-    cap: { en: "Golden hour", es: "Hora dorada" },
-    alt: {
-      en: "Quinceañera in a champagne gown and tiara in a cactus garden at sunset",
-      es: "Quinceañera con vestido champán y tiara en un jardín de cactus al atardecer",
-    },
-  },
-  {
-    src: "/home/gifts.webp",
-    width: 480,
-    height: 719,
-    cap: { en: "Her gifts", es: "Sus regalos" },
-    alt: {
-      en: "Quinceañera in a black and gold gown behind a large red gift box at her party",
-      es: "Quinceañera con vestido negro y dorado detrás de una gran caja de regalo roja en su fiesta",
-    },
-  },
-  {
-    src: "/home/canal.webp",
-    width: 480,
-    height: 640,
-    cap: { en: "By the canal", es: "Junto al canal" },
-    alt: {
-      en: "Quinceañera in a red ball gown with a long train at dusk",
-      es: "Quinceañera con vestido rojo de cola larga al anochecer",
-    },
-  },
-];
-
-/** Caption for a hero slot print the admin swapped for another photo. */
-export const SWAP_CAPTION = [
-  { en: "Portraits", es: "Retratos" },
-  { en: "Her day", es: "Su día" },
-] as const;
-
 /** Package rows: the chips beside each price (hours and team come from the book). */
 export const PACKAGE_DETAIL: Record<TierId, { en: string; es: string }> = {
   study: { en: "Photos only · 60 edited photos", es: "Solo fotos · 60 fotos editadas" },
-  cinema: { en: "8–10 min video + trailer · 400+ photos", es: "Video de 8–10 min + tráiler · 400+ fotos" },
+  cinema: { en: "Full-length film + 1-min highlight · 400+ photos", es: "Video completo + resumen de 1 min · 400+ fotos" },
+  trio: { en: "Full-length film + 1-min highlight · 600+ photos", es: "Video completo + resumen de 1 min · 600+ fotos" },
   production: {
-    en: "Coordinator · portraits · 12–15 min video · 700+ photos · album",
-    es: "Coordinadora · retratos · video de 12–15 min · 700+ fotos · álbum",
+    en: "Coordinator · portraits · full-length film + 3–5 min highlight · 700+ photos · album",
+    es: "Coordinadora · retratos · video completo + resumen de 3–5 min · 700+ fotos · álbum",
   },
   archive: { en: "20 min video · 1,000+ photos · large album", es: "Video de 20 min · 1,000+ fotos · álbum grande" },
 };
 
 /** Topic tag per FAQ item in copy.ts, in the same order. */
 export const FAQ_TAGS = {
-  en: ["Prices", "Packages", "Your team", "The day", "Booking", "The day", "En español", "Booking", "Photoshoot", "Travel"],
-  es: ["Precios", "Paquetes", "Tu equipo", "El día", "Reservar", "El día", "Idioma", "Reservar", "Sesión de fotos", "Viajes"],
+  en: ["Prices", "Packages", "Your team", "The day", "Video", "Booking", "The day", "En español", "Your team", "Booking", "Photoshoot", "Travel"],
+  es: ["Precios", "Paquetes", "Tu equipo", "El día", "Video", "Reservar", "El día", "Idioma", "Tu equipo", "Reservar", "Sesión de fotos", "Viajes"],
 } as const;
 
 export const HOME = {
