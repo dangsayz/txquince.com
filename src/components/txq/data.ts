@@ -194,12 +194,12 @@ const v = (en: string, es: string = en): L => ({ en, es });
 /** "6 hours" / "6 horas", plus how far it can grow (from the live book). */
 const hoursCell = (book: PriceBook, tier: TierId): L => {
   const base = book.packages[tier].hours;
+  const en = base === 1 ? "1 hour" : `${base} hours`;
+  const es = base === 1 ? "1 hora" : `${base} horas`;
   if (!canAddHours(book, tier)) {
-    return tier === "archive"
-      ? v(`${base} hours, both days`, `${base} horas, ambos días`)
-      : v(`${base} hours`, `${base} horas`);
+    return tier === "archive" ? v(`${base} hours, both days`, `${base} horas, ambos días`) : v(en, es);
   }
-  return v(`${base} hours (add up to ${book.maxHours})`, `${base} horas (hasta ${book.maxHours})`);
+  return v(`${en} (add up to ${book.maxHours})`, `${es} (hasta ${book.maxHours})`);
 };
 
 /** The full-length film: the whole day as it happened, so its length follows her day. */
@@ -287,7 +287,7 @@ export const matrixFor = (book: PriceBook): MatrixGroup[] => [
       {
         label: v("Short videos for social media", "Videos cortos para redes"),
         values: {
-          study: v("1", "1"),
+          study: null, // photos only
           cinema: v("2", "2"),
           trio: v("4", "4"),
           production: v("4", "4"),

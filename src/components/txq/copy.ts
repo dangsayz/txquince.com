@@ -3,7 +3,6 @@
  *
  * `es` is typed against `en`, so a missing translation fails the build.
  */
-import { BASE_CREW } from "@/lib/commission";
 import { PT } from "@/lib/price-text";
 
 // Every price, percent, hour count and day count below is a price TOKEN
