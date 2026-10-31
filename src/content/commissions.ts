@@ -24,7 +24,7 @@ export type Commission = {
   retainerLabel: string;
   /** Short deliverable lines, e.g. "Hours: 6 hours (add up to 8)" — first four non-empty matrix values. */
   highlights: { en: string[]; es: string[] };
-  /** Recommended package — gets the visual emphasis. */
+  /** Recommended package (the Trio, "our pick") — gets the visual emphasis. */
   recommended: boolean;
 };
 
@@ -32,7 +32,7 @@ export type Commission = {
 const HIGHLIGHT_ROWS = [
   "Hours",
   "Your team",
-  "Full-length video",
+  "Full-length film",
   "Edited photos",
   "Printed photo album",
 ];
@@ -62,7 +62,7 @@ export function commissionsFor(book: PriceBook): Commission[] {
       priceLabel: usd(price),
       retainerLabel: usd(depositFor(book, price)),
       highlights: { en: highlightsFor(book, t.id, "en"), es: highlightsFor(book, t.id, "es") },
-      recommended: t.id === "production",
+      recommended: t.recommended === true,
     };
   });
 }
@@ -109,7 +109,7 @@ export const bookingSteps: Record<Lang, BookingStep[]> = {
     },
     {
       title: "Your day, captured",
-      body: "From la misa to the last dance, we capture the whole day. The Full Celebration and the Two-Day Celebration include a portrait session first, so we already know each other on the big day.",
+      body: "From la misa to the last dance, we capture the whole day. The Full Celebration includes a portrait session first, so we already know each other on the big day.",
     },
   ],
   es: [
@@ -127,7 +127,7 @@ export const bookingSteps: Record<Lang, BookingStep[]> = {
     },
     {
       title: "Tu día, para siempre",
-      body: "De la misa al último baile, capturamos todo el día. La Celebración completa y la Celebración de dos días incluyen antes una sesión de retratos, así que ya nos conocemos cuando llega el gran día.",
+      body: "De la misa al último baile, capturamos todo el día. La Celebración completa incluye antes una sesión de retratos, así que ya nos conocemos cuando llega el gran día.",
     },
   ],
 };

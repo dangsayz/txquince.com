@@ -10,7 +10,7 @@ export const revalidate = 3600;
 // Carries a price token (FROM_TOKEN); filled from the live book below.
 const META: Metadata = {
   title: "Videógrafo de Quinceañeras en Dallas–Fort Worth",
-  description: `Videos de quinceañeras en Dallas–Fort Worth: videos completos en 4K, tráileres cortos y videos verticales cortos para redes sociales. Mira celebraciones reales; paquetes publicados desde ${FROM_TOKEN}.`,
+  description: `Videos de quinceañeras en Dallas–Fort Worth: videos completos en 4K, resúmenes cortos y videos verticales cortos para redes sociales. Mira celebraciones reales; paquetes publicados desde ${FROM_TOKEN}.`,
   alternates: { canonical: "/es/videografo-de-quinceaneras", languages: languageAlternates("/quinceanera-videographer", "/es/videografo-de-quinceaneras") },
   openGraph: {
     title: `Video de Quinceañeras en Dallas–Fort Worth · ${site.brand}`,

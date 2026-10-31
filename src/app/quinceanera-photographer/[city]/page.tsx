@@ -121,11 +121,11 @@ function sharedFaqs(city: string) {
   return [
     {
       q: `How much does a quinceañera photographer cost in ${city}?`,
-      a: `Every package is published: the Portrait Session is ${PT.price.study}, photos and video together start at ${PT.price.cinema}, and the Full Celebration, the package we recommend for most ${city} celebrations, is ${PT.price.production}. The Two-Day Celebration is ${PT.price.archive}.`,
+      a: `Every package is published: the Portrait Session is ${PT.price.study}, photos and video together start at ${PT.price.cinema} with the Duo, the Trio, the package we recommend for most ${city} celebrations, is ${PT.price.trio}, and the Full Celebration is ${PT.price.production}.`,
     },
     {
       q: "Do you offer video too, or only photography?",
-      a: "Both. From Photo + Video up, a photographer and a videographer cover the day as one team, so the misa, el vals and the reception are captured in photos and a 4K video without two vendors getting in each other's way.",
+      a: "Both. From the Duo up, a photographer and a videographer cover the day as one team, so the misa, el vals and the reception are captured in photos and a full-length 4K film of her whole day without two vendors getting in each other's way.",
     },
     {
       q: "Do you charge a travel fee?",
@@ -426,8 +426,9 @@ export default async function CityPage({
             </h2>
             <p className="tq-head__dek">
               Every price for your {loc.city} celebration is published. A {retainerPercentLabel} deposit holds the
-              date and goes toward your total. The Full Celebration brings a team of {BASE_CREW.production}, a day-of coordinator and a
-              printed photo album.
+              date and goes toward your total. The Trio, our pick for most families, puts a team of {BASE_CREW.trio} on her day — two
+              photographers and a videographer. The Full Celebration brings a team of {BASE_CREW.production}, a coordinator who runs the
+              day and a printed photo album.
             </p>
           </header>
           <ol className="tq-place-tiers">
