@@ -14,7 +14,7 @@ const post: BlogPost = {
   publishedAt: "2026-06-09",
   updatedAt: "2026-10-14",
   readMinutes: 7,
-  lead: "If you've set the date and you're starting to line up vendors, photography is one to handle early — not last. The best photographers in Dallas–Fort Worth take one quinceañera per day, and the prime spring and fall Saturdays go first. Here's exactly when to reach out, in plain terms, so the date you want is still open when you do.",
+  lead: "If you've set the date and you're starting to line up vendors, photography is one to handle early — not last. In Dallas–Fort Worth, the prime spring and fall Saturdays go first, often a year or more out. Here's exactly when to reach out, in plain terms, so the date you want is still open when you do.",
   content: [
     { type: "h2", text: "The short answer" },
     {
@@ -23,7 +23,7 @@ const post: BlogPost = {
     },
     {
       type: "callout",
-      text: "One booking per day. The best DFW photographers don't double-book a Saturday — when your date is taken, it's taken. There is no waitlist that magically opens it back up the week of.",
+      text: "Saturdays go first. The spring and fall ones are the most requested dates in DFW, and a date is only yours once it's reserved. There is no waitlist that magically opens one back up the week of.",
     },
     { type: "h2", text: "Why booking early helps you" },
     {
@@ -46,7 +46,7 @@ const post: BlogPost = {
     { type: "h2", text: "What happens if you wait" },
     {
       type: "p",
-      text: "Waiting feels safe — the event is months away, there's no rush. But on a one-per-day calendar, every week you wait is a week someone else can claim your date. And waiting buys you nothing in return.",
+      text: "Waiting feels safe — the event is months away, there's no rush. But spring and fall Saturdays book up early, and every week you wait is a week your Saturday can be taken. And waiting buys you nothing in return.",
     },
     {
       type: "ul",
@@ -126,7 +126,7 @@ const post: BlogPost = {
   faqs: [
     {
       q: "How far in advance should I book a quinceañera photographer?",
-      a: "Nine to fourteen months ahead is ideal in Dallas–Fort Worth — book at the same time you lock your venue. Spring and fall Saturdays are the most popular and go first, often a year or more out. On a one-booking-per-day calendar, the date you want is only yours once it's reserved.",
+      a: "Nine to fourteen months ahead is ideal in Dallas–Fort Worth — book at the same time you lock your venue. Spring and fall Saturdays are the most popular and go first, often a year or more out, and the date you want is only yours once it's reserved.",
     },
     {
       q: "Do photographers offer discounts for last-minute bookings?",

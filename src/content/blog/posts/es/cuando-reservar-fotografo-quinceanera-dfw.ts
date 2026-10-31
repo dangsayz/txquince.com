@@ -16,7 +16,7 @@ const post: BlogPost = {
   updatedAt: "2026-10-14",
   readMinutes: 7,
   lang: "es",
-  lead: "Cuando ya tiene la fecha y empieza a cerrar a sus proveedores, la fotografía es de las primeras cosas que conviene resolver, no la última. Los mejores fotógrafos de Dallas–Fort Worth atienden una sola quinceañera por día, y los sábados de primavera y otoño se van primero. El momento de escribirnos importa, y por eso conviene saber cuándo hacerlo: para que la fecha que usted quiere siga libre el día que decida apartarla.",
+  lead: "Cuando ya tiene la fecha y empieza a cerrar a sus proveedores, la fotografía es de las primeras cosas que conviene resolver, no la última. En Dallas–Fort Worth, los sábados de primavera y otoño se van primero, muchas veces con un año o más de anticipación. El momento de escribirnos importa, y por eso conviene saber cuándo hacerlo: para que la fecha que usted quiere siga libre el día que decida apartarla.",
   content: [
     { type: "h2", text: "La respuesta en una línea" },
     {
@@ -25,7 +25,7 @@ const post: BlogPost = {
     },
     {
       type: "callout",
-      text: "Una sola quinceañera por día. Los mejores fotógrafos de DFW no toman dos eventos el mismo sábado: cuando su fecha está apartada, está apartada. No existe una lista de espera que la libere por arte de magia la semana del evento.",
+      text: "Los sábados se van primero. Los de primavera y otoño son las fechas más solicitadas en DFW, y una fecha solo es suya cuando está reservada. No existe una lista de espera que la libere por arte de magia la semana del evento.",
     },
     {
       type: "p",
@@ -48,7 +48,7 @@ const post: BlogPost = {
     { type: "h2", text: "Qué pasa si espera" },
     {
       type: "p",
-      text: "Esperar se siente seguro: el evento está a meses de distancia y no parece haber prisa. Pero en un calendario de una quinceañera por día, cada semana que pasa es una semana en la que otra familia puede apartar su fecha. Y esperar no le devuelve nada a cambio.",
+      text: "Esperar se siente seguro: el evento está a meses de distancia y no parece haber prisa. Pero los sábados de primavera y otoño se llenan pronto, y cada semana que pasa es una semana en la que su sábado se puede ocupar. Y esperar no le devuelve nada a cambio.",
     },
     {
       type: "ul",
@@ -128,7 +128,7 @@ const post: BlogPost = {
   faqs: [
     {
       q: "¿Con cuánta anticipación debo reservar al fotógrafo de quinceañera?",
-      a: "De 9 a 14 meses antes es lo ideal en Dallas–Fort Worth, al mismo tiempo que aparta el salón. Los sábados de primavera y otoño son los más solicitados y se van primero, muchas veces con un año o más de anticipación. En un calendario de una sola quinceañera por día, la fecha que usted quiere es suya únicamente cuando está reservada.",
+      a: "De 9 a 14 meses antes es lo ideal en Dallas–Fort Worth, al mismo tiempo que aparta el salón. Los sábados de primavera y otoño son los más solicitados y se van primero, muchas veces con un año o más de anticipación, y la fecha que usted quiere es suya únicamente cuando está reservada.",
     },
     {
       q: "¿Hay descuentos por reservar a último minuto?",

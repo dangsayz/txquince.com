@@ -132,7 +132,7 @@ const en = {
     index: "04 / About us",
     title: "Why families choose us",
     manifesto:
-      "We only take one quinceañera per day, so she gets our full attention — from getting ready at home to the last song. We catch the little things too: abuela fixing her dress, papá's face before the vals.",
+      "A TX Quince team stays with her from getting ready at home to the last song, and every gallery and film is edited by us, the owners. We catch the little things too: abuela fixing her dress, papá's face before the vals.",
     principles: [
       {
         title: "Natural, not stiff",
@@ -456,7 +456,7 @@ const es: Copy = {
     index: "04 / Nosotros",
     title: "Por qué nos eligen las familias",
     manifesto:
-      "Solo tomamos una quinceañera por día, para darle toda nuestra atención — desde que se arregla en casa hasta la última canción. También captamos los detalles: la abuela acomodándole el vestido, la cara de papá antes del vals.",
+      "Un equipo de TX Quince la acompaña desde que se arregla en casa hasta la última canción, y nosotros, los dueños, editamos cada galería y cada video. También captamos los detalles: la abuela acomodándole el vestido, la cara de papá antes del vals.",
     principles: [
       {
         title: "Natural, no tieso",

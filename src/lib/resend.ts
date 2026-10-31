@@ -455,7 +455,7 @@ export async function sendFollowupEmail(
       "",
       `Pick a package, fill in your details, then review and sign the agreement online. I review and approve it within one day, and I hold your date for ${book.holdDays} days while I do. Once it's approved, a ${book.depositPercent}% deposit locks in your date, and the rest is due ${dueEn} before the event. Prefer to talk first? Ask for a quick call.`,
       "",
-      `Getting started takes just a few minutes (I only book one quinceañera per day): ${reserveUrl}`,
+      `Getting started takes just a few minutes, and dates go to whoever reserves first: ${reserveUrl}`,
       "",
       "If you have any questions about the packages or the timeline, just reply — I read every message.",
       "",
@@ -464,7 +464,7 @@ export async function sendFollowupEmail(
     bodyHtml = `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">One thing I want to make easy: <strong style="color:${INK}">you don&apos;t pay it all at once.</strong></p>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">Pick a package, fill in your details, then review and sign the agreement online. I review and approve it within one day, and I hold your date for ${book.holdDays} days while I do. Once it&apos;s approved, a ${book.depositPercent}% deposit locks in your date, and the rest is due ${dueEn} before the event. Prefer to talk first? Ask for a quick call.</p>
-      <p style="margin:0;font-size:15px;line-height:1.7;color:#56504a">Getting started takes just a few minutes — I only book one quinceañera per day. Questions about the packages or timeline? Just reply; I read every message.</p>`;
+      <p style="margin:0;font-size:15px;line-height:1.7;color:#56504a">Getting started takes just a few minutes — dates go to whoever reserves first, and spring and fall Saturdays fill early. Questions about the packages or timeline? Just reply; I read every message.</p>`;
   } else if (step === 3) {
     subject = "Last check on your date";
     text = [
@@ -535,7 +535,7 @@ export async function sendBookingRecoveryEmail(
     "",
     `You started reserving ${dateStr}${tierSuffix} but the checkout didn't finish — and nothing was charged.`,
     "",
-    "Good news: that date is still open. I only book one quinceañera a day, though, so it's first to reserve.",
+    "Good news: that date is still open. Dates go to whoever reserves first, though, and spring and fall Saturdays fill early.",
     "",
     `Pick up right where you left off — it takes about two minutes: ${ctaUrl}`,
     "",
@@ -546,7 +546,7 @@ export async function sendBookingRecoveryEmail(
 
   const bodyHtml = `
     <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">You started reserving <strong style="color:${INK}">${esc(dateStr)}</strong>${esc(tierSuffix)} but the checkout didn&apos;t finish — and <strong style="color:${INK}">nothing was charged.</strong></p>
-    <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">Good news: that date is still open. I only book one quinceañera a day, though, so it goes to whoever reserves first.</p>
+    <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">Good news: that date is still open. Dates go to whoever reserves first, though, and spring and fall Saturdays fill early.</p>
     <p style="margin:0;font-size:15px;line-height:1.7;color:#56504a">Pick up right where you left off — it takes about two minutes. If the timing changed, just reply and I&apos;ll close out your file.</p>`;
 
   try {
@@ -660,7 +660,7 @@ export async function sendReservationRequestClientEmail(
     "",
     "Here's what happens next: I'll personally confirm your date is open and reach out — usually within 24 hours — to talk through the day and send you a secure link to place your deposit and lock it in. No payment is needed right now.",
     "",
-    "I only book one quinceañera a day, so your request holds your date while we connect.",
+    "Your request holds your date while we connect.",
     "",
     "Talk soon,",
     site.brand,
@@ -669,7 +669,7 @@ export async function sendReservationRequestClientEmail(
   const bodyHtml = `
     <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">Thank you for choosing me for your daughter&apos;s quinceañera on <strong style="color:${INK}">${esc(dateStr)}</strong>${tier && tier !== "—" ? ` (${esc(tier)})` : ""}.</p>
     <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">Here&apos;s what happens next: I&apos;ll personally confirm your date is open and reach out — usually within 24 hours — to talk through the day and send you a <strong style="color:${INK}">secure link to place your deposit</strong> and lock it in. <strong style="color:${INK}">No payment is needed right now.</strong></p>
-    <p style="margin:0;font-size:15px;line-height:1.7;color:#56504a">I only book one quinceañera a day, so your request holds your date while we connect.</p>`;
+    <p style="margin:0;font-size:15px;line-height:1.7;color:#56504a">Your request holds your date while we connect.</p>`;
 
   try {
     const { error } = await resend.emails.send({

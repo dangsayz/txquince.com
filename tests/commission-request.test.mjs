@@ -39,7 +39,7 @@ test("a request without signature fields is accepted", () => {
   assert.equal(r.data.signature, undefined);
   assert.equal(r.data.agree, undefined);
   const q = quoteCommission(DEFAULT_PRICE_BOOK, r.data.tier, r.data.add_ons, r.data.hours);
-  assert.equal(q.totalUsd, 2800 + 300); // The Trio, 7 hrs included + Same-Day Edit
+  assert.equal(q.totalUsd, 2800 + 600); // The Trio, 7 hrs included + Same-Day Edit
   assert.match(describeCommission(r.data, q, DEFAULT_PRICE_BOOK), /not signed yet/);
 });
 

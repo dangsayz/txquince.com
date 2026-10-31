@@ -100,7 +100,7 @@ export const HOME = {
     },
     about: {
       label: "Meet the studio · Conócenos",
-      chips: ["English y español", "Dallas–Fort Worth", "One quince per day"],
+      chips: ["English y español", "Dallas–Fort Worth", "Edited by the owners"],
       more: "More about us",
       blog: "From our blog",
     },
@@ -173,7 +173,7 @@ export const HOME = {
     },
     about: {
       label: "Conócenos · Meet the studio",
-      chips: ["English y español", "Dallas–Fort Worth", "Una quince por día"],
+      chips: ["English y español", "Dallas–Fort Worth", "Editado por los dueños"],
       more: "Más sobre nosotros",
       blog: "De nuestro blog",
     },
