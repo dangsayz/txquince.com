@@ -101,7 +101,7 @@ const BUCKET_COPY: Bucket[] = [
     qas: [
       {
         q: "How much does a quinceañera photographer cost in Dallas–Fort Worth?",
-        a: `Most DFW quinceañera studios publish packages between about $1,500 and $6,000. TX Quince publishes every price: the Portrait Session is ${PT.price.study}, photos and video together start at ${PT.price.cinema} with the Duo, and the Trio (our pick for most families) is ${PT.price.trio}. What you pay depends on the hours, the size of the team, and the album and extras you choose.`,
+        a: `Most DFW quinceañera studios publish packages between about $1,500 and $6,000. TX Quince publishes every price: the Portrait Session is ${PT.price.study}, photos and video together start at ${PT.price.solo} with the Solo (one shooter with a 2–3 camera setup), the Duo is ${PT.price.cinema}, and the Trio (our pick for most families) is ${PT.price.trio}. What you pay depends on the hours, the size of the team, and the album and extras you choose.`,
         href: "/blog/quinceanera-photographer-cost-dallas-fort-worth",
         hrefLabel: "What drives the price",
       },
@@ -134,7 +134,7 @@ const BUCKET_COPY: Bucket[] = [
     qas: [
       {
         q: "Photo or video for a quinceañera — which do I need?",
-        a: `If you can, both — they do different jobs. Photos are what you frame and pass down; video is her voice, the music, and the room in motion. From the Duo (${PT.price.cinema}) up, a photographer and a videographer cover the day together, and the video is the full-length film of her whole day, from la misa to the dance floor.`,
+        a: `If you can, both — they do different jobs. Photos are what you frame and pass down; video is her voice, the music, and the room in motion. The Solo (${PT.price.solo}) gets you both from one shooter with a 2–3 camera setup, photographing and filming at once; from the Duo (${PT.price.cinema}) up, a photographer and a videographer cover the day together. Either way, the video is the full-length film of her whole day, from la misa to the dance floor.`,
         href: "/blog/quinceanera-photo-vs-video",
         hrefLabel: "Photos vs. video, honestly",
       },
@@ -203,7 +203,7 @@ const BUCKET_COPY: Bucket[] = [
       },
       {
         q: "What's a pre-quince or save-the-date session?",
-        a: `It's a portrait session weeks or months before the celebration — for her invitations, the welcome board, and a calm first look at her in the gown. Book it on its own as the Portrait Session (${PT.price.study}), or receive it with the Duo or the Trio, which include a dress or save-the-date session booked after the deposit.`,
+        a: `It's a portrait session weeks or months before the celebration — for her invitations, the welcome board, and a calm first look at her in the gown. Book it on its own as the Portrait Session (${PT.price.study}), or receive it with the Duo or the Trio, which include a dress or save-the-date session (30–40 edited photos) booked after the deposit.`,
         href: "/quinceanera-photoshoot",
         hrefLabel: "About the pre-quince photoshoot",
       },
@@ -457,7 +457,7 @@ export default async function QuinceaneraGuidePage() {
         <div className="tq-wrap">
           <header className="tq-head">
             <p className="tq-head__index tq-mono" style={{ margin: 0 }}>
-              [Three packages]
+              [Four packages]
             </p>
             <h2 id="guide-collections-title" className="tq-display tq-head__title">
               Coverage for the day you have in mind.

@@ -2,6 +2,7 @@ import type { BlogPost } from "@/content/blog";
 import { PT } from "@/lib/price-text";
 
 const study = PT.price.study;
+const solo = PT.price.solo;
 const cinema = PT.price.cinema;
 const trio = PT.price.trio;
 
@@ -60,7 +61,7 @@ const post: BlogPost = {
     },
     {
       "type": "p",
-      "text": `Whatever VM Ballroom quotes you, photos and video are a separate, fixed line. Our [packages](/#commissions) are published at ${study}, ${cinema}, and ${trio}, and a deposit of ${PT.deposit.percent} locks in the date once your agreement is approved, with the rest due ${PT.balanceDays} days before the event. Venue budgeting is the moving target; coverage doesn't have to be.`
+      "text": `Whatever VM Ballroom quotes you, photos and video are a separate, fixed line. Our [packages](/#commissions) are published at ${study}, ${solo}, ${cinema}, and ${trio}, and a deposit of ${PT.deposit.percent} locks in the date once your agreement is approved, with the rest due ${PT.balanceDays} days before the event. Venue budgeting is the moving target; coverage doesn't have to be.`
     },
     {
       "type": "h2",

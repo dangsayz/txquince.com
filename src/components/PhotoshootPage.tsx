@@ -60,14 +60,14 @@ const COPY = {
     waysTitle: "On its own, or already included",
     ways: [
       { label: "Portrait Session, on its own", note: "The session alone, no event coverage", price: PT.price.study },
-      { label: "Included in the Duo and the Trio", note: "A dress or save-the-date session, booked after the deposit, plus her full day", price: `From ${PT.price.cinema}` },
+      { label: "Included in the Duo and the Trio", note: "A dress or save-the-date session (30–40 edited photos), booked after the deposit, plus her full day", price: `From ${PT.price.cinema}` },
       { label: ADD_ON_NAME_EN.secondday, note: "A separate day for portraits in her dress, photos and video, at up to 2 locations", price: `+${PT.addon.secondday}` },
     ],
     compare: "Compare every package",
     faqEyebrow: "04 / Questions",
     faqTitle: "Photoshoot questions, answered.",
     faqs: [
-      { q: "How much is a quinceañera photoshoot?", a: `The Portrait Session is ${PT.price.study} on its own: a ${PT.hours.study}-hour session with one photographer and 60 edited photos (photos only, no video). The Duo (${PT.price.cinema}) and the Trio (${PT.price.trio}) include a dress or save-the-date session, booked after the deposit, and the Second Portrait Day extra (${PT.addon.secondday}, Duo and Trio) adds a separate day for portraits in her dress, photos and video, at up to 2 locations.` },
+      { q: "How much is a quinceañera photoshoot?", a: `The Portrait Session is ${PT.price.study} on its own: a ${PT.hours.study}-hour session with one photographer and 60 edited photos (photos only, no video). The Duo (${PT.price.cinema}) and the Trio (${PT.price.trio}) include a dress or save-the-date session with 30–40 edited photos, booked after the deposit, and the Second Portrait Day extra (${PT.addon.secondday}, Duo and Trio) adds a separate day for portraits in her dress, photos and video, at up to 2 locations.` },
       { q: "Can we book only the photoshoot, without the event?", a: "Yes. The Portrait Session is designed to stand alone, for the invitations and welcome board, and it works just as well when the celebration itself is covered by family or another team." },
       { q: "Can she wear her own quince dress?", a: "Yes, her own gown and as many as two looks in the session. There is no rental and no restriction on the dress." },
       { q: "When should we schedule it?", a: "Usually two to four months before the celebration, so the portraits are ready for invitations. Spring and fall light in Dallas–Fort Worth is the most forgiving; we plan the hour around it." },
@@ -120,14 +120,14 @@ const COPY = {
     waysTitle: "Sola, o ya incluida",
     ways: [
       { label: "Sesión de retratos, por sí sola", note: "Solo la sesión, sin cobertura del evento", price: PT.price.study },
-      { label: "Incluida en el Dúo y el Trío", note: "Una sesión con el vestido o de save the date, que se agenda después del depósito, más todo su día", price: `Desde ${PT.price.cinema}` },
+      { label: "Incluida en el Dúo y el Trío", note: "Una sesión con el vestido o de save the date (30–40 fotos editadas), que se agenda después del depósito, más todo su día", price: `Desde ${PT.price.cinema}` },
       { label: "Segundo día de retratos", note: "Un día aparte para retratos con su vestido, fotos y video, en hasta 2 lugares", price: `+${PT.addon.secondday}` },
     ],
     compare: "Comparar todos los paquetes",
     faqEyebrow: "04 / Preguntas",
     faqTitle: "Preguntas sobre la sesión de fotos.",
     faqs: [
-      { q: "¿Cuánto cuesta una sesión de fotos de quinceañera?", a: `La Sesión de retratos cuesta ${PT.price.study} por sí sola: una sesión de ${PT.hours.study} h con un fotógrafo y 60 fotos editadas (solo fotos, sin video). El Dúo (${PT.price.cinema}) y el Trío (${PT.price.trio}) incluyen una sesión con el vestido o de save the date, que se agenda después del depósito, y el extra Segundo día de retratos (${PT.addon.secondday}, en el Dúo y el Trío) añade un día aparte para retratos con su vestido, fotos y video, en hasta 2 lugares.` },
+      { q: "¿Cuánto cuesta una sesión de fotos de quinceañera?", a: `La Sesión de retratos cuesta ${PT.price.study} por sí sola: una sesión de ${PT.hours.study} h con un fotógrafo y 60 fotos editadas (solo fotos, sin video). El Dúo (${PT.price.cinema}) y el Trío (${PT.price.trio}) incluyen una sesión con el vestido o de save the date con 30–40 fotos editadas, que se agenda después del depósito, y el extra Segundo día de retratos (${PT.addon.secondday}, en el Dúo y el Trío) añade un día aparte para retratos con su vestido, fotos y video, en hasta 2 lugares.` },
       { q: "¿Podemos reservar solo la sesión de fotos, sin el evento?", a: "Sí. La Sesión de retratos está pensada para reservarse sola, para las invitaciones y el tablero de bienvenida, y funciona igual de bien si la celebración la cubre la familia u otro equipo." },
       { q: "¿Puede usar su propio vestido de quince?", a: "Sí, su propio vestido y hasta dos cambios en la sesión. No hay renta ni restricciones sobre el vestido." },
       { q: "¿Cuándo conviene hacerla?", a: "Normalmente de dos a cuatro meses antes de la celebración, para que los retratos estén listos para las invitaciones. La luz de primavera y otoño en Dallas–Fort Worth es la más amable; planeamos la hora alrededor de ella." },

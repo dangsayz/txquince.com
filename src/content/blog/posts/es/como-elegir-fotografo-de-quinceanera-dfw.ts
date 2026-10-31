@@ -77,12 +77,12 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Por eso cada paquete de foto y video de TX Quince reúne al menos a un fotógrafo y a un videógrafo —hasta un equipo de ${BASE_CREW.trio} en El Trío— como un solo equipo durante todo el día, y se puede agregar una coordinadora que dirija el día, por ${PT.addon.coordinator} al día. Son fotógrafos y videógrafos del propio equipo de TX Quince, asignados según la fecha y la disponibilidad (las familias no pueden pedir a personas específicas, ni siquiera a los dueños), y cada galería y cada película la editan los dueños. Si todavía está decidiendo si necesita video, lea [foto o video para una quinceañera](/es/blog/foto-o-video-quinceanera) antes de elegir: es el arrepentimiento más común después de la fiesta.`,
+      text: `Por eso cada paquete de foto y video de TX Quince mantiene la foto y el video en un solo equipo durante todo el día —desde El Solo, una sola persona con 2–3 cámaras que toma fotos y graba a la vez, hasta El Dúo y El Trío, que reúnen al menos a un fotógrafo y a un videógrafo (hasta un equipo de ${BASE_CREW.trio} en El Trío)—, y se puede agregar una coordinadora que dirija el día, por ${PT.addon.coordinator} al día. Son fotógrafos y videógrafos del propio equipo de TX Quince, asignados según la fecha y la disponibilidad (las familias no pueden pedir a personas específicas, ni siquiera a los dueños), y cada galería y cada película la editan los dueños. Si todavía está decidiendo si necesita video, lea [foto o video para una quinceañera](/es/blog/foto-o-video-quinceanera) antes de elegir: es el arrepentimiento más común después de la fiesta.`,
     },
     {
       type: "cta",
-      heading: "Vea los tres paquetes y qué incluye cada uno",
-      body: "Sesión de retratos, El Dúo y El Trío: precios publicados y todo lo que incluye cada uno, en una sola página.",
+      heading: "Vea los cuatro paquetes y qué incluye cada uno",
+      body: "Sesión de retratos, El Solo, El Dúo y El Trío: precios publicados y todo lo que incluye cada uno, en una sola página.",
       href: "/es#commissions",
       label: "Comparar paquetes",
     },
@@ -136,7 +136,7 @@ const post: BlogPost = {
     },
     {
       q: "¿Conviene un solo equipo para foto y video?",
-      a: `Para una quinceañera, sí: un solo equipo casi siempre es mejor que dos proveedores por separado. Un equipo coordinado de foto y video planea la cobertura en conjunto para no estorbarse, le da un solo contrato y un solo punto de contacto, y entrega una galería y un video que combinan en estilo y color. En TX Quince, cada paquete de foto y video reúne al menos a un fotógrafo y a un videógrafo como un solo equipo durante todo el día, hasta un equipo de ${BASE_CREW.trio} personas en El Trío.`,
+      a: `Para una quinceañera, sí: un solo equipo casi siempre es mejor que dos proveedores por separado. Un equipo coordinado de foto y video planea la cobertura en conjunto para no estorbarse, le da un solo contrato y un solo punto de contacto, y entrega una galería y un video que combinan en estilo y color. En TX Quince, cada paquete de foto y video mantiene la foto y el video en un solo equipo durante todo el día: El Solo es una sola persona con 2–3 cámaras, y El Dúo y El Trío reúnen al menos a un fotógrafo y a un videógrafo, hasta un equipo de ${BASE_CREW.trio} personas en El Trío.`,
     },
     {
       q: "¿Cómo sé si un fotógrafo tiene experiencia en quinceañeras?",

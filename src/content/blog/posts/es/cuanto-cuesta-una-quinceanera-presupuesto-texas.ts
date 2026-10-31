@@ -2,6 +2,7 @@ import type { BlogPost } from "@/content/blog";
 import { PT } from "@/lib/price-text";
 
 const study = PT.price.study;
+const solo = PT.price.solo;
 const cinema = PT.price.cinema;
 const trio = PT.price.trio;
 const retainerPct = PT.deposit.percent;
@@ -65,7 +66,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Un paquete de foto y video es otro proveedor y otro oficio: los artistas que acompañan a su hija durante todo el día y le devuelven la historia completa. En [TX Quince](/es#commissions) esos paquetes están publicados: ${study} (solo foto), ${cinema} y ${trio}. Un “paquete” de salón y un paquete de foto y video pueden sonar a la misma clase de compra — no lo son, así que no deje que una hoja de cotización los revuelva.`,
+      text: `Un paquete de foto y video es otro proveedor y otro oficio: los artistas que acompañan a su hija durante todo el día y le devuelven la historia completa. En [TX Quince](/es#commissions) esos paquetes están publicados: ${study} (solo foto), ${solo}, ${cinema} y ${trio}. Un “paquete” de salón y un paquete de foto y video pueden sonar a la misma clase de compra — no lo son, así que no deje que una hoja de cotización los revuelva.`,
     },
     { type: "h2", text: "Por qué la foto y el video merecen su parte" },
     {
@@ -164,7 +165,7 @@ const post: BlogPost = {
     },
     {
       q: "¿Los paquetes del salón son lo mismo que las colecciones de fotografía?",
-      a: `No. Los paquetes de salón todo incluido (a menudo de $2,000 a $4,000 en DFW) le compran el lugar, las mesas y a veces el banquete o el DJ. Un paquete de foto y video es otro proveedor y otro oficio — en TX Quince están publicados en ${study}, ${cinema} y ${trio}. “Paquetes” que suenan parecido, compras totalmente distintas.`,
+      a: `No. Los paquetes de salón todo incluido (a menudo de $2,000 a $4,000 en DFW) le compran el lugar, las mesas y a veces el banquete o el DJ. Un paquete de foto y video es otro proveedor y otro oficio — en TX Quince están publicados en ${study}, ${solo}, ${cinema} y ${trio}. “Paquetes” que suenan parecido, compras totalmente distintas.`,
     },
   ],
   related: [

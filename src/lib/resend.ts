@@ -436,7 +436,7 @@ export async function sendFollowupEmail(
       "",
       `If it helps, here are full galleries and videos from real DFW celebrations (not just highlights): ${galleryUrl}`,
       "",
-      `Every package is published on the site — from ${usd(book.packages.study.price)} for a portrait session, with photo and video from ${usd(book.packages.cinema.price)}: ${investmentUrl}`,
+      `Every package is published on the site — from ${usd(book.packages.study.price)} for a portrait session, with photo and video from ${usd(book.packages.solo.price)}: ${investmentUrl}`,
       "",
       "Whenever you're ready, just reply here and I'll confirm whether your date is open.",
       "",
@@ -444,7 +444,7 @@ export async function sendFollowupEmail(
     ].join("\n");
     bodyHtml = `
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">Just circling back on your daughter&apos;s quinceañera — no pressure at all, I know there&apos;s a lot to plan.</p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">If it helps, here are <a href="${galleryUrl}" style="color:${WINE}">full galleries and videos</a> from real DFW celebrations — not just highlights, so you see exactly what you&apos;d be getting. Pricing is <a href="${investmentUrl}" style="color:${WINE}">published right on the site</a>: from ${usd(book.packages.study.price)} for a portrait session, with photo and video from ${usd(book.packages.cinema.price)}.</p>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">If it helps, here are <a href="${galleryUrl}" style="color:${WINE}">full galleries and videos</a> from real DFW celebrations — not just highlights, so you see exactly what you&apos;d be getting. Pricing is <a href="${investmentUrl}" style="color:${WINE}">published right on the site</a>: from ${usd(book.packages.study.price)} for a portrait session, with photo and video from ${usd(book.packages.solo.price)}.</p>
       <p style="margin:0;font-size:15px;line-height:1.7;color:#56504a">Whenever you&apos;re ready, just reply and I&apos;ll confirm whether your date is open.</p>`;
   } else if (step === 2) {
     subject = "How reserving your date works";

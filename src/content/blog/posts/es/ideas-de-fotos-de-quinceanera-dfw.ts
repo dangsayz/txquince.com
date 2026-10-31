@@ -185,7 +185,7 @@ const post: BlogPost = {
     },
     {
       q: "¿Necesito un segundo fotógrafo?",
-      a: `No es obligatorio, pero un segundo artista significa dos ángulos a la vez: alguien en su cara durante el vals mientras el otro atrapa al público, o uno en los detalles del arreglo mientras el otro la fotografía a ella. En TX Quince, cada paquete de foto y video incluye al menos un fotógrafo y un videógrafo — El Trío trae dos fotógrafos y un videógrafo (${BASE_CREW.trio} en total) —, y por eso nada importante pasa fuera de cámara. También se puede agregar una coordinadora que dirija el día, por ${PT.addon.coordinator} al día.`,
+      a: `No es obligatorio, pero un segundo artista significa dos ángulos a la vez: alguien en su cara durante el vals mientras el otro atrapa al público, o uno en los detalles del arreglo mientras el otro la fotografía a ella. En TX Quince, El Dúo y El Trío incluyen al menos un fotógrafo y un videógrafo — El Trío trae dos fotógrafos y un videógrafo (${BASE_CREW.trio} en total) —, y por eso nada importante pasa fuera de cámara; El Solo le da foto y video con una sola persona y 2–3 cámaras. También se puede agregar una coordinadora que dirija el día, por ${PT.addon.coordinator} al día.`,
     },
     {
       q: "¿Cuántas fotos editadas recibo de una quinceañera?",

@@ -37,6 +37,7 @@ const post: BlogPost = {
       type: "ul",
       items: [
         `Sesión de retratos (${PT.price.study}): depósito de ${PT.deposit.study} para apartar su fecha.`,
+        `El Solo (${PT.price.solo}): depósito de ${PT.deposit.solo} para apartar su fecha.`,
         `El Dúo (${PT.price.cinema}): depósito de ${PT.deposit.cinema} para apartar su fecha.`,
         `El Trío (${PT.price.trio}): depósito de ${PT.deposit.trio} para apartar su fecha.`,
       ],
@@ -116,7 +117,7 @@ const post: BlogPost = {
     },
     {
       q: "¿De cuánto es el depósito para apartar la fecha?",
-      a: `Es el ${retainerPct} de su paquete: ${PT.deposit.study} para la Sesión de retratos (${PT.price.study}), ${PT.deposit.cinema} para El Dúo (${PT.price.cinema}) y ${PT.deposit.trio} para El Trío (${PT.price.trio}).`,
+      a: `Es el ${retainerPct} de su paquete: ${PT.deposit.study} para la Sesión de retratos (${PT.price.study}), ${PT.deposit.solo} para El Solo (${PT.price.solo}), ${PT.deposit.cinema} para El Dúo (${PT.price.cinema}) y ${PT.deposit.trio} para El Trío (${PT.price.trio}).`,
     },
     {
       q: "¿El depósito es reembolsable?",

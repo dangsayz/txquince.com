@@ -13,7 +13,7 @@ export type L = { en: string; es: string };
 
 export const pick = (lang: Lang, v: L) => v[lang];
 
-import { canAddHours, usd, type AddOnId, type PriceBook, type TierId } from "@/lib/commission";
+import { canAddHours, maxHoursFor, usd, type AddOnId, type PriceBook, type TierId } from "@/lib/commission";
 
 /* ------------------------------------------------------------------ */
 /* Hero plates                                                          */
@@ -117,8 +117,24 @@ export const TIERS: Tier[] = [
     scope: "stills",
   },
   {
-    id: "cinema",
+    id: "solo",
     numeral: "II.",
+    name: { en: "The Solo", es: "El Solo" },
+    summary: {
+      en: "One shooter with a 2–3 camera setup, taking photos and filming at the same time, so wherever the action is, a camera is on it. The budget-friendly way to get the photos and the full-length film of her day.",
+      es: "Una sola persona con 2–3 cámaras, que toma fotos y graba al mismo tiempo, así que donde pase algo, hay una cámara apuntando. La forma más económica de tener las fotos y el video completo de su día.",
+    },
+    bullets: [
+      { en: "1 hybrid shooter (photo + video), 2–3 camera setup", es: "1 fotógrafo y videógrafo en uno, 2–3 cámaras" },
+      { en: "Photos and video at once, a camera on every angle of the action", es: "Fotos y video a la vez, una cámara en cada ángulo de la acción" },
+      { en: "The full-length film of her day", es: "El video completo de su día" },
+      { en: "150+ edited photos", es: "Más de 150 fotos editadas" },
+    ],
+    scope: "both",
+  },
+  {
+    id: "cinema",
+    numeral: "III.",
     name: { en: "The Duo", es: "El Dúo" },
     summary: {
       en: "One photographer and one videographer for her day, plus a dress or save-the-date session: the photos, and the full-length film of everything that happened.",
@@ -126,7 +142,7 @@ export const TIERS: Tier[] = [
     },
     bullets: [
       { en: "1 photographer + 1 videographer", es: "1 fotógrafo + 1 videógrafo" },
-      { en: "A dress or save-the-date session, booked after your deposit", es: "Una sesión con el vestido o de save the date, después de tu depósito" },
+      { en: "A dress or save-the-date session (30–40 photos), booked after your deposit", es: "Una sesión con el vestido o de save the date (30–40 fotos), después de tu depósito" },
       { en: "The full-length film of her day + a 1-minute highlight", es: "El video completo de su día + un resumen de 1 minuto" },
       { en: "400+ edited photos", es: "Más de 400 fotos editadas" },
     ],
@@ -134,7 +150,7 @@ export const TIERS: Tier[] = [
   },
   {
     id: "trio",
-    numeral: "III.",
+    numeral: "IV.",
     name: { en: "The Trio", es: "El Trío" },
     summary: {
       en: "Two photographers and one videographer, so both sides of the room are covered while the film rolls, plus a dress or save-the-date session and a printed album. Our pick for most families.",
@@ -142,7 +158,7 @@ export const TIERS: Tier[] = [
     },
     bullets: [
       { en: "2 photographers + 1 videographer", es: "2 fotógrafos + 1 videógrafo" },
-      { en: "A dress or save-the-date session, booked after your deposit", es: "Una sesión con el vestido o de save the date, después de tu depósito" },
+      { en: "A dress or save-the-date session (30–40 photos), booked after your deposit", es: "Una sesión con el vestido o de save the date (30–40 fotos), después de tu depósito" },
       { en: "The full-length film + a 3–5 minute highlight film", es: "El video completo + un resumen de 3–5 minutos" },
       { en: "700+ photos and a printed album", es: "Más de 700 fotos y un álbum impreso" },
     ],
@@ -154,7 +170,7 @@ export const TIERS: Tier[] = [
 export const RETIRED_TIERS: Tier[] = [
   {
     id: "production",
-    numeral: "IV.",
+    numeral: "V.",
     name: { en: "Full Celebration", es: "Celebración completa" },
     summary: {
       en: "A team of four plus a coordinator who runs the day, so you can enjoy it. Includes a portrait session and a printed album.",
@@ -170,7 +186,7 @@ export const RETIRED_TIERS: Tier[] = [
   },
   {
     id: "archive",
-    numeral: "V.",
+    numeral: "VI.",
     name: { en: "Two-Day Celebration", es: "Celebración de dos días" },
     summary: {
       en: "Everything in the Full Celebration, plus a second day for portraits, a team of five, and a larger album.",
@@ -199,7 +215,8 @@ const hoursCell = (book: PriceBook, tier: TierId): L => {
   if (!canAddHours(book, tier)) {
     return tier === "archive" ? v(`${base} hours, both days`, `${base} horas, ambos días`) : v(en, es);
   }
-  return v(`${en} (add up to ${book.maxHours})`, `${es} (hasta ${book.maxHours})`);
+  const max = maxHoursFor(book, tier);
+  return v(`${en} (add up to ${max})`, `${es} (hasta ${max})`);
 };
 
 /** The full-length film: the whole day as it happened, so its length follows her day. */
@@ -207,6 +224,16 @@ const FULL_FILM = v(
   "Her whole day: the misa, every presentation and toast in full, 15–20 min of dancing",
   "Todo su día: la misa, cada presentación y brindis completos, 15–20 min de baile",
 );
+
+/** The Solo's film: the same whole day, cut from its 2–3 camera angles. */
+const SOLO_FILM = v(
+  "Her whole day, cut from the 2–3 camera angles: the misa, presentations, toasts and dancing",
+  "Todo su día, editado con los 2–3 ángulos de cámara: la misa, presentaciones, brindis y baile",
+);
+
+/** The Solo can add the 3–5 minute Highlight Film, priced from the live book. */
+const highlightCell = (book: PriceBook): L =>
+  v(`Add a 3–5 min film for ${usd(book.addOns.highlight)}`, `Agrega uno de 3–5 min por ${usd(book.addOns.highlight)}`);
 
 /** The coordinator is an extra now: "Add for $500 a day", priced from the live book. */
 const coordinatorCell = (book: PriceBook): L =>
@@ -222,6 +249,7 @@ export const matrixFor = (book: PriceBook): MatrixGroup[] => [
         label: v("Hours", "Horas"),
         values: {
           study: hoursCell(book, "study"),
+          solo: hoursCell(book, "solo"),
           cinema: hoursCell(book, "cinema"),
           trio: hoursCell(book, "trio"),
           production: hoursCell(book, "production"),
@@ -232,6 +260,7 @@ export const matrixFor = (book: PriceBook): MatrixGroup[] => [
         label: v("Your team", "Tu equipo"),
         values: {
           study: v("1 photographer", "1 fotógrafo"),
+          solo: v("1 hybrid shooter (photo + video), 2–3 camera setup", "1 fotógrafo y videógrafo en uno, 2–3 cámaras"),
           cinema: v("1 photographer + 1 videographer", "1 fotógrafo + 1 videógrafo"),
           trio: v("2 photographers + 1 videographer (you can switch)", "2 fotógrafos + 1 videógrafo (puedes cambiar)"),
           production: v("4 people — you pick photo or video", "4 personas — tú eliges foto o video"),
@@ -242,6 +271,7 @@ export const matrixFor = (book: PriceBook): MatrixGroup[] => [
         label: v("Coordinator who runs the day", "Coordinadora que lleva el día"),
         values: {
           study: null,
+          solo: coordinatorCell(book),
           cinema: coordinatorCell(book),
           trio: coordinatorCell(book),
           production: v("Included", "Incluida"),
@@ -252,8 +282,9 @@ export const matrixFor = (book: PriceBook): MatrixGroup[] => [
         label: v("Dress or save-the-date session", "Sesión con el vestido o de save the date"),
         values: {
           study: v("Yes — that's this package", "Sí — es este paquete"),
-          cinema: v("Included, after your deposit", "Incluida, después del depósito"),
-          trio: v("Included, after your deposit", "Incluida, después del depósito"),
+          solo: null,
+          cinema: v("Included after your deposit · 30–40 photos", "Incluida después del depósito · 30–40 fotos"),
+          trio: v("Included after your deposit · 30–40 photos", "Incluida después del depósito · 30–40 fotos"),
           production: v("1 location", "1 lugar"),
           archive: v("2 locations, on its own day", "2 lugares, en su propio día"),
         },
@@ -268,6 +299,7 @@ export const matrixFor = (book: PriceBook): MatrixGroup[] => [
         label: v("Full-length film", "Video completo"),
         values: {
           study: null,
+          solo: SOLO_FILM,
           cinema: FULL_FILM,
           trio: FULL_FILM,
           production: FULL_FILM,
@@ -278,6 +310,7 @@ export const matrixFor = (book: PriceBook): MatrixGroup[] => [
         label: v("Highlight video", "Video resumen"),
         values: {
           study: null,
+          solo: highlightCell(book),
           cinema: v("1 minute", "1 minuto"),
           trio: v("3–5 minutes", "3–5 minutos"),
           production: v("3–5 minutes", "3–5 minutos"),
@@ -288,6 +321,7 @@ export const matrixFor = (book: PriceBook): MatrixGroup[] => [
         label: v("Short videos for social media", "Videos cortos para redes"),
         values: {
           study: null, // photos only
+          solo: null,
           cinema: v("2", "2"),
           trio: v("4", "4"),
           production: v("4", "4"),
@@ -304,6 +338,7 @@ export const matrixFor = (book: PriceBook): MatrixGroup[] => [
         label: v("Edited photos", "Fotos editadas"),
         values: {
           study: v("60", "60"),
+          solo: v("150+", "150+"),
           cinema: v("400+", "400+"),
           trio: v("700+", "700+"),
           production: v("700+", "700+"),
@@ -314,6 +349,7 @@ export const matrixFor = (book: PriceBook): MatrixGroup[] => [
         label: v("Printed photo album", "Álbum de fotos impreso"),
         values: {
           study: null,
+          solo: null,
           cinema: null,
           trio: v("10×10 in, 40 pages", "25×25 cm, 40 páginas"),
           production: v("10×10 in, 40 pages", "25×25 cm, 40 páginas"),
@@ -324,6 +360,7 @@ export const matrixFor = (book: PriceBook): MatrixGroup[] => [
         label: v("All your original files", "Todos tus archivos originales"),
         values: {
           study: null,
+          solo: null,
           cinema: null,
           trio: v("Photos", "Fotos"),
           production: v("Photos", "Fotos"),
@@ -341,8 +378,8 @@ export const ADD_ONS: AddOn[] = [
     id: "destination",
     name: { en: "Dress Session", es: "Sesión con el vestido" },
     note: {
-      en: "A photo session in her dress before the big day — a park, a garden, wherever she loves.",
-      es: "Una sesión de fotos con su vestido antes del gran día — un parque, un jardín, donde ella quiera.",
+      en: "A photo session in her dress before the big day — a park, a garden, wherever she loves. 30–40 edited photos.",
+      es: "Una sesión de fotos con su vestido antes del gran día — un parque, un jardín, donde ella quiera. 30–40 fotos editadas.",
     },
   },
   {

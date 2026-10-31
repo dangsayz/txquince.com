@@ -1,5 +1,5 @@
 /**
- * commissions.ts — the three packages, shaped for the SEO landing
+ * commissions.ts — the four packages, shaped for the SEO landing
  * pages (city, videographer, guide, venue, save-the-date). Prices come from the
  * LIVE price book (commissionsFor(await getPriceBook())); names and
  * deliverables from the homepage matrix, so every page shows the same offer as
@@ -49,7 +49,7 @@ function highlightsFor(book: PriceBook, id: TierId, lang: Lang): string[] {
   return out.slice(0, 4);
 }
 
-/** The three packages priced from a price book (server: `commissionsFor(await getPriceBook())`). */
+/** The four packages priced from a price book (server: `commissionsFor(await getPriceBook())`). */
 export function commissionsFor(book: PriceBook): Commission[] {
   return TIERS.map((t) => {
     const price = book.packages[t.id].price;

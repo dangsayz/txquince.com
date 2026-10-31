@@ -525,7 +525,7 @@ function Packages({ children }: { children: ReactNode }) {
                   </h3>
                   <p className="ed-pkg__desc">{PACKAGE_DETAIL[x.id][lang]}</p>
                   <p className="ed-pkg__meta">
-                    {p.hours(pp.hours)} · {p.team(BASE_CREW[x.id])}
+                    {p.hours(pp.hours)} · {x.id === "solo" ? p.soloTeam : p.team(BASE_CREW[x.id])}
                   </p>
                   {x.id === "trio" && book.trioSpotsLeft > 0 && (
                     <p className="ed-offer">{p.offer(book.trioSpotsLeft, book.trioSpotsTotal, money(pp.price))}</p>

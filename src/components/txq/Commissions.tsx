@@ -91,7 +91,7 @@ function PackageCard({ tier: x }: { tier: Tier }) {
         {money(p.price)}
       </p>
       <p id={`${id}-m`} className="tq-pkg__meta">
-        {hoursLine(t, x.id, p.hours)} · {t.booking.team(BASE_CREW[x.id], COORDINATOR_INCLUDED[x.id])}
+        {hoursLine(t, x.id, p.hours)} · {x.id === "solo" ? t.booking.soloTeam : t.booking.team(BASE_CREW[x.id], COORDINATOR_INCLUDED[x.id])}
       </p>
       <ul id={`${id}-l`} className="tq-pkg__list">
         {x.bullets.map((b) => (
