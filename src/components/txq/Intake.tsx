@@ -699,7 +699,7 @@ function Summary({ onEdit, language }: { onEdit: (step: number) => void; languag
       lines: [
         `${t.booking.hourOption(hours)}${hours > q.baseHours ? ` (+${money(q.extraHoursUsd)})` : ""}`,
         extras.length ? extras.map((a) => pick(lang, a.name)).join(", ") : t.booking.noExtras,
-        `${BASE_CREW[tier] > 1 ? t.crew.mix(crew.photo, crew.motion) : t.crew.mix(1, 0)}${
+        `${tier === "solo" ? t.booking.soloTeam : BASE_CREW[tier] > 1 ? t.crew.mix(crew.photo, crew.motion) : t.crew.mix(1, 0)}${
           COORDINATOR_INCLUDED[tier] ? ` · ${t.crew.coordinator}` : ""
         }`,
       ],

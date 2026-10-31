@@ -10,28 +10,30 @@
  */
 import { z } from "zod";
 
-export const TIER_IDS = ["study", "cinema", "trio", "production", "archive"] as const;
+export const TIER_IDS = ["study", "solo", "cinema", "trio", "production", "archive"] as const;
 export const ADD_ON_IDS = ["destination", "sameday", "super8", "parents", "secondday", "highlight", "coordinator"] as const;
 export type TierId = (typeof TIER_IDS)[number];
 export type AddOnId = (typeof ADD_ON_IDS)[number];
 
 /**
  * The packages families can choose today, in the order they are shown:
- * Portrait Session, The Duo (1 photographer + 1 videographer) and The Trio
- * (2 + 1). Retired packages stay in TIER_IDS so older inquiries, bookings and
+ * Portrait Session, The Solo (one hybrid shooter running a 2–3 camera setup,
+ * photos and film at once), The Duo (1 photographer + 1 videographer) and The
+ * Trio (2 + 1). Retired packages stay in TIER_IDS so older inquiries, bookings and
  * agreements still read and re-price exactly as they were made: the Two-Day
  * Celebration (`archive`, its second day is now the `secondday` extra) and
  * the Full Celebration (`production`, its coordinator is now the
  * `coordinator` extra). New requests are refused for a retired package on the
  * server (isBookableTier).
  */
-export const PUBLIC_TIER_IDS = ["study", "cinema", "trio"] as const satisfies readonly TierId[];
+export const PUBLIC_TIER_IDS = ["study", "solo", "cinema", "trio"] as const satisfies readonly TierId[];
 export type PublicTierId = (typeof PUBLIC_TIER_IDS)[number];
 export const isBookableTier = (id: TierId): id is PublicTierId => (PUBLIC_TIER_IDS as readonly TierId[]).includes(id);
 
 /** English names for Stripe line items, receipts and operator email. */
 export const TIER_NAME_EN: Record<TierId, string> = {
   study: "Portrait Session",
+  solo: "The Solo",
   cinema: "The Duo",
   trio: "The Trio",
   production: "Full Celebration (retired)",
@@ -58,6 +60,9 @@ export const ADD_ON_NAME_EN: Record<AddOnId, string> = {
  *  - Albums for Mom & Dad are copies of the Trio's printed album.
  *  - The Dress Session is now included in the Duo and Trio (a dress or
  *    save-the-date session after the deposit), so it is not sold separately.
+ *  - The Solo is the budget package: one shooter, no second-location or
+ *    second-day work, so only the Highlight Film and a Coordinator can be
+ *    added. Anything more is what the Duo is for.
  */
 export const ADD_ON_TIERS: Partial<Record<AddOnId, readonly TierId[]>> = {
   destination: [],
@@ -65,8 +70,8 @@ export const ADD_ON_TIERS: Partial<Record<AddOnId, readonly TierId[]>> = {
   super8: ["cinema", "trio"],
   parents: ["trio"],
   secondday: ["cinema", "trio"],
-  highlight: ["cinema"],
-  coordinator: ["cinema", "trio"],
+  highlight: ["solo", "cinema"],
+  coordinator: ["solo", "cinema", "trio"],
 };
 export const addOnAllowed = (tier: TierId, id: AddOnId) => {
   const only = ADD_ON_TIERS[id];
@@ -82,7 +87,8 @@ export const addOnAllowed = (tier: TierId, id: AddOnId) => {
  *  - Most DFW quince budgets are $12–25K all-in; photo + film takes 8–15%.
  *  - Published DFW quince packages: photo-only $1.5–3K, photo + video
  *    $3–5.5K, luxury collections $5.5–8K (highest published ~$6K).
- * The Oct 31 2026 lineup: Portrait Session, The Duo (1 photographer + 1
+ * The Oct 31 2026 lineup: Portrait Session, The Solo (one hybrid shooter,
+ * 5 hours, capped at 6), The Duo (1 photographer + 1
  * videographer, 6 hours) and The Trio (2 + 1, 7 hours). Both event packages
  * include a dress or save-the-date session once the deposit is paid; a
  * day-of coordinator is an extra.
@@ -94,6 +100,7 @@ export const addOnAllowed = (tier: TierId, id: AddOnId) => {
  */
 const DEFAULT_TIER_PRICE_USD: Record<TierId, number> = {
   study: 400,
+  solo: 1200,
   cinema: 2000,
   trio: 2800,
   production: 2800,
@@ -111,6 +118,7 @@ const DEFAULT_ADD_ON_PRICE_USD: Record<AddOnId, number> = {
 /** Hours of coverage included in the package price. */
 const DEFAULT_BASE_HOURS: Record<TierId, number> = {
   study: 1,
+  solo: 5,
   cinema: 6,
   trio: 7,
   production: 7,
@@ -119,6 +127,7 @@ const DEFAULT_BASE_HOURS: Record<TierId, number> = {
 /** Price of each hour added beyond the included hours (0 = hours can't be added). */
 const DEFAULT_EXTRA_HOUR_USD: Record<TierId, number> = {
   study: 150,
+  solo: 200,
   cinema: 400,
   trio: 450,
   production: 450,
@@ -128,6 +137,12 @@ const DEFAULT_EXTRA_HOUR_USD: Record<TierId, number> = {
 const DEFAULT_TRIO_SPOTS_TOTAL = 5;
 const DEFAULT_TRIO_SPOTS_LEFT = 0;
 const DEFAULT_MAX_HOURS = 8;
+/**
+ * A package's own ceiling under the book's longest day. The Solo is one
+ * person carrying every camera, so it stops at 6 hours: a family that wants a
+ * longer day books the Duo or the Trio.
+ */
+export const TIER_MAX_HOURS: Partial<Record<TierId, number>> = { solo: 6 };
 /** Deposit: 25% down once we approve the signed agreement; the rest 14 days before. */
 const DEFAULT_DEPOSIT_PERCENT = 25;
 const DEFAULT_BALANCE_DUE_DAYS = 14;
@@ -276,7 +291,8 @@ export const priceBookSchema = z
 /** Most hours this package can have on the day (included hours if hours can't be added). */
 export function maxHoursFor(book: PriceBook, tier: TierId): number {
   const p = book.packages[tier];
-  return p.extraHour > 0 ? Math.max(p.hours, book.maxHours) : p.hours;
+  const cap = Math.min(book.maxHours, TIER_MAX_HOURS[tier] ?? book.maxHours);
+  return p.extraHour > 0 ? Math.max(p.hours, cap) : p.hours;
 }
 
 /** Can a family add hours to this package at all? */
@@ -303,6 +319,7 @@ export type Crew = Record<CrewRole, number>;
 /** Directors included on the celebration day. */
 export const BASE_CREW: Record<TierId, number> = {
   study: 1,
+  solo: 1,
   cinema: 2,
   trio: 3,
   production: 4,
@@ -315,15 +332,21 @@ export const MAX_CREW = Math.max(...Object.values(BASE_CREW));
 /** A day-of coordinator comes with the larger productions. */
 export const COORDINATOR_INCLUDED: Record<TierId, boolean> = {
   study: false,
+  solo: false,
   cinema: false,
   trio: false,
   production: true,
   archive: true,
 };
 
-/** The Portrait Study is stills only; every event commission keeps at least one of each. */
+/**
+ * The Portrait Study is stills only; every event commission keeps at least one
+ * of each. The Solo is one hybrid shooter (photos and film at once from a 2–3
+ * camera setup), counted as one seat with nothing to rearrange.
+ */
 const MIN_ROLE: Record<TierId, Crew> = {
   study: { photo: 1, motion: 0 },
+  solo: { photo: 1, motion: 0 },
   cinema: { photo: 1, motion: 1 },
   trio: { photo: 1, motion: 1 },
   production: { photo: 1, motion: 1 },
@@ -332,6 +355,7 @@ const MIN_ROLE: Record<TierId, Crew> = {
 
 const DEFAULT_MIX: Record<TierId, Crew> = {
   study: { photo: 1, motion: 0 },
+  solo: { photo: 1, motion: 0 },
   cinema: { photo: 1, motion: 1 },
   trio: { photo: 2, motion: 1 },
   production: { photo: 2, motion: 2 },
@@ -358,6 +382,7 @@ export const canShift = (tier: TierId, mix: Crew, to: CrewRole) => {
 /** Single-craft tiers carry a photo-only service; the rest are photo + film. */
 export const TIER_SERVICE: Record<TierId, "photo" | "both"> = {
   study: "photo",
+  solo: "both",
   cinema: "both",
   trio: "both",
   production: "both",
@@ -539,6 +564,7 @@ export const CITY_NAME: Record<(typeof CITY_IDS)[number], string> = {
 };
 
 function crewLine(tier: TierId, mix: Crew): string {
+  if (tier === "solo") return "Team (included, 1): 1 hybrid shooter (photo + video), 2–3 camera setup";
   const n = (k: number, one: string) => `${k} ${one}${k === 1 ? "" : "s"}`;
   return `Team (included, ${BASE_CREW[tier]}): ${n(mix.photo, "photographer")} + ${n(mix.motion, "videographer")}`;
 }

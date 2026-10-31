@@ -39,6 +39,23 @@ describe("inquiry package", () => {
     expect(inquiryPackageSchema.safeParse({ ...pick, tier: "cinema", hours: 6, add_ons: ["destination"] }).success).toBe(false);
   });
 
+  it("refuses the Solo with an extra it doesn't offer, called directly", () => {
+    const solo = { ...pick, tier: "solo", hours: 5 };
+    expect(inquiryPackageSchema.safeParse({ ...solo, add_ons: ["highlight", "coordinator"] }).success).toBe(true);
+    for (const extra of ["secondday", "sameday", "super8", "parents", "destination"]) {
+      expect(inquiryPackageSchema.safeParse({ ...solo, add_ons: [extra] }).success).toBe(false);
+    }
+    expect(BUDGET_FOR_TIER.solo).toBe("solo");
+  });
+
+  it("prices a Solo asking for 8 hours at the 6-hour cap and names the hybrid shooter", () => {
+    const p = inquiryPackageSchema.parse({ ...pick, tier: "solo", hours: 8, add_ons: [] });
+    const text = describeInquiryPackage(p, ctx, DEFAULT_PRICE_BOOK);
+    expect(text).toContain("Hours on the day: 6");
+    expect(text).toContain("1 hybrid shooter");
+    expect(text).toContain("Total: $1,400");
+  });
+
   it("refuses the retired Two-Day and Full Celebration on a new request, called directly", () => {
     expect(inquiryPackageSchema.safeParse({ ...pick, tier: "archive" }).success).toBe(false);
     expect(inquiryPackageSchema.safeParse({ ...pick, tier: "production" }).success).toBe(false);
