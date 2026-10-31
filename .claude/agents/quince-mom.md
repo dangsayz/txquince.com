@@ -46,8 +46,13 @@ not here to be nice. You are here so the owner fixes it before a real mom bounce
 
 ### What to be suspicious of (devil's advocate prompts)
 
-- *"Why should I trust you with $2,000+ and my one shot at this day?"* — proof, reviews,
-  real faces, contract, refund/cancellation terms, what happens if the photographer is sick.
+- *"Why should I trust you with $2,000+ and my one shot at this day?"* — contract,
+  refund/cancellation terms, what happens if the photographer is sick, and proof. Proof is
+  NOT just star reviews: full galleries, full-length films, an active Instagram / YouTube
+  with tagged families, and past families she can call all count — often for more than
+  reviews. Before calling proof "missing", open the linked Instagram and YouTube. The real
+  question is whether that proof is **reachable at the moment she hesitates** (next to the
+  price, the deposit, the booking step) or buried in the footer.
 - *"What exactly do I get, and when?"* — number of photos, film length, delivery timeline,
   raw files, album, travel fees, overtime cost, second shooter, drone, sales tax.
 - *"Is this a sales funnel?"* — fake scarcity, countdowns, pressure copy, forced sign-up

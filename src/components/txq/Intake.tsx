@@ -21,6 +21,7 @@ import { getFirstTouch } from "@/components/Tracker";
 import { ContactLine } from "@/components/ContactButtons";
 import { BASE_CREW, COORDINATOR_INCLUDED } from "@/lib/commission";
 import { HONEYPOT_FIELD } from "@/lib/inquiry";
+import { site } from "@/content/site";
 import { usePriceBook } from "@/components/PriceBookProvider";
 import { ADD_ONS, CITIES, money, pick, tierById, type Lang, type TierId } from "./data";
 import { BOOKING_STEPS, isoDate, useAvailability, useQuote, useSite } from "./state";
@@ -560,6 +561,12 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
                       </ol>
                       <p className="tq-bk-nocharge">{t.booking.noCharge}</p>
                       <p className="tq-bk-team">{t.booking.teamNote}</p>
+                      <p className="tq-bk-team">{t.booking.proofLead}</p>
+                      <p className="tq-bk-proof">
+                        <a href={site.social.instagram} target="_blank" rel="noopener noreferrer">{t.booking.proofIg}</a>
+                        <a href={site.social.youtube} target="_blank" rel="noopener noreferrer">{t.booking.proofYt}</a>
+                        <a href={`sms:${site.contact.phoneE164}`}>{t.booking.proofRef}</a>
+                      </p>
                     </div>
                     <ContactLine lang={lang} placement="booking-send" />
 
