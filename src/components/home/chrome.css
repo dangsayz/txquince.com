@@ -177,7 +177,7 @@
 .txq .sf-big a:hover { opacity: 0.5; }
 .txq .sf-side { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; align-content: start; }
 .txq .sf-col { display: flex; flex-direction: column; min-width: 0; }
-.txq .sf-col a { display: inline-flex; align-items: center; min-height: 40px; padding-block: 2px; color: #101010; overflow-wrap: anywhere; }
+.txq .sf-col a { display: inline-flex; align-items: center; min-height: 44px; color: #101010; overflow-wrap: anywhere; }
 .txq .sf-col a:hover { text-decoration: underline; text-underline-offset: 5px; }
 .txq .sf-h {
   margin: 0 0 8px;

@@ -102,6 +102,7 @@ export function SiteHeader() {
             ref={menuBtn}
             type="button"
             className="sh-menu"
+            aria-label={e.menu}
             aria-expanded={open}
             aria-controls="sh-menu"
             onClick={() => setOpen(true)}
@@ -117,11 +118,9 @@ export function SiteHeader() {
           </a>
           <div className="sh-right">
             <Lang2 className="sh-lang" />
-            <a href={homeHref("#intake")} className="sh-reserve">
+            <a href={homeHref("#intake")} className="sh-reserve" aria-label={e.reserve}>
               <span className="sh-reserve__long">{e.reserve}</span>
-              <span className="sh-reserve__short" aria-hidden>
-                {e.packages.book}
-              </span>
+              <span className="sh-reserve__short">{e.packages.book}</span>
             </a>
           </div>
         </div>
@@ -130,7 +129,7 @@ export function SiteHeader() {
       {open && (
         <div id="sh-menu" className="sm" role="dialog" aria-modal="true" aria-label={e.menu}>
           <div className="sh-in sm-top">
-            <button ref={closeBtn} type="button" className="sh-menu" onClick={() => setOpen(false)}>
+            <button ref={closeBtn} type="button" className="sh-menu" aria-label={e.close} onClick={() => setOpen(false)}>
               <span className="sh-burger sh-burger--x" aria-hidden>
                 <i />
                 <i />

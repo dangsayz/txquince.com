@@ -26,9 +26,10 @@ function whenIdle(fn: () => void) {
  *   data-ed="feature-bg" the black-and-white plate behind the featured package
  *   data-ed="rise"     a heading rises in once, if it starts below the fold
  *
- * The libraries are fetched after the page has loaded, so they never compete
- * with the first paint, and nothing is hidden before they arrive: every scene
- * only moves things from where the page already drew them. Visitors who ask
+ * The libraries are fetched on the visitor's first scroll, touch, key or mouse
+ * move (every scene is scroll-driven, so nothing is lost by waiting), which
+ * keeps them entirely out of the first load. Nothing is hidden before they
+ * arrive: every scene only moves things from where the page already drew them. Visitors who ask
  * for reduced motion get the still page; phones keep native scrolling.
  */
 export function useScenes(rootRef: RefObject<HTMLElement | null>) {
@@ -87,7 +88,7 @@ export function useScenes(rootRef: RefObject<HTMLElement | null>) {
         );
 
         q('[data-ed="lines"]').forEach((block) =>
-          gsap.fromTo(block.querySelectorAll("[data-line]"), { opacity: 0.15 }, { opacity: 1, ease: "none", stagger: 0.35, scrollTrigger: { trigger: block, start: "top 92%", end: "bottom 60%", scrub: true } }),
+          gsap.fromTo(block.querySelectorAll("[data-line]"), { opacity: 0.25 }, { opacity: 1, ease: "none", stagger: 0.35, scrollTrigger: { trigger: block, start: "top 96%", end: "top 50%", scrub: true } }),
         );
 
         q('[data-ed="band"]').forEach((band) =>
@@ -140,12 +141,20 @@ export function useScenes(rootRef: RefObject<HTMLElement | null>) {
       };
     };
 
-    const go = () => whenIdle(() => void start());
-    if (document.readyState === "complete") go();
-    else window.addEventListener("load", go, { once: true });
+    const EVENTS = ["scroll", "wheel", "touchstart", "pointerdown", "pointermove", "keydown"] as const;
+    let started = false;
+    const go = () => {
+      if (started) return;
+      started = true;
+      EVENTS.forEach((ev) => window.removeEventListener(ev, go));
+      whenIdle(() => void start());
+    };
+    // Already scrolled (a reload mid-page, or an in-page link): start now.
+    if (window.scrollY > 0) go();
+    else EVENTS.forEach((ev) => window.addEventListener(ev, go, { passive: true, once: true }));
     return () => {
       cancelled = true;
-      window.removeEventListener("load", go);
+      EVENTS.forEach((ev) => window.removeEventListener(ev, go));
       cleanup();
     };
   }, [rootRef]);
