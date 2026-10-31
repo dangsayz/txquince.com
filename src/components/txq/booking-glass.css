@@ -320,3 +320,12 @@
   .txq .tq-bk-bar { transition: none !important; }
   .txq .tq-bk .tq-btn:active { transform: none; }
 }
+
+/* The chosen package, restated at the top of Hours & extras. */
+.txq .tq-bk .tq-picked {
+  border: 1px solid var(--g-line);
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: var(--g-card);
+}
+.txq .tq-bk .tq-picked button { font-weight: 600; }
