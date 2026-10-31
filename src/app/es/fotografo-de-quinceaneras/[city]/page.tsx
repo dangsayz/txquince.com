@@ -82,11 +82,11 @@ function sharedFaqsEs(city: string) {
   return [
     {
       q: `¿Cuánto cuesta un fotógrafo de quinceañera en ${city}?`,
-      a: `Todos los paquetes están publicados: la Sesión de retratos cuesta ${PT.price.study}, fotos y video juntos desde ${PT.price.cinema} con el Dúo, el Trío, el paquete que recomendamos para la mayoría de las celebraciones en ${city}, cuesta ${PT.price.trio}, y la Celebración completa cuesta ${PT.price.production}. Puedes consultar tu fecha sin pagar.`,
+      a: `Todos los paquetes están publicados: la Sesión de retratos cuesta ${PT.price.study}, fotos y video juntos desde ${PT.price.solo} con el Solo, el Dúo cuesta ${PT.price.cinema}, el Trío, el paquete que recomendamos para la mayoría de las celebraciones en ${city} y el que incluye álbum impreso, cuesta ${PT.price.trio}. Puedes consultar tu fecha sin pagar.`,
     },
     {
       q: "¿También ofreces video, o solo fotografía?",
-      a: "Los dos. Desde el Dúo, un fotógrafo y un videógrafo cubren el día como un solo equipo, para que la misa, el vals y la recepción queden en fotos y en un video completo en 4K de todo su día sin que dos proveedores se estorben.",
+      a: "Los dos. El Solo es una sola persona con 2–3 cámaras, fotógrafo y videógrafo en uno, que toma las fotos y graba al mismo tiempo. Desde el Dúo, un fotógrafo y un videógrafo cubren el día como un solo equipo, para que la misa, el vals y la recepción queden en fotos y en un video completo en 4K de todo su día sin que dos proveedores se estorben.",
     },
     {
       q: "¿Cobras por traslado?",
@@ -387,8 +387,8 @@ export default async function CityPageEs({
             <p className="tq-head__dek">
               Cuatro paquetes con precios publicados. Un depósito del {retainerPercentLabel} aparta la fecha y se
               abona a tu total. El Trío, nuestra recomendación para la mayoría de las familias, pone un equipo de {BASE_CREW.trio} en
-              su día: dos fotógrafos y un videógrafo. La Celebración completa reúne un equipo de {BASE_CREW.production}, una coordinadora
-              que lleva el día y un álbum de fotos impreso.
+              su día: dos fotógrafos y un videógrafo, más un álbum de fotos impreso. El Dúo y el Trío incluyen una sesión con el
+              vestido o de save the date, que se agenda después del depósito.
             </p>
           </header>
           <ol className="tq-place-tiers">

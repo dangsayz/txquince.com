@@ -8,7 +8,7 @@ const pick = {
   venue: "Salón Ejemplo",
   start_time: "4:00 PM",
   scope: "both",
-  tier: "production",
+  tier: "trio",
   add_ons: ["sameday"],
   hours: 7,
   honoree: "Lucía",
@@ -21,7 +21,7 @@ describe("inquiry package", () => {
   it("accepts the picker's payload and maps it to the inquiry's fields", () => {
     const r = inquiryPackageSchema.safeParse(pick);
     expect(r.success).toBe(true);
-    expect(BUDGET_FOR_TIER.production).toBe("full");
+    expect(BUDGET_FOR_TIER.trio).toBe("trio");
     expect(servicesForTier("study")).toBe("photo");
     expect(servicesForTier("archive")).toBe("both");
   });
@@ -33,13 +33,32 @@ describe("inquiry package", () => {
   });
 
   it("refuses an extra the package doesn't offer, called directly", () => {
-    expect(inquiryPackageSchema.safeParse({ ...pick, tier: "production", add_ons: ["highlight"] }).success).toBe(false);
-    expect(inquiryPackageSchema.safeParse({ ...pick, tier: "cinema", hours: 5, add_ons: ["highlight"] }).success).toBe(true);
+    // The Trio already includes a highlight film; the Dress Session is included in both packages now.
+    expect(inquiryPackageSchema.safeParse({ ...pick, tier: "trio", add_ons: ["highlight"] }).success).toBe(false);
+    expect(inquiryPackageSchema.safeParse({ ...pick, tier: "cinema", hours: 6, add_ons: ["highlight", "coordinator"] }).success).toBe(true);
+    expect(inquiryPackageSchema.safeParse({ ...pick, tier: "cinema", hours: 6, add_ons: ["destination"] }).success).toBe(false);
   });
 
-  it("refuses the retired Two-Day Celebration on a new request, called directly", () => {
-    const r = inquiryPackageSchema.safeParse({ ...pick, tier: "archive" });
-    expect(r.success).toBe(false);
+  it("refuses the Solo with an extra it doesn't offer, called directly", () => {
+    const solo = { ...pick, tier: "solo", hours: 5 };
+    expect(inquiryPackageSchema.safeParse({ ...solo, add_ons: ["highlight", "coordinator"] }).success).toBe(true);
+    for (const extra of ["secondday", "sameday", "super8", "parents", "destination"]) {
+      expect(inquiryPackageSchema.safeParse({ ...solo, add_ons: [extra] }).success).toBe(false);
+    }
+    expect(BUDGET_FOR_TIER.solo).toBe("solo");
+  });
+
+  it("prices a Solo asking for 8 hours at the 6-hour cap and names the hybrid shooter", () => {
+    const p = inquiryPackageSchema.parse({ ...pick, tier: "solo", hours: 8, add_ons: [] });
+    const text = describeInquiryPackage(p, ctx, DEFAULT_PRICE_BOOK);
+    expect(text).toContain("Hours on the day: 6");
+    expect(text).toContain("1 hybrid shooter");
+    expect(text).toContain("Total: $1,400");
+  });
+
+  it("refuses the retired Two-Day and Full Celebration on a new request, called directly", () => {
+    expect(inquiryPackageSchema.safeParse({ ...pick, tier: "archive" }).success).toBe(false);
+    expect(inquiryPackageSchema.safeParse({ ...pick, tier: "production" }).success).toBe(false);
   });
 
   it("refuses unknown packages, extras and smuggled fields such as a client total", () => {
@@ -52,13 +71,13 @@ describe("inquiry package", () => {
     const p = inquiryPackageSchema.parse(pick);
     const text = describeInquiryPackage(p, ctx, DEFAULT_PRICE_BOOK);
     expect(text).toContain("Nothing was booked or charged");
-    expect(text).toContain("Full Celebration");
+    expect(text).toContain("The Trio");
     expect(text).toContain("Church at 2pm");
     expect(text).not.toContain("not signed yet");
 
     const pricier: PriceBook = {
       ...DEFAULT_PRICE_BOOK,
-      packages: { ...DEFAULT_PRICE_BOOK.packages, production: { ...DEFAULT_PRICE_BOOK.packages.production, price: 5555 } },
+      packages: { ...DEFAULT_PRICE_BOOK.packages, trio: { ...DEFAULT_PRICE_BOOK.packages.trio, price: 5555 } },
     };
     expect(describeInquiryPackage(p, ctx, pricier)).toContain("$5,555");
   });

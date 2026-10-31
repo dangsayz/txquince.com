@@ -152,7 +152,7 @@ const post: BlogPost = {
     },
     {
       "type": "p",
-      "text": "Y decídalo temprano. El color y el fotógrafo se eligen en el mismo periodo — su sesión de retrato antes de la celebración usa el vestido o uno de reemplazo, así que defina el color primero; muchas familias lo cierran de nueve a doce meses antes. Vea qué incluye cada paquete — la Sesión de retratos y la Celebración completa incluyen una sesión de retratos — en nuestros [paquetes](/es#commissions), y luego [aparte su fecha](/es#intake) una vez que el sábado es suyo."
+      "text": "Y decídalo temprano. El color y el fotógrafo se eligen en el mismo periodo — su sesión de retrato antes de la celebración usa el vestido o uno de reemplazo, así que defina el color primero; muchas familias lo cierran de nueve a doce meses antes. Vea qué incluye cada paquete — la Sesión de retratos es una sesión de retratos por sí sola, y El Dúo y El Trío incluyen una sesión con el vestido o de save-the-date después del depósito — en nuestros [paquetes](/es#commissions), y luego [aparte su fecha](/es#intake) una vez que el sábado es suyo."
     }
   ],
   "faqs": [

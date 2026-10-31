@@ -9,8 +9,18 @@ import type { TierId } from "@/lib/commission";
 /** Package rows: the chips beside each price (hours and team come from the book). */
 export const PACKAGE_DETAIL: Record<TierId, { en: string; es: string }> = {
   study: { en: "Photos only · 60 edited photos", es: "Solo fotos · 60 fotos editadas" },
-  cinema: { en: "Full-length film + 1-min highlight · 400+ photos", es: "Video completo + resumen de 1 min · 400+ fotos" },
-  trio: { en: "Full-length film + 1-min highlight · 600+ photos", es: "Video completo + resumen de 1 min · 600+ fotos" },
+  solo: {
+    en: "Photo + video from a 2–3 camera setup · full-length film · 150+ photos",
+    es: "Foto + video con 2–3 cámaras · video completo · 150+ fotos",
+  },
+  cinema: {
+    en: "Dress or save-the-date session (30–40 photos) · full-length film + 1-min highlight · 400+ photos",
+    es: "Sesión con el vestido o save the date (30–40 fotos) · video completo + resumen de 1 min · 400+ fotos",
+  },
+  trio: {
+    en: "Dress or save-the-date session (30–40 photos) · full-length film + 3–5 min highlight · 700+ photos · album",
+    es: "Sesión con el vestido o save the date (30–40 fotos) · video completo + resumen de 3–5 min · 700+ fotos · álbum",
+  },
   production: {
     en: "Coordinator · portraits · full-length film + 3–5 min highlight · 700+ photos · album",
     es: "Coordinadora · retratos · video completo + resumen de 3–5 min · 700+ fotos · álbum",
@@ -84,7 +94,7 @@ export const HOME = {
       hours: (h: number) => (h === 1 ? "1 hour" : `${h} hours`),
       hoursTwoDays: (h: number) => `${h} hrs · 2 days`,
       team: (n: number) => (n === 1 ? "1 photographer" : `Team of ${n}`),
-      after: "Add hours, a Dress Session or a Same-Day Edit in the next step.",
+      after: "Add hours or extras like a Highlight Film or a Same-Day Edit in the next step.",
       panelTitle: "Send your request",
       panelDek: "Choose a package above or here, pick her date, and send it. We reply within a day.",
     },
@@ -157,7 +167,7 @@ export const HOME = {
       hours: (h: number) => (h === 1 ? "1 hora" : `${h} horas`),
       hoursTwoDays: (h: number) => `${h} h · 2 días`,
       team: (n: number) => (n === 1 ? "1 fotógrafo" : `Equipo de ${n}`),
-      after: "En el siguiente paso puedes agregar horas, una sesión con el vestido o un video del mismo día.",
+      after: "En el siguiente paso puedes agregar horas o extras como un video resumen o un video del mismo día.",
       panelTitle: "Envía tu solicitud",
       panelDek: "Elige un paquete arriba o aquí, escoge su fecha y envíala. Respondemos en un día.",
     },

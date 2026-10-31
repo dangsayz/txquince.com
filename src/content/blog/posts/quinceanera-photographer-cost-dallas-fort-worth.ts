@@ -3,9 +3,9 @@ import { BASE_CREW } from "@/lib/commission";
 import { PT } from "@/lib/price-text";
 
 const study = PT.price.study;
+const solo = PT.price.solo;
 const cinema = PT.price.cinema;
 const trio = PT.price.trio;
-const production = PT.price.production;
 const retainerPct = PT.deposit.percent;
 
 const post: BlogPost = {
@@ -24,7 +24,7 @@ const post: BlogPost = {
     { type: "h2", text: "The short answer" },
     {
       type: "p",
-      text: `In Dallas–Fort Worth, most quinceañera studios publish photo-only packages around $1,500–$3,000 and photo + video packages around $3,000–$5,500. Luxury quince collections run $5,500–$8,000 and up, and for comparison, luxury Dallas wedding photo + video averages about $10,000. At [TX Quince](/#commissions), packages are published on the site — no quote form required: the ${study} Portrait Session, ${cinema} Duo, ${trio} Trio, and ${production} Full Celebration.`,
+      text: `In Dallas–Fort Worth, most quinceañera studios publish photo-only packages around $1,500–$3,000 and photo + video packages around $3,000–$5,500. Luxury quince collections run $5,500–$8,000 and up, and for comparison, luxury Dallas wedding photo + video averages about $10,000. At [TX Quince](/#commissions), packages are published on the site — no quote form required: the ${study} Portrait Session, ${solo} Solo, ${cinema} Duo, and ${trio} Trio.`,
     },
     {
       type: "p",
@@ -43,15 +43,15 @@ const post: BlogPost = {
       type: "ul",
       items: [
         "Coverage hours — a quince day runs long: getting ready, la misa, portraits, and the reception. Full-day coverage is the difference between a highlight and the whole story.",
-        `One artist vs. a team — one photographer and one videographer on the Duo (${BASE_CREW.cinema} in all), two photographers and one videographer on the Trio (${BASE_CREW.trio}), a team of ${BASE_CREW.production} plus a coordinator who runs the day on the Full Celebration — means the church and the reception entrance are both covered at once, with reverse angles you can't fake with one camera.`,
-        "Photo vs. photo + video — video is a separate craft and a separate edit. A package with both is two storytellers, not one person juggling a camera and a tripod.",
-        "Delivery — a private online gallery, and on the video packages the full-length film of her whole day plus a short highlight. The Full Celebration adds a printed album.",
+        `One artist vs. a team — one photographer and one videographer on the Duo (${BASE_CREW.cinema} in all), two photographers and one videographer on the Trio (${BASE_CREW.trio}) — means the church and the reception entrance are both covered at once, with reverse angles you can't fake with one camera. A coordinator who runs the day can be added for ${PT.addon.coordinator} a day.`,
+        "Photo vs. photo + video — video is a separate craft and a separate edit. Our Solo gets you both from one shooter running a 2–3 camera setup, so a camera is on the action wherever it happens; the Duo and the Trio put a dedicated photographer and videographer on the day.",
+        "Delivery — a private online gallery, and on the video packages the full-length film of her whole day plus a highlight (1 minute on the Duo, 3–5 minutes on the Trio, an add-on with the Solo). The Trio adds a printed album.",
       ],
     },
     { type: "h2", text: "Photo only, or photo and video?" },
     {
       type: "p",
-      text: `This one choice changes the price more than any other — and it's the most common regret. Families who book photo-only most often wish, afterward, that they had the vals and the surprise dance on video. If the budget only stretches one way, prioritize the moments that move: the [vals and the surprise dance](/portfolio) are made for video. Our ${study} Portrait Session is photo only — ${PT.hours.study} hours with one photographer — while every package from ${cinema} up pairs photos with the full-length film of her day and a short highlight. Compare them side by side on the [packages page](/#commissions); for most families, our pick is the Trio at ${trio}.`,
+      text: `This one choice changes the price more than any other — and it's the most common regret. Families who book photo-only most often wish, afterward, that they had the vals and the surprise dance on video. If the budget only stretches one way, prioritize the moments that move: the [vals and the surprise dance](/portfolio) are made for video. Our ${study} Portrait Session is photo only — a ${PT.hours.study}-hour session with one photographer — while every package from ${solo} up pairs photos with the full-length film of her day, and from ${cinema} up a short highlight comes with it. Compare them side by side on the [packages page](/#commissions); for most families, our pick is the Trio at ${trio}.`,
     },
     { type: "h2", text: "The deposit and the balance" },
     {
@@ -69,7 +69,7 @@ const post: BlogPost = {
     {
       type: "ul",
       items: [
-        `Up: adding video, a larger team, more hours on the day (from ${PT.extra.from} per extra hour with us, up to ${PT.hours.max} hours in all), a Second Portrait Day (${PT.addon.secondday}), or extras like a Dress Session (${PT.addon.destination}) or a Same-Day Edit, ready in 24 hours (${PT.addon.sameday}).`,
+        `Up: adding video, a larger team, more hours on the day (from ${PT.extra.from} per extra hour with us, up to ${PT.hours.max} hours in all), a Second Portrait Day (${PT.addon.secondday}), or extras like a Same-Day Edit, ready in 24 hours (${PT.addon.sameday}).`,
         "Up a little: travel far outside the metroplex (inside DFW there's usually no travel fee).",
         "Doesn't change the price with honest studios: your venue, your guest count, or the day of the week — be wary of anyone who quotes by those.",
       ],
@@ -92,7 +92,7 @@ const post: BlogPost = {
   faqs: [
     {
       q: "How much should I budget for quinceañera photography in DFW?",
-      a: `Most DFW studios publish photo-only packages around $1,500–$3,000 and photo + video around $3,000–$5,500, with luxury quince collections at $5,500–$8,000 and up. TX Quince publishes four packages: the Portrait Session at ${study} (photo only), the Duo at ${cinema}, the Trio at ${trio}, and the Full Celebration at ${production}.`,
+      a: `Most DFW studios publish photo-only packages around $1,500–$3,000 and photo + video around $3,000–$5,500, with luxury quince collections at $5,500–$8,000 and up. TX Quince publishes four packages: the Portrait Session at ${study} (photo only), the Solo at ${solo} (photo + video from one shooter), the Duo at ${cinema}, and the Trio at ${trio}.`,
     },
     {
       q: "Do I need both a photographer and a videographer?",

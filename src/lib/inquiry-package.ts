@@ -34,13 +34,14 @@ export const inquiryPackageSchema = commissionSchema
 export type InquiryPackage = z.infer<typeof inquiryPackageSchema>;
 
 /** Package → the inquiry's budget key (lib/inquiry BUDGET_OPTIONS). */
-export const BUDGET_FOR_TIER: Record<TierId, "portrait" | "photo_video" | "trio" | "full"> = {
+export const BUDGET_FOR_TIER: Record<TierId, "portrait" | "solo" | "photo_video" | "trio"> = {
   study: "portrait",
+  solo: "solo",
   cinema: "photo_video",
   trio: "trio",
-  production: "full",
-  // Retired; never sent by the picker any more (the server refuses it).
-  archive: "full",
+  // Retired; never sent by the picker any more (the server refuses them).
+  production: "trio",
+  archive: "trio",
 };
 
 /** Package → the inquiry's services value: the Portrait Session is photos only. */

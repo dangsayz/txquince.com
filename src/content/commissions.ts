@@ -109,7 +109,7 @@ export const bookingSteps: Record<Lang, BookingStep[]> = {
     },
     {
       title: "Your day, captured",
-      body: "From la misa to the last dance, we capture the whole day. The Full Celebration includes a portrait session first, so we already know each other on the big day.",
+      body: "From la misa to the last dance, we capture the whole day. The Duo and the Trio include a dress or save-the-date session, booked after your deposit, so we already know each other on the big day.",
     },
   ],
   es: [
@@ -127,7 +127,7 @@ export const bookingSteps: Record<Lang, BookingStep[]> = {
     },
     {
       title: "Tu día, para siempre",
-      body: "De la misa al último baile, capturamos todo el día. La Celebración completa incluye antes una sesión de retratos, así que ya nos conocemos cuando llega el gran día.",
+      body: "De la misa al último baile, capturamos todo el día. El Dúo y el Trío incluyen una sesión con el vestido o de save the date, que se agenda después de tu depósito, así que ya nos conocemos cuando llega el gran día.",
     },
   ],
 };

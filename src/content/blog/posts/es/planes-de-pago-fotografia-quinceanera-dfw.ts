@@ -37,9 +37,9 @@ const post: BlogPost = {
       type: "ul",
       items: [
         `Sesión de retratos (${PT.price.study}): depósito de ${PT.deposit.study} para apartar su fecha.`,
+        `El Solo (${PT.price.solo}): depósito de ${PT.deposit.solo} para apartar su fecha.`,
         `El Dúo (${PT.price.cinema}): depósito de ${PT.deposit.cinema} para apartar su fecha.`,
         `El Trío (${PT.price.trio}): depósito de ${PT.deposit.trio} para apartar su fecha.`,
-        `Celebración completa (${PT.price.production}): depósito de ${PT.deposit.production} para apartar su fecha.`,
       ],
     },
     {
@@ -93,7 +93,7 @@ const post: BlogPost = {
       type: "ul",
       items: [
         `Firme primero el contrato. Le apartamos la fecha ${hold} días mientras lo revisamos, y no se cobra nada hasta que esté aprobado. ¿Quiere platicarlo? Pida una llamada rápida sobre el horario y qué paquete le conviene.`,
-        `Empiece con la Sesión de retratos. Por ${PT.price.study}, es nuestro paquete de solo foto: ${PT.hours.study} horas con un fotógrafo, 60 fotos editadas y un video corto para redes sociales, con un depósito de ${PT.deposit.study}.`,
+        `Empiece con la Sesión de retratos. Por ${PT.price.study}, es nuestro paquete de solo foto: una sesión de ${PT.hours.study} hora con un fotógrafo y 60 fotos editadas, con un depósito de ${PT.deposit.study}.`,
       ],
     },
     {
@@ -117,7 +117,7 @@ const post: BlogPost = {
     },
     {
       q: "¿De cuánto es el depósito para apartar la fecha?",
-      a: `Es el ${retainerPct} de su paquete: ${PT.deposit.study} para la Sesión de retratos (${PT.price.study}), ${PT.deposit.cinema} para El Dúo (${PT.price.cinema}), ${PT.deposit.trio} para El Trío (${PT.price.trio}) y ${PT.deposit.production} para la Celebración completa (${PT.price.production}).`,
+      a: `Es el ${retainerPct} de su paquete: ${PT.deposit.study} para la Sesión de retratos (${PT.price.study}), ${PT.deposit.solo} para El Solo (${PT.price.solo}), ${PT.deposit.cinema} para El Dúo (${PT.price.cinema}) y ${PT.deposit.trio} para El Trío (${PT.price.trio}).`,
     },
     {
       q: "¿El depósito es reembolsable?",

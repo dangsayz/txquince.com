@@ -202,7 +202,7 @@ const post: BlogPost = {
     },
     {
       q: "How many hours of photography coverage do I need for a quinceañera?",
-      a: `To capture the whole day — getting ready, the Mass, portraits, and the full reception through the surprise dance — plan for about 6–8 hours, depending on how close together your church and venue are. With fewer hours, the morning or the end of the party usually gets cut. Our Duo includes ${PT.hours.cinema} hours, the Trio ${PT.hours.trio}, and the Full Celebration ${PT.hours.production}, and you can add hours, from ${PT.extra.from} an hour, up to ${PT.hours.max} in all.`,
+      a: `To capture the whole day — getting ready, the Mass, portraits, and the full reception through the surprise dance — plan for about 6–8 hours, depending on how close together your church and venue are. With fewer hours, the morning or the end of the party usually gets cut. Our Duo includes ${PT.hours.cinema} hours and the Trio ${PT.hours.trio}, and you can add hours, from ${PT.extra.from} an hour, up to ${PT.hours.max} in all.`,
     },
   ],
   related: [

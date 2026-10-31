@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { animate, useReducedMotion } from "motion/react";
-import { ADD_ONS, TIERS, matrixFor, money, pick, type Lang, type Tier, type TierId } from "./data";
+import { tierById, ADD_ONS, TIERS, matrixFor, money, pick, type Lang, type Tier, type TierId } from "./data";
 import { useSite } from "./state";
 import { usePriceBook } from "@/components/PriceBookProvider";
 import { BASE_CREW, COORDINATOR_INCLUDED, CREW_ROLES, addOnAllowed, canShift, type CrewRole } from "@/lib/commission";
@@ -91,7 +91,7 @@ function PackageCard({ tier: x }: { tier: Tier }) {
         {money(p.price)}
       </p>
       <p id={`${id}-m`} className="tq-pkg__meta">
-        {hoursLine(t, x.id, p.hours)} · {t.booking.team(BASE_CREW[x.id], COORDINATOR_INCLUDED[x.id])}
+        {hoursLine(t, x.id, p.hours)} · {x.id === "solo" ? t.booking.soloTeam : t.booking.team(BASE_CREW[x.id], COORDINATOR_INCLUDED[x.id])}
       </p>
       <ul id={`${id}-l`} className="tq-pkg__list">
         {x.bullets.map((b) => (
@@ -261,7 +261,7 @@ export function ExtrasStep({ onChangePackage }: { onChangePackage: () => void })
   const { t, lang, tier, hours, setHours, addOns, toggleAddOn } = useSite();
   const { book, maxHours, canAddHours } = usePriceBook();
   const p = book.packages[tier];
-  const x = TIERS.find((y) => y.id === tier)!;
+  const x = tierById(tier);
   const options = Array.from({ length: maxHours(tier) - p.hours + 1 }, (_, i) => p.hours + i);
 
   return (
