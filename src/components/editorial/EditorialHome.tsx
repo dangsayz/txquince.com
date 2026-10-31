@@ -135,9 +135,9 @@ function Hero({ overrides }: { overrides: HomeOverrides }) {
         </motion.div>
         <motion.div className="ed-hero__copy" style={reduce ? undefined : { opacity: copyOpacity, y: copyY }}>
           <h1 id="ed-hero-title" className="ed-hero__h1">
-            <span className="ed-eyebrow ed-eyebrow--light">{t.hero.h1}</span>
+            <span className="ed-eyebrow ed-eyebrow--light">{t.hero.h1}</span>{" "}
             <span className="ed-hero__title">
-              <span>{e.heroLines[0]}</span>
+              <span>{e.heroLines[0]}</span>{" "}
               <span>
                 {e.heroLines[1].replace(/XV$/, "")}
                 <em>XV</em>

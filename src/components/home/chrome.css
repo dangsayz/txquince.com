@@ -4,8 +4,9 @@
    Below that: one 64px bar with wordmark, text button and menu.
    ========================================================================== */
 
+/* Doubled class: txq.css sets --header-h on .txq too and may load later. */
 @media (min-width: 1200px) {
-  .txq { --header-h: 120px; }
+  .txq.txq { --header-h: 120px; }
 }
 
 /* ---------- Header ---------- */

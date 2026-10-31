@@ -1,6 +1,6 @@
 /**
- * Homepage-only type: Oswald (condensed uppercase display, one variable file
- * covering every weight, with accents for Spanish) and Instrument Serif italic
+ * Homepage-only type: Oswald (condensed uppercase display, with accents for
+ * Spanish; one weight, 500, so the page preloads a single display file) and Instrument Serif italic
  * (the one serif accent). Body text stays Inter from the site shell.
  *
  * Loaded by the homepage routes only, so other pages never download them.
@@ -11,7 +11,7 @@ import { Instrument_Serif, Oswald } from "next/font/google";
 
 export const display = Oswald({
   subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: "500",
   variable: "--font-ed-display",
   display: "swap",
 });
