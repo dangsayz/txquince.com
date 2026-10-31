@@ -11,6 +11,7 @@ import { Instrument_Serif, Oswald } from "next/font/google";
 
 export const display = Oswald({
   subsets: ["latin"],
+  weight: ["400", "500"],
   variable: "--font-ed-display",
   display: "swap",
 });
