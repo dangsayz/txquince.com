@@ -12,6 +12,7 @@ import { trackEvent } from "@/components/Tracker";
 import { CONTACT_COPY, CONTACT_EVENT, smsHref, whatsappHref } from "@/lib/contact";
 import { site } from "@/content/site";
 import { HOME } from "./home-copy";
+import { ED } from "@/components/editorial/copy";
 import "./chrome.css";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -96,7 +97,7 @@ export function SiteHeader() {
             </nav>
             <LangSwitch id="header" />
             <a href={homeHref("#intake")} className="sh-cta">
-              {t.nav.cta}
+              {ED[lang].reserve}
             </a>
             <a
               href={smsHref()}
@@ -192,10 +193,10 @@ export function SiteFooter() {
       <div className="sf-in">
         <div id="contact" className="sf-invite">
           <svg className="sf-tiara" width="64" height="34" viewBox="0 0 64 34" fill="none" aria-hidden>
-            <path d="M4 30h56M7 30 4 10l14 10L32 3l14 17 14-10-3 20" stroke="#b8975a" strokeWidth="1.6" strokeLinejoin="round" />
-            <circle cx="32" cy="3" r="2.4" fill="#b8975a" />
-            <circle cx="4" cy="10" r="2" fill="#b8975a" />
-            <circle cx="60" cy="10" r="2" fill="#b8975a" />
+            <path d="M4 30h56M7 30 4 10l14 10L32 3l14 17 14-10-3 20" stroke="#b76e79" strokeWidth="1.6" strokeLinejoin="round" />
+            <circle cx="32" cy="3" r="2.4" fill="#b76e79" />
+            <circle cx="4" cy="10" r="2" fill="#b76e79" />
+            <circle cx="60" cy="10" r="2" fill="#b76e79" />
           </svg>
           <p className="sf-label">{f.invite}</p>
           <h2 className="sf-title">{f.title}</h2>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { HomeSite } from "@/components/home/HomeSite";
+import { EditorialHome } from "@/components/editorial/EditorialHome";
+import { editorialFonts } from "@/components/editorial/fonts";
 import { latestJournal } from "@/components/txq/journal";
 import { getCinemaFilms } from "@/components/txq/films";
 import { HomeJsonLd } from "@/components/txq/HomeJsonLd";
@@ -47,7 +48,9 @@ export default async function InicioEs() {
     <>
       <HomeJsonLd lang="es" book={book} />
       <SlotProvider slots={await resolveHomeSlots(overrides)}>
-        <HomeSite journal={fillDeep(latestJournal(), book)} films={films} photos={photos} overrides={overrides} galleries={galleriesFromImages(portfolio)} cities={homeCities()} />
+        <div className={editorialFonts}>
+          <EditorialHome journal={fillDeep(latestJournal(), book)} films={films} photos={photos} overrides={overrides} galleries={galleriesFromImages(portfolio)} cities={homeCities()} />
+        </div>
       </SlotProvider>
     </>
   );
