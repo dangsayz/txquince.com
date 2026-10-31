@@ -131,7 +131,7 @@ function Hero({ overrides }: { overrides: HomeOverrides }) {
             <span className="ed-hero__title">
               {e.heroLines.map((line, i) => (
                 <span key={line} className="ed-hero__line">
-                  <span style={{ animationDelay: `${0.12 + i * 0.09}s` }}>{line}</span>
+                  <span style={{ animationDelay: `${0.12 + i * 0.09}s` }}>{line}</span>{" "}
                 </span>
               ))}
             </span>
