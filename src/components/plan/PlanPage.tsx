@@ -14,6 +14,7 @@ import { isPlanSlug } from "@/lib/plan-slug";
 import { formatPlanDate, planPath, timelinePath, toPublicPlan, type PlanLang } from "@/lib/plan";
 import { colorById, colorLabel, matchGallery } from "@/lib/quince-colors";
 import { getPriceBook } from "@/lib/pricing";
+import { PUBLIC_TIER_IDS } from "@/lib/commission";
 import { languageAlternates } from "@/lib/hreflang";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
@@ -21,8 +22,8 @@ import { smsHref } from "@/lib/contact";
 import "@/components/txq/pages/pages.css";
 import "./plan.css";
 
-/** The three event packages (the Portrait Session is a separate, smaller offer). */
-const EVENT_TIERS = new Set(["cinema", "trio", "production"]);
+/** The event packages families can book today (the Portrait Session is a separate, smaller offer). */
+const EVENT_TIERS = new Set<string>(PUBLIC_TIER_IDS.filter((id) => id !== "study"));
 
 export type PlanParams = Promise<{ slug: string }>;
 export type PlanSearch = Promise<Record<string, string | string[] | undefined>>;
