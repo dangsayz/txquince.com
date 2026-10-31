@@ -21,8 +21,10 @@ import type { HomeGallery } from "@/lib/home-galleries";
 import type { HomeCity } from "@/content/home-places";
 import { site } from "@/content/site";
 import { ED } from "./copy";
-import { BAND_VIDEO, DETAILS, FEATURE_STILL, HERO, JOURNAL_PHOTO, JOURNAL_PHOTO_FALLBACK, type Detail } from "./media";
+import { BAND_VIDEO, DETAILS, FEATURE_STILL, HERO, JOURNAL_PHOTO, JOURNAL_PHOTO_FALLBACK } from "./media";
 import { LazyVideo } from "./LazyVideo";
+import { Favorites } from "./Favorites";
+import type { Favorite } from "@/lib/favorites";
 import { useScenes } from "./scenes";
 import "./editorial.css";
 
@@ -45,6 +47,7 @@ export function EditorialHome({
   overrides = {},
   galleries = [],
   cities = [],
+  favorites = [],
 }: {
   journal: Journal;
   films: CinemaFilm[];
@@ -56,6 +59,8 @@ export function EditorialHome({
   galleries?: HomeGallery[];
   /** City pages for the "Where we work" links. */
   cities?: HomeCity[];
+  /** Starred portfolio photos (Admin → Portfolio → Feature), up to 100. */
+  favorites?: Favorite[];
 }) {
   const { setDockHidden } = useShell();
   const rootRef = useRef<HTMLDivElement>(null);
@@ -81,7 +86,7 @@ export function EditorialHome({
     <div ref={rootRef} className="ed">
       <Hero overrides={overrides} />
       <Statement />
-      <Details />
+      <FavoritesSection favorites={favorites} />
       <Band films={films} />
       <Collage galleries={galleries} />
       <Feature />
@@ -169,61 +174,26 @@ function Statement() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Details: the day in portrait clips                                  */
+/* Favorites: the contact sheet of starred portfolio photos            */
 /* ------------------------------------------------------------------ */
 
 const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"];
 
-function Details() {
+/** Starred portfolio photos; the six static stills when the database is unreachable. */
+function FavoritesSection({ favorites }: { favorites: Favorite[] }) {
   const { lang } = useSite();
-  return (
-    <section className="ed-details" aria-label={ED[lang].details.label}>
-      <div className="ed-wrap">
-        <p className="ed-label ed-details__label">{ED[lang].details.label}</p>
-        <ul className="ed-tiles">
-          {DETAILS.map((d, i) => (
-            <DetailTile key={d.id} d={d} i={i} />
-          ))}
-        </ul>
-      </div>
-    </section>
-  );
-}
-
-function DetailTile({ d, i }: { d: Detail; i: number }) {
-  const { lang } = useSite();
-  const [title, ...rest] = d.lines[lang];
-  return (
-    <li className="ed-tile" data-col={i % 3}>
-      <div className="ed-tile__media">
-        <div className="ed-tile__inner" data-ed="parallax">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={d.still.src}
-            width={d.still.width}
-            height={d.still.height}
-            alt={d.still.alt[lang]}
-            loading="lazy"
-            decoding="async"
-          />
-          <LazyVideo clip={d.video} className="ed-video" />
-        </div>
-      </div>
-      <div className="ed-tile__cap" data-ed="lines">
-        <span className="ed-roman" aria-hidden>
-          {ROMAN[i]}
-        </span>
-        <h3 className="ed-tile__title" data-line>
-          {title}
-        </h3>
-        {rest.map((line) => (
-          <span key={line} className="ed-tile__line" data-line>
-            {line}
-          </span>
-        ))}
-      </div>
-    </li>
-  );
+  const list: Favorite[] = favorites.length
+    ? favorites
+    : DETAILS.map((d) => ({
+        id: d.id,
+        src: d.still.src,
+        width: d.still.width,
+        height: d.still.height,
+        alt: d.still.alt[lang],
+        group: "celebration",
+        href: null,
+      }));
+  return <Favorites favorites={list} />;
 }
 
 /* ------------------------------------------------------------------ */

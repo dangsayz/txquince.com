@@ -12,6 +12,8 @@ import { resolveHomeSlots } from "@/lib/image-slot-home";
 import { SlotProvider } from "@/components/slots/SlotProvider";
 import { getPortfolioImages } from "@/lib/content-db";
 import { galleriesFromImages } from "@/lib/home-galleries";
+import { favoritesFromImages } from "@/lib/favorites";
+import { FavoritesJsonLd } from "@/components/editorial/FavoritesJsonLd";
 import { homeCities } from "@/content/home-places";
 import { site } from "@/content/site";
 import { languageAlternates } from "@/lib/hreflang";
@@ -46,12 +48,14 @@ export default async function HomePage() {
     getPriceBook(),
     getPortfolioImages(),
   ]);
+  const favorites = favoritesFromImages(portfolio);
   return (
     <>
       <HomeJsonLd lang="en" book={book} />
+      <FavoritesJsonLd favorites={favorites} lang="en" />
       <SlotProvider slots={await resolveHomeSlots(overrides)}>
         <div className={editorialFonts}>
-          <EditorialHome journal={fillDeep(latestJournal(), book)} films={films} photos={photos} overrides={overrides} galleries={galleriesFromImages(portfolio)} cities={homeCities()} />
+          <EditorialHome journal={fillDeep(latestJournal(), book)} films={films} photos={photos} overrides={overrides} galleries={galleriesFromImages(portfolio)} cities={homeCities()} favorites={favorites} />
         </div>
       </SlotProvider>
     </>
