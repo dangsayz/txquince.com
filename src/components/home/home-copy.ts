@@ -9,8 +9,14 @@ import type { TierId } from "@/lib/commission";
 /** Package rows: the chips beside each price (hours and team come from the book). */
 export const PACKAGE_DETAIL: Record<TierId, { en: string; es: string }> = {
   study: { en: "Photos only · 60 edited photos", es: "Solo fotos · 60 fotos editadas" },
-  cinema: { en: "Full-length film + 1-min highlight · 400+ photos", es: "Video completo + resumen de 1 min · 400+ fotos" },
-  trio: { en: "Full-length film + 1-min highlight · 600+ photos", es: "Video completo + resumen de 1 min · 600+ fotos" },
+  cinema: {
+    en: "Dress or save-the-date session · full-length film + 1-min highlight · 400+ photos",
+    es: "Sesión con el vestido o save the date · video completo + resumen de 1 min · 400+ fotos",
+  },
+  trio: {
+    en: "Dress or save-the-date session · full-length film + 3–5 min highlight · 700+ photos · album",
+    es: "Sesión con el vestido o save the date · video completo + resumen de 3–5 min · 700+ fotos · álbum",
+  },
   production: {
     en: "Coordinator · portraits · full-length film + 3–5 min highlight · 700+ photos · album",
     es: "Coordinadora · retratos · video completo + resumen de 3–5 min · 700+ fotos · álbum",

@@ -18,8 +18,8 @@ import { PT, fillDeep, fillPrices, hasPriceToken } from "../src/lib/price-text.t
 const clone = (b) => structuredClone({ ...b });
 
 test("defaults reproduce the launch quote", () => {
-  // Full Celebration (7 hrs included) + an 8th hour + Same-Day Edit.
-  const q = quoteWithDefaults("production", ["sameday"], 8);
+  // The Trio (7 hrs included) + an 8th hour + Same-Day Edit.
+  const q = quoteWithDefaults("trio", ["sameday"], 8);
   assert.equal(q.totalUsd, 2800 + 450 + 300);
   assert.equal(q.retainerUsd, Math.round(3550 * 0.25));
   assert.equal(q.balanceUsd, 3550 - Math.round(3550 * 0.25));
@@ -28,11 +28,11 @@ test("defaults reproduce the launch quote", () => {
 
 test("a changed book changes every number", () => {
   const b = clone(DEFAULT_PRICE_BOOK);
-  b.packages.production.price = 5555;
-  b.packages.production.extraHour = 111;
+  b.packages.trio.price = 5555;
+  b.packages.trio.extraHour = 111;
   b.addOns.sameday = 333;
   b.depositPercent = 30;
-  const q = quoteCommission(b, "production", ["sameday", "sameday"], 8);
+  const q = quoteCommission(b, "trio", ["sameday", "sameday"], 8);
   assert.equal(q.totalUsd, 5555 + 111 + 333);
   assert.equal(q.retainerUsd, Math.round(5999 * 0.3));
   assert.equal(q.depositPercent, 30);
@@ -41,9 +41,9 @@ test("a changed book changes every number", () => {
 test("hours are clamped to the package; $0 extra hour means none can be added", () => {
   const b = clone(DEFAULT_PRICE_BOOK);
   assert.equal(normalizeHours(b, "cinema", 99), 8);
-  assert.equal(normalizeHours(b, "cinema", 1), 5);
+  assert.equal(normalizeHours(b, "cinema", 1), 6);
   b.packages.cinema.extraHour = 0;
-  assert.equal(normalizeHours(b, "cinema", 8), 5);
+  assert.equal(normalizeHours(b, "cinema", 8), 6);
 });
 
 test("schema refuses nonsense", () => {
@@ -82,7 +82,7 @@ test("describeChanges lists only what moved", () => {
   b.packages.cinema.price = 3600;
   b.holdDays = 10;
   assert.deepEqual(describeChanges(DEFAULT_PRICE_BOOK, b), [
-    "The Duo price: $1,500 → $3,600",
+    "The Duo price: $2,000 → $3,600",
     "Date hold while reviewing: 7 → 10 days",
   ]);
 });
@@ -102,18 +102,18 @@ test("savePriceBook (called directly): validates, refuses stale versions, record
   await assert.rejects(savePriceBook(bad, "none", "owner@test"), (e) => e instanceof PricingError && e.code === "invalid");
 
   const next = clone(DEFAULT_PRICE_BOOK);
-  next.packages.production.price = 5200;
+  next.packages.trio.price = 5200;
   const saved = await savePriceBook(next, "none", "owner@test");
-  assert.equal(saved.book.packages.production.price, 5200);
+  assert.equal(saved.book.packages.trio.price, 5200);
   assert.equal(saved.book.updatedBy, "owner@test");
-  assert.deepEqual(saved.changes, ["Full Celebration price: $2,800 → $5,200"]);
+  assert.deepEqual(saved.changes, ["The Trio price: $2,800 → $5,200"]);
 
   // A form loaded before that save (baseVersion "none") is refused — nothing written.
   const stale = clone(DEFAULT_PRICE_BOOK);
-  stale.packages.production.price = 9999;
+  stale.packages.trio.price = 9999;
   await assert.rejects(savePriceBook(stale, "none", "other@test"), (e) => e instanceof PricingError && e.code === "conflict");
   const after = await readPriceBook();
-  assert.equal(after.book.packages.production.price, 5200);
+  assert.equal(after.book.packages.trio.price, 5200);
 
   const history = await listPriceHistory();
   assert.equal(history.length, 1);
@@ -121,5 +121,5 @@ test("savePriceBook (called directly): validates, refuses stale versions, record
   const files = await readdir(join(dir, "config", "pricing-history"));
   assert.equal(files.filter((f) => f.endsWith(".json")).length, 1);
   const live = JSON.parse(await readFile(join(dir, "config", "pricing.json"), "utf8"));
-  assert.equal(live.packages.production.price, 5200);
+  assert.equal(live.packages.trio.price, 5200);
 });
