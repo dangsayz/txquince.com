@@ -21,6 +21,7 @@ import { getFirstTouch } from "@/components/Tracker";
 import { ContactLine } from "@/components/ContactButtons";
 import { BASE_CREW, COORDINATOR_INCLUDED } from "@/lib/commission";
 import { HONEYPOT_FIELD } from "@/lib/inquiry";
+import { BUDGET_FOR_TIER, servicesForTier } from "@/lib/inquiry-package";
 import { usePriceBook } from "@/components/PriceBookProvider";
 import { ADD_ONS, CITIES, money, pick, tierById, type Lang, type TierId } from "./data";
 import { BOOKING_STEPS, isoDate, useAvailability, useQuote, useSite } from "./state";
@@ -243,8 +244,8 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
           event_date: b.date,
           venue: b.venue.trim(),
           // The server derives services, budget and the priced summary from `package`.
-          services: tier === "study" ? "photo" : "both",
-          budget_range: "full",
+          services: servicesForTier(tier),
+          budget_range: BUDGET_FOR_TIER[tier],
           message: b.note.trim(),
           package: {
             city: b.city,

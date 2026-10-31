@@ -70,8 +70,17 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // 4) Server-side validation (never trust the client).
-  const parsed = inquirySchema.safeParse(body);
+  // 4) Server-side validation (never trust the client). A package-picker
+  // request carries its package, and the server derives services and budget
+  // from it (below), so validate with those derived keys rather than whatever
+  // placeholder the browser sent: a budget key the picker no longer knows must
+  // never be able to turn every homepage request away.
+  const pkgPick = body.package !== undefined ? inquiryPackageSchema.safeParse(body.package) : null;
+  const parsed = inquirySchema.safeParse(
+    pkgPick?.success
+      ? { ...body, services: servicesForTier(pkgPick.data.tier), budget_range: BUDGET_FOR_TIER[pkgPick.data.tier] }
+      : body,
+  );
   if (!parsed.success) {
     const fieldErrors = parsed.error.flatten().fieldErrors;
     return NextResponse.json(
@@ -85,7 +94,7 @@ export async function POST(req: NextRequest) {
   // From the homepage package picker: re-validate and re-price the family's
   // picks on the server; the summary (not any client total) goes in the message.
   if (body.package !== undefined) {
-    const pkg = inquiryPackageSchema.safeParse(body.package);
+    const pkg = pkgPick!;
     if (!pkg.success || !fields.event_date) {
       return NextResponse.json(
         { ok: false, error: "Please check your package choices and date, then try again." },
