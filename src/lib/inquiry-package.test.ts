@@ -32,6 +32,11 @@ describe("inquiry package", () => {
     expect(BUDGET_FOR_TIER.trio).toBe("trio");
   });
 
+  it("refuses an extra the package doesn't offer, called directly", () => {
+    expect(inquiryPackageSchema.safeParse({ ...pick, tier: "production", add_ons: ["highlight"] }).success).toBe(false);
+    expect(inquiryPackageSchema.safeParse({ ...pick, tier: "cinema", hours: 5, add_ons: ["highlight"] }).success).toBe(true);
+  });
+
   it("refuses the retired Two-Day Celebration on a new request, called directly", () => {
     const r = inquiryPackageSchema.safeParse({ ...pick, tier: "archive" });
     expect(r.success).toBe(false);
