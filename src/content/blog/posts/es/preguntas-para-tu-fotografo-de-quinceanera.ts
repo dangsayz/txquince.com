@@ -61,7 +61,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Así suena una buena respuesta: si el segundo fotógrafo va incluido, si está disponible como complemento o si no se ofrece, y en cuáles paquetes. Con nosotros, El Trío trae dos fotógrafos y un videógrafo, y se puede agregar una coordinadora que dirige el día por ${PT.addon.coordinator} al día. Son fotógrafos y videógrafos del propio equipo de TX Quince, asignados según la fecha y la disponibilidad — las familias no pueden pedir a personas específicas, ni siquiera a los dueños —, y cada galería y cada película la editan los dueños. Puede ver los ángulos inversos y los momentos de doble cobertura que hacen posibles en el [portafolio](/portfolio). Si un fotógrafo no puede mostrarle cobertura de dos cámaras, dé por hecho que trabaja solo.`,
+      text: `Así suena una buena respuesta: si el segundo fotógrafo va incluido, si está disponible como complemento o si no se ofrece, y en cuáles paquetes. Con nosotros, El Trío trae dos fotógrafos y un videógrafo, y se puede agregar una coordinadora que dirija el día, por ${PT.addon.coordinator} al día. Son fotógrafos y videógrafos del propio equipo de TX Quince, asignados según la fecha y la disponibilidad — las familias no pueden pedir a personas específicas, ni siquiera a los dueños —, y cada galería y cada película la editan los dueños. Puede ver los ángulos inversos y los momentos de doble cobertura que hacen posibles en el [portafolio](/portfolio). Si un fotógrafo no puede mostrarle cobertura de dos cámaras, dé por hecho que trabaja solo.`,
     },
     { type: "h2", text: "5. ¿Me da los derechos de uso e impresión de las fotos?" },
     {

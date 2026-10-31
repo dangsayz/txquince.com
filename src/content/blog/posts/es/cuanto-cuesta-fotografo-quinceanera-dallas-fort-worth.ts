@@ -45,7 +45,7 @@ const post: BlogPost = {
       type: "ul",
       items: [
         "Horas de cobertura — el día de unos quince es largo: el arreglo, la misa de acción de gracias, las fotos formales y la fiesta. La cobertura de día completo es la diferencia entre un resumen y la historia entera.",
-        `Un artista o un equipo — un fotógrafo y un videógrafo en El Dúo (${BASE_CREW.cinema} en total), dos fotógrafos y un videógrafo en El Trío (${BASE_CREW.trio}) — significa que la iglesia y la entrada al salón quedan cubiertas al mismo tiempo, con ángulos opuestos que una sola cámara no puede inventar. Una coordinadora que dirige el día se puede agregar por ${PT.addon.coordinator} al día.`,
+        `Un artista o un equipo — un fotógrafo y un videógrafo en El Dúo (${BASE_CREW.cinema} en total), dos fotógrafos y un videógrafo en El Trío (${BASE_CREW.trio}) — significa que la iglesia y la entrada al salón quedan cubiertas al mismo tiempo, con ángulos opuestos que una sola cámara no puede inventar. También se puede agregar una coordinadora que dirija el día, por ${PT.addon.coordinator} al día.`,
         "Foto, o foto y video — el video es un oficio aparte y una edición aparte. Un paquete con ambos son dos narradores, no una persona haciendo malabares con la cámara y el tripié.",
         "Entrega — una galería privada en línea y, en los paquetes con video, la película completa de su día entero más un resumen (de 1 minuto en El Dúo, de 3 a 5 minutos en El Trío). El Trío suma un álbum impreso.",
       ],

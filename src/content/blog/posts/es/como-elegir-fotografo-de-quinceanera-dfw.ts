@@ -77,7 +77,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Por eso cada paquete de foto y video de TX Quince reúne al menos a un fotógrafo y a un videógrafo —hasta un equipo de ${BASE_CREW.trio} en El Trío— como un solo equipo durante todo el día, y se puede agregar una coordinadora que dirige el día por ${PT.addon.coordinator} al día. Son fotógrafos y videógrafos del propio equipo de TX Quince, asignados según la fecha y la disponibilidad (las familias no pueden pedir a personas específicas, ni siquiera a los dueños), y cada galería y cada película la editan los dueños. Si todavía está decidiendo si necesita video, lea [foto o video para una quinceañera](/es/blog/foto-o-video-quinceanera) antes de elegir: es el arrepentimiento más común después de la fiesta.`,
+      text: `Por eso cada paquete de foto y video de TX Quince reúne al menos a un fotógrafo y a un videógrafo —hasta un equipo de ${BASE_CREW.trio} en El Trío— como un solo equipo durante todo el día, y se puede agregar una coordinadora que dirija el día, por ${PT.addon.coordinator} al día. Son fotógrafos y videógrafos del propio equipo de TX Quince, asignados según la fecha y la disponibilidad (las familias no pueden pedir a personas específicas, ni siquiera a los dueños), y cada galería y cada película la editan los dueños. Si todavía está decidiendo si necesita video, lea [foto o video para una quinceañera](/es/blog/foto-o-video-quinceanera) antes de elegir: es el arrepentimiento más común después de la fiesta.`,
     },
     {
       type: "cta",
