@@ -158,25 +158,35 @@
 .txq .tq-bk .tq-hour__h { font-weight: 600; }
 .txq .tq-bk .tq-hour__p { color: var(--g-mute); }
 
-/* ---------- Team stepper ---------- */
+/* ---------- Team stepper (iOS-style capsule) ---------- */
 .txq .tq-bk .tq-crew { gap: 10px; }
 .txq .tq-bk .tq-crew__row {
   border: 0;
-  border-radius: var(--g-r-ctl);
-  background: var(--g-fill);
-  padding: 8px 8px 8px 16px;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: var(--g-card);
+  padding: 8px 8px 8px 18px;
 }
-.txq .tq-bk .tq-crew button {
-  width: 44px;
-  height: 44px;
+.txq .tq-bk .tq-stepper-ctl {
+  gap: 4px;
+  padding: 4px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--g-fill);
+}
+.txq .tq-bk .tq-stepper-ctl button {
+  width: 40px;
+  height: 40px;
   border: 0;
   border-radius: 999px;
   background: #ffffff;
   color: var(--g-ink);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   font-size: 20px;
 }
-.txq .tq-bk .tq-crew button:disabled { opacity: 0.35; box-shadow: none; }
+.txq .tq-bk .tq-stepper-ctl button:not(:disabled):hover { background: #ffffff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.14); }
+.txq .tq-bk .tq-stepper-ctl button:disabled { background: transparent; box-shadow: none; color: rgba(0, 0, 0, 0.25); }
+.txq .tq-bk .tq-stepper-ctl output { min-width: 28px; text-align: center; font-weight: 600; }
 
 /* ---------- Extras ---------- */
 .txq .tq-bk .tq-addons { gap: 12px; }
