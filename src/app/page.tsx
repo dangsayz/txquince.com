@@ -4,7 +4,7 @@ import { editorialFonts } from "@/components/editorial/fonts";
 import { latestJournal } from "@/components/txq/journal";
 import { getCinemaFilms } from "@/components/txq/films";
 import { HomeJsonLd } from "@/components/txq/HomeJsonLd";
-import { getFeedPage, getHomeOverrides } from "@/lib/photo-dump";
+import { getHomeOverrides } from "@/lib/photo-dump";
 import { priceFloor, usd } from "@/lib/commission";
 import { getPriceBook } from "@/lib/pricing";
 import { fillDeep } from "@/lib/price-text";
@@ -12,6 +12,8 @@ import { resolveHomeSlots } from "@/lib/image-slot-home";
 import { SlotProvider } from "@/components/slots/SlotProvider";
 import { getPortfolioImages } from "@/lib/content-db";
 import { galleriesFromImages } from "@/lib/home-galleries";
+import { favoritesFromImages } from "@/lib/favorites";
+import { FavoritesJsonLd } from "@/components/editorial/FavoritesJsonLd";
 import { homeCities } from "@/content/home-places";
 import { site } from "@/content/site";
 import { languageAlternates } from "@/lib/hreflang";
@@ -39,19 +41,20 @@ export default async function HomePage() {
   // are empty (section hidden, original images) when storage is unreachable.
   // The gallery section is the real portfolio, grouped by shoot (empty when
   // the database is unreachable; the section then shows real photos instead).
-  const [films, photos, overrides, book, portfolio] = await Promise.all([
+  const [films, overrides, book, portfolio] = await Promise.all([
     getCinemaFilms(),
-    getFeedPage(0),
     getHomeOverrides(),
     getPriceBook(),
     getPortfolioImages(),
   ]);
+  const favorites = favoritesFromImages(portfolio);
   return (
     <>
       <HomeJsonLd lang="en" book={book} />
+      <FavoritesJsonLd favorites={favorites} lang="en" />
       <SlotProvider slots={await resolveHomeSlots(overrides)}>
         <div className={editorialFonts}>
-          <EditorialHome journal={fillDeep(latestJournal(), book)} films={films} photos={photos} overrides={overrides} galleries={galleriesFromImages(portfolio)} cities={homeCities()} />
+          <EditorialHome journal={fillDeep(latestJournal(), book)} films={films} overrides={overrides} galleries={galleriesFromImages(portfolio)} cities={homeCities()} favorites={favorites} />
         </div>
       </SlotProvider>
     </>

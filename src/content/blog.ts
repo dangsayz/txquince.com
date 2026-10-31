@@ -78,6 +78,8 @@ import courtVals from "./blog/posts/court-vals-surprise-dance-quinceanera";
 import mass from "./blog/posts/quinceanera-mass-dallas-fort-worth";
 import howToChoose from "./blog/posts/how-to-choose-quinceanera-photographer-dfw";
 import questionsToAsk from "./blog/posts/questions-to-ask-quinceanera-photographer";
+import vendorsBurned from "./blog/posts/hire-quinceanera-vendors-without-getting-burned-texas";
+import deliveryTime from "./blog/posts/how-long-to-get-quinceanera-photos-video-back";
 import photoVsVideo from "./blog/posts/quinceanera-photo-vs-video";
 import preQuince from "./blog/posts/pre-quince-photo-session-dfw";
 import photoLocations from "./blog/posts/best-quinceanera-photo-locations-dfw";
@@ -89,6 +91,8 @@ import themes from "./blog/posts/quinceanera-themes-and-colors";
 import vmBallroom from "./blog/posts/quinceanera-at-vm-ballroom-balch-springs";
 
 export const posts: BlogPost[] = [
+  vendorsBurned,
+  deliveryTime,
   costDfw,
   whenToBook,
   questionsToAsk,
@@ -170,8 +174,12 @@ import esCanciones from "./blog/posts/es/canciones-para-quinceanera";
 import esColoresVestido from "./blog/posts/es/colores-de-vestido-de-quinceanera-que-fotografian-mejor";
 import esThemes from "./blog/posts/es/temas-y-colores-para-quinceanera";
 import esVmBallroom from "./blog/posts/es/quinceanera-en-vm-ballroom-balch-springs";
+import esEntrega from "./blog/posts/es/cuanto-tardan-las-fotos-y-video-de-quinceanera";
+import esProveedores from "./blog/posts/es/como-contratar-proveedores-de-quinceanera-sin-que-le-estafen";
 
 export const esPosts: BlogPost[] = [
+  esProveedores,
+  esEntrega,
   esCosto,
   esCuandoReservar,
   esPreguntas,
@@ -208,6 +216,8 @@ export function relatedEsPosts(post: BlogPost, n = 3): BlogPost[] {
 
 /** EN ↔ ES slug pairs, for hreflang alternates linking each translation. */
 const EN_ES_PAIRS: { en: string; es: string }[] = [
+  { en: "how-long-to-get-quinceanera-photos-video-back", es: "cuanto-tardan-las-fotos-y-video-de-quinceanera" },
+  { en: "hire-quinceanera-vendors-without-getting-burned-texas", es: "como-contratar-proveedores-de-quinceanera-sin-que-le-estafen" },
   { en: "quinceanera-at-vm-ballroom-balch-springs", es: "quinceanera-en-vm-ballroom-balch-springs" },
   { en: "quinceanera-photographer-cost-dallas-fort-worth", es: "cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth" },
   { en: "quinceanera-songs-for-every-moment", es: "canciones-para-quinceanera" },

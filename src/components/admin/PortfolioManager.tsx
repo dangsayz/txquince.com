@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import type { PortfolioImage, ImageVendorCredit, Vendor } from "@/lib/content-db";
+import { colorLabel, imageColors, parseColors } from "@/lib/quince-colors";
 import {
   CATEGORIES,
   CATEGORIES_BY_GROUP,
@@ -1106,6 +1107,10 @@ export function PortfolioManager({
                         {describing.has(img.id) ? "…" : "AI"}
                       </button>
                     </div>
+                    {/* Colors — powers the color match on /plan pages. Any spelling,
+                        English or Spanish; saved as canonical ids. Empty = the
+                        colors detected in the alt/title/caption are used. */}
+                    <ColorsInput img={img} onSave={(colors) => patch(img.id, { colors })} />
                     <CategorySelect
                       value={img.section}
                       onChange={(next) => patch(img.id, { section: next })}
@@ -1194,5 +1199,29 @@ export function PortfolioManager({
         </div>
       ))}
     </div>
+  );
+}
+
+/** Free-text color tags ("fucsia, dorado", "pink and gold") → canonical ids. */
+function ColorsInput({ img, onSave }: { img: PortfolioImage; onSave: (colors: string[]) => void }) {
+  const saved = img.colors ?? [];
+  const detected = saved.length ? [] : imageColors(img);
+  const label = (ids: readonly string[]) => ids.map((c) => colorLabel(c as Parameters<typeof colorLabel>[0], "en")).join(", ");
+  return (
+    <label className="grid gap-1 text-sm">
+      <span className="sr-only">Photo colors</span>
+      <input
+        key={`colors-${img.id}-${saved.join(",")}`}
+        defaultValue={label(saved)}
+        placeholder={detected.length ? `Colors (detected: ${label(detected)})` : "Colors (e.g. fucsia, dorado)"}
+        aria-label="Photo colors"
+        onBlur={(e) => {
+          const next = parseColors(e.target.value, 8);
+          if (next.join(",") !== saved.join(",")) onSave(next);
+          e.target.value = label(next);
+        }}
+        className="min-h-11 w-full rounded-lg border border-line bg-white px-3 py-2 text-base focus:border-accent focus:outline-2 focus:outline-offset-2 focus:outline-accent"
+      />
+    </label>
   );
 }

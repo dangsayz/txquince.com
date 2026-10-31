@@ -8,6 +8,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 const mainLinks = [
   { href: "/admin", label: "Today" },
   { href: "/admin/inquiries", label: "Inquiries" },
+  { href: "/admin/plans", label: "Plans" },
   { href: "/admin/bookings", label: "Bookings" },
   { href: "/admin/insights", label: "Insights" },
   { href: "/admin/portfolio", label: "Website" },
@@ -20,11 +21,16 @@ const websiteLinks = [
   { href: "/admin/venues", label: "Venues" },
   { href: "/admin/hero", label: "Page imagery" },
   { href: "/admin/prices", label: "Prices" },
+  { href: "/admin/price-guide", label: "Price guide" },
   { href: "/admin/images", label: "Every image" },
 ] as const;
 
 function isActive(pathname: string, href: string) {
-  return pathname === href || (href === "/admin/inquiries" && pathname.startsWith("/admin/inquiries/"));
+  return (
+    pathname === href ||
+    (href === "/admin/inquiries" && pathname.startsWith("/admin/inquiries/")) ||
+    (href === "/admin/plans" && pathname === "/admin/availability")
+  );
 }
 
 function MainNavigation({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {

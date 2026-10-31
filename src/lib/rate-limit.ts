@@ -16,7 +16,7 @@
  *   if (await rateLimited(clientIp(req))) return 429;
  */
 
-export type RateLimitName = "commission" | "inquiry" | "track" | "csp-report";
+export type RateLimitName = "commission" | "inquiry" | "plan" | "track" | "csp-report";
 
 export type RateLimitPolicy = {
   /** Requests allowed per window. */
@@ -35,6 +35,8 @@ export type RateLimitPolicy = {
 export const RATE_LIMITS: Record<RateLimitName, RateLimitPolicy> = {
   commission: { limit: 5, windowMs: 60_000, binding: "RATE_LIMIT_FORMS" },
   inquiry: { limit: 5, windowMs: 60_000, binding: "RATE_LIMIT_FORMS" },
+  // /api/plan (new plan) and /api/plan/[slug]/hold (open checkout).
+  plan: { limit: 5, windowMs: 60_000, binding: "RATE_LIMIT_FORMS" },
   track: { limit: 60, windowMs: 60_000, binding: "RATE_LIMIT_TRACK" },
   "csp-report": { limit: 60, windowMs: 60_000, binding: "RATE_LIMIT_TRACK" },
 };
