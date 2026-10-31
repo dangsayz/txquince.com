@@ -48,7 +48,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Así suena una buena respuesta: un rango de entrega y un tiempo de entrega, por escrito. Una galería privada en línea que usted pueda descargar y compartir, una cantidad de fotos acorde a las horas de cobertura, y una fecha a la que pueda darle seguimiento. En nuestros paquetes con video, la película completa viene además con un resumen — de 1 minuto en El Dúo, y un video resumen de 3 a 5 minutos en El Trío —, la versión rápida que va a querer compartir con la familia.",
+      text: "Así suena una buena respuesta: un rango de entrega y un tiempo de entrega, por escrito. Una galería privada en línea que usted pueda descargar y compartir, una cantidad de fotos acorde a las horas de cobertura, y una fecha a la que pueda darle seguimiento. En El Dúo y El Trío, la película completa viene además con un resumen — de 1 minuto en El Dúo, y un video resumen de 3 a 5 minutos en El Trío —, la versión rápida que va a querer compartir con la familia; con El Solo, el video resumen se puede agregar.",
     },
     {
       type: "callout",
@@ -113,7 +113,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Así suena una buena respuesta: un sí o un no directo. Nosotros ofrecemos foto y video como un solo equipo en cada paquete desde El Dúo, con un equipo de ${BASE_CREW.cinema} a ${BASE_CREW.trio} personas trabajando el mismo día, y la película completa de su día más un resumen corto, no una sola persona haciendo malabares entre la cámara y el tripié. Si todavía está decidiendo si vale la pena el video, [foto o video para la quinceañera](/es/blog/foto-o-video-quinceanera) sopesa esa decisión sin rodeos.`,
+      text: `Así suena una buena respuesta: un sí o un no directo, y una respuesta clara sobre quién está detrás de cada cámara. Nosotros ofrecemos foto y video en cada paquete desde El Solo. El Solo es una sola persona con 2–3 cámaras (una cámara que lleva encima, una cámara fija de lado y la cámara de fotos), un fotógrafo y videógrafo en uno, así que donde pase algo hay una cámara apuntando, y usted recibe la película completa de su día. El Dúo y El Trío ponen un equipo dedicado de ${BASE_CREW.cinema} a ${BASE_CREW.trio} personas trabajando el mismo día, con la película completa de su día más un resumen corto. Si todavía está decidiendo si vale la pena el video, [foto o video para la quinceañera](/es/blog/foto-o-video-quinceanera) sopesa esa decisión sin rodeos.`,
     },
     { type: "h2", text: "Para cerrar" },
     {

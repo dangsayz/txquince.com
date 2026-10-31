@@ -204,7 +204,7 @@ const post: BlogPost = {
     },
     {
       q: "Do you need a second photographer for a quinceañera?",
-      a: `It's not required, but a second artist means two angles at once — someone on her face during the vals while the other catches the crowd, or one on getting-ready details while the other shoots her. At TX Quince every photo + video package includes at least one photographer and one videographer — the Trio brings two photographers and a videographer (${BASE_CREW.trio} in all) — which is why nothing important happens off-camera. A coordinator who runs the day can be added for ${PT.addon.coordinator} a day.`,
+      a: `It's not required, but a second artist means two angles at once — someone on her face during the vals while the other catches the crowd, or one on getting-ready details while the other shoots her. At TX Quince the Duo and the Trio include at least one photographer and one videographer — the Trio brings two photographers and a videographer (${BASE_CREW.trio} in all) — which is why nothing important happens off-camera; the Solo gets you photo and video from one shooter with a 2–3 camera setup. A coordinator who runs the day can be added for ${PT.addon.coordinator} a day.`,
     },
     {
       q: "How many edited photos do you get from a quinceañera?",

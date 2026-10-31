@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { PT } from "@/lib/price-text";
 
-// Video starts with the Duo (the Portrait Session is photos only).
-const FROM_TOKEN = PT.price.cinema;
+// Video starts with the Solo (the Portrait Session is photos only).
+const FROM_TOKEN = PT.price.solo;
 import { getPriceBook } from "@/lib/pricing";
 import { fillDeep } from "@/lib/price-text";
 import { VideographerPage } from "@/components/VideographerPage";

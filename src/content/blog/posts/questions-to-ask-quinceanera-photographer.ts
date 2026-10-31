@@ -47,7 +47,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "What a good answer sounds like: a delivery range and a turnaround time, in writing. A private online gallery you can download and share, an honest edit count tied to your coverage hours, and a date you can hold them to. On our video packages the full-length film also comes with a short highlight — 1 minute with the Duo, a 3–5 minute highlight film with the Trio — the quick version you'll want to share with family.",
+      text: "What a good answer sounds like: a delivery range and a turnaround time, in writing. A private online gallery you can download and share, an honest edit count tied to your coverage hours, and a date you can hold them to. On the Duo and the Trio the full-length film also comes with a short highlight — 1 minute with the Duo, a 3–5 minute highlight film with the Trio — the quick version you'll want to share with family; with the Solo, the highlight film is an add-on.",
     },
     {
       type: "callout",
@@ -112,7 +112,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `What a good answer sounds like: a direct yes or no. We offer photo + video as one team on every package from the Duo up — the full-length film of her whole day plus a short highlight — with a team of ${BASE_CREW.cinema} to ${BASE_CREW.trio} working the same day, not one person juggling a camera and a tripod. If you're weighing whether video is worth it at all, [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video) walks through the tradeoff honestly.`,
+      text: `What a good answer sounds like: a direct yes or no, and a straight answer about who is behind each camera. We offer photo + video on every package from the Solo up. The Solo is one shooter with a 2–3 camera setup (a camera on them, a fixed side camera and the photo camera), so wherever the action is, a camera is pointed at it, and you get the full-length film of her day. The Duo and the Trio put a dedicated team of ${BASE_CREW.cinema} to ${BASE_CREW.trio} on the same day, with the full-length film of her whole day plus a short highlight. If you're weighing whether video is worth it at all, [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video) walks through the tradeoff honestly.`,
     },
     { type: "h2", text: "Putting it together" },
     {

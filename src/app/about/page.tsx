@@ -142,7 +142,7 @@ export default async function AboutPage() {
               <span className="tq-mono tq-muted">[03]</span>
               <h3 className="tq-display">Published packages.</h3>
               <p>
-                Three packages with prices on the page: the Portrait Session, the Duo and the Trio.{" "}
+                Four packages with prices on the page: the Portrait Session, the Solo, the Duo and the Trio.{" "}
                 <Link href={commissionLinks.en.compare} className="tq-pg-inline">
                   Compare packages
                 </Link>
