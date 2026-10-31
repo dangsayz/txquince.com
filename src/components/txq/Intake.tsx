@@ -25,6 +25,7 @@ import { usePriceBook } from "@/components/PriceBookProvider";
 import { ADD_ONS, CITIES, money, pick, tierById, type Lang, type TierId } from "./data";
 import { BOOKING_STEPS, isoDate, useAvailability, useQuote, useSite } from "./state";
 import { ExtrasStep, PackageStep, useTween } from "./Commissions";
+import "./booking-glass.css";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const LAST = BOOKING_STEPS - 1;

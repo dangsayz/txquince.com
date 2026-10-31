@@ -253,7 +253,7 @@ export default async function LocationsHubEs() {
               </h2>
             </div>
             <div className="tq-place-cta__side">
-              <p>Explora el trabajo y los cuatro paquetes; luego dinos qué fecha tienes en mente.</p>
+              <p>Explora el trabajo y los tres paquetes; luego dinos qué fecha tienes en mente.</p>
               <div className="tq-place-actions">
                 <Link href="/es#intake" className="tq-btn tq-btn--lg">
                   Consultar tu fecha <span className="tq-arrow" aria-hidden>↗</span>

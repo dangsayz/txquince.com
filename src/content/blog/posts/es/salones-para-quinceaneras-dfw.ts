@@ -4,7 +4,6 @@ import { PT } from "@/lib/price-text";
 const study = PT.price.study;
 const cinema = PT.price.cinema;
 const trio = PT.price.trio;
-const production = PT.price.production;
 
 const post: BlogPost = {
   slug: "salones-para-quinceaneras-dfw",
@@ -128,7 +127,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Una última nota sobre el dinero: el salón y el banquete son su propia partida del presupuesto, completamente aparte de la fotografía. Nuestros [paquetes](/es#commissions) están publicados en ${study} (solo foto), ${cinema}, ${trio} y ${production}, así que una vez que elija su salón, el costo de su cobertura ya es un número conocido.`,
+      text: `Una última nota sobre el dinero: el salón y el banquete son su propia partida del presupuesto, completamente aparte de la fotografía. Nuestros [paquetes](/es#commissions) están publicados en ${study} (solo foto), ${cinema} y ${trio}, así que una vez que elija su salón, el costo de su cobertura ya es un número conocido.`,
     },
   ],
   faqs: [
@@ -146,7 +145,7 @@ const post: BlogPost = {
     },
     {
       q: "¿Cuánto cuestan los salones para quinceañera en Dallas?",
-      a: `El costo del salón varía mucho según el lugar, la temporada, el día de la semana y si incluye banquete, así que pida una cotización vigente a cada salón directamente; ese número es aparte de la fotografía. Como referencia, los paquetes de TX Quince están publicados en ${study}, ${cinema}, ${trio} y ${production}, sin importar qué salón reserve.`,
+      a: `El costo del salón varía mucho según el lugar, la temporada, el día de la semana y si incluye banquete, así que pida una cotización vigente a cada salón directamente; ese número es aparte de la fotografía. Como referencia, los paquetes de TX Quince están publicados en ${study}, ${cinema} y ${trio}, sin importar qué salón reserve.`,
     },
     {
       q: "¿Puedo llevar a mi propio fotógrafo a un salón de DFW?",

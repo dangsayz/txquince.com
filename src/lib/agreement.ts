@@ -22,7 +22,7 @@ import { addOnAllowed,
   type PriceBook,
   type TierId,
 } from "@/lib/commission";
-import { ADD_ONS, matrixFor, TIERS, type Lang } from "@/components/txq/data";
+import { tierById, ADD_ONS, matrixFor, type Lang } from "@/components/txq/data";
 
 /** Bump when the wording below changes; stored with every signature. */
 export const AGREEMENT_VERSION = "2026-10-31.1";
@@ -188,7 +188,8 @@ export function buildAgreement(input: AgreementInput, book: PriceBook): Agreemen
   const t = T[input.lang];
   const q = quoteCommission(book, input.tier, input.addOns, input.hours);
   const crew = normalizeCrew(input.tier, input.crew);
-  const tier = TIERS.find((x) => x.id === input.tier)!;
+  // tierById also finds retired packages, so an older booking still gets its agreement.
+  const tier = tierById(input.tier);
   const base = q.baseHours;
   const extraHours = q.hours - base;
   // Same rule as the quote: an extra the package doesn't offer is never listed (or charged).

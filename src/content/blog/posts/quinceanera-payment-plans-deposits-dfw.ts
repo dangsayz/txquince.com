@@ -39,7 +39,6 @@ const post: BlogPost = {
         `Portrait Session (${PT.price.study}) — ${PT.deposit.study} deposit to reserve your date.`,
         `The Duo (${PT.price.cinema}) — ${PT.deposit.cinema} deposit to reserve your date.`,
         `The Trio (${PT.price.trio}) — ${PT.deposit.trio} deposit to reserve your date.`,
-        `Full Celebration (${PT.price.production}) — ${PT.deposit.production} deposit to reserve your date.`,
       ],
     },
     {
@@ -93,7 +92,7 @@ const post: BlogPost = {
       type: "ul",
       items: [
         `Sign the agreement first. We hold your date for ${hold} days while we review it, and nothing is charged until it's approved. Want to talk it through? Ask for a quick call about the timeline and which package fits.`,
-        `Start with the Portrait Session. At ${PT.price.study}, it's our photo-only package — ${PT.hours.study} hours with one photographer, 60 edited photos, and a short video for social media — with a ${PT.deposit.study} deposit.`,
+        `Start with the Portrait Session. At ${PT.price.study}, it's our photo-only package — a ${PT.hours.study}-hour session with one photographer and 60 edited photos — with a ${PT.deposit.study} deposit.`,
       ],
     },
     {
@@ -117,7 +116,7 @@ const post: BlogPost = {
     },
     {
       q: "How much is the deposit to book?",
-      a: `It's ${retainerPct} of your package: ${PT.deposit.study} for the Portrait Session (${PT.price.study}), ${PT.deposit.cinema} for the Duo (${PT.price.cinema}), ${PT.deposit.trio} for the Trio (${PT.price.trio}), and ${PT.deposit.production} for the Full Celebration (${PT.price.production}).`,
+      a: `It's ${retainerPct} of your package: ${PT.deposit.study} for the Portrait Session (${PT.price.study}), ${PT.deposit.cinema} for the Duo (${PT.price.cinema}), and ${PT.deposit.trio} for the Trio (${PT.price.trio}).`,
     },
     {
       q: "Is the deposit refundable?",

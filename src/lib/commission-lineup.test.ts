@@ -16,12 +16,13 @@ import {
 } from "@/lib/commission";
 import { parseStoredBook } from "@/lib/pricing";
 
-describe("the Oct 2026 lineup", () => {
-  it("offers four packages, each event package one hour longer than the last", () => {
-    expect(PUBLIC_TIER_IDS).toEqual(["study", "cinema", "trio", "production"]);
+describe("the Oct 31 2026 lineup", () => {
+  it("offers three packages: the Portrait Session, the Duo (6 hrs) and the Trio (7 hrs)", () => {
+    expect(PUBLIC_TIER_IDS).toEqual(["study", "cinema", "trio"]);
     const h = DEFAULT_PRICE_BOOK.packages;
-    expect([h.cinema.hours, h.trio.hours, h.production.hours]).toEqual([5, 6, 7]);
+    expect([h.cinema.hours, h.trio.hours]).toEqual([6, 7]);
     expect(isBookableTier("archive")).toBe(false);
+    expect(isBookableTier("production")).toBe(false);
   });
 
   it("gives the Trio two photographers and one videographer, without a coordinator", () => {
@@ -31,15 +32,18 @@ describe("the Oct 2026 lineup", () => {
   });
 
   it("keeps the retired package out of the published price range", () => {
-    const book = { ...DEFAULT_PRICE_BOOK, packages: { ...DEFAULT_PRICE_BOOK.packages, archive: { price: 99_000, hours: 7, extraHour: 0 } } };
-    expect(priceCeiling(book)).toBe(DEFAULT_PRICE_BOOK.packages.production.price);
+    const book = {
+      ...DEFAULT_PRICE_BOOK,
+      packages: { ...DEFAULT_PRICE_BOOK.packages, archive: { price: 99_000, hours: 7, extraHour: 0 }, production: { price: 98_000, hours: 7, extraHour: 0 } },
+    };
+    expect(priceCeiling(book)).toBe(DEFAULT_PRICE_BOOK.packages.trio.price);
     expect(priceFloor(book)).toBe(DEFAULT_PRICE_BOOK.packages.study.price);
   });
 
   it("prices the 8th hour and the Second Portrait Day on the server's book", () => {
-    const q = quoteCommission(DEFAULT_PRICE_BOOK, "production", ["secondday"], 8);
-    const p = DEFAULT_PRICE_BOOK.packages.production;
-    expect(q.totalUsd).toBe(p.price + p.extraHour + DEFAULT_PRICE_BOOK.addOns.secondday);
+    const q = quoteCommission(DEFAULT_PRICE_BOOK, "trio", ["secondday", "coordinator"], 8);
+    const p = DEFAULT_PRICE_BOOK.packages.trio;
+    expect(q.totalUsd).toBe(p.price + p.extraHour + DEFAULT_PRICE_BOOK.addOns.secondday + DEFAULT_PRICE_BOOK.addOns.coordinator);
   });
 
   it("reads a book saved before the Trio existed, filling the new fields from defaults", () => {
@@ -55,15 +59,17 @@ describe("the Oct 2026 lineup", () => {
     expect(book).not.toBeNull();
     expect(book!.packages.trio).toEqual(DEFAULT_PRICE_BOOK.packages.trio);
     expect(book!.addOns.secondday).toBe(DEFAULT_PRICE_BOOK.addOns.secondday);
-    expect(book!.trioSpotsLeft).toBe(5);
+    expect(book!.trioSpotsLeft).toBe(0);
+    expect(book!.addOns.coordinator).toBe(DEFAULT_PRICE_BOOK.addOns.coordinator);
     expect(book!.packages.production.price).toBe(2000);
   });
 
-  it("offers the Highlight Film on the Duo and Trio only, and never prices it elsewhere", () => {
+  it("prices each extra only on the packages that offer it", () => {
     const b = DEFAULT_PRICE_BOOK;
-    expect(quoteCommission(b, "trio", ["highlight"]).addOnsUsd).toBe(b.addOns.highlight);
-    expect(quoteCommission(b, "production", ["highlight"]).addOnsUsd).toBe(0);
-    expect(quoteCommission(b, "study", ["highlight"]).addOnsUsd).toBe(0);
+    expect(quoteCommission(b, "cinema", ["highlight"]).addOnsUsd).toBe(b.addOns.highlight);
+    expect(quoteCommission(b, "trio", ["highlight"]).addOnsUsd).toBe(0); // the Trio already includes one
+    expect(quoteCommission(b, "study", ["highlight", "coordinator"]).addOnsUsd).toBe(0); // no video, no event day
+    expect(quoteCommission(b, "trio", ["destination"]).addOnsUsd).toBe(0); // the dress session is included now
   });
 
   it("never lets the offer show more dates left than it started with", () => {

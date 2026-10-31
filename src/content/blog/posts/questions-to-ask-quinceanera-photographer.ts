@@ -38,7 +38,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "What a good answer sounds like: a clear explanation of which one is included, whether the other is available, and what it costs if it is. There's no single right model here — what matters is that they tell you plainly, so you're not surprised by a session you assumed was included (or a fee you didn't budget for). Our [packages](/#commissions) spell out exactly what each one covers — the Full Celebration, for example, includes a portrait session at one location.",
+      text: "What a good answer sounds like: a clear explanation of which one is included, whether the other is available, and what it costs if it is. There's no single right model here — what matters is that they tell you plainly, so you're not surprised by a session you assumed was included (or a fee you didn't budget for). Our [packages](/#commissions) spell out exactly what each one covers — the Duo and the Trio, for example, include a dress or save-the-date session, booked after the deposit is paid.",
     },
     { type: "h2", text: "3. How many edited photos will I get, and how and when are they delivered?" },
     {
@@ -47,7 +47,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "What a good answer sounds like: a delivery range and a turnaround time, in writing. A private online gallery you can download and share, an honest edit count tied to your coverage hours, and a date you can hold them to. On our video packages the full-length film also comes with a short highlight — 1 minute with the Duo and the Trio, 3–5 minutes with the Full Celebration — the quick version you'll want to share with family.",
+      text: "What a good answer sounds like: a delivery range and a turnaround time, in writing. A private online gallery you can download and share, an honest edit count tied to your coverage hours, and a date you can hold them to. On our video packages the full-length film also comes with a short highlight — 1 minute with the Duo, a 3–5 minute highlight film with the Trio — the quick version you'll want to share with family.",
     },
     {
       type: "callout",
@@ -60,7 +60,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `What a good answer sounds like: whether a second shooter is included, available as an add-on, or not offered — and on which packages. With us, the Trio comes with two photographers and a videographer, and the Full Celebration with a team of ${BASE_CREW.production} plus a coordinator who runs the day. They're TX Quince's own team photographers and videographers, assigned by date and availability — families can't request specific people, the owners included — and every gallery and film is edited by the owners. You can see the reverse angles and dual-coverage moments they make possible across the [portfolio](/portfolio). If a photographer can't show you two-camera coverage, assume they work solo.`,
+      text: `What a good answer sounds like: whether a second shooter is included, available as an add-on, or not offered — and on which packages. With us, the Trio comes with two photographers and a videographer, and a coordinator who runs the day can be added for ${PT.addon.coordinator} a day. They're TX Quince's own team photographers and videographers, assigned by date and availability — families can't request specific people, the owners included — and every gallery and film is edited by the owners. You can see the reverse angles and dual-coverage moments they make possible across the [portfolio](/portfolio). If a photographer can't show you two-camera coverage, assume they work solo.`,
     },
     { type: "h2", text: "5. Do I get full usage and print rights to the images?" },
     {
@@ -112,7 +112,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `What a good answer sounds like: a direct yes or no. We offer photo + video as one team on every package from the Duo up — the full-length film of her whole day plus a short highlight — with a team of ${BASE_CREW.cinema} to ${BASE_CREW.production} working the same day, not one person juggling a camera and a tripod. If you're weighing whether video is worth it at all, [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video) walks through the tradeoff honestly.`,
+      text: `What a good answer sounds like: a direct yes or no. We offer photo + video as one team on every package from the Duo up — the full-length film of her whole day plus a short highlight — with a team of ${BASE_CREW.cinema} to ${BASE_CREW.trio} working the same day, not one person juggling a camera and a tripod. If you're weighing whether video is worth it at all, [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video) walks through the tradeoff honestly.`,
     },
     { type: "h2", text: "Putting it together" },
     {

@@ -11,18 +11,21 @@
 import { z } from "zod";
 
 export const TIER_IDS = ["study", "cinema", "trio", "production", "archive"] as const;
-export const ADD_ON_IDS = ["destination", "sameday", "super8", "parents", "secondday", "highlight"] as const;
+export const ADD_ON_IDS = ["destination", "sameday", "super8", "parents", "secondday", "highlight", "coordinator"] as const;
 export type TierId = (typeof TIER_IDS)[number];
 export type AddOnId = (typeof ADD_ON_IDS)[number];
 
 /**
- * The packages families can choose today, in the order they are shown. The
- * Two-Day Celebration (`archive`) is retired — its second day is now the
- * `secondday` extra — but stays in TIER_IDS so older inquiries, bookings and
- * agreements still read and re-price exactly as they were made. New requests
- * are refused for a retired package on the server (isBookableTier).
+ * The packages families can choose today, in the order they are shown:
+ * Portrait Session, The Duo (1 photographer + 1 videographer) and The Trio
+ * (2 + 1). Retired packages stay in TIER_IDS so older inquiries, bookings and
+ * agreements still read and re-price exactly as they were made: the Two-Day
+ * Celebration (`archive`, its second day is now the `secondday` extra) and
+ * the Full Celebration (`production`, its coordinator is now the
+ * `coordinator` extra). New requests are refused for a retired package on the
+ * server (isBookableTier).
  */
-export const PUBLIC_TIER_IDS = ["study", "cinema", "trio", "production"] as const satisfies readonly TierId[];
+export const PUBLIC_TIER_IDS = ["study", "cinema", "trio"] as const satisfies readonly TierId[];
 export type PublicTierId = (typeof PUBLIC_TIER_IDS)[number];
 export const isBookableTier = (id: TierId): id is PublicTierId => (PUBLIC_TIER_IDS as readonly TierId[]).includes(id);
 
@@ -31,7 +34,7 @@ export const TIER_NAME_EN: Record<TierId, string> = {
   study: "Portrait Session",
   cinema: "The Duo",
   trio: "The Trio",
-  production: "Full Celebration",
+  production: "Full Celebration (retired)",
   archive: "Two-Day Celebration (retired)",
 };
 
@@ -42,17 +45,28 @@ export const ADD_ON_NAME_EN: Record<AddOnId, string> = {
   parents: "Albums for Mom & Dad",
   secondday: "Second Portrait Day",
   highlight: "Highlight Film (3–5 min)",
+  coordinator: "Day-of Coordinator (per day)",
 };
 
 
 /**
- * Extras offered on some packages only (every other extra is offered on all).
- * The Highlight Film is already part of the Full Celebration, and the
- * Portrait Session has no video. Enforced by the server (quote + inquiry
- * schema), not only by what the booking panel shows.
+ * Extras offered on some packages only (an extra not listed here is offered
+ * on all). Enforced by the server (quote + inquiry schema + agreement), not
+ * only by what the booking panel shows.
+ *  - Video extras need a videographer, so not the Portrait Session.
+ *  - The Highlight Film is already part of the Trio.
+ *  - Albums for Mom & Dad are copies of the Trio's printed album.
+ *  - The Dress Session is now included in the Duo and Trio (a dress or
+ *    save-the-date session after the deposit), so it is not sold separately.
  */
 export const ADD_ON_TIERS: Partial<Record<AddOnId, readonly TierId[]>> = {
-  highlight: ["cinema", "trio"],
+  destination: [],
+  sameday: ["cinema", "trio"],
+  super8: ["cinema", "trio"],
+  parents: ["trio"],
+  secondday: ["cinema", "trio"],
+  highlight: ["cinema"],
+  coordinator: ["cinema", "trio"],
 };
 export const addOnAllowed = (tier: TierId, id: AddOnId) => {
   const only = ADD_ON_TIERS[id];
@@ -68,9 +82,10 @@ export const addOnAllowed = (tier: TierId, id: AddOnId) => {
  *  - Most DFW quince budgets are $12–25K all-in; photo + film takes 8–15%.
  *  - Published DFW quince packages: photo-only $1.5–3K, photo + video
  *    $3–5.5K, luxury collections $5.5–8K (highest published ~$6K).
- * The Oct 2026 lineup: Portrait Session, The Duo (1 photographer + 1
- * videographer), The Trio (2 + 1, the most-chosen offer) and the Full
- * Celebration (team of 4 + coordinator); each event package adds one hour.
+ * The Oct 31 2026 lineup: Portrait Session, The Duo (1 photographer + 1
+ * videographer, 6 hours) and The Trio (2 + 1, 7 hours). Both event packages
+ * include a dress or save-the-date session once the deposit is paid; a
+ * day-of coordinator is an extra.
  *
  * These constants are NOT read anywhere else. The live prices are the
  * runtime price book (src/lib/pricing.ts → R2 config/pricing.json, edited at
@@ -79,8 +94,8 @@ export const addOnAllowed = (tier: TierId, id: AddOnId) => {
  */
 const DEFAULT_TIER_PRICE_USD: Record<TierId, number> = {
   study: 400,
-  cinema: 1500,
-  trio: 2000,
+  cinema: 2000,
+  trio: 2800,
   production: 2800,
   archive: 3500,
 };
@@ -91,25 +106,27 @@ const DEFAULT_ADD_ON_PRICE_USD: Record<AddOnId, number> = {
   parents: 550,
   secondday: 600,
   highlight: 500,
+  coordinator: 500,
 };
 /** Hours of coverage included in the package price. */
 const DEFAULT_BASE_HOURS: Record<TierId, number> = {
   study: 1,
-  cinema: 5,
-  trio: 6,
+  cinema: 6,
+  trio: 7,
   production: 7,
   archive: 7,
 };
 /** Price of each hour added beyond the included hours (0 = hours can't be added). */
 const DEFAULT_EXTRA_HOUR_USD: Record<TierId, number> = {
   study: 150,
-  cinema: 300,
-  trio: 350,
+  cinema: 400,
+  trio: 450,
   production: 450,
   archive: 0,
 };
-/** The Trio launch offer: this many dates at the Trio price, counted down by hand in admin. */
+/** The Trio launch offer: this many dates at the Trio price, counted down by hand in admin. Off (0 left) by default. */
 const DEFAULT_TRIO_SPOTS_TOTAL = 5;
+const DEFAULT_TRIO_SPOTS_LEFT = 0;
 const DEFAULT_MAX_HOURS = 8;
 /** Deposit: 25% down once we approve the signed agreement; the rest 14 days before. */
 const DEFAULT_DEPOSIT_PERCENT = 25;
@@ -184,7 +201,7 @@ export const DEFAULT_PRICE_BOOK: PriceBook = deepFreeze({
   updatedAt: null,
   updatedBy: null,
   trioSpotsTotal: DEFAULT_TRIO_SPOTS_TOTAL,
-  trioSpotsLeft: DEFAULT_TRIO_SPOTS_TOTAL,
+  trioSpotsLeft: DEFAULT_TRIO_SPOTS_LEFT,
 });
 
 /** Hard limits for every editable number (the admin form shows the same). */

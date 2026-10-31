@@ -183,7 +183,7 @@ const post: BlogPost = {
     },
     {
       q: "¿Cuántas horas de cobertura fotográfica necesito para una quinceañera?",
-      a: `Para captar el día completo —el arreglo, la misa, las fotos y toda la recepción hasta el baile sorpresa— considere de 6 a 8 horas, según qué tan cerca estén la iglesia y el salón. Con menos horas, casi siempre se queda fuera la mañana o el final de la fiesta. El Dúo incluye ${PT.hours.cinema} horas, El Trío ${PT.hours.trio} y la Celebración completa ${PT.hours.production}, y puede agregar horas, desde ${PT.extra.from} la hora, hasta ${PT.hours.max} en total.`,
+      a: `Para captar el día completo —el arreglo, la misa, las fotos y toda la recepción hasta el baile sorpresa— considere de 6 a 8 horas, según qué tan cerca estén la iglesia y el salón. Con menos horas, casi siempre se queda fuera la mañana o el final de la fiesta. El Dúo incluye ${PT.hours.cinema} horas y El Trío ${PT.hours.trio}, y puede agregar horas, desde ${PT.extra.from} la hora, hasta ${PT.hours.max} en total.`,
     },
   ],
   related: [

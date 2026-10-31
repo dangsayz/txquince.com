@@ -5,7 +5,6 @@ import { PT } from "@/lib/price-text";
 const study = PT.price.study;
 const cinema = PT.price.cinema;
 const trio = PT.price.trio;
-const production = PT.price.production;
 
 const post: BlogPost = {
   slug: "quinceanera-photo-vs-video",
@@ -24,7 +23,7 @@ const post: BlogPost = {
     { type: "h2", text: "The short answer" },
     {
       type: "p",
-      text: "You don't technically need both. Plenty of families book photo-only and are happy. But photo and video capture two different things, and the moments that move — the vals, the speeches, the surprise dance, your daughter's face when the music starts — only fully live on video. If your budget can stretch to both, a single team that does photo + video is the easiest way to get there. At [TX Quince](/#commissions), the Portrait Session is our photo-only package; the Duo, the Trio, and the Full Celebration all include both.",
+      text: "You don't technically need both. Plenty of families book photo-only and are happy. But photo and video capture two different things, and the moments that move — the vals, the speeches, the surprise dance, your daughter's face when the music starts — only fully live on video. If your budget can stretch to both, a single team that does photo + video is the easiest way to get there. At [TX Quince](/#commissions), the Portrait Session is our photo-only package; the Duo and the Trio include both.",
     },
     { type: "h2", text: "What photos capture that video can't" },
     {
@@ -76,12 +75,12 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "On our video packages, the full-length film is her whole day as it happened — the misa, the venue details and the guests, every presentation in full (the grand entrance, the vals, the surprise dance), every toast in full, and 15–20 minutes of the dance floor. Its length follows her day, so we never cut it down to a set number of minutes. A short highlight comes with it — 1 minute with the Duo and the Trio, 3–5 minutes with the Full Celebration — the short version you'll share with everyone.",
+      text: "On our video packages, the full-length film is her whole day as it happened — the misa, the venue details and the guests, every presentation in full (the grand entrance, the vals, the surprise dance), every toast in full, and 15–20 minutes of the dance floor. Its length follows her day, so we never cut it down to a set number of minutes. A highlight comes with it — 1 minute with the Duo, a 3–5 minute highlight film with the Trio — the short version you'll share with everyone.",
     },
     {
       type: "cta",
       heading: "See exactly which packages include video",
-      body: `The Portrait Session is photo only. The Duo, the Trio, and the Full Celebration pair photographers with videographers — one of each with the Duo (${BASE_CREW.cinema} in all), two photographers and one videographer with the Trio (${BASE_CREW.trio}), or a team of ${BASE_CREW.production} plus a coordinator with the Full Celebration. Compare them side by side.`,
+      body: `The Portrait Session is photo only. The Duo and the Trio pair photographers with videographers — one of each with the Duo (${BASE_CREW.cinema} in all), or two photographers and one videographer with the Trio (${BASE_CREW.trio}). Compare them side by side.`,
       href: "/#commissions",
       label: "Compare packages",
     },
@@ -106,7 +105,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Anchored to our packages: the Portrait Session is ${study} — photos only, ${PT.hours.study} hours with one photographer. The Duo is ${cinema} — ${PT.hours.cinema} hours with one photographer and one videographer, the full-length film plus a 1-minute highlight, and 400+ edited photos. The Trio, at ${trio}, is our pick for most families — ${PT.hours.trio} hours with two photographers and one videographer, the full-length film plus a 1-minute highlight, and 600+ edited photos. The Full Celebration, at ${production}, gives you ${PT.hours.production} hours, a team of ${BASE_CREW.production} plus a coordinator who runs the day, a portrait session at one location, the full-length film plus a 3–5 minute highlight film, 700+ edited photos, and a printed album. Want portraits in her dress on a separate day? Add a Second Portrait Day (${PT.addon.secondday}) — photos and video at up to two locations. Need more time on the day? You can add hours, from ${PT.extra.from} an hour, up to ${PT.hours.max} in all. For the full breakdown of every inclusion, see [which packages include video](/#commissions), and for a wider look at pricing read our [quinceañera photographer cost guide for DFW](/blog/quinceanera-photographer-cost-dallas-fort-worth).`,
+      text: `Anchored to our packages: the Portrait Session is ${study} — photos only, a ${PT.hours.study}-hour session with one photographer and 60 edited photos. The Duo is ${cinema} — ${PT.hours.cinema} hours with one photographer and one videographer, a dress or save-the-date session (booked after the deposit is paid), the full-length film plus a 1-minute highlight, and 400+ edited photos. The Trio, at ${trio}, is our pick for most families — ${PT.hours.trio} hours with two photographers and one videographer, a dress or save-the-date session (booked after the deposit is paid), the full-length film plus a 3–5 minute highlight film, 700+ edited photos, and a printed album. Need a coordinator who runs the day? One can be added for ${PT.addon.coordinator} a day. Want more portraits in her dress on another day? Add a Second Portrait Day (${PT.addon.secondday}) — photos and video at up to two locations. Need more time on the day? You can add hours, from ${PT.extra.from} an hour, up to ${PT.hours.max} in all. For the full breakdown of every inclusion, see [which packages include video](/#commissions), and for a wider look at pricing read our [quinceañera photographer cost guide for DFW](/blog/quinceanera-photographer-cost-dallas-fort-worth).`,
     },
     { type: "h2", text: "If your budget only stretches one way" },
     {
@@ -137,7 +136,7 @@ const post: BlogPost = {
     },
     {
       q: "What's included in quinceañera videography?",
-      a: "A proper quince video isn't a raw recording — it's an edited story, usually delivered in two pieces: a documentary-style edit that walks through the full day in order, and a 3–5 minute highlight video cut to music. On TX Quince video packages, the full-length film is her whole day as it happened — the misa, every presentation and every toast in full, and 15–20 minutes of the dance floor — so its length follows her day, and it comes with a short highlight (1 minute with the Duo and the Trio, 3–5 minutes with the Full Celebration).",
+      a: "A proper quince video isn't a raw recording — it's an edited story, usually delivered in two pieces: a documentary-style edit that walks through the full day in order, and a 3–5 minute highlight video cut to music. On TX Quince video packages, the full-length film is her whole day as it happened — the misa, every presentation and every toast in full, and 15–20 minutes of the dance floor — so its length follows her day, and it comes with a highlight (1 minute with the Duo, a 3–5 minute highlight film with the Trio).",
     },
     {
       q: "Is it cheaper to book photo and video together?",
@@ -145,7 +144,7 @@ const post: BlogPost = {
     },
     {
       q: "Which TX Quince packages include both photo and video?",
-      a: `The Portrait Session (${study}) is photo only. The Duo (${cinema}), the Trio (${trio}), and the Full Celebration (${production}) all include photos and video: one photographer and one videographer with the Duo, two photographers and one videographer with the Trio, and a team of ${BASE_CREW.production} plus a coordinator with the Full Celebration. The Trio is our pick for most families. You can compare every inclusion in the packages on our homepage.`,
+      a: `The Portrait Session (${study}) is photo only. The Duo (${cinema}) and the Trio (${trio}) both include photos and video: one photographer and one videographer with the Duo, and two photographers and one videographer with the Trio. The Trio is our pick for most families. You can compare every inclusion in the packages on our homepage.`,
     },
     {
       q: "Can one team shoot both the photos and the video?",

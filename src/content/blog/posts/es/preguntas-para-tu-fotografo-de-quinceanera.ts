@@ -39,7 +39,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Así suena una buena respuesta: una explicación clara de cuál está incluida, si la otra está disponible y cuánto cuesta si la quiere agregar. No hay un único modelo correcto; lo que importa es que se lo digan con claridad, para que no le sorprenda una sesión que daba por incluida (ni un costo que no había contemplado). Nuestros [paquetes](/es#commissions) detallan exactamente qué cubre cada uno; la Celebración completa, por ejemplo, incluye una sesión de retrato en una locación.",
+      text: "Así suena una buena respuesta: una explicación clara de cuál está incluida, si la otra está disponible y cuánto cuesta si la quiere agregar. No hay un único modelo correcto; lo que importa es que se lo digan con claridad, para que no le sorprenda una sesión que daba por incluida (ni un costo que no había contemplado). Nuestros [paquetes](/es#commissions) detallan exactamente qué cubre cada uno; El Dúo y El Trío, por ejemplo, incluyen una sesión con el vestido o de save-the-date, que se agenda después de pagar el depósito.",
     },
     { type: "h2", text: "3. ¿Cuántas fotos editadas entrega y cómo y cuándo las recibo?" },
     {
@@ -48,7 +48,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Así suena una buena respuesta: un rango de entrega y un tiempo de entrega, por escrito. Una galería privada en línea que usted pueda descargar y compartir, una cantidad de fotos acorde a las horas de cobertura, y una fecha a la que pueda darle seguimiento. En nuestros paquetes con video, la película completa viene además con un resumen corto — de 1 minuto en El Dúo y El Trío, de 3 a 5 minutos en la Celebración completa —, la versión rápida que va a querer compartir con la familia.",
+      text: "Así suena una buena respuesta: un rango de entrega y un tiempo de entrega, por escrito. Una galería privada en línea que usted pueda descargar y compartir, una cantidad de fotos acorde a las horas de cobertura, y una fecha a la que pueda darle seguimiento. En nuestros paquetes con video, la película completa viene además con un resumen — de 1 minuto en El Dúo, y un video resumen de 3 a 5 minutos en El Trío —, la versión rápida que va a querer compartir con la familia.",
     },
     {
       type: "callout",
@@ -61,7 +61,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Así suena una buena respuesta: si el segundo fotógrafo va incluido, si está disponible como complemento o si no se ofrece, y en cuáles paquetes. Con nosotros, El Trío trae dos fotógrafos y un videógrafo, y la Celebración completa un equipo de ${BASE_CREW.production} personas más una coordinadora que dirige el día. Son fotógrafos y videógrafos del propio equipo de TX Quince, asignados según la fecha y la disponibilidad — las familias no pueden pedir a personas específicas, ni siquiera a los dueños —, y cada galería y cada película la editan los dueños. Puede ver los ángulos inversos y los momentos de doble cobertura que hacen posibles en el [portafolio](/portfolio). Si un fotógrafo no puede mostrarle cobertura de dos cámaras, dé por hecho que trabaja solo.`,
+      text: `Así suena una buena respuesta: si el segundo fotógrafo va incluido, si está disponible como complemento o si no se ofrece, y en cuáles paquetes. Con nosotros, El Trío trae dos fotógrafos y un videógrafo, y se puede agregar una coordinadora que dirija el día, por ${PT.addon.coordinator} al día. Son fotógrafos y videógrafos del propio equipo de TX Quince, asignados según la fecha y la disponibilidad — las familias no pueden pedir a personas específicas, ni siquiera a los dueños —, y cada galería y cada película la editan los dueños. Puede ver los ángulos inversos y los momentos de doble cobertura que hacen posibles en el [portafolio](/portfolio). Si un fotógrafo no puede mostrarle cobertura de dos cámaras, dé por hecho que trabaja solo.`,
     },
     { type: "h2", text: "5. ¿Me da los derechos de uso e impresión de las fotos?" },
     {
@@ -113,7 +113,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Así suena una buena respuesta: un sí o un no directo. Nosotros ofrecemos foto y video como un solo equipo en cada paquete desde El Dúo, con un equipo de ${BASE_CREW.cinema} a ${BASE_CREW.production} personas trabajando el mismo día, y la película completa de su día más un resumen corto, no una sola persona haciendo malabares entre la cámara y el tripié. Si todavía está decidiendo si vale la pena el video, [foto o video para la quinceañera](/es/blog/foto-o-video-quinceanera) sopesa esa decisión sin rodeos.`,
+      text: `Así suena una buena respuesta: un sí o un no directo. Nosotros ofrecemos foto y video como un solo equipo en cada paquete desde El Dúo, con un equipo de ${BASE_CREW.cinema} a ${BASE_CREW.trio} personas trabajando el mismo día, y la película completa de su día más un resumen corto, no una sola persona haciendo malabares entre la cámara y el tripié. Si todavía está decidiendo si vale la pena el video, [foto o video para la quinceañera](/es/blog/foto-o-video-quinceanera) sopesa esa decisión sin rodeos.`,
     },
     { type: "h2", text: "Para cerrar" },
     {

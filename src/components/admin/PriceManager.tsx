@@ -21,7 +21,7 @@ import {
   type PriceBook,
   type TierId,
 } from "@/lib/commission";
-import { ADD_ONS, TIERS } from "@/components/txq/data";
+import { tierById, ADD_ONS } from "@/components/txq/data";
 
 export type PriceHistoryRow = { at: string; by: string; changes: string[] };
 export type PricesSnapshot = {
@@ -194,7 +194,7 @@ function Preview({ book }: { book: PriceBook | null }) {
   const maxExtra = canAdd ? book.maxHours - pkg.hours : 0;
   const extraNow = Math.min(extra, maxExtra);
   const q = quoteCommission(book, tier, addOns, pkg.hours + extraNow);
-  const name = (id: TierId) => TIERS.find((t) => t.id === id)!.name.en;
+  const name = (id: TierId) => tierById(id).name.en;
 
   return (
     <div className="rounded-xl border border-line bg-ivory p-4 sm:p-6">
@@ -353,7 +353,7 @@ export function PriceManager({ initial }: { initial: PricesSnapshot }) {
   }
 
   const err = (k: string) => errors[k];
-  const tierName = (id: TierId) => TIERS.find((t) => t.id === id)!.name.en;
+  const tierName = (id: TierId) => tierById(id).name.en;
   const L = PRICE_LIMITS;
 
   return (

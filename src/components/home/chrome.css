@@ -143,22 +143,33 @@
   .txq .sm-links li { animation: none; }
 }
 
-/* ---------- Mobile booking dock: one quiet bar ---------- */
+/* ---------- Mobile booking dock: a floating frosted-glass capsule ---------- */
 .txq .tq-dock {
-  background: rgba(255, 255, 255, 0.96);
-  border-top: 1px solid #e6e6e6;
+  left: 10px;
+  right: 10px;
+  bottom: calc(10px + env(safe-area-inset-bottom));
+  padding: 8px 8px 8px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.72);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.16);
 }
+.txq .tq-dock[data-hidden="true"] { transform: translateY(calc(100% + 24px)); }
 .txq .tq-dock .tq-btn {
-  border-radius: 0;
-  background: #000000;
+  min-height: 48px;
+  border: 0;
+  border-radius: 999px;
+  background: #1d1d1f;
   color: #ffffff;
-  font-family: var(--font-ed-display), Futura, sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-transform: none;
 }
-.txq .tq-dock__status { font-family: var(--font-ed-display), Futura, sans-serif; letter-spacing: 0.06em; }
+.txq .tq-dock__status { font-family: var(--font-sans); font-size: 13px; letter-spacing: 0; text-transform: none; color: #1d1d1f; }
 
 /* ---------- Footer ---------- */
 .txq .sf { background: #ffffff; color: #101010; border-top: 1px solid #e6e6e6; font-size: 16px; }

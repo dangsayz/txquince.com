@@ -13,7 +13,7 @@ export type L = { en: string; es: string };
 
 export const pick = (lang: Lang, v: L) => v[lang];
 
-import { canAddHours, type AddOnId, type PriceBook, type TierId } from "@/lib/commission";
+import { canAddHours, usd, type AddOnId, type PriceBook, type TierId } from "@/lib/commission";
 
 /* ------------------------------------------------------------------ */
 /* Hero plates                                                          */
@@ -121,14 +121,14 @@ export const TIERS: Tier[] = [
     numeral: "II.",
     name: { en: "The Duo", es: "El Dúo" },
     summary: {
-      en: "One photographer and one videographer for her day: the photos, and the full-length film of everything that happened.",
-      es: "Un fotógrafo y un videógrafo para su día: las fotos y el video completo de todo lo que pasó.",
+      en: "One photographer and one videographer for her day, plus a dress or save-the-date session: the photos, and the full-length film of everything that happened.",
+      es: "Un fotógrafo y un videógrafo para su día, más una sesión con el vestido o de save the date: las fotos y el video completo de todo lo que pasó.",
     },
     bullets: [
       { en: "1 photographer + 1 videographer", es: "1 fotógrafo + 1 videógrafo" },
+      { en: "A dress or save-the-date session, booked after your deposit", es: "Una sesión con el vestido o de save the date, después de tu depósito" },
       { en: "The full-length film of her day + a 1-minute highlight", es: "El video completo de su día + un resumen de 1 minuto" },
       { en: "400+ edited photos", es: "Más de 400 fotos editadas" },
-      { en: "2 short videos for social media", es: "2 videos cortos para redes" },
     ],
     scope: "both",
   },
@@ -137,18 +137,21 @@ export const TIERS: Tier[] = [
     numeral: "III.",
     name: { en: "The Trio", es: "El Trío" },
     summary: {
-      en: "Two photographers and one videographer, so both sides of the room are covered while the film rolls. Our pick for most families.",
-      es: "Dos fotógrafos y un videógrafo, para cubrir los dos lados del salón mientras se graba el video. Nuestra recomendación para la mayoría de las familias.",
+      en: "Two photographers and one videographer, so both sides of the room are covered while the film rolls, plus a dress or save-the-date session and a printed album. Our pick for most families.",
+      es: "Dos fotógrafos y un videógrafo, para cubrir los dos lados del salón mientras se graba el video, más una sesión con el vestido o de save the date y un álbum impreso. Nuestra recomendación para la mayoría de las familias.",
     },
     bullets: [
       { en: "2 photographers + 1 videographer", es: "2 fotógrafos + 1 videógrafo" },
-      { en: "The full-length film of her day + a 1-minute highlight", es: "El video completo de su día + un resumen de 1 minuto" },
-      { en: "600+ edited photos", es: "Más de 600 fotos editadas" },
-      { en: "3 short videos for social media", es: "3 videos cortos para redes" },
+      { en: "A dress or save-the-date session, booked after your deposit", es: "Una sesión con el vestido o de save the date, después de tu depósito" },
+      { en: "The full-length film + a 3–5 minute highlight film", es: "El video completo + un resumen de 3–5 minutos" },
+      { en: "700+ photos and a printed album", es: "Más de 700 fotos y un álbum impreso" },
     ],
     recommended: true,
     scope: "both",
   },
+];
+
+export const RETIRED_TIERS: Tier[] = [
   {
     id: "production",
     numeral: "IV.",
@@ -165,13 +168,6 @@ export const TIERS: Tier[] = [
     ],
     scope: "both",
   },
-];
-
-/**
- * Retired packages: not offered any more, kept so older inquiries, bookings
- * and agreements still show their package (see PUBLIC_TIER_IDS).
- */
-export const RETIRED_TIERS: Tier[] = [
   {
     id: "archive",
     numeral: "V.",
@@ -198,12 +194,12 @@ const v = (en: string, es: string = en): L => ({ en, es });
 /** "6 hours" / "6 horas", plus how far it can grow (from the live book). */
 const hoursCell = (book: PriceBook, tier: TierId): L => {
   const base = book.packages[tier].hours;
+  const en = base === 1 ? "1 hour" : `${base} hours`;
+  const es = base === 1 ? "1 hora" : `${base} horas`;
   if (!canAddHours(book, tier)) {
-    return tier === "archive"
-      ? v(`${base} hours, both days`, `${base} horas, ambos días`)
-      : v(`${base} hours`, `${base} horas`);
+    return tier === "archive" ? v(`${base} hours, both days`, `${base} horas, ambos días`) : v(en, es);
   }
-  return v(`${base} hours (add up to ${book.maxHours})`, `${base} horas (hasta ${book.maxHours})`);
+  return v(`${en} (add up to ${book.maxHours})`, `${es} (hasta ${book.maxHours})`);
 };
 
 /** The full-length film: the whole day as it happened, so its length follows her day. */
@@ -211,6 +207,10 @@ const FULL_FILM = v(
   "Her whole day: the misa, every presentation and toast in full, 15–20 min of dancing",
   "Todo su día: la misa, cada presentación y brindis completos, 15–20 min de baile",
 );
+
+/** The coordinator is an extra now: "Add for $500 a day", priced from the live book. */
+const coordinatorCell = (book: PriceBook): L =>
+  v(`Add for ${usd(book.addOns.coordinator)} a day`, `Agrégala por ${usd(book.addOns.coordinator)} al día`);
 
 /** The comparison matrix. Hours come from the live price book. */
 export const matrixFor = (book: PriceBook): MatrixGroup[] => [
@@ -242,18 +242,18 @@ export const matrixFor = (book: PriceBook): MatrixGroup[] => [
         label: v("Coordinator who runs the day", "Coordinadora que lleva el día"),
         values: {
           study: null,
-          cinema: null,
-          trio: null,
+          cinema: coordinatorCell(book),
+          trio: coordinatorCell(book),
           production: v("Included", "Incluida"),
           archive: v("Included, both days", "Incluida, ambos días"),
         },
       },
       {
-        label: v("Portrait session", "Sesión de retratos"),
+        label: v("Dress or save-the-date session", "Sesión con el vestido o de save the date"),
         values: {
           study: v("Yes — that's this package", "Sí — es este paquete"),
-          cinema: null,
-          trio: null,
+          cinema: v("Included, after your deposit", "Incluida, después del depósito"),
+          trio: v("Included, after your deposit", "Incluida, después del depósito"),
           production: v("1 location", "1 lugar"),
           archive: v("2 locations, on its own day", "2 lugares, en su propio día"),
         },
@@ -279,7 +279,7 @@ export const matrixFor = (book: PriceBook): MatrixGroup[] => [
         values: {
           study: null,
           cinema: v("1 minute", "1 minuto"),
-          trio: v("1 minute", "1 minuto"),
+          trio: v("3–5 minutes", "3–5 minutos"),
           production: v("3–5 minutes", "3–5 minutos"),
           archive: v("2 minutes", "2 minutos"),
         },
@@ -287,9 +287,9 @@ export const matrixFor = (book: PriceBook): MatrixGroup[] => [
       {
         label: v("Short videos for social media", "Videos cortos para redes"),
         values: {
-          study: v("1", "1"),
+          study: null, // photos only
           cinema: v("2", "2"),
-          trio: v("3", "3"),
+          trio: v("4", "4"),
           production: v("4", "4"),
           archive: v("6, first one in 48 hours", "6, el primero en 48 horas"),
         },
@@ -305,7 +305,7 @@ export const matrixFor = (book: PriceBook): MatrixGroup[] => [
         values: {
           study: v("60", "60"),
           cinema: v("400+", "400+"),
-          trio: v("600+", "600+"),
+          trio: v("700+", "700+"),
           production: v("700+", "700+"),
           archive: v("1,000+", "1,000+"),
         },
@@ -315,7 +315,7 @@ export const matrixFor = (book: PriceBook): MatrixGroup[] => [
         values: {
           study: null,
           cinema: null,
-          trio: null,
+          trio: v("10×10 in, 40 pages", "25×25 cm, 40 páginas"),
           production: v("10×10 in, 40 pages", "25×25 cm, 40 páginas"),
           archive: v("12×12 in, 60 pages, gift box", "30×30 cm, 60 páginas, caja de regalo"),
         },
@@ -325,7 +325,7 @@ export const matrixFor = (book: PriceBook): MatrixGroup[] => [
         values: {
           study: null,
           cinema: null,
-          trio: null,
+          trio: v("Photos", "Fotos"),
           production: v("Photos", "Fotos"),
           archive: v("Photos + video", "Fotos + video"),
         },
@@ -375,6 +375,14 @@ export const ADD_ONS: AddOn[] = [
     note: {
       en: "A separate day for portraits in her dress, photos and video, at up to 2 locations.",
       es: "Un día aparte para retratos con su vestido, fotos y video, en hasta 2 lugares.",
+    },
+  },
+  {
+    id: "coordinator",
+    name: { en: "Day-of Coordinator", es: "Coordinadora del día" },
+    note: {
+      en: "Runs the schedule and lines up the court, so your family can just enjoy the day. Priced per day.",
+      es: "Lleva el horario y organiza a la corte, para que tu familia solo disfrute. Precio por día.",
     },
   },
   {
