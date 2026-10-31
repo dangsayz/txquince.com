@@ -10,10 +10,21 @@
  *
  * SECURITY LAW: STRIPE_SECRET_KEY is server-only. This module is imported only by
  * API routes / server components.
+ *
+ * Local testing: STRIPE_API_BASE points at a local mock, and is honored ONLY
+ * outside production with an sk_test_ key, so it can never redirect a live key.
  */
 import "server-only";
 
-const STRIPE_API_BASE = "https://api.stripe.com/v1";
+const DEFAULT_STRIPE_API_BASE = "https://api.stripe.com/v1";
+
+function stripeApiBase(): string {
+  const override = process.env.STRIPE_API_BASE;
+  if (override && process.env.NODE_ENV !== "production" && getStripeSecretKey().startsWith("sk_test_")) {
+    return override.replace(/\/+$/, "");
+  }
+  return DEFAULT_STRIPE_API_BASE;
+}
 
 export interface StripeCheckoutSession {
   id: string;
@@ -39,7 +50,8 @@ interface CreateCheckoutSessionInput {
   productName: string;
   productDescription?: string;
   clientReferenceId: string;
-  customerEmail: string;
+  /** Prefills Checkout and the receipt. Omit and Stripe Checkout asks for it. */
+  customerEmail?: string | null;
   successUrl: string;
   cancelUrl: string;
   expiresAt: Date;
@@ -80,7 +92,7 @@ async function stripeRequest<T>(
   path: string,
   init: { method: "GET" | "POST"; params?: URLSearchParams },
 ): Promise<T> {
-  const response = await fetch(`${STRIPE_API_BASE}${path}`, {
+  const response = await fetch(`${stripeApiBase()}${path}`, {
     method: init.method,
     headers: {
       Authorization: `Bearer ${getStripeSecretKey()}`,
@@ -128,8 +140,10 @@ export async function createStripeCheckoutSession(
     );
   }
   params.set("client_reference_id", input.clientReferenceId);
-  params.set("customer_email", input.customerEmail);
-  params.set("payment_intent_data[receipt_email]", input.customerEmail);
+  if (input.customerEmail) {
+    params.set("customer_email", input.customerEmail);
+    params.set("payment_intent_data[receipt_email]", input.customerEmail);
+  }
   params.set("success_url", input.successUrl);
   params.set("cancel_url", input.cancelUrl);
   params.set("expires_at", String(Math.floor(input.expiresAt.getTime() / 1000)));

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { isColorId } from "@/lib/quince-colors";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/require-admin";
@@ -99,6 +100,8 @@ const UpdateSchema = z.object({
   // Punchy one-liner + free-form keyword tags (meta).
   hook: z.string().max(200).nullable().optional(),
   tags: z.string().max(400).nullable().optional(),
+  // Canonical color ids (src/lib/quince-colors.ts) for the /plan color match.
+  colors: z.array(z.string().refine(isColorId)).max(8).optional(),
   section: sectionSchema.optional(),
   is_feature: z.boolean().optional(),
   // Replace the FULL set of vendors credited on this image (idempotent). Order

@@ -3,6 +3,8 @@ import { site } from "@/content/site";
 import { locations } from "@/content/locations";
 import { getAllPosts, getAllEsPosts, esSlugForEn, enSlugForEs } from "@/content/blog";
 import { getVendors } from "@/lib/content-db";
+import { getPriceGuide } from "@/lib/plan-db";
+import { guideUpdated } from "@/lib/price-guide";
 import { venues } from "@/content/venues";
 import { languageAlternates } from "@/lib/hreflang";
 
@@ -32,6 +34,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/es/fotografo-de-quinceaneras", priority: 0.8 },
     { path: "/es", priority: 0.9 },
     { path: "/es/consulta", priority: 0.9 },
+    // Personalized quince plan intake (EN ↔ ES).
+    { path: "/plan", priority: 0.6 },
+    { path: "/es/plan", priority: 0.6 },
     { path: "/es/salones", priority: 0.7 },
     { path: "/es/videografo-de-quinceaneras", priority: 0.8 },
     { path: "/quinceanera-photoshoot", priority: 0.8 },
@@ -108,6 +113,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.4,
   }));
 
+  // The DFW price guide pair, only once it has rows (empty = noindex).
+  const guide = await getPriceGuide();
+  const guideUpdatedAt = guideUpdated(guide);
+  const guideAlt = { languages: languageAlternates(`${site.url}/quince-prices-dfw`, `${site.url}/precios-quince-dfw`) };
+  const guideEntries: MetadataRoute.Sitemap = guide.length
+    ? ["/precios-quince-dfw", "/quince-prices-dfw"].map((path) => ({
+        url: `${site.url}${path}`,
+        lastModified: guideUpdatedAt ?? LASTMOD,
+        changeFrequency: "monthly" as const,
+        priority: 0.8,
+        alternates: guideAlt,
+      }))
+    : [];
+
   return [
     ...staticRoutes.map((r) => ({
       url: `${site.url}${r.path}`,
@@ -116,6 +135,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: r.priority,
     })),
     ...blogEntries,
+    ...guideEntries,
     ...vendorEntries,
   ];
 }

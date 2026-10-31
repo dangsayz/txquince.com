@@ -1,0 +1,91 @@
+/* price-guide.css — the DFW price table. A real <table> (easy for search and
+   answer engines to read) that stacks into one card per category under 640px,
+   so there is never sideways scrolling at 360px. */
+.pg-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+}
+.pg-table th,
+.pg-table td {
+  padding: 14px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-hairline);
+}
+.pg-table thead th {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.pg-table tbody th {
+  font-weight: var(--weight-semibold);
+}
+.pg-typical {
+  font-weight: var(--weight-semibold);
+}
+@media (max-width: 639px) {
+  .pg-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+  .pg-table,
+  .pg-table tbody,
+  .pg-table tr,
+  .pg-table th,
+  .pg-table td {
+    display: block;
+  }
+  .pg-table tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px 12px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border-hairline);
+  }
+  .pg-table tbody th {
+    grid-column: 1 / -1;
+    padding: 0 0 4px;
+    border: 0;
+    font-size: 1.125rem;
+  }
+  .pg-table td {
+    padding: 0;
+    border: 0;
+  }
+  .pg-table td::before {
+    content: attr(data-label);
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+}
+.pg-cta__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.pg-cta__row .qp-cta {
+  flex: 1 1 16rem;
+}
+.pg-faq {
+  display: grid;
+  gap: 24px;
+}
+.pg-faq h3 {
+  margin: 0 0 6px;
+  font-size: 1.125rem;
+  font-weight: var(--weight-semibold);
+  line-height: 1.35;
+}
+.pg-faq p {
+  margin: 0;
+  line-height: 1.6;
+  max-width: 65ch;
+}
