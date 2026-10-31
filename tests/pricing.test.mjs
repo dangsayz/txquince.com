@@ -20,9 +20,9 @@ const clone = (b) => structuredClone({ ...b });
 test("defaults reproduce the launch quote", () => {
   // The Trio (7 hrs included) + an 8th hour + Same-Day Edit.
   const q = quoteWithDefaults("trio", ["sameday"], 8);
-  assert.equal(q.totalUsd, 2800 + 450 + 300);
-  assert.equal(q.retainerUsd, Math.round(3550 * 0.25));
-  assert.equal(q.balanceUsd, 3550 - Math.round(3550 * 0.25));
+  assert.equal(q.totalUsd, 2800 + 450 + 600);
+  assert.equal(q.retainerUsd, Math.round(3850 * 0.25));
+  assert.equal(q.balanceUsd, 3850 - Math.round(3850 * 0.25));
   assert.equal(DEFAULT_PRICE_BOOK.balanceDueDays, 14);
 });
 

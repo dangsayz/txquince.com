@@ -108,7 +108,7 @@ const DEFAULT_TIER_PRICE_USD: Record<TierId, number> = {
 };
 const DEFAULT_ADD_ON_PRICE_USD: Record<AddOnId, number> = {
   destination: 400,
-  sameday: 300,
+  sameday: 600,
   super8: 600,
   parents: 550,
   secondday: 600,
