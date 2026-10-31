@@ -5,7 +5,7 @@ import { animate, useReducedMotion } from "motion/react";
 import { ADD_ONS, TIERS, matrixFor, money, pick, type Lang, type Tier, type TierId } from "./data";
 import { useSite } from "./state";
 import { usePriceBook } from "@/components/PriceBookProvider";
-import { BASE_CREW, COORDINATOR_INCLUDED, CREW_ROLES, canShift, type CrewRole } from "@/lib/commission";
+import { BASE_CREW, COORDINATOR_INCLUDED, CREW_ROLES, addOnAllowed, canShift, type CrewRole } from "@/lib/commission";
 
 /**
  * Packages & Prices — the section heading. The booking panel (Intake) renders
@@ -313,7 +313,7 @@ export function ExtrasStep({ onChangePackage }: { onChangePackage: () => void })
           {t.booking.extrasTitle} <span className="tq-bk-opt">— {t.booking.optional}</span>
         </legend>
         <div className="tq-addons">
-          {ADD_ONS.map((a) => {
+          {ADD_ONS.filter((a) => addOnAllowed(tier, a.id)).map((a) => {
             const on = addOns.includes(a.id);
             return (
               <button key={a.id} type="button" className="tq-addon" aria-pressed={on} onClick={() => toggleAddOn(a.id)}>

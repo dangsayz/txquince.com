@@ -12,7 +12,7 @@ import {
 } from "react";
 import { COPY, type Copy } from "./copy";
 import type { AddOnId, Lang, TierId } from "./data";
-import { ADD_ON_IDS, PUBLIC_TIER_IDS, normalizeCrew, type Crew } from "@/lib/commission";
+import { ADD_ON_IDS, PUBLIC_TIER_IDS, addOnAllowed, normalizeCrew, type Crew } from "@/lib/commission";
 import { usePriceBook } from "@/components/PriceBookProvider";
 import { HREFLANG } from "@/lib/hreflang";
 
@@ -219,7 +219,9 @@ export function SiteProvider({
   const prices = usePriceBook();
   // The booking panel opens on our pick (the Trio).
   const [tier, setTier] = useState<TierId>("trio");
-  const [addOns, setAddOnsRaw] = useState<AddOnId[]>([]);
+  const [addOnsPicked, setAddOnsRaw] = useState<AddOnId[]>([]);
+  // Only the extras the chosen package offers (switching packages drops the rest).
+  const addOns = useMemo(() => addOnsPicked.filter((a) => addOnAllowed(tier, a)), [addOnsPicked, tier]);
   const [crewRaw, setCrewRaw] = useState<Crew | null>(null);
   // The mix always fits the chosen tier's included crew (default mix until chosen).
   const crew = useMemo(() => normalizeCrew(tier, crewRaw), [tier, crewRaw]);

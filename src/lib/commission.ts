@@ -11,7 +11,7 @@
 import { z } from "zod";
 
 export const TIER_IDS = ["study", "cinema", "trio", "production", "archive"] as const;
-export const ADD_ON_IDS = ["destination", "sameday", "super8", "parents", "secondday"] as const;
+export const ADD_ON_IDS = ["destination", "sameday", "super8", "parents", "secondday", "highlight"] as const;
 export type TierId = (typeof TIER_IDS)[number];
 export type AddOnId = (typeof ADD_ON_IDS)[number];
 
@@ -41,8 +41,23 @@ export const ADD_ON_NAME_EN: Record<AddOnId, string> = {
   super8: "Vintage Film Clip (Super 8)",
   parents: "Albums for Mom & Dad",
   secondday: "Second Portrait Day",
+  highlight: "Highlight Film (3–5 min)",
 };
 
+
+/**
+ * Extras offered on some packages only (every other extra is offered on all).
+ * The Highlight Film is already part of the Full Celebration, and the
+ * Portrait Session has no video. Enforced by the server (quote + inquiry
+ * schema), not only by what the booking panel shows.
+ */
+export const ADD_ON_TIERS: Partial<Record<AddOnId, readonly TierId[]>> = {
+  highlight: ["cinema", "trio"],
+};
+export const addOnAllowed = (tier: TierId, id: AddOnId) => {
+  const only = ADD_ON_TIERS[id];
+  return !only || only.includes(tier);
+};
 
 /* ------------------------------------------------------------------ */
 /* Defaults — the launch price book                                     */
@@ -75,6 +90,7 @@ const DEFAULT_ADD_ON_PRICE_USD: Record<AddOnId, number> = {
   super8: 600,
   parents: 550,
   secondday: 600,
+  highlight: 500,
 };
 /** Hours of coverage included in the package price. */
 const DEFAULT_BASE_HOURS: Record<TierId, number> = {
@@ -366,7 +382,7 @@ export function quoteCommission(
   const tierUsd = pkg.price;
   const hours = normalizeHours(book, tier, hoursWanted);
   const extraHoursUsd = (hours - pkg.hours) * pkg.extraHour;
-  const unique = Array.from(new Set(addOns));
+  const unique = Array.from(new Set(addOns)).filter((a) => addOnAllowed(tier, a));
   const addOnsUsd = unique.reduce((sum, a) => sum + book.addOns[a], 0);
   const crewSize = BASE_CREW[tier];
   const totalUsd = tierUsd + extraHoursUsd + addOnsUsd;
@@ -516,7 +532,9 @@ export function describeCommission(r: CommissionRequest, q: Quote, book: PriceBo
     `Package: ${TIER_NAME_EN[r.tier]} — ${usd(q.tierUsd)} (${q.baseHours} hrs included)`,
     q.extraHoursUsd ? `+ ${q.hours - q.baseHours} extra hr(s) — ${usd(q.extraHoursUsd)}` : "",
     `Hours on the day: ${q.hours}`,
-    ...Array.from(new Set(r.add_ons)).map((a) => `+ ${ADD_ON_NAME_EN[a]} — ${usd(book.addOns[a])}`),
+    ...Array.from(new Set(r.add_ons))
+      .filter((a) => addOnAllowed(r.tier, a))
+      .map((a) => `+ ${ADD_ON_NAME_EN[a]} — ${usd(book.addOns[a])}`),
     crewLine(r.tier, normalizeCrew(r.tier, r.crew_mix)),
     COORDINATOR_INCLUDED[r.tier] ? "Day-of coordinator: included" : "",
     `Total: ${usd(q.totalUsd)} · Deposit (${q.depositPercent}%): ${usd(q.retainerUsd)} · Balance: ${usd(q.balanceUsd)}`,

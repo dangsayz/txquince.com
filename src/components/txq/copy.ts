@@ -171,7 +171,7 @@ const en = {
       },
       {
         q: "What is in the full-length film?",
-        a: "Her whole day, as it happened: the misa, the venue and the guests arriving, every presentation in full (the grand entrance, the vals, the surprise dance), every toast in full, and 15 to 20 minutes of the dance floor. Its length follows her day. A short highlight to share comes with it: 1 minute with The Duo and The Trio, 3 to 5 minutes with the Full Celebration.",
+        a: `Her whole day, as it happened: the misa, the venue and the guests arriving, every presentation in full (the grand entrance, the vals, the surprise dance), every toast in full, and 15 to 20 minutes of the dance floor. Its length follows her day. A short highlight to share comes with it: 1 minute with The Duo and The Trio, 3 to 5 minutes with the Full Celebration. The Duo and The Trio can add the 3–5 minute highlight film for ${PT.addon.highlight}.`,
       },
       {
         q: "How far in advance should we book?",
@@ -481,7 +481,7 @@ const es: Copy = {
       },
       {
         q: "¿Qué incluye el video completo?",
-        a: "Todo su día, tal como pasó: la misa, el salón y la llegada de los invitados, cada presentación completa (la entrada, el vals, el baile sorpresa), cada brindis completo y de 15 a 20 minutos de baile. Su duración depende de su día. También recibes un resumen corto para compartir: de 1 minuto con El Dúo y El Trío, y de 3 a 5 minutos con la Celebración completa.",
+        a: `Todo su día, tal como pasó: la misa, el salón y la llegada de los invitados, cada presentación completa (la entrada, el vals, el baile sorpresa), cada brindis completo y de 15 a 20 minutos de baile. Su duración depende de su día. También recibes un resumen corto para compartir: de 1 minuto con El Dúo y El Trío, y de 3 a 5 minutos con la Celebración completa. El Dúo y El Trío pueden agregar el resumen de 3–5 minutos por ${PT.addon.highlight}.`,
       },
       {
         q: "¿Con cuánta anticipación debemos reservar?",

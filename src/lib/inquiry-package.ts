@@ -7,7 +7,7 @@
  * signed or charged; the owner follows up and handles payment.
  */
 import { z } from "zod";
-import { commissionSchema, describeCommission, isBookableTier, quoteCommission, type PriceBook, type TierId } from "@/lib/commission";
+import { addOnAllowed, commissionSchema, describeCommission, isBookableTier, quoteCommission, type PriceBook, type TierId } from "@/lib/commission";
 
 export const inquiryPackageSchema = commissionSchema
   .pick({
@@ -26,7 +26,10 @@ export const inquiryPackageSchema = commissionSchema
   .strict()
   // A retired package (the Two-Day Celebration) can't be requested any more,
   // whatever an old tab or a hand-built request sends.
-  .refine((p) => isBookableTier(p.tier), { path: ["tier"], message: "That package is no longer offered." });
+  .refine((p) => isBookableTier(p.tier), { path: ["tier"], message: "That package is no longer offered." })
+  // An extra this package doesn't offer (e.g. the Highlight Film on the Full
+  // Celebration, which already includes one) is refused, not silently priced.
+  .refine((p) => p.add_ons.every((a) => addOnAllowed(p.tier, a)), { path: ["add_ons"], message: "That extra isn't offered with this package." });
 
 export type InquiryPackage = z.infer<typeof inquiryPackageSchema>;
 

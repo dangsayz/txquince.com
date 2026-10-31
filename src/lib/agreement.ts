@@ -12,7 +12,7 @@
  * the stored snapshot — including the deposit %, balance-due days and hold
  * days it was signed under, so a later price change never touches it.
  */
-import {
+import { addOnAllowed,
   COORDINATOR_INCLUDED,
   normalizeCrew,
   quoteCommission,
@@ -191,7 +191,8 @@ export function buildAgreement(input: AgreementInput, book: PriceBook): Agreemen
   const tier = TIERS.find((x) => x.id === input.tier)!;
   const base = q.baseHours;
   const extraHours = q.hours - base;
-  const extras = ADD_ONS.filter((a) => input.addOns.includes(a.id));
+  // Same rule as the quote: an extra the package doesn't offer is never listed (or charged).
+  const extras = ADD_ONS.filter((a) => input.addOns.includes(a.id) && addOnAllowed(input.tier, a.id));
 
   const includes = matrixFor(book).flatMap((g) =>
     g.rows

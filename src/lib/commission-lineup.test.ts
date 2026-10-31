@@ -59,6 +59,13 @@ describe("the Oct 2026 lineup", () => {
     expect(book!.packages.production.price).toBe(2000);
   });
 
+  it("offers the Highlight Film on the Duo and Trio only, and never prices it elsewhere", () => {
+    const b = DEFAULT_PRICE_BOOK;
+    expect(quoteCommission(b, "trio", ["highlight"]).addOnsUsd).toBe(b.addOns.highlight);
+    expect(quoteCommission(b, "production", ["highlight"]).addOnsUsd).toBe(0);
+    expect(quoteCommission(b, "study", ["highlight"]).addOnsUsd).toBe(0);
+  });
+
   it("never lets the offer show more dates left than it started with", () => {
     const r = priceBookSchema.safeParse({ ...DEFAULT_PRICE_BOOK, trioSpotsTotal: 5, trioSpotsLeft: 6 });
     expect(r.success).toBe(false);

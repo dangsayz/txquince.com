@@ -377,6 +377,14 @@ export const ADD_ONS: AddOn[] = [
       es: "Un día aparte para retratos con su vestido, fotos y video, en hasta 2 lugares.",
     },
   },
+  {
+    id: "highlight",
+    name: { en: "Highlight Film (3–5 min)", es: "Video resumen (3–5 min)" },
+    note: {
+      en: "A 3–5 minute highlight film of her day, cut from the same footage as her full-length film.",
+      es: "Un resumen de 3–5 minutos de su día, editado con las mismas tomas de su video completo.",
+    },
+  },
 ];
 
 export const tierById = (id: TierId) => [...TIERS, ...RETIRED_TIERS].find((t) => t.id === id)!;
