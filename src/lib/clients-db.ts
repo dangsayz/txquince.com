@@ -1,6 +1,7 @@
 import "server-only";
 import { cache } from "react";
 import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
+import { ACTIVE_BOOKING_STATUSES, fullDates } from "@/lib/booking-capacity";
 
 /**
  * clients-db.ts — read-only admin views of the two pipelines that matter:
@@ -137,11 +138,11 @@ export const getTakenEventDates = cache(async (): Promise<string[]> => {
     const { data, error } = await supabase
       .from("bookings")
       .select("event_date")
-      .in("status", ["requested", "pending_payment", "paid"])
+      .in("status", [...ACTIVE_BOOKING_STATUSES])
       .gte("event_date", today);
     if (error || !data) return [];
-    // De-dupe (a date can have one active row, but be defensive).
-    return Array.from(new Set(data.map((r) => r.event_date as string)));
+    // A date is taken once it holds BOOKINGS_PER_DATE active bookings.
+    return fullDates(data.map((r) => r.event_date as string));
   } catch {
     return [];
   }

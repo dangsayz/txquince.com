@@ -3,8 +3,9 @@
  * date-hold deposit on a family's plan.
  *
  * Reuses the existing booking machinery end to end:
- *   - create_booking_hold() atomically claims the date (one active booking per
- *     date, enforced by a unique index), so two families can't both pay;
+ *   - create_booking_hold() atomically claims a spot on the date (up to
+ *     BOOKINGS_PER_DATE active bookings, enforced by a database trigger), so
+ *     families can't pay for more spots than the date has;
  *   - the existing Stripe webhook confirms payment (confirm_booking_payment),
  *     releases the date if checkout expires, and sends the booking emails;
  *   - fulfillment marks the plan Booked (metadata.plan_id).

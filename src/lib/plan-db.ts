@@ -9,6 +9,7 @@
 import "server-only";
 import { cache } from "react";
 import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
+import { ACTIVE_BOOKING_STATUSES, BOOKINGS_PER_DATE } from "@/lib/booking-capacity";
 import { generatePlanSlug } from "@/lib/plan-slug";
 import { isColorId } from "@/lib/quince-colors";
 import {
@@ -105,18 +106,17 @@ export async function updatePlan(id: string, fields: { status?: PlanStatus; note
 
 export type AvailabilityRow = { event_date: string; status: DateStatus; note: string | null; updated_at: string };
 
-const ACTIVE_BOOKING = ["requested", "pending_payment", "paid"];
+const ACTIVE_BOOKING = [...ACTIVE_BOOKING_STATUSES];
 
-/** True when a live hold or paid booking already claims this date. */
+/** True when the date's live holds and paid bookings have reached BOOKINGS_PER_DATE. */
 async function isDateTaken(date: string): Promise<boolean> {
-  const { data, error } = await getServiceSupabase()
+  const { count, error } = await getServiceSupabase()
     .from("bookings")
-    .select("id")
+    .select("id", { count: "exact", head: true })
     .eq("event_date", date)
-    .in("status", ACTIVE_BOOKING)
-    .limit(1);
+    .in("status", ACTIVE_BOOKING);
   if (error) return false;
-  return (data ?? []).length > 0;
+  return (count ?? 0) >= BOOKINGS_PER_DATE;
 }
 
 /** The status a family sees for one date (see resolveDateStatus). Never throws. */
