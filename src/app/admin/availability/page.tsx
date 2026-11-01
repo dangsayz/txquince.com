@@ -3,6 +3,7 @@ import { requireAdminPage } from "@/lib/require-admin";
 import { listAvailability, listBookedDates, type AvailabilityRow } from "@/lib/plan-db";
 import { formatPlanDate, todayInDallas } from "@/lib/plan";
 import { AvailabilityEditor, ClearDateButton } from "@/components/admin/AvailabilityEditor";
+import { BOOKINGS_PER_DATE } from "@/lib/booking-capacity";
 
 export const dynamic = "force-dynamic";
 
@@ -29,7 +30,7 @@ export default async function AdminAvailability() {
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#62625f]"><Link href="/admin/plans" className="underline">Plans</Link> / Availability</p>
         <h1 className="mt-3 text-[clamp(1.7rem,2.5vw,2.25rem)] font-normal leading-tight tracking-[-0.035em]">Date availability</h1>
         <p className="mt-3 max-w-[60ch] text-sm leading-6 text-[#575753]">
-          Every date is <strong>Available</strong> unless you mark it here. Dates with a live hold or a paid booking always show as <strong>Booked</strong> on plan pages, no matter what this list says.
+          Every date is <strong>Available</strong> unless you mark it here. A date that already has {BOOKINGS_PER_DATE} live holds or paid bookings always shows as <strong>Booked</strong> on plan pages, no matter what this list says.
         </p>
       </div>
 
