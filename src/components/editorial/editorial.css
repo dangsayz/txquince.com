@@ -172,19 +172,6 @@
 .ed-statement__body { max-width: 56ch; color: var(--ed-ink); }
 
 /* ---------- Details (tiles) ---------- */
-.ed-details { padding-bottom: clamp(96px, 12vw, 180px); }
-.ed-details__label { margin-bottom: 40px !important; }
-.ed-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: clamp(16px, 2.4vw, 40px); row-gap: clamp(64px, 8vw, 120px); }
-.ed-tile { display: flex; flex-direction: column; gap: 20px; }
-.ed-tile[data-col="1"] { margin-top: 18vh; }
-.ed-tile[data-col="2"] { margin-top: 7vh; }
-.ed-tile__media { position: relative; aspect-ratio: 3 / 4; overflow: hidden; background: var(--ed-soft); }
-.ed-tile__inner { position: absolute; inset: -8% 0; will-change: transform; }
-.ed-tile__inner img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.ed-tile__cap { display: flex; flex-direction: column; gap: 4px; max-width: 34ch; }
-.ed-tile__cap .ed-roman { margin-bottom: 8px; }
-.ed-tile__title { font-family: var(--ed-display); font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; font-size: 20px; line-height: 1.1; margin-bottom: 4px !important; }
-.ed-tile__line { display: block; color: var(--ed-ink); }
 
 /* ---------- Band ---------- */
 .ed-band { background: #000000; color: #ffffff; padding: clamp(80px, 9vw, 120px) 0 clamp(48px, 6vw, 80px); will-change: clip-path; }
@@ -366,9 +353,6 @@
 
 /* ---------- Tablet & phone ---------- */
 @media (max-width: 1023px) {
-  .ed-tiles { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-  .ed-tile[data-col] { margin-top: 0; }
-  .ed-tile:nth-child(even) { margin-top: 12vh; }
   .ed-faq__grid { grid-template-columns: minmax(0, 1fr); }
   .ed-faq__side { position: static; }
 }
@@ -377,9 +361,6 @@
   .ed-hero__foot .ed-btn { width: 100%; }
   .ed-hero__copy { padding-bottom: 96px; }
 
-  .ed-tiles { grid-template-columns: minmax(0, 1fr); row-gap: 64px; }
-  .ed-tile:nth-child(even) { margin-top: 0; padding-left: 16%; }
-  .ed-tile:nth-child(odd) { padding-right: 16%; }
 
   .ed-collage__stage { min-height: 640px; }
   .ed-plate--a { left: 3%; top: 6%; width: 30vw; }

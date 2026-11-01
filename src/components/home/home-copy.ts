@@ -30,9 +30,24 @@ export const PACKAGE_DETAIL: Record<TierId, { en: string; es: string }> = {
 
 /** Topic tag per FAQ item in copy.ts, in the same order. */
 export const FAQ_TAGS = {
-  en: ["Prices", "Packages", "Your team", "The day", "Video", "Booking", "The day", "En español", "Your team", "Booking", "Photoshoot", "Travel"],
-  es: ["Precios", "Paquetes", "Tu equipo", "El día", "Video", "Reservar", "El día", "Idioma", "Tu equipo", "Reservar", "Sesión de fotos", "Viajes"],
+  en: ["Prices", "Packages", "Your team", "The day", "Video", "Booking", "The day", "En español", "Your team", "Booking", "Photoshoot", "Travel", "Delivery", "Your team", "Sharing"],
+  es: ["Precios", "Paquetes", "Tu equipo", "El día", "Video", "Reservar", "El día", "Idioma", "Tu equipo", "Reservar", "Sesión de fotos", "Viajes", "Entrega", "Tu equipo", "Compartir"],
 } as const;
+
+/**
+ * Homepage "What moms ask" groups: which group each FAQ item in copy.ts sits
+ * in (same order as the items), and the group names in display order.
+ */
+export const FAQ_GROUP_OF = [
+  "booking", "booking", "team", "day", "after", "booking", "day", "team", "team", "booking", "day", "booking", "after", "team", "after",
+] as const;
+export type FaqGroup = (typeof FAQ_GROUP_OF)[number];
+export const FAQ_GROUPS: { id: FaqGroup; label: { en: string; es: string } }[] = [
+  { id: "booking", label: { en: "Prices & booking", es: "Precios y reserva" } },
+  { id: "team", label: { en: "Your team", es: "Su equipo" } },
+  { id: "day", label: { en: "The day", es: "El día" } },
+  { id: "after", label: { en: "After the party", es: "Después de la fiesta" } },
+];
 
 export const HOME = {
   en: {

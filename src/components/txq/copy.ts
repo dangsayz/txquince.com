@@ -204,6 +204,18 @@ const en = {
         q: "Do you travel outside Dallas–Fort Worth?",
         a: "Yes. Our home is Dallas–Fort Worth, and we also accept celebrations in Houston, Austin and San Antonio, plus destination portrait sessions anywhere in Texas.",
       },
+      {
+        q: "When do we get our photos and video?",
+        a: "Between 30 and 90 days after the party, depending on the season: closer to 30 in the quieter months, up to 90 in our busiest season. It takes that long because the two of us edit every photo and every film ourselves.",
+      },
+      {
+        q: "What happens if someone on your team is sick on our date?",
+        a: "We show up ourselves. If anyone on the team can't make it, one of the two owners covers your day, no exceptions. Your date is never handed to someone we found at the last minute.",
+      },
+      {
+        q: "Will you post our photos online?",
+        a: "Sharing real work is how other families find us, so your agreement includes permission for us to share some of your photos and videos on our website and social media. If you'd rather we didn't, tell us before you sign and your agreement will say we won't share them publicly.",
+      },
     ],
   },
   booking: {
@@ -515,6 +527,18 @@ const es: Copy = {
       {
         q: "¿Viajan fuera de Dallas–Fort Worth?",
         a: "Sí. Nuestra base es Dallas–Fort Worth, y también aceptamos celebraciones en Houston, Austin y San Antonio, además de sesiones de retrato en destino en cualquier parte de Texas.",
+      },
+      {
+        q: "¿Cuándo recibimos las fotos y el video?",
+        a: "Entre 30 y 90 días después de la fiesta, según la temporada: más cerca de 30 en los meses tranquilos y hasta 90 en nuestra temporada más ocupada. Toma ese tiempo porque nosotros dos editamos cada foto y cada video.",
+      },
+      {
+        q: "¿Qué pasa si alguien de su equipo se enferma el día de nuestra fiesta?",
+        a: "Llegamos nosotros. Si alguien del equipo no puede ir, uno de los dos dueños cubre tu día, sin excepción. Tu fecha nunca se le pasa a alguien que conseguimos a última hora.",
+      },
+      {
+        q: "¿Van a publicar nuestras fotos?",
+        a: "Compartir trabajo real es como otras familias nos encuentran, así que tu contrato incluye permiso para compartir algunas de tus fotos y videos en nuestra página y redes sociales. Si prefieres que no, avísanos antes de firmar y tu contrato dirá que no las compartiremos públicamente.",
       },
     ],
   },

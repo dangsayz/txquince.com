@@ -52,6 +52,14 @@ export async function fulfillCheckoutSession(
 
   const record = booking as BookingRecord;
 
+  // Plan date holds can come from phone-only families: Stripe Checkout asked
+  // for the email, so adopt it for the confirmation and the booking record.
+  const stripeEmail = session.customer_details?.email?.trim().toLowerCase() ?? "";
+  if (!record.email && stripeEmail) {
+    record.email = stripeEmail;
+    await supabase.from("bookings").update({ email: stripeEmail }).eq("id", record.id);
+  }
+
   // Amount integrity (defense-in-depth): the deposit is priced server-side at
   // session-create, but re-verify what Stripe ACTUALLY collected matches what we
   // expect before telling the family their date is reserved. On a server-priced
@@ -73,6 +81,17 @@ export async function fulfillCheckoutSession(
         .eq("id", record.id);
       record.status = "payment_review";
     }
+  }
+
+  // A "Hold my date" from a quince plan: the plan is now Booked (only when the
+  // payment actually confirmed the date, not when it went to review).
+  const planId = session.metadata?.plan_id;
+  if (planId && record.status === "paid") {
+    const { error: planErr } = await supabase
+      .from("quince_plans")
+      .update({ status: "booked", booking_id: record.id })
+      .eq("id", planId);
+    if (planErr) console.error("[booking] plan status update failed:", planErr.message);
   }
 
   // Already emailed (webhook retry) — stop here.

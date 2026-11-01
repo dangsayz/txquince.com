@@ -3,26 +3,26 @@
 import { useEffect, useRef, useState, type ReactNode, type SyntheticEvent } from "react";
 import Link from "next/link";
 import { Intake, bookHref } from "@/components/txq/Intake";
-import { PhotoDump } from "@/components/txq/PhotoDump";
 import { useShell } from "@/components/txq/SiteShell";
 import { useSite } from "@/components/txq/state";
 import { TIERS, money, type CinemaFilm } from "@/components/txq/data";
 import type { Journal } from "@/components/txq/Editorial";
 import { usePriceBook } from "@/components/PriceBookProvider";
-import { trackEvent } from "@/components/Tracker";
 import { SlotPicture } from "@/components/slots/SlotPicture";
 import { SlotAdminControl } from "@/components/slots/SlotAdminControl";
 import { useSlot } from "@/components/slots/SlotProvider";
-import { FAQ_TAGS, PACKAGE_DETAIL } from "@/components/home/home-copy";
+import { PACKAGE_DETAIL } from "@/components/home/home-copy";
+import { MomsAsk } from "./MomsAsk";
 import { BASE_CREW, priceFloor } from "@/lib/commission";
-import { CONTACT_EVENT, smsHref } from "@/lib/contact";
-import { HERO_SLOTS, type FeedPage, type HomeOverrides } from "@/lib/photo-dump-shared";
+import { HERO_SLOTS, type HomeOverrides } from "@/lib/photo-dump-shared";
 import type { HomeGallery } from "@/lib/home-galleries";
 import type { HomeCity } from "@/content/home-places";
 import { site } from "@/content/site";
 import { ED } from "./copy";
-import { BAND_VIDEO, DETAILS, FEATURE_STILL, HERO, JOURNAL_PHOTO, JOURNAL_PHOTO_FALLBACK, type Detail } from "./media";
+import { BAND_VIDEO, DETAILS, FEATURE_STILL, HERO, JOURNAL_PHOTO, JOURNAL_PHOTO_FALLBACK } from "./media";
 import { LazyVideo } from "./LazyVideo";
+import { Favorites } from "./Favorites";
+import type { Favorite } from "@/lib/favorites";
 import { useScenes } from "./scenes";
 import "./editorial.css";
 
@@ -41,21 +41,21 @@ import "./editorial.css";
 export function EditorialHome({
   journal,
   films,
-  photos = null,
   overrides = {},
   galleries = [],
   cities = [],
+  favorites = [],
 }: {
   journal: Journal;
   films: CinemaFilm[];
-  /** First page of the Photo dump ("Latest photos"); null = storage unreachable. */
-  photos?: FeedPage | null;
   /** Admin swaps for the hero image slot, chosen from the Photo dump. */
   overrides?: HomeOverrides;
   /** Real portfolio galleries (server-grouped). */
   galleries?: HomeGallery[];
   /** City pages for the "Where we work" links. */
   cities?: HomeCity[];
+  /** Starred portfolio photos (Admin → Portfolio → Feature), up to 100. */
+  favorites?: Favorite[];
 }) {
   const { setDockHidden } = useShell();
   const rootRef = useRef<HTMLDivElement>(null);
@@ -81,16 +81,16 @@ export function EditorialHome({
     <div ref={rootRef} className="ed">
       <Hero overrides={overrides} />
       <Statement />
-      <Details />
+      <FavoritesSection favorites={favorites} />
       <Band films={films} />
       <Collage galleries={galleries} />
       <Feature />
       <Packages>
         <Intake ref={intakeRef} />
       </Packages>
-      <PhotoDump initial={photos} />
+      <MomsAsk />
       <JournalRow journal={journal} />
-      <Questions cities={cities} />
+      <WhereWeWork cities={cities} />
     </div>
   );
 }
@@ -169,61 +169,26 @@ function Statement() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Details: the day in portrait clips                                  */
+/* Favorites: the contact sheet of starred portfolio photos            */
 /* ------------------------------------------------------------------ */
 
 const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"];
 
-function Details() {
+/** Starred portfolio photos; the six static stills when the database is unreachable. */
+function FavoritesSection({ favorites }: { favorites: Favorite[] }) {
   const { lang } = useSite();
-  return (
-    <section className="ed-details" aria-label={ED[lang].details.label}>
-      <div className="ed-wrap">
-        <p className="ed-label ed-details__label">{ED[lang].details.label}</p>
-        <ul className="ed-tiles">
-          {DETAILS.map((d, i) => (
-            <DetailTile key={d.id} d={d} i={i} />
-          ))}
-        </ul>
-      </div>
-    </section>
-  );
-}
-
-function DetailTile({ d, i }: { d: Detail; i: number }) {
-  const { lang } = useSite();
-  const [title, ...rest] = d.lines[lang];
-  return (
-    <li className="ed-tile" data-col={i % 3}>
-      <div className="ed-tile__media">
-        <div className="ed-tile__inner" data-ed="parallax">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={d.still.src}
-            width={d.still.width}
-            height={d.still.height}
-            alt={d.still.alt[lang]}
-            loading="lazy"
-            decoding="async"
-          />
-          <LazyVideo clip={d.video} className="ed-video" />
-        </div>
-      </div>
-      <div className="ed-tile__cap" data-ed="lines">
-        <span className="ed-roman" aria-hidden>
-          {ROMAN[i]}
-        </span>
-        <h3 className="ed-tile__title" data-line>
-          {title}
-        </h3>
-        {rest.map((line) => (
-          <span key={line} className="ed-tile__line" data-line>
-            {line}
-          </span>
-        ))}
-      </div>
-    </li>
-  );
+  const list: Favorite[] = favorites.length
+    ? favorites
+    : DETAILS.map((d) => ({
+        id: d.id,
+        src: d.still.src,
+        width: d.still.width,
+        height: d.still.height,
+        alt: d.still.alt[lang],
+        group: "celebration",
+        href: null,
+      }));
+  return <Favorites favorites={list} />;
 }
 
 /* ------------------------------------------------------------------ */
@@ -627,42 +592,13 @@ function JournalRow({ journal }: { journal: Journal }) {
 /* Questions + where we work                                           */
 /* ------------------------------------------------------------------ */
 
-function Questions({ cities }: { cities: HomeCity[] }) {
+/** "Where we work": the city pages and services (the questions moved up to MomsAsk). */
+function WhereWeWork({ cities }: { cities: HomeCity[] }) {
   const { t, lang } = useSite();
   const q = ED[lang].faq;
-  const tags = FAQ_TAGS[lang];
   return (
-    <section id="questions" className="ed-faq" aria-labelledby="ed-faq-title">
-      <div className="ed-wrap ed-faq__grid">
-        <div className="ed-faq__side">
-          <p className="ed-label">{q.label}</p>
-          <h2 id="ed-faq-title" className="ed-display ed-display--md">
-            {t.faq.title}
-          </h2>
-          <div className="ed-ask">
-            <p className="ed-ask__t">{q.askTitle}</p>
-            <p>{q.askBody}</p>
-            <a href={smsHref()} className="ed-btn" onClick={() => trackEvent(CONTACT_EVENT.text, "faq")}>
-              {ED[lang].text} {site.contact.phone}
-            </a>
-          </div>
-        </div>
-        <div className="ed-faq__main">
-          <div className="ed-faq__list">
-            {t.faq.items.map((item, i) => (
-              <details key={item.q} open={i === 0}>
-                <summary>
-                  <span className="ed-q">
-                    {tags[i] && <span className="ed-q__tag">{tags[i]}</span>}
-                    <h3 className="ed-q__text">{item.q}</h3>
-                  </span>
-                  <span className="ed-toggle" aria-hidden />
-                </summary>
-                <p className="ed-q__a">{item.a}</p>
-              </details>
-            ))}
-          </div>
-
+    <section className="ed-faq ed-faq--where" aria-labelledby="ed-where-title">
+      <div className="ed-wrap">
           <nav id="where-we-work" className="ed-where" aria-labelledby="ed-where-title">
             <h2 id="ed-where-title" className="ed-label">
               {q.where}
@@ -686,7 +622,6 @@ function Questions({ cities }: { cities: HomeCity[] }) {
               ))}
             </ul>
           </nav>
-        </div>
       </div>
     </section>
   );

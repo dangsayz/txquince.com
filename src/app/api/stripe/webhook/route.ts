@@ -118,7 +118,7 @@ function checkoutSessionFromEvent(value: unknown): StripeCheckoutSession | null 
  * account event to every endpoint. Only act on checkouts this site created
  * (all of them carry metadata.source); acknowledge the rest untouched.
  */
-const TXQ_SOURCES = new Set(["commission", "txquince", "txquince-admin"]);
+const TXQ_SOURCES = new Set(["commission", "txquince", "txquince-admin", "txquince-plan"]);
 function isTxQuinceSession(session: StripeCheckoutSession): boolean {
   return TXQ_SOURCES.has(session.metadata?.source ?? "");
 }

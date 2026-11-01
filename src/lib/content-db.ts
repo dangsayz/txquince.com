@@ -76,6 +76,8 @@ export type PortfolioImage = {
   hook?: string | null;
   /** Free-form comma-separated keywords (meta) for search/SEO. */
   tags?: string | null;
+  /** Palette colors (canonical ids, src/lib/quince-colors.ts) for the /plan match. */
+  colors?: string[] | null;
   /** Vendors credited on this photo (public-safe). */
   vendors?: ImageVendorCredit[];
   /** Branded serve URL (/api/img/{slug}) — never the raw bucket URL. */

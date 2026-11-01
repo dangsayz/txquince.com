@@ -1,0 +1,218 @@
+/*
+ * favorites.css — the homepage contact sheet.
+ * Every cell is the same 4:5 frame (most quince photos are vertical, so
+ * portraits fill it); the photo is contained inside it (never
+ * cropped), so mixed portrait/landscape frames stay aligned on one grid with
+ * even white space. 2 columns on phones (faces stay big), 3 / 4 / 5 up.
+ */
+.fv {
+  padding: clamp(64px, 9vw, 140px) 0 clamp(96px, 12vw, 180px);
+  background: #ffffff;
+}
+.fv-head {
+  display: grid;
+  gap: 16px;
+  margin-bottom: clamp(32px, 4vw, 56px);
+}
+.fv-title {
+  margin: 0;
+  max-width: 22ch;
+  font-family: var(--ed-display);
+  font-weight: 500;
+  font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--ed-ink);
+}
+
+/* Filter words, after MOUTHWASH: the active word is ink, the rest muted. */
+.fv-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  margin-top: 4px;
+}
+.fv-filter {
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: var(--ed-display);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--ed-mute);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.fv-filter[aria-pressed="true"] {
+  color: var(--ed-ink);
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  text-decoration-thickness: 1px;
+}
+.fv-filter:focus-visible,
+.fv-hit:focus-visible,
+.fv-more:focus-visible {
+  outline: 2px solid var(--ed-ink);
+  outline-offset: 3px;
+}
+
+.fv-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(20px, 3vw, 48px) clamp(12px, 2vw, 32px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@media (min-width: 640px) {
+  .fv-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 960px) {
+  .fv-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (min-width: 1280px) {
+  .fv-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+.fv-cell {
+  aspect-ratio: 4 / 5; /* reserves the space: no layout shift */
+  min-width: 0;
+}
+.fv-hit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  -webkit-touch-callout: none;
+}
+.fv-hit img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* the whole frame, its true shape */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .fv-hit img { transition: opacity 300ms ease; }
+  .fv-grid:hover .fv-hit img { opacity: 0.55; }
+  .fv-grid:hover .fv-hit:hover img { opacity: 1; }
+}
+
+.fv-foot {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  margin-top: clamp(40px, 5vw, 72px);
+}
+.fv-count {
+  margin: 0;
+  font-family: var(--ed-display);
+  font-size: 0.8125rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ed-mute);
+}
+.fv-more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 28px;
+  border: 1px solid var(--ed-ink);
+  background: #ffffff;
+  color: var(--ed-ink);
+  font-family: var(--ed-display);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.fv-more:hover { background: var(--ed-ink); color: #ffffff; }
+
+/* ---------- Lightbox ---------- */
+.fv-lb {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: max(56px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(56px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+  background: #ffffff;
+  overscroll-behavior: contain;
+}
+.fv-lb__fig {
+  position: relative;
+  margin: 0;
+  max-width: 100%;
+  max-height: 100%;
+}
+.fv-lb__fig img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(100%, 1200px);
+  max-height: calc(100dvh - 128px);
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+.fv-lb__mark {
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+  font-family: var(--ed-display);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+}
+.fv-lb__count {
+  position: absolute;
+  left: 50%;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  margin: 0;
+  font-family: var(--ed-display);
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  color: var(--ed-mute);
+}
+.fv-lb__btn {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--ed-ink);
+  font-size: 32px;
+  line-height: 1;
+  cursor: pointer;
+}
+.fv-lb__btn:focus-visible { outline: 2px solid var(--ed-ink); outline-offset: 2px; }
+.fv-lb__close { top: max(4px, env(safe-area-inset-top)); right: max(4px, env(safe-area-inset-right)); }
+.fv-lb__prev,
+.fv-lb__next { bottom: max(4px, env(safe-area-inset-bottom)); }
+.fv-lb__prev { left: max(4px, env(safe-area-inset-left)); }
+.fv-lb__next { right: max(4px, env(safe-area-inset-right)); }
+@media (min-width: 960px) {
+  .fv-lb__prev,
+  .fv-lb__next { top: 50%; bottom: auto; transform: translateY(-50%); }
+}

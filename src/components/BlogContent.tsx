@@ -7,6 +7,7 @@ import { BlogShare } from "@/components/BlogShare";
 import { BlogPlanCta } from "@/components/BlogPlanCta";
 import { SlotImage } from "@/components/SlotImage";
 import { blogCoverSlotId } from "@/lib/image-slots";
+import type { Series } from "@/content/blog-clusters";
 import "@/components/txq/pages/blog.css";
 
 /**
@@ -109,6 +110,10 @@ const COPY = {
     reading: "Reading",
     fig: "Fig.",
     faqTitle: "Frequently asked questions",
+    seriesLabel: "Part of the series",
+    seriesOf: (n: number, total: number) => `${n} of ${total}`,
+    seriesNext: "Read next",
+    seriesGuide: "Complete guide",
     relatedIndex: "Keep reading",
     relatedTitle: "More from the journal",
     closeIndex: "Your date",
@@ -141,6 +146,10 @@ const COPY = {
     reading: "Lectura",
     fig: "Fig.",
     faqTitle: "Preguntas frecuentes",
+    seriesLabel: "Parte de la serie",
+    seriesOf: (n: number, total: number) => `${n} de ${total}`,
+    seriesNext: "Siga leyendo",
+    seriesGuide: "Guía completa",
     relatedIndex: "Sigue leyendo",
     relatedTitle: "Más del diario",
     closeIndex: "Su fecha",
@@ -592,8 +601,11 @@ export function BlogArticleView({
   related,
   shareUrl,
   shareImage,
+  series = null,
 }: {
   lang: BlogLang;
+  /** The topic cluster this post belongs to (src/content/blog-clusters.ts). */
+  series?: Series | null;
   post: BlogPost;
   images: Record<string, BlogImage>;
   /** Resolved hero (see BlogCoverImage). */
@@ -653,6 +665,11 @@ export function BlogArticleView({
                   {post.title}
                 </h1>
                 <p className="tq-blog-post__lead">{post.lead}</p>
+                {series ? (
+                  <a href="#tq-blog-series" className="tq-series-chip tq-mono">
+                    {c.seriesLabel}: {series.title} · {c.seriesOf(series.position, series.items.length)}
+                  </a>
+                ) : null}
                 <BlogShare url={shareUrl} title={post.title} image={shareImage} lang={lang} placement="top" />
               </div>
               <dl className="tq-blog-post__meta tq-mono">
@@ -729,6 +746,41 @@ export function BlogArticleView({
               <BlogPlanCta lang={lang} placement="end" />
             </div>
           </div>
+
+          {series ? (
+            <nav id="tq-blog-series" className="tq-series" aria-label={`${c.seriesLabel}: ${series.title}`}>
+              <p className="tq-mono tq-muted">
+                {c.seriesLabel} · {c.seriesOf(series.position, series.items.length)}
+              </p>
+              <h2 className="tq-display tq-series__title">{series.title}</h2>
+              <p className="tq-series__worry">{series.worry}</p>
+              <ol className="tq-series__list">
+                {series.items.map((it, i) => (
+                  <li key={it.slug}>
+                    {it.current ? (
+                      <span aria-current="page" className="tq-series__item" data-current>
+                        <span className="tq-mono tq-nums">{pad(i + 1)}</span>
+                        <span>{it.title}</span>
+                      </span>
+                    ) : (
+                      <Link href={it.href} className="tq-series__item">
+                        <span className="tq-mono tq-nums">{pad(i + 1)}</span>
+                        <span>
+                          {it.title}
+                          {it.pillar ? <span className="tq-mono tq-muted tq-series__tag"> · {c.seriesGuide}</span> : null}
+                        </span>
+                      </Link>
+                    )}
+                  </li>
+                ))}
+              </ol>
+              {series.next ? (
+                <Link href={series.next.href} className="tq-btn tq-btn--lg tq-series__next">
+                  {c.seriesNext}: {series.next.title} <span className="tq-arrow" aria-hidden>→</span>
+                </Link>
+              ) : null}
+            </nav>
+          ) : null}
 
           {faqs.length ? (
             <section className="tq-section" aria-labelledby="tq-blog-faq">

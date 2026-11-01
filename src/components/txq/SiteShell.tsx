@@ -28,10 +28,13 @@ type ShellControls = {
 const ShellCtx = createContext<ShellControls>({ setCinema: () => {}, setDockHidden: () => {} });
 export const useShell = () => useContext(ShellCtx);
 
+/** Spanish pages that live outside /es (their URL is the Spanish search phrase). */
+const SPANISH_ROOT_PATHS = new Set(["/precios-quince-dfw"]);
+
 export function SiteShell({ children, book }: { children: ReactNode; book: PriceBook }) {
   const pathname = usePathname() || "/";
   const isHome = pathname === "/" || pathname === "/es";
-  const urlLang = pathname === "/es" || pathname.startsWith("/es/") ? "es" : "en";
+  const urlLang = pathname === "/es" || pathname.startsWith("/es/") || SPANISH_ROOT_PATHS.has(pathname) ? "es" : "en";
 
   return (
     <PriceBookProvider book={book}>

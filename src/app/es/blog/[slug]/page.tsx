@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { site } from "@/content/site";
+import { seriesFor } from "@/content/blog-clusters";
 import {
   getAllEsPosts,
   getEsPost,
@@ -84,6 +85,7 @@ export default async function EsBlogPostPage({
 
   const url = `${site.url}/es/blog/${post.slug}`;
   const related = fillDeep(relatedEsPosts(raw), book);
+  const series = fillDeep(seriesFor(raw.slug, "es"), book);
   const images = await getBlogImages(post.content);
   const cover = await resolveBlogCover(post, images, "es");
   const coverAbs = absoluteImageUrl(cover.url);
@@ -109,6 +111,7 @@ export default async function EsBlogPostPage({
         images={images}
         cover={cover}
         related={related}
+        series={series}
         shareUrl={url}
         shareImage={coverAbs}
       />
