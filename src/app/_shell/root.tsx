@@ -63,7 +63,7 @@ const META: Record<SiteLang, Metadata> = {
       template: `%s · ${site.brand}`,
     },
     description:
-      `Luxury quinceañera photos and video across Dallas–Fort Worth. Four published packages from ${commissionsFromLabel}, from the portrait session to the last dance.`,
+      `Luxury quinceañera photos and video across Dallas–Fort Worth. Five published packages from ${commissionsFromLabel}, from the portrait session to the last dance.`,
     applicationName: site.brand,
     openGraph: {
       type: "website",
@@ -91,7 +91,7 @@ const META: Record<SiteLang, Metadata> = {
       template: `%s · ${site.brand}`,
     },
     description:
-      `Fotografía y video de quinceañera en Dallas–Fort Worth. Cuatro paquetes publicados desde ${commissionsFromLabel}, de la sesión de retratos al último baile.`,
+      `Fotografía y video de quinceañera en Dallas–Fort Worth. Cinco paquetes publicados desde ${commissionsFromLabel}, de la sesión de retratos al último baile.`,
     applicationName: site.brand,
     openGraph: {
       type: "website",
