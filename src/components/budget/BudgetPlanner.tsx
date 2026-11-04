@@ -14,6 +14,7 @@ import { todayInDallas } from "@/lib/plan";
 import { BUDGET_COPY } from "./budget-copy";
 import { detailsFor, goodToKnow } from "./budget-details";
 import { DetailIcon } from "./DetailIcon";
+import { ShareBar } from "./ShareBar";
 import "./budget.css";
 
 const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
@@ -159,6 +160,9 @@ export function BudgetPlanner() {
         <p className="bp-eyebrow">{c.eyebrow}</p>
         <h1 className="bp-title">{c.title}</h1>
         <p className="bp-dek">{c.dek}</p>
+        <a className="bp-sharelink" href="#share-bottom">
+          {c.shareTop} <span aria-hidden>↓</span>
+        </a>
       </header>
 
       <section className="bp-panel" aria-labelledby={`${uid}-in`}>
@@ -339,6 +343,8 @@ export function BudgetPlanner() {
           </form>
         )}
       </section>
+
+      <ShareBar placement="bottom" />
 
       <p className="bp-fine">
         {c.fine} <a href={homeHref("#commissions")}>{c.seePackages}</a>
