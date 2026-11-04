@@ -47,7 +47,7 @@ export const EMPTY_BOOKING: BookingDraft = {
   step: 0,
   reached: 0,
   date: null,
-  city: "",
+  city: "dfw",
   venue: "",
   startTime: "",
   name: "",
@@ -80,6 +80,8 @@ type SiteState = {
   updateBooking: (patch: Partial<BookingDraft>) => void;
   /** Clear the booking answers and the package choice (after a request is sent). */
   resetBooking: () => void;
+  /** A saved request with her details was restored on this visit ("Welcome back"). */
+  draftRestored: boolean;
   /**
    * Choose a package from anywhere ("Book this", the comparison table, a
    * `#book-<package>` link): selects it and opens the panel at Hours & extras.
@@ -136,9 +138,13 @@ function alternateHref(l: Lang): string | null {
   }
 }
 
-/* Booking draft (sessionStorage). Everything read back is re-checked: a draft
-   is only ever a convenience, and the server re-validates the real request. */
+/* Booking draft (localStorage, on the family's own device). It survives a
+   closed tab or a frozen in-app browser, so she can come back and finish; it
+   expires after DRAFT_DAYS and is cleared once the request is sent. Everything
+   read back is re-checked: a draft is only ever a convenience, and the server
+   re-validates the real request. Nothing here leaves the device. */
 const DRAFT_KEY = "txq:booking-draft";
+const DRAFT_DAYS = 14;
 type Draft = {
   tier: TierId;
   addOns: AddOnId[];
@@ -154,9 +160,13 @@ const clampStep = (v: unknown) => (Number.isInteger(v) ? Math.max(0, Math.min(BO
 
 function readDraft(): Draft | null {
   try {
-    const raw = sessionStorage.getItem(DRAFT_KEY);
+    const raw = localStorage.getItem(DRAFT_KEY) ?? sessionStorage.getItem(DRAFT_KEY);
     if (!raw) return null;
     const d = JSON.parse(raw) as Record<string, unknown>;
+    if (typeof d.savedAt === "number" && Date.now() - d.savedAt > DRAFT_DAYS * 86_400_000) {
+      localStorage.removeItem(DRAFT_KEY);
+      return null;
+    }
     const b = (d.booking ?? {}) as Record<string, unknown>;
     if (!isTier(d.tier)) return null;
     const date = /^\d{4}-\d{2}-\d{2}$/.test(str(b.date, 10)) && str(b.date, 10) > isoDate(new Date()) ? str(b.date, 10) : null;
@@ -174,7 +184,7 @@ function readDraft(): Draft | null {
         step: Math.min(clampStep(b.step), reached),
         reached,
         date,
-        city: str(b.city, 10),
+        city: str(b.city, 10) || EMPTY_BOOKING.city,
         venue: str(b.venue, 160),
         startTime: /^\d{2}:\d{2}$/.test(str(b.startTime, 5)) ? str(b.startTime, 5) : "",
         name: str(b.name, 120),
@@ -193,7 +203,7 @@ function readDraft(): Draft | null {
 
 function writeDraft(d: Draft) {
   try {
-    sessionStorage.setItem(DRAFT_KEY, JSON.stringify(d));
+    localStorage.setItem(DRAFT_KEY, JSON.stringify({ ...d, savedAt: Date.now() }));
   } catch {
     /* storage full or blocked — the panel works without it */
   }
@@ -258,15 +268,17 @@ export function SiteProvider({
     setBooking((b) => ({ ...b, step: 1, reached: Math.max(b.reached, 1) }));
     setPickTick((n) => n + 1);
   }, []);
+  const [draftRestored, setDraftRestored] = useState(false);
   const resetBooking = useCallback(() => {
+    setDraftRestored(false);
     setBooking(EMPTY_BOOKING);
     setAddOnsRaw([]);
     setHoursRaw(null);
     setCrewRaw(null);
   }, []);
 
-  // A draft of the booking survives a reload in this tab (sessionStorage — a
-  // per-tab convenience; the request itself is the only thing that's saved).
+  // A draft of the booking survives a reload, a closed tab or a frozen in-app
+  // browser (localStorage on her device; see readDraft).
   // Restored after mount so the server render (package step) never mismatches.
   const [draftReady, setDraftReady] = useState(false);
   useEffect(() => {
@@ -280,6 +292,8 @@ export function SiteProvider({
         setCrewRaw(d.crew);
         setHoursRaw(d.hours);
         setBooking(d.booking);
+        const b = d.booking;
+        setDraftRestored(Boolean(b.date || b.name || b.email || b.phone));
       }
       setDraftReady(true);
     });
@@ -334,6 +348,7 @@ export function SiteProvider({
       booking,
       updateBooking,
       resetBooking,
+      draftRestored,
       pickPackage,
       pickTick,
       isHome,
@@ -354,6 +369,7 @@ export function SiteProvider({
       booking,
       updateBooking,
       resetBooking,
+      draftRestored,
       pickPackage,
       pickTick,
       isHome,

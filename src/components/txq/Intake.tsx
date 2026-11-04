@@ -72,7 +72,7 @@ const isTextField = (el: EventTarget | null) =>
   el.matches("textarea, select, input:not([type=radio]):not([type=checkbox]):not([type=button]):not([type=submit])");
 
 export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) {
-  const { t, lang, tier, addOns, crew, hours, booking: b, updateBooking, resetBooking, pickPackage, pickTick } =
+  const { t, lang, tier, addOns, crew, hours, booking: b, updateBooking, resetBooking, draftRestored, pickPackage, pickTick } =
     useSite();
   const avail = useAvailability();
   const quote = useQuote();
@@ -332,6 +332,16 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
         <Success done={done} onAgain={() => setDone(null)} headingRef={headingRef} />
       ) : (
         <>
+          {draftRestored ? (
+            <p className="tq-bk-welcome" role="status">
+              <span>
+                <strong>{t.booking.welcomeBack}</strong> {t.booking.welcomeSaved}
+              </span>
+              <button type="button" className="tq-bk-welcome__reset" onClick={resetBooking}>
+                {t.booking.startOver}
+              </button>
+            </p>
+          ) : null}
           <nav className="tq-bk-steps" aria-label={t.booking.stepsLabel}>
             <ol>
               {t.booking.steps.map((label, i) => {

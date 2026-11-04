@@ -344,3 +344,47 @@
   text-underline-offset: 5px;
   text-decoration-thickness: 1px;
 }
+
+/* Fields stand out from the grey panel: white, with a visible edge. */
+.txq .tq-bk .tq-input,
+.txq .tq-bk input[type="text"],
+.txq .tq-bk input[type="email"],
+.txq .tq-bk input[type="tel"],
+.txq .tq-bk input[type="time"],
+.txq .tq-bk textarea,
+.txq .tq-bk select {
+  background: #ffffff;
+  border-color: #c7c7cc;
+}
+.txq .tq-bk .tq-input:hover,
+.txq .tq-bk input:hover,
+.txq .tq-bk textarea:hover,
+.txq .tq-bk select:hover { border-color: #8e8e93; }
+
+/* "Welcome back": a saved request was restored. */
+.txq .tq-bk .tq-bk-welcome {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin: 0 0 18px;
+  padding: 14px 18px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid #e3e3e6;
+  font-size: 15px;
+  color: var(--g-ink);
+}
+.txq .tq-bk .tq-bk-welcome__reset {
+  min-height: 44px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--g-ink);
+  font-size: 15px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
