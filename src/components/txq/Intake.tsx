@@ -160,6 +160,33 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
     headingRef.current?.focus({ preventScroll: true });
   }, [moveTick, pickTick]);
 
+  // Arriving on /#intake (from the budget page, or a shared link): keep the
+  // panel in view while the photos above it load and push it down, until the
+  // visitor scrolls or taps themselves. The router's own hash handling and
+  // late layout shifts can otherwise leave a fresh page at the top.
+  useEffect(() => {
+    if (window.location.hash !== "#intake") return;
+    let stopped = false;
+    const stop = () => (stopped = true);
+    const opts = { passive: true, once: true } as const;
+    const events = ["wheel", "touchstart", "keydown", "pointerdown"] as const;
+    events.forEach((e) => window.addEventListener(e, stop, opts));
+    const align = () => {
+      const panel = panelRef.current;
+      if (stopped || !panel) return;
+      const header = parseFloat(getComputedStyle(panel).scrollMarginTop) || 64;
+      const top = panel.getBoundingClientRect().top;
+      if (Math.abs(top - header) > 24) window.scrollBy({ top: top - header, behavior: "auto" });
+    };
+    const ids = [0, 150, 400, 800, 1300, 2000, 3000].map((ms) => window.setTimeout(align, ms));
+    window.addEventListener("load", align, { once: true });
+    return () => {
+      ids.forEach((id) => window.clearTimeout(id));
+      window.removeEventListener("load", align);
+      events.forEach((e) => window.removeEventListener(e, stop));
+    };
+  }, []);
+
   // "Book this" links anywhere: #book-<package> opens the panel at Hours & extras.
   useEffect(() => {
     const onHash = () => {

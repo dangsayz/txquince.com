@@ -49,7 +49,9 @@ export function BudgetPlanner() {
   const choose = (o: CoverageOption) => {
     trackEvent("budget_choose", o.tier);
     handoffToBooking({ tier: o.tier, hours: o.hours, addOns: o.addOns });
-    window.location.assign(homeHref(`#book-${o.tier}`));
+    // The choice travels as this tab's booking draft; the link only has to land
+    // on the panel, which the browser and the router both scroll to.
+    window.location.assign(homeHref("#intake"));
   };
 
   /* ---------- offer ---------- */
