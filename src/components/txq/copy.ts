@@ -158,7 +158,7 @@ const en = {
     items: [
       {
         q: "How much does a quinceañera photographer and videographer cost in Dallas–Fort Worth?",
-        a: `Most DFW quinceañera studios charge between about $1,500 and $6,000. Our prices are all shown above: a Portrait Session is ${P.study}, The Solo (one shooter taking photos and video with a 2–3 camera setup) is ${P.solo}, The Duo (one photographer and one videographer) is ${P.cinema}, and The Trio (two photographers and one videographer), the package we recommend for most families, is ${P.trio}. Both the Duo and the Trio include a dress or save-the-date session (30–40 edited photos) once your deposit is paid.`,
+        a: `Most DFW quinceañera studios charge between about $1,500 and $6,000. Our prices are all shown above: a Portrait Session is ${P.study}, Just the Moments (one photographer for the presentation and family portraits) starts at ${P.moments} for 2 hours, The Solo (one shooter taking photos and video with a 2–3 camera setup) is ${P.solo}, The Duo (one photographer and one videographer) is ${P.cinema}, and The Trio (two photographers and one videographer), the package we recommend for most families, is ${P.trio}. Both the Duo and the Trio include a dress or save-the-date session (30–40 edited photos) once your deposit is paid.`,
       },
       {
         q: "Is photography and film included together?",
@@ -264,6 +264,8 @@ const en = {
     nextMonth: "Next month",
     legendOpen: "Open",
     legendTaken: "Booked",
+    momentsSatShort: "Saturdays open 30 days before for this package",
+    momentsSatNote: (days: number) => `Just the Moments: Fridays, Sundays and weekdays are open any time. Saturdays open up ${days} days before the date.`,
     legendPicked: "Your date",
     pickedPrefix: "Your date:",
     noDate: "No date picked yet.",
@@ -327,6 +329,7 @@ const en = {
       failed: "Something went wrong. Please try again, or text or email us.",
       taken: "Sorry — another family just booked that date. Please pick another.",
       verify: "Please complete the quick check below.",
+      momentsSaturday: (days: number) => `Just the Moments can take a Saturday only within ${days} days of the date. Pick a Friday or Sunday, or another package.`,
     },
   },
   footer: {
@@ -482,7 +485,7 @@ const es: Copy = {
     items: [
       {
         q: "¿Cuánto cuesta un fotógrafo y videógrafo de quinceañera en Dallas–Fort Worth?",
-        a: `La mayoría de los estudios de quinceañera en DFW cobran entre $1,500 y $6,000. Todos nuestros precios están arriba: la Sesión de retratos cuesta ${P.study}, El Solo (una sola persona que toma fotos y graba con 2–3 cámaras) ${P.solo}, El Dúo (un fotógrafo y un videógrafo) ${P.cinema} y El Trío (dos fotógrafos y un videógrafo), el paquete que recomendamos para la mayoría de las familias, ${P.trio}. El Dúo y El Trío incluyen una sesión con el vestido o de save the date (30–40 fotos editadas) una vez pagado tu depósito.`,
+        a: `La mayoría de los estudios de quinceañera en DFW cobran entre $1,500 y $6,000. Todos nuestros precios están arriba: la Sesión de retratos cuesta ${P.study}, Los Momentos (un fotógrafo para la presentación y las fotos con la familia) desde ${P.moments} por 2 horas, El Solo (una sola persona que toma fotos y graba con 2–3 cámaras) ${P.solo}, El Dúo (un fotógrafo y un videógrafo) ${P.cinema} y El Trío (dos fotógrafos y un videógrafo), el paquete que recomendamos para la mayoría de las familias, ${P.trio}. El Dúo y El Trío incluyen una sesión con el vestido o de save the date (30–40 fotos editadas) una vez pagado tu depósito.`,
       },
       {
         q: "¿La foto y el video vienen juntos?",
@@ -587,6 +590,8 @@ const es: Copy = {
     nextMonth: "Mes siguiente",
     legendOpen: "Libre",
     legendTaken: "Ocupada",
+    momentsSatShort: "Los sábados se abren 30 días antes para este paquete",
+    momentsSatNote: (days: number) => `Los Momentos: viernes, domingos y entre semana se pueden reservar cuando sea. Los sábados se abren ${days} días antes de la fecha.`,
     legendPicked: "Tu fecha",
     pickedPrefix: "Tu fecha:",
     noDate: "Aún no eliges fecha.",
@@ -650,6 +655,7 @@ const es: Copy = {
       failed: "Algo salió mal. Inténtalo de nuevo, o escríbenos o mándanos un mensaje.",
       taken: "Lo sentimos — otra familia acaba de reservar esa fecha. Por favor elige otra.",
       verify: "Por favor completa la verificación de abajo.",
+      momentsSaturday: (days: number) => `Los Momentos solo se puede reservar en sábado dentro de los ${days} días antes de la fecha. Elige un viernes o domingo, u otro paquete.`,
     },
   },
   footer: {

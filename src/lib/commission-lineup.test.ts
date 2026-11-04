@@ -9,6 +9,7 @@ import {
   PUBLIC_TIER_IDS,
   isBookableTier,
   maxHoursFor,
+  momentsDateAllowed,
   normalizeCrew,
   priceBookSchema,
   priceCeiling,
@@ -19,7 +20,7 @@ import { parseStoredBook } from "@/lib/pricing";
 
 describe("the Oct 31 2026 lineup", () => {
   it("offers four packages: the Portrait Session, the Solo (5 hrs), the Duo (6 hrs) and the Trio (7 hrs)", () => {
-    expect(PUBLIC_TIER_IDS).toEqual(["study", "solo", "cinema", "trio"]);
+    expect(PUBLIC_TIER_IDS).toEqual(["study", "moments", "solo", "cinema", "trio"]);
     expect(DEFAULT_PRICE_BOOK.packages.solo).toEqual({ price: 1200, hours: 5, extraHour: 200 });
     const h = DEFAULT_PRICE_BOOK.packages;
     expect([h.cinema.hours, h.trio.hours]).toEqual([6, 7]);
@@ -100,6 +101,22 @@ describe("the Oct 31 2026 lineup", () => {
     delete (saved.packages as Record<string, unknown>).solo;
     const book = parseStoredBook(saved);
     expect(book!.packages.solo).toEqual(DEFAULT_PRICE_BOOK.packages.solo);
+  });
+
+  it("prices Just the Moments by the hour from 2 to 4, with only its own film as an extra", () => {
+    const b = DEFAULT_PRICE_BOOK;
+    expect(b.packages.moments).toEqual({ price: 500, hours: 2, extraHour: 250 });
+    expect(quoteCommission(b, "moments", [], 9).totalUsd).toBe(1000); // capped at 4 hours
+    expect(quoteCommission(b, "moments", ["momentsfilm", "coordinator", "highlight"], 2).totalUsd).toBe(750);
+    expect(quoteCommission(b, "solo", ["momentsfilm"]).addOnsUsd).toBe(0);
+  });
+
+  it("opens a Moments Saturday only within 30 days; other days and packages any time", () => {
+    const today = "2027-03-01"; // a Monday
+    expect(momentsDateAllowed("moments", "2027-03-27", today)).toBe(true); // Saturday, 26 days out
+    expect(momentsDateAllowed("moments", "2027-04-03", today)).toBe(false); // Saturday, 33 days out
+    expect(momentsDateAllowed("moments", "2027-04-04", today)).toBe(true); // Sunday
+    expect(momentsDateAllowed("trio", "2027-04-03", today)).toBe(true);
   });
 
   it("never lets the offer show more dates left than it started with", () => {
