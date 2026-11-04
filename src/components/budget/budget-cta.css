@@ -1,0 +1,100 @@
+/* Budget call to action: a black band with a live demo (see BudgetCta.tsx). */
+.txq .bc { background: #0b0b0c; color: #fff; overflow: hidden; }
+.txq .bc-in {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 72px 16px;
+  display: grid;
+  gap: 44px;
+  align-items: center;
+}
+.txq .bc-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 18px;
+  font-family: var(--font-ed-display), Futura, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.78);
+}
+.txq .bc-dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; animation: bc-pulse 2.4s ease-in-out infinite; }
+@keyframes bc-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.5); } 50% { box-shadow: 0 0 0 7px rgba(255, 255, 255, 0); } }
+.txq .bc-title {
+  margin: 0;
+  font-family: var(--font-ed-display), Futura, sans-serif;
+  font-weight: 500;
+  font-size: clamp(32px, 6.4vw, 60px);
+  line-height: 1.04;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+.txq .bc-dek { margin: 26px 0 0; max-width: 46ch; font-size: 17px; line-height: 1.55; color: rgba(255, 255, 255, 0.72); }
+.txq .bc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  margin-top: 30px;
+  padding: 0 28px;
+  border-radius: 999px;
+  background: #fff;
+  color: #0b0b0c;
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.txq .bc-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255, 255, 255, 0.18); }
+.txq .bc-arrow { display: inline-block; transition: transform 0.25s ease; }
+.txq .bc-btn:hover .bc-arrow { transform: translateX(4px); }
+
+/* The demo card */
+.txq .bc-demo {
+  position: relative;
+  padding: 26px 22px 22px;
+  border-radius: 30px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03));
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+}
+.txq .bc-field { padding: 18px 20px; border-radius: 20px; background: #fff; color: #1d1d1f; }
+.txq .bc-field__label { display: block; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #6e6e73; font-family: var(--font-ed-display), Futura, sans-serif; }
+.txq .bc-field__value { display: flex; align-items: center; min-height: 52px; font-family: var(--font-ed-display), Futura, sans-serif; font-size: 44px; font-variant-numeric: tabular-nums; }
+.txq .bc-caret { display: inline-block; width: 2px; height: 0.9em; margin-left: 3px; background: #1d1d1f; opacity: 0; }
+.txq .bc-caret[data-on] { animation: bc-blink 1s steps(1) infinite; }
+@keyframes bc-blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+.txq .bc-result {
+  display: grid;
+  gap: 4px;
+  min-height: 104px;
+  margin-top: 16px;
+  padding: 18px 20px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  opacity: 0;
+  transform: translateY(14px);
+  filter: blur(6px);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), filter 0.6s ease;
+}
+.txq .bc-result[data-show] { opacity: 1; transform: none; filter: none; }
+.txq .bc-result__covers { font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(255, 255, 255, 0.6); }
+.txq .bc-result__name { font-family: var(--font-ed-display), Futura, sans-serif; font-size: 26px; }
+.txq .bc-result__meta { font-size: 15px; color: rgba(255, 255, 255, 0.75); }
+.txq .bc-dots { display: flex; gap: 6px; justify-content: center; margin-top: 18px; }
+.txq .bc-dots i { width: 6px; height: 6px; border-radius: 999px; background: rgba(255, 255, 255, 0.3); transition: width 0.4s ease, background 0.4s ease; }
+.txq .bc-dots i[data-on] { width: 22px; background: #fff; }
+
+@media (min-width: 900px) {
+  .txq .bc-in { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 72px; padding: 120px 40px; }
+  .txq .bc-demo { padding: 34px 30px 26px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .txq .bc-dot, .txq .bc-caret[data-on] { animation: none; }
+  .txq .bc-result { transition: none; filter: none; }
+  .txq .bc-btn, .txq .bc-arrow { transition: none; }
+}

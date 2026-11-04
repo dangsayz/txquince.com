@@ -12,6 +12,8 @@ import { coverageForBudget, smallestCoverage, EVENT_TIERS, type CoverageOption, 
 import { MOMENTS_SATURDAY_WINDOW_DAYS, momentsDateAllowed, usd, type AddOnId } from "@/lib/commission";
 import { todayInDallas } from "@/lib/plan";
 import { BUDGET_COPY } from "./budget-copy";
+import { detailsFor, goodToKnow } from "./budget-details";
+import { DetailIcon } from "./DetailIcon";
 import "./budget.css";
 
 const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
@@ -213,12 +215,8 @@ export function BudgetPlanner() {
                   <p className="bp-card__meta">
                     {label(o)} · {o.video ? c.includesVideo : c.photosOnly}
                   </p>
-                  <ul className="bp-card__list">
-                    {t.bullets.map((b) => (
-                      <li key={b.en}>{b[lang]}</li>
-                    ))}
-                  </ul>
-                  {o.tier === "moments" ? <p className="bp-hint">{c.satNote(MOMENTS_SATURDAY_WINDOW_DAYS)}</p> : null}
+                  <WhatYouGet option={o} />
+                  {o.tier === "moments" ? <p className="bp-hint bp-hint--note">{c.satNote(MOMENTS_SATURDAY_WINDOW_DAYS)}</p> : null}
                   <button type="button" className="bp-btn" onClick={() => choose(o)} aria-label={c.chooseAria(t.name[lang])}>
                     {c.choose} <span aria-hidden>→</span>
                   </button>
@@ -235,6 +233,7 @@ export function BudgetPlanner() {
                 <p className="bp-card__meta">
                   {label(result.stretch)} · {result.stretch.video ? c.includesVideo : c.photosOnly}
                 </p>
+                <WhatYouGet option={result.stretch} />
                 <button type="button" className="bp-btn bp-btn--line" onClick={() => choose(result.stretch!)}>
                   {c.choose} <span aria-hidden>→</span>
                 </button>
@@ -247,6 +246,21 @@ export function BudgetPlanner() {
             {c.offerTitle}
           </button>
         ) : null}
+      </section>
+
+      <section className="bp-know" aria-labelledby={`${uid}-know`}>
+        <h2 id={`${uid}-know`} className="bp-h2">{c.knowTitle}</h2>
+        <ul className="bp-lines">
+          {goodToKnow(lang, book).map((l) => (
+            <li key={l.label} className="bp-line">
+              <DetailIcon name={l.icon} />
+              <div>
+                <p className="bp-line__label">{l.label}</p>
+                <p className="bp-line__text">{l.text}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section id={`${uid}-offer`} className="bp-panel bp-offer" aria-labelledby={`${uid}-offer-t`}>
@@ -327,6 +341,43 @@ export function BudgetPlanner() {
       <p className="bp-fine">
         {c.fine} <a href={homeHref("#commissions")}>{c.seePackages}</a>
       </p>
+    </div>
+  );
+}
+
+/** Exactly what an option includes, one icon line each, then what isn't included. */
+function WhatYouGet({ option }: { option: CoverageOption }) {
+  const { lang } = useSite();
+  const { book } = usePriceBook();
+  const c = BUDGET_COPY[lang];
+  const d = detailsFor(option.tier, option.hours, option.addOns, lang, book);
+  return (
+    <div className="bp-get">
+      <p className="bp-get__h">{c.youGet}</p>
+      <ul className="bp-lines">
+        {d.included.map((l) => (
+          <li key={l.label} className="bp-line">
+            <DetailIcon name={l.icon} />
+            <div>
+              <p className="bp-line__label">{l.label}</p>
+              <p className="bp-line__text">{l.text}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+      {d.notIncluded.length ? (
+        <>
+          <p className="bp-get__h bp-get__h--no">{c.notIncluded}</p>
+          <ul className="bp-nots">
+            {d.notIncluded.map((n) => (
+              <li key={n}>
+                <DetailIcon name="no" />
+                <span>{n}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      ) : null}
     </div>
   );
 }

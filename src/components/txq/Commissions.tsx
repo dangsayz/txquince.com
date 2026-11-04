@@ -127,6 +127,9 @@ function CompareDialog() {
       >
         {t.booking.compare}
       </button>
+      <a className="tq-bk-budget" href={lang === "es" ? "/es/presupuesto" : "/budget"}>
+        {t.booking.budgetLink} <span aria-hidden>→</span>
+      </a>
       <dialog
         ref={ref}
         className="tq-compare"

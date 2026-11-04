@@ -50,6 +50,9 @@ export const BUDGET_COPY = {
       saturday: (days: number) =>
         `Just the Moments can take a Saturday only within ${days} days of the date. Pick a Friday or Sunday, or another package.`,
     },
+    youGet: "What you get",
+    notIncluded: "Not included",
+    knowTitle: "Good to know",
     fine: "Nothing is charged. Prices are the ones on our packages.",
     seePackages: "See all packages",
   },
@@ -100,6 +103,9 @@ export const BUDGET_COPY = {
       saturday: (days: number) =>
         `Los Momentos solo se puede reservar en sábado dentro de los ${days} días antes de la fecha. Elige un viernes o domingo, u otro paquete.`,
     },
+    youGet: "Lo que recibes",
+    notIncluded: "No incluye",
+    knowTitle: "Bueno saber",
     fine: "No se cobra nada. Los precios son los de nuestros paquetes.",
     seePackages: "Ver todos los paquetes",
   },
