@@ -133,7 +133,7 @@ const en = {
     index: "04 / About us",
     title: "Why families choose us",
     manifesto:
-      "Dang and Yvonne, the owners, are at every TX Quince event, with our small trusted crew. We stay with her from getting ready at home to the last song, and we edit every gallery and film ourselves. We catch the little things too: abuela fixing her dress, papá's face before the vals.",
+      "Your day is covered by our small in-house crew of photographers and videographers, sometimes with Dang or Yvonne, the owners, behind the camera. We stay with her from getting ready at home to the last song, and we edit every gallery and film ourselves. We catch the little things too: abuela fixing her dress, papá's face before the vals.",
     principles: [
       {
         title: "Natural, not stiff",
@@ -191,7 +191,7 @@ const en = {
       },
       {
         q: "Can we choose who photographs our quinceañera?",
-        a: "Dang and Yvonne, the owners, are at every TX Quince event, with our small trusted crew. Your day is covered by our own photographers and videographers, not freelancers we find last-minute. Every photo and every film comes back to the two of us: we edit all of it ourselves, so your gallery and film look like TX Quince no matter who's behind the camera.",
+        a: "Your day is covered by our small in-house crew of photographers and videographers, sometimes with Dang or Yvonne, the owners, behind the camera. They're our own people, not freelancers we find last-minute, and we put the crew together for each date. Every photo and every film comes back to the two of us: we edit all of it ourselves, so your gallery and film look like TX Quince no matter who's behind the camera.",
       },
       {
         q: "How does the deposit work?",
@@ -316,7 +316,7 @@ const en = {
       `The rest is due ${PT.balanceDays} days before your event.`,
     ],
     noCharge: "Nothing is charged today.",
-    teamNote: "Dang and Yvonne, the owners, are at every TX Quince event, with our small trusted crew. Every gallery and film is edited by the owners.",
+    teamNote: "Your day is covered by our small in-house crew of photographers and videographers, sometimes with Dang or Yvonne, the owners, behind the camera. Every gallery and film is edited by the owners.",
     // After sending
     reference: "Reference",
     doneTitle: "Thank you!",
@@ -465,7 +465,7 @@ const es: Copy = {
     index: "04 / Nosotros",
     title: "Por qué nos eligen las familias",
     manifesto:
-      "Dang y Yvonne, los dueños, están en cada evento de TX Quince, con nuestro pequeño equipo de confianza. La acompañamos desde que se arregla en casa hasta la última canción, y nosotros mismos editamos cada galería y cada video. También captamos los detalles: la abuela acomodándole el vestido, la cara de papá antes del vals.",
+      "Tu día lo cubre nuestro pequeño equipo de fotógrafos y videógrafos de casa, a veces con Dang o Yvonne, los dueños, detrás de la cámara. La acompañamos desde que se arregla en casa hasta la última canción, y nosotros mismos editamos cada galería y cada video. También captamos los detalles: la abuela acomodándole el vestido, la cara de papá antes del vals.",
     principles: [
       {
         title: "Natural, no tieso",
@@ -523,7 +523,7 @@ const es: Copy = {
       },
       {
         q: "¿Podemos escoger quién fotografía la quinceañera?",
-        a: "Dang y Yvonne, los dueños, están en cada evento de TX Quince, con nuestro pequeño equipo de confianza. Tu día lo cubren nuestros propios fotógrafos y videógrafos, no gente que conseguimos a última hora. Cada foto y cada video regresa a nosotros dos: todo lo editamos nosotros mismos, así que tu galería y tu video se ven como TX Quince sin importar quién esté detrás de la cámara.",
+        a: "Tu día lo cubre nuestro pequeño equipo de fotógrafos y videógrafos de casa, a veces con Dang o Yvonne, los dueños, detrás de la cámara. Son nuestra propia gente, no gente que conseguimos a última hora, y armamos el equipo para cada fecha. Cada foto y cada video regresa a nosotros dos: todo lo editamos nosotros mismos, así que tu galería y tu video se ven como TX Quince sin importar quién esté detrás de la cámara.",
       },
       {
         q: "¿Cómo funciona el depósito?",
@@ -647,7 +647,7 @@ const es: Copy = {
       `El resto se paga ${PT.balanceDays} días antes de tu evento.`,
     ],
     noCharge: "Hoy no se cobra nada.",
-    teamNote: "Dang y Yvonne, los dueños, están en cada evento de TX Quince, con nuestro pequeño equipo de confianza. Cada galería y cada video lo editan los dueños.",
+    teamNote: "Tu día lo cubre nuestro pequeño equipo de fotógrafos y videógrafos de casa, a veces con Dang o Yvonne, los dueños, detrás de la cámara. Cada galería y cada video lo editan los dueños.",
     // Después de enviar
     reference: "Referencia",
     doneTitle: "¡Gracias!",

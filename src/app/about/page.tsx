@@ -108,7 +108,7 @@ export default async function AboutPage() {
                   <p key={paragraph}>{paragraph}</p>
                 ))}
                 <p>
-                  Dang and Yvonne, the owners, are at every TX Quince event, with our small trusted crew. Every gallery and
+                  Your day is covered by our small in-house crew of photographers and videographers, sometimes with Dang or Yvonne, the owners, behind the camera. Every gallery and
                   every film is edited by the owners.
                 </p>
               </div>

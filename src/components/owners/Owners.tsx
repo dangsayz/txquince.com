@@ -13,8 +13,8 @@ export const OWNERS_COPY = {
     label: "Meet the owners",
     title: "Hi, we're Dang and Yvonne.",
     body: [
-      "Dang and Yvonne, the owners, are at every TX Quince event, with our small trusted crew.",
-      "We edit every gallery and every film ourselves, and we'll talk with you in English or Spanish from your first message to her last song.",
+      "We own TX Quince. Your day is covered by our small in-house crew of photographers and videographers, sometimes with one of us behind the camera.",
+      "Every gallery and every film comes back to the two of us, and we edit it all ourselves. We'll talk with you in English or Spanish from your first message to her last song.",
     ],
     youtube: "Watch our films on YouTube",
     instagram: "@txquince on Instagram",
@@ -23,8 +23,8 @@ export const OWNERS_COPY = {
     label: "Conoce a los dueños",
     title: "Hola, somos Dang y Yvonne.",
     body: [
-      "Dang y Yvonne, los dueños, están en cada evento de TX Quince, con nuestro pequeño equipo de confianza.",
-      "Nosotros mismos editamos cada galería y cada video, y te atendemos en español o inglés desde tu primer mensaje hasta la última canción.",
+      "Somos los dueños de TX Quince. Tu día lo cubre nuestro pequeño equipo de fotógrafos y videógrafos de casa, a veces con uno de nosotros detrás de la cámara.",
+      "Cada galería y cada video regresa a nosotros dos, y lo editamos todo nosotros mismos. Te atendemos en español o inglés desde tu primer mensaje hasta la última canción.",
     ],
     youtube: "Mira nuestros videos en YouTube",
     instagram: "@txquince en Instagram",
