@@ -72,7 +72,7 @@ const isTextField = (el: EventTarget | null) =>
   el.matches("textarea, select, input:not([type=radio]):not([type=checkbox]):not([type=button]):not([type=submit])");
 
 export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) {
-  const { t, lang, tier, addOns, crew, hours, booking: b, updateBooking, resetBooking, pickPackage, pickTick } =
+  const { t, lang, tier, addOns, crew, hours, booking: b, updateBooking, resetBooking, draftRestored, pickPackage, pickTick } =
     useSite();
   const avail = useAvailability();
   const quote = useQuote();
@@ -159,6 +159,33 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
     }
     headingRef.current?.focus({ preventScroll: true });
   }, [moveTick, pickTick]);
+
+  // Arriving on /#intake (from the budget page, or a shared link): keep the
+  // panel in view while the photos above it load and push it down, until the
+  // visitor scrolls or taps themselves. The router's own hash handling and
+  // late layout shifts can otherwise leave a fresh page at the top.
+  useEffect(() => {
+    if (window.location.hash !== "#intake") return;
+    let stopped = false;
+    const stop = () => (stopped = true);
+    const opts = { passive: true, once: true } as const;
+    const events = ["wheel", "touchstart", "keydown", "pointerdown"] as const;
+    events.forEach((e) => window.addEventListener(e, stop, opts));
+    const align = () => {
+      const panel = panelRef.current;
+      if (stopped || !panel) return;
+      const header = parseFloat(getComputedStyle(panel).scrollMarginTop) || 64;
+      const top = panel.getBoundingClientRect().top;
+      if (Math.abs(top - header) > 24) window.scrollBy({ top: top - header, behavior: "auto" });
+    };
+    const ids = [0, 150, 400, 800, 1300, 2000, 3000].map((ms) => window.setTimeout(align, ms));
+    window.addEventListener("load", align, { once: true });
+    return () => {
+      ids.forEach((id) => window.clearTimeout(id));
+      window.removeEventListener("load", align);
+      events.forEach((e) => window.removeEventListener(e, stop));
+    };
+  }, []);
 
   // "Book this" links anywhere: #book-<package> opens the panel at Hours & extras.
   useEffect(() => {
@@ -305,6 +332,16 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
         <Success done={done} onAgain={() => setDone(null)} headingRef={headingRef} />
       ) : (
         <>
+          {draftRestored ? (
+            <p className="tq-bk-welcome" role="status">
+              <span>
+                <strong>{t.booking.welcomeBack}</strong> {t.booking.welcomeSaved}
+              </span>
+              <button type="button" className="tq-bk-welcome__reset" onClick={resetBooking}>
+                {t.booking.startOver}
+              </button>
+            </p>
+          ) : null}
           <nav className="tq-bk-steps" aria-label={t.booking.stepsLabel}>
             <ol>
               {t.booking.steps.map((label, i) => {
