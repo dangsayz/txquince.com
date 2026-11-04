@@ -130,7 +130,7 @@ export function goodToKnow(lang: L, book: PriceBook): DetailLine[] {
     {
       icon: "team",
       label: t(lang, "Your team", "Tu equipo"),
-      text: t(lang, "Dang and Yvonne, the owners, are at every TX Quince event, with our small trusted crew. Every gallery and film is edited by us, the owners.", "Dang y Yvonne, los dueños, están en cada evento de TX Quince, con nuestro pequeño equipo de confianza. Nosotros, los dueños, editamos cada galería y cada video."),
+      text: t(lang, "Your day is covered by our small in-house crew of photographers and videographers, sometimes with Dang or Yvonne, the owners, behind the camera. Every gallery and film is edited by us, the owners.", "Tu día lo cubre nuestro pequeño equipo de fotógrafos y videógrafos de casa, a veces con Dang o Yvonne, los dueños, detrás de la cámara. Nosotros, los dueños, editamos cada galería y cada video."),
     },
     {
       icon: "chat",
