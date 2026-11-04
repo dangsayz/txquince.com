@@ -87,6 +87,7 @@ function fallbackPhoto(url: string) {
 /** Spanish alt text for the bundled fallback photographs. */
 const FALLBACK_ALT_ES: Record<string, string> = {
   "/portfolio/hero.webp": "Quinceañera bajo una gran cúpula en un salón de baile",
+  "/portfolio/owners-placeholder.webp": "Dang y Yvonne, los dueños de TX Quince",
   "/portfolio/save-date.webp": "Quinceañera con vestido rojo y sombrero vaquero blanco sobre un muro de piedra",
   "/portfolio/red-garden.webp": "Quinceañera con vestido rojo entre la vegetación de un jardín",
   "/portfolio/lilac-arch.webp": "Quinceañera con vestido lila frente a un arco de piedra",
@@ -152,6 +153,17 @@ const pageSlots: SlotDef[] = [
     "/portfolio/stockyards.webp",
     "Quinceañera portrait in Dallas–Fort Worth",
   ),
+  // Dang and Yvonne (homepage + About). Until their photo is uploaded with the
+  // Replace button, a clearly marked "Photo coming soon" placeholder shows.
+  {
+    ...staticSlot(
+      { id: "home.owners", group: "Homepage", page: "/", paths: ["/", "/es", "/about"], label: "Dang & Yvonne — owners photo", crops: F.card, sizes: SIZES.duo },
+      "/portfolio/owners-placeholder.webp",
+      "Dang and Yvonne, the owners of TX Quince",
+    ),
+    defaultWidth: 1200,
+    defaultHeight: 1500,
+  },
   staticSlot(
     { id: "about.portrait", group: "About", page: "/about", paths: ["/about"], label: "About — portrait beside the story", crops: F.card, sizes: SIZES.duo },
     "/portfolio/red-garden.webp",

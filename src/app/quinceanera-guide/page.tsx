@@ -457,7 +457,7 @@ export default async function QuinceaneraGuidePage() {
         <div className="tq-wrap">
           <header className="tq-head">
             <p className="tq-head__index tq-mono" style={{ margin: 0 }}>
-              [Four packages]
+              [Five packages]
             </p>
             <h2 id="guide-collections-title" className="tq-display tq-head__title">
               Coverage for the day you have in mind.

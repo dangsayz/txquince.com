@@ -10,6 +10,7 @@ export const ED = {
     close: "Close",
     heroLines: ["Every", "moment of", "her XV"],
     heroNote: (from: string) => `Packages from ${from} · We reply within a day`,
+    heroFilms: "Watch our films on YouTube",
     statement: { label: "The studio", title: "Fifteen, forever." },
     details: { label: "Her day, moment by moment" },
     band: {
@@ -44,7 +45,7 @@ export const ED = {
       soloTeam: "1 hybrid shooter · 2–3 cameras",
       pick: "Our pick",
       offer: (left: number, total: number, price: string) => `Only ${left} of ${total} dates left at ${price}`,
-      crew: "Covered by the TX Quince team · Edited by the owners",
+      crew: "Dang and Yvonne, the owners, are at every TX Quince event, with our small trusted crew.",
       panelTitle: "Send your request",
       panelDek: "Pick a package, her date and your details. We reply within a day to confirm, then send your agreement and deposit link.",
     },
@@ -63,6 +64,7 @@ export const ED = {
     close: "Cerrar",
     heroLines: ["Cada", "momento de", "sus XV"],
     heroNote: (from: string) => `Paquetes desde ${from} · Respondemos en un día`,
+    heroFilms: "Mira nuestros videos en YouTube",
     statement: { label: "El estudio", title: "Quince, para siempre." },
     details: { label: "Su día, momento a momento" },
     band: {
@@ -98,7 +100,7 @@ export const ED = {
       soloTeam: "1 fotógrafo y videógrafo · 2–3 cámaras",
       pick: "Nuestra recomendación",
       offer: (left: number, total: number, price: string) => `Solo quedan ${left} de ${total} fechas a ${price}`,
-      crew: "Cubierto por el equipo de TX Quince · Editado por los dueños",
+      crew: "Dang y Yvonne, los dueños, están en cada evento de TX Quince, con nuestro pequeño equipo de confianza.",
       panelTitle: "Envía tu solicitud",
       panelDek: "Elige un paquete, su fecha y tus datos. Respondemos en un día para confirmar y te mandamos el contrato y el enlace del depósito.",
     },

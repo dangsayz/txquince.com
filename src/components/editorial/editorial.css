@@ -390,3 +390,24 @@
   .ed-feature__track { min-height: 0; }
   .ed-feature__track { padding-block: 16svh; }
 }
+
+/* Hero: links to the films (YouTube) and Instagram, under the Reserve button. */
+.ed-hero__social { position: relative; display: flex; flex-wrap: wrap; gap: 8px 10px; margin: 18px 0 0; padding: 0; list-style: none; }
+.ed-hero__social a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: rgba(0, 0, 0, 0.18);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.ed-hero__social a:hover { background: rgba(0, 0, 0, 0.32); border-color: #fff; }

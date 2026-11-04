@@ -81,7 +81,7 @@ const post: BlogPost = {
     },
     {
       type: "cta",
-      heading: "Vea los cuatro paquetes y qué incluye cada uno",
+      heading: "Vea los cinco paquetes y qué incluye cada uno",
       body: "Sesión de retratos, El Solo, El Dúo y El Trío: precios publicados y todo lo que incluye cada uno, en una sola página.",
       href: "/es#commissions",
       label: "Comparar paquetes",

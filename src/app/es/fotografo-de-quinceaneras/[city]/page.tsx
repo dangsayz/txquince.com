@@ -385,7 +385,7 @@ export default async function CityPageEs({
               Paquetes desde {commissionsFromLabel}.
             </h2>
             <p className="tq-head__dek">
-              Cuatro paquetes con precios publicados. Un depósito del {retainerPercentLabel} aparta la fecha y se
+              Cinco paquetes con precios publicados. Un depósito del {retainerPercentLabel} aparta la fecha y se
               abona a tu total. El Trío, nuestra recomendación para la mayoría de las familias, pone un equipo de {BASE_CREW.trio} en
               su día: dos fotógrafos y un videógrafo, más un álbum de fotos impreso. El Dúo y el Trío incluyen una sesión con el
               vestido o de save the date, que se agenda después del depósito.

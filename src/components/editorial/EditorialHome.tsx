@@ -23,6 +23,7 @@ import { ED } from "./copy";
 import { BAND_VIDEO, DETAILS, FEATURE_STILL, HERO, JOURNAL_PHOTO, JOURNAL_PHOTO_FALLBACK } from "./media";
 import { LazyVideo } from "./LazyVideo";
 import { Favorites } from "./Favorites";
+import { Owners, SocialIcon } from "@/components/owners/Owners";
 import type { Favorite } from "@/lib/favorites";
 import { useScenes } from "./scenes";
 import "./editorial.css";
@@ -82,6 +83,7 @@ export function EditorialHome({
     <div ref={rootRef} className="ed">
       <Hero overrides={overrides} />
       <Statement />
+      <HomeOwners />
       <FavoritesSection favorites={favorites} />
       <Band films={films} />
       <Collage galleries={galleries} />
@@ -144,9 +146,44 @@ function Hero({ overrides }: { overrides: HomeOverrides }) {
             </a>
             <p className="ed-hero__note">{e.heroNote(money(priceFloor(book)))}</p>
           </div>
+          <ul className="ed-hero__social">
+            <li>
+              <a href={site.social.youtube} target="_blank" rel="noopener noreferrer">
+                <SocialIcon name="youtube" /> {e.heroFilms}
+              </a>
+            </li>
+            <li>
+              <a href={site.social.instagram} target="_blank" rel="noopener noreferrer">
+                <SocialIcon name="instagram" /> @txquince
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
     </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Dang and Yvonne                                                     */
+/* ------------------------------------------------------------------ */
+
+const OWNERS_FALLBACK = {
+  src: "/portfolio/owners-placeholder.webp",
+  alt: { en: "Dang and Yvonne, the owners of TX Quince", es: "Dang y Yvonne, los dueños de TX Quince" },
+  width: 1200,
+  height: 1500,
+};
+
+function HomeOwners() {
+  const { lang } = useSite();
+  const image = useSlot("home.owners", OWNERS_FALLBACK, "(max-width: 960px) 100vw, 40vw");
+  return (
+    <Owners
+      lang={lang}
+      photo={<SlotPicture image={image} lang={lang} fill sizes="(max-width: 960px) 100vw, 40vw" />}
+      admin={<SlotAdminControl slot="home.owners" />}
+    />
   );
 }
 

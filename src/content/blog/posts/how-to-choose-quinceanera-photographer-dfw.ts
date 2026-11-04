@@ -80,7 +80,7 @@ const post: BlogPost = {
     },
     {
       type: "cta",
-      heading: "See the four packages and what's included",
+      heading: "See the five packages and what's included",
       body: "Portrait Session, the Solo, the Duo, and the Trio — published prices and full inclusions on one page.",
       href: "/#commissions",
       label: "Compare packages",
