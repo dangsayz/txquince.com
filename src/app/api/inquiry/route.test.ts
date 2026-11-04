@@ -57,6 +57,14 @@ const pickerBody = (overrides: Record<string, unknown> = {}) => ({
 const post = (body: unknown) =>
   POST(new Request("https://txquince.com/api/inquiry", { method: "POST", body: JSON.stringify(body) }) as never);
 
+/** A Saturday this many days from today (Dallas), as YYYY-MM-DD. */
+function saturdayAtLeast(days: number): string {
+  const d = new Date();
+  d.setUTCDate(d.getUTCDate() + days);
+  while (d.getUTCDay() !== 6) d.setUTCDate(d.getUTCDate() + 1);
+  return d.toISOString().slice(0, 10);
+}
+
 describe("POST /api/inquiry, called directly", () => {
   beforeEach(() => inserted.splice(0));
 
@@ -87,6 +95,37 @@ describe("POST /api/inquiry, called directly", () => {
   it("still refuses a package the picker doesn't offer", async () => {
     const res = await post(pickerBody({ package: { ...pickerBody().package, tier: "archive" } }));
     expect(res.status).toBe(422);
+    expect(inserted).toHaveLength(0);
+  });
+
+  it("refuses Just the Moments on a Saturday more than 30 days out, whatever the page allowed", async () => {
+    const pkg = { ...pickerBody().package, tier: "moments", hours: 2 };
+    const res = await post(pickerBody({ event_date: saturdayAtLeast(40), package: pkg }));
+    expect(res.status).toBe(422);
+    expect((await res.json()).error).toMatch(/Saturday/);
+    expect(inserted).toHaveLength(0);
+  });
+
+  it("takes Just the Moments on a Saturday inside the window, and on a far-off Sunday", async () => {
+    const pkg = { ...pickerBody().package, tier: "moments", hours: 3, add_ons: ["momentsfilm"] };
+    const soon = saturdayAtLeast(3);
+    expect((await post(pickerBody({ event_date: soon, package: pkg }))).status).toBe(200);
+    const sunday = new Date(`${saturdayAtLeast(60)}T12:00:00Z`);
+    sunday.setUTCDate(sunday.getUTCDate() + 1);
+    expect((await post(pickerBody({ event_date: sunday.toISOString().slice(0, 10), package: pkg }))).status).toBe(200);
+    expect(inserted[0].services).toBe("both"); // the film makes it photo + video
+  });
+
+  it("records an offer next to the server's own price, never as the price", async () => {
+    const pkg = { ...pickerBody().package, tier: "solo", hours: 5, offer_usd: 950 };
+    const res = await post(pickerBody({ package: pkg }));
+    expect(res.status).toBe(200);
+    expect(String(inserted[0].message)).toContain("OFFER from the budget page: $950 for this coverage (our price: $1,200)");
+  });
+
+  it("refuses an offer outside sane bounds", async () => {
+    const pkg = { ...pickerBody().package, offer_usd: 5 };
+    expect((await post(pickerBody({ package: pkg }))).status).toBe(422);
     expect(inserted).toHaveLength(0);
   });
 });

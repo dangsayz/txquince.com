@@ -9,6 +9,10 @@ import type { TierId } from "@/lib/commission";
 /** Package rows: the chips beside each price (hours and team come from the book). */
 export const PACKAGE_DETAIL: Record<TierId, { en: string; es: string }> = {
   study: { en: "Photos only · 60 edited photos", es: "Solo fotos · 60 fotos editadas" },
+  moments: {
+    en: "The presentation and family portraits · 1 photographer · 50+ photos",
+    es: "La presentación y fotos con la familia · 1 fotógrafo · 50+ fotos",
+  },
   solo: {
     en: "Photo + video from a 2–3 camera setup · full-length film · 150+ photos",
     es: "Foto + video con 2–3 cámaras · video completo · 150+ fotos",

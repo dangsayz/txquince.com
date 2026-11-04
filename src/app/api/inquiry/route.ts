@@ -22,6 +22,8 @@ import { sanitizeAttribution } from "@/lib/attribution";
 import { clientIp } from "@/lib/client-ip";
 import { rateLimiter } from "@/lib/rate-limit";
 import { getPriceBook } from "@/lib/pricing";
+import { MOMENTS_SATURDAY_WINDOW_DAYS, momentsDateAllowed } from "@/lib/commission";
+import { todayInDallas } from "@/lib/plan";
 import { BUDGET_FOR_TIER, describeInquiryPackage, inquiryPackageSchema, servicesForTier } from "@/lib/inquiry-package";
 
 // Always run server-side at request time.
@@ -78,7 +80,7 @@ export async function POST(req: NextRequest) {
   const pkgPick = body.package !== undefined ? inquiryPackageSchema.safeParse(body.package) : null;
   const parsed = inquirySchema.safeParse(
     pkgPick?.success
-      ? { ...body, services: servicesForTier(pkgPick.data.tier), budget_range: BUDGET_FOR_TIER[pkgPick.data.tier] }
+      ? { ...body, services: servicesForTier(pkgPick.data.tier, pkgPick.data.add_ons), budget_range: BUDGET_FOR_TIER[pkgPick.data.tier] }
       : body,
   );
   if (!parsed.success) {
@@ -101,9 +103,19 @@ export async function POST(req: NextRequest) {
         { status: 422 },
       );
     }
+    // Just the Moments takes a Saturday only within the window (MOMENTS_SATURDAY_WINDOW_DAYS).
+    if (!momentsDateAllowed(pkg.data.tier, fields.event_date, todayInDallas())) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error: `Just the Moments can be booked on a Saturday only within ${MOMENTS_SATURDAY_WINDOW_DAYS} days of the date. Pick a Friday or Sunday, or another package.`,
+        },
+        { status: 422 },
+      );
+    }
     fields = {
       ...fields,
-      services: servicesForTier(pkg.data.tier),
+      services: servicesForTier(pkg.data.tier, pkg.data.add_ons),
       budget_range: BUDGET_FOR_TIER[pkg.data.tier],
       message: describeInquiryPackage(
         pkg.data,

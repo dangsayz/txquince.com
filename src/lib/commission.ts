@@ -10,14 +10,16 @@
  */
 import { z } from "zod";
 
-export const TIER_IDS = ["study", "solo", "cinema", "trio", "production", "archive"] as const;
-export const ADD_ON_IDS = ["destination", "sameday", "super8", "parents", "secondday", "highlight", "coordinator"] as const;
+export const TIER_IDS = ["study", "moments", "solo", "cinema", "trio", "production", "archive"] as const;
+export const ADD_ON_IDS = ["destination", "sameday", "super8", "parents", "secondday", "highlight", "coordinator", "momentsfilm"] as const;
 export type TierId = (typeof TIER_IDS)[number];
 export type AddOnId = (typeof ADD_ON_IDS)[number];
 
 /**
  * The packages families can choose today, in the order they are shown:
- * Portrait Session, The Solo (one hybrid shooter running a 2–3 camera setup,
+ * Portrait Session, Just the Moments (2 to 4 hours of one photographer for the
+ * parts of the day a family cares most about: the presentation, family
+ * portraits, some dancing), The Solo (one hybrid shooter running a 2–3 camera setup,
  * photos and film at once), The Duo (1 photographer + 1 videographer) and The
  * Trio (2 + 1). Retired packages stay in TIER_IDS so older inquiries, bookings and
  * agreements still read and re-price exactly as they were made: the Two-Day
@@ -26,13 +28,14 @@ export type AddOnId = (typeof ADD_ON_IDS)[number];
  * `coordinator` extra). New requests are refused for a retired package on the
  * server (isBookableTier).
  */
-export const PUBLIC_TIER_IDS = ["study", "solo", "cinema", "trio"] as const satisfies readonly TierId[];
+export const PUBLIC_TIER_IDS = ["study", "moments", "solo", "cinema", "trio"] as const satisfies readonly TierId[];
 export type PublicTierId = (typeof PUBLIC_TIER_IDS)[number];
 export const isBookableTier = (id: TierId): id is PublicTierId => (PUBLIC_TIER_IDS as readonly TierId[]).includes(id);
 
 /** English names for Stripe line items, receipts and operator email. */
 export const TIER_NAME_EN: Record<TierId, string> = {
   study: "Portrait Session",
+  moments: "Just the Moments",
   solo: "The Solo",
   cinema: "The Duo",
   trio: "The Trio",
@@ -48,6 +51,7 @@ export const ADD_ON_NAME_EN: Record<AddOnId, string> = {
   secondday: "Second Portrait Day",
   highlight: "Highlight Film (3–5 min)",
   coordinator: "Day-of Coordinator (per day)",
+  momentsfilm: "Presentation Film",
 };
 
 
@@ -60,6 +64,8 @@ export const ADD_ON_NAME_EN: Record<AddOnId, string> = {
  *  - Albums for Mom & Dad are copies of the Trio's printed album.
  *  - The Dress Session is now included in the Duo and Trio (a dress or
  *    save-the-date session after the deposit), so it is not sold separately.
+ *  - Just the Moments is short coverage by one photographer: only its own
+ *    Presentation Film can be added (no coordinator, no second day).
  *  - The Solo is the budget package: one shooter, no second-location or
  *    second-day work, so only the Highlight Film and a Coordinator can be
  *    added. Anything more is what the Duo is for.
@@ -72,6 +78,7 @@ export const ADD_ON_TIERS: Partial<Record<AddOnId, readonly TierId[]>> = {
   secondday: ["cinema", "trio"],
   highlight: ["solo", "cinema"],
   coordinator: ["solo", "cinema", "trio"],
+  momentsfilm: ["moments"],
 };
 export const addOnAllowed = (tier: TierId, id: AddOnId) => {
   const only = ADD_ON_TIERS[id];
@@ -100,6 +107,7 @@ export const addOnAllowed = (tier: TierId, id: AddOnId) => {
  */
 const DEFAULT_TIER_PRICE_USD: Record<TierId, number> = {
   study: 400,
+  moments: 500,
   solo: 1200,
   cinema: 2000,
   trio: 2800,
@@ -114,10 +122,12 @@ const DEFAULT_ADD_ON_PRICE_USD: Record<AddOnId, number> = {
   secondday: 600,
   highlight: 500,
   coordinator: 500,
+  momentsfilm: 250,
 };
 /** Hours of coverage included in the package price. */
 const DEFAULT_BASE_HOURS: Record<TierId, number> = {
   study: 1,
+  moments: 2,
   solo: 5,
   cinema: 6,
   trio: 7,
@@ -127,6 +137,7 @@ const DEFAULT_BASE_HOURS: Record<TierId, number> = {
 /** Price of each hour added beyond the included hours (0 = hours can't be added). */
 const DEFAULT_EXTRA_HOUR_USD: Record<TierId, number> = {
   study: 150,
+  moments: 250,
   solo: 200,
   cinema: 400,
   trio: 450,
@@ -142,7 +153,7 @@ const DEFAULT_MAX_HOURS = 8;
  * person carrying every camera, so it stops at 6 hours: a family that wants a
  * longer day books the Duo or the Trio.
  */
-export const TIER_MAX_HOURS: Partial<Record<TierId, number>> = { solo: 6 };
+export const TIER_MAX_HOURS: Partial<Record<TierId, number>> = { moments: 4, solo: 6 };
 /** Deposit: 25% down once we approve the signed agreement; the rest 14 days before. */
 const DEFAULT_DEPOSIT_PERCENT = 25;
 const DEFAULT_BALANCE_DUE_DAYS = 14;
@@ -319,6 +330,7 @@ export type Crew = Record<CrewRole, number>;
 /** Directors included on the celebration day. */
 export const BASE_CREW: Record<TierId, number> = {
   study: 1,
+  moments: 1,
   solo: 1,
   cinema: 2,
   trio: 3,
@@ -332,6 +344,7 @@ export const MAX_CREW = Math.max(...Object.values(BASE_CREW));
 /** A day-of coordinator comes with the larger productions. */
 export const COORDINATOR_INCLUDED: Record<TierId, boolean> = {
   study: false,
+  moments: false,
   solo: false,
   cinema: false,
   trio: false,
@@ -346,6 +359,7 @@ export const COORDINATOR_INCLUDED: Record<TierId, boolean> = {
  */
 const MIN_ROLE: Record<TierId, Crew> = {
   study: { photo: 1, motion: 0 },
+  moments: { photo: 1, motion: 0 },
   solo: { photo: 1, motion: 0 },
   cinema: { photo: 1, motion: 1 },
   trio: { photo: 1, motion: 1 },
@@ -355,6 +369,7 @@ const MIN_ROLE: Record<TierId, Crew> = {
 
 const DEFAULT_MIX: Record<TierId, Crew> = {
   study: { photo: 1, motion: 0 },
+  moments: { photo: 1, motion: 0 },
   solo: { photo: 1, motion: 0 },
   cinema: { photo: 1, motion: 1 },
   trio: { photo: 2, motion: 1 },
@@ -382,6 +397,7 @@ export const canShift = (tier: TierId, mix: Crew, to: CrewRole) => {
 /** Single-craft tiers carry a photo-only service; the rest are photo + film. */
 export const TIER_SERVICE: Record<TierId, "photo" | "both"> = {
   study: "photo",
+  moments: "photo",
   solo: "both",
   cinema: "both",
   trio: "both",
@@ -481,6 +497,28 @@ export function describeChanges(before: PriceBook, after: PriceBook): string[] {
   num("Trio offer dates", before.trioSpotsTotal, after.trioSpotsTotal, "dates");
   num("Trio offer dates left", before.trioSpotsLeft, after.trioSpotsLeft, "dates");
   return out;
+}
+
+/* ------------------------------------------------------------------ */
+/* Just the Moments on Saturdays                                       */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Saturdays are when full-day packages book, so a short Moments booking may
+ * take a Saturday only this close to the date, when a full-day booking is
+ * unlikely to come. Fridays, Sundays and weekdays are open any time. Enforced
+ * by the server (inquiry + commission routes), not only by the calendar.
+ */
+export const MOMENTS_SATURDAY_WINDOW_DAYS = 30;
+
+/** Can this package be requested for this date? `today` is YYYY-MM-DD in Dallas. */
+export function momentsDateAllowed(tier: TierId, eventDate: string, today: string): boolean {
+  if (tier !== "moments") return true;
+  const d = new Date(`${eventDate}T12:00:00Z`);
+  const t = new Date(`${today}T12:00:00Z`);
+  if (Number.isNaN(d.getTime()) || Number.isNaN(t.getTime())) return false;
+  if (d.getUTCDay() !== 6) return true;
+  return Math.round((d.getTime() - t.getTime()) / 86_400_000) <= MOMENTS_SATURDAY_WINDOW_DAYS;
 }
 
 /* ------------------------------------------------------------------ */

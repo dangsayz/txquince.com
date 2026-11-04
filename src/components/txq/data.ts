@@ -117,8 +117,24 @@ export const TIERS: Tier[] = [
     scope: "stills",
   },
   {
-    id: "solo",
+    id: "moments",
     numeral: "II.",
+    name: { en: "Just the Moments", es: "Los Momentos" },
+    summary: {
+      en: "One photographer for the part of the day you care about most: the presentation and family portraits, with some dancing if you add an hour. For smaller budgets.",
+      es: "Un fotógrafo para la parte del día que más te importa: la presentación y las fotos con la familia, y algo de baile si agregas una hora. Para presupuestos más chicos.",
+    },
+    bullets: [
+      { en: "1 photographer, from 2 hours", es: "1 fotógrafo, desde 2 horas" },
+      { en: "The grand entrance, vals, surprise dance, toast and family portraits", es: "La entrada, el vals, el baile sorpresa, el brindis y las fotos con la familia" },
+      { en: "Add a film of the presentation", es: "Agrega un video de la presentación" },
+      { en: "50+ edited photos for 2 hours", es: "Más de 50 fotos editadas por 2 horas" },
+    ],
+    scope: "stills",
+  },
+  {
+    id: "solo",
+    numeral: "III.",
     name: { en: "The Solo", es: "El Solo" },
     summary: {
       en: "One shooter with a 2–3 camera setup, taking photos and filming at the same time, so wherever the action is, a camera is on it. The budget-friendly way to get the photos and the full-length film of her day.",
@@ -134,7 +150,7 @@ export const TIERS: Tier[] = [
   },
   {
     id: "cinema",
-    numeral: "III.",
+    numeral: "IV.",
     name: { en: "The Duo", es: "El Dúo" },
     summary: {
       en: "One photographer and one videographer for her day, plus a dress or save-the-date session: the photos, and the full-length film of everything that happened.",
@@ -150,7 +166,7 @@ export const TIERS: Tier[] = [
   },
   {
     id: "trio",
-    numeral: "IV.",
+    numeral: "V.",
     name: { en: "The Trio", es: "El Trío" },
     summary: {
       en: "Two photographers and one videographer, so both sides of the room are covered while the film rolls, plus a dress or save-the-date session and a printed album. Our pick for most families.",
@@ -170,7 +186,7 @@ export const TIERS: Tier[] = [
 export const RETIRED_TIERS: Tier[] = [
   {
     id: "production",
-    numeral: "V.",
+    numeral: "VI.",
     name: { en: "Full Celebration", es: "Celebración completa" },
     summary: {
       en: "A team of four plus a coordinator who runs the day, so you can enjoy it. Includes a portrait session and a printed album.",
@@ -186,7 +202,7 @@ export const RETIRED_TIERS: Tier[] = [
   },
   {
     id: "archive",
-    numeral: "VI.",
+    numeral: "VII.",
     name: { en: "Two-Day Celebration", es: "Celebración de dos días" },
     summary: {
       en: "Everything in the Full Celebration, plus a second day for portraits, a team of five, and a larger album.",
@@ -235,6 +251,10 @@ const SOLO_FILM = v(
 const highlightCell = (book: PriceBook): L =>
   v(`Add a 3–5 min film for ${usd(book.addOns.highlight)}`, `Agrega uno de 3–5 min por ${usd(book.addOns.highlight)}`);
 
+/** Just the Moments can add a film of the presentation, priced from the live book. */
+const momentsFilmCell = (book: PriceBook): L =>
+  v(`Add a film of the presentation for ${usd(book.addOns.momentsfilm)}`, `Agrega un video de la presentación por ${usd(book.addOns.momentsfilm)}`);
+
 /** The coordinator is an extra now: "Add for $500 a day", priced from the live book. */
 const coordinatorCell = (book: PriceBook): L =>
   v(`Add for ${usd(book.addOns.coordinator)} a day`, `Agrégala por ${usd(book.addOns.coordinator)} al día`);
@@ -249,6 +269,7 @@ export const matrixFor = (book: PriceBook): MatrixGroup[] => [
         label: v("Hours", "Horas"),
         values: {
           study: hoursCell(book, "study"),
+          moments: hoursCell(book, "moments"),
           solo: hoursCell(book, "solo"),
           cinema: hoursCell(book, "cinema"),
           trio: hoursCell(book, "trio"),
@@ -260,6 +281,7 @@ export const matrixFor = (book: PriceBook): MatrixGroup[] => [
         label: v("Your team", "Tu equipo"),
         values: {
           study: v("1 photographer", "1 fotógrafo"),
+          moments: v("1 photographer", "1 fotógrafo"),
           solo: v("1 hybrid shooter (photo + video), 2–3 camera setup", "1 fotógrafo y videógrafo en uno, 2–3 cámaras"),
           cinema: v("1 photographer + 1 videographer", "1 fotógrafo + 1 videógrafo"),
           trio: v("2 photographers + 1 videographer (you can switch)", "2 fotógrafos + 1 videógrafo (puedes cambiar)"),
@@ -271,6 +293,7 @@ export const matrixFor = (book: PriceBook): MatrixGroup[] => [
         label: v("Coordinator who runs the day", "Coordinadora que lleva el día"),
         values: {
           study: null,
+          moments: null,
           solo: coordinatorCell(book),
           cinema: coordinatorCell(book),
           trio: coordinatorCell(book),
@@ -282,6 +305,7 @@ export const matrixFor = (book: PriceBook): MatrixGroup[] => [
         label: v("Dress or save-the-date session", "Sesión con el vestido o de save the date"),
         values: {
           study: v("Yes — that's this package", "Sí — es este paquete"),
+          moments: null,
           solo: null,
           cinema: v("Included after your deposit · 30–40 photos", "Incluida después del depósito · 30–40 fotos"),
           trio: v("Included after your deposit · 30–40 photos", "Incluida después del depósito · 30–40 fotos"),
@@ -299,6 +323,7 @@ export const matrixFor = (book: PriceBook): MatrixGroup[] => [
         label: v("Full-length film", "Video completo"),
         values: {
           study: null,
+          moments: momentsFilmCell(book),
           solo: SOLO_FILM,
           cinema: FULL_FILM,
           trio: FULL_FILM,
@@ -310,6 +335,7 @@ export const matrixFor = (book: PriceBook): MatrixGroup[] => [
         label: v("Highlight video", "Video resumen"),
         values: {
           study: null,
+          moments: null,
           solo: highlightCell(book),
           cinema: v("1 minute", "1 minuto"),
           trio: v("3–5 minutes", "3–5 minutos"),
@@ -321,6 +347,7 @@ export const matrixFor = (book: PriceBook): MatrixGroup[] => [
         label: v("Short videos for social media", "Videos cortos para redes"),
         values: {
           study: null, // photos only
+          moments: null,
           solo: null,
           cinema: v("2", "2"),
           trio: v("4", "4"),
@@ -338,6 +365,7 @@ export const matrixFor = (book: PriceBook): MatrixGroup[] => [
         label: v("Edited photos", "Fotos editadas"),
         values: {
           study: v("60", "60"),
+          moments: v("50+ for 2 hours, more for each added hour", "50+ por 2 horas, más por cada hora extra"),
           solo: v("150+", "150+"),
           cinema: v("400+", "400+"),
           trio: v("700+", "700+"),
@@ -349,6 +377,7 @@ export const matrixFor = (book: PriceBook): MatrixGroup[] => [
         label: v("Printed photo album", "Álbum de fotos impreso"),
         values: {
           study: null,
+          moments: null,
           solo: null,
           cinema: null,
           trio: v("10×10 in, 40 pages", "25×25 cm, 40 páginas"),
@@ -360,6 +389,7 @@ export const matrixFor = (book: PriceBook): MatrixGroup[] => [
         label: v("All your original files", "Todos tus archivos originales"),
         values: {
           study: null,
+          moments: null,
           solo: null,
           cinema: null,
           trio: v("Photos", "Fotos"),
@@ -374,6 +404,14 @@ export const matrixFor = (book: PriceBook): MatrixGroup[] => [
 export type AddOn = { id: AddOnId; name: L; note: L };
 
 export const ADD_ONS: AddOn[] = [
+  {
+    id: "momentsfilm",
+    name: { en: "Presentation Film", es: "Video de la presentación" },
+    note: {
+      en: "A film of the whole presentation (entrance, vals, surprise dance and toast), recorded with a 2–3 camera setup.",
+      es: "Un video de toda la presentación (la entrada, el vals, el baile sorpresa y el brindis), grabado con 2–3 cámaras.",
+    },
+  },
   {
     id: "destination",
     name: { en: "Dress Session", es: "Sesión con el vestido" },

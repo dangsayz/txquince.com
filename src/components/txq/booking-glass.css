@@ -329,3 +329,18 @@
   box-shadow: var(--g-card);
 }
 .txq .tq-bk .tq-picked button { font-weight: 600; }
+
+/* "Have a budget in mind?" link under Compare (step 1) → the budget page. */
+.txq .tq-bk .tq-bk-budget {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  margin-top: 6px;
+  font-size: 15px;
+  color: var(--g-ink, #1d1d1f);
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  text-decoration-thickness: 1px;
+}

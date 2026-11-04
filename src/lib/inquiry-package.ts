@@ -7,7 +7,7 @@
  * signed or charged; the owner follows up and handles payment.
  */
 import { z } from "zod";
-import { addOnAllowed, commissionSchema, describeCommission, isBookableTier, quoteCommission, type PriceBook, type TierId } from "@/lib/commission";
+import { addOnAllowed, commissionSchema, usd, describeCommission, isBookableTier, quoteCommission, type PriceBook, type TierId } from "@/lib/commission";
 
 export const inquiryPackageSchema = commissionSchema
   .pick({
@@ -23,6 +23,14 @@ export const inquiryPackageSchema = commissionSchema
     language: true,
     share_permission: true,
   })
+  .extend({
+    /**
+     * From the budget page: the price the family offers for this coverage.
+     * Never charged or accepted automatically: it goes to the owner as a
+     * request to accept, counter or decline, next to the server's own price.
+     */
+    offer_usd: z.number().int().min(50).max(50_000).optional(),
+  })
   .strict()
   // A retired package (the Two-Day Celebration) can't be requested any more,
   // whatever an old tab or a hand-built request sends.
@@ -34,8 +42,9 @@ export const inquiryPackageSchema = commissionSchema
 export type InquiryPackage = z.infer<typeof inquiryPackageSchema>;
 
 /** Package → the inquiry's budget key (lib/inquiry BUDGET_OPTIONS). */
-export const BUDGET_FOR_TIER: Record<TierId, "portrait" | "solo" | "photo_video" | "trio"> = {
+export const BUDGET_FOR_TIER: Record<TierId, "portrait" | "moments" | "solo" | "photo_video" | "trio"> = {
   study: "portrait",
+  moments: "moments",
   solo: "solo",
   cinema: "photo_video",
   trio: "trio",
@@ -45,7 +54,8 @@ export const BUDGET_FOR_TIER: Record<TierId, "portrait" | "solo" | "photo_video"
 };
 
 /** Package → the inquiry's services value: the Portrait Session is photos only. */
-export const servicesForTier = (tier: TierId): "photo" | "both" => (tier === "study" ? "photo" : "both");
+export const servicesForTier = (tier: TierId, addOns: readonly string[] = []): "photo" | "both" =>
+  tier === "study" || (tier === "moments" && !addOns.includes("momentsfilm")) ? "photo" : "both";
 
 /** The owner-facing summary, priced with the server's book, plus the family's own note. */
 export function describeInquiryPackage(
@@ -67,7 +77,9 @@ export function describeInquiryPackage(
     book,
   );
   return [
-    "Sent from the package picker. Nothing was booked or charged.",
+    p.offer_usd !== undefined
+      ? `OFFER from the budget page: ${usd(p.offer_usd)} for this coverage (our price: ${usd(q.totalUsd)}). Reply to accept, counter or decline. Nothing was booked or charged.`
+      : "Sent from the package picker. Nothing was booked or charged.",
     summary.replace("Request — not signed yet\n", ""),
     p.share_permission ? "OK to share some photos publicly: yes" : "OK to share some photos publicly: no",
   ].join("\n");

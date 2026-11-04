@@ -199,6 +199,23 @@ function writeDraft(d: Draft) {
   }
 }
 
+/**
+ * Hand a choice made elsewhere (the budget page) to the homepage booking
+ * panel: saved as this tab's booking draft, which the panel restores, then a
+ * `#book-<package>` link opens it at Hours & extras. Keeps any date or details
+ * the family already typed in this tab.
+ */
+export function handoffToBooking(choice: { tier: TierId; hours: number; addOns: AddOnId[] }) {
+  const prev = readDraft();
+  writeDraft({
+    tier: choice.tier,
+    addOns: choice.addOns,
+    crew: null,
+    hours: { tier: choice.tier, h: choice.hours },
+    booking: { ...(prev?.booking ?? EMPTY_BOOKING), step: 1, reached: Math.max(prev?.booking.reached ?? 0, 1) },
+  });
+}
+
 export function SiteProvider({
   children,
   urlLang = "en",

@@ -19,7 +19,7 @@ import { motion } from "motion/react";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { getFirstTouch } from "@/components/Tracker";
 import { ContactLine } from "@/components/ContactButtons";
-import { BASE_CREW, COORDINATOR_INCLUDED } from "@/lib/commission";
+import { BASE_CREW, COORDINATOR_INCLUDED, PUBLIC_TIER_IDS, MOMENTS_SATURDAY_WINDOW_DAYS, momentsDateAllowed } from "@/lib/commission";
 import { HONEYPOT_FIELD } from "@/lib/inquiry";
 import { BUDGET_FOR_TIER, servicesForTier } from "@/lib/inquiry-package";
 import { usePriceBook } from "@/components/PriceBookProvider";
@@ -32,7 +32,8 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 const LAST = BOOKING_STEPS - 1;
 const MAX_MONTHS_AHEAD = 36;
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-const BOOK_HASH = /^#book-(study|cinema|production|archive)$/;
+// Any package families can choose today (#book-moments, #book-trio, …).
+const BOOK_HASH = new RegExp(`^#book-(${PUBLIC_TIER_IDS.join("|")})$`);
 
 const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 // Turnstile is locked to production hostnames; local dev skips it (the API
@@ -107,6 +108,7 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
     const e: Errors = {};
     if (s === 2) {
       if (!b.date) e.date = t.booking.errors.date;
+      else if (!momentsDateAllowed(tier, b.date, isoDate(new Date()))) e.date = t.booking.errors.momentsSaturday(MOMENTS_SATURDAY_WINDOW_DAYS);
       if (!b.city) e.city = t.booking.errors.city;
     }
     if (s === 3) {
@@ -244,7 +246,7 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
           event_date: b.date,
           venue: b.venue.trim(),
           // The server derives services, budget and the priced summary from `package`.
-          services: servicesForTier(tier),
+          services: servicesForTier(tier, addOns),
           budget_range: BUDGET_FOR_TIER[tier],
           message: b.note.trim(),
           package: {
@@ -880,7 +882,7 @@ function Calendar({
   onChange: (iso: string) => void;
   error?: string;
 }) {
-  const { t, lang } = useSite();
+  const { t, lang, tier } = useSite();
   const { taken } = useAvailability();
   const today = useMemo(() => {
     const d = new Date();
@@ -962,16 +964,18 @@ function Calendar({
             // Today can't be booked online (the server only accepts future dates).
             const past = d <= today;
             const isTaken = taken.has(iso);
+            // Just the Moments: Saturdays open only close to the date (server-enforced too).
+            const satClosed = !past && !momentsDateAllowed(tier, iso, isoDate(today));
             return (
               <button
                 key={iso}
                 type="button"
                 className="tq-day tq-nums"
-                disabled={past || isTaken}
+                disabled={past || isTaken || satClosed}
                 aria-pressed={value === iso}
-                aria-label={`${dayFmt.format(d)}${isTaken ? ` — ${t.booking.legendTaken}` : ""}`}
+                aria-label={`${dayFmt.format(d)}${isTaken ? ` — ${t.booking.legendTaken}` : satClosed ? ` — ${t.booking.momentsSatShort}` : ""}`}
                 data-past={past}
-                data-taken={isTaken}
+                data-taken={isTaken || satClosed}
                 data-sat={d.getDay() === 6}
                 onClick={() => onChange(iso)}
               >
@@ -980,6 +984,7 @@ function Calendar({
             );
           })}
         </div>
+        {tier === "moments" ? <p className="tq-bk-hint tq-cal__note">{t.booking.momentsSatNote(MOMENTS_SATURDAY_WINDOW_DAYS)}</p> : null}
         <div className="tq-cal__legend" aria-hidden>
           <span>
             <i className="tq-cal__key" /> {t.booking.legendOpen}

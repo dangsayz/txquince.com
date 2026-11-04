@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type ReactNode, type SyntheticEvent } from "react";
 import Link from "next/link";
 import { Intake, bookHref } from "@/components/txq/Intake";
+import { BudgetCta } from "@/components/budget/BudgetCta";
 import { useShell } from "@/components/txq/SiteShell";
 import { useSite } from "@/components/txq/state";
 import { TIERS, money, type CinemaFilm } from "@/components/txq/data";
@@ -85,6 +86,7 @@ export function EditorialHome({
       <Band films={films} />
       <Collage galleries={galleries} />
       <Feature />
+      <BudgetCta placement="home" />
       <Packages>
         <Intake ref={intakeRef} />
       </Packages>
