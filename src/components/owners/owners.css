@@ -41,3 +41,6 @@
 @media (min-width: 900px) {
   .txq .ow-in { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr); gap: 72px; padding: 120px 40px; }
 }
+.txq .ow .ow-title { margin-bottom: 28px; }
+.txq .ow .ow-body { margin: 0 0 18px; }
+.txq .ow .ow-links { margin-top: 30px; gap: 12px; }
