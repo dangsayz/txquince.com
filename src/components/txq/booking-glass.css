@@ -388,3 +388,12 @@
   cursor: pointer;
   white-space: nowrap;
 }
+
+/* Choices (hours, city, language) read as buttons on the grey panel. */
+.txq .tq-bk .tq-hour,
+.txq .tq-bk .tq-pill { background: #ffffff; box-shadow: inset 0 0 0 1px #c7c7cc; }
+.txq .tq-bk .tq-hour:hover,
+.txq .tq-bk .tq-pill:hover { background: #ffffff; box-shadow: inset 0 0 0 1px #8e8e93; }
+.txq .tq-bk .tq-hour:has(input:checked),
+.txq .tq-bk .tq-pill:has(input:checked),
+.txq .tq-bk .tq-pill[aria-pressed="true"] { background: var(--g-ink); box-shadow: none; }
