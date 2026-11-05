@@ -57,8 +57,6 @@ export type InspoPlace = {
   slug: string;
   citySlug: string;
   path: L;
-  /** Budget-page ref tag for attribution (/budget?ref=…). */
-  ref: string;
   /** schema.org Place (never a LocalBusiness). */
   place: {
     name: string;
@@ -79,7 +77,6 @@ const mandalay: InspoPlace = {
   slug: "mandalay-canal",
   citySlug: "irving",
   path: { en: "/irving/mandalay-canal", es: "/es/irving/canal-mandalay" },
-  ref: "mandalay",
   place: {
     name: "Mandalay Canal",
     alternateName: "Mandalay Canal Walk at Las Colinas",

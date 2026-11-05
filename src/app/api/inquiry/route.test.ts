@@ -77,10 +77,10 @@ describe("POST /api/inquiry, called directly", () => {
     expect(inserted[0].services).toBe("both");
   });
 
-  it("saves the ?ref= link tag with the inquiry", async () => {
-    const res = await post(pickerBody({ attribution: { source: "google.com", landing: "/irving/mandalay-canal", ref: "mandalay", refLanding: "/budget" } }));
+  it("saves the ?src= link tag with the inquiry", async () => {
+    const res = await post(pickerBody({ attribution: { source: "google.com", landing: "/irving/mandalay-canal", src: "instagram", srcLanding: "/budget" } }));
     expect(res.status).toBe(200);
-    expect(inserted[0].attribution).toMatchObject({ source: "google.com", ref: "mandalay", refLanding: "/budget" });
+    expect(inserted[0].attribution).toMatchObject({ source: "google.com", src: "instagram", srcLanding: "/budget" });
   });
 
   it("derives the Solo's budget and services from the package, not the browser", async () => {

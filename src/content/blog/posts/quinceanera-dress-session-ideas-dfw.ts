@@ -127,7 +127,7 @@ const post: BlogPost = {
       type: "cta",
       heading: "See what fits your budget",
       body: "Type your budget and see which package fits, with every price published. Nothing is charged to send a request.",
-      href: "/budget?ref=blog",
+      href: "/budget",
       label: "Open the budget page",
     },
     {

@@ -90,7 +90,7 @@ export async function PriceGuidePage({ lang }: { lang: PlanLang }) {
   const faq = priceGuideFaq(rows, lang, updatedLabel);
   const total = rows.reduce((s, r) => s + r.typical_usd, 0);
   const url = `${site.url}${GUIDE_PATH[lang]}`;
-  const planHref = lang === "es" ? "/es/plan?src=price-guide" : "/plan?src=price-guide";
+  const planHref = lang === "es" ? "/es/plan" : "/plan";
   const pkgHref = lang === "es" ? "/es#commissions" : "/#commissions";
 
   const jsonLd = rows.length

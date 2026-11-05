@@ -118,7 +118,7 @@ const post: BlogPost = {
       type: "cta",
       heading: "Primero, un plan por escrito",
       body: "Díganos la fecha y los colores y reciba un plan privado con nuestro trabajo, la disponibilidad de su fecha y todos los precios, antes de hablar de dinero con nadie.",
-      href: "/es/plan?src=blog-proveedores",
+      href: "/es/plan",
       label: "Recibir mi plan de quince gratis",
     },
   ],

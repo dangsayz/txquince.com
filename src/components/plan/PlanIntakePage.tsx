@@ -5,13 +5,14 @@ import { locations } from "@/content/locations";
 import { site } from "@/content/site";
 import { languageAlternates, OG_LOCALE } from "@/lib/hreflang";
 import { parseColors } from "@/lib/quince-colors";
-import { prefillDate, sanitizeSource, todayInDallas, type PlanLang } from "@/lib/plan";
+import { prefillDate, todayInDallas, type PlanLang } from "@/lib/plan";
+import { normalizeSrc } from "@/lib/src-tag";
 
 /**
  * /plan and /es/plan — the intake. Query params (never personal data):
  *   date=YYYY-MM-DD   prefilled when it is a plannable date
  *   colors=a,b,c      any spelling, English or Spanish ("fucsia,blanco,dorado")
- *   src=fb-group      which group or post the link was shared in
+ *   src=instagram     which platform the link was shared on (one of the six src tags)
  * The middleware has already sent Spanish-preferring visitors to /es/plan.
  */
 export type IntakeSearch = Promise<Record<string, string | string[] | undefined>>;
@@ -46,7 +47,7 @@ export async function PlanIntakePage({ lang, searchParams }: { lang: PlanLang; s
       lang={lang}
       initialDate={prefillDate(one(q.date))}
       initialColors={parseColors(one(q.colors) ?? "")}
-      src={sanitizeSource(one(q.src) ?? one(q.ref))}
+      src={normalizeSrc(one(q.src))}
       minDate={today}
       maxDate={maxDate}
       cities={cities}

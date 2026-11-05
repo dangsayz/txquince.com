@@ -188,10 +188,10 @@ export default async function AdminDashboard({
           Revenue &amp; leads by source
         </p>
         <p className="mt-1 text-xs text-ink-soft">
-          Where each booking &amp; lead came from: the link tag when there is one (tag your links
-          with <code className="text-ink">?ref=</code>, e.g. <code className="text-ink">?ref=pinterest</code>,{" "}
-          <code className="text-ink">?ref=gbp</code>, <code className="text-ink">?ref=mandalay</code>), otherwise
-          the site they first came from.
+          Where each booking &amp; lead came from: the link tag when there is one (tag links you share
+          outside the site with <code className="text-ink">?src=</code>: instagram, facebook, tiktok, youtube,
+          pinterest or quora, e.g. <code className="text-ink">?src=pinterest</code>; links between our own
+          pages get no tag), otherwise the site they first came from.
         </p>
         {s.bySource.length === 0 ? (
           <p className="mt-4 text-base text-ink-faint">

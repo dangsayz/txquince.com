@@ -66,7 +66,7 @@ export function StudioPulse({ s, basePath, range, moves, social }: { s: RangedSt
       label: "Campaigns",
       unit: "Views",
       rows: s.utmSources.map((p) => ({ label: p.label, value: p.count })),
-      empty: "No tagged links yet. Add ?src= to the links you share (e.g. ?src=fb-group-irving).",
+      empty: "No tagged links yet. Add ?src= to the links you share outside the site (e.g. ?src=instagram).",
       tip: "Tag every link you post with ?src= so you know exactly which post worked.",
     },
     {

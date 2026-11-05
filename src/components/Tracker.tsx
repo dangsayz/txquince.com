@@ -3,29 +3,29 @@
 import { useEffect, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { attributedSearch } from "@/lib/bio-utm";
-import { normalizeRef } from "@/lib/ref-tag";
+import { normalizeSrc } from "@/lib/src-tag";
 
 const FIRST_TOUCH_KEY = "txq_first_touch";
-const REF_KEY = "txq_ref";
+const SRC_KEY = "txq_src";
 
 /**
- * Remember the latest `?ref=` link tag this browser arrived with (overwritten
- * by each new tagged link), so it rides along with the form she fills in
- * later, on any page.
+ * Remember the latest `?src=` tag this browser arrived with (overwritten by
+ * each new tagged link), so it rides along with the form she fills in later,
+ * on any page (the budget form included, across all its steps).
  */
-function captureRef(pathname: string, search: URLSearchParams) {
+function captureSrc(pathname: string, search: URLSearchParams) {
   try {
-    const ref = normalizeRef(search.get("ref"));
-    if (!ref) return;
-    localStorage.setItem(REF_KEY, JSON.stringify({ ref, refLanding: pathname, refTs: new Date().toISOString() }));
+    const src = normalizeSrc(search.get("src"));
+    if (!src) return;
+    localStorage.setItem(SRC_KEY, JSON.stringify({ src, srcLanding: pathname, srcTs: new Date().toISOString() }));
   } catch {
     /* never break the page */
   }
 }
 
-function storedRef(): Record<string, string> | null {
+function storedSrc(): Record<string, string> | null {
   try {
-    const raw = localStorage.getItem(REF_KEY);
+    const raw = localStorage.getItem(SRC_KEY);
     return raw ? (JSON.parse(raw) as Record<string, string>) : null;
   } catch {
     return null;
@@ -49,11 +49,11 @@ function captureFirstTouch(pathname: string, search: URLSearchParams) {
       refHost = "";
     }
     if (refHost && refHost === location.hostname.replace(/^www\./, "")) refHost = ""; // ignore self
-    const refTag = normalizeRef(search.get("ref"));
-    const source = utmSource || refTag || refHost || "direct";
+    const srcTag = normalizeSrc(search.get("src"));
+    const source = utmSource || srcTag || refHost || "direct";
     const ft = {
       source,
-      medium: search.get("utm_medium") || (utmSource ? "campaign" : refTag ? "ref" : refHost ? "referral" : "none"),
+      medium: search.get("utm_medium") || (utmSource ? "campaign" : srcTag ? "src" : refHost ? "referral" : "none"),
       campaign: search.get("utm_campaign") || "",
       referrer: document.referrer || "",
       landing: pathname,
@@ -67,16 +67,16 @@ function captureFirstTouch(pathname: string, search: URLSearchParams) {
 
 /**
  * Read the stored attribution for a form submission: the first touch, plus the
- * latest ?ref= tag (ref, refLanding, refTs) when there is one.
+ * latest ?src= tag (src, srcLanding, srcTs) when there is one.
  */
 export function getFirstTouch(): Record<string, string> | null {
   if (typeof window === "undefined") return null;
   try {
     const raw = localStorage.getItem(FIRST_TOUCH_KEY);
     const ft = raw ? (JSON.parse(raw) as Record<string, string>) : null;
-    const ref = storedRef();
-    if (!ft && !ref) return null;
-    return { ...(ft ?? {}), ...(ref ?? {}) };
+    const src = storedSrc();
+    if (!ft && !src) return null;
+    return { ...(ft ?? {}), ...(src ?? {}) };
   } catch {
     return null;
   }
@@ -151,7 +151,7 @@ export function Tracker() {
     // the visit arrives without one — Instagram often strips the referrer.
     const params = attributedSearch(pathname, new URLSearchParams(search.toString()));
     captureFirstTouch(pathname, params);
-    captureRef(pathname, params);
+    captureSrc(pathname, params);
     const key = `${pathname}?${search.toString()}`;
     if (last.current === key) return;
     last.current = key;
@@ -162,9 +162,9 @@ export function Tracker() {
       ref: document.referrer || null,
       sid: sessionId(),
       vid: visitorId(),
-      // A ?ref= tag counts as the visit's source when there is no utm_source.
-      us: params.get("utm_source") || normalizeRef(params.get("ref")),
-      um: params.get("utm_medium") || (!params.get("utm_source") && normalizeRef(params.get("ref")) ? "ref" : null),
+      // A ?src= tag counts as the visit's source when there is no utm_source.
+      us: params.get("utm_source") || normalizeSrc(params.get("src")),
+      um: params.get("utm_medium") || (!params.get("utm_source") && normalizeSrc(params.get("src")) ? "src" : null),
       uc: params.get("utm_campaign"),
     });
   }, [pathname, search]);

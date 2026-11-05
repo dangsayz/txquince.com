@@ -1,11 +1,11 @@
 /**
  * First-touch attribution helpers. The client (Tracker.getFirstTouch) sends a
  * small JSON blob; we never trust it — keep only known string keys, length-capped,
- * for display/aggregation only. Stored on inquiries + bookings.
+ * for display/aggregation only. Stored on inquiries, plans and bookings.
  */
-import { normalizeRef } from "@/lib/ref-tag";
+import { normalizeSrc } from "@/lib/src-tag";
 
-const ALLOWED_KEYS = ["source", "medium", "campaign", "referrer", "landing", "ts", "refLanding", "refTs"];
+const ALLOWED_KEYS = ["source", "medium", "campaign", "referrer", "landing", "ts", "srcLanding", "srcTs"];
 
 export function sanitizeAttribution(v: unknown): Record<string, string> | null {
   if (!v || typeof v !== "object") return null;
@@ -14,8 +14,8 @@ export function sanitizeAttribution(v: unknown): Record<string, string> | null {
     const val = (v as Record<string, unknown>)[k];
     if (typeof val === "string" && val.trim()) out[k] = val.trim().slice(0, 200);
   }
-  // The ?ref= link tag (latest one seen), kept only when it is a clean tag.
-  const ref = normalizeRef((v as Record<string, unknown>).ref);
-  if (ref) out.ref = ref;
+  // The ?src= tag (latest one seen), kept only when it is one of the six.
+  const src = normalizeSrc((v as Record<string, unknown>).src);
+  if (src) out.src = src;
   return Object.keys(out).length ? out : null;
 }
