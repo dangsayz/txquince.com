@@ -1,0 +1,108 @@
+/* ==========================================================================
+   "Latest on Instagram" (homepage). Editorial type and colors, square tiles,
+   generous gaps, no Instagram chrome.
+   Gates: 0 overflow at 360px (fractional grid, min-width 0) · tiles are whole
+   links, far over 44px · gaps ≥ 8px · squares reserved by aspect-ratio and
+   width/height (no layout shift) · captions only on hover/focus · nothing
+   moves under prefers-reduced-motion.
+   ========================================================================== */
+
+.ig { padding: clamp(80px, 10vw, 140px) 0; border-top: 1px solid var(--ed-line); }
+.ig-head { display: flex; flex-direction: column; gap: 18px; margin-bottom: clamp(32px, 4vw, 56px); }
+.ig-handle { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.ig-handle svg { width: 16px; height: 16px; }
+
+.ig-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(8px, 1.6vw, 24px);
+}
+/* Phones: two columns, so a 9-post feed shows its first six (three full rows). */
+.ig-grid > li:nth-child(n + 7) { display: none; }
+@media (min-width: 640px) {
+  .ig-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .ig-grid > li:nth-child(n + 7) { display: block; }
+}
+
+.ig-tile {
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: var(--ed-soft);
+  color: #ffffff;
+  text-decoration: none;
+}
+.ig-tile img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease;
+}
+.ig-tile:focus-visible { outline: 2px solid var(--ed-ink); outline-offset: 3px; }
+
+/* Play mark on videos/Reels: a small white circle, top right. */
+.ig-play {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  padding-left: 2px;
+}
+
+/* Caption excerpt: hidden until hover (mouse) or keyboard focus. */
+.ig-cap {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 48px 16px 14px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.72) 100%);
+  font-size: 14px;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+@media (hover: hover) {
+  .ig-tile:hover img { transform: scale(1.04); }
+  .ig-tile:hover .ig-cap { opacity: 1; }
+}
+.ig-tile:focus-visible .ig-cap { opacity: 1; }
+
+.ig-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Main action stays on the site; Instagram is the quiet secondary link. */
+.ig-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; margin-top: clamp(28px, 4vw, 48px); }
+.ig-follow svg { width: 16px; height: 16px; }
+@media (max-width: 639px) {
+  .ig-actions { flex-direction: column; align-items: stretch; }
+  .ig-actions .ed-btn { width: 100%; }
+  .ig-follow { justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ig-tile img,
+  .ig-cap { transition: none; }
+  .ig-tile:hover img { transform: none; }
+}

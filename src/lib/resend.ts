@@ -77,6 +77,21 @@ function field(label: string, value?: string): string {
   return `${label}: ${value && value.trim() ? value.trim() : "—"}`;
 }
 
+/** Plain-text system alert → operator (e.g. the Instagram feed stopped updating). */
+export async function sendOperatorAlert(subject: string, text: string): Promise<{ ok: boolean; error?: string }> {
+  const resend = getResend();
+  const to = process.env.OPERATOR_NOTIFY_EMAIL;
+  if (!resend) return { ok: false, error: "resend-not-configured" };
+  if (!to) return { ok: false, error: "operator-email-not-set" };
+  try {
+    const { error } = await resend.emails.send({ from: FROM, to, subject: `[${site.domain}] ${subject}`, text });
+    if (error) return { ok: false, error: String(error.message ?? error) };
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : String(err) };
+  }
+}
+
 /** Email #1 → operator. Structured, everything visible, reply reminder. */
 export async function sendOperatorEmail(
   data: InquiryInput,

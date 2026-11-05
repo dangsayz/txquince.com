@@ -125,6 +125,59 @@ add Upstash Redis + `@upstash/ratelimit` and swap it into `route.ts`.
 
 ---
 
+## Instagram feed ("Latest on Instagram" on `/` and `/es`)
+
+The homepage shows the newest @txquince posts in a square grid after the
+galleries. It updates itself: post on Instagram and it appears on the site
+within about an hour. Nothing else to do once it is switched on.
+
+**How it works.** Every hour the cron worker calls `/api/cron/instagram`, which
+asks the Instagram API for the latest posts, copies each picture into the
+private R2 bucket (`instagram/…`) and saves the list. The homepage reads that
+saved list (never Instagram), and pictures are served from our own domain by
+`/api/instagram/<id>`, so they never expire and visitors never load anything
+from Instagram. The access token is refreshed weekly by the same job.
+
+**If something goes wrong** (token expired, Instagram down), the site keeps
+showing the last good posts. If there have never been at least 6 posts, the
+section simply does not appear. You get an email at `OPERATOR_NOTIFY_EMAIL`
+(at most one a day) saying what happened and how to fix it. Details are in the
+app Worker's logs: search for `[instagram]`.
+
+### One-time setup (about 15 minutes)
+
+1. **Make @txquince a professional account.** In the Instagram app: Settings →
+   Account type and tools → Switch to professional account → Business or
+   Creator. (No Facebook Page is needed.)
+2. **Create a Meta app.** At <https://developers.facebook.com/apps> → Create app
+   → choose the **Business** type. Add the **Instagram** product.
+3. **Generate the token.** In the app dashboard: Instagram → **API setup with
+   Instagram business login** → Add account (log in as @txquince) → **Generate
+   token** next to the account. Copy the token (it lasts 60 days; the site
+   renews it automatically from then on). Standard access is enough for your
+   own account, so no App Review is needed.
+4. **Store it as a Cloudflare secret** (from the repo root, never in a file):
+   ```bash
+   npx wrangler secret put INSTAGRAM_ACCESS_TOKEN
+   ```
+5. **Make sure the cron worker is deployed** with the Instagram ping (it already
+   needs `CRON_SECRET`, see DEPLOY.md §5):
+   ```bash
+   cd cron-worker && npx wrangler deploy
+   ```
+6. **Check it.** Within the hour (or right away with
+   `curl -H "Authorization: Bearer $CRON_SECRET" https://txquince.com/api/cron/instagram`)
+   the response says `"status":"updated"` and the section appears on the homepage.
+
+**If you get an "Instagram token" email:** repeat step 3 and step 4. Putting a
+new secret replaces the old token automatically.
+
+**Local development:** `npm run dev` shows sample posts made from the site's own
+photos (links go to the real profile). Set `INSTAGRAM_FIXTURE=0` to see the
+page without the section.
+
+---
+
 ## Analytics — success metrics
 
 Track from day one: inquiry submissions (primary conversion), **% of submissions

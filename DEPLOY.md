@@ -45,6 +45,7 @@ npx wrangler secret put TURNSTILE_SECRET_KEY
 npx wrangler secret put STRIPE_SECRET_KEY        # see §4
 npx wrangler secret put STRIPE_WEBHOOK_SECRET    # see §4
 npx wrangler secret put CRON_SECRET              # see §5
+npx wrangler secret put INSTAGRAM_ACCESS_TOKEN   # optional: homepage Instagram feed (README → Instagram feed)
 ```
 
 ## 3. Database migrations (Supabase, project `yeazpzmuyjmkinrhtarx`)
@@ -86,7 +87,8 @@ Two revenue-saving jobs, both built and inert until activated:
    npx wrangler deploy
    npx wrangler secret put CRON_SECRET     # same value as the app's
    ```
-   It runs **hourly** and pings both endpoints. Follow-ups are day-paced
+   It runs **hourly** and pings these endpoints (plus `/api/cron/instagram`,
+   the homepage Instagram feed, which does nothing until `INSTAGRAM_ACCESS_TOKEN` is set). Follow-ups are day-paced
    internally, so hourly only matters for recovery (fires within ~an hour of a
    hold expiring). Both 401 until the secret is set — nothing sends before that.
 

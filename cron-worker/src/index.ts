@@ -45,6 +45,8 @@ export default {
       Promise.all([
         ping("/api/cron/followups", "followups-cron"),
         ping("/api/cron/booking-recovery", "booking-recovery-cron"),
+        // Latest @txquince posts → R2 (and a weekly token refresh).
+        ping("/api/cron/instagram", "instagram-cron"),
       ]).then(() => undefined),
     );
   },

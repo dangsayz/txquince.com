@@ -13,6 +13,7 @@ import { SlotProvider } from "@/components/slots/SlotProvider";
 import { getPortfolioImages } from "@/lib/content-db";
 import { galleriesFromImages } from "@/lib/home-galleries";
 import { favoritesFromImages } from "@/lib/favorites";
+import { getInstagramFeed } from "@/lib/instagram";
 import { FavoritesJsonLd } from "@/components/editorial/FavoritesJsonLd";
 import { homeCities } from "@/content/home-places";
 import { languageAlternates, OG_LOCALE } from "@/lib/hreflang";
@@ -39,11 +40,14 @@ export default async function InicioEs() {
   // are empty (section hidden, original images) when storage is unreachable.
   // The gallery section is the real portfolio, grouped by shoot (empty when
   // the database is unreachable; the section then shows real photos instead).
-  const [films, overrides, book, portfolio] = await Promise.all([
+  // Instagram posts are read from R2 (synced hourly), never from Instagram;
+  // empty (section hidden) when the feed has never synced.
+  const [films, overrides, book, portfolio, instagram] = await Promise.all([
     getCinemaFilms(),
     getHomeOverrides(),
     getPriceBook(),
     getPortfolioImages(),
+    getInstagramFeed(),
   ]);
   const favorites = favoritesFromImages(portfolio);
   return (
@@ -52,7 +56,7 @@ export default async function InicioEs() {
       <FavoritesJsonLd favorites={favorites} lang="es" />
       <SlotProvider slots={await resolveHomeSlots(overrides)}>
         <div className={editorialFonts}>
-          <EditorialHome journal={fillDeep(latestJournal(), book)} films={films} overrides={overrides} galleries={galleriesFromImages(portfolio)} cities={homeCities()} favorites={favorites} />
+          <EditorialHome journal={fillDeep(latestJournal(), book)} films={films} overrides={overrides} galleries={galleriesFromImages(portfolio)} cities={homeCities()} favorites={favorites} instagram={instagram} />
         </div>
       </SlotProvider>
     </>

@@ -23,6 +23,8 @@ import { ED } from "./copy";
 import { BAND_VIDEO, DETAILS, FEATURE_STILL, HERO, JOURNAL_PHOTO, JOURNAL_PHOTO_FALLBACK } from "./media";
 import { LazyVideo } from "./LazyVideo";
 import { Favorites } from "./Favorites";
+import { InstagramFeed } from "./InstagramFeed";
+import type { InstagramTile } from "@/lib/instagram-shared";
 import { Owners, SocialIcon } from "@/components/owners/Owners";
 import type { Favorite } from "@/lib/favorites";
 import { useScenes } from "./scenes";
@@ -39,6 +41,7 @@ import "./editorial.css";
  * first paint and nothing shifts. Section ids stay the ones the header, dock
  * and other pages link to: #top, #editorial, #cinema, #archive,
  * #commissions (with #intake inside), #questions and #where-we-work.
+ * The Instagram section sits after the galleries, at the end of the proof.
  */
 export function EditorialHome({
   journal,
@@ -47,6 +50,7 @@ export function EditorialHome({
   galleries = [],
   cities = [],
   favorites = [],
+  instagram = [],
 }: {
   journal: Journal;
   films: CinemaFilm[];
@@ -58,6 +62,8 @@ export function EditorialHome({
   cities?: HomeCity[];
   /** Starred portfolio photos (Admin → Portfolio → Feature), up to 100. */
   favorites?: Favorite[];
+  /** Latest @txquince posts (synced hourly into R2); [] hides the section. */
+  instagram?: InstagramTile[];
 }) {
   const { setDockHidden } = useShell();
   const rootRef = useRef<HTMLDivElement>(null);
@@ -87,6 +93,7 @@ export function EditorialHome({
       <FavoritesSection favorites={favorites} />
       <Band films={films} />
       <Collage galleries={galleries} />
+      <InstagramFeed posts={instagram} />
       <Feature />
       <BudgetCta placement="home" />
       <Packages>
