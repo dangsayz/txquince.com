@@ -135,20 +135,20 @@ export const DETAILS: Detail[] = [
     },
   },
   {
-    id: "details",
+    id: "gifts",
     still: {
-      src: "/portfolio/reception.webp",
+      src: "/portfolio/shoe-ceremony.webp",
       width: 719,
       height: 1080,
       alt: {
-        en: "Quinceañera in a pink corset ball gown smiling in a bright white room at her reception",
-        es: "Quinceañera con vestido de gala rosa con corsé sonriendo en un salón blanco y luminoso en su recepción",
+        en: "Crowned quinceañera in a black and gold gown opening a gift at her party",
+        es: "Quinceañera con corona y vestido negro y dorado abriendo un regalo en su fiesta",
       },
     },
     video: null,
     lines: {
-      en: ["Her night.", "The moments in between", "are the ones you keep."],
-      es: ["Su noche.", "Los momentos de en medio", "son los que se quedan."],
+      en: ["Her gifts.", "The moments in between", "are the ones you keep."],
+      es: ["Sus regalos.", "Los momentos de en medio", "son los que se quedan."],
     },
   },
 ];
@@ -172,7 +172,7 @@ export const BAND_VIDEO: Clip | null = null;
  * carry no images of their own). Decorative: the card's title says what it is.
  */
 export const JOURNAL_PHOTO: Record<string, { src: string; width: number; height: number }> = {
-  "Cost & Budget": { src: "/portfolio/canal.webp", width: 720, height: 1080 },
+  "Cost & Budget": { src: "/portfolio/shoe-ceremony.webp", width: 719, height: 1080 },
   Planning: { src: "/portfolio/save-date.webp", width: 810, height: 1080 },
   Traditions: { src: "/portfolio/dance.webp", width: 719, height: 1080 },
   "Photography & Film": { src: "/portfolio/reception.webp", width: 719, height: 1080 },

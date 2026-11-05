@@ -95,6 +95,7 @@ const FALLBACK_ALT_ES: Record<string, string> = {
   "/portfolio/reception.webp": "Retrato de quinceañera con vestido rosa en su recepción",
   "/portfolio/stockyards.webp": "Retrato de quinceañera en los Fort Worth Stockyards",
   "/portfolio/dance.webp": "Quinceañera bailando folklórico en su recepción",
+  "/portfolio/shoe-ceremony.webp": "Quinceañera con corona abriendo un regalo en su recepción",
   "/portfolio/gown-overhead.webp": "Vestido de quinceañera visto desde arriba",
 };
 

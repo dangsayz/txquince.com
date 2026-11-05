@@ -90,4 +90,13 @@ export const portfolioFallback: readonly PortfolioFallbackPhoto[] = [
     width: 719,
     height: 1080,
   },
+  {
+    url: "/portfolio/shoe-ceremony.webp",
+    alt: "Crowned quinceañera in a black gown opening a gift at her reception",
+    section: "celebration",
+    slug: "quinceanera-reception-gift",
+    title: "The gifts and gestures",
+    width: 719,
+    height: 1080,
+  },
 ];
