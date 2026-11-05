@@ -61,7 +61,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Así suena una buena respuesta: si el segundo fotógrafo va incluido, si está disponible como complemento o si no se ofrece, y en cuáles paquetes. Con nosotros, El Trío trae dos fotógrafos y un videógrafo, y se puede agregar una coordinadora que dirija el día, por ${PT.addon.coordinator} al día. Son fotógrafos y videógrafos del propio equipo de TX Quince, asignados según la fecha y la disponibilidad —así que no podemos prometer a una persona en específico—, y cada galería y cada película la editan los dueños. Puede ver los ángulos inversos y los momentos de doble cobertura que hacen posibles en el [portafolio](/portfolio). Si un fotógrafo no puede mostrarle cobertura de dos cámaras, dé por hecho que trabaja solo.`,
+      text: `Así suena una buena respuesta: si el segundo fotógrafo va incluido, si está disponible como complemento o si no se ofrece, y en cuáles paquetes. Con nosotros, El Trío trae dos fotógrafos y un videógrafo, y se puede agregar una coordinadora que dirija el día, por ${PT.addon.coordinator} al día. Son nuestro propio pequeño equipo de fotógrafos y videógrafos de casa, a veces con Dang o Yvonne, los dueños, detrás de la cámara, y cada galería y cada película la editan los dueños. Puede ver los ángulos inversos y los momentos de doble cobertura que hacen posibles en el [portafolio](/portfolio). Si un fotógrafo no puede mostrarle cobertura de dos cámaras, dé por hecho que trabaja solo.`,
     },
     { type: "h2", text: "5. ¿Me da los derechos de uso e impresión de las fotos?" },
     {
@@ -113,7 +113,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Así suena una buena respuesta: un sí o un no directo, y una respuesta clara sobre quién está detrás de cada cámara. Nosotros ofrecemos foto y video en cada paquete desde El Solo. El Solo es una sola persona con 2–3 cámaras (una cámara que lleva encima, una cámara fija de lado y la cámara de fotos), un fotógrafo y videógrafo en uno, así que donde pase algo hay una cámara apuntando, y usted recibe la película completa de su día. El Dúo y El Trío ponen un equipo dedicado de ${BASE_CREW.cinema} a ${BASE_CREW.trio} personas trabajando el mismo día, con la película completa de su día más un resumen corto. Si todavía está decidiendo si vale la pena el video, [foto o video para la quinceañera](/es/blog/foto-o-video-quinceanera) sopesa esa decisión sin rodeos.`,
+      text: `Así suena una buena respuesta: un sí o un no directo, y una respuesta clara sobre quién está detrás de cada cámara. Nosotros ofrecemos foto y video en cada paquete desde El Solo. El Solo es una sola persona con {{cameras.solo}} cámaras (una cámara que lleva encima, una cámara fija de lado y la cámara de fotos), un fotógrafo y videógrafo en uno, así que donde pase algo hay una cámara apuntando, y usted recibe la película completa de su día. El Dúo y El Trío ponen un equipo dedicado de ${BASE_CREW.cinema} a ${BASE_CREW.trio} personas trabajando el mismo día, con la película completa de su día más un resumen corto. Si todavía está decidiendo si vale la pena el video, [foto o video para la quinceañera](/es/blog/foto-o-video-quinceanera) sopesa esa decisión sin rodeos.`,
     },
     { type: "h2", text: "Para cerrar" },
     {

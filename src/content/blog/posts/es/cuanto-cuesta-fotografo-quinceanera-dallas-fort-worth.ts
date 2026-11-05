@@ -4,6 +4,7 @@ import { PT } from "@/lib/price-text";
 
 const study = PT.price.study;
 const solo = PT.price.solo;
+const moments = PT.price.moments;
 const cinema = PT.price.cinema;
 const trio = PT.price.trio;
 const retainerPct = PT.deposit.percent;
@@ -27,7 +28,7 @@ const post: BlogPost = {
     { type: "h2", text: "La respuesta corta" },
     {
       type: "p",
-      text: `En Dallas–Fort Worth, la mayoría de los estudios de quinceañera publican paquetes de solo foto de unos $1,500 a $3,000, y de foto y video de unos $3,000 a $5,500. Las colecciones de lujo para quinceañera van de $5,500 a $8,000 o más, y como referencia, la foto y el video de una boda de lujo en Dallas promedian unos $10,000. En [TX Quince](/es#commissions) los paquetes están publicados en el sitio, sin formulario de cotización: Sesión de retratos (${study}), El Solo (${solo}), El Dúo (${cinema}) y El Trío (${trio}).`,
+      text: `En Dallas–Fort Worth, la mayoría de los estudios de quinceañera publican paquetes de solo foto de unos $1,500 a $3,000, y de foto y video de unos $3,000 a $5,500. Las colecciones de lujo para quinceañera van de $5,500 a $8,000 o más, y como referencia, la foto y el video de una boda de lujo en Dallas promedian unos $10,000. En [TX Quince](/es#commissions) los paquetes están publicados en el sitio, sin formulario de cotización: Sesión de retratos (${study}), Los Momentos (${moments}), El Solo (${solo}), El Dúo (${cinema}) y El Trío (${trio}).`,
     },
     {
       type: "p",
@@ -47,7 +48,7 @@ const post: BlogPost = {
       items: [
         "Horas de cobertura — el día de unos quince es largo: el arreglo, la misa de acción de gracias, las fotos formales y la fiesta. La cobertura de día completo es la diferencia entre un resumen y la historia entera.",
         `Un artista o un equipo — un fotógrafo y un videógrafo en El Dúo (${BASE_CREW.cinema} en total), dos fotógrafos y un videógrafo en El Trío (${BASE_CREW.trio}) — significa que la iglesia y la entrada al salón quedan cubiertas al mismo tiempo, con ángulos opuestos que una sola cámara no puede inventar. También se puede agregar una coordinadora que dirija el día, por ${PT.addon.coordinator} al día.`,
-        "Foto, o foto y video — el video es un oficio aparte y una edición aparte. El Solo le da los dos con una sola persona y 2–3 cámaras, así que donde pase algo hay una cámara apuntando; El Dúo y El Trío ponen a un fotógrafo y un videógrafo dedicados ese día.",
+        "Foto, o foto y video — el video es un oficio aparte y una edición aparte. El Solo le da los dos con una sola persona y {{cameras.solo}} cámaras, así que donde pase algo hay una cámara apuntando; El Dúo y El Trío ponen a un fotógrafo y un videógrafo dedicados ese día.",
         "Entrega — una galería privada en línea y, en los paquetes con video, la película completa de su día entero más un resumen (de 1 minuto en El Dúo, de 3 a 5 minutos en El Trío, y como extra en El Solo). El Trío suma un álbum impreso.",
       ],
     },
@@ -99,7 +100,7 @@ const post: BlogPost = {
   faqs: [
     {
       q: "¿Cuánto debo presupuestar para la fotografía de quinceañera en DFW?",
-      a: `La mayoría de los estudios de DFW publican solo foto entre unos $1,500 y $3,000, y foto y video entre unos $3,000 y $5,500; las colecciones de lujo van de $5,500 a $8,000 o más. TX Quince publica cuatro paquetes: Sesión de retratos (${study}, solo foto), El Solo (${solo}, foto y video con una sola persona), El Dúo (${cinema}) y El Trío (${trio}).`,
+      a: `La mayoría de los estudios de DFW publican solo foto entre unos $1,500 y $3,000, y foto y video entre unos $3,000 y $5,500; las colecciones de lujo van de $5,500 a $8,000 o más. TX Quince publica cinco paquetes: Sesión de retratos (${study}, solo foto), Los Momentos (desde ${moments}, 2 horas de la presentación y fotos con la familia), El Solo (${solo}, foto y video con una sola persona), El Dúo (${cinema}) y El Trío (${trio}).`,
     },
     {
       q: "¿Necesito fotógrafo y videógrafo?",

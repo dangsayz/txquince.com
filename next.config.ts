@@ -39,6 +39,12 @@ const nextConfig: NextConfig = {
       { source: "/investment", destination: "/#commissions", permanent: true },
       { source: "/payment-plans", destination: "/#commissions", permanent: true },
       { source: "/reserve", destination: "/#intake", permanent: true },
+      // Addresses families type or guess: packages live on the homepage,
+      // contact is the check-your-date inquiry page.
+      { source: "/packages", destination: "/#commissions", permanent: true },
+      { source: "/pricing", destination: "/#commissions", permanent: true },
+      { source: "/contact", destination: "/check-your-date", permanent: true },
+      { source: "/es/contacto", destination: "/es/consulta", permanent: true },
       { source: "/es/paquetes", destination: "/es#commissions", permanent: true },
       { source: "/es/planes-de-pago", destination: "/es#commissions", permanent: true },
       // The bundled Save-the-Date session became the Portrait Study.

@@ -3,17 +3,17 @@
 import { useEffect, useRef, useState, type ReactNode, type SyntheticEvent } from "react";
 import Link from "next/link";
 import { Intake, bookHref } from "@/components/txq/Intake";
+import { BudgetCta } from "@/components/budget/BudgetCta";
 import { useShell } from "@/components/txq/SiteShell";
 import { useSite } from "@/components/txq/state";
-import { TIERS, money, type CinemaFilm } from "@/components/txq/data";
+import { TIERS, money, tierBullets, tierDetail, tierTeam, type CinemaFilm } from "@/components/txq/data";
 import type { Journal } from "@/components/txq/Editorial";
 import { usePriceBook } from "@/components/PriceBookProvider";
 import { SlotPicture } from "@/components/slots/SlotPicture";
 import { SlotAdminControl } from "@/components/slots/SlotAdminControl";
 import { useSlot } from "@/components/slots/SlotProvider";
-import { PACKAGE_DETAIL } from "@/components/home/home-copy";
 import { MomsAsk } from "./MomsAsk";
-import { BASE_CREW, priceFloor } from "@/lib/commission";
+import { priceFloor } from "@/lib/commission";
 import { HERO_SLOTS, type HomeOverrides } from "@/lib/photo-dump-shared";
 import type { HomeGallery } from "@/lib/home-galleries";
 import type { HomeCity } from "@/content/home-places";
@@ -22,8 +22,12 @@ import { ED } from "./copy";
 import { BAND_VIDEO, DETAILS, FEATURE_STILL, HERO, JOURNAL_PHOTO, JOURNAL_PHOTO_FALLBACK } from "./media";
 import { LazyVideo } from "./LazyVideo";
 import { Favorites } from "./Favorites";
+import { Owners, SocialIcon } from "@/components/owners/Owners";
 import type { Favorite } from "@/lib/favorites";
 import { useScenes } from "./scenes";
+import { CONTACT_EVENT, whatsappHref } from "@/lib/contact";
+import { trackEvent } from "@/components/Tracker";
+import { WhatsAppFloat } from "@/components/WhatsAppFloat";
 import "./editorial.css";
 
 /**
@@ -58,39 +62,60 @@ export function EditorialHome({
   favorites?: Favorite[];
 }) {
   const { setDockHidden } = useShell();
+  const { lang } = useSite();
+  const [intakeOnScreen, setIntakeOnScreen] = useState(false);
+  const [heroOnScreen, setHeroOnScreen] = useState(true);
   const rootRef = useRef<HTMLDivElement>(null);
   const intakeRef = useRef<HTMLDivElement>(null);
   useScenes(rootRef);
 
-  // The mobile dock steps aside while the booking panel is on screen (the
-  // panel has its own total · Next bar).
+  // The mobile dock (Available · Reserve Your Date) stays out of the way while
+  // the hero is on screen, which has its own Reserve button: the first screen
+  // shows one call to action, not three. It slides in once the hero is mostly
+  // scrolled past, and steps aside again while the booking panel is on screen
+  // (the panel has its own total · Next bar).
+  useEffect(() => {
+    const hero = rootRef.current?.querySelector("#top");
+    if (!hero) return;
+    const io = new IntersectionObserver(([e]) => setHeroOnScreen(e.isIntersecting), {
+      // "On screen" = the hero still reaches into the top 40% of the viewport.
+      rootMargin: "0px 0px -60% 0px",
+    });
+    io.observe(hero);
+    return () => io.disconnect();
+  }, []);
   useEffect(() => {
     const el = intakeRef.current;
     if (!el) return;
-    const io = new IntersectionObserver(([e]) => setDockHidden(e.isIntersecting), {
+    const io = new IntersectionObserver(([e]) => setIntakeOnScreen(e.isIntersecting), {
       rootMargin: "0px 0px -30% 0px",
     });
     io.observe(el);
-    return () => {
-      io.disconnect();
-      setDockHidden(false);
-    };
-  }, [setDockHidden]);
+    return () => io.disconnect();
+  }, []);
+  useEffect(() => {
+    setDockHidden(heroOnScreen || intakeOnScreen);
+  }, [heroOnScreen, intakeOnScreen, setDockHidden]);
+  useEffect(() => () => setDockHidden(false), [setDockHidden]);
 
   return (
     <div ref={rootRef} className="ed">
       <Hero overrides={overrides} />
       <Statement />
+      <HomeOwners />
       <FavoritesSection favorites={favorites} />
       <Band films={films} />
       <Collage galleries={galleries} />
       <Feature />
       <Packages>
-        <Intake ref={intakeRef} />
+        <Intake ref={intakeRef} pickFromList="commissions" />
       </Packages>
       <MomsAsk />
+      {/* After the questions: "still unsure? tell us your budget". */}
+      <BudgetCta placement="home" />
       <JournalRow journal={journal} />
       <WhereWeWork cities={cities} />
+      <WhatsAppFloat lang={lang} hidden={intakeOnScreen} />
     </div>
   );
 }
@@ -137,14 +162,55 @@ function Hero({ overrides }: { overrides: HomeOverrides }) {
             </span>
           </h1>
           <div className="ed-hero__foot">
-            <a href={homeHref("#intake")} className="ed-btn ed-btn--light">
+            {/* To the package list: on the homepage it is the only package picker. */}
+            <a href={homeHref("#commissions")} className="ed-btn ed-btn--light">
               {e.reserve}
             </a>
             <p className="ed-hero__note">{e.heroNote(money(priceFloor(book)))}</p>
           </div>
+          <ul className="ed-hero__social">
+            <li>
+              <a href={site.social.youtube} target="_blank" rel="noopener noreferrer">
+                <SocialIcon name="youtube" /> {e.heroFilms}
+              </a>
+            </li>
+            <li>
+              <a href={site.social.instagram} target="_blank" rel="noopener noreferrer">
+                <SocialIcon name="instagram" /> @txquince
+              </a>
+            </li>
+            <li>
+              <a href={whatsappHref(lang)} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent(CONTACT_EVENT.whatsapp, "hero")}>
+                <SocialIcon name="whatsapp" /> {e.heroWhatsapp}
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
     </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Dang and Yvonne                                                     */
+/* ------------------------------------------------------------------ */
+
+const OWNERS_FALLBACK = {
+  src: "/portfolio/owners-placeholder.webp",
+  alt: { en: "Dang and Yvonne, the owners of TX Quince", es: "Dang y Yvonne, los dueños de TX Quince" },
+  width: 1200,
+  height: 1500,
+};
+
+function HomeOwners() {
+  const { lang } = useSite();
+  const image = useSlot("home.owners", OWNERS_FALLBACK, "(max-width: 960px) 100vw, 40vw");
+  return (
+    <Owners
+      lang={lang}
+      photo={<SlotPicture image={image} lang={lang} fill sizes="(max-width: 960px) 100vw, 40vw" />}
+      admin={<SlotAdminControl slot="home.owners" />}
+    />
   );
 }
 
@@ -158,7 +224,6 @@ function Statement() {
   return (
     <section id="editorial" className="ed-statement" aria-labelledby="ed-statement-title">
       <div className="ed-statement__in" data-ed="drift">
-        <p className="ed-label">{s.label}</p>
         <h2 id="ed-statement-title" className="ed-display ed-display--lg">
           {s.title}
         </h2>
@@ -421,7 +486,7 @@ function Feature() {
         />
       </div>
       <div className="ed-feature__track">
-        <div className="ed-card">
+        <div className="ed-card" data-header-tone="light">
           <p className="ed-label">{e.feature.label}</p>
           <h2 id="ed-feature-title" className="ed-display ed-display--md">
             {tier.name[lang]}
@@ -431,7 +496,7 @@ function Feature() {
             <p className="ed-offer">{e.packages.offer(book.trioSpotsLeft, book.trioSpotsTotal, money(p.price))}</p>
           )}
           <ul className="ed-card__list">
-            {tier.bullets.map((b) => (
+            {tierBullets(book, tier.id).map((b) => (
               <li key={b.en}>{b[lang]}</li>
             ))}
           </ul>
@@ -467,7 +532,6 @@ function Packages({ children }: { children: ReactNode }) {
     <section id="commissions" className="ed-packages" aria-labelledby="ed-pk-title">
       <div className="ed-wrap">
         <div className="ed-head" data-ed="rise">
-          <p className="ed-label">{p.label}</p>
           <h2 id="ed-pk-title" className="ed-display ed-display--lg">
             {p.title}
           </h2>
@@ -488,9 +552,9 @@ function Packages({ children }: { children: ReactNode }) {
                     {name}
                     {pick && <span className="ed-pkg__pick">{p.pick}</span>}
                   </h3>
-                  <p className="ed-pkg__desc">{PACKAGE_DETAIL[x.id][lang]}</p>
+                  <p className="ed-pkg__desc">{tierDetail(book, x.id)[lang]}</p>
                   <p className="ed-pkg__meta">
-                    {p.hours(pp.hours)} · {x.id === "solo" ? p.soloTeam : p.team(BASE_CREW[x.id])}
+                    {p.hours(pp.hours)} · {tierTeam(book, x.id)[lang]}
                   </p>
                   {x.id === "trio" && book.trioSpotsLeft > 0 && (
                     <p className="ed-offer">{p.offer(book.trioSpotsLeft, book.trioSpotsTotal, money(pp.price))}</p>
@@ -552,7 +616,6 @@ function JournalRow({ journal }: { journal: Journal }) {
       <div className="ed-wrap">
         <div className="ed-journal__head">
           <div>
-            <p className="ed-label">{j.label}</p>
             <h2 id="ed-journal-title" className="ed-journal__title">
               {j.title}
             </h2>

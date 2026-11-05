@@ -6,6 +6,7 @@ import { getImageBySlug, getImagesBySection, getFeaturedImages, getPageHero } fr
 import { mediaUrl } from "@/content/media";
 import { SlotImage } from "@/components/SlotImage";
 import { FinalCTA } from "@/components/FinalCTA";
+import { Owners } from "@/components/owners/Owners";
 import { commissionLinks } from "@/content/commissions";
 import "@/components/txq/pages/pages.css";
 
@@ -107,8 +108,7 @@ export default async function AboutPage() {
                   <p key={paragraph}>{paragraph}</p>
                 ))}
                 <p>
-                  Her day is covered by TX Quince&apos;s own team of photographers and videographers, assigned by date and
-                  availability, so we can&apos;t promise a specific person. Every gallery and
+                  Your day is covered by our small in-house crew of photographers and videographers, sometimes with Dang or Yvonne, the owners, behind the camera. Every gallery and
                   every film is edited by the owners.
                 </p>
               </div>
@@ -116,6 +116,19 @@ export default async function AboutPage() {
           </div>
         </div>
       </section>
+
+      <Owners
+        lang="en"
+        photo={
+          <SlotImage
+            slot="home.owners"
+            lang="en"
+            fill
+            sizes="(max-width: 960px) 100vw, 40vw"
+            fallback={{ src: "/portfolio/owners-placeholder.webp", alt: "Dang and Yvonne, the owners of TX Quince", width: 1200, height: 1500 }}
+          />
+        }
+      />
 
       <section className="tq-section" aria-labelledby="approach-title">
         <div className="tq-wrap">
@@ -142,7 +155,7 @@ export default async function AboutPage() {
               <span className="tq-mono tq-muted">[03]</span>
               <h3 className="tq-display">Published packages.</h3>
               <p>
-                Four packages with prices on the page: the Portrait Session, the Solo, the Duo and the Trio.{" "}
+                Five packages with prices on the page: the Portrait Session, Just the Moments, the Solo, the Duo and the Trio.{" "}
                 <Link href={commissionLinks.en.compare} className="tq-pg-inline">
                   Compare packages
                 </Link>

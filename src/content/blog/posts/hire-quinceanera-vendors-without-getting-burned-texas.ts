@@ -118,7 +118,7 @@ const post: BlogPost = {
       type: "cta",
       heading: "Get a plan in writing first",
       body: "Tell us her date and colors and get a private plan with our work, your date's availability and every price, before you talk money with anyone.",
-      href: "/plan?src=blog-vendors",
+      href: "/plan",
       label: "Get my free quince plan",
     },
   ],

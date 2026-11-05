@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { StatusLabel } from "@/components/txq/Header";
-import { FooterAdmin } from "@/components/txq/Editorial";
+import { FooterAdmin, useAdminLogout } from "@/components/txq/Editorial";
+import { useIsAdmin } from "@/components/EditMode";
 import { useSite } from "@/components/txq/state";
 import type { Lang } from "@/components/txq/data";
 import { trackEvent } from "@/components/Tracker";
@@ -12,6 +13,7 @@ import { site } from "@/content/site";
 import { HOME } from "./home-copy";
 import { ED } from "@/components/editorial/copy";
 import "./chrome.css";
+import { WhatsAppChatButton } from "@/components/WhatsAppChatButton";
 
 /** Footer city links (each has a page in both languages; see content/locations.ts). */
 const FOOTER_CITIES = [
@@ -35,6 +37,43 @@ function Lang2({ className }: { className?: string }) {
   );
 }
 
+/** Small key-shaped admin icon (decorative; the link carries the text). */
+function AdminIcon() {
+  return (
+    <svg className="sh-admin__icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden focusable="false">
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6l7-3z M9.5 12l1.8 1.8L15 10"
+      />
+    </svg>
+  );
+}
+
+/** Owner controls in the open menu: shown only to a signed-in admin. */
+function MenuAdmin({ onNavigate }: { onNavigate: () => void }) {
+  const { lang } = useSite();
+  const { busy, logOut } = useAdminLogout();
+  const es = lang === "es";
+  return (
+    <div className="sm-admin">
+      <p className="sm-admin__label">{es ? "Sesión de admin" : "Signed in as admin"}</p>
+      <div className="sm-admin__row">
+        <a href="/admin" className="sm-admin__btn sm-admin__btn--solid" rel="nofollow" onClick={onNavigate}>
+          <AdminIcon />
+          {es ? "Abrir admin" : "Open admin"}
+        </a>
+        <button type="button" className="sm-admin__btn" onClick={logOut} disabled={busy}>
+          {busy ? (es ? "Cerrando…" : "Logging out…") : es ? "Cerrar sesión" : "Log out"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 /**
  * The global header: nothing but a menu button, the wordmark and one action,
  * floating over the page. It reads the section beneath it — over a photo or
@@ -49,6 +88,7 @@ export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const menuBtn = useRef<HTMLButtonElement>(null);
   const closeBtn = useRef<HTMLButtonElement>(null);
+  const isAdmin = useIsAdmin();
 
   // Tone: is a dark section (data-header-tone="dark") under the header bar?
   useEffect(() => {
@@ -56,12 +96,17 @@ export function SiteHeader() {
     const check = () => {
       raf = 0;
       const line = 32;
+      // A light element (e.g. a white card) inside a dark section wins, so
+      // white header text never lands on white.
       let dark = false;
-      document.querySelectorAll('[data-header-tone="dark"]').forEach((el) => {
+      let light = false;
+      document.querySelectorAll("[data-header-tone]").forEach((el) => {
         const r = el.getBoundingClientRect();
-        if (r.top <= line && r.bottom >= line) dark = true;
+        if (r.top > line || r.bottom < line) return;
+        if (el.getAttribute("data-header-tone") === "light") light = true;
+        else dark = true;
       });
-      setTone(dark ? "dark" : "light");
+      setTone(dark && !light ? "dark" : "light");
       setScrolled(window.scrollY > 8);
     };
     const onScroll = () => {
@@ -117,6 +162,14 @@ export function SiteHeader() {
             TX QUINCE
           </a>
           <div className="sh-right">
+            {isAdmin ? (
+              <a href="/admin" className="sh-admin" rel="nofollow" aria-label="Admin">
+                <span className="sh-admin__pill">
+                  <AdminIcon />
+                  <span className="sh-admin__text">Admin</span>
+                </span>
+              </a>
+            ) : null}
             <Lang2 className="sh-lang" />
             <a href={homeHref("#intake")} className="sh-reserve" aria-label={e.reserve}>
               <span className="sh-reserve__long">{e.reserve}</span>
@@ -171,6 +224,7 @@ export function SiteHeader() {
                 WhatsApp
               </a>
               <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+              {isAdmin ? <MenuAdmin onNavigate={() => setOpen(false)} /> : null}
             </div>
           </div>
         </div>
@@ -198,13 +252,13 @@ export function SiteFooter() {
             <a href={homeHref("#intake")}>{e.reserve}</a>
           </nav>
           <div className="sf-side">
+            <div className="sf-wa-row">
+              <WhatsAppChatButton lang={lang} placement="footer" />
+            </div>
             <div id="contact" className="sf-col">
               <p className="sf-h">{f.hello}</p>
               <a href={smsHref()} onClick={() => trackEvent(CONTACT_EVENT.text, "footer")}>
                 {e.text} {site.contact.phone}
-              </a>
-              <a href={whatsappHref(lang)} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent(CONTACT_EVENT.whatsapp, "footer")}>
-                WhatsApp
               </a>
               <a href={telHref()} onClick={() => trackEvent(CONTACT_EVENT.call, "footer")}>
                 {lang === "es" ? "Llamar" : "Call"}

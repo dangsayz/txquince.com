@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useLayoutEffect, useMemo, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { MotionConfig } from "motion/react";
 import { MobileDock } from "./Header";
@@ -41,7 +41,9 @@ export function SiteShell({ children, book }: { children: ReactNode; book: Price
       <SiteProvider urlLang={urlLang} isHome={isHome}>
         <AvailabilityProvider>
           <MotionConfig reducedMotion="user">
-            <Frame key={pathname}>{children}</Frame>
+            <Frame key={pathname} dockStartsHidden={isHome}>
+              {children}
+            </Frame>
           </MotionConfig>
         </AvailabilityProvider>
       </SiteProvider>
@@ -49,10 +51,37 @@ export function SiteShell({ children, book }: { children: ReactNode; book: Price
   );
 }
 
-function Frame({ children }: { children: ReactNode }) {
+/*
+ * Scroll on page change. Frame remounts for every new path, so a forward
+ * navigation (clicking a post, a menu link) starts at the top of the new page,
+ * even after a long scroll on the last one. Back/forward (popstate) and links
+ * to a #section keep the browser's own position. The first load is left alone
+ * so a reload stays where it was.
+ */
+let firstFrame = true;
+let poppedAt = 0;
+if (typeof window !== "undefined") {
+  window.addEventListener("popstate", () => (poppedAt = Date.now()));
+}
+function useScrollTopOnNewPage() {
+  useLayoutEffect(() => {
+    if (firstFrame) {
+      firstFrame = false;
+      return;
+    }
+    if (Date.now() - poppedAt < 1500 || window.location.hash) return;
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+  }, []);
+}
+
+function Frame({ children, dockStartsHidden }: { children: ReactNode; dockStartsHidden: boolean }) {
+  useScrollTopOnNewPage();
   const { lang, t } = useSite();
   const [cinema, setCinema] = useState(false);
-  const [dockHidden, setDockHidden] = useState(false);
+  // The homepage hero carries its own Reserve button, so there the dock starts
+  // hidden (also in the server HTML, so it never flashes in on load) and
+  // slides in once the hero is scrolled past (see EditorialHome).
+  const [dockHidden, setDockHidden] = useState(dockStartsHidden);
   const controls = useMemo(() => ({ setCinema, setDockHidden }), []);
 
   // Keep the document language in step with the visible language.

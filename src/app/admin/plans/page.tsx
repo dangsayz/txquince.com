@@ -1,3 +1,4 @@
+import { sourceKey } from "@/lib/src-tag";
 import Link from "next/link";
 import { requireAdminPage } from "@/lib/require-admin";
 import { listPlans } from "@/lib/plan-db";
@@ -16,7 +17,7 @@ const VIEWS: { id: View; label: string }[] = [
   { id: "lost", label: "Lost" },
 ];
 
-const sourceOf = (p: PlanRecord) => p.source ?? p.attribution?.source ?? "direct";
+const sourceOf = (p: PlanRecord) => p.source ?? sourceKey(p.attribution);
 const created = (iso: string) =>
   new Date(iso).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZone: "America/Chicago" });
 
@@ -89,7 +90,7 @@ export default async function AdminPlans({ searchParams }: { searchParams: Promi
         </div>
         <div className="flex flex-wrap gap-3">
           <Link href="/admin/availability" className="inline-flex min-h-11 items-center rounded-sm border border-[#dcdcd9] px-4 text-sm font-medium hover:border-[#252525]">Date availability</Link>
-          <Link href="/plan?src=fb-group" target="_blank" className="inline-flex min-h-11 items-center rounded-sm bg-[#242424] px-4 text-sm font-medium text-white hover:bg-[#444]">Open the intake ↗</Link>
+          <Link href="/plan?src=facebook" target="_blank" className="inline-flex min-h-11 items-center rounded-sm bg-[#242424] px-4 text-sm font-medium text-white hover:bg-[#444]">Open the intake ↗</Link>
         </div>
       </div>
 
@@ -109,7 +110,7 @@ export default async function AdminPlans({ searchParams }: { searchParams: Promi
               </li>
             ))}
           </ul>
-        ) : <p className="mt-3 text-sm text-[#696965]">No plans yet. Share <code>txquince.com/plan?src=fb-group</code> in a group reply.</p>}
+        ) : <p className="mt-3 text-sm text-[#696965]">No plans yet. Share <code>txquince.com/plan?src=facebook</code> in a group reply.</p>}
       </section>
 
       <nav aria-label="Plan views" className="mt-7 flex gap-6 overflow-x-auto border-b border-[#e5e5e3]">

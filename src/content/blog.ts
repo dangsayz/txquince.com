@@ -44,6 +44,13 @@ export type BlogPost = {
   faqs?: BlogFaq[];
   related?: string[]; // slugs
   lang?: "en" | "es";
+  /**
+   * Show the cover photo whole, at its own shape (e.g. a portrait), instead of
+   * filling the wide cover frame. For photos that must never be cropped.
+   */
+  coverFull?: boolean;
+  /** Venue slugs (src/content/venues.ts) this post features; each venue page links back. */
+  venues?: string[];
 };
 
 export const BLOG_CATEGORIES = [
@@ -89,8 +96,14 @@ import songs from "./blog/posts/quinceanera-songs-for-every-moment";
 import dressColors from "./blog/posts/quinceanera-dress-colors-that-photograph-best";
 import themes from "./blog/posts/quinceanera-themes-and-colors";
 import vmBallroom from "./blog/posts/quinceanera-at-vm-ballroom-balch-springs";
+import dressSessionIdeas from "./blog/posts/quinceanera-dress-session-ideas-dfw";
+import receptionDetails from "./blog/posts/quinceanera-reception-details-to-photograph";
+import lastDoll from "./blog/posts/what-is-the-last-doll-quinceanera";
 
 export const posts: BlogPost[] = [
+  dressSessionIdeas,
+  receptionDetails,
+  lastDoll,
   vendorsBurned,
   deliveryTime,
   costDfw,
@@ -122,6 +135,11 @@ export function getAllPosts(): BlogPost[] {
 
 export function getPost(slug: string): BlogPost | undefined {
   return posts.find((p) => p.slug === slug);
+}
+
+/** Posts that feature a venue, newest first (shown on /venues/{slug}). */
+export function postsForVenue(venueSlug: string): BlogPost[] {
+  return getAllPosts().filter((p) => p.venues?.includes(venueSlug));
 }
 
 export function getPostsByCategory(category: BlogCategory): BlogPost[] {

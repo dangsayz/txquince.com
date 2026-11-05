@@ -1,0 +1,66 @@
+/* Floating WhatsApp capsule (landing page). Ink on canvas like the rest of
+   the site; 48px chat button, 44px close button, 8px apart. */
+.tq-waf {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  /* Phones: above the mobile "Reserve your date" dock (~68px + safe area). */
+  bottom: calc(84px + env(safe-area-inset-bottom));
+  z-index: 41;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity 300ms ease, transform 300ms ease;
+}
+.tq-waf[data-show="true"] {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.tq-waf__chat {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 18px 0 14px;
+  border-radius: 999px;
+  background: #111110;
+  color: #faf8f5;
+  font-size: 1rem;
+  font-weight: 510;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+}
+.tq-waf__chat:hover,
+.tq-waf__chat:focus-visible {
+  background: #2a2a28;
+}
+.tq-waf__x {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid rgba(17, 17, 16, 0.2);
+  border-radius: 999px;
+  background: rgba(250, 248, 245, 0.92);
+  color: #111110;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+.tq-waf__x:hover,
+.tq-waf__x:focus-visible {
+  border-color: #111110;
+}
+@media (min-width: 640px) {
+  /* No dock on tablets and up. */
+  .tq-waf { bottom: max(24px, env(safe-area-inset-bottom)); right: max(24px, env(safe-area-inset-right)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tq-waf { transition: none; transform: none; }
+}

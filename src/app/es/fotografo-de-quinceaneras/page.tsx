@@ -67,7 +67,7 @@ export default async function LocationsHubEs() {
 
   const heroImage =
     assignedHero ?? imgs.find((image) => (image.width ?? 0) >= (image.height ?? 0)) ?? imgs[0] ?? null;
-  const fallbackHero = portfolioFallback.find((p) => p.url === "/portfolio/kimberly-reception.webp") ?? portfolioFallback[0];
+  const fallbackHero = portfolioFallback.find((p) => p.url === "/portfolio/hero.webp") ?? portfolioFallback[0];
   const hero: Shot | null = heroImage ? fromDb(heroImage) : fallbackHero ? { ...fromFallback(fallbackHero), focus: "50% 60%" } : null;
 
   // Cada tarjeta lleva una fotografía real: primero las fotos de la ciudad,
@@ -253,7 +253,7 @@ export default async function LocationsHubEs() {
               </h2>
             </div>
             <div className="tq-place-cta__side">
-              <p>Explora el trabajo y los cuatro paquetes; luego dinos qué fecha tienes en mente.</p>
+              <p>Explora el trabajo y los cinco paquetes; luego dinos qué fecha tienes en mente.</p>
               <div className="tq-place-actions">
                 <Link href="/es#intake" className="tq-btn tq-btn--lg">
                   Consultar tu fecha <span className="tq-arrow" aria-hidden>↗</span>

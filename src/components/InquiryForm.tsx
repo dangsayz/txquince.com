@@ -15,6 +15,7 @@ import { trackEvent, getFirstTouch } from "@/components/Tracker";
 import { useShell } from "@/components/txq/SiteShell";
 import { usePriceBook } from "@/components/PriceBookProvider";
 import "@/components/txq/pages/pages.css";
+import { TrustLine } from "@/components/TrustLine";
 
 type Status = "idle" | "submitting" | "error";
 type FieldErrors = Partial<Record<string, string[]>>;
@@ -343,6 +344,7 @@ export function InquiryForm({ initialDate = "", locale = "en" }: { initialDate?:
             </>
           )}
         </button>
+        <TrustLine lang={locale} />
       </div>
     </form>
   );

@@ -83,7 +83,7 @@ const post: BlogPost = {
     {
       type: "cta",
       heading: "Vea exactamente cuáles paquetes incluyen video",
-      body: `La Sesión de retratos es solo foto. El Solo es una sola persona que toma fotos y graba a la vez con 2–3 cámaras. El Dúo y El Trío combinan fotógrafos y videógrafos: uno de cada uno con El Dúo (${BASE_CREW.cinema} en total), o dos fotógrafos y un videógrafo con El Trío (${BASE_CREW.trio}). Compárelos lado a lado.`,
+      body: `La Sesión de retratos es solo foto. El Solo es una sola persona que toma fotos y graba a la vez con {{cameras.solo}} cámaras. El Dúo y El Trío combinan fotógrafos y videógrafos: uno de cada uno con El Dúo (${BASE_CREW.cinema} en total), o dos fotógrafos y un videógrafo con El Trío (${BASE_CREW.trio}). Compárelos lado a lado.`,
       href: "/es#commissions",
       label: "Comparar paquetes",
     },
@@ -108,7 +108,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Anclado a nuestros paquetes: la Sesión de retratos cuesta ${study} — solo fotos, una sesión de ${PT.hours.study} hora con un fotógrafo y 60 fotos editadas. El Solo cuesta ${solo} — ${PT.hours.solo} horas con un fotógrafo y videógrafo en uno, que toma fotos y graba al mismo tiempo con 2–3 cámaras, la película completa de su día editada con esos ángulos, y más de 150 fotos editadas. El Dúo cuesta ${cinema} — ${PT.hours.cinema} horas con un fotógrafo y un videógrafo, una sesión con el vestido o de save-the-date (se agenda después de pagar el depósito), la película completa más un resumen de 1 minuto, y más de 400 fotos editadas. El Trío, por ${trio}, es nuestra recomendación para la mayoría de las familias — ${PT.hours.trio} horas con dos fotógrafos y un videógrafo, una sesión con el vestido o de save-the-date (se agenda después de pagar el depósito), la película completa más un video resumen de 3 a 5 minutos, más de 700 fotos editadas y un álbum impreso. ¿Necesita una coordinadora que dirija el día? Se puede agregar por ${PT.addon.coordinator} al día. ¿Quiere más fotos con el vestido en otro día? Agregue un Segundo día de retratos (${PT.addon.secondday}) — foto y video en hasta dos lugares. ¿Necesita más tiempo el día de la fiesta? Puede agregar horas, desde ${PT.extra.from} la hora, hasta ${PT.hours.max} en total. Para ver qué incluye cada paquete y [cuáles incluyen ambos](/es#commissions), revise los paquetes; y para una mirada más amplia al costo, lea [cuánto cuesta un fotógrafo de quinceañera en DFW](/es/blog/cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth).`,
+      text: `Anclado a nuestros paquetes: la Sesión de retratos cuesta ${study} — solo fotos, una sesión de ${PT.hours.study} hora con un fotógrafo y {{photos.study}} fotos editadas. El Solo cuesta ${solo} — ${PT.hours.solo} horas con un fotógrafo y videógrafo en uno, que toma fotos y graba al mismo tiempo con {{cameras.solo}} cámaras, la película completa de su día editada con esos ángulos, y {{photos.solo}} fotos editadas. El Dúo cuesta ${cinema} — ${PT.hours.cinema} horas con un fotógrafo y un videógrafo, una sesión con el vestido o de save-the-date (se agenda después de pagar el depósito), la película completa más un resumen de 1 minuto, y {{photos.cinema}} fotos editadas. El Trío, por ${trio}, es nuestra recomendación para la mayoría de las familias — ${PT.hours.trio} horas con dos fotógrafos y un videógrafo, una sesión con el vestido o de save-the-date (se agenda después de pagar el depósito), la película completa más un video resumen de 3 a 5 minutos, {{photos.trio}} fotos editadas y un álbum impreso. ¿Necesita una coordinadora que dirija el día? Se puede agregar por ${PT.addon.coordinator} al día. ¿Quiere más fotos con el vestido en otro día? Agregue un Segundo día de retratos (${PT.addon.secondday}) — foto y video en hasta dos lugares. ¿Necesita más tiempo el día de la fiesta? Puede agregar horas, desde ${PT.extra.from} la hora, hasta ${PT.hours.max} en total. Para ver qué incluye cada paquete y [cuáles incluyen ambos](/es#commissions), revise los paquetes; y para una mirada más amplia al costo, lea [cuánto cuesta un fotógrafo de quinceañera en DFW](/es/blog/cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth).`,
     },
     { type: "h2", text: "Si el presupuesto solo alcanza para uno" },
     {
@@ -147,7 +147,7 @@ const post: BlogPost = {
     },
     {
       q: "¿Cuáles paquetes de TX Quince incluyen foto y video?",
-      a: `La Sesión de retratos (${study}) es solo foto. El Solo (${solo}), El Dúo (${cinema}) y El Trío (${trio}) incluyen foto y video: una sola persona con 2–3 cámaras en El Solo, un fotógrafo y un videógrafo en El Dúo, y dos fotógrafos y un videógrafo en El Trío. El Trío es nuestra recomendación para la mayoría de las familias. Puede comparar todo lo que incluye cada uno en los paquetes de nuestra página principal.`,
+      a: `La Sesión de retratos (${study}) es solo foto. El Solo (${solo}), El Dúo (${cinema}) y El Trío (${trio}) incluyen foto y video: una sola persona con {{cameras.solo}} cámaras en El Solo, un fotógrafo y un videógrafo en El Dúo, y dos fotógrafos y un videógrafo en El Trío. El Trío es nuestra recomendación para la mayoría de las familias. Puede comparar todo lo que incluye cada uno en los paquetes de nuestra página principal.`,
     },
     {
       q: "¿Un mismo equipo puede hacer la foto y el video?",

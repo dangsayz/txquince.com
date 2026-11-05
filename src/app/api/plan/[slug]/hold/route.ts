@@ -3,13 +3,15 @@
  * date-hold deposit on a family's plan.
  *
  * Reuses the existing booking machinery end to end:
- *   - create_booking_hold() atomically claims the date (one active booking per
- *     date, enforced by a unique index), so two families can't both pay;
+ *   - create_booking_hold() atomically claims a spot on the date (up to
+ *     BOOKINGS_PER_DATE active bookings, enforced by a database trigger), so
+ *     families can't pay for more spots than the date has;
  *   - the existing Stripe webhook confirms payment (confirm_booking_payment),
  *     releases the date if checkout expires, and sends the booking emails;
  *   - fulfillment marks the plan Booked (metadata.plan_id).
- * The amount is the site's flat date-hold deposit (site.booking.depositCents),
- * priced here on the server; nothing in the request can change it.
+ * The amount is the flat date-hold deposit from the live price book
+ * (planHoldUsd, set at /admin/prices), priced here on the server; nothing in
+ * the request can change it.
  *
  * PRIVACY: success/cancel URLs carry only the random slug.
  */
@@ -24,6 +26,7 @@ import { clientIp } from "@/lib/client-ip";
 import { rateLimiter } from "@/lib/rate-limit";
 import { getSiteUrl } from "@/lib/site-url";
 import { site } from "@/content/site";
+import { getPriceBook } from "@/lib/pricing";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -72,6 +75,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
     return NextResponse.json({ ok: false, error: "taken" }, { status: 409 });
   }
 
+  const holdCents = (await getPriceBook()).planHoldUsd * 100;
   const colors = plan.colors.map((c) => colorLabel(c, "en")).join(", ");
   const { data: hold, error: holdErr } = await supabase.rpc("create_booking_hold", {
     p_name: plan.name,
@@ -87,7 +91,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
     ]
       .filter(Boolean)
       .join("\n"),
-    p_deposit_cents: site.booking.depositCents,
+    p_deposit_cents: holdCents,
     p_currency: site.booking.currency,
     p_hold_minutes: HOLD_MINUTES,
   });
@@ -110,7 +114,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
   let session;
   try {
     session = await createStripeCheckoutSession({
-      amountCents: site.booking.depositCents,
+      amountCents: holdCents,
       currency: site.booking.currency,
       productName: es ? `${site.brand} — Apartado de fecha · ${date}` : `${site.brand} — Date hold · ${date}`,
       productDescription: es ? "Se abona al total de tu paquete." : "Goes toward your package total.",

@@ -3,8 +3,34 @@
 import { useEffect, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { attributedSearch } from "@/lib/bio-utm";
+import { normalizeSrc } from "@/lib/src-tag";
 
 const FIRST_TOUCH_KEY = "txq_first_touch";
+const SRC_KEY = "txq_src";
+
+/**
+ * Remember the latest `?src=` tag this browser arrived with (overwritten by
+ * each new tagged link), so it rides along with the form she fills in later,
+ * on any page (the budget form included, across all its steps).
+ */
+function captureSrc(pathname: string, search: URLSearchParams) {
+  try {
+    const src = normalizeSrc(search.get("src"));
+    if (!src) return;
+    localStorage.setItem(SRC_KEY, JSON.stringify({ src, srcLanding: pathname, srcTs: new Date().toISOString() }));
+  } catch {
+    /* never break the page */
+  }
+}
+
+function storedSrc(): Record<string, string> | null {
+  try {
+    const raw = localStorage.getItem(SRC_KEY);
+    return raw ? (JSON.parse(raw) as Record<string, string>) : null;
+  } catch {
+    return null;
+  }
+}
 
 /**
  * Record where the visitor FIRST arrived from — once, on their first page view,
@@ -23,10 +49,11 @@ function captureFirstTouch(pathname: string, search: URLSearchParams) {
       refHost = "";
     }
     if (refHost && refHost === location.hostname.replace(/^www\./, "")) refHost = ""; // ignore self
-    const source = utmSource || refHost || "direct";
+    const srcTag = normalizeSrc(search.get("src"));
+    const source = utmSource || srcTag || refHost || "direct";
     const ft = {
       source,
-      medium: search.get("utm_medium") || (utmSource ? "campaign" : refHost ? "referral" : "none"),
+      medium: search.get("utm_medium") || (utmSource ? "campaign" : srcTag ? "src" : refHost ? "referral" : "none"),
       campaign: search.get("utm_campaign") || "",
       referrer: document.referrer || "",
       landing: pathname,
@@ -38,12 +65,18 @@ function captureFirstTouch(pathname: string, search: URLSearchParams) {
   }
 }
 
-/** Read the stored first-touch attribution (for attaching to form submissions). */
+/**
+ * Read the stored attribution for a form submission: the first touch, plus the
+ * latest ?src= tag (src, srcLanding, srcTs) when there is one.
+ */
 export function getFirstTouch(): Record<string, string> | null {
   if (typeof window === "undefined") return null;
   try {
     const raw = localStorage.getItem(FIRST_TOUCH_KEY);
-    return raw ? (JSON.parse(raw) as Record<string, string>) : null;
+    const ft = raw ? (JSON.parse(raw) as Record<string, string>) : null;
+    const src = storedSrc();
+    if (!ft && !src) return null;
+    return { ...(ft ?? {}), ...(src ?? {}) };
   } catch {
     return null;
   }
@@ -64,7 +97,36 @@ function sessionId(): string {
   }
 }
 
+/**
+ * A stable, anonymous id for this browser (localStorage, no cookie, no PII),
+ * so the dashboard can count unique visitors, not just visits (a visit is one
+ * tab's session; one family opening the link three times is 3 visits, 1 visitor).
+ */
+function visitorId(): string | null {
+  try {
+    const k = "txq_vid";
+    let v = localStorage.getItem(k);
+    if (!v) {
+      v = `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 12)}`;
+      localStorage.setItem(k, v);
+    }
+    return v;
+  } catch {
+    return null;
+  }
+}
+
+/** The owner's own browsing never counts: /admin marks this browser (EditMode). */
+function isOwnerBrowser(): boolean {
+  try {
+    return Boolean(localStorage.getItem("txq_admin"));
+  } catch {
+    return false;
+  }
+}
+
 function post(body: Record<string, unknown>) {
+  if (isOwnerBrowser()) return;
   try {
     const json = JSON.stringify(body);
     if (navigator.sendBeacon) {
@@ -89,6 +151,7 @@ export function Tracker() {
     // the visit arrives without one — Instagram often strips the referrer.
     const params = attributedSearch(pathname, new URLSearchParams(search.toString()));
     captureFirstTouch(pathname, params);
+    captureSrc(pathname, params);
     const key = `${pathname}?${search.toString()}`;
     if (last.current === key) return;
     last.current = key;
@@ -98,11 +161,48 @@ export function Tracker() {
       path: pathname,
       ref: document.referrer || null,
       sid: sessionId(),
-      us: params.get("utm_source"),
-      um: params.get("utm_medium"),
+      vid: visitorId(),
+      // A ?src= tag counts as the visit's source when there is no utm_source.
+      us: params.get("utm_source") || normalizeSrc(params.get("src")),
+      um: params.get("utm_medium") || (!params.get("utm_source") && normalizeSrc(params.get("src")) ? "src" : null),
       uc: params.get("utm_campaign"),
     });
   }, [pathname, search]);
+
+  // "Saw the work" on pages that show it inline (homepage galleries, films,
+  // packages): once per section per session, when it reaches the middle of the screen.
+  useEffect(() => {
+    if (pathname.startsWith("/admin") || typeof IntersectionObserver === "undefined") return;
+    let io: IntersectionObserver | null = null;
+    const t = window.setTimeout(() => {
+      const els = document.querySelectorAll<HTMLElement>(".fv, #archive, #cinema, #commissions, [data-track-view]");
+      if (!els.length) return;
+      io = new IntersectionObserver(
+        (entries) => {
+          for (const en of entries) {
+            if (!en.isIntersecting) continue;
+            const el = en.target as HTMLElement;
+            const label = el.dataset.trackView || el.id || "favorites";
+            const key = `txq_wv:${pathname}:${label}`;
+            io?.unobserve(el);
+            try {
+              if (sessionStorage.getItem(key)) continue;
+              sessionStorage.setItem(key, "1");
+            } catch {
+              /* still count it */
+            }
+            trackEvent("work_viewed", label);
+          }
+        },
+        { rootMargin: "-35% 0px -35% 0px" },
+      );
+      els.forEach((el) => io!.observe(el));
+    }, 600);
+    return () => {
+      window.clearTimeout(t);
+      io?.disconnect();
+    };
+  }, [pathname]);
 
   // Delegated CTA tracking: any click on a link to the intake is booking intent.
   useEffect(() => {
@@ -120,5 +220,5 @@ export function Tracker() {
 /** Fire-and-forget intent event (form starts, CTA clicks, shares). */
 export function trackEvent(eventType: string, target?: string) {
   if (typeof window === "undefined") return;
-  post({ t: "ev", et: eventType, path: window.location.pathname, tg: target ?? null, sid: sessionId() });
+  post({ t: "ev", et: eventType, path: window.location.pathname, tg: target ?? null, sid: sessionId(), vid: visitorId() });
 }

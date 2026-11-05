@@ -48,6 +48,9 @@
   color: var(--ed-ink);
 }
 .ed-label--light { color: #ffffff; }
+/* No one-word last lines (orphans) in body copy; headings balance. */
+.ed :where(p, li, dd) { text-wrap: pretty; }
+.ed h2 { text-wrap: balance; }
 .ed-display {
   font-family: var(--ed-display);
   font-weight: 500;
@@ -84,8 +87,10 @@
   text-decoration: none;
   transition: opacity 0.2s ease, background-color 0.2s ease, color 0.2s ease;
 }
-.ed-btn:hover { opacity: 0.82; }
+/* One button on this page: square, ink or paper. Hover swaps the two. */
+.ed-btn:hover { background: #ffffff; color: #000000; }
 .ed-btn--light { background: #ffffff; color: #000000; border-color: #ffffff; }
+.ed-btn--light:hover { background: transparent; color: #ffffff; }
 .ed-btn[data-variant="line"] { background: transparent; color: #000000; }
 .ed-btn[data-variant="line"]:hover { background: #000000; color: #ffffff; opacity: 1; }
 .ed-btn--block { width: 100%; }
@@ -151,7 +156,9 @@
   font-family: var(--ed-display);
   font-weight: 500;
   text-transform: uppercase;
-  font-size: clamp(52px, 8.6vw, 132px);
+  /* Floor scales with narrow phones so the longest line (ES "MOMENTO DE")
+     fits 360px; from ~420px up it is the same 52px floor as before. */
+  font-size: clamp(min(52px, 12.4vw), 8.6vw, 132px);
   line-height: 0.85;
   letter-spacing: 0.04em;
   color: #ffffff;
@@ -163,8 +170,10 @@
   from { transform: translateY(105%); }
   to { transform: translateY(0); }
 }
-.ed-hero__foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px; }
-.ed-hero__note { font-size: 14px; color: rgba(255, 255, 255, 0.86); }
+.ed-hero__foot { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; }
+/* Sits beside Reserve (it was ~900px away on wide screens); full white,
+   since 0.86 alpha fell to ~2.3:1 over the bright parts of the photo. */
+.ed-hero__note { font-size: 1rem; color: #ffffff; text-shadow: 0 1px 12px rgba(0, 0, 0, 0.45); }
 
 /* ---------- Statement ---------- */
 .ed-statement { padding: clamp(112px, 16vw, 220px) var(--ed-gutter) clamp(96px, 12vw, 180px); }
@@ -200,7 +209,8 @@
 .ed-band__foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px 24px; padding-top: 20px; }
 .ed-band__title { display: flex; align-items: baseline; gap: 16px; font-size: 15px; color: rgba(255, 255, 255, 0.86); min-width: 0; }
 .ed-band__count { font-family: var(--ed-display); font-size: 12px; letter-spacing: 0.06em; color: #ffffff; white-space: nowrap; }
-.ed-band__nav { display: flex; align-items: center; gap: 20px; }
+/* Wraps on phones: in one row, "Watch more on YouTube" ran 8px off a 390px screen. */
+.ed-band__nav { display: flex; flex-wrap: wrap; align-items: center; gap: 0 20px; min-width: 0; }
 .ed-band__nav button.ed-textlink { min-width: 44px; justify-content: center; text-decoration: none; font-size: 16px; }
 
 /* ---------- Collage ---------- */
@@ -209,9 +219,8 @@
 .ed-collage__copy { position: relative; z-index: 2; max-width: 520px; padding: 0 var(--ed-gutter); display: flex; flex-direction: column; align-items: center; gap: 22px; text-align: center; }
 .ed-collage__body { color: var(--ed-ink); max-width: 40ch; }
 .ed-plate { position: absolute; display: block; overflow: hidden; background: var(--ed-soft); will-change: transform; }
-.ed-plate img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(1); opacity: 0.45; transition: filter 0.6s ease, opacity 0.6s ease; }
-.ed-plate[data-sharp] img,
-.ed-plate:hover img { filter: none; opacity: 1; }
+/* Collage photos show in full color, always. */
+.ed-plate img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .ed-plate--a { left: 4%; top: 10%; width: 15vw; aspect-ratio: 3 / 4; }
 .ed-plate--b { right: 7%; top: 14%; width: 21vw; aspect-ratio: 4 / 5; }
 .ed-plate--c { left: 16%; bottom: 4%; width: 12vw; aspect-ratio: 4 / 5; }
@@ -237,7 +246,7 @@
 /* ---------- Feature (sticky card over B&W plate) ---------- */
 .ed-feature { position: relative; min-height: 160svh; overflow: clip; background: #111111; }
 .ed-feature__plate { position: absolute; inset: 0; overflow: hidden; }
-.ed-feature__plate img { position: absolute; inset: -8% 0; width: 100%; height: 116%; object-fit: cover; filter: grayscale(1) contrast(1.04); will-change: transform; }
+.ed-feature__plate img { position: absolute; inset: -8% 0; width: 100%; height: 116%; object-fit: cover; will-change: transform; }
 .ed-feature__plate::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, 0.16); }
 .ed-feature__track { position: relative; min-height: 160svh; padding: 14svh var(--ed-gutter); display: flex; justify-content: flex-end; }
 .ed-card {
@@ -245,10 +254,8 @@
   top: calc(var(--header-h) + 6svh);
   align-self: flex-start;
   width: min(420px, 100%);
-  background: rgba(255, 255, 255, 0.78);
-  -webkit-backdrop-filter: saturate(180%) blur(24px);
-  backdrop-filter: saturate(180%) blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: #ffffff; /* opaque paper, not frosted glass */
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 28px;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
   padding: clamp(28px, 3vw, 40px);
@@ -259,9 +266,9 @@
 }
 .ed-card__price { font-family: var(--ed-display); font-size: 40px; font-weight: 500; letter-spacing: 0.02em; line-height: 1; }
 .ed-card__list { align-self: stretch; display: grid; gap: 6px; padding-top: 16px !important; border-top: 1px solid rgba(0, 0, 0, 0.1); }
-.ed-card .ed-btn { border-radius: 999px; }
 .ed-card__list li { font-size: 15px; line-height: 1.5; }
-.ed-card__fine { font-size: 14px; color: var(--ed-mute); }
+/* --tq-ink-mute: 8:1 on the white card. */
+.ed-card__fine { font-size: 14px; color: var(--tq-ink-mute); }
 
 /* ---------- Packages ---------- */
 .ed-packages { padding: clamp(96px, 12vw, 160px) 0; }
@@ -301,8 +308,10 @@
 }
 .ed-crew { margin-top: 20px !important; font-size: 14px; color: var(--ed-mute); }
 .ed-pkg__price { font-family: var(--ed-display); font-size: 28px; letter-spacing: 0.02em; text-align: right; font-variant-numeric: tabular-nums; line-height: 1; }
-.ed-pkg__btn { width: 140px; padding: 0 12px; border-radius: 999px; }
-.ed-panel { margin-top: clamp(48px, 6vw, 80px); border-radius: 32px; background: #f5f5f7; padding: clamp(20px, 3vw, 40px); display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.ed-pkg__btn { width: 140px; padding: 0 12px; }
+/* Flat, not a card: the package cards inside carry their own border and
+   shadow, so a grey rounded box around them was a card inside a card. */
+.ed-panel { margin-top: clamp(48px, 6vw, 80px); border-top: 1px solid var(--ed-line); padding: clamp(32px, 4vw, 48px) 0 0; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 .ed-panel > .ed-dek { margin-bottom: 10px; }
 
 /* "Latest photos" (Photo dump) in the same quiet type. */
@@ -347,7 +356,7 @@
 .ed-q__a { margin: 0 56px 24px 0 !important; color: var(--ed-ink); }
 .ed-where { display: flex; flex-direction: column; gap: 16px; padding-top: 56px; }
 .ed-cities { display: flex; flex-wrap: wrap; gap: 4px 24px; }
-.ed-city { display: inline-flex; align-items: center; min-height: 44px; color: var(--ed-ink); text-decoration: none; }
+.ed-city { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; color: var(--ed-ink); text-decoration: none; }
 .ed-city:hover { text-decoration: underline; text-underline-offset: 6px; }
 .ed-services { display: flex; flex-wrap: wrap; gap: 0 28px; }
 
@@ -374,8 +383,11 @@
   .ed-feature { min-height: 130svh; }
   .ed-feature__track { min-height: 130svh; justify-content: center; padding-top: 10svh; }
 
-  .ed-pkg { grid-template-columns: 32px minmax(0, 1fr) auto; gap: 12px 14px; padding: 20px; border-radius: 22px; }
-  .ed-pkg__btn { grid-column: 2 / -1; width: 100%; }
+  /* Price drops under the details on phones: beside them it squeezed each
+     description into a 4-line strip at 390px. */
+  .ed-pkg { grid-template-columns: 32px minmax(0, 1fr); gap: 12px 14px; padding: 20px; border-radius: 22px; }
+  .ed-pkg__price { grid-column: 2; text-align: left; }
+  .ed-pkg__btn { grid-column: 2; width: 100%; }
 
   .ed-news { grid-template-columns: minmax(0, 1fr); }
   .ed-q__text { font-size: 17px; }
@@ -390,3 +402,43 @@
   .ed-feature__track { min-height: 0; }
   .ed-feature__track { padding-block: 16svh; }
 }
+
+/* Hero: links to the films (YouTube) and Instagram, under the Reserve button. */
+.ed-hero__social { position: relative; display: flex; flex-wrap: wrap; gap: 8px 10px; margin: 18px 0 0; padding: 0; list-style: none; }
+.ed-hero__social a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: rgba(0, 0, 0, 0.18);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.ed-hero__social a:hover { background: rgba(0, 0, 0, 0.32); border-color: #fff; }
+
+/* The booking panel's action buttons take the page's square button (the
+   panel keeps its own pill look on /reserve). */
+.txq .ed .tq-bk .tq-btn,
+.txq .ed .tq-bk-bar .tq-btn {
+  border: 1px solid var(--ed-ink);
+  border-radius: 0;
+  background: var(--ed-ink);
+  color: #ffffff;
+  font-family: var(--ed-display);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.txq .ed .tq-bk .tq-btn:hover,
+.txq .ed .tq-bk-bar .tq-btn:hover { background: #ffffff; color: var(--ed-ink); }
+.txq .ed .tq-bk .tq-btn--ghost { background: transparent; color: var(--ed-ink); }
+.txq .ed .tq-bk .tq-btn--ghost:hover { background: var(--ed-ink); color: #ffffff; }

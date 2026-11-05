@@ -12,12 +12,13 @@
  * phone or email in a URL.
  */
 import { NextResponse, type NextRequest } from "next/server";
-import { planInputSchema, parseContact, planPath, sanitizeSource, PLAN_HONEYPOT_FIELD, type PlanField } from "@/lib/plan";
+import { planInputSchema, parseContact, planPath, PLAN_HONEYPOT_FIELD, type PlanField } from "@/lib/plan";
 import { isSupabaseConfigured } from "@/lib/supabase-server";
 import { createPlan, getDateStatus } from "@/lib/plan-db";
 import { sendPlanFamilyEmail, sendPlanOperatorEmail } from "@/lib/plan-email";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { sanitizeAttribution } from "@/lib/attribution";
+import { normalizeSrc } from "@/lib/src-tag";
 import { clientIp } from "@/lib/client-ip";
 import { rateLimiter } from "@/lib/rate-limit";
 import { getSiteUrl } from "@/lib/site-url";
@@ -97,9 +98,11 @@ export async function POST(req: NextRequest) {
   // 5) Save.
   let plan;
   try {
+    const attribution = sanitizeAttribution(typeof body.attribution === "string" ? safeJson(body.attribution) : body.attribution);
     plan = await createPlan(parsed.data, contact, {
-      source: sanitizeSource(parsed.data.src),
-      attribution: sanitizeAttribution(typeof body.attribution === "string" ? safeJson(body.attribution) : body.attribution),
+      // The link's ?src= on /plan, else the latest ?src= the browser carried in.
+      source: normalizeSrc(parsed.data.src) ?? attribution?.src ?? null,
+      attribution,
     });
   } catch (err) {
     console.error("[plan] insert failed:", err);

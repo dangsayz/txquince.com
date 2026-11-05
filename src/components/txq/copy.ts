@@ -4,10 +4,9 @@
  * `es` is typed against `en`, so a missing translation fails the build.
  */
 import { PT } from "@/lib/price-text";
-import { TIER_MAX_HOURS } from "@/lib/commission";
 
-/** The Solo stops at this many hours (one person carries every camera). */
-const SOLO_MAX = TIER_MAX_HOURS.solo;
+/** The Solo stops at this many hours (one person carries every camera; set at /admin/prices). */
+const SOLO_MAX = PT.maxHours.solo;
 
 // Every price, percent, hour count and day count below is a price TOKEN
 // (src/lib/price-text.ts). SiteProvider fills the whole copy object from the
@@ -27,8 +26,9 @@ const en = {
       { n: "01", label: "Photos", href: "#archive" },
       { n: "02", label: "Videos", href: "#cinema" },
       { n: "03", label: "Packages", href: "#commissions" },
-      { n: "04", label: "About", href: "#editorial" },
-      { n: "05", label: "Blog", href: "/blog" },
+      { n: "04", label: "Your budget", href: "/budget" },
+      { n: "05", label: "About", href: "#editorial" },
+      { n: "06", label: "Blog", href: "/blog" },
     ],
     cta: "Reserve Your Date",
     menu: "Menu",
@@ -107,7 +107,7 @@ const en = {
   commissions: {
     index: "03 / Packages",
     title: "Packages & Prices",
-    dek: "Four packages, every price shown up front. Choose one, add hours or extras, pick your date and send your request. Nothing is charged today.",
+    dek: "Five packages, every price shown up front. Choose one, add hours or extras, pick your date and send your request. Nothing is charged today.",
     notIncluded: "Not included",
     fine: "Texas sales tax and travel outside Dallas–Fort Worth, Houston, Austin and San Antonio are quoted separately.",
   },
@@ -132,7 +132,7 @@ const en = {
     index: "04 / About us",
     title: "Why families choose us",
     manifesto:
-      "A TX Quince team stays with her from getting ready at home to the last song, and every gallery and film is edited by us, the owners. We catch the little things too: abuela fixing her dress, papá's face before the vals.",
+      "Your day is covered by our small in-house crew of photographers and videographers, sometimes with Dang or Yvonne, the owners, behind the camera. We stay with her from getting ready at home to the last song, and we edit every gallery and film ourselves. We catch the little things too: abuela fixing her dress, papá's face before the vals.",
     principles: [
       {
         title: "Natural, not stiff",
@@ -158,15 +158,15 @@ const en = {
     items: [
       {
         q: "How much does a quinceañera photographer and videographer cost in Dallas–Fort Worth?",
-        a: `Most DFW quinceañera studios charge between about $1,500 and $6,000. Our prices are all shown above: a Portrait Session is ${P.study}, The Solo (one shooter taking photos and video with a 2–3 camera setup) is ${P.solo}, The Duo (one photographer and one videographer) is ${P.cinema}, and The Trio (two photographers and one videographer), the package we recommend for most families, is ${P.trio}. Both the Duo and the Trio include a dress or save-the-date session (30–40 edited photos) once your deposit is paid.`,
+        a: `Most DFW quinceañera studios charge between about $1,500 and $6,000. Our prices are all shown above: a Portrait Session is ${P.study}, Just the Moments (one photographer for the presentation and family portraits) starts at ${P.moments} for 2 hours, The Solo (one shooter taking photos and video with a {{cameras.solo}} camera setup) is ${P.solo}, The Duo (one photographer and one videographer) is ${P.cinema}, and The Trio (two photographers and one videographer), the package we recommend for most families, is ${P.trio}. Both the Duo and the Trio include a dress or save-the-date session ({{session.photos}} edited photos) once your deposit is paid.`,
       },
       {
         q: "Is photography and film included together?",
-        a: "Yes, in The Solo, The Duo and The Trio, so you get the photos and the full-length film of her day. The Solo is one shooter running a 2–3 camera setup, taking photos and filming at the same time; the Duo and the Trio put dedicated photographers and a videographer on the day. The Portrait Session is photos only.",
+        a: "Yes, in The Solo, The Duo and The Trio, so you get the photos and the full-length film of her day. The Solo is one shooter running a {{cameras.solo}} camera setup, taking photos and filming at the same time; the Duo and the Trio put dedicated photographers and a videographer on the day. The Portrait Session is photos only.",
       },
       {
         q: "How many photographers and videographers do we get?",
-        a: `It's included in the price: The Solo comes with one hybrid shooter who takes photos and films at once with a 2–3 camera setup, The Duo with one photographer and one videographer, and The Trio with two photographers and one videographer. A coordinator who runs the schedule and lines up the court can be added for ${PT.addon.coordinator} a day, so your family can just enjoy it.`,
+        a: `It's included in the price: The Solo comes with one hybrid shooter who takes photos and films at once with a {{cameras.solo}} camera setup, The Duo with one photographer and one videographer, and The Trio with two photographers and one videographer. A coordinator who runs the schedule and lines up the court can be added for ${PT.addon.coordinator} a day, so your family can just enjoy it.`,
       },
       {
         q: "How many hours of coverage does a quinceañera need?",
@@ -174,7 +174,7 @@ const en = {
       },
       {
         q: "What is in the full-length film?",
-        a: `Her whole day, as it happened: the misa, the venue and the guests arriving, every presentation in full (the grand entrance, the vals, the surprise dance), every toast in full, and 15 to 20 minutes of the dance floor. Its length follows her day. A short highlight to share comes with it: 1 minute with The Duo, 3 to 5 minutes with The Trio. The Solo's film is cut from its 2–3 camera angles, and the Solo and the Duo can add the 3–5 minute highlight film for ${PT.addon.highlight}.`,
+        a: `Her whole day, as it happened: the misa, the venue and the guests arriving, every presentation in full (the grand entrance, the vals, the surprise dance), every toast in full, and 15 to 20 minutes of the dance floor. Its length follows her day. A short highlight to share comes with it: 1 minute with The Duo, 3 to 5 minutes with The Trio. The Solo's film is cut from its {{cameras.solo}} camera angles, and the Solo and the Duo can add the 3–5 minute highlight film for ${PT.addon.highlight}.`,
       },
       {
         q: "How far in advance should we book?",
@@ -190,7 +190,7 @@ const en = {
       },
       {
         q: "Can we choose who photographs our quinceañera?",
-        a: "TX Quince is a team. Your day is covered by our own photographers and videographers, not freelancers we find last-minute, and we assign them by date and availability, so we can't promise a specific person. Every photo and every film comes back to the two of us: we edit all of it ourselves, so your gallery and film look like TX Quince no matter who's behind the camera.",
+        a: "Your day is covered by our small in-house crew of photographers and videographers, sometimes with Dang or Yvonne, the owners, behind the camera. They're our own people, not freelancers we find last-minute, and we put the crew together for each date. Every photo and every film comes back to the two of us: we edit all of it ourselves, so your gallery and film look like TX Quince no matter who's behind the camera.",
       },
       {
         q: "How does the deposit work?",
@@ -235,6 +235,13 @@ const en = {
     sending: "Sending…",
     // 1 — Package
     packageDek: "Every price is shown up front. Choose the package you like, then press Next.",
+    // Homepage: the package list above the panel is the only picker.
+    listDek: "Pick a package in the list above. Its Reserve button brings you back here.",
+    listNone: "No package chosen yet.",
+    listSee: "See the packages",
+    listChange: "Change package",
+    listError: "Choose a package in the list above first.",
+    listTotalHint: "Choose a package to see your total.",
     packagesLabel: "Packages",
     choose: "Choose",
     chosen: "Chosen",
@@ -244,8 +251,9 @@ const en = {
     team: (n: number, coordinator: boolean) =>
       n === 1 ? "1 photographer" : `Team of ${n}${coordinator ? " + coordinator" : ""}`,
     /** The Solo: one person shooting photos and video at once. */
-    soloTeam: "1 hybrid shooter · 2–3 cameras",
+    soloTeam: `1 hybrid shooter · ${PT.cameras.solo} cameras`,
     compare: "Compare all packages",
+    budgetLink: "Have a budget in mind? See what it covers",
     compareTitle: "Compare all packages",
     compareClose: "Close",
     comparePrice: "Price",
@@ -268,6 +276,11 @@ const en = {
     nextMonth: "Next month",
     legendOpen: "Open",
     legendTaken: "Booked",
+    welcomeBack: "Welcome back.",
+    welcomeSaved: "We saved your request right where you left off.",
+    startOver: "Start over",
+    momentsSatShort: `Saturdays open ${PT.satDays} days before for this package`,
+    momentsSatNote: (days: number) => `Just the Moments: Fridays, Sundays and weekdays are open any time. Saturdays open up ${days} days before the date.`,
     legendPicked: "Your date",
     pickedPrefix: "Your date:",
     noDate: "No date picked yet.",
@@ -317,7 +330,7 @@ const en = {
     proofIg: "Instagram",
     proofYt: "Full films on YouTube",
     proofRef: "Ask to talk to a family",
-    teamNote: "Your day is covered by the TX Quince team, assigned by date. Every gallery and film is edited by the owners.",
+    teamNote: "Your day is covered by our small in-house crew of photographers and videographers, sometimes with Dang or Yvonne, the owners, behind the camera. Every gallery and film is edited by the owners.",
     // After sending
     reference: "Reference",
     doneTitle: "Thank you!",
@@ -335,6 +348,7 @@ const en = {
       failed: "Something went wrong. Please try again, or text or email us.",
       taken: "Sorry — another family just booked that date. Please pick another.",
       verify: "Please complete the quick check below.",
+      momentsSaturday: (days: number) => `Just the Moments can take a Saturday only within ${days} days of the date. Pick a Friday or Sunday, or another package.`,
     },
   },
   footer: {
@@ -361,8 +375,9 @@ const es: Copy = {
       { n: "01", label: "Fotos", href: "#archive" },
       { n: "02", label: "Videos", href: "#cinema" },
       { n: "03", label: "Paquetes", href: "#commissions" },
-      { n: "04", label: "Nosotros", href: "#editorial" },
-      { n: "05", label: "Blog", href: "/es/blog" },
+      { n: "04", label: "Tu presupuesto", href: "/es/presupuesto" },
+      { n: "05", label: "Nosotros", href: "#editorial" },
+      { n: "06", label: "Blog", href: "/es/blog" },
     ],
     cta: "Reserva tu fecha",
     menu: "Menú",
@@ -439,7 +454,7 @@ const es: Copy = {
   commissions: {
     index: "03 / Paquetes",
     title: "Paquetes y precios",
-    dek: "Cuatro paquetes, con todos los precios a la vista. Elige uno, añade horas o extras, escoge tu fecha y envía tu solicitud. Hoy no se cobra nada.",
+    dek: "Cinco paquetes, con todos los precios a la vista. Elige uno, añade horas o extras, escoge tu fecha y envía tu solicitud. Hoy no se cobra nada.",
     notIncluded: "No incluido",
     fine: "El impuesto de Texas y los viajes fuera de Dallas–Fort Worth, Houston, Austin y San Antonio se cotizan aparte.",
   },
@@ -464,7 +479,7 @@ const es: Copy = {
     index: "04 / Nosotros",
     title: "Por qué nos eligen las familias",
     manifesto:
-      "Un equipo de TX Quince la acompaña desde que se arregla en casa hasta la última canción, y nosotros, los dueños, editamos cada galería y cada video. También captamos los detalles: la abuela acomodándole el vestido, la cara de papá antes del vals.",
+      "Tu día lo cubre nuestro pequeño equipo de fotógrafos y videógrafos de casa, a veces con Dang o Yvonne, los dueños, detrás de la cámara. La acompañamos desde que se arregla en casa hasta la última canción, y nosotros mismos editamos cada galería y cada video. También captamos los detalles: la abuela acomodándole el vestido, la cara de papá antes del vals.",
     principles: [
       {
         title: "Natural, no tieso",
@@ -490,15 +505,15 @@ const es: Copy = {
     items: [
       {
         q: "¿Cuánto cuesta un fotógrafo y videógrafo de quinceañera en Dallas–Fort Worth?",
-        a: `La mayoría de los estudios de quinceañera en DFW cobran entre $1,500 y $6,000. Todos nuestros precios están arriba: la Sesión de retratos cuesta ${P.study}, El Solo (una sola persona que toma fotos y graba con 2–3 cámaras) ${P.solo}, El Dúo (un fotógrafo y un videógrafo) ${P.cinema} y El Trío (dos fotógrafos y un videógrafo), el paquete que recomendamos para la mayoría de las familias, ${P.trio}. El Dúo y El Trío incluyen una sesión con el vestido o de save the date (30–40 fotos editadas) una vez pagado tu depósito.`,
+        a: `La mayoría de los estudios de quinceañera en DFW cobran entre $1,500 y $6,000. Todos nuestros precios están arriba: la Sesión de retratos cuesta ${P.study}, Los Momentos (un fotógrafo para la presentación y las fotos con la familia) desde ${P.moments} por 2 horas, El Solo (una sola persona que toma fotos y graba con {{cameras.solo}} cámaras) ${P.solo}, El Dúo (un fotógrafo y un videógrafo) ${P.cinema} y El Trío (dos fotógrafos y un videógrafo), el paquete que recomendamos para la mayoría de las familias, ${P.trio}. El Dúo y El Trío incluyen una sesión con el vestido o de save the date ({{session.photos}} fotos editadas) una vez pagado tu depósito.`,
       },
       {
         q: "¿La foto y el video vienen juntos?",
-        a: "Sí, en El Solo, El Dúo y El Trío, así que tienes las fotos y el video completo de su día. El Solo es una sola persona con 2–3 cámaras que toma fotos y graba al mismo tiempo; El Dúo y El Trío ponen fotógrafos y un videógrafo dedicados ese día. La Sesión de retratos es solo de fotos.",
+        a: "Sí, en El Solo, El Dúo y El Trío, así que tienes las fotos y el video completo de su día. El Solo es una sola persona con {{cameras.solo}} cámaras que toma fotos y graba al mismo tiempo; El Dúo y El Trío ponen fotógrafos y un videógrafo dedicados ese día. La Sesión de retratos es solo de fotos.",
       },
       {
         q: "¿Cuántos fotógrafos y videógrafos incluye?",
-        a: `Viene incluido en el precio: El Solo trae un fotógrafo y videógrafo en uno, que toma fotos y graba a la vez con 2–3 cámaras, El Dúo un fotógrafo y un videógrafo, y El Trío dos fotógrafos y un videógrafo. Puedes agregar una coordinadora que lleva el horario y organiza a la corte por ${PT.addon.coordinator} al día, para que tu familia solo disfrute.`,
+        a: `Viene incluido en el precio: El Solo trae un fotógrafo y videógrafo en uno, que toma fotos y graba a la vez con {{cameras.solo}} cámaras, El Dúo un fotógrafo y un videógrafo, y El Trío dos fotógrafos y un videógrafo. Puedes agregar una coordinadora que lleva el horario y organiza a la corte por ${PT.addon.coordinator} al día, para que tu familia solo disfrute.`,
       },
       {
         q: "¿Cuántas horas de cobertura necesita una quinceañera?",
@@ -506,7 +521,7 @@ const es: Copy = {
       },
       {
         q: "¿Qué incluye el video completo?",
-        a: `Todo su día, tal como pasó: la misa, el salón y la llegada de los invitados, cada presentación completa (la entrada, el vals, el baile sorpresa), cada brindis completo y de 15 a 20 minutos de baile. Su duración depende de su día. También recibes un resumen corto para compartir: de 1 minuto con El Dúo y de 3 a 5 minutos con El Trío. El video de El Solo se edita con sus 2–3 ángulos de cámara, y El Solo y El Dúo pueden agregar el resumen de 3–5 minutos por ${PT.addon.highlight}.`,
+        a: `Todo su día, tal como pasó: la misa, el salón y la llegada de los invitados, cada presentación completa (la entrada, el vals, el baile sorpresa), cada brindis completo y de 15 a 20 minutos de baile. Su duración depende de su día. También recibes un resumen corto para compartir: de 1 minuto con El Dúo y de 3 a 5 minutos con El Trío. El video de El Solo se edita con sus {{cameras.solo}} ángulos de cámara, y El Solo y El Dúo pueden agregar el resumen de 3–5 minutos por ${PT.addon.highlight}.`,
       },
       {
         q: "¿Con cuánta anticipación debemos reservar?",
@@ -522,7 +537,7 @@ const es: Copy = {
       },
       {
         q: "¿Podemos escoger quién fotografía la quinceañera?",
-        a: "TX Quince es un equipo. Tu día lo cubren nuestros propios fotógrafos y videógrafos, no gente que conseguimos a última hora, y los asignamos según la fecha y la disponibilidad, así que no podemos prometer a una persona en específico. Cada foto y cada video regresa a nosotros dos: todo lo editamos nosotros mismos, así que tu galería y tu video se ven como TX Quince sin importar quién esté detrás de la cámara.",
+        a: "Tu día lo cubre nuestro pequeño equipo de fotógrafos y videógrafos de casa, a veces con Dang o Yvonne, los dueños, detrás de la cámara. Son nuestra propia gente, no gente que conseguimos a última hora, y armamos el equipo para cada fecha. Cada foto y cada video regresa a nosotros dos: todo lo editamos nosotros mismos, así que tu galería y tu video se ven como TX Quince sin importar quién esté detrás de la cámara.",
       },
       {
         q: "¿Cómo funciona el depósito?",
@@ -567,6 +582,12 @@ const es: Copy = {
     sending: "Enviando…",
     // 1 — Paquete
     packageDek: "Todos los precios a la vista. Elige el paquete que te guste y luego presiona Siguiente.",
+    listDek: "Elige un paquete en la lista de arriba. Su botón Reservar te trae de vuelta aquí.",
+    listNone: "Aún no eliges paquete.",
+    listSee: "Ver los paquetes",
+    listChange: "Cambiar paquete",
+    listError: "Primero elige un paquete en la lista de arriba.",
+    listTotalHint: "Elige un paquete para ver tu total.",
     packagesLabel: "Paquetes",
     choose: "Elegir",
     chosen: "Elegido",
@@ -575,8 +596,9 @@ const es: Copy = {
     hoursBothDays: (h: number) => `${h} horas, ambos días`,
     team: (n: number, coordinator: boolean) =>
       n === 1 ? "1 fotógrafo" : `Equipo de ${n}${coordinator ? " + coordinadora" : ""}`,
-    soloTeam: "1 fotógrafo y videógrafo · 2–3 cámaras",
+    soloTeam: `1 fotógrafo y videógrafo · ${PT.cameras.solo} cámaras`,
     compare: "Comparar paquetes",
+    budgetLink: "¿Tienes un presupuesto? Mira qué alcanza",
     compareTitle: "Comparar paquetes",
     compareClose: "Cerrar",
     comparePrice: "Precio",
@@ -599,6 +621,11 @@ const es: Copy = {
     nextMonth: "Mes siguiente",
     legendOpen: "Libre",
     legendTaken: "Ocupada",
+    welcomeBack: "¡Qué bueno que regresaste!",
+    welcomeSaved: "Guardamos tu solicitud justo donde la dejaste.",
+    startOver: "Empezar de nuevo",
+    momentsSatShort: `Los sábados se abren ${PT.satDays} días antes para este paquete`,
+    momentsSatNote: (days: number) => `Los Momentos: viernes, domingos y entre semana se pueden reservar cuando sea. Los sábados se abren ${days} días antes de la fecha.`,
     legendPicked: "Tu fecha",
     pickedPrefix: "Tu fecha:",
     noDate: "Aún no eliges fecha.",
@@ -648,7 +675,7 @@ const es: Copy = {
     proofIg: "Instagram",
     proofYt: "Videos completos en YouTube",
     proofRef: "Pide hablar con una familia",
-    teamNote: "Tu día lo cubre el equipo de TX Quince, asignado según la fecha. Cada galería y cada video lo editan los dueños.",
+    teamNote: "Tu día lo cubre nuestro pequeño equipo de fotógrafos y videógrafos de casa, a veces con Dang o Yvonne, los dueños, detrás de la cámara. Cada galería y cada video lo editan los dueños.",
     // Después de enviar
     reference: "Referencia",
     doneTitle: "¡Gracias!",
@@ -666,6 +693,7 @@ const es: Copy = {
       failed: "Algo salió mal. Inténtalo de nuevo, o escríbenos o mándanos un mensaje.",
       taken: "Lo sentimos — otra familia acaba de reservar esa fecha. Por favor elige otra.",
       verify: "Por favor completa la verificación de abajo.",
+      momentsSaturday: (days: number) => `Los Momentos solo se puede reservar en sábado dentro de los ${days} días antes de la fecha. Elige un viernes o domingo, u otro paquete.`,
     },
   },
   footer: {

@@ -22,6 +22,7 @@ import { portfolioFallback } from "@/content/portfolio-fallback";
 import { releasedTestimonials } from "@/content/testimonials";
 import { getFeaturedImages, getImagesByCity, type PortfolioImage } from "@/lib/content-db";
 import { venuesByCity } from "@/content/venues";
+import { getInspoPlace } from "@/content/inspo-places";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import "@/components/txq/pages/places.css";
@@ -125,7 +126,7 @@ function sharedFaqs(city: string) {
     },
     {
       q: "Do you offer video too, or only photography?",
-      a: "Both. The Solo is one shooter with a 2–3 camera setup who takes the photos and films at the same time. From the Duo up, a photographer and a videographer cover the day as one team, so the misa, el vals and the reception are captured in photos and a full-length 4K film of her whole day without two vendors getting in each other's way.",
+      a: "Both. The Solo is one shooter with a {{cameras.solo}} camera setup who takes the photos and films at the same time. From the Duo up, a photographer and a videographer cover the day as one team, so the misa, el vals and the reception are captured in photos and a full-length 4K film of her whole day without two vendors getting in each other's way.",
     },
     {
       q: "Do you charge a travel fee?",
@@ -409,6 +410,13 @@ export default async function CityPage({
                   <span className="tq-mono tq-place-row__k">[{pad(i + 1)}]</span>
                   <h3 className="tq-display tq-place-row__t">{s.name}</h3>
                   <p className="tq-place-row__b">{s.why}</p>
+                  {s.inspo && getInspoPlace(s.inspo) ? (
+                    <p className="tq-place-row__b">
+                      <Link href={getInspoPlace(s.inspo)!.path.en} className="tq-place-row__link">
+                        See photos from a session here <span aria-hidden>→</span>
+                      </Link>
+                    </p>
+                  ) : null}
                 </li>
               ))}
             </ol>

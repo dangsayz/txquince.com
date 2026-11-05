@@ -25,6 +25,7 @@ import { cache } from "react";
 import {
   ADD_ON_IDS,
   DEFAULT_PRICE_BOOK,
+  PUBLIC_TIER_IDS,
   TIER_IDS,
   describeChanges,
   priceBookSchema,
@@ -152,6 +153,8 @@ export function parseStoredBook(raw: unknown): PriceBook | null {
   const o = raw as Record<string, unknown>;
   const pk = (o.packages ?? {}) as Record<string, unknown>;
   const ad = (o.addOns ?? {}) as Record<string, unknown>;
+  const ct = (o.content ?? {}) as Record<string, unknown>;
+  const an = (o.addOnNotes ?? {}) as Record<string, unknown>;
   const merged = {
     packages: Object.fromEntries(
       TIER_IDS.map((id) => [id, { ...DEFAULT_PRICE_BOOK.packages[id], ...((pk[id] as object) ?? {}) }]),
@@ -165,6 +168,14 @@ export function parseStoredBook(raw: unknown): PriceBook | null {
     updatedBy: typeof o.updatedBy === "string" ? o.updatedBy : null,
     trioSpotsTotal: o.trioSpotsTotal ?? DEFAULT_PRICE_BOOK.trioSpotsTotal,
     trioSpotsLeft: o.trioSpotsLeft ?? DEFAULT_PRICE_BOOK.trioSpotsLeft,
+    planHoldUsd: o.planHoldUsd ?? DEFAULT_PRICE_BOOK.planHoldUsd,
+    momentsSaturdayDays: o.momentsSaturdayDays ?? DEFAULT_PRICE_BOOK.momentsSaturdayDays,
+    sessionPhotos: o.sessionPhotos ?? DEFAULT_PRICE_BOOK.sessionPhotos,
+    // Wording saved before a field existed takes that field's launch wording.
+    content: Object.fromEntries(
+      PUBLIC_TIER_IDS.map((id) => [id, { ...DEFAULT_PRICE_BOOK.content[id], ...((ct[id] as object) ?? {}) }]),
+    ),
+    addOnNotes: Object.fromEntries(ADD_ON_IDS.map((id) => [id, an[id] ?? DEFAULT_PRICE_BOOK.addOnNotes[id]])),
   };
   const parsed = priceBookSchema.safeParse(merged);
   return parsed.success ? (Object.freeze(parsed.data) as PriceBook) : null;

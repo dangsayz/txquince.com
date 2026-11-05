@@ -22,6 +22,8 @@ import { sanitizeAttribution } from "@/lib/attribution";
 import { clientIp } from "@/lib/client-ip";
 import { rateLimiter } from "@/lib/rate-limit";
 import { getPriceBook } from "@/lib/pricing";
+import { momentsDateAllowed } from "@/lib/commission";
+import { todayInDallas } from "@/lib/plan";
 import { BUDGET_FOR_TIER, describeInquiryPackage, inquiryPackageSchema, servicesForTier } from "@/lib/inquiry-package";
 
 // Always run server-side at request time.
@@ -70,8 +72,17 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // 4) Server-side validation (never trust the client).
-  const parsed = inquirySchema.safeParse(body);
+  // 4) Server-side validation (never trust the client). A package-picker
+  // request carries its package, and the server derives services and budget
+  // from it (below), so validate with those derived keys rather than whatever
+  // placeholder the browser sent: a budget key the picker no longer knows must
+  // never be able to turn every homepage request away.
+  const pkgPick = body.package !== undefined ? inquiryPackageSchema.safeParse(body.package) : null;
+  const parsed = inquirySchema.safeParse(
+    pkgPick?.success
+      ? { ...body, services: servicesForTier(pkgPick.data.tier, pkgPick.data.add_ons), budget_range: BUDGET_FOR_TIER[pkgPick.data.tier] }
+      : body,
+  );
   if (!parsed.success) {
     const fieldErrors = parsed.error.flatten().fieldErrors;
     return NextResponse.json(
@@ -85,16 +96,26 @@ export async function POST(req: NextRequest) {
   // From the homepage package picker: re-validate and re-price the family's
   // picks on the server; the summary (not any client total) goes in the message.
   if (body.package !== undefined) {
-    const pkg = inquiryPackageSchema.safeParse(body.package);
+    const pkg = pkgPick!;
     if (!pkg.success || !fields.event_date) {
       return NextResponse.json(
         { ok: false, error: "Please check your package choices and date, then try again." },
         { status: 422 },
       );
     }
+    // Just the Moments takes a Saturday only within the window (book.momentsSaturdayDays).
+    if (!momentsDateAllowed(book, pkg.data.tier, fields.event_date, todayInDallas())) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error: `Just the Moments can be booked on a Saturday only within ${book.momentsSaturdayDays} days of the date. Pick a Friday or Sunday, or another package.`,
+        },
+        { status: 422 },
+      );
+    }
     fields = {
       ...fields,
-      services: servicesForTier(pkg.data.tier),
+      services: servicesForTier(pkg.data.tier, pkg.data.add_ons),
       budget_range: BUDGET_FOR_TIER[pkg.data.tier],
       message: describeInquiryPackage(
         pkg.data,

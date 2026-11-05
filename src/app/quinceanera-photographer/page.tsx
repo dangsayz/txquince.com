@@ -69,7 +69,7 @@ export default async function LocationsHub() {
 
   const heroImage =
     assignedHero ?? imgs.find((i) => (i.width ?? 0) >= (i.height ?? 0)) ?? imgs[0] ?? null;
-  const fallbackHero = portfolioFallback.find((p) => p.url === "/portfolio/kimberly-reception.webp") ?? portfolioFallback[0];
+  const fallbackHero = portfolioFallback.find((p) => p.url === "/portfolio/hero.webp") ?? portfolioFallback[0];
   const hero: Shot | null = heroImage ? fromDb(heroImage) : fallbackHero ? { ...fromFallback(fallbackHero), focus: "50% 60%" } : null;
 
   // Every card gets a real photograph: the city's own tagged work, then a

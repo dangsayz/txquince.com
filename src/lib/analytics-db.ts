@@ -1,9 +1,11 @@
 import "server-only";
 import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
+import { platformOf, PLATFORMS, type Platform } from "@/lib/social";
 import { getBookings, getInquiries } from "@/lib/clients-db";
 import { releasedTestimonials } from "@/content/testimonials";
 import { collectionById } from "@/content/packages";
 import type { ConversionChange } from "@/components/admin/ChangeLog";
+import { sourceKey, visitSourceKey, WHATSAPP_SOURCE } from "@/lib/src-tag";
 
 export type RangedStats = {
   configured: boolean;
@@ -16,6 +18,30 @@ export type RangedStats = {
   pagesPerSession: number;
   bounceRate: number;
   daily: { date: string; count: number }[];
+  /** Per day in the range: page views, distinct visitors, new leads (inquiries + plans). */
+  series: { date: string; views: number; visitors: number; unique: number; leads: number }[];
+  /** Distinct browsers in the range (visitor_id; older rows fall back to their session). */
+  uniqueVisitors: number;
+  /** The same totals for the period just before this one, for "vs previous" deltas. */
+  previous: { views: number; visitors: number; unique: number; leads: number; booked: number };
+  /** New leads (inquiries + quince plans) and paid bookings inside the range. */
+  rangeLeads: number;
+  rangeBooked: number;
+  /** One consistent window: visitors → saw work/prices → took action → lead → booked. */
+  flow: { label: string; value: number }[];
+  /** The step whose drop-off is worst vs. a healthy baseline (null = not enough data yet). */
+  flowBottleneck: { step: number; rate: number; baseline: number; action: string } | null;
+  /** Visits and new leads in the range that each social platform brought (first touch). */
+  byPlatform: Record<Platform, { visits: number; leads: number }>;
+  /** Why visits don't reach the work: where they landed / came from, and how many of each went on. */
+  dropoff: {
+    lost: number;
+    onePage: number;
+    landings: { label: string; sessions: number; reached: number }[];
+    sources: { label: string; sessions: number; reached: number }[];
+    /** Per device (phone / tablet / desktop); empty until migration 0026 has data. */
+    devices: { label: string; sessions: number; reached: number; onePage: number }[];
+  };
   topPages: { label: string; count: number }[];
   topReferrers: { label: string; count: number }[];
   utmSources: { label: string; count: number }[];
@@ -35,7 +61,8 @@ export type RangedStats = {
   pipelineValue: number;
   inquiryToBooked: number;
   funnel: { label: string; value: number }[];
-  bySource: { source: string; leads: number; requests: number; bookedValue: number }[];
+  /** Per source: visits (sessions), WhatsApp chats started (button taps, own "whatsapp" row), leads, date requests, booked $. */
+  bySource: { source: string; visits: number; chats: number; leads: number; requests: number; bookedValue: number }[];
   insights: { type: "success" | "warning" | "info"; text: string }[];
   /** Sessions active in the last 5 minutes — who's on the site right now. */
   liveNow: { path: string; seconds: number; pages: number }[];
@@ -51,11 +78,13 @@ type PV = {
   path: string;
   referrer: string | null;
   session_id: string | null;
+  visitor_id?: string | null;
+  device?: string | null;
   utm_source: string | null;
   utm_medium: string | null;
   created_at: string;
 };
-type LE = { event_type: string };
+type LE = { event_type: string; session_id?: string | null; target?: string | null };
 
 function hostOf(ref: string | null): string | null {
   if (!ref) return null;
@@ -88,6 +117,15 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     pagesPerSession: 0,
     bounceRate: 0,
     daily: [],
+    series: [],
+    previous: { views: 0, visitors: 0, unique: 0, leads: 0, booked: 0 },
+    uniqueVisitors: 0,
+    rangeLeads: 0,
+    rangeBooked: 0,
+    flow: [],
+    flowBottleneck: null,
+    byPlatform: Object.fromEntries(PLATFORMS.map((p) => [p, { visits: 0, leads: 0 }])) as RangedStats["byPlatform"],
+    dropoff: { lost: 0, onePage: 0, landings: [], sources: [], devices: [] },
     topPages: [],
     topReferrers: [],
     utmSources: [],
@@ -122,16 +160,24 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     const startToday = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
     const start7 = new Date(now - 7 * 86400_000).toISOString();
     const startRange = new Date(now - range * 86400_000).toISOString();
+    const startPrev = new Date(now - 2 * range * 86400_000).toISOString();
 
     const week = new Date(now - 7 * 86400_000).toISOString();
-    const [pvRes, leRes, bookings, inquiries, imgWeekRes, vidRes, lastChangeRes] =
+    const [pvRes, leRes, bookings, inquiries, imgWeekRes, vidRes, lastChangeRes, plansRes] =
       await Promise.all([
-        supabase
-          .from("page_views")
-          .select("path, referrer, session_id, utm_source, utm_medium, created_at")
-          .gte("created_at", startRange)
-          .order("created_at", { ascending: true }),
-        supabase.from("lead_events").select("event_type").gte("created_at", startRange),
+        // visitor_id (0025) and device (0026) arrive with migrations; until
+        // they run, fall back to the columns that exist.
+        (async () => {
+          const q = (cols: string) =>
+            supabase.from("page_views").select(cols).gte("created_at", startPrev).order("created_at", { ascending: true });
+          const base = "path, referrer, session_id, utm_source, utm_medium, created_at";
+          for (const cols of [`${base}, visitor_id, device`, `${base}, visitor_id`, base]) {
+            const res = await q(cols);
+            if (!res.error) return res;
+          }
+          return { data: [] as unknown[], error: null };
+        })(),
+        supabase.from("lead_events").select("event_type, session_id, target").gte("created_at", startRange),
         getBookings(),
         getInquiries(),
         // Flywheel inputs: fresh proof + iteration cadence.
@@ -146,9 +192,13 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
           .order("created_at", { ascending: false })
           .limit(1)
           .maybeSingle(),
+        // Quince plans count as leads (table from migration 0023; absent → none).
+        supabase.from("quince_plans").select("created_at, attribution").gte("created_at", startPrev),
       ]);
 
-    const rows = (pvRes.data ?? []) as PV[];
+    const allRows = (pvRes.data ?? []) as PV[];
+    const rows = allRows.filter((r) => r.created_at >= startRange);
+    const prevRows = allRows.filter((r) => r.created_at < startRange);
     const events = (leRes.data ?? []) as LE[];
 
     // ---- traffic ----
@@ -202,14 +252,20 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     const paymentReview = reviewBookings.length;
     const paymentReviewValue =
       reviewBookings.reduce((s, b) => s + (b.deposit_amount_cents ?? 0), 0) / 100;
-    const valueOf = (collection: string | null) =>
-      collection ? (collectionById(collection)?.price ?? 0) : 0;
+    // A booking's value: the total stored on it when it was made (today's
+    // packages keep it in metadata.total_usd); older rows fall back to the
+    // retired collection's list price.
+    const valueOf = (b: (typeof bookings)[number]) => {
+      const total = Number(b.metadata?.total_usd);
+      if (Number.isFinite(total) && total > 0) return total;
+      return b.collection ? (collectionById(b.collection)?.price ?? 0) : 0;
+    };
     const bookedValue = bookings
       .filter((b) => b.status === "paid")
-      .reduce((s, b) => s + valueOf(b.collection), 0);
+      .reduce((s, b) => s + valueOf(b), 0);
     const pipelineValue = bookings
       .filter((b) => b.status === "requested" || b.status === "pending_payment")
-      .reduce((s, b) => s + valueOf(b.collection), 0);
+      .reduce((s, b) => s + valueOf(b), 0);
 
     // DB constraint allows new | won | lost | unsubscribed — only "new" is open.
     const openLeads = inquiries.filter(
@@ -220,32 +276,45 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     const inquiryToBooked = totalInquiries ? Math.round((paid / totalInquiries) * 100) : 0;
 
     const funnel = [
-      { label: "Visitors", value: uniqueSessions },
+      { label: "Visits", value: uniqueSessions },
       { label: "Leads", value: totalInquiries },
       { label: "Date requests", value: totalBookings },
       { label: "Paid", value: paid },
     ];
 
     // ---- revenue & leads by first-touch source ----
-    const srcKey = (a: Record<string, string> | null) =>
-      (a?.source || "direct").toLowerCase();
-    const sourceMap = new Map<string, { source: string; leads: number; requests: number; bookedValue: number }>();
+    // The ?src= tag when there is one (instagram, pinterest…), else the first-touch source.
+    const srcKey = sourceKey;
+    const sourceMap = new Map<string, RangedStats["bySource"][number]>();
     const bump = (key: string) => {
-      const row = sourceMap.get(key) ?? { source: key, leads: 0, requests: 0, bookedValue: 0 };
+      const row = sourceMap.get(key) ?? { source: key, visits: 0, chats: 0, leads: 0, requests: 0, bookedValue: 0 };
       sourceMap.set(key, row);
       return row;
     };
+    // Visits: each session counted once, by its first page (?src=gbp → "gbp").
+    {
+      const seen = new Set<string>();
+      for (const r of rows) {
+        const sid = r.session_id ?? `anon-${r.created_at}`;
+        if (seen.has(sid)) continue;
+        seen.add(sid);
+        bump(visitSourceKey(r.utm_source, hostOf(r.referrer))).visits += 1;
+      }
+    }
+    // WhatsApp button taps are their own source: a chat started off-site.
+    bump(WHATSAPP_SOURCE).chats += events.filter((e) => e.event_type === "contact_whatsapp").length;
     for (const i of inquiries) bump(srcKey(i.attribution)).leads += 1;
     for (const bk of bookings) {
       if (bk.status === "requested" || bk.status === "pending_payment" || bk.status === "paid") {
         const row = bump(srcKey(bk.attribution));
         row.requests += 1;
-        if (bk.status === "paid") row.bookedValue += valueOf(bk.collection);
+        if (bk.status === "paid") row.bookedValue += valueOf(bk);
       }
     }
     const bySource = Array.from(sourceMap.values())
-      .sort((a, b) => b.bookedValue - a.bookedValue || b.leads - a.leads || b.requests - a.requests)
-      .slice(0, 10);
+      .filter((r) => r.visits || r.chats || r.leads || r.requests)
+      .sort((a, b) => b.bookedValue - a.bookedValue || b.leads - a.leads || b.chats - a.chats || b.requests - a.requests || b.visits - a.visits)
+      .slice(0, 12);
 
     // ---- session journeys: dwell per page, exits, live-now ----
     // Dwell for page N = gap to page N+1 in the same session (capped at 10 min;
@@ -303,10 +372,18 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
 
     // ---- bottleneck finder: weakest funnel edge vs. healthy baseline ----
     // Only judge an edge once its denominator is meaningful (≥20).
-    const moneyPageSessions = Array.from(journeys.values()).filter((steps) =>
-      steps.some((s) => /^\/(investment|portfolio|reserve|photos)/.test(s.path)),
-    ).length;
-    const intentTotal = ctaClicks + formStarts + dateChecks;
+    // "Saw work or prices": opened a gallery / price / plan page or a blog or
+    // venue article, or scrolled the homepage's own galleries into view
+    // (work_viewed events, sent by the Tracker).
+    const WORK_PAGE = /^\/(es\/)?(investment|portfolio|reserve|photos|fotos-recientes|plan|budget|presupuesto|quince-prices-dfw|precios-quince-dfw|saved|check-your-date|consulta|quinceanera-photo|sesion-de-fotos|quinceanera-videographer|videografo|fotografo|quinceanera-photographer)/;
+    const workViewSids = new Set(events.filter((e) => e.event_type === "work_viewed" && e.session_id).map((e) => e.session_id!));
+    const reachedWork = (sid: string, steps: { path: string }[]) =>
+      workViewSids.has(sid) || steps.some((st) => WORK_PAGE.test(st.path) || /^\/(es\/)?(blog|venues|salones)\//.test(st.path));
+    const moneyPageSessions = Array.from(journeys.entries()).filter(([sid, steps]) => reachedWork(sid, steps)).length;
+    const INTENT = new Set(["cta_clicked", "form_started", "date_checked"]);
+    const intentEvents = events.filter((e) => INTENT.has(e.event_type));
+    // People, not clicks: one session tapping three buttons is one "took action".
+    const intentTotal = new Set(intentEvents.map((e, i) => e.session_id ?? `anon-${i}`)).size;
     const totalRequests = bookings.filter((b) =>
       ["requested", "pending_payment", "paid"].includes(b.status),
     ).length;
@@ -393,9 +470,135 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     if (pipelineValue > 0)
       insights.push({ type: "info", text: `$${pipelineValue.toLocaleString()} in pipeline value is held but not yet paid.` });
 
+    // ---- per-day series + previous period ----
+    const plans = ((plansRes as { data?: { created_at: string }[] | null })?.data ?? []) as { created_at: string }[];
+    const leadTimes = [...inquiries.map((i) => i.created_at), ...plans.map((p) => p.created_at)];
+    const who = (r: PV) => (r.visitor_id ? `v:${r.visitor_id}` : `s:${r.session_id ?? "anon"}`);
+    const seriesMap = new Map<string, { views: number; sids: Set<string>; vids: Set<string>; leads: number }>();
+    for (const d of dailyMap.keys()) seriesMap.set(d, { views: 0, sids: new Set(), vids: new Set(), leads: 0 });
+    for (const r of rows) {
+      const day = seriesMap.get(dayKey(r.created_at));
+      if (!day) continue;
+      day.views += 1;
+      day.sids.add(r.session_id ?? "anon");
+      day.vids.add(who(r));
+    }
+    for (const t of leadTimes) {
+      if (t < startRange) continue;
+      const day = seriesMap.get(dayKey(t));
+      if (day) day.leads += 1;
+    }
+    const series = Array.from(seriesMap.entries()).map(([date, v]) => ({ date, views: v.views, visitors: v.sids.size, unique: v.vids.size, leads: v.leads }));
+    const uniqueVisitors = new Set(rows.map(who)).size;
+    const rangeLeads = leadTimes.filter((t) => t >= startRange).length;
+    const paidAt = (b: (typeof bookings)[number]) => (b as { paid_at?: string | null }).paid_at ?? null;
+    const rangeBooked = bookings.filter((b) => b.status === "paid" && (paidAt(b) ?? "") >= startRange).length;
+    const previous = {
+      views: prevRows.length,
+      visitors: new Set(prevRows.map((r) => r.session_id ?? "anon")).size,
+      unique: new Set(prevRows.map(who)).size,
+      leads: leadTimes.filter((t) => t >= startPrev && t < startRange).length,
+      booked: bookings.filter((b) => b.status === "paid" && (paidAt(b) ?? "") >= startPrev && (paidAt(b) ?? "") < startRange).length,
+    };
+
+    // ---- drop-off: where visits that never reached the work came in ----
+    const firstRow = new Map<string, PV>();
+    for (const r of rows) {
+      const sid = r.session_id ?? "anon";
+      if (!firstRow.has(sid)) firstRow.set(sid, r);
+    }
+    const landAgg = new Map<string, { sessions: number; reached: number }>();
+    const srcAgg = new Map<string, { sessions: number; reached: number }>();
+    const devAgg = new Map<string, { sessions: number; reached: number; onePage: number }>();
+    let lost = 0;
+    let onePage = 0;
+    for (const [sid, steps] of journeys) {
+      const first = firstRow.get(sid);
+      if (!first) continue;
+      const ok = reachedWork(sid, steps);
+      const single = new Set(steps.map((x) => x.path)).size === 1;
+      if (!ok) {
+        lost += 1;
+        if (single) onePage += 1;
+      }
+      if (first.device) {
+        const label = first.device === "phone" ? "Phone" : first.device === "tablet" ? "Tablet" : "Desktop";
+        const d = devAgg.get(label) ?? { sessions: 0, reached: 0, onePage: 0 };
+        d.sessions += 1;
+        if (ok) d.reached += 1;
+        if (single) d.onePage += 1;
+        devAgg.set(label, d);
+      }
+      const land = first.path === "/" ? "Homepage" : first.path === "/es" ? "Spanish homepage" : first.path;
+      const src = first.utm_source || hostOf(first.referrer) || "Direct / app";
+      for (const [m, k] of [[landAgg, land], [srcAgg, src]] as const) {
+        const row = m.get(k) ?? { sessions: 0, reached: 0 };
+        row.sessions += 1;
+        if (ok) row.reached += 1;
+        m.set(k, row);
+      }
+    }
+    const topAgg = (m: Map<string, { sessions: number; reached: number }>) =>
+      Array.from(m.entries()).map(([label, v]) => ({ label, ...v })).sort((a, b) => b.sessions - a.sessions).slice(0, 5);
+    const devices = Array.from(devAgg.entries()).map(([label, v]) => ({ label, ...v })).sort((a, b) => b.sessions - a.sessions);
+    // ---- per social platform: visits (session's first page) and leads (first touch) ----
+    const byPlatform = Object.fromEntries(PLATFORMS.map((p) => [p, { visits: 0, leads: 0 }])) as RangedStats["byPlatform"];
+    for (const first of firstRow.values()) {
+      const p = platformOf(first.utm_source) ?? platformOf(hostOf(first.referrer));
+      if (p) byPlatform[p].visits += 1;
+    }
+    const leadAttr = [
+      ...inquiries.filter((i) => i.created_at >= startRange).map((i) => i.attribution),
+      ...((plansRes as { data?: { created_at: string; attribution?: Record<string, string> | null }[] | null })?.data ?? [])
+        .filter((pl) => pl.created_at >= startRange)
+        .map((pl) => pl.attribution ?? null),
+    ];
+    for (const a of leadAttr) {
+      const p = platformOf(a?.source) ?? platformOf(a?.referrer);
+      if (p) byPlatform[p].leads += 1;
+    }
+    const dropoff = { lost, onePage, landings: topAgg(landAgg), sources: topAgg(srcAgg), devices };
+
+    // ---- the flow: one window, five steps ----
+    const flow = [
+      { label: "Visits", value: uniqueSessions },
+      { label: "Saw work or prices", value: moneyPageSessions },
+      { label: "Took action", value: intentTotal },
+      { label: "Leads", value: rangeLeads },
+      { label: "Booked", value: rangeBooked },
+    ];
+    // Healthy step-to-step rates; the worst ratio vs. healthy is the bottleneck.
+    const FLOW_RULES = [
+      { baseline: 0.35, action: "Most visitors leave without opening your work or prices. Put real galleries and the package prices higher on the homepage and landing pages." },
+      { baseline: 0.25, action: "They look but don't act. Make the next step obvious next to the work: check your date, get a plan, text us." },
+      { baseline: 0.3, action: "They start but don't finish. Shorten the form, say there's nothing to pay, and test it on a phone." },
+      { baseline: 0.5, action: "Leads stall before paying. Reply within the hour, send the plan or deposit link the same day, and follow up on day 2 and day 5." },
+    ];
+    let flowBottleneck: RangedStats["flowBottleneck"] = null;
+    let worstRatio = 1;
+    for (let i = 1; i < flow.length; i++) {
+      const den = flow[i - 1].value;
+      if (den < 10) continue;
+      const rate = flow[i].value / den;
+      const ratio = rate / FLOW_RULES[i - 1].baseline;
+      if (ratio < worstRatio) {
+        worstRatio = ratio;
+        flowBottleneck = { step: i, rate: Math.round(rate * 100), baseline: Math.round(FLOW_RULES[i - 1].baseline * 100), action: FLOW_RULES[i - 1].action };
+      }
+    }
+
     return {
       configured: true,
       range,
+      series,
+      uniqueVisitors,
+      previous,
+      rangeLeads,
+      rangeBooked,
+      flow,
+      flowBottleneck,
+      dropoff,
+      byPlatform,
       today,
       last7,
       rangeViews,

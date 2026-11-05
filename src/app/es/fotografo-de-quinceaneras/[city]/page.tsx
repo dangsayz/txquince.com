@@ -21,6 +21,7 @@ import { getEsPost } from "@/content/blog";
 import { portfolioFallback } from "@/content/portfolio-fallback";
 import { getFeaturedImages, getImagesByCity } from "@/lib/content-db";
 import { venuesByCity } from "@/content/venues";
+import { getInspoPlace } from "@/content/inspo-places";
 import "@/components/txq/pages/places.css";
 import { ContactButtons, ContactLine } from "@/components/ContactButtons";
 import { businessContactJsonLd } from "@/lib/contact";
@@ -86,7 +87,7 @@ function sharedFaqsEs(city: string) {
     },
     {
       q: "¿También ofreces video, o solo fotografía?",
-      a: "Los dos. El Solo es una sola persona con 2–3 cámaras, fotógrafo y videógrafo en uno, que toma las fotos y graba al mismo tiempo. Desde el Dúo, un fotógrafo y un videógrafo cubren el día como un solo equipo, para que la misa, el vals y la recepción queden en fotos y en un video completo en 4K de todo su día sin que dos proveedores se estorben.",
+      a: "Los dos. El Solo es una sola persona con {{cameras.solo}} cámaras, fotógrafo y videógrafo en uno, que toma las fotos y graba al mismo tiempo. Desde el Dúo, un fotógrafo y un videógrafo cubren el día como un solo equipo, para que la misa, el vals y la recepción queden en fotos y en un video completo en 4K de todo su día sin que dos proveedores se estorben.",
     },
     {
       q: "¿Cobras por traslado?",
@@ -369,6 +370,13 @@ export default async function CityPageEs({
                   <span className="tq-mono tq-place-row__k">[{pad(i + 1)}]</span>
                   <h3 className="tq-display tq-place-row__t">{s.name}</h3>
                   <p className="tq-place-row__b">{s.whyEs}</p>
+                  {s.inspo && getInspoPlace(s.inspo) ? (
+                    <p className="tq-place-row__b">
+                      <Link href={getInspoPlace(s.inspo)!.path.es} className="tq-place-row__link">
+                        Ver fotos de una sesión aquí <span aria-hidden>→</span>
+                      </Link>
+                    </p>
+                  ) : null}
                 </li>
               ))}
             </ol>
@@ -385,7 +393,7 @@ export default async function CityPageEs({
               Paquetes desde {commissionsFromLabel}.
             </h2>
             <p className="tq-head__dek">
-              Cuatro paquetes con precios publicados. Un depósito del {retainerPercentLabel} aparta la fecha y se
+              Cinco paquetes con precios publicados. Un depósito del {retainerPercentLabel} aparta la fecha y se
               abona a tu total. El Trío, nuestra recomendación para la mayoría de las familias, pone un equipo de {BASE_CREW.trio} en
               su día: dos fotógrafos y un videógrafo, más un álbum de fotos impreso. El Dúo y el Trío incluyen una sesión con el
               vestido o de save the date, que se agenda después del depósito.

@@ -328,7 +328,7 @@ export const locations: Location[] = [
       },
       {
         q: "Which package do you recommend for a Mansfield quinceañera?",
-        a: `For most celebrations, the Trio (${PT.price.trio}) — ${PT.hours.trio} hours with a team of ${BASE_CREW.trio} (two photographers and a videographer), a dress or save-the-date session after the deposit, the full-length film of her whole day with a 3–5 minute highlight film, 700+ edited photos and a 40-page printed photo album. Families who want someone to run the day can add the Day-of Coordinator (${PT.addon.coordinator} a day). For a separate day of portraits in her dress, add the Second Portrait Day (${PT.addon.secondday}). Compare all three on our Packages & Prices page.`,
+        a: `For most celebrations, the Trio (${PT.price.trio}) — ${PT.hours.trio} hours with a team of ${BASE_CREW.trio} (two photographers and a videographer), a dress or save-the-date session after the deposit, the full-length film of her whole day with a 3–5 minute highlight film, {{photos.trio}} edited photos and a 40-page printed photo album. Families who want someone to run the day can add the Day-of Coordinator (${PT.addon.coordinator} a day). For a separate day of portraits in her dress, add the Second Portrait Day (${PT.addon.secondday}). Compare all three on our Packages & Prices page.`,
       },
     ],
     leadEs: "Donde las familias de DFW se lucen con la celebración.",
@@ -343,7 +343,7 @@ export const locations: Location[] = [
       },
       {
         q: "¿Qué paquete recomiendas para una quinceañera en Mansfield?",
-        a: `Para la mayoría de las celebraciones, el Trío (${PT.price.trio}): ${PT.hours.trio} horas con un equipo de ${BASE_CREW.trio} (dos fotógrafos y un videógrafo), una sesión con el vestido o de save the date después del depósito, el video completo de todo su día con un resumen de 3 a 5 minutos, más de 700 fotos editadas y un álbum de fotos impreso de 40 páginas. Si quieren a alguien que lleve el día, pueden sumar la Coordinadora del día (${PT.addon.coordinator} por día). Para un día aparte de retratos con su vestido, suma el Segundo día de retratos (${PT.addon.secondday}). Compara los tres en nuestra página de Paquetes y precios.`,
+        a: `Para la mayoría de las celebraciones, el Trío (${PT.price.trio}): ${PT.hours.trio} horas con un equipo de ${BASE_CREW.trio} (dos fotógrafos y un videógrafo), una sesión con el vestido o de save the date después del depósito, el video completo de todo su día con un resumen de 3 a 5 minutos, {{photos.trio}} fotos editadas y un álbum de fotos impreso de 40 páginas. Si quieren a alguien que lleve el día, pueden sumar la Coordinadora del día (${PT.addon.coordinator} por día). Para un día aparte de retratos con su vestido, suma el Segundo día de retratos (${PT.addon.secondday}). Compara los tres en nuestra página de Paquetes y precios.`,
       },
     ],
   },

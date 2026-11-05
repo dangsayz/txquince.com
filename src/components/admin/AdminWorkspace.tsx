@@ -21,6 +21,7 @@ const websiteLinks = [
   { href: "/admin/venues", label: "Venues" },
   { href: "/admin/hero", label: "Page imagery" },
   { href: "/admin/prices", label: "Prices" },
+  { href: "/admin/packages", label: "Packages" },
   { href: "/admin/price-guide", label: "Price guide" },
   { href: "/admin/images", label: "Every image" },
 ] as const;

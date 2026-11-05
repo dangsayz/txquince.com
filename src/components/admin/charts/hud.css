@@ -1,0 +1,206 @@
+/*
+ * hud.css — the "Studio pulse" analytics panel, in Apple light mode.
+ * Tokens: bg #F5F5F7 · surface #FFF · separator #D2D2D7 · text #1D1D1F /
+ * secondary #6E6E73 (5:1) · accent #0071E3 · and the darker Apple green /
+ * red (#248A3D / #D70015) so text passes 4.5:1 on white; red also marks the bottleneck.
+ * Cards 18px radius with a soft shadow, pills 999px, SF Pro (Rounded numbers).
+ * Motion: cell field, line draw-in, flow particles, live dot. All of it
+ * stops under prefers-reduced-motion.
+ */
+.hud {
+  --bg: #f5f5f7;
+  --surface: #ffffff;
+  --surface-raised: #f5f5f7;
+  --separator: #d2d2d7;
+  --text: #1d1d1f;
+  --text-secondary: #6e6e73;
+  --text-tertiary: #6e6e73;
+  --accent: #0071e3;
+  --accent-fill: rgba(0, 113, 227, 0.1);
+  --positive: #248a3d;
+  --negative: #d70015;
+  --warning: #d70015;
+  --warning-fill: rgba(255, 59, 48, 0.08);
+  --radius-card: 18px;
+  --radius-pill: 999px;
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;
+  --font-numeric: -apple-system, "SF Pro Rounded", "Inter", system-ui, sans-serif;
+
+  /* aliases used by the components */
+  --hud-bg: var(--bg);
+  --hud-panel: var(--surface);
+  --hud-line: var(--separator);
+  --hud-line-strong: #c7c7cc;
+  --hud-cyan: var(--accent);
+  --hud-violet: var(--accent);
+  --hud-lime: var(--positive);
+  --hud-rose: var(--negative);
+  --hud-amber: var(--warning);
+  --hud-text: var(--text);
+  --hud-muted: var(--text-secondary);
+  --hud-mono: var(--font-numeric);
+
+  position: relative;
+  isolation: isolate;
+  border-radius: 24px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  padding: clamp(14px, 2vw, 24px);
+}
+.hud-mono { font-family: var(--font-numeric); font-variant-numeric: tabular-nums; }
+.hud-label {
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-secondary);
+}
+.hud-card {
+  position: relative;
+  min-width: 0;
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.hud-focus:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Range toggle: iOS segmented control */
+.hud-seg { display: inline-flex; padding: 2px; border-radius: 10px; background: rgba(118, 118, 128, 0.12); }
+.hud-seg a {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 52px; min-height: 44px; padding: 0 12px; border-radius: 8px;
+  font-family: var(--font); font-size: 13px; font-weight: 500; color: var(--text-secondary); text-decoration: none;
+  transition: color 160ms ease, background 160ms ease;
+}
+.hud-seg a:hover { color: var(--text); }
+.hud-seg a[aria-current="page"] { color: var(--text); background: #ffffff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 0 0 0.5px rgba(0, 0, 0, 0.04); }
+
+/* Metric tabs */
+.hud-tab {
+  position: relative; min-height: 96px; padding: 16px 18px; text-align: left;
+  background: transparent; border: 0; color: inherit; cursor: pointer;
+  transition: background 200ms ease;
+}
+.hud-tab:hover { background: rgba(0, 0, 0, 0.02); }
+.hud-tab[aria-selected="true"] { background: var(--surface-raised); }
+.hud-tab[aria-selected="true"]::after {
+  content: ""; position: absolute; left: 18px; right: 18px; bottom: 0; height: 2px; border-radius: 2px;
+  background: var(--accent);
+}
+.hud-value {
+  font-family: var(--font-numeric); font-weight: 600; font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em; line-height: 1.05; color: var(--text);
+  font-size: clamp(26px, 3vw, 34px);
+}
+.hud-up { color: var(--positive); }
+.hud-down { color: var(--negative); }
+
+/* Chart */
+.hud-line { filter: none; }
+.hud-draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: hud-draw 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+@keyframes hud-draw { to { stroke-dashoffset: 0; } }
+.hud-fade { opacity: 0; animation: hud-fade 900ms ease 250ms forwards; }
+@keyframes hud-fade { to { opacity: 1; } }
+.hud-live { transform-box: fill-box; transform-origin: center; animation: hud-ping 1.8s ease-out infinite; }
+@keyframes hud-ping { 0% { opacity: 0.8; transform: scale(1); } 100% { opacity: 0; transform: scale(3); } }
+.hud-tip {
+  position: absolute; top: 0; z-index: 2; pointer-events: none; white-space: nowrap;
+  padding: 8px 12px; border-radius: 12px;
+  background: var(--surface); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 0 0 0.5px var(--separator);
+  font-family: var(--font-numeric); font-size: 13px; font-variant-numeric: tabular-nums;
+}
+
+/* Funnel particles */
+.hud-flow { stroke-dasharray: 2 22; animation: hud-flow 1.6s linear infinite; }
+.hud-flow--slow { animation-duration: 2.4s; }
+@keyframes hud-flow { to { stroke-dashoffset: -24; } }
+
+/* Ranked rows */
+.hud-bar { background: var(--accent-fill); border-radius: 6px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hud-draw, .hud-fade { animation: none; stroke-dashoffset: 0; opacity: 1; }
+  .hud-live, .hud-flow { animation: none; }
+}
+
+/* Intel card */
+.hud-intel {
+  padding: 14px 16px 16px;
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: 0 0 0 0.5px var(--separator), 0 18px 48px rgba(0, 0, 0, 0.14);
+  color: var(--text-secondary);
+  text-align: left;
+  font-family: var(--font);
+  font-size: 13px;
+  line-height: 1.5;
+  animation: hud-pop 160ms ease-out;
+}
+@keyframes hud-pop { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+.hud-intel__head { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; color: var(--text); }
+.hud-intel__dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+.hud-intel__tag { margin-left: auto; padding: 2px 8px; border-radius: var(--radius-pill); background: var(--accent-fill); font-size: 11px; font-weight: 600; color: var(--accent); }
+.hud-intel__k { margin: 10px 0 2px; font-size: 12px; font-weight: 600; color: var(--text-tertiary); }
+.hud-intel__p { margin: 0; }
+.hud-intel__moves { margin-top: 12px; padding-top: 4px; border-top: 0.5px solid var(--separator); }
+.hud-intel__moves ol { margin: 6px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; color: var(--hud-text); }
+.hud-intel__hint { margin: 10px 0 0; font-size: 12px; color: var(--accent); }
+.hud-type { opacity: 0; transform: translateX(-4px); animation: hud-type 320ms ease-out forwards; }
+@keyframes hud-type { to { opacity: 1; transform: none; } }
+.hud-info { display: inline-grid; place-items: center; width: 15px; height: 15px; border-radius: 50%; background: rgba(0, 0, 0, 0.06); font-size: 10px; font-weight: 600; color: var(--text-secondary); font-family: var(--font); }
+
+/* Briefing */
+.hud-caret { display: inline-block; width: 2px; height: 16px; margin-left: 2px; vertical-align: -3px; background: var(--accent); animation: hud-blink 0.9s steps(2) infinite; }
+@keyframes hud-blink { 50% { opacity: 0; } }
+.hud-brief__pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--positive); animation: hud-breathe 2.4s ease-in-out infinite; }
+@keyframes hud-breathe { 50% { opacity: 0.35; } }
+
+/* Funnel node pulse on the bottleneck */
+.hud-bneck { animation: hud-breathe 1.8s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hud-intel, .hud-type { animation: none; opacity: 1; transform: none; }
+  .hud-caret, .hud-brief__pulse, .hud-bneck { animation: none; }
+}
+
+/* Ranked bars grow in on tab switch */
+.hud-grow { transform-origin: left center; animation: hud-grow 700ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes hud-grow { from { transform: scaleX(0); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* Scanline sweep across the whole panel */
+.hud-scan { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; border-radius: inherit; }
+.hud-scan::after {
+  content: ""; position: absolute; left: 0; right: 0; top: -30%; height: 30%;
+  background: linear-gradient(180deg, transparent, rgba(255,255,255, 0.03), transparent);
+  animation: hud-scan 7s linear infinite;
+}
+@keyframes hud-scan { to { transform: translateY(440%); } }
+.hud-grid-bg {
+  position: absolute; inset: 0; z-index: -2; pointer-events: none;
+  background-image: linear-gradient(rgba(255,255,255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255, 0.03) 1px, transparent 1px);
+  background-size: 36px 36px;
+  mask-image: radial-gradient(80% 60% at 50% 0%, #000, transparent);
+}
+.hud-stat { min-height: 96px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hud-grow, .hud-scan::after { animation: none; }
+}
+
+/* The card with an open intel card rises above its neighbours (cards are stacking contexts). */
+.hud-card:has(.hud-intel:not(.sr-only)), .hud-raise:has(.hud-intel:not(.sr-only)) { z-index: 40; }
+
+/* Next-move actions */
+.hud-move-btn {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px;
+  border: 0; border-radius: var(--radius-pill); background: var(--accent-fill);
+  font-family: var(--font); font-size: 15px; font-weight: 600; color: var(--accent); cursor: pointer;
+  transition: background 160ms ease;
+}
+.hud-move-btn:hover { background: rgba(0, 113, 227, 0.18); }
+.hud-move-btn:disabled { opacity: 0.6; cursor: progress; }
+.hud-move-on { display: inline-flex; align-items: center; min-height: 32px; font-size: 13px; font-weight: 600; color: var(--positive); }
+.hud-pill { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: var(--radius-pill); background: color-mix(in srgb, currentColor 15%, transparent); font-family: var(--font); font-size: 12px; font-weight: 600; white-space: nowrap; }

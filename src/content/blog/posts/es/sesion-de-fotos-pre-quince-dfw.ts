@@ -77,7 +77,7 @@ const post: BlogPost = {
     {
       type: "cta",
       heading: "Reserve su sesión de fotos pre-quince",
-      body: `Nuestra Sesión de retratos (${PT.price.study}) es una sesión de ${PT.hours.study} hora con un fotógrafo: 60 fotos editadas. Elija su locación y su tema, y nosotros nos encargamos de la luz.`,
+      body: `Nuestra Sesión de retratos (${PT.price.study}) es una sesión de ${PT.hours.study} hora con un fotógrafo: {{photos.study}} fotos editadas. Elija su locación y su tema, y nosotros nos encargamos de la luz.`,
       href: "/es#intake",
       label: "Reservar su sesión",
     },

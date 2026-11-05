@@ -19,20 +19,23 @@ import { motion } from "motion/react";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { getFirstTouch } from "@/components/Tracker";
 import { ContactLine } from "@/components/ContactButtons";
-import { BASE_CREW, COORDINATOR_INCLUDED } from "@/lib/commission";
+import { BASE_CREW, COORDINATOR_INCLUDED, PUBLIC_TIER_IDS, momentsDateAllowed } from "@/lib/commission";
 import { HONEYPOT_FIELD } from "@/lib/inquiry";
+import { BUDGET_FOR_TIER, servicesForTier } from "@/lib/inquiry-package";
 import { site } from "@/content/site";
 import { usePriceBook } from "@/components/PriceBookProvider";
 import { ADD_ONS, CITIES, money, pick, tierById, type Lang, type TierId } from "./data";
 import { BOOKING_STEPS, isoDate, useAvailability, useQuote, useSite } from "./state";
 import { ExtrasStep, PackageStep, useTween } from "./Commissions";
 import "./booking-glass.css";
+import { TrustLine } from "@/components/TrustLine";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const LAST = BOOKING_STEPS - 1;
 const MAX_MONTHS_AHEAD = 36;
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-const BOOK_HASH = /^#book-(study|cinema|production|archive)$/;
+// Any package families can choose today (#book-moments, #book-trio, …).
+const BOOK_HASH = new RegExp(`^#book-(${PUBLIC_TIER_IDS.join("|")})$`);
 
 const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 // Turnstile is locked to production hostnames; local dev skips it (the API
@@ -70,9 +73,16 @@ const isTextField = (el: EventTarget | null) =>
   el instanceof HTMLElement &&
   el.matches("textarea, select, input:not([type=radio]):not([type=checkbox]):not([type=button]):not([type=submit])");
 
-export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) {
-  const { t, lang, tier, addOns, crew, hours, booking: b, updateBooking, resetBooking, pickPackage, pickTick } =
+/**
+ * `pickFromList`: the id of a package list on the same page (the homepage's
+ * #commissions). That list becomes the only package picker: step 1 shows the
+ * chosen package in one line (or asks her to pick one) instead of a second
+ * set of cards, and nothing is preselected until she picks.
+ */
+export const Intake = forwardRef<HTMLDivElement | null, { pickFromList?: string }>(function Intake({ pickFromList }, ref) {
+  const { t, lang, tier, addOns, crew, hours, booking: b, updateBooking, resetBooking, draftRestored, pickPackage, pickTick } =
     useSite();
+  const { book } = usePriceBook();
   const avail = useAvailability();
   const quote = useQuote();
   const step = b.step;
@@ -100,13 +110,25 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
   // The package decides what's covered: the Portrait Session is photos only.
   const scope = tier === "study" ? "stills" : "both";
   const moved = moveTick > 0 || pickTick > 0;
+  const listMode = Boolean(pickFromList);
+  /** Has she picked a package? Always true with the in-panel picker (it starts on Our pick). */
+  const chosen = !listMode || b.reached >= 1 || step >= 1;
+  const toList = () => {
+    const list = pickFromList ? document.getElementById(pickFromList) : null;
+    if (!list) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    list.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    list.querySelector<HTMLElement>(".ed-pkg a[href], .ed-pkg button")?.focus({ preventScroll: true });
+  };
 
   /* ---------- step moves ---------- */
 
   const errorsFor = (s: number): Errors => {
     const e: Errors = {};
+    if (s === 0 && !chosen) e.package = t.booking.listError;
     if (s === 2) {
       if (!b.date) e.date = t.booking.errors.date;
+      else if (!momentsDateAllowed(book, tier, b.date, isoDate(new Date()))) e.date = t.booking.errors.momentsSaturday(book.momentsSaturdayDays);
       if (!b.city) e.city = t.booking.errors.city;
     }
     if (s === 3) {
@@ -157,6 +179,33 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
     }
     headingRef.current?.focus({ preventScroll: true });
   }, [moveTick, pickTick]);
+
+  // Arriving on /#intake (from the budget page, or a shared link): keep the
+  // panel in view while the photos above it load and push it down, until the
+  // visitor scrolls or taps themselves. The router's own hash handling and
+  // late layout shifts can otherwise leave a fresh page at the top.
+  useEffect(() => {
+    if (window.location.hash !== "#intake") return;
+    let stopped = false;
+    const stop = () => (stopped = true);
+    const opts = { passive: true, once: true } as const;
+    const events = ["wheel", "touchstart", "keydown", "pointerdown"] as const;
+    events.forEach((e) => window.addEventListener(e, stop, opts));
+    const align = () => {
+      const panel = panelRef.current;
+      if (stopped || !panel) return;
+      const header = parseFloat(getComputedStyle(panel).scrollMarginTop) || 64;
+      const top = panel.getBoundingClientRect().top;
+      if (Math.abs(top - header) > 24) window.scrollBy({ top: top - header, behavior: "auto" });
+    };
+    const ids = [0, 150, 400, 800, 1300, 2000, 3000].map((ms) => window.setTimeout(align, ms));
+    window.addEventListener("load", align, { once: true });
+    return () => {
+      ids.forEach((id) => window.clearTimeout(id));
+      window.removeEventListener("load", align);
+      events.forEach((e) => window.removeEventListener(e, stop));
+    };
+  }, []);
 
   // "Book this" links anywhere: #book-<package> opens the panel at Hours & extras.
   useEffect(() => {
@@ -244,8 +293,8 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
           event_date: b.date,
           venue: b.venue.trim(),
           // The server derives services, budget and the priced summary from `package`.
-          services: tier === "study" ? "photo" : "both",
-          budget_range: "full",
+          services: servicesForTier(tier, addOns),
+          budget_range: BUDGET_FOR_TIER[tier],
           message: b.note.trim(),
           package: {
             city: b.city,
@@ -303,6 +352,16 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
         <Success done={done} onAgain={() => setDone(null)} headingRef={headingRef} />
       ) : (
         <>
+          {draftRestored ? (
+            <p className="tq-bk-welcome" role="status">
+              <span>
+                <strong>{t.booking.welcomeBack}</strong> {t.booking.welcomeSaved}
+              </span>
+              <button type="button" className="tq-bk-welcome__reset" onClick={resetBooking}>
+                {t.booking.startOver}
+              </button>
+            </p>
+          ) : null}
           <nav className="tq-bk-steps" aria-label={t.booking.stepsLabel}>
             <ol>
               {t.booking.steps.map((label, i) => {
@@ -360,11 +419,12 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
                     {t.booking.steps[step]}
                   </h3>
                   <p className="tq-bk-dek">
-                    {[t.booking.packageDek, t.booking.extrasDek, t.booking.dateDek, t.booking.detailsDek, t.booking.sendDek][step]}
+                    {[listMode ? t.booking.listDek : t.booking.packageDek, t.booking.extrasDek, t.booking.dateDek, t.booking.detailsDek, t.booking.sendDek][step]}
                   </p>
                 </div>
 
-                {step === 0 && <PackageStep />}
+                {step === 0 &&
+                  (listMode ? <ListPick chosen={chosen} error={errors.package} onToList={toList} /> : <PackageStep />)}
 
                 {step === 1 && <ExtrasStep onChangePackage={() => go(0)} />}
 
@@ -600,9 +660,10 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
                   {nextLabel} {sending ? null : <span className="tq-arrow" aria-hidden>→</span>}
                 </button>
               </div>
+              <TrustLine lang={lang} />
             </form>
 
-            <Totals nextLabel={nextLabel} sending={sending} />
+            <Totals nextLabel={nextLabel} sending={sending} chosen={chosen} />
           </div>
 
           {/* Phones + tablets: total · deposit and Next, pinned to the bottom. */}
@@ -614,12 +675,18 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
             inert={!showBar}
           >
             <span className="tq-bk-bar__sum tq-nums">
-              <span className="tq-bk-bar__total">
-                {t.booking.total}: {money(quote.totalUsd)}
-              </span>
-              <span className="tq-bk-bar__dep">
-                {t.booking.depositShort}: {money(quote.retainerUsd)}
-              </span>
+              {chosen ? (
+                <>
+                  <span className="tq-bk-bar__total">
+                    {t.booking.total}: {money(quote.totalUsd)}
+                  </span>
+                  <span className="tq-bk-bar__dep">
+                    {t.booking.depositShort}: {money(quote.retainerUsd)}
+                  </span>
+                </>
+              ) : (
+                <span className="tq-bk-bar__dep">{t.booking.listTotalHint}</span>
+              )}
             </span>
             <button type="submit" form="tq-bk-form" className="tq-btn tq-btn--lg" disabled={sending}>
               {nextLabel} {sending ? null : <span className="tq-arrow" aria-hidden>→</span>}
@@ -630,7 +697,7 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
 
       {/* One quiet announcement of the total for screen readers. */}
       <p className="tq-sr" aria-live="polite">
-        {done ? "" : `${t.booking.total}: ${money(quote.totalUsd)}`}
+        {done || !chosen ? "" : `${t.booking.total}: ${money(quote.totalUsd)}`}
       </p>
     </div>
   );
@@ -640,7 +707,43 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
 /* Running total — side card on desktop                                */
 /* ------------------------------------------------------------------ */
 
-function Totals({ nextLabel, sending }: { nextLabel: string; sending: boolean }) {
+/* ------------------------------------------------------------------ */
+/* Step 1 when the page's package list is the picker                  */
+/* ------------------------------------------------------------------ */
+
+function ListPick({ chosen, error, onToList }: { chosen: boolean; error?: string; onToList: () => void }) {
+  const { t, lang, tier } = useSite();
+  const q = useQuote();
+  const x = tierById(tier);
+  return (
+    <div className="tq-bk-listpick" data-chosen={chosen}>
+      {chosen ? (
+        <p className="tq-bk-listpick__pick tq-nums">
+          <strong>{pick(lang, x.name)}</strong>
+          <span>{money(q.tierUsd)}</span>
+        </p>
+      ) : (
+        <p className="tq-bk-listpick__pick">{t.booking.listNone}</p>
+      )}
+      <button
+        type="button"
+        className="tq-btn tq-btn--ghost"
+        onClick={onToList}
+        data-invalid={error ? "true" : undefined}
+        aria-describedby={error ? "tq-bk-listpick-err" : undefined}
+      >
+        {chosen ? t.booking.listChange : t.booking.listSee} <span className="tq-arrow" aria-hidden>↑</span>
+      </button>
+      {error ? (
+        <p id="tq-bk-listpick-err" className="tq-bk-listpick__err" role="alert">
+          {error}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+function Totals({ nextLabel, sending, chosen }: { nextLabel: string; sending: boolean; chosen: boolean }) {
   const { t, lang, tier, addOns, hours } = useSite();
   const { book } = usePriceBook();
   const q = useQuote();
@@ -649,35 +752,41 @@ function Totals({ nextLabel, sending }: { nextLabel: string; sending: boolean })
   return (
     <aside className="tq-bk-side" aria-label={t.booking.total}>
       <p className="tq-bk-kicker">{t.booking.total}</p>
-      <p className="tq-display tq-bk-side__total tq-nums" aria-hidden>
-        {money(shown)}
-      </p>
-      <dl className="tq-bk-lines tq-nums">
-        <div>
-          <dt>{pick(lang, x.name)}</dt>
-          <dd>{money(q.tierUsd)}</dd>
-        </div>
-        <div>
-          <dt>{t.booking.hourOption(hours)}</dt>
-          <dd>{hours > q.baseHours ? `+${money(q.extraHoursUsd)}` : t.booking.includedTag}</dd>
-        </div>
-        {ADD_ONS.filter((a) => addOns.includes(a.id)).map((a) => (
-          <div key={a.id}>
-            <dt>{pick(lang, a.name)}</dt>
-            <dd>+{money(book.addOns[a.id])}</dd>
-          </div>
-        ))}
-        <div className="tq-bk-lines__strong">
-          <dt>
-            {t.booking.deposit} <span className="tq-bk-lines__when">({t.booking.depositWhen})</span>
-          </dt>
-          <dd>{money(q.retainerUsd)}</dd>
-        </div>
-        <div>
-          <dt>{t.booking.rest}</dt>
-          <dd>{money(q.balanceUsd)}</dd>
-        </div>
-      </dl>
+      {chosen ? (
+        <>
+          <p className="tq-display tq-bk-side__total tq-nums" aria-hidden>
+            {money(shown)}
+          </p>
+          <dl className="tq-bk-lines tq-nums">
+            <div>
+              <dt>{pick(lang, x.name)}</dt>
+              <dd>{money(q.tierUsd)}</dd>
+            </div>
+            <div>
+              <dt>{t.booking.hourOption(hours)}</dt>
+              <dd>{hours > q.baseHours ? `+${money(q.extraHoursUsd)}` : t.booking.includedTag}</dd>
+            </div>
+            {ADD_ONS.filter((a) => addOns.includes(a.id)).map((a) => (
+              <div key={a.id}>
+                <dt>{pick(lang, a.name)}</dt>
+                <dd>+{money(book.addOns[a.id])}</dd>
+              </div>
+            ))}
+            <div className="tq-bk-lines__strong">
+              <dt>
+                {t.booking.deposit} <span className="tq-bk-lines__when">({t.booking.depositWhen})</span>
+              </dt>
+              <dd>{money(q.retainerUsd)}</dd>
+            </div>
+            <div>
+              <dt>{t.booking.rest}</dt>
+              <dd>{money(q.balanceUsd)}</dd>
+            </div>
+          </dl>
+        </>
+      ) : (
+        <p className="tq-bk-side__hint">{t.booking.listTotalHint}</p>
+      )}
       <button type="submit" form="tq-bk-form" className="tq-btn tq-btn--lg tq-btn--block" disabled={sending}>
         {nextLabel} {sending ? null : <span className="tq-arrow" aria-hidden>→</span>}
       </button>
@@ -886,7 +995,8 @@ function Calendar({
   onChange: (iso: string) => void;
   error?: string;
 }) {
-  const { t, lang } = useSite();
+  const { t, lang, tier } = useSite();
+  const { book } = usePriceBook();
   const { taken } = useAvailability();
   const today = useMemo(() => {
     const d = new Date();
@@ -968,16 +1078,18 @@ function Calendar({
             // Today can't be booked online (the server only accepts future dates).
             const past = d <= today;
             const isTaken = taken.has(iso);
+            // Just the Moments: Saturdays open only close to the date (server-enforced too).
+            const satClosed = !past && !momentsDateAllowed(book, tier, iso, isoDate(today));
             return (
               <button
                 key={iso}
                 type="button"
                 className="tq-day tq-nums"
-                disabled={past || isTaken}
+                disabled={past || isTaken || satClosed}
                 aria-pressed={value === iso}
-                aria-label={`${dayFmt.format(d)}${isTaken ? ` — ${t.booking.legendTaken}` : ""}`}
+                aria-label={`${dayFmt.format(d)}${isTaken ? ` — ${t.booking.legendTaken}` : satClosed ? ` — ${t.booking.momentsSatShort}` : ""}`}
                 data-past={past}
-                data-taken={isTaken}
+                data-taken={isTaken || satClosed}
                 data-sat={d.getDay() === 6}
                 onClick={() => onChange(iso)}
               >
@@ -986,6 +1098,7 @@ function Calendar({
             );
           })}
         </div>
+        {tier === "moments" ? <p className="tq-bk-hint tq-cal__note">{t.booking.momentsSatNote(book.momentsSaturdayDays)}</p> : null}
         <div className="tq-cal__legend" aria-hidden>
           <span>
             <i className="tq-cal__key" /> {t.booking.legendOpen}

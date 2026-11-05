@@ -1,6 +1,7 @@
 import { SlotImage } from "@/components/SlotImage";
 import Link from "next/link";
 import { InquiryForm } from "@/components/InquiryForm";
+import { BudgetCta } from "@/components/budget/BudgetCta";
 import { ContactButtons, ContactLine } from "@/components/ContactButtons";
 import { site } from "@/content/site";
 import { getFeaturedImages } from "@/lib/content-db";
@@ -155,6 +156,7 @@ export async function InquiryPage({ locale, initialDate = "" }: { locale: "en" |
           </div>
         </div>
       </section>
+      <BudgetCta placement="inquiry" />
     </>
   );
 }

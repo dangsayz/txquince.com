@@ -4,6 +4,7 @@ import { PT } from "@/lib/price-text";
 
 const study = PT.price.study;
 const solo = PT.price.solo;
+const moments = PT.price.moments;
 const cinema = PT.price.cinema;
 const trio = PT.price.trio;
 const retainerPct = PT.deposit.percent;
@@ -24,7 +25,7 @@ const post: BlogPost = {
     { type: "h2", text: "The short answer" },
     {
       type: "p",
-      text: `In Dallas–Fort Worth, most quinceañera studios publish photo-only packages around $1,500–$3,000 and photo + video packages around $3,000–$5,500. Luxury quince collections run $5,500–$8,000 and up, and for comparison, luxury Dallas wedding photo + video averages about $10,000. At [TX Quince](/#commissions), packages are published on the site — no quote form required: the ${study} Portrait Session, ${solo} Solo, ${cinema} Duo, and ${trio} Trio.`,
+      text: `In Dallas–Fort Worth, most quinceañera studios publish photo-only packages around $1,500–$3,000 and photo + video packages around $3,000–$5,500. Luxury quince collections run $5,500–$8,000 and up, and for comparison, luxury Dallas wedding photo + video averages about $10,000. At [TX Quince](/#commissions), packages are published on the site — no quote form required: the ${study} Portrait Session, ${moments} Just the Moments, ${solo} Solo, ${cinema} Duo, and ${trio} Trio.`,
     },
     {
       type: "p",
@@ -44,7 +45,7 @@ const post: BlogPost = {
       items: [
         "Coverage hours — a quince day runs long: getting ready, la misa, portraits, and the reception. Full-day coverage is the difference between a highlight and the whole story.",
         `One artist vs. a team — one photographer and one videographer on the Duo (${BASE_CREW.cinema} in all), two photographers and one videographer on the Trio (${BASE_CREW.trio}) — means the church and the reception entrance are both covered at once, with reverse angles you can't fake with one camera. A coordinator who runs the day can be added for ${PT.addon.coordinator} a day.`,
-        "Photo vs. photo + video — video is a separate craft and a separate edit. Our Solo gets you both from one shooter running a 2–3 camera setup, so a camera is on the action wherever it happens; the Duo and the Trio put a dedicated photographer and videographer on the day.",
+        "Photo vs. photo + video — video is a separate craft and a separate edit. Our Solo gets you both from one shooter running a {{cameras.solo}} camera setup, so a camera is on the action wherever it happens; the Duo and the Trio put a dedicated photographer and videographer on the day.",
         "Delivery — a private online gallery, and on the video packages the full-length film of her whole day plus a highlight (1 minute on the Duo, 3–5 minutes on the Trio, an add-on with the Solo). The Trio adds a printed album.",
       ],
     },
@@ -92,7 +93,7 @@ const post: BlogPost = {
   faqs: [
     {
       q: "How much should I budget for quinceañera photography in DFW?",
-      a: `Most DFW studios publish photo-only packages around $1,500–$3,000 and photo + video around $3,000–$5,500, with luxury quince collections at $5,500–$8,000 and up. TX Quince publishes four packages: the Portrait Session at ${study} (photo only), the Solo at ${solo} (photo + video from one shooter), the Duo at ${cinema}, and the Trio at ${trio}.`,
+      a: `Most DFW studios publish photo-only packages around $1,500–$3,000 and photo + video around $3,000–$5,500, with luxury quince collections at $5,500–$8,000 and up. TX Quince publishes five packages: the Portrait Session at ${study} (photo only), Just the Moments from ${moments} (2 hours of the presentation and family portraits), the Solo at ${solo} (photo + video from one shooter), the Duo at ${cinema}, and the Trio at ${trio}.`,
     },
     {
       q: "Do I need both a photographer and a videographer?",

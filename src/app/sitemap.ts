@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { INSPO_PLACES } from "@/content/inspo-places";
 import { site } from "@/content/site";
 import { locations } from "@/content/locations";
 import { getAllPosts, getAllEsPosts, esSlugForEn, enSlugForEs } from "@/content/blog";
@@ -29,11 +30,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/quinceanera-videographer", priority: 0.8 },
     { path: "/about", priority: 0.7 },
     { path: "/check-your-date", priority: 0.9 },
+    { path: "/budget", priority: 0.8 },
     { path: "/quinceanera-guide", priority: 0.9 },
     { path: "/quinceanera-photographer", priority: 0.8 },
     { path: "/es/fotografo-de-quinceaneras", priority: 0.8 },
     { path: "/es", priority: 0.9 },
     { path: "/es/consulta", priority: 0.9 },
+    { path: "/es/presupuesto", priority: 0.8 },
     // Personalized quince plan intake (EN ↔ ES).
     { path: "/plan", priority: 0.6 },
     { path: "/es/plan", priority: 0.6 },
@@ -46,6 +49,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/es/fotos-recientes", priority: 0.7 },
     { path: "/privacy", priority: 0.2 },
     { path: "/venues", priority: 0.7 },
+    // Photo-spot inspiration pages (EN + ES, hreflang pairs on the pages).
+    ...INSPO_PLACES.flatMap((p) => [
+      { path: p.path.en, priority: 0.7 },
+      { path: p.path.es, priority: 0.7 },
+    ]),
     // Venue landing pages — one per venue we shoot at (keyword targets).
     ...venues.map((v) => ({ path: `/venues/${v.slug}`, priority: 0.7 })),
     // Local SEO landing pages — one per DFW city served, EN + ES.
@@ -104,7 +112,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }),
   ];
 
-  // One indexable credit page per vendor, plus the directory once it has any (empty = noindex).
+  // One indexable credit page per vendor.
+  // The directory itself is listed only once it has vendors (empty = noindex).
   const vendors = await getVendors();
   const vendorEntries: MetadataRoute.Sitemap = vendors.map((v) => ({
     url: `${site.url}/vendors/${v.slug}`,

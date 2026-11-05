@@ -76,11 +76,11 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `This is exactly why every TX Quince photo + video package keeps photo and video with one team for the whole day — from the Solo, one shooter with a 2–3 camera setup who takes photos and films at once, to the Duo and the Trio, which put at least one photographer and one videographer on the day (up to a team of ${BASE_CREW.trio} with the Trio) — and a coordinator who runs the day can be added for ${PT.addon.coordinator} a day. They're TX Quince's own team photographers and videographers, assigned by date and availability (so we can't promise a specific person), and every gallery and film is edited by the owners. If you're weighing whether you even need video, read [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video) before you decide — it's the most common after-the-fact regret.`,
+      text: `This is exactly why every TX Quince photo + video package keeps photo and video with one team for the whole day — from the Solo, one shooter with a {{cameras.solo}} camera setup who takes photos and films at once, to the Duo and the Trio, which put at least one photographer and one videographer on the day (up to a team of ${BASE_CREW.trio} with the Trio) — and a coordinator who runs the day can be added for ${PT.addon.coordinator} a day. They're our own small in-house crew of photographers and videographers, sometimes with Dang or Yvonne, the owners, behind the camera, and every gallery and film is edited by the owners. If you're weighing whether you even need video, read [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video) before you decide — it's the most common after-the-fact regret.`,
     },
     {
       type: "cta",
-      heading: "See the four packages and what's included",
+      heading: "See the five packages and what's included",
       body: "Portrait Session, the Solo, the Duo, and the Trio — published prices and full inclusions on one page.",
       href: "/#commissions",
       label: "Compare packages",
@@ -135,7 +135,7 @@ const post: BlogPost = {
     },
     {
       q: "Should I hire one team for photo and video?",
-      a: `For a quinceañera, yes — one team is almost always better than two separate vendors. A coordinated photo-and-video team plans coverage together so they don't block each other, gives you one contract and one point of contact, and delivers a gallery and video that match in style and color. At TX Quince, every photo + video package keeps photo and video with one team for the whole day: the Solo is one shooter with a 2–3 camera setup, and the Duo and the Trio put at least one photographer and one videographer on the day — up to a team of ${BASE_CREW.trio} with the Trio.`,
+      a: `For a quinceañera, yes — one team is almost always better than two separate vendors. A coordinated photo-and-video team plans coverage together so they don't block each other, gives you one contract and one point of contact, and delivers a gallery and video that match in style and color. At TX Quince, every photo + video package keeps photo and video with one team for the whole day: the Solo is one shooter with a {{cameras.solo}} camera setup, and the Duo and the Trio put at least one photographer and one videographer on the day — up to a team of ${BASE_CREW.trio} with the Trio.`,
     },
     {
       q: "How do I know if a photographer is experienced with quinceañeras?",

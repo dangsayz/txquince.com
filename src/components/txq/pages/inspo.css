@@ -1,0 +1,181 @@
+/* ==========================================================================
+   Photo-spot inspiration pages (InspoPlacePage). Mobile-first from 360px.
+   Text is all ink (the house rule), so hierarchy comes from size, weight and
+   space. Photos are always shown whole: each frame takes the photo's own
+   aspect ratio and the image uses object-fit: contain. No crop, no overlay.
+   ========================================================================== */
+
+.txq .tq-inspo {
+  padding-bottom: 72px;
+}
+
+/* ---------- Hero ---------- */
+.txq .tq-inspo-hero {
+  display: grid;
+  gap: 40px;
+  padding-top: 40px;
+  padding-bottom: 56px;
+}
+.txq .tq-inspo-eyebrow {
+  margin: 0 0 16px;
+}
+.txq .tq-inspo-h1 {
+  margin: 0;
+  font-size: clamp(2rem, 1.4rem + 2.6vw, 3.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.txq .tq-inspo-answer {
+  margin: 24px 0 0;
+  max-width: 38rem;
+  font-size: clamp(1.125rem, 1rem + 0.4vw, 1.3125rem);
+  line-height: 1.55;
+}
+.txq .tq-inspo-lead {
+  margin: 16px 0 0;
+  max-width: 38rem;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+.txq .tq-inspo-credit {
+  margin: 24px 0 0;
+  max-width: 38rem;
+  padding-left: 14px;
+  border-left: 2px solid var(--text-primary);
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: var(--weight-medium);
+}
+.txq .tq-inspo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+.txq .tq-inspo-actions .tq-btn {
+  white-space: nowrap;
+}
+/* The money action: 48px tall. */
+.txq .tq-inspo-cta {
+  min-height: 48px;
+}
+@media (min-width: 960px) {
+  .txq .tq-inspo-hero {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 56px;
+    align-items: start;
+    padding-top: 64px;
+    padding-bottom: 96px;
+  }
+  .txq .tq-inspo-hero__text {
+    position: sticky;
+    top: calc(var(--header-h) + 32px);
+  }
+}
+
+/* ---------- Photos ---------- */
+.txq .tq-inspo-fig {
+  margin: 0;
+  break-inside: avoid;
+}
+.txq .tq-inspo-fig__frame {
+  width: 100%;
+  background: var(--bg-surface);
+}
+.txq .tq-inspo-fig__frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.txq .tq-inspo-fig__cap {
+  display: grid;
+  gap: 6px;
+  padding: 12px 0 0;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+/* The tall hero photo never runs taller than most of the screen. */
+.txq .tq-inspo-hero__photo .tq-inspo-fig {
+  max-width: min(100%, calc(80svh * var(--inspo-ar, 0.6667)));
+  margin-inline: auto;
+}
+@media (min-width: 960px) {
+  .txq .tq-inspo-hero__photo .tq-inspo-fig { max-width: min(100%, calc(84svh * var(--inspo-ar, 0.6667))); }
+}
+
+/* ---------- Gallery ---------- */
+.txq .tq-inspo-gallery {
+  display: grid;
+  gap: 40px;
+}
+@media (min-width: 768px) {
+  .txq .tq-inspo-gallery {
+    display: block;
+    columns: 2;
+    column-gap: 32px;
+  }
+  .txq .tq-inspo-gallery .tq-inspo-fig {
+    margin-bottom: 40px;
+  }
+}
+
+/* ---------- Text blocks ---------- */
+.txq .tq-inspo-block {
+  padding-top: 56px;
+  padding-bottom: 8px;
+  border-top: 1px solid var(--border-hairline);
+}
+.txq .tq-inspo-h2 {
+  margin: 0 0 24px;
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2.25rem);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.txq .tq-inspo-text > p,
+.txq .tq-inspo-list,
+.txq .tq-inspo-talk {
+  max-width: 40rem;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+.txq .tq-inspo-text > p {
+  margin: 0 0 16px;
+}
+.txq .tq-inspo-list {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding-left: 1.25em;
+}
+.txq .tq-inspo-talk {
+  margin: 32px 0 16px;
+}
+.txq .tq-inspo-links {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-width: 40rem;
+}
+.txq .tq-inspo-links li {
+  border-top: 1px solid var(--border-hairline);
+}
+.txq .tq-inspo-links li:last-child {
+  border-bottom: 1px solid var(--border-hairline);
+}
+.txq .tq-inspo-links a {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  min-height: 56px;
+  padding: 12px 0;
+  font-size: 1.0625rem;
+  line-height: 1.4;
+}
+@media (min-width: 960px) {
+  .txq .tq-inspo-block { padding-top: 80px; }
+}

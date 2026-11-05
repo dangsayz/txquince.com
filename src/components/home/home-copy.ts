@@ -4,29 +4,9 @@
  * Prices are never written here: package rows read the live price book, and
  * the FAQ answers come from copy.ts, which is filled from the same book.
  */
-import type { TierId } from "@/lib/commission";
 
-/** Package rows: the chips beside each price (hours and team come from the book). */
-export const PACKAGE_DETAIL: Record<TierId, { en: string; es: string }> = {
-  study: { en: "Photos only · 60 edited photos", es: "Solo fotos · 60 fotos editadas" },
-  solo: {
-    en: "Photo + video from a 2–3 camera setup · full-length film · 150+ photos",
-    es: "Foto + video con 2–3 cámaras · video completo · 150+ fotos",
-  },
-  cinema: {
-    en: "Dress or save-the-date session (30–40 photos) · full-length film + 1-min highlight · 400+ photos",
-    es: "Sesión con el vestido o save the date (30–40 fotos) · video completo + resumen de 1 min · 400+ fotos",
-  },
-  trio: {
-    en: "Dress or save-the-date session (30–40 photos) · full-length film + 3–5 min highlight · 700+ photos · album",
-    es: "Sesión con el vestido o save the date (30–40 fotos) · video completo + resumen de 3–5 min · 700+ fotos · álbum",
-  },
-  production: {
-    en: "Coordinator · portraits · full-length film + 3–5 min highlight · 700+ photos · album",
-    es: "Coordinadora · retratos · video completo + resumen de 3–5 min · 700+ fotos · álbum",
-  },
-  archive: { en: "20 min video · 1,000+ photos · large album", es: "Video de 20 min · 1,000+ fotos · álbum grande" },
-};
+// Package rows (the line under each name) are wording in the live price book:
+// tierDetail(book, id) in src/components/txq/data.ts, edited at /admin/packages.
 
 /** Topic tag per FAQ item in copy.ts, in the same order. */
 export const FAQ_TAGS = {

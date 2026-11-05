@@ -86,7 +86,6 @@ export function Favorites({ favorites }: { favorites: Favorite[] }) {
     <section className="fv" aria-labelledby="fv-title">
       <div className="ed-wrap">
         <header className="fv-head">
-          <p className="ed-label">{t.label}</p>
           <h2 id="fv-title" className="fv-title">{t.title}</h2>
           {groups.length > 1 ? (
             <div className="fv-filters" role="group" aria-label={t.filters}>

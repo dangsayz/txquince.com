@@ -41,7 +41,7 @@ export default async function VenuesPage() {
   const counts = await Promise.all(venues.map((v) => getImagesByVenue(v.slug)));
   const withCounts = venues.map((v, i) => ({ ...v, count: counts[i].length, image: counts[i][0] ?? null }));
   const heroPhoto = withCounts.find((venue) => venue.image?.url)?.image ?? null;
-  const fallbackHero = portfolioFallback.find((p) => p.url === "/portfolio/kimberly-reception.webp") ?? portfolioFallback[0];
+  const fallbackHero = portfolioFallback.find((p) => p.url === "/portfolio/hero.webp") ?? portfolioFallback[0];
   const totalPhotos = withCounts.reduce((n, v) => n + v.count, 0);
 
   // Group by city, cities ordered by total photos (busiest first).
