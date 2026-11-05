@@ -69,8 +69,8 @@ const fmtDay = (iso: string) =>
   new Date(`${iso}T12:00:00Z`).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
 
 function Delta({ now, before }: { now: number; before: number }) {
-  if (before === 0 && now === 0) return <span className="hud-mono text-xs text-[#8e8e93]">±0</span>;
-  if (before === 0) return <span className="hud-mono hud-up text-xs">NEW</span>;
+  if (before === 0 && now === 0) return <span className="hud-mono text-xs text-[rgba(235,235,245,0.6)]">±0</span>;
+  if (before === 0) return <span className="hud-mono hud-up text-xs">New</span>;
   const pct = Math.round(((now - before) / before) * 100);
   return (
     <span className={`hud-mono text-xs ${pct >= 0 ? "hud-up" : "hud-down"}`}>
@@ -143,7 +143,7 @@ export function TrendChart({
 
   return (
     <div className="hud-card">
-      <div role="tablist" aria-label="Metric" className="grid grid-cols-2 border-b border-[rgba(255,255,255,0.14)] lg:grid-cols-4">
+      <div role="tablist" aria-label="Metric" className="grid grid-cols-2 border-b border-[#38383A] lg:grid-cols-4">
         {METRICS.map((m, i) => {
           const tab = (
             <button role="tab" type="button" aria-selected={m.key === metric} onClick={() => setMetric(m.key)} className="hud-tab hud-focus h-full w-full">
@@ -164,7 +164,7 @@ export function TrendChart({
               </span>
             </button>
           );
-          const edge = `${i % 2 ? "border-l" : ""} ${i >= 2 ? "border-t lg:border-t-0" : ""} ${i === 2 ? "lg:border-l" : ""} border-[rgba(255,255,255,0.14)]`;
+          const edge = `${i % 2 ? "border-l" : ""} ${i >= 2 ? "border-t lg:border-t-0" : ""} ${i === 2 ? "lg:border-l" : ""} border-[#38383A]`;
           const it = intel?.[m.key];
           return it ? (
             <HudIntel key={m.key} intel={it} align={i % 2 || i === 3 ? "right" : "left"} className={edge}>
@@ -184,7 +184,7 @@ export function TrendChart({
           {label}: {totals[metric]} in the last {range} days, versus {previous[metric]} in the {range} days before.
         </p>
         <div className="relative flex gap-3">
-          <div aria-hidden className="hud-mono flex flex-col justify-between text-right text-[11px] text-[#8e8e93]" style={{ height: H, paddingTop: PAD_TOP - 6, paddingBottom: PAD_BOTTOM - 4 }}>
+          <div aria-hidden className="hud-mono flex flex-col justify-between text-right text-[13px] text-[rgba(235,235,245,0.6)]" style={{ height: H, paddingTop: PAD_TOP - 6, paddingBottom: PAD_BOTTOM - 4 }}>
             <span>{max}</span>
             <span>{max / 2}</span>
             <span>0</span>
@@ -201,16 +201,16 @@ export function TrendChart({
               <svg width={W} height={H} className="absolute inset-0 overflow-visible" aria-hidden>
                 <defs>
                   <linearGradient id={`stroke-${gid}`} x1="0" x2="1" y1="0" y2="0">
-                    <stop offset="0%" stopColor="#5e5ce6" />
+                    <stop offset="0%" stopColor="#0a84ff" />
                     <stop offset="100%" stopColor="#0a84ff" />
                   </linearGradient>
                   <linearGradient id={`fill-${gid}`} x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#0a84ff" stopOpacity="0.28" />
+                    <stop offset="0%" stopColor="#0a84ff" stopOpacity="0.25" />
                     <stop offset="100%" stopColor="#0a84ff" stopOpacity="0" />
                   </linearGradient>
                 </defs>
                 {[yOf(max), yOf(max / 2), yOf(0)].map((y) => (
-                  <line key={y} x1="0" x2={W} y1={y} y2={y} stroke="rgba(255,255,255,0.12)" strokeDasharray="3 5" />
+                  <line key={y} x1="0" x2={W} y1={y} y2={y} stroke="#38383A" strokeDasharray="3 5" />
                 ))}
                 {!empty ? <path key={`a-${metric}-${range}`} className="hud-fade" d={area} fill={`url(#fill-${gid})`} /> : null}
                 <path
@@ -220,7 +220,7 @@ export function TrendChart({
                   d={line}
                   fill="none"
                   stroke={empty ? "rgba(142,142,147,0.4)" : `url(#stroke-${gid})`}
-                  strokeWidth="2.25"
+                  strokeWidth="2"
                   strokeLinejoin="round"
                   strokeLinecap="round"
                 />
@@ -242,22 +242,22 @@ export function TrendChart({
             ) : null}
             {hp && hd ? (
               <span className="hud-tip" style={{ left: hp[0], transform: `translateX(${hp[0] > W * 0.7 ? "calc(-100% - 14px)" : "14px"})` }}>
-                <span className="block text-[#8e8e93]">{fmtDay(hd.date).toUpperCase()}</span>
-                <span className="text-[#f5f5f7]">
+                <span className="block text-[rgba(235,235,245,0.6)]">{fmtDay(hd.date)}</span>
+                <span className="text-[#ffffff]">
                   <span className="text-[#0a84ff]">{hd[metric].toLocaleString("en-US")}</span> {label.toLowerCase()}
                 </span>
               </span>
             ) : null}
             {empty ? (
-              <p className="hud-mono absolute inset-0 grid place-items-center text-sm text-[#8e8e93]">NO {label.toUpperCase()} YET IN THIS PERIOD</p>
+              <p className="hud-mono absolute inset-0 grid place-items-center text-sm text-[rgba(235,235,245,0.6)]">No {label.toLowerCase()} yet in this period</p>
             ) : null}
           </div>
         </div>
         {series.length ? (
-          <div aria-hidden className="hud-mono relative ml-9 mt-2 flex justify-between text-[11px] text-[#8e8e93]">
-            <span>{fmtDay(series[0].date).toUpperCase()}</span>
-            <span>{fmtDay(series[Math.floor((series.length - 1) / 2)].date).toUpperCase()}</span>
-            <span className="text-[#0a84ff]">● LIVE</span>
+          <div aria-hidden className="hud-mono relative ml-9 mt-2 flex justify-between text-[13px] text-[rgba(235,235,245,0.6)]">
+            <span>{fmtDay(series[0].date)}</span>
+            <span>{fmtDay(series[Math.floor((series.length - 1) / 2)].date)}</span>
+            <span className="text-[#0a84ff]">● Live</span>
           </div>
         ) : null}
       </div>

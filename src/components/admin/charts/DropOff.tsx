@@ -21,10 +21,10 @@ function Table({ title, rows }: { title: string; rows: Row[] }) {
           return (
             <li key={r.label} className="relative isolate flex min-h-10 items-center justify-between gap-3 px-1 text-sm">
               <span aria-hidden className="absolute inset-y-1.5 left-0 -z-10 rounded-[3px] bg-[rgba(255,255,255,0.07)]" style={{ width: `${Math.max(pct, 2)}%` }} />
-              <span className="min-w-0 truncate text-[#f5f5f7]">{r.label}</span>
-              <span className="hud-mono shrink-0 text-[13px] text-[#e5e5ea]">
+              <span className="min-w-0 truncate text-[#ffffff]">{r.label}</span>
+              <span className="hud-mono shrink-0 text-[13px] text-[#ffffff]">
                 {r.sessions}
-                <span className="ml-2 inline-block w-10 text-right" style={{ color: weak ? "#ff9f0a" : "#8e8e93" }}>{pct}%</span>
+                <span className="ml-2 inline-block w-10 text-right" style={{ color: weak ? "#ff9f0a" : "rgba(235,235,245,0.6)" }}>{pct}%</span>
               </span>
             </li>
           );
@@ -43,20 +43,20 @@ export function DropOff({ d, visits, range }: { d: RangedStats["dropoff"]; visit
     .sort((a, b) => a.reached / a.sessions - b.reached / b.sessions || b.sessions - a.sessions)[0];
   return (
     <section aria-labelledby="drop-title" className="hud-card min-w-0">
-      <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[rgba(255,255,255,0.14)] px-4 py-3.5 sm:px-5">
-        <h2 id="drop-title" className="hud-label m-0" style={{ color: "#f5f5f7" }}>
+      <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[#38383A] px-4 py-3.5 sm:px-5">
+        <h2 id="drop-title" className="hud-label m-0" style={{ color: "#ffffff" }}>
           Why they drop off
         </h2>
-        <p className="hud-mono m-0 text-[11px] text-[#8e8e93]">LAST {range}D · VISITS THAT NEVER SAW WORK OR PRICES</p>
+        <p className="hud-mono m-0 text-[13px] text-[rgba(235,235,245,0.6)]">Last {range} days · visits that never saw work or prices</p>
       </div>
       <div className="px-4 pt-3.5 sm:px-5">
-        <p className="m-0 text-base leading-7 text-[#f5f5f7]">
+        <p className="m-0 text-base leading-7 text-[#ffffff]">
           <span className="hud-mono text-[#ff9f0a]">{d.lost.toLocaleString("en-US")}</span> of {visits.toLocaleString("en-US")} visits ({lostPct}%) never saw your work or
           prices. <span className="hud-mono text-[#ff9f0a]">{onePct}%</span> of those opened one page and left.
         </p>
         {worst ? (
-          <p className="m-0 mt-1.5 text-[13px] leading-5 text-[#aeaeb2]">
-            <span className="hud-mono mr-1.5 text-[11px] text-[#0a84ff]">› FIX FIRST</span>
+          <p className="m-0 mt-1.5 text-[13px] leading-5 text-[rgba(235,235,245,0.6)]">
+            <span className="hud-mono mr-1.5 text-[13px] text-[#0a84ff]">Fix first:</span>
             {worst.label}: only {Math.round((worst.reached / worst.sessions) * 100)}% of its {worst.sessions} visits went on. Put real photos and one clear button
             (see the work, check your date) in its first screen.
           </p>
@@ -66,8 +66,8 @@ export function DropOff({ d, visits, range }: { d: RangedStats["dropoff"]; visit
         <Table title="Landed on" rows={d.landings} />
         <Table title="Came from" rows={d.sources} />
       </div>
-      <p className="hud-mono m-0 border-t border-[rgba(255,255,255,0.14)] px-4 py-3 text-[11px] leading-5 text-[#8e8e93] sm:px-5">
-        NOW COUNTED AS &quot;SAW WORK&quot;: SCROLLING TO THE HOMEPAGE GALLERIES, FILMS OR PACKAGES, PLUS /BUDGET AND THE PRICE AND PLAN PAGES.
+      <p className="hud-mono m-0 border-t border-[#38383A] px-4 py-3 text-[13px] leading-5 text-[rgba(235,235,245,0.6)] sm:px-5">
+        Now counted as “saw work”: scrolling to the homepage galleries, films or packages, plus /budget and the price and plan pages.
       </p>
     </section>
   );

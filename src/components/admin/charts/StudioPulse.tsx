@@ -83,20 +83,20 @@ export function StudioPulse({ s, basePath, range, moves }: { s: RangedStats; bas
     <section aria-labelledby="pulse-title" className="hud mt-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="min-w-0">
-          <p className="hud-label m-0" style={{ color: "#8e8e93" }}>Studio pulse</p>
-          <h2 id="pulse-title" className="mt-1 text-xl font-normal tracking-[-0.02em] text-[#f5f5f7] sm:text-2xl">How the site is doing</h2>
+          <p className="hud-label m-0" style={{ color: "rgba(235,235,245,0.6)" }}>Studio pulse</p>
+          <h2 id="pulse-title" className="mt-1 text-xl font-normal tracking-[-0.02em] text-[#ffffff] sm:text-2xl">How the site is doing</h2>
         </div>
         <nav aria-label="Period" className="hud-seg">
           {PULSE_RANGES.map((r) => (
             <Link key={r} href={`${basePath}?range=${r}`} scroll={false} aria-current={r === range ? "page" : undefined} className="hud-focus">
-              {r}D
+              {r}d
             </Link>
           ))}
         </nav>
       </div>
 
       {!s.configured ? (
-        <p className="hud-card mt-4 px-5 py-6 text-sm text-[#8e8e93]">Analytics appear here once the database connection is available.</p>
+        <p className="hud-card mt-4 px-5 py-6 text-sm text-[rgba(235,235,245,0.6)]">Analytics appear here once the database connection is available.</p>
       ) : (
         <div className="mt-4 grid gap-4">
           <Briefing lines={briefing(s)} />
@@ -120,13 +120,13 @@ export function StudioPulse({ s, basePath, range, moves }: { s: RangedStats; bas
           <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 lg:grid-cols-4">
             {stats.map((m, i) => (
               <HudIntel key={m.k} intel={intel[m.k]} side="top" align={i % 2 ? "right" : "left"}>
-                <button type="button" className="hud-card hud-focus hud-stat block w-full px-4 py-3.5 text-left transition-colors hover:border-[rgba(255,255,255,0.35)]">
+                <button type="button" className="hud-card hud-focus hud-stat block w-full px-4 py-3.5 text-left transition-colors hover:border-[#48484A]">
                   <span className="hud-label flex items-center gap-1.5 whitespace-nowrap">
                     <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: m.c, boxShadow: `0 0 8px ${m.c}` }} />
                     <span className="truncate">{m.label}</span>
                   </span>
-                  <span className="hud-value mt-2 block text-[#f5f5f7]">{m.v}</span>
-                  <span className="hud-mono mt-1.5 block truncate text-[11px] text-[#8e8e93]">{m.n}</span>
+                  <span className="hud-value mt-2 block text-[#ffffff]">{m.v}</span>
+                  <span className="hud-mono mt-1.5 block truncate text-[13px] text-[rgba(235,235,245,0.6)]">{m.n}</span>
                 </button>
               </HudIntel>
             ))}

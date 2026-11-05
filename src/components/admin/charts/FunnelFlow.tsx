@@ -90,11 +90,11 @@ export function FunnelFlow({
 
   return (
     <section aria-labelledby={`funnel-${gid}`} className="hud-card min-w-0">
-      <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[rgba(255,255,255,0.14)] px-4 py-3.5 sm:px-5">
-        <h2 id={`funnel-${gid}`} className="hud-label m-0" style={{ color: "#f5f5f7" }}>
+      <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[#38383A] px-4 py-3.5 sm:px-5">
+        <h2 id={`funnel-${gid}`} className="hud-label m-0" style={{ color: "#ffffff" }}>
           Booking funnel
         </h2>
-        <p className="hud-mono m-0 text-[11px] text-[#8e8e93]">LAST {range}D · % OF STEP BEFORE · HOVER A STEP</p>
+        <p className="hud-mono m-0 text-[13px] text-[rgba(235,235,245,0.6)]">Last {range} days · % of the step before · hover a step</p>
       </div>
 
       {/* Desktop / tablet: the stream */}
@@ -105,14 +105,14 @@ export function FunnelFlow({
             const isB = b?.step === i;
             return (
               <HudIntel key={s.label} intel={intel[i]} align={i >= steps.length - 2 ? "right" : "left"}>
-                <button type="button" className={`hud-focus block w-full min-w-0 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-[rgba(255,255,255,0.05)] ${i ? "border-l border-[rgba(255,255,255,0.12)]" : ""}`}>
+                <button type="button" className={`hud-focus block w-full min-w-0 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-[rgba(255,255,255,0.05)] ${i ? "border-l border-[#38383A]" : ""}`}>
                   <span className="hud-label block truncate">{s.label}</span>
                   <span className="hud-value mt-1.5 block" style={isB ? { color: AMBER, textShadow: `0 0 14px ${AMBER}66` } : undefined}>
                     {s.value.toLocaleString("en-US")}
                   </span>
-                  <span className="hud-mono mt-1 block text-[11px]" style={{ color: isB ? AMBER : "#8e8e93" }}>
-                    {pct === null ? "SOURCE" : `${pct}%`}
-                    {isB ? " · BOTTLENECK" : ""}
+                  <span className="hud-mono mt-1 block text-[13px]" style={{ color: isB ? AMBER : "rgba(235,235,245,0.6)" }}>
+                    {pct === null ? "Start" : `${pct}%`}
+                    {isB ? " · Bottleneck" : ""}
                   </span>
                 </button>
               </HudIntel>
@@ -125,7 +125,7 @@ export function FunnelFlow({
               <defs>
                 <linearGradient id={`band-${gid}`} x1="0" x2="1" y1="0" y2="0">
                   <stop offset="0%" stopColor="#0a84ff" stopOpacity="0.85" />
-                  <stop offset="100%" stopColor="#5e5ce6" stopOpacity="0.7" />
+                  <stop offset="100%" stopColor="#0a84ff" stopOpacity="0.7" />
                 </linearGradient>
                 <clipPath id={`clip-${gid}`}>
                   <path d={bandPath(hs, W)} />
@@ -151,7 +151,7 @@ export function FunnelFlow({
               {/* particles flowing through the stream */}
               <g clipPath={`url(#clip-${gid})`}>
                 {[-0.32, -0.16, 0, 0.16, 0.32].map((k, i) => (
-                  <path key={k} d={flowLine(hs, W, k)} fill="none" stroke="#f5f5f7" strokeOpacity={i === 2 ? 0.7 : 0.4} strokeWidth={i === 2 ? 2 : 1.4} strokeLinecap="round" className={`hud-flow ${i % 2 ? "hud-flow--slow" : ""}`} />
+                  <path key={k} d={flowLine(hs, W, k)} fill="none" stroke="#ffffff" strokeOpacity={i === 2 ? 0.7 : 0.4} strokeWidth={i === 2 ? 2 : 1.4} strokeLinecap="round" className={`hud-flow ${i % 2 ? "hud-flow--slow" : ""}`} />
                 ))}
               </g>
               {/* step markers */}
@@ -160,7 +160,7 @@ export function FunnelFlow({
                 const top = (H - hs[i]) / 2;
                 return (
                   <g key={s.label}>
-                    <line x1={i * cw} x2={i * cw} y1="0" y2={H} stroke="rgba(255,255,255,0.14)" strokeDasharray="2 4" />
+                    <line x1={i * cw} x2={i * cw} y1="0" y2={H} stroke="#38383A" strokeDasharray="2 4" />
                     <circle cx={x} cy={top} r="3" fill="#000000" stroke={b?.step === i ? AMBER : "#0a84ff"} strokeWidth="1.5" />
                   </g>
                 );
@@ -181,9 +181,9 @@ export function FunnelFlow({
                 <button type="button" className="hud-focus block min-h-11 w-full rounded-md px-1.5 py-1 text-left">
                   <span className="flex items-baseline justify-between gap-3">
                     <span className="hud-label min-w-0 truncate">{s.label}</span>
-                    <span className="hud-mono shrink-0 text-sm text-[#f5f5f7]">
+                    <span className="hud-mono shrink-0 text-sm text-[#ffffff]">
                       {s.value.toLocaleString("en-US")}
-                      {pct !== null ? <span className="ml-2 text-xs" style={{ color: isB ? AMBER : "#8e8e93" }}>{pct}%</span> : null}
+                      {pct !== null ? <span className="ml-2 text-xs" style={{ color: isB ? AMBER : "rgba(235,235,245,0.6)" }}>{pct}%</span> : null}
                     </span>
                   </span>
                   <span className="mt-1.5 block h-2 overflow-hidden rounded-full bg-[rgba(255,255,255,0.08)]">
@@ -191,7 +191,7 @@ export function FunnelFlow({
                       className={`block h-full rounded-full ${isB ? "hud-bneck" : ""}`}
                       style={{
                         width: `${Math.max(Math.sqrt(s.value / max) * 100, s.value ? 3 : 0)}%`,
-                        background: isB ? AMBER : "linear-gradient(90deg,#0a84ff,#5e5ce6)",
+                        background: isB ? AMBER : "linear-gradient(90deg,#0a84ff,#0a84ff)",
                         boxShadow: `0 0 12px ${isB ? AMBER : "#0a84ff"}88`,
                       }}
                     />
@@ -204,19 +204,19 @@ export function FunnelFlow({
       </ol>
 
       {b ? (
-        <div className="border-t border-[rgba(255,255,255,0.14)] px-4 py-3.5 sm:px-5">
+        <div className="border-t border-[#38383A] px-4 py-3.5 sm:px-5">
           <p className="hud-label m-0" style={{ color: AMBER }}>
-            ⚠ Bottleneck · {steps[b.step - 1].label} → {steps[b.step].label}
+            Bottleneck · {steps[b.step - 1].label} → {steps[b.step].label}
           </p>
-          <p className="mt-1.5 text-base text-[#f5f5f7]">
+          <p className="mt-1.5 text-base text-[#ffffff]">
             <span className="hud-mono" style={{ color: AMBER }}>{b.rate}%</span> make it through. Healthy is about{" "}
             <span className="hud-mono">{b.baseline}%</span>.
           </p>
-          <p className="mt-1 text-sm leading-6 text-[#aeaeb2]">{b.action}</p>
+          <p className="mt-1 text-sm leading-6 text-[rgba(235,235,245,0.6)]">{b.action}</p>
         </div>
       ) : (
-        <p className="hud-mono border-t border-[rgba(255,255,255,0.14)] px-4 py-3.5 text-xs text-[#8e8e93] sm:px-5">
-          BOTTLENECK DETECTION STARTS ONCE 10 PEOPLE REACH A STEP.
+        <p className="hud-mono border-t border-[#38383A] px-4 py-3.5 text-xs text-[rgba(235,235,245,0.6)] sm:px-5">
+          Bottleneck detection starts once 10 people reach a step.
         </p>
       )}
     </section>

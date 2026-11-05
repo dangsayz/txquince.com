@@ -111,12 +111,12 @@ export function HudIntel({
         <div className="hud-intel__head">
           <span className="hud-intel__dot" style={{ background: toneColor, boxShadow: `0 0 10px ${toneColor}` }} />
           <span>{intel.title}</span>
-          <span className="hud-intel__tag">INTEL</span>
+          <span className="hud-intel__tag">Intel</span>
         </div>
         <p className="hud-intel__k">What it is</p>
         <p className="hud-intel__p">{intel.what}</p>
         <p className="hud-intel__k">Right now</p>
-        <p className="hud-intel__p" style={{ color: "#f5f5f7" }}>{intel.read}</p>
+        <p className="hud-intel__p" style={{ color: "#ffffff" }}>{intel.read}</p>
         {showDeep && intel.todo.length ? (
           <div className="hud-intel__moves">
             <p className="hud-intel__k" style={{ color: toneColor }}>Next moves</p>
@@ -128,7 +128,7 @@ export function HudIntel({
                     <span className="mt-1.5 block">
                       {intel.trying?.[i] != null || started.includes(i) ? (
                         <span className="hud-mono hud-move-on">
-                          ● TRYING{intel.trying?.[i] != null ? ` · DAY ${intel.trying[i]}` : " · DAY 1"}
+                          ● Trying{intel.trying?.[i] != null ? ` · day ${intel.trying[i]}` : " · day 1"}
                         </span>
                       ) : (
                         <button type="button" className="hud-move-btn hud-focus" disabled={saving === i} onClick={() => tryMove(i, t)}>
