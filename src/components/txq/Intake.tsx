@@ -19,7 +19,7 @@ import { motion } from "motion/react";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { getFirstTouch } from "@/components/Tracker";
 import { ContactLine } from "@/components/ContactButtons";
-import { BASE_CREW, COORDINATOR_INCLUDED, PUBLIC_TIER_IDS, collectionParamTier, momentsDateAllowed } from "@/lib/commission";
+import { BASE_CREW, COORDINATOR_INCLUDED, PUBLIC_TIER_IDS, collectionFromLocation, collectionParamTier, momentsDateAllowed } from "@/lib/commission";
 import { HONEYPOT_FIELD } from "@/lib/inquiry";
 import { BUDGET_FOR_TIER, servicesForTier } from "@/lib/inquiry-package";
 import { site } from "@/content/site";
@@ -185,7 +185,7 @@ export const Intake = forwardRef<HTMLDivElement | null, { pickFromList?: string 
   // visitor scrolls or taps themselves. The router's own hash handling and
   // late layout shifts can otherwise leave a fresh page at the top.
   useEffect(() => {
-    if (window.location.hash !== "#intake") return;
+    if (!/^#intake(\?|$)/.test(window.location.hash)) return;
     let stopped = false;
     const stop = () => (stopped = true);
     const opts = { passive: true, once: true } as const;
@@ -208,8 +208,9 @@ export const Intake = forwardRef<HTMLDivElement | null, { pickFromList?: string 
   }, []);
 
   // "Book this" links anywhere: #book-<package> opens the panel at Hours & extras.
-  // So does /reserve?collection=<package> (redirected here as ?collection=…#intake);
-  // the parameter is then dropped so a reload keeps her own progress.
+  // So does /reserve?collection=<package> (redirected here as ?collection=…#intake,
+  // or #intake?collection=… in production); the parameter is then dropped so a
+  // reload keeps her own progress.
   useEffect(() => {
     const onHash = () => {
       const m = BOOK_HASH.exec(window.location.hash);
@@ -218,13 +219,15 @@ export const Intake = forwardRef<HTMLDivElement | null, { pickFromList?: string 
       history.replaceState(null, "", `${window.location.pathname}${window.location.search}#intake`);
     };
     const onLoad = () => {
-      const url = new URL(window.location.href);
-      if (BOOK_HASH.test(url.hash) || !url.searchParams.has("collection")) return onHash();
-      const requested = collectionParamTier(url.searchParams.get("collection"));
+      const { pathname, search, hash } = window.location;
+      if (BOOK_HASH.test(hash)) return onHash();
+      const requested = collectionParamTier(collectionFromLocation(search, hash));
       if (!requested) return;
       pickPackage(requested);
-      url.searchParams.delete("collection");
-      history.replaceState(null, "", `${url.pathname}${url.search}${url.hash || "#intake"}`);
+      const rest = new URLSearchParams(search);
+      rest.delete("collection");
+      const query = rest.toString();
+      history.replaceState(null, "", `${pathname}${query ? `?${query}` : ""}#intake`);
     };
     // After the draft restore (a parent effect) so the link wins over an old draft.
     const id = window.setTimeout(onLoad, 0);
