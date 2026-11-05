@@ -39,7 +39,7 @@ export function CellField({ intensity = 0.5 }: { intensity?: number }) {
       for (let y = 0; y < rows; y++) {
         for (let x = 0; x < cols; x++) {
           const v = heat[y * cols + x];
-          ctx!.fillStyle = v > 0.02 ? `rgba(214,196,160,${0.03 + v * 0.2})` : "rgba(214,196,160,0.025)";
+          ctx!.fillStyle = v > 0.02 ? `rgba(10,132,255,${0.04 + v * 0.22})` : "rgba(255,255,255,0.02)";
           ctx!.fillRect(x * CELL + 1, y * CELL + 1, CELL - 3, CELL - 3);
         }
       }

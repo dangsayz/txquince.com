@@ -73,20 +73,18 @@ export function StudioPulse({ s, basePath, range, moves }: { s: RangedStats; bas
   ];
 
   const stats = [
-    { k: "booked" as const, label: "Booked value", v: money(s.bookedValue), n: `${s.paid} paid all-time`, c: "#a3bf98" },
-    { k: "pipeline" as const, label: "In the pipeline", v: money(s.pipelineValue), n: `${s.requests} requests · ${s.pendingHolds} holds`, c: "#e0a564" },
-    { k: "bounce" as const, label: "Bounce rate", v: `${s.bounceRate}%`, n: `${s.pagesPerSession} pages per visit`, c: s.bounceRate > 60 ? "#d98e80" : "#d6c4a0" },
-    { k: "live" as const, label: "On the site now", v: String(s.liveNow.length), n: "Active in the last 5 min", c: "#d6c4a0" },
+    { k: "booked" as const, label: "Booked value", v: money(s.bookedValue), n: `${s.paid} paid all-time`, c: "#30d158" },
+    { k: "pipeline" as const, label: "In the pipeline", v: money(s.pipelineValue), n: `${s.requests} requests · ${s.pendingHolds} holds`, c: "#ff9f0a" },
+    { k: "bounce" as const, label: "Bounce rate", v: `${s.bounceRate}%`, n: `${s.pagesPerSession} pages per visit`, c: s.bounceRate > 60 ? "#ff453a" : "#0a84ff" },
+    { k: "live" as const, label: "On the site now", v: String(s.liveNow.length), n: "Active in the last 5 min", c: "#0a84ff" },
   ];
 
   return (
     <section aria-labelledby="pulse-title" className="hud mt-10">
-      <span aria-hidden className="hud-grid-bg" />
-      <span aria-hidden className="hud-scan" />
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="min-w-0">
-          <p className="hud-label m-0" style={{ color: "#d6c4a0" }}>TXQ // Studio pulse</p>
-          <h2 id="pulse-title" className="mt-1 text-xl font-normal tracking-[-0.02em] text-[#efeae2] sm:text-2xl">How the site is doing</h2>
+          <p className="hud-label m-0" style={{ color: "#8e8e93" }}>Studio pulse</p>
+          <h2 id="pulse-title" className="mt-1 text-xl font-normal tracking-[-0.02em] text-[#f5f5f7] sm:text-2xl">How the site is doing</h2>
         </div>
         <nav aria-label="Period" className="hud-seg">
           {PULSE_RANGES.map((r) => (
@@ -98,7 +96,7 @@ export function StudioPulse({ s, basePath, range, moves }: { s: RangedStats; bas
       </div>
 
       {!s.configured ? (
-        <p className="hud-card mt-4 px-5 py-6 text-sm text-[#9a948a]">Analytics appear here once the database connection is available.</p>
+        <p className="hud-card mt-4 px-5 py-6 text-sm text-[#8e8e93]">Analytics appear here once the database connection is available.</p>
       ) : (
         <div className="mt-4 grid gap-4">
           <Briefing lines={briefing(s)} />
@@ -122,13 +120,13 @@ export function StudioPulse({ s, basePath, range, moves }: { s: RangedStats; bas
           <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 lg:grid-cols-4">
             {stats.map((m, i) => (
               <HudIntel key={m.k} intel={intel[m.k]} side="top" align={i % 2 ? "right" : "left"}>
-                <button type="button" className="hud-card hud-focus hud-stat block w-full px-4 py-3.5 text-left transition-colors hover:border-[rgba(214,196,160,0.35)]">
+                <button type="button" className="hud-card hud-focus hud-stat block w-full px-4 py-3.5 text-left transition-colors hover:border-[rgba(255,255,255,0.35)]">
                   <span className="hud-label flex items-center gap-1.5 whitespace-nowrap">
                     <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: m.c, boxShadow: `0 0 8px ${m.c}` }} />
                     <span className="truncate">{m.label}</span>
                   </span>
-                  <span className="hud-value mt-2 block text-[#efeae2]">{m.v}</span>
-                  <span className="hud-mono mt-1.5 block truncate text-[11px] text-[#9a948a]">{m.n}</span>
+                  <span className="hud-value mt-2 block text-[#f5f5f7]">{m.v}</span>
+                  <span className="hud-mono mt-1.5 block truncate text-[11px] text-[#8e8e93]">{m.n}</span>
                 </button>
               </HudIntel>
             ))}
