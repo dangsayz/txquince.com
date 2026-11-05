@@ -301,10 +301,11 @@ export default async function VenuePage({
             </p>
           )}
           {stories.length ? (
-            <div>
-              <h3 className="tq-mono tq-muted" style={{ margin: "40px 0 16px", fontSize: "0.875rem", fontWeight: 400 }}>
-                From the journal · shot at {venue.venue}
-              </h3>
+            <div className="tq-place-stories">
+              <header className="tq-place-stories__head">
+                <p className="tq-mono tq-place-stories__label">From the journal</p>
+                <h3 className="tq-display tq-place-stories__title">Shot at {venue.venue}.</h3>
+              </header>
               <ol className="tq-place-guides">
                 {stories.map((g) => (
                   <li key={g.slug}>
