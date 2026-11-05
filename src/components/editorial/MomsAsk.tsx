@@ -52,7 +52,6 @@ export function MomsAsk() {
     <section id="questions" className="ma" aria-labelledby="ma-title">
       <div className="ed-wrap">
         <header className="ma-head">
-          <p className="ed-label">{c.label}</p>
           <h2 id="ma-title" className="ma-title">{c.title}</h2>
           <nav className="ma-jump" aria-label={c.jump}>
             {groups.map((g) => (

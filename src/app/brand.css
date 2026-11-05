@@ -18,6 +18,7 @@
   --tq-surface-2: #e2ddd5; /* greige — hairlines, quiet fills */
   --tq-ink: #111110; /* deep carbon — all text, primary fill */
   --tq-ink-on: #faf8f5; /* text on ink fills */
+  --tq-ink-mute: #4d4b48; /* secondary text: 8.2:1 on canvas, 5.7:1 on translucent cards */
   --tq-stone: #8c877f; /* control borders (3.4:1 on canvas, UI-only — not text) */
   --tq-hover: #d4cfc7; /* hover tint */
   --tq-cinema: #0d0d0c; /* obsidian — dark film-room sections */

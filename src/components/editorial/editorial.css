@@ -48,6 +48,9 @@
   color: var(--ed-ink);
 }
 .ed-label--light { color: #ffffff; }
+/* No one-word last lines (orphans) in body copy; headings balance. */
+.ed :where(p, li, dd) { text-wrap: pretty; }
+.ed h2 { text-wrap: balance; }
 .ed-display {
   font-family: var(--ed-display);
   font-weight: 500;
@@ -260,7 +263,9 @@
 .ed-card__list { align-self: stretch; display: grid; gap: 6px; padding-top: 16px !important; border-top: 1px solid rgba(0, 0, 0, 0.1); }
 .ed-card .ed-btn { border-radius: 999px; }
 .ed-card__list li { font-size: 15px; line-height: 1.5; }
-.ed-card__fine { font-size: 14px; color: var(--ed-mute); }
+/* Fine print sits on a translucent card over the dark film band, where
+   --ed-mute fell to 3.5:1; --tq-ink-mute holds 5.7:1 there. */
+.ed-card__fine { font-size: 14px; color: var(--tq-ink-mute); }
 
 /* ---------- Packages ---------- */
 .ed-packages { padding: clamp(96px, 12vw, 160px) 0; }
@@ -301,7 +306,9 @@
 .ed-crew { margin-top: 20px !important; font-size: 14px; color: var(--ed-mute); }
 .ed-pkg__price { font-family: var(--ed-display); font-size: 28px; letter-spacing: 0.02em; text-align: right; font-variant-numeric: tabular-nums; line-height: 1; }
 .ed-pkg__btn { width: 140px; padding: 0 12px; border-radius: 999px; }
-.ed-panel { margin-top: clamp(48px, 6vw, 80px); border-radius: 32px; background: #f5f5f7; padding: clamp(20px, 3vw, 40px); display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+/* Flat, not a card: the package cards inside carry their own border and
+   shadow, so a grey rounded box around them was a card inside a card. */
+.ed-panel { margin-top: clamp(48px, 6vw, 80px); border-top: 1px solid var(--ed-line); padding: clamp(32px, 4vw, 48px) 0 0; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 .ed-panel > .ed-dek { margin-bottom: 10px; }
 
 /* "Latest photos" (Photo dump) in the same quiet type. */
@@ -346,7 +353,7 @@
 .ed-q__a { margin: 0 56px 24px 0 !important; color: var(--ed-ink); }
 .ed-where { display: flex; flex-direction: column; gap: 16px; padding-top: 56px; }
 .ed-cities { display: flex; flex-wrap: wrap; gap: 4px 24px; }
-.ed-city { display: inline-flex; align-items: center; min-height: 44px; color: var(--ed-ink); text-decoration: none; }
+.ed-city { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; color: var(--ed-ink); text-decoration: none; }
 .ed-city:hover { text-decoration: underline; text-underline-offset: 6px; }
 .ed-services { display: flex; flex-wrap: wrap; gap: 0 28px; }
 
@@ -373,8 +380,11 @@
   .ed-feature { min-height: 130svh; }
   .ed-feature__track { min-height: 130svh; justify-content: center; padding-top: 10svh; }
 
-  .ed-pkg { grid-template-columns: 32px minmax(0, 1fr) auto; gap: 12px 14px; padding: 20px; border-radius: 22px; }
-  .ed-pkg__btn { grid-column: 2 / -1; width: 100%; }
+  /* Price drops under the details on phones: beside them it squeezed each
+     description into a 4-line strip at 390px. */
+  .ed-pkg { grid-template-columns: 32px minmax(0, 1fr); gap: 12px 14px; padding: 20px; border-radius: 22px; }
+  .ed-pkg__price { grid-column: 2; text-align: left; }
+  .ed-pkg__btn { grid-column: 2; width: 100%; }
 
   .ed-news { grid-template-columns: minmax(0, 1fr); }
   .ed-q__text { font-size: 17px; }

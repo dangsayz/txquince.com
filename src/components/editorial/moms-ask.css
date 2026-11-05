@@ -32,7 +32,9 @@
 .ma-jump__link {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   min-height: 44px;
+  min-width: 44px;
   font-family: var(--ed-display);
   font-size: 1rem;
   font-weight: 500;
@@ -71,7 +73,7 @@
   font-size: 1rem;
   line-height: 1.65;
   color: var(--ed-ink);
-  max-width: 62ch;
+  max-width: 34em; /* ~75 Inter characters; 62ch ran to ~87 */
 }
 @media (min-width: 960px) {
   .ma-row {

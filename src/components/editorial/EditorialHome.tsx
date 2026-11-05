@@ -210,7 +210,6 @@ function Statement() {
   return (
     <section id="editorial" className="ed-statement" aria-labelledby="ed-statement-title">
       <div className="ed-statement__in" data-ed="drift">
-        <p className="ed-label">{s.label}</p>
         <h2 id="ed-statement-title" className="ed-display ed-display--lg">
           {s.title}
         </h2>
@@ -519,7 +518,6 @@ function Packages({ children }: { children: ReactNode }) {
     <section id="commissions" className="ed-packages" aria-labelledby="ed-pk-title">
       <div className="ed-wrap">
         <div className="ed-head" data-ed="rise">
-          <p className="ed-label">{p.label}</p>
           <h2 id="ed-pk-title" className="ed-display ed-display--lg">
             {p.title}
           </h2>
@@ -604,7 +602,6 @@ function JournalRow({ journal }: { journal: Journal }) {
       <div className="ed-wrap">
         <div className="ed-journal__head">
           <div>
-            <p className="ed-label">{j.label}</p>
             <h2 id="ed-journal-title" className="ed-journal__title">
               {j.title}
             </h2>
