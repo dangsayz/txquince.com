@@ -16,6 +16,17 @@ export type RangedStats = {
   pagesPerSession: number;
   bounceRate: number;
   daily: { date: string; count: number }[];
+  /** Per day in the range: page views, distinct visitors, new leads (inquiries + plans). */
+  series: { date: string; views: number; visitors: number; leads: number }[];
+  /** The same totals for the period just before this one, for "vs previous" deltas. */
+  previous: { views: number; visitors: number; leads: number; booked: number };
+  /** New leads (inquiries + quince plans) and paid bookings inside the range. */
+  rangeLeads: number;
+  rangeBooked: number;
+  /** One consistent window: visitors → saw work/prices → took action → lead → booked. */
+  flow: { label: string; value: number }[];
+  /** The step whose drop-off is worst vs. a healthy baseline (null = not enough data yet). */
+  flowBottleneck: { step: number; rate: number; baseline: number; action: string } | null;
   topPages: { label: string; count: number }[];
   topReferrers: { label: string; count: number }[];
   utmSources: { label: string; count: number }[];
@@ -88,6 +99,12 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     pagesPerSession: 0,
     bounceRate: 0,
     daily: [],
+    series: [],
+    previous: { views: 0, visitors: 0, leads: 0, booked: 0 },
+    rangeLeads: 0,
+    rangeBooked: 0,
+    flow: [],
+    flowBottleneck: null,
     topPages: [],
     topReferrers: [],
     utmSources: [],
@@ -122,14 +139,15 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     const startToday = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
     const start7 = new Date(now - 7 * 86400_000).toISOString();
     const startRange = new Date(now - range * 86400_000).toISOString();
+    const startPrev = new Date(now - 2 * range * 86400_000).toISOString();
 
     const week = new Date(now - 7 * 86400_000).toISOString();
-    const [pvRes, leRes, bookings, inquiries, imgWeekRes, vidRes, lastChangeRes] =
+    const [pvRes, leRes, bookings, inquiries, imgWeekRes, vidRes, lastChangeRes, plansRes] =
       await Promise.all([
         supabase
           .from("page_views")
           .select("path, referrer, session_id, utm_source, utm_medium, created_at")
-          .gte("created_at", startRange)
+          .gte("created_at", startPrev)
           .order("created_at", { ascending: true }),
         supabase.from("lead_events").select("event_type").gte("created_at", startRange),
         getBookings(),
@@ -146,9 +164,13 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
           .order("created_at", { ascending: false })
           .limit(1)
           .maybeSingle(),
+        // Quince plans count as leads (table from migration 0023; absent → none).
+        supabase.from("quince_plans").select("created_at").gte("created_at", startPrev),
       ]);
 
-    const rows = (pvRes.data ?? []) as PV[];
+    const allRows = (pvRes.data ?? []) as PV[];
+    const rows = allRows.filter((r) => r.created_at >= startRange);
+    const prevRows = allRows.filter((r) => r.created_at < startRange);
     const events = (leRes.data ?? []) as LE[];
 
     // ---- traffic ----
@@ -202,14 +224,20 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     const paymentReview = reviewBookings.length;
     const paymentReviewValue =
       reviewBookings.reduce((s, b) => s + (b.deposit_amount_cents ?? 0), 0) / 100;
-    const valueOf = (collection: string | null) =>
-      collection ? (collectionById(collection)?.price ?? 0) : 0;
+    // A booking's value: the total stored on it when it was made (today's
+    // packages keep it in metadata.total_usd); older rows fall back to the
+    // retired collection's list price.
+    const valueOf = (b: (typeof bookings)[number]) => {
+      const total = Number(b.metadata?.total_usd);
+      if (Number.isFinite(total) && total > 0) return total;
+      return b.collection ? (collectionById(b.collection)?.price ?? 0) : 0;
+    };
     const bookedValue = bookings
       .filter((b) => b.status === "paid")
-      .reduce((s, b) => s + valueOf(b.collection), 0);
+      .reduce((s, b) => s + valueOf(b), 0);
     const pipelineValue = bookings
       .filter((b) => b.status === "requested" || b.status === "pending_payment")
-      .reduce((s, b) => s + valueOf(b.collection), 0);
+      .reduce((s, b) => s + valueOf(b), 0);
 
     // DB constraint allows new | won | lost | unsubscribed — only "new" is open.
     const openLeads = inquiries.filter(
@@ -240,7 +268,7 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
       if (bk.status === "requested" || bk.status === "pending_payment" || bk.status === "paid") {
         const row = bump(srcKey(bk.attribution));
         row.requests += 1;
-        if (bk.status === "paid") row.bookedValue += valueOf(bk.collection);
+        if (bk.status === "paid") row.bookedValue += valueOf(bk);
       }
     }
     const bySource = Array.from(sourceMap.values())
@@ -304,7 +332,7 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     // ---- bottleneck finder: weakest funnel edge vs. healthy baseline ----
     // Only judge an edge once its denominator is meaningful (≥20).
     const moneyPageSessions = Array.from(journeys.values()).filter((steps) =>
-      steps.some((s) => /^\/(investment|portfolio|reserve|photos)/.test(s.path)),
+      steps.some((s) => /^\/(es\/)?(investment|portfolio|reserve|photos|fotos-recientes|plan|quince-prices-dfw|precios-quince-dfw)/.test(s.path) || /^\/(es\/)?(blog|venues)\//.test(s.path)),
     ).length;
     const intentTotal = ctaClicks + formStarts + dateChecks;
     const totalRequests = bookings.filter((b) =>
@@ -393,9 +421,70 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     if (pipelineValue > 0)
       insights.push({ type: "info", text: `$${pipelineValue.toLocaleString()} in pipeline value is held but not yet paid.` });
 
+    // ---- per-day series + previous period ----
+    const plans = ((plansRes as { data?: { created_at: string }[] | null })?.data ?? []) as { created_at: string }[];
+    const leadTimes = [...inquiries.map((i) => i.created_at), ...plans.map((p) => p.created_at)];
+    const seriesMap = new Map<string, { views: number; sids: Set<string>; leads: number }>();
+    for (const d of dailyMap.keys()) seriesMap.set(d, { views: 0, sids: new Set(), leads: 0 });
+    for (const r of rows) {
+      const day = seriesMap.get(dayKey(r.created_at));
+      if (!day) continue;
+      day.views += 1;
+      day.sids.add(r.session_id ?? "anon");
+    }
+    for (const t of leadTimes) {
+      if (t < startRange) continue;
+      const day = seriesMap.get(dayKey(t));
+      if (day) day.leads += 1;
+    }
+    const series = Array.from(seriesMap.entries()).map(([date, v]) => ({ date, views: v.views, visitors: v.sids.size, leads: v.leads }));
+    const rangeLeads = leadTimes.filter((t) => t >= startRange).length;
+    const paidAt = (b: (typeof bookings)[number]) => (b as { paid_at?: string | null }).paid_at ?? null;
+    const rangeBooked = bookings.filter((b) => b.status === "paid" && (paidAt(b) ?? "") >= startRange).length;
+    const previous = {
+      views: prevRows.length,
+      visitors: new Set(prevRows.map((r) => r.session_id ?? "anon")).size,
+      leads: leadTimes.filter((t) => t >= startPrev && t < startRange).length,
+      booked: bookings.filter((b) => b.status === "paid" && (paidAt(b) ?? "") >= startPrev && (paidAt(b) ?? "") < startRange).length,
+    };
+
+    // ---- the flow: one window, five steps ----
+    const flow = [
+      { label: "Visitors", value: uniqueSessions },
+      { label: "Saw work or prices", value: moneyPageSessions },
+      { label: "Took action", value: intentTotal },
+      { label: "Leads", value: rangeLeads },
+      { label: "Booked", value: rangeBooked },
+    ];
+    // Healthy step-to-step rates; the worst ratio vs. healthy is the bottleneck.
+    const FLOW_RULES = [
+      { baseline: 0.35, action: "Most visitors leave without opening your work or prices. Put real galleries and the package prices higher on the homepage and landing pages." },
+      { baseline: 0.25, action: "They look but don't act. Make the next step obvious next to the work: check your date, get a plan, text us." },
+      { baseline: 0.3, action: "They start but don't finish. Shorten the form, say there's nothing to pay, and test it on a phone." },
+      { baseline: 0.5, action: "Leads stall before paying. Reply within the hour, send the plan or deposit link the same day, and follow up on day 2 and day 5." },
+    ];
+    let flowBottleneck: RangedStats["flowBottleneck"] = null;
+    let worstRatio = 1;
+    for (let i = 1; i < flow.length; i++) {
+      const den = flow[i - 1].value;
+      if (den < 10) continue;
+      const rate = flow[i].value / den;
+      const ratio = rate / FLOW_RULES[i - 1].baseline;
+      if (ratio < worstRatio) {
+        worstRatio = ratio;
+        flowBottleneck = { step: i, rate: Math.round(rate * 100), baseline: Math.round(FLOW_RULES[i - 1].baseline * 100), action: FLOW_RULES[i - 1].action };
+      }
+    }
+
     return {
       configured: true,
       range,
+      series,
+      previous,
+      rangeLeads,
+      rangeBooked,
+      flow,
+      flowBottleneck,
       today,
       last7,
       rangeViews,
