@@ -60,7 +60,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `What a good answer sounds like: whether a second shooter is included, available as an add-on, or not offered — and on which packages. With us, the Trio comes with two photographers and a videographer, and a coordinator who runs the day can be added for ${PT.addon.coordinator} a day. They're TX Quince's own team photographers and videographers, assigned by date and availability — families can't request specific people, the owners included — and every gallery and film is edited by the owners. You can see the reverse angles and dual-coverage moments they make possible across the [portfolio](/portfolio). If a photographer can't show you two-camera coverage, assume they work solo.`,
+      text: `What a good answer sounds like: whether a second shooter is included, available as an add-on, or not offered — and on which packages. With us, the Trio comes with two photographers and a videographer, and a coordinator who runs the day can be added for ${PT.addon.coordinator} a day. They're TX Quince's own team photographers and videographers, assigned by date and availability, so we can't promise a specific person, and every gallery and film is edited by the owners. You can see the reverse angles and dual-coverage moments they make possible across the [portfolio](/portfolio). If a photographer can't show you two-camera coverage, assume they work solo.`,
     },
     { type: "h2", text: "5. Do I get full usage and print rights to the images?" },
     {

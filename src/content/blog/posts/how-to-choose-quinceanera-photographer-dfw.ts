@@ -76,7 +76,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `This is exactly why every TX Quince photo + video package keeps photo and video with one team for the whole day — from the Solo, one shooter with a 2–3 camera setup who takes photos and films at once, to the Duo and the Trio, which put at least one photographer and one videographer on the day (up to a team of ${BASE_CREW.trio} with the Trio) — and a coordinator who runs the day can be added for ${PT.addon.coordinator} a day. They're TX Quince's own team photographers and videographers, assigned by date and availability (families can't request specific people, the owners included), and every gallery and film is edited by the owners. If you're weighing whether you even need video, read [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video) before you decide — it's the most common after-the-fact regret.`,
+      text: `This is exactly why every TX Quince photo + video package keeps photo and video with one team for the whole day — from the Solo, one shooter with a 2–3 camera setup who takes photos and films at once, to the Duo and the Trio, which put at least one photographer and one videographer on the day (up to a team of ${BASE_CREW.trio} with the Trio) — and a coordinator who runs the day can be added for ${PT.addon.coordinator} a day. They're TX Quince's own team photographers and videographers, assigned by date and availability (so we can't promise a specific person), and every gallery and film is edited by the owners. If you're weighing whether you even need video, read [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video) before you decide — it's the most common after-the-fact regret.`,
     },
     {
       type: "cta",

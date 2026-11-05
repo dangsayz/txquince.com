@@ -106,7 +106,7 @@ const T = {
     teamSolo: "Your team: 1 hybrid shooter taking photos and video at the same time, with a 2–3 camera setup",
     crew: "Who covers your day",
     crewLines: [
-      "Your day is covered by TX Quince team photographers and videographers, assigned by the studio. Requests for specific team members, including the owners, are not accepted.",
+      "Your day is covered by TX Quince team photographers and videographers, assigned by the studio by date and availability, so a specific team member can't be promised.",
       "Every gallery and film is edited by the owners.",
     ],
     media: "Your photos and videos",
@@ -162,7 +162,7 @@ const T = {
     teamSolo: "Tu equipo: 1 fotógrafo y videógrafo en uno, que toma fotos y graba al mismo tiempo con 2–3 cámaras",
     crew: "Quién cubre tu día",
     crewLines: [
-      "Tu día lo cubren fotógrafos y videógrafos del equipo de TX Quince, asignados por el estudio. No se aceptan peticiones de miembros específicos del equipo, incluidos los dueños.",
+      "Tu día lo cubren fotógrafos y videógrafos del equipo de TX Quince, asignados por el estudio según la fecha y la disponibilidad, así que no se puede prometer a un miembro específico del equipo.",
       "Cada galería y cada video lo editan los dueños.",
     ],
     media: "Tus fotos y videos",
