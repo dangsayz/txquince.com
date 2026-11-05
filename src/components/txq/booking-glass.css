@@ -55,7 +55,7 @@
 .txq .tq-bk .tq-btn:active { transform: scale(0.98); }
 .txq .tq-bk .tq-btn--ghost { background: var(--g-fill); color: var(--g-ink); }
 .txq .tq-bk .tq-btn--ghost:hover { background: var(--g-fill-2); }
-.txq .tq-bk .tq-btn:focus-visible { outline: 3px solid rgba(0, 113, 227, 0.6); outline-offset: 2px; }
+.txq .tq-bk .tq-btn:focus-visible { outline: 2px solid var(--g-ink); outline-offset: 2px; }
 
 /* ---------- Step strip ---------- */
 .txq .tq-bk .tq-bk-steps ol::before { background: var(--g-line); }
@@ -88,7 +88,7 @@
   border-color: transparent;
   box-shadow: 0 0 0 2px var(--g-ink), var(--g-lift);
 }
-.txq .tq-bk .tq-pkg:has(.tq-pkg__input:focus-visible) { outline: 3px solid rgba(0, 113, 227, 0.6); outline-offset: 3px; }
+.txq .tq-bk .tq-pkg:has(.tq-pkg__input:focus-visible) { outline: 2px solid var(--g-ink); outline-offset: 3px; }
 .txq .tq-bk .tq-pkg__num { font-size: 13px; font-weight: 600; color: var(--g-mute); letter-spacing: 0.02em; }
 .txq .tq-bk .tq-pkg__badge {
   min-height: 28px;

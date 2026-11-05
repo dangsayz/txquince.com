@@ -472,7 +472,7 @@ function Feature() {
         />
       </div>
       <div className="ed-feature__track">
-        <div className="ed-card">
+        <div className="ed-card" data-header-tone="light">
           <p className="ed-label">{e.feature.label}</p>
           <h2 id="ed-feature-title" className="ed-display ed-display--md">
             {tier.name[lang]}

@@ -154,7 +154,9 @@
   font-family: var(--ed-display);
   font-weight: 500;
   text-transform: uppercase;
-  font-size: clamp(52px, 8.6vw, 132px);
+  /* Floor scales with narrow phones so the longest line (ES "MOMENTO DE")
+     fits 360px; from ~420px up it is the same 52px floor as before. */
+  font-size: clamp(min(52px, 12.4vw), 8.6vw, 132px);
   line-height: 0.85;
   letter-spacing: 0.04em;
   color: #ffffff;
@@ -166,8 +168,10 @@
   from { transform: translateY(105%); }
   to { transform: translateY(0); }
 }
-.ed-hero__foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px; }
-.ed-hero__note { font-size: 14px; color: rgba(255, 255, 255, 0.86); }
+.ed-hero__foot { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; }
+/* Sits beside Reserve (it was ~900px away on wide screens); full white,
+   since 0.86 alpha fell to ~2.3:1 over the bright parts of the photo. */
+.ed-hero__note { font-size: 1rem; color: #ffffff; text-shadow: 0 1px 12px rgba(0, 0, 0, 0.45); }
 
 /* ---------- Statement ---------- */
 .ed-statement { padding: clamp(112px, 16vw, 220px) var(--ed-gutter) clamp(96px, 12vw, 180px); }
@@ -247,10 +251,8 @@
   top: calc(var(--header-h) + 6svh);
   align-self: flex-start;
   width: min(420px, 100%);
-  background: rgba(255, 255, 255, 0.78);
-  -webkit-backdrop-filter: saturate(180%) blur(24px);
-  backdrop-filter: saturate(180%) blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: #ffffff; /* opaque paper, not frosted glass */
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 28px;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
   padding: clamp(28px, 3vw, 40px);
@@ -263,8 +265,7 @@
 .ed-card__list { align-self: stretch; display: grid; gap: 6px; padding-top: 16px !important; border-top: 1px solid rgba(0, 0, 0, 0.1); }
 .ed-card .ed-btn { border-radius: 999px; }
 .ed-card__list li { font-size: 15px; line-height: 1.5; }
-/* Fine print sits on a translucent card over the dark film band, where
-   --ed-mute fell to 3.5:1; --tq-ink-mute holds 5.7:1 there. */
+/* --tq-ink-mute: 8:1 on the white card. */
 .ed-card__fine { font-size: 14px; color: var(--tq-ink-mute); }
 
 /* ---------- Packages ---------- */

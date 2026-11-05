@@ -96,12 +96,17 @@ export function SiteHeader() {
     const check = () => {
       raf = 0;
       const line = 32;
+      // A light element (e.g. a white card) inside a dark section wins, so
+      // white header text never lands on white.
       let dark = false;
-      document.querySelectorAll('[data-header-tone="dark"]').forEach((el) => {
+      let light = false;
+      document.querySelectorAll("[data-header-tone]").forEach((el) => {
         const r = el.getBoundingClientRect();
-        if (r.top <= line && r.bottom >= line) dark = true;
+        if (r.top > line || r.bottom < line) return;
+        if (el.getAttribute("data-header-tone") === "light") light = true;
+        else dark = true;
       });
-      setTone(dark ? "dark" : "light");
+      setTone(dark && !light ? "dark" : "light");
       setScrolled(window.scrollY > 8);
     };
     const onScroll = () => {
