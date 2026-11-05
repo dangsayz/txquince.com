@@ -1,3 +1,4 @@
+import { sourceKey } from "@/lib/ref-tag";
 import Link from "next/link";
 import { requireAdminPage } from "@/lib/require-admin";
 import { listPlans } from "@/lib/plan-db";
@@ -16,7 +17,7 @@ const VIEWS: { id: View; label: string }[] = [
   { id: "lost", label: "Lost" },
 ];
 
-const sourceOf = (p: PlanRecord) => p.source ?? p.attribution?.source ?? "direct";
+const sourceOf = (p: PlanRecord) => p.source ?? sourceKey(p.attribution);
 const created = (iso: string) =>
   new Date(iso).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZone: "America/Chicago" });
 

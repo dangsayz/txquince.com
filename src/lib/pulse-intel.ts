@@ -38,8 +38,8 @@ export function metricIntel(s: PulseStats): Record<"visits" | "unique" | "views"
       what: "Every time someone opens the site in a browser tab. One mom opening your link three times is three visits. Your own browsing on this computer isn't counted.",
       read: change(s.uniqueSessions, s.previous.visitors, "visits") + (topRef ? ` Most arrive from ${topRef.label}.` : ""),
       todo: visitsUp
-        ? ["Traffic is rising: post in the same groups again this week while it's working.", "Tag every link you share with ?src= (e.g. ?src=fb-group-irving) to see exactly which post did it."]
-        : ["Share the /plan link in 2 or 3 Facebook group threads where moms are asking for vendors.", "Post one Reel with a link in bio tagged ?src=ig-bio."],
+        ? ["Traffic is rising: post in the same groups again this week while it's working.", "Tag every link you share with ?ref= (e.g. ?ref=fb-group-irving) to see exactly which post did it."]
+        : ["Share the /plan link in 2 or 3 Facebook group threads where moms are asking for vendors.", "Post one Reel with a link in bio tagged ?ref=ig-bio."],
       tone: visitsUp ? "good" : "info",
     },
     unique: {
@@ -50,7 +50,7 @@ export function metricIntel(s: PulseStats): Record<"visits" | "unique" | "views"
         : "No visitors in this period yet.",
       todo: repeat >= 1.5
         ? ["Returning visitors are close to deciding. Make the next step easy: 'Get my free plan' near the top.", "Reply fast to anything that comes in; they're comparing you right now."]
-        : ["Give people a reason to come back: the price guide, the plan page, a new gallery each week.", "Ask every lead where they found you and add it as a ?src= tag."],
+        : ["Give people a reason to come back: the price guide, the plan page, a new gallery each week.", "Ask every lead where they found you and add it as a ?ref= tag."],
       tone: repeat >= 1.5 ? "good" : "info",
     },
     views: {
