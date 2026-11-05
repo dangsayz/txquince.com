@@ -26,3 +26,17 @@ what's included, links, policies, wording rules), rewrite that doc's facts and a
 "What's new" entry. Only true, live facts; never invent reviews, numbers or availability.
 Prices and package wording are owner-editable at /admin/prices and /admin/packages, so tell
 Grokbot to confirm numbers on txquince.com/budget before posting.
+
+## Design workflow — every UI job (standing rule from Dang)
+
+Claude is design + frontend lead for every page, template and rewrite here. Never ship generic AI UI. Run `scripts/install-design-stack.sh` at the start of a UI session (skills are gitignored; `skills-lock.json` pins them). Mobbin and frontend-design are Claude plugins/connectors, not repo files.
+
+1. **Brand kit** — use `src/app/brand.css` (`--tq-*`), documented in `docs/brand-kit.md`. Don't invent per-page colors, radii, shadows or durations; extend the kit if something is truly missing.
+2. **Taste / Impeccable preflight** — no purple gradients, Inter-only type, blob meshes, "empower/unlock/elevate" copy, fake social proof, identical 3-col icon grids.
+3. **Mobbin** — pull 2–4 real web section refs (`search_sections`), cite them by `mobbin_url` in the PR/summary, build from them (or use refs Dang pastes).
+4. **pick-ui-library** — one kit or none, with a reason. Default here: none (custom CSS + `motion`, already in deps).
+5. **Build** with frontend-design against the brand kit + refs.
+6. **Motion** — transitions.dev patterns only; `--tq-ease` / `--tq-dur-*`; honor `prefers-reduced-motion`; never `transition: all`.
+7. **web-design-guidelines** (Vercel) on changed files: a11y, focus, forms, images, CLS. Plus the web design standard gates above.
+8. **Impeccable critique** (`npx impeccable detect` on the running page) before done. If it still looks template, it doesn't ship.
+9. **Done** only when: brand kit used, Mobbin cited, guidelines clean, no AI slop. Never invent brand facts, prices or testimonials. If a skill fails, name it and continue.

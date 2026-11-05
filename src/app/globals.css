@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./brand.css"; /* brand kit — the locked token set, see docs/brand-kit.md */
 
 @theme {
   /* One palette site-wide — mirrors the homepage tokens in components/txq/txq.css. */
@@ -121,7 +122,10 @@ body {
   font-size: 0.875rem;
   letter-spacing: 0;
   line-height: 1;
-  transition: all 0.4s var(--ease-out-soft);
+  transition:
+    color 0.4s var(--ease-out-soft),
+    background-color 0.4s var(--ease-out-soft),
+    border-color 0.4s var(--ease-out-soft);
 }
 
 /* Thin vertical hairline — editorial descending rule used under hero, etc. */
