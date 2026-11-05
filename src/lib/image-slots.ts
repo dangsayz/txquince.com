@@ -92,11 +92,9 @@ const FALLBACK_ALT_ES: Record<string, string> = {
   "/portfolio/red-garden.webp": "Quinceañera con vestido rojo entre la vegetación de un jardín",
   "/portfolio/lilac-arch.webp": "Quinceañera con vestido lila frente a un arco de piedra",
   "/portfolio/canal.webp": "Quinceañera con vestido rosa junto a un barandal de piedra en el Mandalay Canal de Irving",
-  "/portfolio/kimberly-reception.webp": "Quinceañera durante su recepción en Dallas–Fort Worth",
   "/portfolio/reception.webp": "Retrato de quinceañera con vestido rosa en su recepción",
   "/portfolio/stockyards.webp": "Retrato de quinceañera en los Fort Worth Stockyards",
-  "/portfolio/dance.webp": "Quinceañera bailando el vals con su familia",
-  "/portfolio/shoe-ceremony.webp": "Ceremonia del cambio de zapatillas de una quinceañera",
+  "/portfolio/dance.webp": "Quinceañera bailando folklórico en su recepción",
   "/portfolio/gown-overhead.webp": "Vestido de quinceañera visto desde arriba",
 };
 
@@ -186,16 +184,16 @@ const pageSlots: SlotDef[] = [
   ),
   staticSlot(
     { id: "videographer.hero", group: "Videographer", page: "/quinceanera-videographer", paths: ["/quinceanera-videographer", "/es/videografo-de-quinceaneras"], label: "Videographer page — big top photo", defaultFocus: "50% 40%", crops: F.pagePlate, sizes: SIZES.full, lcp: true },
-    "/portfolio/kimberly-reception.webp",
+    "/portfolio/hero.webp",
     "Quinceañera celebration photographed by TX Quince",
   ),
   staticSlot(
     { id: "areas.hero", group: "Areas served", page: "/quinceanera-photographer", paths: ["/quinceanera-photographer", "/es/fotografo-de-quinceaneras"], label: "Areas served — big top photo", defaultFocus: "50% 60%", crops: F.placeStage, sizes: SIZES.full, lcp: true },
-    "/portfolio/kimberly-reception.webp",
+    "/portfolio/hero.webp",
   ),
   staticSlot(
     { id: "venues.hero", group: "Venues", page: "/venues", paths: ["/venues", "/es/salones"], label: "Venues — big top photo", defaultFocus: "50% 60%", crops: F.placeStage, sizes: SIZES.full, lcp: true },
-    "/portfolio/kimberly-reception.webp",
+    "/portfolio/hero.webp",
   ),
   staticSlot(
     { id: "vendors.hero", group: "Vendors", page: "/vendors", paths: ["/vendors"], label: "Vendors — top photo", defaultFocus: "50% 40%", crops: F.shortPlate, sizes: SIZES.full, lcp: true },
@@ -212,7 +210,7 @@ const pageSlots: SlotDef[] = [
       ["planning", "Planning", "/portfolio/save-date.webp", "Quinceañera save-the-date portrait"],
       ["cost", "Cost", "/portfolio/reception.webp", "Quinceañera portrait in a pink gown"],
       ["photo-film", "Photos and video", "/portfolio/lilac-arch.webp", "Quinceañera portrait in a lilac gown"],
-      ["celebration", "The celebration", "/portfolio/kimberly-reception.webp", "Quinceañera celebration and dance"],
+      ["celebration", "The celebration", "/portfolio/dance.webp", "Quinceañera dancing folklórico at her celebration"],
     ] as const
   ).map(([id, name, url, alt], i) =>
     staticSlot(
@@ -257,7 +255,7 @@ const citySlots: SlotDef[] = locations.flatMap((loc, i): SlotDef[] => {
   return [
     staticSlot(
       { id: `city.${loc.slug}.hero`, group: `${loc.city} page`, page: en, paths: [en, es], label: `${loc.city} page — big top photo`, defaultFocus: "50% 35%", crops: F.placeStage, sizes: SIZES.full, lcp: true },
-      own ?? "/portfolio/kimberly-reception.webp",
+      own ?? "/portfolio/hero.webp",
     ),
     staticSlot(
       { id: `city.${loc.slug}.card`, group: `${loc.city} page`, page: "/quinceanera-photographer#cities", paths: ["/quinceanera-photographer", "/es/fotografo-de-quinceaneras"], label: `Areas served — ${loc.city} card`, defaultFocus: "50% 35%", crops: F.card, sizes: SIZES.placeCard },

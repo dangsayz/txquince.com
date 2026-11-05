@@ -6,6 +6,7 @@ import { usd } from "@/lib/commission";
 import { PayButton } from "@/components/txq/PayButton";
 import { site } from "@/content/site";
 import "@/components/txq/pages/pages.css";
+import { TrustLine } from "@/components/TrustLine";
 
 /**
  * /booking/[id]?t=… — the family's private booking page, linked from the
@@ -142,6 +143,7 @@ export default async function BookingPage({
         <div className="tq-pg-mast__body">
           <h1 className="tq-display tq-pg-mast__title tq-pg-mast__title--sm">{title}</h1>
           <p className="tq-pg-mast__dek">{body}</p>
+          <TrustLine lang={lang} />
           <dl className="tq-pay__lines tq-nums">
             <div>
               <dt>{c.total}</dt>

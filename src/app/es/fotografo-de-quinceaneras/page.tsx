@@ -67,7 +67,7 @@ export default async function LocationsHubEs() {
 
   const heroImage =
     assignedHero ?? imgs.find((image) => (image.width ?? 0) >= (image.height ?? 0)) ?? imgs[0] ?? null;
-  const fallbackHero = portfolioFallback.find((p) => p.url === "/portfolio/kimberly-reception.webp") ?? portfolioFallback[0];
+  const fallbackHero = portfolioFallback.find((p) => p.url === "/portfolio/hero.webp") ?? portfolioFallback[0];
   const hero: Shot | null = heroImage ? fromDb(heroImage) : fallbackHero ? { ...fromFallback(fallbackHero), focus: "50% 60%" } : null;
 
   // Cada tarjeta lleva una fotografía real: primero las fotos de la ciudad,
