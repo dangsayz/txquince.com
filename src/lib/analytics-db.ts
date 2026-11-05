@@ -1,5 +1,6 @@
 import "server-only";
 import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
+import { platformOf, PLATFORMS, type Platform } from "@/lib/social";
 import { getBookings, getInquiries } from "@/lib/clients-db";
 import { releasedTestimonials } from "@/content/testimonials";
 import { collectionById } from "@/content/packages";
@@ -30,6 +31,8 @@ export type RangedStats = {
   flow: { label: string; value: number }[];
   /** The step whose drop-off is worst vs. a healthy baseline (null = not enough data yet). */
   flowBottleneck: { step: number; rate: number; baseline: number; action: string } | null;
+  /** Visits and new leads in the range that each social platform brought (first touch). */
+  byPlatform: Record<Platform, { visits: number; leads: number }>;
   /** Why visits don't reach the work: where they landed / came from, and how many of each went on. */
   dropoff: {
     lost: number;
@@ -120,6 +123,7 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     rangeBooked: 0,
     flow: [],
     flowBottleneck: null,
+    byPlatform: Object.fromEntries(PLATFORMS.map((p) => [p, { visits: 0, leads: 0 }])) as RangedStats["byPlatform"],
     dropoff: { lost: 0, onePage: 0, landings: [], sources: [], devices: [] },
     topPages: [],
     topReferrers: [],
@@ -188,7 +192,7 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
           .limit(1)
           .maybeSingle(),
         // Quince plans count as leads (table from migration 0023; absent → none).
-        supabase.from("quince_plans").select("created_at").gte("created_at", startPrev),
+        supabase.from("quince_plans").select("created_at, attribution").gte("created_at", startPrev),
       ]);
 
     const allRows = (pvRes.data ?? []) as PV[];
@@ -523,6 +527,22 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     const topAgg = (m: Map<string, { sessions: number; reached: number }>) =>
       Array.from(m.entries()).map(([label, v]) => ({ label, ...v })).sort((a, b) => b.sessions - a.sessions).slice(0, 5);
     const devices = Array.from(devAgg.entries()).map(([label, v]) => ({ label, ...v })).sort((a, b) => b.sessions - a.sessions);
+    // ---- per social platform: visits (session's first page) and leads (first touch) ----
+    const byPlatform = Object.fromEntries(PLATFORMS.map((p) => [p, { visits: 0, leads: 0 }])) as RangedStats["byPlatform"];
+    for (const first of firstRow.values()) {
+      const p = platformOf(first.utm_source) ?? platformOf(hostOf(first.referrer));
+      if (p) byPlatform[p].visits += 1;
+    }
+    const leadAttr = [
+      ...inquiries.filter((i) => i.created_at >= startRange).map((i) => i.attribution),
+      ...((plansRes as { data?: { created_at: string; attribution?: Record<string, string> | null }[] | null })?.data ?? [])
+        .filter((pl) => pl.created_at >= startRange)
+        .map((pl) => pl.attribution ?? null),
+    ];
+    for (const a of leadAttr) {
+      const p = platformOf(a?.source) ?? platformOf(a?.referrer);
+      if (p) byPlatform[p].leads += 1;
+    }
     const dropoff = { lost, onePage, landings: topAgg(landAgg), sources: topAgg(srcAgg), devices };
 
     // ---- the flow: one window, five steps ----
@@ -564,6 +584,7 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
       flow,
       flowBottleneck,
       dropoff,
+      byPlatform,
       today,
       last7,
       rangeViews,

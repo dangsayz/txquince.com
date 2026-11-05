@@ -77,6 +77,7 @@ function harness(options = {}) {
     react: { cache: (fn) => fn },
     "@/lib/supabase-server": { getServiceSupabase: () => db, isSupabaseConfigured: () => true },
     "@/content/venues": {},
+    "@/content/blog-photos": { getBlogPhoto: () => undefined },
     "@/lib/hero-focus": focus,
     "@/lib/hero-cover": schemas,
     "@/lib/image-derivative": derivative,

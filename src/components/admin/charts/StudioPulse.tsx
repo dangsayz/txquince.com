@@ -2,6 +2,8 @@ import Link from "next/link";
 import type { RangedStats } from "@/lib/analytics-db";
 import { briefing, metricIntel, stepIntel, todayFocus, type Intel } from "@/lib/pulse-intel";
 import { TodayFocus } from "./TodayFocus";
+import { SocialPanel } from "./SocialPanel";
+import { summarize, type SocialSheet } from "@/lib/social";
 import type { PulseMove } from "@/lib/pulse-moves";
 import { DropOff } from "./DropOff";
 import { MovesLog } from "./MovesLog";
@@ -24,7 +26,7 @@ const money = (n: number) =>
  * focus or tap any number for what it is, what it says right now, and (stay
  * a second) what to do next. Data: getDashboardStats (first-party).
  */
-export function StudioPulse({ s, basePath, range, moves }: { s: RangedStats; basePath: string; range: number; moves?: PulseMove[] }) {
+export function StudioPulse({ s, basePath, range, moves, social }: { s: RangedStats; basePath: string; range: number; moves?: PulseMove[]; social?: SocialSheet }) {
   const running = (moves ?? []).filter((m) => m.status === "active");
   // Mark moves already being tried, so the card shows "TRYING · DAY n".
   const track = (it: Intel): Intel => ({
@@ -122,6 +124,14 @@ export function StudioPulse({ s, basePath, range, moves }: { s: RangedStats; bas
               <DropOff d={s.dropoff} visits={s.uniqueSessions} range={range} />
               <MovesLog moves={moves} nextUp={null} />
             </div>
+          ) : null}
+          {social ? (
+            <SocialPanel
+              summary={summarize(social.rows, range)}
+              site={s.byPlatform}
+              range={range}
+              status={{ configured: social.configured, ok: social.ok, lastDate: social.rows.reduce<string | null>((m, r) => (!m || r.date > m ? r.date : m), null) }}
+            />
           ) : null}
           <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 lg:grid-cols-4">
             {stats.map((m, i) => (
