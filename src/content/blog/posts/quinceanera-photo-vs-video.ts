@@ -81,7 +81,7 @@ const post: BlogPost = {
     {
       type: "cta",
       heading: "See exactly which packages include video",
-      body: `The Portrait Session is photo only. The Solo is one shooter taking photos and video at once with a 2–3 camera setup. The Duo and the Trio pair photographers with videographers — one of each with the Duo (${BASE_CREW.cinema} in all), or two photographers and one videographer with the Trio (${BASE_CREW.trio}). Compare them side by side.`,
+      body: `The Portrait Session is photo only. The Solo is one shooter taking photos and video at once with a {{cameras.solo}} camera setup. The Duo and the Trio pair photographers with videographers — one of each with the Duo (${BASE_CREW.cinema} in all), or two photographers and one videographer with the Trio (${BASE_CREW.trio}). Compare them side by side.`,
       href: "/#commissions",
       label: "Compare packages",
     },
@@ -106,7 +106,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Anchored to our packages: the Portrait Session is ${study} — photos only, a ${PT.hours.study}-hour session with one photographer and 60 edited photos. The Solo is ${solo} — ${PT.hours.solo} hours with one shooter who takes photos and films at the same time from a 2–3 camera setup, the full-length film of her day cut from those angles, and 150+ edited photos. The Duo is ${cinema} — ${PT.hours.cinema} hours with one photographer and one videographer, a dress or save-the-date session (booked after the deposit is paid), the full-length film plus a 1-minute highlight, and 400+ edited photos. The Trio, at ${trio}, is our pick for most families — ${PT.hours.trio} hours with two photographers and one videographer, a dress or save-the-date session (booked after the deposit is paid), the full-length film plus a 3–5 minute highlight film, 700+ edited photos, and a printed album. Need a coordinator who runs the day? One can be added for ${PT.addon.coordinator} a day. Want more portraits in her dress on another day? Add a Second Portrait Day (${PT.addon.secondday}) — photos and video at up to two locations. Need more time on the day? You can add hours, from ${PT.extra.from} an hour, up to ${PT.hours.max} in all. For the full breakdown of every inclusion, see [which packages include video](/#commissions), and for a wider look at pricing read our [quinceañera photographer cost guide for DFW](/blog/quinceanera-photographer-cost-dallas-fort-worth).`,
+      text: `Anchored to our packages: the Portrait Session is ${study} — photos only, a ${PT.hours.study}-hour session with one photographer and {{photos.study}} edited photos. The Solo is ${solo} — ${PT.hours.solo} hours with one shooter who takes photos and films at the same time from a {{cameras.solo}} camera setup, the full-length film of her day cut from those angles, and {{photos.solo}} edited photos. The Duo is ${cinema} — ${PT.hours.cinema} hours with one photographer and one videographer, a dress or save-the-date session (booked after the deposit is paid), the full-length film plus a 1-minute highlight, and {{photos.cinema}} edited photos. The Trio, at ${trio}, is our pick for most families — ${PT.hours.trio} hours with two photographers and one videographer, a dress or save-the-date session (booked after the deposit is paid), the full-length film plus a 3–5 minute highlight film, {{photos.trio}} edited photos, and a printed album. Need a coordinator who runs the day? One can be added for ${PT.addon.coordinator} a day. Want more portraits in her dress on another day? Add a Second Portrait Day (${PT.addon.secondday}) — photos and video at up to two locations. Need more time on the day? You can add hours, from ${PT.extra.from} an hour, up to ${PT.hours.max} in all. For the full breakdown of every inclusion, see [which packages include video](/#commissions), and for a wider look at pricing read our [quinceañera photographer cost guide for DFW](/blog/quinceanera-photographer-cost-dallas-fort-worth).`,
     },
     { type: "h2", text: "If your budget only stretches one way" },
     {
@@ -145,7 +145,7 @@ const post: BlogPost = {
     },
     {
       q: "Which TX Quince packages include both photo and video?",
-      a: `The Portrait Session (${study}) is photo only. The Solo (${solo}), the Duo (${cinema}) and the Trio (${trio}) all include photos and video: one shooter with a 2–3 camera setup with the Solo, one photographer and one videographer with the Duo, and two photographers and one videographer with the Trio. The Trio is our pick for most families. You can compare every inclusion in the packages on our homepage.`,
+      a: `The Portrait Session (${study}) is photo only. The Solo (${solo}), the Duo (${cinema}) and the Trio (${trio}) all include photos and video: one shooter with a {{cameras.solo}} camera setup with the Solo, one photographer and one videographer with the Duo, and two photographers and one videographer with the Trio. The Trio is our pick for most families. You can compare every inclusion in the packages on our homepage.`,
     },
     {
       q: "Can one team shoot both the photos and the video?",

@@ -89,7 +89,7 @@ const post: BlogPost = {
     {
       type: "cta",
       heading: "Book your pre-quince portrait session",
-      body: `Our Portrait Session (${PT.price.study}) is a ${PT.hours.study}-hour session with one photographer — 60 edited photos. Pick your location and theme, and we'll handle the light.`,
+      body: `Our Portrait Session (${PT.price.study}) is a ${PT.hours.study}-hour session with one photographer — {{photos.study}} edited photos. Pick your location and theme, and we'll handle the light.`,
       href: "/#intake",
       label: "Reserve your session",
     },

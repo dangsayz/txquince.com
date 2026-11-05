@@ -125,7 +125,7 @@ function sharedFaqs(city: string) {
     },
     {
       q: "Do you offer video too, or only photography?",
-      a: "Both. The Solo is one shooter with a 2–3 camera setup who takes the photos and films at the same time. From the Duo up, a photographer and a videographer cover the day as one team, so the misa, el vals and the reception are captured in photos and a full-length 4K film of her whole day without two vendors getting in each other's way.",
+      a: "Both. The Solo is one shooter with a {{cameras.solo}} camera setup who takes the photos and films at the same time. From the Duo up, a photographer and a videographer cover the day as one team, so the misa, el vals and the reception are captured in photos and a full-length 4K film of her whole day without two vendors getting in each other's way.",
     },
     {
       q: "Do you charge a travel fee?",

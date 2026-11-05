@@ -22,7 +22,7 @@ import { sanitizeAttribution } from "@/lib/attribution";
 import { clientIp } from "@/lib/client-ip";
 import { rateLimiter } from "@/lib/rate-limit";
 import { getPriceBook } from "@/lib/pricing";
-import { MOMENTS_SATURDAY_WINDOW_DAYS, momentsDateAllowed } from "@/lib/commission";
+import { momentsDateAllowed } from "@/lib/commission";
 import { todayInDallas } from "@/lib/plan";
 import { BUDGET_FOR_TIER, describeInquiryPackage, inquiryPackageSchema, servicesForTier } from "@/lib/inquiry-package";
 
@@ -103,12 +103,12 @@ export async function POST(req: NextRequest) {
         { status: 422 },
       );
     }
-    // Just the Moments takes a Saturday only within the window (MOMENTS_SATURDAY_WINDOW_DAYS).
-    if (!momentsDateAllowed(pkg.data.tier, fields.event_date, todayInDallas())) {
+    // Just the Moments takes a Saturday only within the window (book.momentsSaturdayDays).
+    if (!momentsDateAllowed(book, pkg.data.tier, fields.event_date, todayInDallas())) {
       return NextResponse.json(
         {
           ok: false,
-          error: `Just the Moments can be booked on a Saturday only within ${MOMENTS_SATURDAY_WINDOW_DAYS} days of the date. Pick a Friday or Sunday, or another package.`,
+          error: `Just the Moments can be booked on a Saturday only within ${book.momentsSaturdayDays} days of the date. Pick a Friday or Sunday, or another package.`,
         },
         { status: 422 },
       );

@@ -16,12 +16,21 @@
  *   hours.<tier>       "6"               hours.max, hours.typicalLow (max − 2)
  *   deposit.percent    "25%"             deposit.<tier> ("$1,225": that package's deposit)
  *   balance.days       "14"              hold.days "7"
+ *   photos.<tier>      "150+"            that package's photo count (admin wording)
+ *   cameras.<tier>     "2–3"             that package's camera count
+ *   maxhours.<tier>    "6"               most hours that package can grow to
+ *   session.photos     "30–40"           photos in the dress / save-the-date session
+ *   moments.satDays    "30"              Just the Moments Saturday window
+ *   plan.hold          "$500"            quince-plan "Hold my date" deposit
  */
+import { RETIRED_PACKAGE_CONTENT, type PackageContent } from "./package-content";
 import {
   ADD_ON_IDS,
   TIER_IDS,
   depositFor,
   extraHourFrom,
+  fmtHours,
+  maxHoursFor,
   priceCeiling,
   priceFloor,
   usd,
@@ -45,7 +54,18 @@ export const PT = {
   deposit: { ...perTier("deposit"), percent: tok("deposit.percent") },
   balanceDays: tok("balance.days"),
   holdDays: tok("hold.days"),
+  photos: perTier("photos"),
+  cameras: perTier("cameras"),
+  maxHours: perTier("maxhours"),
+  sessionPhotos: tok("session.photos"),
+  satDays: tok("moments.satDays"),
+  planHold: tok("plan.hold"),
 } as const;
+
+/** A package's wording: the live book for packages on sale, fixed wording for retired ones. */
+export function contentOf(book: PriceBook, tier: TierId): PackageContent {
+  return (book.content as Partial<Record<TierId, PackageContent>>)[tier] ?? RETIRED_PACKAGE_CONTENT[tier as keyof typeof RETIRED_PACKAGE_CONTENT];
+}
 
 /** Every token's current text for this book. */
 export function priceTokenValues(book: PriceBook): Record<string, string> {
@@ -54,7 +74,11 @@ export function priceTokenValues(book: PriceBook): Record<string, string> {
     const p = book.packages[id];
     v[`price.${id}`] = usd(p.price);
     v[`extra.${id}`] = usd(p.extraHour);
-    v[`hours.${id}`] = String(p.hours);
+    v[`hours.${id}`] = fmtHours(p.hours);
+    v[`maxhours.${id}`] = fmtHours(maxHoursFor(book, id));
+    const c = contentOf(book, id);
+    v[`photos.${id}`] = c.photos;
+    v[`cameras.${id}`] = c.cameras;
     v[`deposit.${id}`] = usd(depositFor(book, p.price));
   }
   for (const id of ADD_ON_IDS) v[`addon.${id}`] = usd(book.addOns[id]);
@@ -62,8 +86,11 @@ export function priceTokenValues(book: PriceBook): Record<string, string> {
   v["price.ceiling"] = usd(priceCeiling(book));
   const from = extraHourFrom(book);
   v["extra.from"] = usd(from ?? 0);
-  v["hours.max"] = String(book.maxHours);
-  v["hours.typicalLow"] = String(Math.max(1, book.maxHours - 2));
+  v["hours.max"] = fmtHours(book.maxHours);
+  v["hours.typicalLow"] = fmtHours(Math.max(1, book.maxHours - 2));
+  v["session.photos"] = book.sessionPhotos;
+  v["moments.satDays"] = String(book.momentsSaturdayDays);
+  v["plan.hold"] = usd(book.planHoldUsd);
   v["deposit.percent"] = `${book.depositPercent}%`;
   v["balance.days"] = String(book.balanceDueDays);
   v["hold.days"] = String(book.holdDays);

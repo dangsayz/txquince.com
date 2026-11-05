@@ -6,15 +6,14 @@ import { Intake, bookHref } from "@/components/txq/Intake";
 import { BudgetCta } from "@/components/budget/BudgetCta";
 import { useShell } from "@/components/txq/SiteShell";
 import { useSite } from "@/components/txq/state";
-import { TIERS, money, type CinemaFilm } from "@/components/txq/data";
+import { TIERS, money, tierBullets, tierDetail, tierTeam, type CinemaFilm } from "@/components/txq/data";
 import type { Journal } from "@/components/txq/Editorial";
 import { usePriceBook } from "@/components/PriceBookProvider";
 import { SlotPicture } from "@/components/slots/SlotPicture";
 import { SlotAdminControl } from "@/components/slots/SlotAdminControl";
 import { useSlot } from "@/components/slots/SlotProvider";
-import { PACKAGE_DETAIL } from "@/components/home/home-copy";
 import { MomsAsk } from "./MomsAsk";
-import { BASE_CREW, priceFloor } from "@/lib/commission";
+import { priceFloor } from "@/lib/commission";
 import { HERO_SLOTS, type HomeOverrides } from "@/lib/photo-dump-shared";
 import type { HomeGallery } from "@/lib/home-galleries";
 import type { HomeCity } from "@/content/home-places";
@@ -470,7 +469,7 @@ function Feature() {
             <p className="ed-offer">{e.packages.offer(book.trioSpotsLeft, book.trioSpotsTotal, money(p.price))}</p>
           )}
           <ul className="ed-card__list">
-            {tier.bullets.map((b) => (
+            {tierBullets(book, tier.id).map((b) => (
               <li key={b.en}>{b[lang]}</li>
             ))}
           </ul>
@@ -527,9 +526,9 @@ function Packages({ children }: { children: ReactNode }) {
                     {name}
                     {pick && <span className="ed-pkg__pick">{p.pick}</span>}
                   </h3>
-                  <p className="ed-pkg__desc">{PACKAGE_DETAIL[x.id][lang]}</p>
+                  <p className="ed-pkg__desc">{tierDetail(book, x.id)[lang]}</p>
                   <p className="ed-pkg__meta">
-                    {p.hours(pp.hours)} · {x.id === "solo" ? p.soloTeam : p.team(BASE_CREW[x.id])}
+                    {p.hours(pp.hours)} · {tierTeam(book, x.id)[lang]}
                   </p>
                   {x.id === "trio" && book.trioSpotsLeft > 0 && (
                     <p className="ed-offer">{p.offer(book.trioSpotsLeft, book.trioSpotsTotal, money(pp.price))}</p>

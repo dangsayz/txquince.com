@@ -7,7 +7,7 @@
  */
 import {
   addOnAllowed,
-  maxHoursFor,
+  hourSteps,
   quoteCommission,
   type AddOnId,
   type PriceBook,
@@ -34,9 +34,8 @@ function videoAddOns(tier: EventTier): AddOnId[] {
 
 /** Every configuration of a package: each hour from included to max, with and without its film. */
 function configs(book: PriceBook, tier: EventTier): CoverageOption[] {
-  const base = book.packages[tier].hours;
   const out: CoverageOption[] = [];
-  for (let h = base; h <= maxHoursFor(book, tier); h++) {
+  for (const h of hourSteps(book, tier)) {
     const variants: AddOnId[][] = tier === "moments" ? [[], videoAddOns(tier)] : [[]];
     for (const addOns of variants) {
       if (!addOns.every((a) => addOnAllowed(tier, a))) continue;

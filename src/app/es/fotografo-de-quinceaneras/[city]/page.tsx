@@ -86,7 +86,7 @@ function sharedFaqsEs(city: string) {
     },
     {
       q: "¿También ofreces video, o solo fotografía?",
-      a: "Los dos. El Solo es una sola persona con 2–3 cámaras, fotógrafo y videógrafo en uno, que toma las fotos y graba al mismo tiempo. Desde el Dúo, un fotógrafo y un videógrafo cubren el día como un solo equipo, para que la misa, el vals y la recepción queden en fotos y en un video completo en 4K de todo su día sin que dos proveedores se estorben.",
+      a: "Los dos. El Solo es una sola persona con {{cameras.solo}} cámaras, fotógrafo y videógrafo en uno, que toma las fotos y graba al mismo tiempo. Desde el Dúo, un fotógrafo y un videógrafo cubren el día como un solo equipo, para que la misa, el vals y la recepción queden en fotos y en un video completo en 4K de todo su día sin que dos proveedores se estorben.",
     },
     {
       q: "¿Cobras por traslado?",

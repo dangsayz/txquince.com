@@ -2,10 +2,11 @@
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { animate, useReducedMotion } from "motion/react";
-import { tierById, ADD_ONS, TIERS, matrixFor, money, pick, type Lang, type Tier, type TierId } from "./data";
+import { tierById, ADD_ONS, TIERS, matrixFor, money, pick, tierBullets, tierTeam, type Lang, type Tier, type TierId } from "./data";
+import { addOnNote } from "@/lib/package-text";
 import { useSite } from "./state";
 import { usePriceBook } from "@/components/PriceBookProvider";
-import { BASE_CREW, COORDINATOR_INCLUDED, CREW_ROLES, addOnAllowed, canShift, type CrewRole } from "@/lib/commission";
+import { BASE_CREW, COORDINATOR_INCLUDED, CREW_ROLES, addOnAllowed, canShift, hourSteps, type CrewRole } from "@/lib/commission";
 
 /**
  * Packages & Prices — the section heading. The booking panel (Intake) renders
@@ -91,10 +92,10 @@ function PackageCard({ tier: x }: { tier: Tier }) {
         {money(p.price)}
       </p>
       <p id={`${id}-m`} className="tq-pkg__meta">
-        {hoursLine(t, x.id, p.hours)} · {x.id === "solo" ? t.booking.soloTeam : t.booking.team(BASE_CREW[x.id], COORDINATOR_INCLUDED[x.id])}
+        {hoursLine(t, x.id, p.hours)} · {pick(lang, tierTeam(book, x.id))}
       </p>
       <ul id={`${id}-l`} className="tq-pkg__list">
-        {x.bullets.map((b) => (
+        {tierBullets(book, x.id).map((b) => (
           <li key={b.en}>{pick(lang, b)}</li>
         ))}
       </ul>
@@ -265,7 +266,7 @@ export function ExtrasStep({ onChangePackage }: { onChangePackage: () => void })
   const { book, maxHours, canAddHours } = usePriceBook();
   const p = book.packages[tier];
   const x = tierById(tier);
-  const options = Array.from({ length: maxHours(tier) - p.hours + 1 }, (_, i) => p.hours + i);
+  const options = hourSteps(book, tier);
 
   return (
     <>
@@ -290,7 +291,7 @@ export function ExtrasStep({ onChangePackage }: { onChangePackage: () => void })
                   <input type="radio" name="tq-hours" value={h} checked={hours === h} onChange={() => setHours(h)} />
                   <span className="tq-hour__h">{t.booking.hourOption(h)}</span>
                   <span className="tq-hour__p tq-nums">
-                    {h === p.hours ? t.booking.includedTag : `+${money((h - p.hours) * p.extraHour)}`}
+                    {h === p.hours ? t.booking.includedTag : `+${money(Math.round((h - p.hours) * p.extraHour))}`}
                   </span>
                 </label>
               ))}
@@ -327,7 +328,7 @@ export function ExtrasStep({ onChangePackage }: { onChangePackage: () => void })
                     {on ? "✓" : ""}
                   </span>
                 </span>
-                <span className="tq-addon__note">{pick(lang, a.note)}</span>
+                <span className="tq-addon__note">{pick(lang, addOnNote(book, a.id))}</span>
               </button>
             );
           })}

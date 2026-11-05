@@ -112,7 +112,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `What a good answer sounds like: a direct yes or no, and a straight answer about who is behind each camera. We offer photo + video on every package from the Solo up. The Solo is one shooter with a 2–3 camera setup (a camera on them, a fixed side camera and the photo camera), so wherever the action is, a camera is pointed at it, and you get the full-length film of her day. The Duo and the Trio put a dedicated team of ${BASE_CREW.cinema} to ${BASE_CREW.trio} on the same day, with the full-length film of her whole day plus a short highlight. If you're weighing whether video is worth it at all, [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video) walks through the tradeoff honestly.`,
+      text: `What a good answer sounds like: a direct yes or no, and a straight answer about who is behind each camera. We offer photo + video on every package from the Solo up. The Solo is one shooter with a {{cameras.solo}} camera setup (a camera on them, a fixed side camera and the photo camera), so wherever the action is, a camera is pointed at it, and you get the full-length film of her day. The Duo and the Trio put a dedicated team of ${BASE_CREW.cinema} to ${BASE_CREW.trio} on the same day, with the full-length film of her whole day plus a short highlight. If you're weighing whether video is worth it at all, [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video) walks through the tradeoff honestly.`,
     },
     { type: "h2", text: "Putting it together" },
     {

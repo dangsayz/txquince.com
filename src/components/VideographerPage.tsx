@@ -2,6 +2,7 @@ import Link from "next/link";
 import { commissionLinks, commissionsFor } from "@/content/commissions";
 import { matrixFor } from "@/components/txq/data";
 import { getPriceBook } from "@/lib/pricing";
+import { fillDeep } from "@/lib/price-text";
 import { SlotImage } from "@/components/SlotImage";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { getFeaturedImages, getVideos } from "@/lib/content-db";
@@ -18,7 +19,7 @@ const copy = {
     films: "Real celebrations, real videos.",
     filmsIntro: "Watch our work before you ask about your date.",
     collections: "Video packages, clearly priced.",
-    one: "Video comes with every package from the Solo up. The Solo is one shooter with a 2–3 camera setup who takes the photos and films at the same time, for the full-length film of her day; the Duo and the Trio put a dedicated videographer from our team on her day, with the full-length film in 4K, a short highlight and short vertical videos for social media. Only need video? Choose video only when you check your date and we'll fit the package to you.",
+    one: "Video comes with every package from the Solo up. The Solo is one shooter with a {{cameras.solo}} camera setup who takes the photos and films at the same time, for the full-length film of her day; the Duo and the Trio put a dedicated videographer from our team on her day, with the full-length film in 4K, a short highlight and short vertical videos for social media. Only need video? Choose video only when you check your date and we'll fit the package to you.",
     faq: "Before you reserve",
     questions: [
       ["Can we book video without photos?", "Yes. Choose video only when you check your date and we'll fit the package to video. Most families get both, and every package from the Solo up includes photos and video."],
@@ -45,7 +46,7 @@ const copy = {
     films: "Celebraciones reales, videos reales.",
     filmsIntro: "Mira nuestro trabajo antes de consultar tu fecha.",
     collections: "Paquetes con video, con precios claros.",
-    one: "El video viene en cada paquete desde el Solo. El Solo es una sola persona con 2–3 cámaras, fotógrafo y videógrafo en uno, que toma las fotos y graba al mismo tiempo, para el video completo de su día; el Dúo y el Trío ponen a un videógrafo dedicado de nuestro equipo en su día, con el video completo en 4K, un resumen corto y videos verticales cortos para redes sociales. ¿Solo necesitas video? Elige solo video al consultar tu fecha y ajustamos el paquete para ti.",
+    one: "El video viene en cada paquete desde el Solo. El Solo es una sola persona con {{cameras.solo}} cámaras, fotógrafo y videógrafo en uno, que toma las fotos y graba al mismo tiempo, para el video completo de su día; el Dúo y el Trío ponen a un videógrafo dedicado de nuestro equipo en su día, con el video completo en 4K, un resumen corto y videos verticales cortos para redes sociales. ¿Solo necesitas video? Elige solo video al consultar tu fecha y ajustamos el paquete para ti.",
     faq: "Antes de reservar",
     questions: [
       ["¿Puedo contratar solo video?", "Sí. Elige solo video al consultar tu fecha y ajustamos el paquete al video. La mayoría de las familias elige los dos, y cada paquete desde el Solo incluye fotos y video."],
@@ -73,7 +74,7 @@ export async function VideographerPage({ locale }: { locale: "en" | "es" }) {
   const priceBook = await getPriceBook();
   const motionRows = matrixFor(priceBook).find((g) => g.id === "motion")!.rows;
   const filmCommissions = commissionsFor(priceBook).filter((c) => c.id !== "study");
-  const c = copy[locale];
+  const c = fillDeep(copy[locale], priceBook);
   const book = commissionLinks[locale].book;
   const [videos, images] = await Promise.all([getVideos(), getFeaturedImages(1)]);
   const hero = images[0];
