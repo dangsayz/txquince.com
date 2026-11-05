@@ -209,9 +209,8 @@
 .ed-collage__copy { position: relative; z-index: 2; max-width: 520px; padding: 0 var(--ed-gutter); display: flex; flex-direction: column; align-items: center; gap: 22px; text-align: center; }
 .ed-collage__body { color: var(--ed-ink); max-width: 40ch; }
 .ed-plate { position: absolute; display: block; overflow: hidden; background: var(--ed-soft); will-change: transform; }
-.ed-plate img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(1); opacity: 0.45; transition: filter 0.6s ease, opacity 0.6s ease; }
-.ed-plate[data-sharp] img,
-.ed-plate:hover img { filter: none; opacity: 1; }
+/* Collage photos show in full color, always. */
+.ed-plate img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .ed-plate--a { left: 4%; top: 10%; width: 15vw; aspect-ratio: 3 / 4; }
 .ed-plate--b { right: 7%; top: 14%; width: 21vw; aspect-ratio: 4 / 5; }
 .ed-plate--c { left: 16%; bottom: 4%; width: 12vw; aspect-ratio: 4 / 5; }
@@ -237,7 +236,7 @@
 /* ---------- Feature (sticky card over B&W plate) ---------- */
 .ed-feature { position: relative; min-height: 160svh; overflow: clip; background: #111111; }
 .ed-feature__plate { position: absolute; inset: 0; overflow: hidden; }
-.ed-feature__plate img { position: absolute; inset: -8% 0; width: 100%; height: 116%; object-fit: cover; filter: grayscale(1) contrast(1.04); will-change: transform; }
+.ed-feature__plate img { position: absolute; inset: -8% 0; width: 100%; height: 116%; object-fit: cover; will-change: transform; }
 .ed-feature__plate::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, 0.16); }
 .ed-feature__track { position: relative; min-height: 160svh; padding: 14svh var(--ed-gutter); display: flex; justify-content: flex-end; }
 .ed-card {
