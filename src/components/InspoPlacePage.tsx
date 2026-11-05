@@ -101,7 +101,7 @@ export async function InspoPlacePage({ place, lang }: { place: InspoPlace; lang:
   const c = fillDeep(place.copy[lang], book);
   const ui = UI[lang];
   const url = `${site.url}${place.path[lang]}`;
-  const budgetHref = `${ui.budget}?ref=${place.ref}`;
+  const budgetHref = ui.budget; // our own page: no ?src= tag
   const placeId = `${site.url}${place.path.en}#place`;
   const business = { "@id": `${site.url}/#business` };
 

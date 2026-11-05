@@ -59,7 +59,7 @@ const post: BlogPost = {
       type: "cta",
       heading: "See our work and your date first",
       body: "Get a private plan with photos in your colors, your date's availability and every price.",
-      href: "/plan?src=blog-delivery",
+      href: "/plan",
       label: "Get my free quince plan",
     },
   ],

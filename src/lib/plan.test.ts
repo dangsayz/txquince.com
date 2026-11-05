@@ -7,7 +7,6 @@ import {
   planPath,
   prefillDate,
   resolveDateStatus,
-  sanitizeSource,
   timelinePath,
   todayInDallas,
 } from "./plan";
@@ -29,16 +28,6 @@ describe("contact box", () => {
   });
   it("rejects anything else", () => {
     for (const bad of ["", "12345", "call me", "mama@", "555-0100", 42]) expect(parseContact(bad)).toBeNull();
-  });
-});
-
-describe("source tag", () => {
-  it("keeps a safe slug", () => {
-    expect(sanitizeSource("fb-group")).toBe("fb-group");
-    expect(sanitizeSource(" FB Quince Dallas ")).toBe("fb-quince-dallas");
-    expect(sanitizeSource("<script>")).toBe("script");
-    expect(sanitizeSource("x")).toBeNull();
-    expect(sanitizeSource(undefined)).toBeNull();
   });
 });
 

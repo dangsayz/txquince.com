@@ -52,16 +52,6 @@ export function prefillDate(v: unknown, now: Date = new Date()): string {
   return typeof v === "string" && isPlannableDate(v, now) ? v : "";
 }
 
-/**
- * The `src` tag (e.g. "fb-group", "fb-quince-dallas") → a safe slug, or null.
- * Lowercase letters, digits, dash and underscore, up to 40 characters.
- */
-export function sanitizeSource(v: unknown): string | null {
-  if (typeof v !== "string") return null;
-  const s = v.trim().toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9_-]/g, "").slice(0, 40);
-  return s.length >= 2 ? s : null;
-}
-
 export type PlanContact = { email: string | null; phone: string | null };
 
 const emailSchema = z.string().email();

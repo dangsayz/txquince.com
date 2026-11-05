@@ -60,7 +60,7 @@ const post: BlogPost = {
       type: "cta",
       heading: "Vea nuestro trabajo y su fecha primero",
       body: "Reciba un plan privado con fotos en sus colores, la disponibilidad de su fecha y todos los precios.",
-      href: "/es/plan?src=blog-entrega",
+      href: "/es/plan",
       label: "Recibir mi plan de quince gratis",
     },
   ],
