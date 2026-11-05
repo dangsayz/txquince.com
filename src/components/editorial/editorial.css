@@ -209,7 +209,8 @@
 .ed-band__foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px 24px; padding-top: 20px; }
 .ed-band__title { display: flex; align-items: baseline; gap: 16px; font-size: 15px; color: rgba(255, 255, 255, 0.86); min-width: 0; }
 .ed-band__count { font-family: var(--ed-display); font-size: 12px; letter-spacing: 0.06em; color: #ffffff; white-space: nowrap; }
-.ed-band__nav { display: flex; align-items: center; gap: 20px; }
+/* Wraps on phones: in one row, "Watch more on YouTube" ran 8px off a 390px screen. */
+.ed-band__nav { display: flex; flex-wrap: wrap; align-items: center; gap: 0 20px; min-width: 0; }
 .ed-band__nav button.ed-textlink { min-width: 44px; justify-content: center; text-decoration: none; font-size: 16px; }
 
 /* ---------- Collage ---------- */
