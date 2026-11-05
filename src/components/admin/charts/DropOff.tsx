@@ -20,7 +20,7 @@ function Table({ title, rows }: { title: string; rows: Row[] }) {
           const weak = r.sessions >= 10 && pct < 20;
           return (
             <li key={r.label} className="relative isolate flex min-h-10 items-center justify-between gap-3 px-1 text-sm">
-              <span aria-hidden className="absolute inset-y-1.5 left-0 -z-10 rounded-[3px] bg-[rgba(0,0,0,0.07)]" style={{ width: `${Math.max(pct, 2)}%` }} />
+              <span aria-hidden className="absolute inset-y-1.5 left-0 -z-10 rounded-[3px] bg-[rgba(0,113,227,0.08)]" style={{ width: `${Math.max(pct, 2)}%` }} />
               <span className="min-w-0 truncate text-[#1d1d1f]">{r.label}</span>
               <span className="hud-mono shrink-0 text-[13px] text-[#1d1d1f]">
                 {r.sessions}

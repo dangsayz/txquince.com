@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
-import { CellField } from "./CellField";
 import { HudIntel } from "./HudIntel";
 import type { Intel } from "@/lib/pulse-intel";
 
@@ -129,7 +128,6 @@ export function TrendChart({
   const area = pts.length ? `${line} L${W},${H} L0,${H} Z` : "";
   const label = METRICS.find((m) => m.key === metric)!.label;
   const empty = values.every((v) => v === 0);
-  const lastVal = values[values.length - 1] ?? 0;
 
   function pick(clientX: number) {
     const box = boxRef.current?.getBoundingClientRect();
@@ -177,9 +175,6 @@ export function TrendChart({
       </div>
 
       <div className="relative px-3 pb-3 pt-4 sm:px-5">
-        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden rounded-b-[10px]">
-          <CellField intensity={peak ? lastVal / peak : 0.2} />
-        </div>
         <p className="sr-only">
           {label}: {totals[metric]} in the last {range} days, versus {previous[metric]} in the {range} days before.
         </p>
@@ -205,12 +200,12 @@ export function TrendChart({
                     <stop offset="100%" stopColor="#0071e3" />
                   </linearGradient>
                   <linearGradient id={`fill-${gid}`} x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#0071e3" stopOpacity="0.25" />
+                    <stop offset="0%" stopColor="#0071e3" stopOpacity="0.1" />
                     <stop offset="100%" stopColor="#0071e3" stopOpacity="0" />
                   </linearGradient>
                 </defs>
                 {[yOf(max), yOf(max / 2), yOf(0)].map((y) => (
-                  <line key={y} x1="0" x2={W} y1={y} y2={y} stroke="#d2d2d7" strokeDasharray="3 5" />
+                  <line key={y} x1="0" x2={W} y1={y} y2={y} stroke="#ececef" />
                 ))}
                 {!empty ? <path key={`a-${metric}-${range}`} className="hud-fade" d={area} fill={`url(#fill-${gid})`} /> : null}
                 <path
@@ -220,22 +215,20 @@ export function TrendChart({
                   d={line}
                   fill="none"
                   stroke={empty ? "rgba(142,142,147,0.4)" : `url(#stroke-${gid})`}
-                  strokeWidth="2"
+                  strokeWidth="1.5"
                   strokeLinejoin="round"
                   strokeLinecap="round"
                 />
                 {!empty && pts.length ? (
                   <g>
-                    <circle className="hud-live" cx={pts[pts.length - 1][0]} cy={pts[pts.length - 1][1]} r="4" fill="#0071e3" />
-                    <circle cx={pts[pts.length - 1][0]} cy={pts[pts.length - 1][1]} r="3.5" fill="#ffffff" stroke="#0071e3" strokeWidth="2" />
+                    <circle className="hud-live" cx={pts[pts.length - 1][0]} cy={pts[pts.length - 1][1]} r="3" fill="#0071e3" />
+                    <circle cx={pts[pts.length - 1][0]} cy={pts[pts.length - 1][1]} r="3" fill="#ffffff" stroke="#0071e3" strokeWidth="1.5" />
                   </g>
                 ) : null}
                 {hp ? (
                   <g>
-                    <line x1={hp[0]} x2={hp[0]} y1="0" y2={H} stroke="rgba(0,0,0,0.55)" strokeDasharray="2 4" />
-                    <line x1="0" x2={W} y1={hp[1]} y2={hp[1]} stroke="rgba(0,0,0,0.25)" strokeDasharray="2 4" />
-                    <circle cx={hp[0]} cy={hp[1]} r="9" fill="none" stroke="rgba(0,0,0,0.6)" />
-                    <circle cx={hp[0]} cy={hp[1]} r="3.5" fill="#0071e3" />
+                    <line x1={hp[0]} x2={hp[0]} y1="0" y2={H} stroke="#d2d2d7" />
+                    <circle cx={hp[0]} cy={hp[1]} r="3.5" fill="#ffffff" stroke="#0071e3" strokeWidth="1.5" />
                   </g>
                 ) : null}
               </svg>
