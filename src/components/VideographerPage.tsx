@@ -163,9 +163,8 @@ export async function VideographerPage({ locale }: { locale: "en" | "es" }) {
                       <span className="tq-mono tq-nums" style={{ whiteSpace: "nowrap" }}>{cm.priceLabel}</span>
                       <p className="tq-pg-index__sub">
                         {motionRows
-                          .map((r) => r.values[cm.id])
-                          .filter((v) => v !== null)
-                          .map((v) => v![locale])
+                          .filter((r) => r.values[cm.id] !== null)
+                          .map((r) => `${r.label[locale]}: ${r.values[cm.id]![locale]}`)
                           .join(" · ")}
                       </p>
                       <p className="tq-pg-index__sub tq-mono">

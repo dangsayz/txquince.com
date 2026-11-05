@@ -2131,6 +2131,16 @@ html:has(.tq-compare[open]) {
   font-size: 0.9375rem;
   line-height: 1.55;
 }
+.tq-bk-proof { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 4px 0 0; }
+.tq-bk-proof a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  white-space: nowrap;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
 
 /* Sent */
 .tq-bk-done {

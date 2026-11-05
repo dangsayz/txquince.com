@@ -194,7 +194,11 @@ const en = {
       },
       {
         q: "How does the deposit work?",
-        a: `Pick your package online and send it to us — nothing is charged. We reply within a day to confirm your date, then send your agreement and a secure link to pay the ${PCT} deposit, which locks in your date. All of it goes toward your total, and the rest is due ${PT.balanceDays} days before the event.`,
+        a: `Pick your package online and send it to us — nothing is charged. We reply within a day to confirm your date, then send your agreement and a secure link to pay the ${PCT} deposit, which locks in your date. All of it goes toward your total, and the rest is due ${PT.balanceDays} days before the event. If we ever have to cancel, your deposit is refunded in full. We're insured and can send your church or venue a certificate of insurance.`,
+      },
+      {
+        q: "Can we see full galleries or talk to a family you've worked with?",
+        a: "Yes. Full galleries and full-length films from real quinceañeras are on our Instagram and YouTube, not just the highlights. And if you'd like to hear it from a mom, ask us: we'll put you in touch with a past family who's happy to take your call.",
       },
       {
         q: "Where do you take pre-quince portraits around Dallas?",
@@ -280,7 +284,7 @@ const en = {
     legendPicked: "Your date",
     pickedPrefix: "Your date:",
     noDate: "No date picked yet.",
-    openCount: (n: number) => `${n} Saturdays still open this year.`,
+    openCount: (n: number) => `${n} Saturdays still open in the next 12 months.`,
     city: "Where is it?",
     venue: "Venue or hall",
     venueHint: "If you have one. You can leave this blank.",
@@ -322,6 +326,10 @@ const en = {
       `The rest is due ${PT.balanceDays} days before your event.`,
     ],
     noCharge: "Nothing is charged today.",
+    proofLead: "Want to see more first? Full galleries and films, or a call with a past family:",
+    proofIg: "Instagram",
+    proofYt: "Full films on YouTube",
+    proofRef: "Ask to talk to a family",
     teamNote: "Your day is covered by our small in-house crew of photographers and videographers, sometimes with Dang or Yvonne, the owners, behind the camera. Every gallery and film is edited by the owners.",
     // After sending
     reference: "Reference",
@@ -533,7 +541,11 @@ const es: Copy = {
       },
       {
         q: "¿Cómo funciona el depósito?",
-        a: `Elige tu paquete en línea y envíanoslo — no se cobra nada. Te respondemos en un día para confirmar tu fecha y te mandamos tu contrato y un enlace seguro para pagar el depósito del ${PCT}, que asegura tu fecha. Todo se abona a tu total, y el resto se paga ${PT.balanceDays} días antes del evento.`,
+        a: `Elige tu paquete en línea y envíanoslo — no se cobra nada. Te respondemos en un día para confirmar tu fecha y te mandamos tu contrato y un enlace seguro para pagar el depósito del ${PCT}, que asegura tu fecha. Todo se abona a tu total, y el resto se paga ${PT.balanceDays} días antes del evento. Si alguna vez tuviéramos que cancelar, te devolvemos el depósito completo. Tenemos seguro y podemos mandarle a tu iglesia o salón un certificado de seguro.`,
+      },
+      {
+        q: "¿Podemos ver galerías completas o hablar con una familia con la que hayan trabajado?",
+        a: "Sí. En nuestro Instagram y YouTube hay galerías completas y videos completos de quinceañeras reales, no solo lo mejor. Y si quieres oírlo de otra mamá, pídenoslo: te ponemos en contacto con una familia que con gusto toma tu llamada.",
       },
       {
         q: "¿Dónde toman los retratos pre-quince en Dallas?",
@@ -617,7 +629,7 @@ const es: Copy = {
     legendPicked: "Tu fecha",
     pickedPrefix: "Tu fecha:",
     noDate: "Aún no eliges fecha.",
-    openCount: (n: number) => `Quedan ${n} sábados libres este año.`,
+    openCount: (n: number) => `Quedan ${n} sábados libres en los próximos 12 meses.`,
     city: "¿Dónde es?",
     venue: "Salón o lugar",
     venueHint: "Si ya lo tienes. Puedes dejarlo en blanco.",
@@ -659,6 +671,10 @@ const es: Copy = {
       `El resto se paga ${PT.balanceDays} días antes de tu evento.`,
     ],
     noCharge: "Hoy no se cobra nada.",
+    proofLead: "¿Quieres ver más antes? Galerías y videos completos, o una llamada con una familia:",
+    proofIg: "Instagram",
+    proofYt: "Videos completos en YouTube",
+    proofRef: "Pide hablar con una familia",
     teamNote: "Tu día lo cubre nuestro pequeño equipo de fotógrafos y videógrafos de casa, a veces con Dang o Yvonne, los dueños, detrás de la cámara. Cada galería y cada video lo editan los dueños.",
     // Después de enviar
     reference: "Referencia",

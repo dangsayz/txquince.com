@@ -49,7 +49,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/es/fotos-recientes", priority: 0.7 },
     { path: "/privacy", priority: 0.2 },
     { path: "/venues", priority: 0.7 },
-    { path: "/vendors", priority: 0.6 },
     // Photo-spot inspiration pages (EN + ES, hreflang pairs on the pages).
     ...INSPO_PLACES.flatMap((p) => [
       { path: p.path.en, priority: 0.7 },
@@ -114,12 +113,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   // One indexable credit page per vendor.
-  const vendorEntries: MetadataRoute.Sitemap = (await getVendors()).map((v) => ({
+  // The directory itself is listed only once it has vendors (empty = noindex).
+  const vendors = await getVendors();
+  const vendorEntries: MetadataRoute.Sitemap = vendors.map((v) => ({
     url: `${site.url}/vendors/${v.slug}`,
     lastModified: LASTMOD,
     changeFrequency: "monthly",
     priority: 0.4,
   }));
+  if (vendors.length)
+    vendorEntries.unshift({ url: `${site.url}/vendors`, lastModified: LASTMOD, changeFrequency: "monthly", priority: 0.6 });
 
   // The DFW price guide pair, only once it has rows (empty = noindex).
   const guide = await getPriceGuide();
