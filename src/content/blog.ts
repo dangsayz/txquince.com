@@ -49,6 +49,8 @@ export type BlogPost = {
    * filling the wide cover frame. For photos that must never be cropped.
    */
   coverFull?: boolean;
+  /** Venue slugs (src/content/venues.ts) this post features; each venue page links back. */
+  venues?: string[];
 };
 
 export const BLOG_CATEGORIES = [
@@ -133,6 +135,11 @@ export function getAllPosts(): BlogPost[] {
 
 export function getPost(slug: string): BlogPost | undefined {
   return posts.find((p) => p.slug === slug);
+}
+
+/** Posts that feature a venue, newest first (shown on /venues/{slug}). */
+export function postsForVenue(venueSlug: string): BlogPost[] {
+  return getAllPosts().filter((p) => p.venues?.includes(venueSlug));
 }
 
 export function getPostsByCategory(category: BlogCategory): BlogPost[] {
