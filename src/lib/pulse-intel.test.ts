@@ -51,3 +51,18 @@ describe("judgeMove", () => {
     expect(judgeMove("step:1", 20, 21, 500, 22).state).toBe("flat");
   });
 });
+
+import { todayFocus } from "./pulse-intel";
+
+describe("todayFocus", () => {
+  const base = { ...stats, previous: { views: 0, visitors: 0, unique: 0, leads: 0, booked: 0 }, pagesPerSession: 1, topReferrers: [], topPages: [], utmSources: [], liveNow: [], bookedValue: 0, pipelineValue: 0, requests: 0, pendingHolds: 0, paid: 0 };
+  it("leads with the bottleneck's next move", () => {
+    const f = todayFocus({ ...base, flowBottleneck: { step: 2, rate: 10, baseline: 25, action: "Fix the ask." } }, { title: "Put the button by the photos.", metric: "step:2" });
+    expect(f.headline).toBe("Put the button by the photos.");
+    expect(f.why).toContain("10%");
+    expect(f.move?.metric).toBe("step:2");
+  });
+  it("falls back to replying to leads", () => {
+    expect(todayFocus({ ...base, flowBottleneck: null }, null).headline).toContain("14 new leads");
+  });
+});

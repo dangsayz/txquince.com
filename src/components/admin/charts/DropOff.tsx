@@ -37,8 +37,9 @@ function Table({ title, rows }: { title: string; rows: Row[] }) {
 export function DropOff({ d, visits, range }: { d: RangedStats["dropoff"]; visits: number; range: number }) {
   if (!visits) return null;
   const lostPct = Math.round((d.lost / visits) * 100);
+  const devTotal = d.devices.reduce((t, v) => t + v.sessions, 0);
   const onePct = d.lost ? Math.round((d.onePage / d.lost) * 100) : 0;
-  const worst = [...d.landings, ...d.sources]
+  const worst = [...d.devices, ...d.landings, ...d.sources]
     .filter((r) => r.sessions >= 10)
     .sort((a, b) => a.reached / a.sessions - b.reached / b.sessions || b.sessions - a.sessions)[0];
   return (
@@ -57,10 +58,36 @@ export function DropOff({ d, visits, range }: { d: RangedStats["dropoff"]; visit
         {worst ? (
           <p className="m-0 mt-1.5 text-[13px] leading-5 text-[#6e6e73]">
             <span className="hud-mono mr-1.5 text-[13px] text-[#0071e3]">Fix first:</span>
-            {worst.label}: only {Math.round((worst.reached / worst.sessions) * 100)}% of its {worst.sessions} visits went on. Put real photos and one clear button
+            {d.devices.some((v) => v.label === worst.label) ? `On ${worst.label.toLowerCase()}s` : worst.label}: only {Math.round((worst.reached / worst.sessions) * 100)}% of its {worst.sessions} visits went on. Put real photos and one clear button
             (see the work, check your date) in its first screen.
           </p>
         ) : null}
+      </div>
+      <div className="px-4 pt-4 sm:px-5">
+        <p className="hud-label m-0 pb-2">By device</p>
+        {d.devices.length ? (
+          <div className="grid grid-cols-1 gap-2 min-[480px]:grid-cols-3">
+            {d.devices.map((v) => {
+              const went = v.sessions ? Math.round((v.reached / v.sessions) * 100) : 0;
+              const left = v.sessions ? Math.round((v.onePage / v.sessions) * 100) : 0;
+              const share = devTotal ? Math.round((v.sessions / devTotal) * 100) : 0;
+              const weak = v.sessions >= 10 && went < 20;
+              return (
+                <div key={v.label} className="rounded-xl bg-[#f5f5f7] px-3.5 py-3">
+                  <p className="m-0 flex items-baseline justify-between gap-2 text-[15px] font-semibold text-[#1d1d1f]">
+                    {v.label}
+                    <span className="hud-mono text-[13px] font-normal text-[#6e6e73]">{share}% of visits</span>
+                  </p>
+                  <p className="hud-mono m-0 mt-1 text-[13px] leading-5 text-[#6e6e73]">
+                    <span style={{ color: weak ? "#d70015" : "#1d1d1f" }}>{went}%</span> went on · {left}% left after one page
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="m-0 text-[13px] leading-5 text-[#6e6e73]">Phone vs. desktop appears here once the device update (migration 0026) has run and new visits come in.</p>
+        )}
       </div>
       <div className="grid gap-5 px-3 pb-4 pt-4 sm:px-4 md:grid-cols-2">
         <Table title="Landed on" rows={d.landings} />

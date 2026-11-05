@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { RangedStats } from "@/lib/analytics-db";
-import { briefing, metricIntel, stepIntel, type Intel } from "@/lib/pulse-intel";
+import { briefing, metricIntel, stepIntel, todayFocus, type Intel } from "@/lib/pulse-intel";
+import { TodayFocus } from "./TodayFocus";
 import type { PulseMove } from "@/lib/pulse-moves";
 import { DropOff } from "./DropOff";
 import { MovesLog } from "./MovesLog";
@@ -37,6 +38,10 @@ export function StudioPulse({ s, basePath, range, moves }: { s: RangedStats; bas
   const tried = new Set((moves ?? []).map((m) => `${m.metric}|${m.title}`));
   const nextTodo = b ? steps[b.step].todo.find((t) => !tried.has(`${steps[b.step].metric}|${t.slice(0, 200)}`)) : undefined;
   const nextUp = b && nextTodo ? { title: nextTodo, metric: `step:${b.step}` } : null;
+  // Today's focus stays put once started (it then reads "Tracking · day n").
+  const startedFocus = b ? running.find((m) => m.metric === `step:${b.step}`) : undefined;
+  const focus = todayFocus(s, startedFocus ? { title: startedFocus.title, metric: startedFocus.metric } : nextUp);
+  const focusDay = focus.move ? running.find((m) => m.title === focus.move!.title.slice(0, 200) && m.metric === focus.move!.metric)?.days ?? null : null;
   const tabs = [
     {
       id: "pages",
@@ -99,6 +104,7 @@ export function StudioPulse({ s, basePath, range, moves }: { s: RangedStats; bas
         <p className="hud-card mt-4 px-5 py-6 text-sm text-[#6e6e73]">Analytics appear here once the database connection is available.</p>
       ) : (
         <div className="mt-4 grid gap-4">
+          <TodayFocus focus={focus} trying={focusDay} />
           <Briefing lines={briefing(s)} />
           <TrendChart
             series={s.series}
@@ -114,7 +120,7 @@ export function StudioPulse({ s, basePath, range, moves }: { s: RangedStats; bas
           {moves ? (
             <div className="grid items-start gap-4 xl:grid-cols-2">
               <DropOff d={s.dropoff} visits={s.uniqueSessions} range={range} />
-              <MovesLog moves={moves} nextUp={nextUp} />
+              <MovesLog moves={moves} nextUp={null} />
             </div>
           ) : null}
           <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 lg:grid-cols-4">
