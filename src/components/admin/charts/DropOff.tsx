@@ -24,7 +24,7 @@ function Table({ title, rows }: { title: string; rows: Row[] }) {
               <span className="min-w-0 truncate text-[#1d1d1f]">{r.label}</span>
               <span className="hud-mono shrink-0 text-[13px] text-[#1d1d1f]">
                 {r.sessions}
-                <span className="ml-2 inline-block w-10 text-right" style={{ color: weak ? "#c93400" : "#6e6e73" }}>{pct}%</span>
+                <span className="ml-2 inline-block w-10 text-right" style={{ color: weak ? "#d70015" : "#6e6e73" }}>{pct}%</span>
               </span>
             </li>
           );
@@ -51,8 +51,8 @@ export function DropOff({ d, visits, range }: { d: RangedStats["dropoff"]; visit
       </div>
       <div className="px-4 pt-3.5 sm:px-5">
         <p className="m-0 text-base leading-7 text-[#1d1d1f]">
-          <span className="hud-mono text-[#c93400]">{d.lost.toLocaleString("en-US")}</span> of {visits.toLocaleString("en-US")} visits ({lostPct}%) never saw your work or
-          prices. <span className="hud-mono text-[#c93400]">{onePct}%</span> of those opened one page and left.
+          <span className="hud-mono text-[#d70015]">{d.lost.toLocaleString("en-US")}</span> of {visits.toLocaleString("en-US")} visits ({lostPct}%) never saw your work or
+          prices. <span className="hud-mono text-[#d70015]">{onePct}%</span> of those opened one page and left.
         </p>
         {worst ? (
           <p className="m-0 mt-1.5 text-[13px] leading-5 text-[#6e6e73]">

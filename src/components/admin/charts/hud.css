@@ -2,7 +2,7 @@
  * hud.css — the "Studio pulse" analytics panel, in Apple light mode.
  * Tokens: bg #F5F5F7 · surface #FFF · separator #D2D2D7 · text #1D1D1F /
  * secondary #6E6E73 (5:1) · accent #0071E3 · and the darker Apple green /
- * red / orange (#248A3D / #D70015 / #C93400) so text passes 4.5:1 on white.
+ * red (#248A3D / #D70015) so text passes 4.5:1 on white; red also marks the bottleneck.
  * Cards 18px radius with a soft shadow, pills 999px, SF Pro (Rounded numbers).
  * Motion: cell field, line draw-in, flow particles, live dot. All of it
  * stops under prefers-reduced-motion.
@@ -19,8 +19,8 @@
   --accent-fill: rgba(0, 113, 227, 0.1);
   --positive: #248a3d;
   --negative: #d70015;
-  --warning: #c93400;
-  --warning-fill: rgba(255, 149, 0, 0.12);
+  --warning: #d70015;
+  --warning-fill: rgba(255, 59, 48, 0.08);
   --radius-card: 18px;
   --radius-pill: 999px;
   --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;

@@ -11,7 +11,7 @@ import { MOVE_METRICS } from "@/lib/pulse-intel";
  * judged, Keep or Drop files them (with the result) so the track record
  * builds up: what was tried, for how long, and whether it moved the number.
  */
-const TONE: Record<string, string> = { working: "#248a3d", "not-working": "#d70015", flat: "#c93400", measuring: "#0071e3" };
+const TONE: Record<string, string> = { working: "#248a3d", "not-working": "#d70015", flat: "#d70015", measuring: "#0071e3" };
 const STATE_LABEL: Record<string, string> = { working: "Working", "not-working": "Not working", flat: "No change", measuring: "Measuring" };
 
 export function MovesLog({ moves, nextUp }: { moves: PulseMove[]; nextUp: { title: string; metric: string } | null }) {
@@ -59,7 +59,7 @@ export function MovesLog({ moves, nextUp }: { moves: PulseMove[]; nextUp: { titl
       {nextUp && !active.some((m) => m.title === nextUp.title) ? (
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-dashed border-[#d2d2d7] px-4 py-3 sm:px-5">
           <p className="m-0 min-w-0 flex-1 text-sm leading-6 text-[#1d1d1f]">
-            <span className="hud-mono mr-2 text-[13px] text-[#c93400]">Next up</span>
+            <span className="hud-mono mr-2 text-[13px] text-[#d70015]">Next up</span>
             {nextUp.title}
           </p>
           <button type="button" className="hud-move-btn hud-focus" disabled={busy === "next"} onClick={startNext}>
