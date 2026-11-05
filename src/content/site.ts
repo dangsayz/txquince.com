@@ -23,14 +23,16 @@ export const site = {
     // RESEND_FROM / FROM in src/lib/resend.ts — so this can be a Gmail address.
     email: "quincebookings@gmail.com",
     // Public phone. Families text far more than they email, so this number is
-    // offered as Text / WhatsApp / Call wherever a family might reach out
+    // offered as Text / Call (WhatsApp has its own number, below) wherever a family might reach out
     // (footer, menu, booking panel, city pages, blog posts, /links) and in the
     // LocalBusiness schema. Display form here; E.164 below for sms:/tel: links.
     phone: "(945) 200-1939",
     phoneE164: "+19452001939",
-    // WhatsApp click-to-chat (wa.me takes the number without the "+"). The
-    // prefilled first message follows the page's language.
-    whatsapp: "https://wa.me/19452001939",
+    // WhatsApp click-to-chat, on its own number (wa.me takes it without the
+    // "+"). Every WhatsApp button on the site opens this one. The prefilled
+    // first message follows the page's language.
+    whatsapp: "https://wa.me/19729148617",
+    whatsappPhone: "(972) 914-8617",
     whatsappMessage: {
       en: "Hi! I'd like to check my quinceañera date.",
       es: "¡Hola! Quiero consultar la fecha de mi quinceañera.",

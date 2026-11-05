@@ -283,3 +283,6 @@
 /* The menu's top bar spans the full width like the header, so Close, the
    wordmark and the language switch sit in their own thirds instead of crowding. */
 .txq .sm-top { width: 100%; flex: none; }
+/* "Chat on WhatsApp" at the top of the footer's contact area: its own
+   full-width row, so the 48px pill never squeezes into a narrow column. */
+.txq .sf-wa-row { grid-column: 1 / -1; color: #101010; }

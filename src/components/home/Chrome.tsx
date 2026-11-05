@@ -13,6 +13,7 @@ import { site } from "@/content/site";
 import { HOME } from "./home-copy";
 import { ED } from "@/components/editorial/copy";
 import "./chrome.css";
+import { WhatsAppChatButton } from "@/components/WhatsAppChatButton";
 
 /** Footer city links (each has a page in both languages; see content/locations.ts). */
 const FOOTER_CITIES = [
@@ -246,13 +247,13 @@ export function SiteFooter() {
             <a href={homeHref("#intake")}>{e.reserve}</a>
           </nav>
           <div className="sf-side">
+            <div className="sf-wa-row">
+              <WhatsAppChatButton lang={lang} placement="footer" />
+            </div>
             <div id="contact" className="sf-col">
               <p className="sf-h">{f.hello}</p>
               <a href={smsHref()} onClick={() => trackEvent(CONTACT_EVENT.text, "footer")}>
                 {e.text} {site.contact.phone}
-              </a>
-              <a href={whatsappHref(lang)} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent(CONTACT_EVENT.whatsapp, "footer")}>
-                WhatsApp
               </a>
               <a href={telHref()} onClick={() => trackEvent(CONTACT_EVENT.call, "footer")}>
                 {lang === "es" ? "Llamar" : "Call"}

@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { normalizeSrc, sourceKey } from "./src-tag";
+import { normalizeSrc, sourceKey, visitSourceKey } from "./src-tag";
 import { sanitizeAttribution } from "./attribution";
 
 describe("src tags", () => {
-  it("accepts only the seven platform tags, lower-cased", () => {
-    for (const t of ["instagram", "facebook", "tiktok", "youtube", "pinterest", "quora", "gbp"]) expect(normalizeSrc(t)).toBe(t);
+  it("accepts only the eight platform tags, lower-cased", () => {
+    for (const t of ["instagram", "facebook", "tiktok", "youtube", "pinterest", "quora", "gbp", "whatsapp"]) expect(normalizeSrc(t)).toBe(t);
     expect(normalizeSrc(" Instagram ")).toBe("instagram");
   });
 
@@ -25,5 +25,12 @@ describe("src tags", () => {
     expect(sourceKey({ source: "google.com", ref: "mandalay" })).toBe("google.com");
     expect(sourceKey({ source: "Pinterest.com" })).toBe("pinterest.com");
     expect(sourceKey(null)).toBe("direct");
+  });
+
+  it("counts visits by their src tag, so gbp and whatsapp are their own rows", () => {
+    expect(visitSourceKey("gbp", "google.com")).toBe("gbp");
+    expect(visitSourceKey("whatsapp", null)).toBe("whatsapp");
+    expect(visitSourceKey(null, "google.com")).toBe("google.com");
+    expect(visitSourceKey(null, null)).toBe("direct");
   });
 });

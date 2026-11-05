@@ -5,7 +5,7 @@ import { getBookings, getInquiries } from "@/lib/clients-db";
 import { releasedTestimonials } from "@/content/testimonials";
 import { collectionById } from "@/content/packages";
 import type { ConversionChange } from "@/components/admin/ChangeLog";
-import { sourceKey } from "@/lib/src-tag";
+import { sourceKey, visitSourceKey, WHATSAPP_SOURCE } from "@/lib/src-tag";
 
 export type RangedStats = {
   configured: boolean;
@@ -61,7 +61,8 @@ export type RangedStats = {
   pipelineValue: number;
   inquiryToBooked: number;
   funnel: { label: string; value: number }[];
-  bySource: { source: string; leads: number; requests: number; bookedValue: number }[];
+  /** Per source: visits (sessions), WhatsApp chats started (button taps, own "whatsapp" row), leads, date requests, booked $. */
+  bySource: { source: string; visits: number; chats: number; leads: number; requests: number; bookedValue: number }[];
   insights: { type: "success" | "warning" | "info"; text: string }[];
   /** Sessions active in the last 5 minutes — who's on the site right now. */
   liveNow: { path: string; seconds: number; pages: number }[];
@@ -284,12 +285,24 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     // ---- revenue & leads by first-touch source ----
     // The ?src= tag when there is one (instagram, pinterest…), else the first-touch source.
     const srcKey = sourceKey;
-    const sourceMap = new Map<string, { source: string; leads: number; requests: number; bookedValue: number }>();
+    const sourceMap = new Map<string, RangedStats["bySource"][number]>();
     const bump = (key: string) => {
-      const row = sourceMap.get(key) ?? { source: key, leads: 0, requests: 0, bookedValue: 0 };
+      const row = sourceMap.get(key) ?? { source: key, visits: 0, chats: 0, leads: 0, requests: 0, bookedValue: 0 };
       sourceMap.set(key, row);
       return row;
     };
+    // Visits: each session counted once, by its first page (?src=gbp → "gbp").
+    {
+      const seen = new Set<string>();
+      for (const r of rows) {
+        const sid = r.session_id ?? `anon-${r.created_at}`;
+        if (seen.has(sid)) continue;
+        seen.add(sid);
+        bump(visitSourceKey(r.utm_source, hostOf(r.referrer))).visits += 1;
+      }
+    }
+    // WhatsApp button taps are their own source: a chat started off-site.
+    bump(WHATSAPP_SOURCE).chats += events.filter((e) => e.event_type === "contact_whatsapp").length;
     for (const i of inquiries) bump(srcKey(i.attribution)).leads += 1;
     for (const bk of bookings) {
       if (bk.status === "requested" || bk.status === "pending_payment" || bk.status === "paid") {
@@ -299,8 +312,9 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
       }
     }
     const bySource = Array.from(sourceMap.values())
-      .sort((a, b) => b.bookedValue - a.bookedValue || b.leads - a.leads || b.requests - a.requests)
-      .slice(0, 10);
+      .filter((r) => r.visits || r.chats || r.leads || r.requests)
+      .sort((a, b) => b.bookedValue - a.bookedValue || b.leads - a.leads || b.chats - a.chats || b.requests - a.requests || b.visits - a.visits)
+      .slice(0, 12);
 
     // ---- session journeys: dwell per page, exits, live-now ----
     // Dwell for page N = gap to page N+1 in the same session (capped at 10 min;
