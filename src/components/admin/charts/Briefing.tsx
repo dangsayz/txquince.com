@@ -36,15 +36,15 @@ export function Briefing({ lines }: { lines: string[] }) {
     <div className="hud-card hud-brief px-4 py-3.5 sm:px-5">
       <div className="hud-label flex flex-wrap items-center gap-x-3 gap-y-1">
         <span className="hud-brief__pulse" aria-hidden />
-        <span style={{ color: "#0a84ff" }}>Pulse</span>
+        <span style={{ color: "#0071e3" }}>Pulse</span>
         <span>System online</span>
         <span className="ml-auto tabular-nums">{clock} CT</span>
       </div>
       <p className="sr-only">{lines.join(" ")}</p>
-      <div aria-hidden className="hud-mono mt-2.5 space-y-1 text-[13px] leading-6 text-[#ffffff] sm:text-sm">
+      <div aria-hidden className="hud-mono mt-2.5 space-y-1 text-[13px] leading-6 text-[#1d1d1f] sm:text-sm">
         {typed.map((l, i) => (
           <p key={i} className="m-0">
-            <span className="text-[#0a84ff]">›</span> {l}
+            <span className="text-[#0071e3]">›</span> {l}
             {i === typed.length - 1 && shown < full.length ? <span className="hud-caret" /> : null}
           </p>
         ))}
