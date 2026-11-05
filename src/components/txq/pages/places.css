@@ -540,7 +540,9 @@
   .txq .tq-place-block { padding-bottom: 112px; }
 }
 
-/* Guides (journal rows) */
+/* Guides (journal rows). Text is all ink, so the hierarchy comes from size,
+   weight and space: a small mono meta line, then a large title, then the
+   excerpt at body size, each with room to breathe. */
 .txq .tq-place-guides {
   margin: 0;
   padding: 0 var(--pad);
@@ -555,18 +557,31 @@
 .txq .tq-place-guides a {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 8px 16px;
-  padding: 22px 0;
+  grid-template-areas:
+    "cat read"
+    "title title"
+    "ex ex";
+  column-gap: 16px;
+  padding: 32px 0;
   align-items: baseline;
 }
 .txq .tq-place-guides__cat {
+  grid-area: cat;
   color: var(--text-muted);
+  white-space: nowrap;
+}
+.txq .tq-place-guides__read {
+  grid-area: read;
+  white-space: nowrap;
 }
 .txq .tq-place-guides__title {
-  grid-column: 1 / -1;
-  order: -1;
-  font-size: clamp(1.125rem, 0.95rem + 0.6vw, 1.5rem);
-  line-height: 1.25;
+  grid-area: title;
+  margin-top: 14px;
+  font-size: clamp(1.375rem, 1.1rem + 0.8vw, 1.75rem);
+  font-weight: var(--weight-medium);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
 }
 .txq .tq-place-guides__title span {
   background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
@@ -576,19 +591,50 @@
   background-size: 100% 1px;
 }
 .txq .tq-place-guides__ex {
-  grid-column: 1 / -1;
-  margin: 0;
-  max-width: 62ch;
+  grid-area: ex;
+  margin: 16px 0 0;
+  max-width: 58ch;
+  font-size: 1rem;
+  line-height: 1.65;
   color: var(--text-muted);
 }
 @media (min-width: 960px) {
   .txq .tq-place-guides a {
     grid-template-columns: minmax(0, 3fr) minmax(0, 7fr) minmax(0, 2fr);
+    grid-template-areas:
+      "cat title read"
+      "cat ex read";
     column-gap: 24px;
+    padding: 40px 0;
   }
-  .txq .tq-place-guides__title { grid-column: 2; order: 0; }
-  .txq .tq-place-guides__ex { grid-column: 2; }
-  .txq .tq-place-guides__read { grid-column: 3; grid-row: 1; justify-self: end; }
+  .txq .tq-place-guides__title { margin-top: 0; }
+  .txq .tq-place-guides__read { justify-self: end; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .txq .tq-place-guides__title span { transition: none; }
+}
+
+/* Venue page: "From the journal" heading above the rows. */
+.txq .tq-place-stories {
+  margin-top: 72px;
+}
+.txq .tq-place-stories__head {
+  margin: 0 0 28px;
+  padding: 0 var(--pad);
+}
+.txq .tq-place-stories__label {
+  margin: 0 0 12px;
+}
+.txq .tq-place-stories__title {
+  margin: 0;
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2.25rem);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+@media (min-width: 960px) {
+  .txq .tq-place-stories { margin-top: 112px; }
+  .txq .tq-place-stories__head { margin-bottom: 40px; }
 }
 
 /* ---------- Quotes (release-cleared testimonials only) ---------- */
@@ -662,4 +708,17 @@
 }
 .txq .tq-place-gallery {
   padding: 0 var(--pad) 80px;
+}
+
+/* Photo-spot row → its inspiration page. */
+.txq .tq-place-row__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: var(--text-primary);
+  font-weight: var(--weight-medium);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  white-space: nowrap;
 }

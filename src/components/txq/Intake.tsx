@@ -27,6 +27,7 @@ import { ADD_ONS, CITIES, money, pick, tierById, type Lang, type TierId } from "
 import { BOOKING_STEPS, isoDate, useAvailability, useQuote, useSite } from "./state";
 import { ExtrasStep, PackageStep, useTween } from "./Commissions";
 import "./booking-glass.css";
+import { TrustLine } from "@/components/TrustLine";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const LAST = BOOKING_STEPS - 1;
@@ -634,6 +635,7 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
                   {nextLabel} {sending ? null : <span className="tq-arrow" aria-hidden>→</span>}
                 </button>
               </div>
+              <TrustLine lang={lang} />
             </form>
 
             <Totals nextLabel={nextLabel} sending={sending} />

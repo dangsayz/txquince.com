@@ -188,8 +188,10 @@ export default async function AdminDashboard({
           Revenue &amp; leads by source
         </p>
         <p className="mt-1 text-xs text-ink-soft">
-          Where each booking &amp; lead first came from (tag your links with{" "}
-          <code className="text-ink">?utm_source=</code> to sharpen this).
+          Where each booking &amp; lead came from: the link tag when there is one (tag your links
+          with <code className="text-ink">?ref=</code>, e.g. <code className="text-ink">?ref=pinterest</code>,{" "}
+          <code className="text-ink">?ref=gbp</code>, <code className="text-ink">?ref=mandalay</code>), otherwise
+          the site they first came from.
         </p>
         {s.bySource.length === 0 ? (
           <p className="mt-4 text-base text-ink-faint">

@@ -1,0 +1,16 @@
+/* "We never post your daughter's name." Body size (>=16px), ink, never wraps
+   awkwardly: icon + text on one baseline, text may wrap on very narrow screens. */
+.tq-trust {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 16px 0 0;
+  font-size: 1rem;
+  line-height: 1.45;
+  font-weight: 510;
+  color: inherit;
+}
+.tq-trust__icon {
+  flex: none;
+  margin-top: 1px;
+}

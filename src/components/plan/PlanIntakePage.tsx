@@ -46,7 +46,7 @@ export async function PlanIntakePage({ lang, searchParams }: { lang: PlanLang; s
       lang={lang}
       initialDate={prefillDate(one(q.date))}
       initialColors={parseColors(one(q.colors) ?? "")}
-      src={sanitizeSource(one(q.src))}
+      src={sanitizeSource(one(q.src) ?? one(q.ref))}
       minDate={today}
       maxDate={maxDate}
       cities={cities}

@@ -67,20 +67,20 @@ export const DETAILS: Detail[] = [
     },
   },
   {
-    id: "vals",
+    id: "portrait",
     still: {
-      src: "/portfolio/kimberly-reception.webp",
-      width: 719,
+      src: "/portfolio/stockyards.webp",
+      width: 720,
       height: 1080,
       alt: {
-        en: "Quinceañera in a black gown dancing with her father beneath lighted marquee letters",
-        es: "Quinceañera con vestido negro bailando con su papá bajo letras iluminadas",
+        en: "Quinceañera in a blush sparkle ball gown holding a bouquet among cactus in soft evening light",
+        es: "Quinceañera con vestido de gala rosado con brillos sosteniendo un ramo entre nopales con luz suave de la tarde",
       },
     },
     video: null,
     lines: {
-      en: ["The vals with papá.", "The dance he has waited", "fifteen years for."],
-      es: ["El vals con papá.", "El baile que esperó", "quince años."],
+      en: ["Just her.", "The dress, the light,", "a moment of her own."],
+      es: ["Solo ella.", "El vestido, la luz,", "un momento para ella."],
     },
   },
   {
@@ -141,8 +141,8 @@ export const DETAILS: Detail[] = [
       width: 719,
       height: 1080,
       alt: {
-        en: "Quinceañera in a black and gold gown behind a large red gift box at her party",
-        es: "Quinceañera con vestido negro y dorado detrás de una gran caja de regalo roja en su fiesta",
+        en: "Crowned quinceañera in a black and gold gown opening a gift at her party",
+        es: "Quinceañera con corona y vestido negro y dorado abriendo un regalo en su fiesta",
       },
     },
     video: null,
@@ -175,7 +175,7 @@ export const JOURNAL_PHOTO: Record<string, { src: string; width: number; height:
   "Cost & Budget": { src: "/portfolio/shoe-ceremony.webp", width: 719, height: 1080 },
   Planning: { src: "/portfolio/save-date.webp", width: 810, height: 1080 },
   Traditions: { src: "/portfolio/dance.webp", width: 719, height: 1080 },
-  "Photography & Film": { src: "/portfolio/kimberly-reception.webp", width: 719, height: 1080 },
+  "Photography & Film": { src: "/portfolio/reception.webp", width: 719, height: 1080 },
   Locations: { src: "/portfolio/lilac-arch.webp", width: 810, height: 1080 },
 };
 export const JOURNAL_PHOTO_FALLBACK = { src: "/portfolio/red-garden.webp", width: 720, height: 1080 };
