@@ -17,9 +17,11 @@ export type RangedStats = {
   bounceRate: number;
   daily: { date: string; count: number }[];
   /** Per day in the range: page views, distinct visitors, new leads (inquiries + plans). */
-  series: { date: string; views: number; visitors: number; leads: number }[];
+  series: { date: string; views: number; visitors: number; unique: number; leads: number }[];
+  /** Distinct browsers in the range (visitor_id; older rows fall back to their session). */
+  uniqueVisitors: number;
   /** The same totals for the period just before this one, for "vs previous" deltas. */
-  previous: { views: number; visitors: number; leads: number; booked: number };
+  previous: { views: number; visitors: number; unique: number; leads: number; booked: number };
   /** New leads (inquiries + quince plans) and paid bookings inside the range. */
   rangeLeads: number;
   rangeBooked: number;
@@ -62,6 +64,7 @@ type PV = {
   path: string;
   referrer: string | null;
   session_id: string | null;
+  visitor_id?: string | null;
   utm_source: string | null;
   utm_medium: string | null;
   created_at: string;
@@ -100,7 +103,8 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     bounceRate: 0,
     daily: [],
     series: [],
-    previous: { views: 0, visitors: 0, leads: 0, booked: 0 },
+    previous: { views: 0, visitors: 0, unique: 0, leads: 0, booked: 0 },
+    uniqueVisitors: 0,
     rangeLeads: 0,
     rangeBooked: 0,
     flow: [],
@@ -144,11 +148,21 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     const week = new Date(now - 7 * 86400_000).toISOString();
     const [pvRes, leRes, bookings, inquiries, imgWeekRes, vidRes, lastChangeRes, plansRes] =
       await Promise.all([
+        // visitor_id arrives with migration 0025; retry without it until then.
         supabase
           .from("page_views")
-          .select("path, referrer, session_id, utm_source, utm_medium, created_at")
+          .select("path, referrer, session_id, visitor_id, utm_source, utm_medium, created_at")
           .gte("created_at", startPrev)
-          .order("created_at", { ascending: true }),
+          .order("created_at", { ascending: true })
+          .then((res) =>
+            res.error
+              ? supabase
+                  .from("page_views")
+                  .select("path, referrer, session_id, utm_source, utm_medium, created_at")
+                  .gte("created_at", startPrev)
+                  .order("created_at", { ascending: true })
+              : res,
+          ),
         supabase.from("lead_events").select("event_type").gte("created_at", startRange),
         getBookings(),
         getInquiries(),
@@ -248,7 +262,7 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     const inquiryToBooked = totalInquiries ? Math.round((paid / totalInquiries) * 100) : 0;
 
     const funnel = [
-      { label: "Visitors", value: uniqueSessions },
+      { label: "Visits", value: uniqueSessions },
       { label: "Leads", value: totalInquiries },
       { label: "Date requests", value: totalBookings },
       { label: "Paid", value: paid },
@@ -424,33 +438,37 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     // ---- per-day series + previous period ----
     const plans = ((plansRes as { data?: { created_at: string }[] | null })?.data ?? []) as { created_at: string }[];
     const leadTimes = [...inquiries.map((i) => i.created_at), ...plans.map((p) => p.created_at)];
-    const seriesMap = new Map<string, { views: number; sids: Set<string>; leads: number }>();
-    for (const d of dailyMap.keys()) seriesMap.set(d, { views: 0, sids: new Set(), leads: 0 });
+    const who = (r: PV) => (r.visitor_id ? `v:${r.visitor_id}` : `s:${r.session_id ?? "anon"}`);
+    const seriesMap = new Map<string, { views: number; sids: Set<string>; vids: Set<string>; leads: number }>();
+    for (const d of dailyMap.keys()) seriesMap.set(d, { views: 0, sids: new Set(), vids: new Set(), leads: 0 });
     for (const r of rows) {
       const day = seriesMap.get(dayKey(r.created_at));
       if (!day) continue;
       day.views += 1;
       day.sids.add(r.session_id ?? "anon");
+      day.vids.add(who(r));
     }
     for (const t of leadTimes) {
       if (t < startRange) continue;
       const day = seriesMap.get(dayKey(t));
       if (day) day.leads += 1;
     }
-    const series = Array.from(seriesMap.entries()).map(([date, v]) => ({ date, views: v.views, visitors: v.sids.size, leads: v.leads }));
+    const series = Array.from(seriesMap.entries()).map(([date, v]) => ({ date, views: v.views, visitors: v.sids.size, unique: v.vids.size, leads: v.leads }));
+    const uniqueVisitors = new Set(rows.map(who)).size;
     const rangeLeads = leadTimes.filter((t) => t >= startRange).length;
     const paidAt = (b: (typeof bookings)[number]) => (b as { paid_at?: string | null }).paid_at ?? null;
     const rangeBooked = bookings.filter((b) => b.status === "paid" && (paidAt(b) ?? "") >= startRange).length;
     const previous = {
       views: prevRows.length,
       visitors: new Set(prevRows.map((r) => r.session_id ?? "anon")).size,
+      unique: new Set(prevRows.map(who)).size,
       leads: leadTimes.filter((t) => t >= startPrev && t < startRange).length,
       booked: bookings.filter((b) => b.status === "paid" && (paidAt(b) ?? "") >= startPrev && (paidAt(b) ?? "") < startRange).length,
     };
 
     // ---- the flow: one window, five steps ----
     const flow = [
-      { label: "Visitors", value: uniqueSessions },
+      { label: "Visits", value: uniqueSessions },
       { label: "Saw work or prices", value: moneyPageSessions },
       { label: "Took action", value: intentTotal },
       { label: "Leads", value: rangeLeads },
@@ -480,6 +498,7 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
       configured: true,
       range,
       series,
+      uniqueVisitors,
       previous,
       rangeLeads,
       rangeBooked,

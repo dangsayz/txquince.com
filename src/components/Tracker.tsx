@@ -64,7 +64,36 @@ function sessionId(): string {
   }
 }
 
+/**
+ * A stable, anonymous id for this browser (localStorage, no cookie, no PII),
+ * so the dashboard can count unique visitors, not just visits (a visit is one
+ * tab's session; one family opening the link three times is 3 visits, 1 visitor).
+ */
+function visitorId(): string | null {
+  try {
+    const k = "txq_vid";
+    let v = localStorage.getItem(k);
+    if (!v) {
+      v = `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 12)}`;
+      localStorage.setItem(k, v);
+    }
+    return v;
+  } catch {
+    return null;
+  }
+}
+
+/** The owner's own browsing never counts: /admin marks this browser (EditMode). */
+function isOwnerBrowser(): boolean {
+  try {
+    return Boolean(localStorage.getItem("txq_admin"));
+  } catch {
+    return false;
+  }
+}
+
 function post(body: Record<string, unknown>) {
+  if (isOwnerBrowser()) return;
   try {
     const json = JSON.stringify(body);
     if (navigator.sendBeacon) {
@@ -98,6 +127,7 @@ export function Tracker() {
       path: pathname,
       ref: document.referrer || null,
       sid: sessionId(),
+      vid: visitorId(),
       us: params.get("utm_source"),
       um: params.get("utm_medium"),
       uc: params.get("utm_campaign"),
@@ -120,5 +150,5 @@ export function Tracker() {
 /** Fire-and-forget intent event (form starts, CTA clicks, shares). */
 export function trackEvent(eventType: string, target?: string) {
   if (typeof window === "undefined") return;
-  post({ t: "ev", et: eventType, path: window.location.pathname, tg: target ?? null, sid: sessionId() });
+  post({ t: "ev", et: eventType, path: window.location.pathname, tg: target ?? null, sid: sessionId(), vid: visitorId() });
 }
