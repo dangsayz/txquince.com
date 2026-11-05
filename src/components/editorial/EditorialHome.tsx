@@ -64,27 +64,39 @@ export function EditorialHome({
   const { setDockHidden } = useShell();
   const { lang } = useSite();
   const [intakeOnScreen, setIntakeOnScreen] = useState(false);
+  const [heroOnScreen, setHeroOnScreen] = useState(true);
   const rootRef = useRef<HTMLDivElement>(null);
   const intakeRef = useRef<HTMLDivElement>(null);
   useScenes(rootRef);
 
-  // The mobile dock steps aside while the booking panel is on screen (the
-  // panel has its own total · Next bar).
+  // The mobile dock (Available · Reserve Your Date) stays out of the way while
+  // the hero is on screen, which has its own Reserve button: the first screen
+  // shows one call to action, not three. It slides in once the hero is mostly
+  // scrolled past, and steps aside again while the booking panel is on screen
+  // (the panel has its own total · Next bar).
+  useEffect(() => {
+    const hero = rootRef.current?.querySelector("#top");
+    if (!hero) return;
+    const io = new IntersectionObserver(([e]) => setHeroOnScreen(e.isIntersecting), {
+      // "On screen" = the hero still reaches into the top 40% of the viewport.
+      rootMargin: "0px 0px -60% 0px",
+    });
+    io.observe(hero);
+    return () => io.disconnect();
+  }, []);
   useEffect(() => {
     const el = intakeRef.current;
     if (!el) return;
-    const io = new IntersectionObserver(([e]) => {
-      setDockHidden(e.isIntersecting);
-      setIntakeOnScreen(e.isIntersecting);
-    }, {
+    const io = new IntersectionObserver(([e]) => setIntakeOnScreen(e.isIntersecting), {
       rootMargin: "0px 0px -30% 0px",
     });
     io.observe(el);
-    return () => {
-      io.disconnect();
-      setDockHidden(false);
-    };
-  }, [setDockHidden]);
+    return () => io.disconnect();
+  }, []);
+  useEffect(() => {
+    setDockHidden(heroOnScreen || intakeOnScreen);
+  }, [heroOnScreen, intakeOnScreen, setDockHidden]);
+  useEffect(() => () => setDockHidden(false), [setDockHidden]);
 
   return (
     <div ref={rootRef} className="ed">

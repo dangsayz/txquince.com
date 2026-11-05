@@ -41,7 +41,9 @@ export function SiteShell({ children, book }: { children: ReactNode; book: Price
       <SiteProvider urlLang={urlLang} isHome={isHome}>
         <AvailabilityProvider>
           <MotionConfig reducedMotion="user">
-            <Frame key={pathname}>{children}</Frame>
+            <Frame key={pathname} dockStartsHidden={isHome}>
+              {children}
+            </Frame>
           </MotionConfig>
         </AvailabilityProvider>
       </SiteProvider>
@@ -72,11 +74,14 @@ function useScrollTopOnNewPage() {
   }, []);
 }
 
-function Frame({ children }: { children: ReactNode }) {
+function Frame({ children, dockStartsHidden }: { children: ReactNode; dockStartsHidden: boolean }) {
   useScrollTopOnNewPage();
   const { lang, t } = useSite();
   const [cinema, setCinema] = useState(false);
-  const [dockHidden, setDockHidden] = useState(false);
+  // The homepage hero carries its own Reserve button, so there the dock starts
+  // hidden (also in the server HTML, so it never flashes in on load) and
+  // slides in once the hero is scrolled past (see EditorialHome).
+  const [dockHidden, setDockHidden] = useState(dockStartsHidden);
   const controls = useMemo(() => ({ setCinema, setDockHidden }), []);
 
   // Keep the document language in step with the visible language.
