@@ -59,6 +59,8 @@ export const BLOG_CLUSTERS: BlogCluster[] = [
       "quinceanera-dress-colors-that-photograph-best",
       "quinceanera-photo-ideas-shot-list-dfw",
       "best-quinceanera-photo-locations-dfw",
+      "quinceanera-dress-session-ideas-dfw",
+      "quinceanera-reception-details-to-photograph",
     ],
   },
   {
@@ -89,6 +91,7 @@ export const BLOG_CLUSTERS: BlogCluster[] = [
       "quinceanera-mass-dallas-fort-worth",
       "court-vals-surprise-dance-quinceanera",
       "changing-of-the-shoes-quinceanera",
+      "what-is-the-last-doll-quinceanera",
       "quinceanera-songs-for-every-moment",
     ],
   },

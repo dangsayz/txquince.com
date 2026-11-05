@@ -22,6 +22,7 @@ import { portfolioFallback } from "@/content/portfolio-fallback";
 import { releasedTestimonials } from "@/content/testimonials";
 import { getFeaturedImages, getImagesByCity, type PortfolioImage } from "@/lib/content-db";
 import { venuesByCity } from "@/content/venues";
+import { getInspoPlace } from "@/content/inspo-places";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import "@/components/txq/pages/places.css";
@@ -409,6 +410,13 @@ export default async function CityPage({
                   <span className="tq-mono tq-place-row__k">[{pad(i + 1)}]</span>
                   <h3 className="tq-display tq-place-row__t">{s.name}</h3>
                   <p className="tq-place-row__b">{s.why}</p>
+                  {s.inspo && getInspoPlace(s.inspo) ? (
+                    <p className="tq-place-row__b">
+                      <Link href={getInspoPlace(s.inspo)!.path.en} className="tq-place-row__link">
+                        See photos from a session here <span aria-hidden>→</span>
+                      </Link>
+                    </p>
+                  ) : null}
                 </li>
               ))}
             </ol>

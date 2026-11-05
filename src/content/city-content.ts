@@ -32,7 +32,13 @@ const HRS_SOLO = PT.hours.solo;
 const HRS_CINEMA = PT.hours.cinema;
 const HRS_TRIO = PT.hours.trio;
 
-export type CityPhotoSpot = { name: string; why: string; whyEs: string };
+export type CityPhotoSpot = {
+  name: string;
+  why: string;
+  whyEs: string;
+  /** Slug of this spot's photo-inspiration page (src/content/inspo-places.ts), if it has one. */
+  inspo?: string;
+};
 
 export type CityContent = {
   intro: string[];
@@ -140,6 +146,7 @@ export const cityContent: Record<string, CityContent> = {
     "photoSpots": [
       {
         "name": "Mandalay Canal Walk at Las Colinas",
+        "inspo": "mandalay-canal",
         "why": "A Venetian-style canal with stone bridges, waterfalls, and arched walkways winding beneath the Las Colinas towers — the most European backdrop in DFW and a favorite for formal gown portraits. Free to walk, right off Lake Carolyn.",
         "whyEs": "Un canal estilo veneciano con puentes de piedra, cascadas y pasajes con arcos bajo las torres de Las Colinas — el fondo más europeo de todo DFW y de los favoritos para las fotos de vestido formal. De acceso libre, junto al Lake Carolyn."
       },

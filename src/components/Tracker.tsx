@@ -3,8 +3,34 @@
 import { useEffect, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { attributedSearch } from "@/lib/bio-utm";
+import { normalizeRef } from "@/lib/ref-tag";
 
 const FIRST_TOUCH_KEY = "txq_first_touch";
+const REF_KEY = "txq_ref";
+
+/**
+ * Remember the latest `?ref=` link tag this browser arrived with (overwritten
+ * by each new tagged link), so it rides along with the form she fills in
+ * later, on any page.
+ */
+function captureRef(pathname: string, search: URLSearchParams) {
+  try {
+    const ref = normalizeRef(search.get("ref"));
+    if (!ref) return;
+    localStorage.setItem(REF_KEY, JSON.stringify({ ref, refLanding: pathname, refTs: new Date().toISOString() }));
+  } catch {
+    /* never break the page */
+  }
+}
+
+function storedRef(): Record<string, string> | null {
+  try {
+    const raw = localStorage.getItem(REF_KEY);
+    return raw ? (JSON.parse(raw) as Record<string, string>) : null;
+  } catch {
+    return null;
+  }
+}
 
 /**
  * Record where the visitor FIRST arrived from — once, on their first page view,
@@ -23,10 +49,11 @@ function captureFirstTouch(pathname: string, search: URLSearchParams) {
       refHost = "";
     }
     if (refHost && refHost === location.hostname.replace(/^www\./, "")) refHost = ""; // ignore self
-    const source = utmSource || refHost || "direct";
+    const refTag = normalizeRef(search.get("ref"));
+    const source = utmSource || refTag || refHost || "direct";
     const ft = {
       source,
-      medium: search.get("utm_medium") || (utmSource ? "campaign" : refHost ? "referral" : "none"),
+      medium: search.get("utm_medium") || (utmSource ? "campaign" : refTag ? "ref" : refHost ? "referral" : "none"),
       campaign: search.get("utm_campaign") || "",
       referrer: document.referrer || "",
       landing: pathname,
@@ -38,12 +65,18 @@ function captureFirstTouch(pathname: string, search: URLSearchParams) {
   }
 }
 
-/** Read the stored first-touch attribution (for attaching to form submissions). */
+/**
+ * Read the stored attribution for a form submission: the first touch, plus the
+ * latest ?ref= tag (ref, refLanding, refTs) when there is one.
+ */
 export function getFirstTouch(): Record<string, string> | null {
   if (typeof window === "undefined") return null;
   try {
     const raw = localStorage.getItem(FIRST_TOUCH_KEY);
-    return raw ? (JSON.parse(raw) as Record<string, string>) : null;
+    const ft = raw ? (JSON.parse(raw) as Record<string, string>) : null;
+    const ref = storedRef();
+    if (!ft && !ref) return null;
+    return { ...(ft ?? {}), ...(ref ?? {}) };
   } catch {
     return null;
   }
@@ -118,6 +151,7 @@ export function Tracker() {
     // the visit arrives without one — Instagram often strips the referrer.
     const params = attributedSearch(pathname, new URLSearchParams(search.toString()));
     captureFirstTouch(pathname, params);
+    captureRef(pathname, params);
     const key = `${pathname}?${search.toString()}`;
     if (last.current === key) return;
     last.current = key;
@@ -128,8 +162,9 @@ export function Tracker() {
       ref: document.referrer || null,
       sid: sessionId(),
       vid: visitorId(),
-      us: params.get("utm_source"),
-      um: params.get("utm_medium"),
+      // A ?ref= tag counts as the visit's source when there is no utm_source.
+      us: params.get("utm_source") || normalizeRef(params.get("ref")),
+      um: params.get("utm_medium") || (!params.get("utm_source") && normalizeRef(params.get("ref")) ? "ref" : null),
       uc: params.get("utm_campaign"),
     });
   }, [pathname, search]);

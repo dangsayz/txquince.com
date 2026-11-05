@@ -5,6 +5,7 @@ import { getBookings, getInquiries } from "@/lib/clients-db";
 import { releasedTestimonials } from "@/content/testimonials";
 import { collectionById } from "@/content/packages";
 import type { ConversionChange } from "@/components/admin/ChangeLog";
+import { sourceKey } from "@/lib/ref-tag";
 
 export type RangedStats = {
   configured: boolean;
@@ -281,8 +282,8 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     ];
 
     // ---- revenue & leads by first-touch source ----
-    const srcKey = (a: Record<string, string> | null) =>
-      (a?.source || "direct").toLowerCase();
+    // The ?ref= tag when there is one (mandalay, pinterest, gbp…), else the first-touch source.
+    const srcKey = sourceKey;
     const sourceMap = new Map<string, { source: string; leads: number; requests: number; bookedValue: number }>();
     const bump = (key: string) => {
       const row = sourceMap.get(key) ?? { source: key, leads: 0, requests: 0, bookedValue: 0 };

@@ -402,6 +402,15 @@
   .txq .tq-blog-cover { --tq-cover-ar: 2; }
   .txq .tq-blog-cover__media { aspect-ratio: 2 / 1; }
 }
+/* coverFull: the whole photo at its own shape (never cropped), no taller than
+   most of the viewport. Comes after the breakpoints so it wins at every width. */
+.txq .tq-blog-cover[data-full] > * {
+  max-width: min(100%, calc(var(--tq-nat-w) * 1px), calc(82svh * var(--tq-nat-w) / var(--tq-nat-h)));
+  margin-inline: auto;
+}
+.txq .tq-blog-cover[data-full] .tq-blog-cover__media {
+  aspect-ratio: var(--tq-nat-w) / var(--tq-nat-h);
+}
 
 /* ---------- Post: body + rail ---------- */
 .txq .tq-blog-body {

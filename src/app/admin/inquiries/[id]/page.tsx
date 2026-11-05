@@ -24,6 +24,8 @@ export default async function InquiryDetail({ params }: { params: Promise<{ id: 
     ["Budget", inquiry.budget_range],
     ["Venue", inquiry.venue],
     ["How they found us", inquiry.referral || inquiry.attribution?.source],
+    ["Link tag (?ref=)", inquiry.attribution?.ref ? `${inquiry.attribution.ref}${inquiry.attribution.refLanding ? ` (on ${inquiry.attribution.refLanding})` : ""}` : null],
+    ["First came from", inquiry.attribution?.source ? `${inquiry.attribution.source}${inquiry.attribution.landing ? ` → ${inquiry.attribution.landing}` : ""}` : null],
     ["Email", inquiry.email],
     ["Phone", inquiry.phone],
     ["Received", new Date(inquiry.created_at).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short", timeZone: "America/Chicago" })],

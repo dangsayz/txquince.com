@@ -16,6 +16,7 @@ import { detailsFor, goodToKnow } from "./budget-details";
 import { DetailIcon } from "./DetailIcon";
 import { ShareBar } from "./ShareBar";
 import "./budget.css";
+import { TrustLine } from "@/components/TrustLine";
 
 const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 // Turnstile is locked to production hostnames; local dev skips it (as Intake does).
@@ -160,6 +161,7 @@ export function BudgetPlanner() {
         <p className="bp-eyebrow">{c.eyebrow}</p>
         <h1 className="bp-title">{c.title}</h1>
         <p className="bp-dek">{c.dek}</p>
+        <TrustLine lang={lang} />
         <a className="bp-sharelink" href="#share-bottom">
           {c.shareTop} <span aria-hidden>↓</span>
         </a>
@@ -340,6 +342,7 @@ export function BudgetPlanner() {
             <button type="submit" className="bp-btn bp-btn--lg" disabled={sending} aria-busy={sending}>
               {sending ? c.sending : c.send} <span aria-hidden>→</span>
             </button>
+            <TrustLine lang={lang} />
           </form>
         )}
       </section>
