@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useLayoutEffect, useMemo, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { MotionConfig } from "motion/react";
 import { MobileDock } from "./Header";
@@ -49,7 +49,31 @@ export function SiteShell({ children, book }: { children: ReactNode; book: Price
   );
 }
 
+/*
+ * Scroll on page change. Frame remounts for every new path, so a forward
+ * navigation (clicking a post, a menu link) starts at the top of the new page,
+ * even after a long scroll on the last one. Back/forward (popstate) and links
+ * to a #section keep the browser's own position. The first load is left alone
+ * so a reload stays where it was.
+ */
+let firstFrame = true;
+let poppedAt = 0;
+if (typeof window !== "undefined") {
+  window.addEventListener("popstate", () => (poppedAt = Date.now()));
+}
+function useScrollTopOnNewPage() {
+  useLayoutEffect(() => {
+    if (firstFrame) {
+      firstFrame = false;
+      return;
+    }
+    if (Date.now() - poppedAt < 1500 || window.location.hash) return;
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+  }, []);
+}
+
 function Frame({ children }: { children: ReactNode }) {
+  useScrollTopOnNewPage();
   const { lang, t } = useSite();
   const [cinema, setCinema] = useState(false);
   const [dockHidden, setDockHidden] = useState(false);

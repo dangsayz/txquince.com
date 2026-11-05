@@ -153,7 +153,7 @@ function Field({
         {label}
       </label>
       <div
-        className={`mt-1.5 flex items-center rounded-lg border bg-white px-3 focus-within:outline focus-within:outline-2 focus-within:outline-offset-1 focus-within:outline-black ${error ? "border-red-700" : "border-[#c9cac7]"}`}
+        className={`mt-1.5 flex items-center rounded-lg border bg-white px-3 transition-[border-color,box-shadow] focus-within:border-ink focus-within:shadow-[0_0_0_3px_rgba(16,16,16,0.12)] ${error ? "border-red-700" : "border-[#c9cac7]"}`}
       >
         {prefix ? <span aria-hidden="true" className="mr-1 text-base text-ink-soft">{prefix}</span> : null}
         <input
@@ -165,7 +165,7 @@ function Field({
           onChange={(e) => onChange(e.target.value)}
           aria-invalid={error ? true : undefined}
           aria-describedby={describedBy}
-          className="h-12 min-w-0 flex-1 bg-transparent text-base tabular-nums text-ink outline-none"
+          className="h-12 min-w-0 flex-1 bg-transparent text-base tabular-nums text-ink outline-none focus:outline-none focus-visible:outline-none!"
         />
         {suffix ? <span aria-hidden="true" className="ml-2 whitespace-nowrap text-sm text-ink-soft">{suffix}</span> : null}
       </div>
@@ -593,8 +593,9 @@ export function PriceManager({ initial }: { initial: PricesSnapshot }) {
           <Preview book={draft} />
         </Section>
 
-        {/* Save bar: sticky on small screens so the main action stays in thumb reach. */}
-        <div className="sticky bottom-0 z-10 -mx-5 border-t border-line bg-white/95 px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 backdrop-blur sm:-mx-8 sm:px-8 lg:static lg:mx-0 lg:border-0 lg:bg-transparent lg:px-0 lg:pb-0 lg:backdrop-blur-none">
+        {/* Save bar: pinned to the bottom of the screen at every size, so Save is
+            always one click away from whatever field was just changed. */}
+        <div className="sticky bottom-0 z-20 -mx-5 border-t border-line bg-white/95 px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 shadow-[0_-8px_24px_rgba(0,0,0,0.06)] backdrop-blur sm:-mx-8 sm:px-8 lg:-mx-12 lg:px-12">
           {message ? (
             <p
               role={message.kind === "error" ? "alert" : "status"}

@@ -20,8 +20,26 @@ const Schema = z.object({
   competitor_name: z.string().max(120).nullable().optional(),
 });
 
+/** Same-site only: a form on another site can't change or delete leads. */
+function crossSite(request: Request): boolean {
+  const origin = request.headers.get("origin");
+  if (!origin) return false;
+  try {
+    return new URL(origin).host !== new URL(request.url).host;
+  } catch {
+    return true;
+  }
+}
+
+function refresh(id: string) {
+  revalidatePath("/admin/inquiries");
+  revalidatePath("/admin");
+  revalidatePath(`/admin/inquiries/${id}`);
+}
+
 export async function PATCH(request: Request) {
   if (!(await requireAdmin())) return unauthorizedAdminResponse();
+  if (crossSite(request)) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   const parsed = Schema.safeParse(await request.json().catch(() => ({})));
   if (!parsed.success) {
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
@@ -59,8 +77,26 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: res.error.message }, { status: 500 });
   }
 
-  revalidatePath("/admin/inquiries");
-  revalidatePath("/admin");
-  revalidatePath(`/admin/inquiries/${id}`);
+  refresh(id);
   return NextResponse.json({ inquiry: res.data });
+}
+
+const DeleteSchema = z.object({ id: z.string().uuid() }).strict();
+
+/**
+ * Delete an inquiry for good (spam, a test, a duplicate). Admin session and
+ * same-site origin are re-checked here; its activity log goes with it
+ * (on delete cascade). Bookings are separate rows and are never touched.
+ */
+export async function DELETE(request: Request) {
+  if (!(await requireAdmin())) return unauthorizedAdminResponse();
+  if (crossSite(request)) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  const parsed = DeleteSchema.safeParse(await request.json().catch(() => ({})));
+  if (!parsed.success) return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
+  const { id } = parsed.data;
+  const { data, error } = await getServiceSupabase().from("inquiries").delete().eq("id", id).select("id");
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (!data?.length) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  refresh(id);
+  return NextResponse.json({ deleted: id });
 }

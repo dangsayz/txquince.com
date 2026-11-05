@@ -98,12 +98,11 @@ export function Editorial({ journal }: { journal: Journal }) {
  * /api/admin/me confirms a signed-in admin (useIsAdmin — free for visitors), it
  * becomes "Admin" (→ /admin) + "Log out" (signs out, returns to the homepage).
  */
-export function FooterAdmin() {
+/** Sign the owner out everywhere (server cookies + browser client) and go home. */
+export function useAdminLogout() {
   const { lang } = useSite();
-  const isAdmin = useIsAdmin();
   const [busy, setBusy] = useState(false);
   const es = lang === "es";
-
   async function logOut() {
     if (busy) return;
     setBusy(true);
@@ -124,6 +123,14 @@ export function FooterAdmin() {
     }
     window.location.assign(es ? "/es" : "/");
   }
+  return { busy, logOut };
+}
+
+export function FooterAdmin() {
+  const { lang } = useSite();
+  const isAdmin = useIsAdmin();
+  const { busy, logOut } = useAdminLogout();
+  const es = lang === "es";
 
   if (!isAdmin) {
     return (

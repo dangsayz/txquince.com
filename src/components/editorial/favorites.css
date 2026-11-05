@@ -100,11 +100,8 @@
   -webkit-user-select: none;
   -webkit-touch-callout: none;
 }
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .fv-hit img { transition: opacity 300ms ease; }
-  .fv-grid:hover .fv-hit img { opacity: 0.55; }
-  .fv-grid:hover .fv-hit:hover img { opacity: 1; }
-}
+/* Photos stay in full color at all times (no hover dimming). */
+
 
 .fv-foot {
   display: grid;

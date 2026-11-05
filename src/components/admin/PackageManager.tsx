@@ -47,7 +47,7 @@ const LINES: { key: keyof PackageContent; label: string; where: string }[] = [
 ];
 
 const inputCls = (bad?: boolean) =>
-  `mt-1 block w-full min-w-0 rounded-lg border bg-white px-3 py-2.5 text-base leading-snug text-ink outline-none focus:outline focus:outline-2 focus:outline-offset-1 focus:outline-black ${bad ? "border-red-700" : "border-[#c9cac7]"}`;
+  `mt-1 block w-full min-w-0 rounded-lg border bg-white px-3 py-2.5 text-base leading-snug text-ink outline-none transition-[border-color,box-shadow] focus:border-ink focus:shadow-[0_0_0_3px_rgba(16,16,16,0.12)] focus:outline-none focus-visible:outline-none! ${bad ? "border-red-700" : "border-[#c9cac7]"}`;
 
 function Pair({
   id,
@@ -497,7 +497,7 @@ export function PackageManager({ initial }: { initial: PricesSnapshot }) {
         </aside>
 
         {/* Save bar: sticky on small screens so the main action stays in thumb reach. */}
-        <div className="sticky bottom-0 z-10 -mx-5 border-t border-line bg-white/95 px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 backdrop-blur sm:-mx-8 sm:px-8 lg:col-span-2 lg:static lg:mx-0 lg:border-0 lg:bg-transparent lg:px-0 lg:pb-0 lg:backdrop-blur-none">
+        <div className="sticky bottom-0 z-20 -mx-5 border-t border-line bg-white/95 px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 shadow-[0_-8px_24px_rgba(0,0,0,0.06)] backdrop-blur sm:-mx-8 sm:px-8 lg:col-span-2 lg:-mx-12 lg:px-12">
           {message ? (
             <p role={message.kind === "error" ? "alert" : "status"} className={`mb-3 text-[15px] font-medium ${message.kind === "error" ? "text-red-800" : "text-green-800"}`}>
               {message.text}

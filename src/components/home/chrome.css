@@ -217,3 +217,69 @@
   .txq .sf-top { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
   .txq .sf-base { padding-bottom: 8px; }
 }
+
+/* ---------- Owner controls (signed-in admin only) ---------- */
+/* Header pill: 44px tap area, a solid 32px pill that inverts with the header tone. */
+.txq .sh-admin { display: none; align-items: center; min-height: 44px; color: inherit; }
+.txq .sh-admin__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: #101010;
+  color: #ffffff;
+  font-family: var(--font-ed-display), Futura, "Century Gothic", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: background-color 0.35s ease, color 0.35s ease;
+}
+.txq .sh[data-tone="dark"] .sh-admin__pill { background: #ffffff; color: #101010; }
+.txq .sh-admin:hover .sh-admin__pill { opacity: 0.85; }
+.txq .sh-admin:focus-visible { outline: none; }
+.txq .sh-admin:focus-visible .sh-admin__pill { outline: 2px solid currentColor; outline-offset: 3px; }
+.txq .sh-admin__icon { flex: none; }
+@media (min-width: 768px) {
+  .txq .sh-admin { display: inline-flex; }
+}
+
+/* Menu block: set apart from the contact links by a rule and air. */
+.txq .sm-admin { margin-top: 28px; padding-top: 24px; border-top: 1px solid #e6e6e4; }
+.txq .sm-admin__label {
+  margin: 0 0 14px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6b6b6b;
+}
+.txq .sm-admin__row { display: flex; flex-wrap: wrap; gap: 12px; }
+.txq .sm-side .sm-admin__btn,
+.txq .sm-admin__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 22px;
+  border: 1px solid #101010;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #101010;
+  font-size: 16px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+.txq .sm-side .sm-admin__btn--solid,
+.txq .sm-admin__btn--solid { background: #101010; color: #ffffff; }
+.txq .sm-admin__btn:hover { opacity: 0.8; }
+.txq .sm-admin__btn:disabled { opacity: 0.5; cursor: default; }
+.txq .sm-admin__btn:focus-visible { outline: 2px solid #101010; outline-offset: 3px; }
+
+/* The menu's top bar spans the full width like the header, so Close, the
+   wordmark and the language switch sit in their own thirds instead of crowding. */
+.txq .sm-top { width: 100%; flex: none; }
