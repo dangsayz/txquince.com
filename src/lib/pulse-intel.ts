@@ -158,10 +158,7 @@ export function briefing(s: PulseStats): string[] {
       ? `${n(s.uniqueSessions)} visits from ${n(s.uniqueVisitors)} people in the last ${s.range} days.`
       : `Traffic ${v >= 0 ? "up" : "down"} ${Math.abs(v)}%: ${n(s.uniqueSessions)} visits from ${n(s.uniqueVisitors)} people in ${s.range} days.`,
   );
-  if (s.flowBottleneck) {
-    const b = s.flowBottleneck;
-    lines.push(`Bottleneck: ${s.flow[b.step - 1].label.toLowerCase()} → ${s.flow[b.step].label.toLowerCase()} at ${b.rate}% (healthy ≈ ${b.baseline}%).`);
-  }
+  // The bottleneck itself leads the panel in "Do this today".
   lines.push(s.rangeLeads ? `${n(s.rangeLeads)} new ${s.rangeLeads === 1 ? "lead" : "leads"}. Reply within the hour.` : "No new leads yet. Priority: turn visits into plans.");
   if (s.pipelineValue) lines.push(`${usd(s.pipelineValue)} is waiting on a deposit.`);
   else if (s.topReferrers[0]) lines.push(`Top source: ${s.topReferrers[0].label}.`);
@@ -224,4 +221,35 @@ export function judgeMove(key: string, before: number, now: number, sample: numb
   if (change <= -15) return { state: "not-working", text: `${fmt(before)} → ${fmt(now)}. Worse: undo it and try the next move.`, change };
   if (days >= 21) return { state: "flat", text: `${fmt(before)} → ${fmt(now)} after ${days} days. No real change: drop it and try the next move.`, change };
   return { state: "measuring", text: `${fmt(before)} → ${fmt(now)} so far. Too close to call; check again at day 21.`, change };
+}
+
+export type Focus = { headline: string; why: string; move: { title: string; metric: string } | null };
+
+/**
+ * The one thing to do today, most important first: fix the bottleneck (with
+ * its next untried move), else answer new leads, else bring in visits.
+ */
+export function todayFocus(s: PulseStats, nextUp: { title: string; metric: string } | null): Focus {
+  const b = s.flowBottleneck;
+  if (b) {
+    const from = s.flow[b.step - 1].label.toLowerCase();
+    const to = s.flow[b.step].label.toLowerCase();
+    return {
+      headline: nextUp?.title ?? b.action,
+      why: `Only ${b.rate}% get from ${from} to ${to}; healthy is about ${b.baseline}%. It's the weakest step in your funnel, so it's worth the most.`,
+      move: nextUp,
+    };
+  }
+  if (s.rangeLeads) {
+    return {
+      headline: `Reply to your ${n(s.rangeLeads)} new ${s.rangeLeads === 1 ? "lead" : "leads"} and send each one the plan or deposit link.`,
+      why: "Nothing in the funnel is far below healthy right now. Speed of reply is what wins quince bookings.",
+      move: null,
+    };
+  }
+  return {
+    headline: "Share the /plan link in 2 or 3 Facebook group threads where moms are asking for vendors.",
+    why: `${n(s.uniqueSessions)} visits in ${s.range} days is too few to judge the funnel yet. More visits first.`,
+    move: { title: "Share the /plan link in 2 or 3 Facebook group threads where moms are asking for vendors.", metric: "visits" },
+  };
 }

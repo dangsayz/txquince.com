@@ -7,6 +7,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
 import { clientIp } from "@/lib/client-ip";
 import { rateLimiter } from "@/lib/rate-limit";
+import { deviceOf } from "@/lib/device";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -59,10 +60,11 @@ export async function POST(req: NextRequest) {
         utm_medium: clip(body.um, 80),
         utm_campaign: clip(body.uc, 80),
       };
-      const visitor_id = clip(body.vid, 64);
-      // visitor_id arrives with migration 0025; until it runs, store the row without it.
-      const { error } = await supabase.from("page_views").insert(visitor_id ? { ...row, visitor_id } : row);
-      if (error && visitor_id) await supabase.from("page_views").insert(row);
+      // visitor_id (migration 0025) and device (0026): until they run, the
+      // insert fails and the row is stored without them.
+      const extra = { visitor_id: clip(body.vid, 64), device: deviceOf(req.headers.get("user-agent")) };
+      const { error } = await supabase.from("page_views").insert({ ...row, ...extra });
+      if (error) await supabase.from("page_views").insert(row);
     }
   } catch {
     /* analytics must never break the page */

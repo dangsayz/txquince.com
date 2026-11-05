@@ -35,6 +35,8 @@ export type RangedStats = {
     onePage: number;
     landings: { label: string; sessions: number; reached: number }[];
     sources: { label: string; sessions: number; reached: number }[];
+    /** Per device (phone / tablet / desktop); empty until migration 0026 has data. */
+    devices: { label: string; sessions: number; reached: number; onePage: number }[];
   };
   topPages: { label: string; count: number }[];
   topReferrers: { label: string; count: number }[];
@@ -72,6 +74,7 @@ type PV = {
   referrer: string | null;
   session_id: string | null;
   visitor_id?: string | null;
+  device?: string | null;
   utm_source: string | null;
   utm_medium: string | null;
   created_at: string;
@@ -116,7 +119,7 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     rangeBooked: 0,
     flow: [],
     flowBottleneck: null,
-    dropoff: { lost: 0, onePage: 0, landings: [], sources: [] },
+    dropoff: { lost: 0, onePage: 0, landings: [], sources: [], devices: [] },
     topPages: [],
     topReferrers: [],
     utmSources: [],
@@ -156,21 +159,18 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     const week = new Date(now - 7 * 86400_000).toISOString();
     const [pvRes, leRes, bookings, inquiries, imgWeekRes, vidRes, lastChangeRes, plansRes] =
       await Promise.all([
-        // visitor_id arrives with migration 0025; retry without it until then.
-        supabase
-          .from("page_views")
-          .select("path, referrer, session_id, visitor_id, utm_source, utm_medium, created_at")
-          .gte("created_at", startPrev)
-          .order("created_at", { ascending: true })
-          .then((res) =>
-            res.error
-              ? supabase
-                  .from("page_views")
-                  .select("path, referrer, session_id, utm_source, utm_medium, created_at")
-                  .gte("created_at", startPrev)
-                  .order("created_at", { ascending: true })
-              : res,
-          ),
+        // visitor_id (0025) and device (0026) arrive with migrations; until
+        // they run, fall back to the columns that exist.
+        (async () => {
+          const q = (cols: string) =>
+            supabase.from("page_views").select(cols).gte("created_at", startPrev).order("created_at", { ascending: true });
+          const base = "path, referrer, session_id, utm_source, utm_medium, created_at";
+          for (const cols of [`${base}, visitor_id, device`, `${base}, visitor_id`, base]) {
+            const res = await q(cols);
+            if (!res.error) return res;
+          }
+          return { data: [] as unknown[], error: null };
+        })(),
         supabase.from("lead_events").select("event_type, session_id, target").gte("created_at", startRange),
         getBookings(),
         getInquiries(),
@@ -490,15 +490,25 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     }
     const landAgg = new Map<string, { sessions: number; reached: number }>();
     const srcAgg = new Map<string, { sessions: number; reached: number }>();
+    const devAgg = new Map<string, { sessions: number; reached: number; onePage: number }>();
     let lost = 0;
     let onePage = 0;
     for (const [sid, steps] of journeys) {
       const first = firstRow.get(sid);
       if (!first) continue;
       const ok = reachedWork(sid, steps);
+      const single = new Set(steps.map((x) => x.path)).size === 1;
       if (!ok) {
         lost += 1;
-        if (new Set(steps.map((x) => x.path)).size === 1) onePage += 1;
+        if (single) onePage += 1;
+      }
+      if (first.device) {
+        const label = first.device === "phone" ? "Phone" : first.device === "tablet" ? "Tablet" : "Desktop";
+        const d = devAgg.get(label) ?? { sessions: 0, reached: 0, onePage: 0 };
+        d.sessions += 1;
+        if (ok) d.reached += 1;
+        if (single) d.onePage += 1;
+        devAgg.set(label, d);
       }
       const land = first.path === "/" ? "Homepage" : first.path === "/es" ? "Spanish homepage" : first.path;
       const src = first.utm_source || hostOf(first.referrer) || "Direct / app";
@@ -511,7 +521,8 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     }
     const topAgg = (m: Map<string, { sessions: number; reached: number }>) =>
       Array.from(m.entries()).map(([label, v]) => ({ label, ...v })).sort((a, b) => b.sessions - a.sessions).slice(0, 5);
-    const dropoff = { lost, onePage, landings: topAgg(landAgg), sources: topAgg(srcAgg) };
+    const devices = Array.from(devAgg.entries()).map(([label, v]) => ({ label, ...v })).sort((a, b) => b.sessions - a.sessions);
+    const dropoff = { lost, onePage, landings: topAgg(landAgg), sources: topAgg(srcAgg), devices };
 
     // ---- the flow: one window, five steps ----
     const flow = [
