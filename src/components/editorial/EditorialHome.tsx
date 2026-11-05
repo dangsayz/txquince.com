@@ -95,11 +95,12 @@ export function EditorialHome({
       <Band films={films} />
       <Collage galleries={galleries} />
       <Feature />
-      <BudgetCta placement="home" />
       <Packages>
-        <Intake ref={intakeRef} />
+        <Intake ref={intakeRef} pickFromList="commissions" />
       </Packages>
       <MomsAsk />
+      {/* After the questions: "still unsure? tell us your budget". */}
+      <BudgetCta placement="home" />
       <JournalRow journal={journal} />
       <WhereWeWork cities={cities} />
       <WhatsAppFloat lang={lang} hidden={intakeOnScreen} />
@@ -149,7 +150,8 @@ function Hero({ overrides }: { overrides: HomeOverrides }) {
             </span>
           </h1>
           <div className="ed-hero__foot">
-            <a href={homeHref("#intake")} className="ed-btn ed-btn--light">
+            {/* To the package list: on the homepage it is the only package picker. */}
+            <a href={homeHref("#commissions")} className="ed-btn ed-btn--light">
               {e.reserve}
             </a>
             <p className="ed-hero__note">{e.heroNote(money(priceFloor(book)))}</p>

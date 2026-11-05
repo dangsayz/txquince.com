@@ -87,8 +87,10 @@
   text-decoration: none;
   transition: opacity 0.2s ease, background-color 0.2s ease, color 0.2s ease;
 }
-.ed-btn:hover { opacity: 0.82; }
+/* One button on this page: square, ink or paper. Hover swaps the two. */
+.ed-btn:hover { background: #ffffff; color: #000000; }
 .ed-btn--light { background: #ffffff; color: #000000; border-color: #ffffff; }
+.ed-btn--light:hover { background: transparent; color: #ffffff; }
 .ed-btn[data-variant="line"] { background: transparent; color: #000000; }
 .ed-btn[data-variant="line"]:hover { background: #000000; color: #ffffff; opacity: 1; }
 .ed-btn--block { width: 100%; }
@@ -263,7 +265,6 @@
 }
 .ed-card__price { font-family: var(--ed-display); font-size: 40px; font-weight: 500; letter-spacing: 0.02em; line-height: 1; }
 .ed-card__list { align-self: stretch; display: grid; gap: 6px; padding-top: 16px !important; border-top: 1px solid rgba(0, 0, 0, 0.1); }
-.ed-card .ed-btn { border-radius: 999px; }
 .ed-card__list li { font-size: 15px; line-height: 1.5; }
 /* --tq-ink-mute: 8:1 on the white card. */
 .ed-card__fine { font-size: 14px; color: var(--tq-ink-mute); }
@@ -306,7 +307,7 @@
 }
 .ed-crew { margin-top: 20px !important; font-size: 14px; color: var(--ed-mute); }
 .ed-pkg__price { font-family: var(--ed-display); font-size: 28px; letter-spacing: 0.02em; text-align: right; font-variant-numeric: tabular-nums; line-height: 1; }
-.ed-pkg__btn { width: 140px; padding: 0 12px; border-radius: 999px; }
+.ed-pkg__btn { width: 140px; padding: 0 12px; }
 /* Flat, not a card: the package cards inside carry their own border and
    shadow, so a grey rounded box around them was a card inside a card. */
 .ed-panel { margin-top: clamp(48px, 6vw, 80px); border-top: 1px solid var(--ed-line); padding: clamp(32px, 4vw, 48px) 0 0; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
@@ -421,3 +422,22 @@
   text-decoration: none;
 }
 .ed-hero__social a:hover { background: rgba(0, 0, 0, 0.32); border-color: #fff; }
+
+/* The booking panel's action buttons take the page's square button (the
+   panel keeps its own pill look on /reserve). */
+.txq .ed .tq-bk .tq-btn,
+.txq .ed .tq-bk-bar .tq-btn {
+  border: 1px solid var(--ed-ink);
+  border-radius: 0;
+  background: var(--ed-ink);
+  color: #ffffff;
+  font-family: var(--ed-display);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.txq .ed .tq-bk .tq-btn:hover,
+.txq .ed .tq-bk-bar .tq-btn:hover { background: #ffffff; color: var(--ed-ink); }
+.txq .ed .tq-bk .tq-btn--ghost { background: transparent; color: var(--ed-ink); }
+.txq .ed .tq-bk .tq-btn--ghost:hover { background: var(--ed-ink); color: #ffffff; }

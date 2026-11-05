@@ -397,3 +397,20 @@
 .txq .tq-bk .tq-hour:has(input:checked),
 .txq .tq-bk .tq-pill:has(input:checked),
 .txq .tq-bk .tq-pill[aria-pressed="true"] { background: var(--g-ink); box-shadow: none; }
+
+/* Homepage step 1: the package list above is the picker, so the panel shows
+   one quiet line (chosen package · price) and a way back up to the list. */
+.txq .tq-bk .tq-bk-listpick {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding: 20px 0;
+  border-block: 1px solid var(--g-line);
+}
+.txq .tq-bk .tq-bk-listpick__pick { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; font-size: 1.125rem; }
+.txq .tq-bk .tq-bk-listpick[data-chosen="false"] .tq-bk-listpick__pick { color: var(--g-mute); font-size: 1rem; }
+.txq .tq-bk .tq-bk-listpick .tq-btn { min-height: 48px; white-space: nowrap; }
+.txq .tq-bk .tq-bk-listpick__err { flex-basis: 100%; margin: 0; color: #9a4a12; /* the site error colour (.tq-error) */ font-size: 1rem; }
+.txq .tq-bk .tq-bk-side__hint { margin: 8px 0 4px; font-size: 1rem; color: var(--g-mute); }

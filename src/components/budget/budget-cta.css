@@ -8,19 +8,6 @@
   gap: 44px;
   align-items: center;
 }
-.txq .bc-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin: 0 0 18px;
-  font-family: var(--font-ed-display), Futura, sans-serif;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.78);
-}
-.txq .bc-dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; }
 .txq .bc-title {
   margin: 0;
   font-family: var(--font-ed-display), Futura, sans-serif;
@@ -36,19 +23,24 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  min-height: 52px;
+  min-height: 48px;
   margin-top: 30px;
   padding: 0 28px;
-  border-radius: 999px;
+  /* The site's square button (hero "Reserve your date"), paper on ink. */
+  border: 1px solid #fff;
+  border-radius: 0;
   background: #fff;
   color: #0b0b0c;
-  font-size: 16px;
-  font-weight: 600;
+  font-family: var(--font-ed-display), Futura, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   white-space: nowrap;
   text-decoration: none;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
-.txq .bc-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255, 255, 255, 0.18); }
+.txq .bc-btn:hover { background: transparent; color: #fff; }
 .txq .bc-arrow { display: inline-block; transition: transform 0.25s ease; }
 .txq .bc-btn:hover .bc-arrow { transform: translateX(4px); }
 
@@ -57,9 +49,7 @@
   position: relative;
   padding: 26px 22px 22px;
   border-radius: 30px;
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03));
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.16); /* a hairline, no gradient or glow */
 }
 .txq .bc-field { padding: 18px 20px; border-radius: 20px; background: #fff; color: #1d1d1f; }
 .txq .bc-field__label { display: block; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #6e6e73; font-family: var(--font-ed-display), Futura, sans-serif; }

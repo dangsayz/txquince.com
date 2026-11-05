@@ -72,7 +72,13 @@ const isTextField = (el: EventTarget | null) =>
   el instanceof HTMLElement &&
   el.matches("textarea, select, input:not([type=radio]):not([type=checkbox]):not([type=button]):not([type=submit])");
 
-export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) {
+/**
+ * `pickFromList`: the id of a package list on the same page (the homepage's
+ * #commissions). That list becomes the only package picker: step 1 shows the
+ * chosen package in one line (or asks her to pick one) instead of a second
+ * set of cards, and nothing is preselected until she picks.
+ */
+export const Intake = forwardRef<HTMLDivElement | null, { pickFromList?: string }>(function Intake({ pickFromList }, ref) {
   const { t, lang, tier, addOns, crew, hours, booking: b, updateBooking, resetBooking, draftRestored, pickPackage, pickTick } =
     useSite();
   const { book } = usePriceBook();
@@ -103,11 +109,22 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
   // The package decides what's covered: the Portrait Session is photos only.
   const scope = tier === "study" ? "stills" : "both";
   const moved = moveTick > 0 || pickTick > 0;
+  const listMode = Boolean(pickFromList);
+  /** Has she picked a package? Always true with the in-panel picker (it starts on Our pick). */
+  const chosen = !listMode || b.reached >= 1 || step >= 1;
+  const toList = () => {
+    const list = pickFromList ? document.getElementById(pickFromList) : null;
+    if (!list) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    list.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    list.querySelector<HTMLElement>(".ed-pkg a[href], .ed-pkg button")?.focus({ preventScroll: true });
+  };
 
   /* ---------- step moves ---------- */
 
   const errorsFor = (s: number): Errors => {
     const e: Errors = {};
+    if (s === 0 && !chosen) e.package = t.booking.listError;
     if (s === 2) {
       if (!b.date) e.date = t.booking.errors.date;
       else if (!momentsDateAllowed(book, tier, b.date, isoDate(new Date()))) e.date = t.booking.errors.momentsSaturday(book.momentsSaturdayDays);
@@ -401,11 +418,12 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
                     {t.booking.steps[step]}
                   </h3>
                   <p className="tq-bk-dek">
-                    {[t.booking.packageDek, t.booking.extrasDek, t.booking.dateDek, t.booking.detailsDek, t.booking.sendDek][step]}
+                    {[listMode ? t.booking.listDek : t.booking.packageDek, t.booking.extrasDek, t.booking.dateDek, t.booking.detailsDek, t.booking.sendDek][step]}
                   </p>
                 </div>
 
-                {step === 0 && <PackageStep />}
+                {step === 0 &&
+                  (listMode ? <ListPick chosen={chosen} error={errors.package} onToList={toList} /> : <PackageStep />)}
 
                 {step === 1 && <ExtrasStep onChangePackage={() => go(0)} />}
 
@@ -638,7 +656,7 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
               <TrustLine lang={lang} />
             </form>
 
-            <Totals nextLabel={nextLabel} sending={sending} />
+            <Totals nextLabel={nextLabel} sending={sending} chosen={chosen} />
           </div>
 
           {/* Phones + tablets: total · deposit and Next, pinned to the bottom. */}
@@ -650,12 +668,18 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
             inert={!showBar}
           >
             <span className="tq-bk-bar__sum tq-nums">
-              <span className="tq-bk-bar__total">
-                {t.booking.total}: {money(quote.totalUsd)}
-              </span>
-              <span className="tq-bk-bar__dep">
-                {t.booking.depositShort}: {money(quote.retainerUsd)}
-              </span>
+              {chosen ? (
+                <>
+                  <span className="tq-bk-bar__total">
+                    {t.booking.total}: {money(quote.totalUsd)}
+                  </span>
+                  <span className="tq-bk-bar__dep">
+                    {t.booking.depositShort}: {money(quote.retainerUsd)}
+                  </span>
+                </>
+              ) : (
+                <span className="tq-bk-bar__dep">{t.booking.listTotalHint}</span>
+              )}
             </span>
             <button type="submit" form="tq-bk-form" className="tq-btn tq-btn--lg" disabled={sending}>
               {nextLabel} {sending ? null : <span className="tq-arrow" aria-hidden>→</span>}
@@ -666,7 +690,7 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
 
       {/* One quiet announcement of the total for screen readers. */}
       <p className="tq-sr" aria-live="polite">
-        {done ? "" : `${t.booking.total}: ${money(quote.totalUsd)}`}
+        {done || !chosen ? "" : `${t.booking.total}: ${money(quote.totalUsd)}`}
       </p>
     </div>
   );
@@ -676,7 +700,43 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
 /* Running total — side card on desktop                                */
 /* ------------------------------------------------------------------ */
 
-function Totals({ nextLabel, sending }: { nextLabel: string; sending: boolean }) {
+/* ------------------------------------------------------------------ */
+/* Step 1 when the page's package list is the picker                  */
+/* ------------------------------------------------------------------ */
+
+function ListPick({ chosen, error, onToList }: { chosen: boolean; error?: string; onToList: () => void }) {
+  const { t, lang, tier } = useSite();
+  const q = useQuote();
+  const x = tierById(tier);
+  return (
+    <div className="tq-bk-listpick" data-chosen={chosen}>
+      {chosen ? (
+        <p className="tq-bk-listpick__pick tq-nums">
+          <strong>{pick(lang, x.name)}</strong>
+          <span>{money(q.tierUsd)}</span>
+        </p>
+      ) : (
+        <p className="tq-bk-listpick__pick">{t.booking.listNone}</p>
+      )}
+      <button
+        type="button"
+        className="tq-btn tq-btn--ghost"
+        onClick={onToList}
+        data-invalid={error ? "true" : undefined}
+        aria-describedby={error ? "tq-bk-listpick-err" : undefined}
+      >
+        {chosen ? t.booking.listChange : t.booking.listSee} <span className="tq-arrow" aria-hidden>↑</span>
+      </button>
+      {error ? (
+        <p id="tq-bk-listpick-err" className="tq-bk-listpick__err" role="alert">
+          {error}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+function Totals({ nextLabel, sending, chosen }: { nextLabel: string; sending: boolean; chosen: boolean }) {
   const { t, lang, tier, addOns, hours } = useSite();
   const { book } = usePriceBook();
   const q = useQuote();
@@ -685,35 +745,41 @@ function Totals({ nextLabel, sending }: { nextLabel: string; sending: boolean })
   return (
     <aside className="tq-bk-side" aria-label={t.booking.total}>
       <p className="tq-bk-kicker">{t.booking.total}</p>
-      <p className="tq-display tq-bk-side__total tq-nums" aria-hidden>
-        {money(shown)}
-      </p>
-      <dl className="tq-bk-lines tq-nums">
-        <div>
-          <dt>{pick(lang, x.name)}</dt>
-          <dd>{money(q.tierUsd)}</dd>
-        </div>
-        <div>
-          <dt>{t.booking.hourOption(hours)}</dt>
-          <dd>{hours > q.baseHours ? `+${money(q.extraHoursUsd)}` : t.booking.includedTag}</dd>
-        </div>
-        {ADD_ONS.filter((a) => addOns.includes(a.id)).map((a) => (
-          <div key={a.id}>
-            <dt>{pick(lang, a.name)}</dt>
-            <dd>+{money(book.addOns[a.id])}</dd>
-          </div>
-        ))}
-        <div className="tq-bk-lines__strong">
-          <dt>
-            {t.booking.deposit} <span className="tq-bk-lines__when">({t.booking.depositWhen})</span>
-          </dt>
-          <dd>{money(q.retainerUsd)}</dd>
-        </div>
-        <div>
-          <dt>{t.booking.rest}</dt>
-          <dd>{money(q.balanceUsd)}</dd>
-        </div>
-      </dl>
+      {chosen ? (
+        <>
+          <p className="tq-display tq-bk-side__total tq-nums" aria-hidden>
+            {money(shown)}
+          </p>
+          <dl className="tq-bk-lines tq-nums">
+            <div>
+              <dt>{pick(lang, x.name)}</dt>
+              <dd>{money(q.tierUsd)}</dd>
+            </div>
+            <div>
+              <dt>{t.booking.hourOption(hours)}</dt>
+              <dd>{hours > q.baseHours ? `+${money(q.extraHoursUsd)}` : t.booking.includedTag}</dd>
+            </div>
+            {ADD_ONS.filter((a) => addOns.includes(a.id)).map((a) => (
+              <div key={a.id}>
+                <dt>{pick(lang, a.name)}</dt>
+                <dd>+{money(book.addOns[a.id])}</dd>
+              </div>
+            ))}
+            <div className="tq-bk-lines__strong">
+              <dt>
+                {t.booking.deposit} <span className="tq-bk-lines__when">({t.booking.depositWhen})</span>
+              </dt>
+              <dd>{money(q.retainerUsd)}</dd>
+            </div>
+            <div>
+              <dt>{t.booking.rest}</dt>
+              <dd>{money(q.balanceUsd)}</dd>
+            </div>
+          </dl>
+        </>
+      ) : (
+        <p className="tq-bk-side__hint">{t.booking.listTotalHint}</p>
+      )}
       <button type="submit" form="tq-bk-form" className="tq-btn tq-btn--lg tq-btn--block" disabled={sending}>
         {nextLabel} {sending ? null : <span className="tq-arrow" aria-hidden>→</span>}
       </button>
