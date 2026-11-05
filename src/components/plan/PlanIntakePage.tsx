@@ -12,7 +12,7 @@ import { normalizeSrc } from "@/lib/src-tag";
  * /plan and /es/plan — the intake. Query params (never personal data):
  *   date=YYYY-MM-DD   prefilled when it is a plannable date
  *   colors=a,b,c      any spelling, English or Spanish ("fucsia,blanco,dorado")
- *   src=instagram     which platform the link was shared on (one of the six src tags)
+ *   src=instagram     which platform the link was shared on (one of the src tags in src-tag.ts)
  * The middleware has already sent Spanish-preferring visitors to /es/plan.
  */
 export type IntakeSearch = Promise<Record<string, string | string[] | undefined>>;

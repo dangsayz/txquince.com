@@ -14,7 +14,7 @@ export function sanitizeAttribution(v: unknown): Record<string, string> | null {
     const val = (v as Record<string, unknown>)[k];
     if (typeof val === "string" && val.trim()) out[k] = val.trim().slice(0, 200);
   }
-  // The ?src= tag (latest one seen), kept only when it is one of the six.
+  // The ?src= tag (latest one seen), kept only when it is one of the allowed tags.
   const src = normalizeSrc((v as Record<string, unknown>).src);
   if (src) out.src = src;
   return Object.keys(out).length ? out : null;

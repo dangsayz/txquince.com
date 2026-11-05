@@ -1,7 +1,8 @@
 /**
  * src-tag.ts — the `?src=` tags put on links shared OUTSIDE the site, so a
- * visit, inquiry or plan knows which platform sent it. One parameter, six
- * values: instagram, facebook, tiktok, youtube, pinterest, quora. Links
+ * visit, inquiry or plan knows which platform sent it. One parameter, seven
+ * values: instagram, facebook, tiktok, youtube, pinterest, quora, gbp
+ * (Google Business Profile posts, kept apart from plain Google search). Links
  * between our own pages never carry a tag.
  *
  * The browser keeps the LATEST src it saw (Tracker), so a visitor who first
@@ -11,10 +12,10 @@
  * groups leads by it.
  */
 
-export const SRC_TAGS = ["instagram", "facebook", "tiktok", "youtube", "pinterest", "quora"] as const;
+export const SRC_TAGS = ["instagram", "facebook", "tiktok", "youtube", "pinterest", "quora", "gbp"] as const;
 export type SrcTag = (typeof SRC_TAGS)[number];
 
-/** One of the six tags ("Instagram " → "instagram"), or null for anything else. */
+/** One of the seven tags ("Instagram " → "instagram"), or null for anything else. */
 export function normalizeSrc(v: unknown): SrcTag | null {
   if (typeof v !== "string") return null;
   const t = v.trim().toLowerCase();

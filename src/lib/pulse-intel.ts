@@ -62,7 +62,7 @@ export function metricIntel(s: PulseStats): Record<"visits" | "unique" | "views"
         : "No visitors in this period yet.",
       todo: repeat >= 1.5
         ? ["Returning visitors are close to deciding. Make the next step easy: 'Get my free plan' near the top.", "Reply fast to anything that comes in; they're comparing you right now."]
-        : ["Give people a reason to come back: the price guide, the plan page, a new gallery each week.", "Ask every lead where they found you, and tag every shared link with ?src= (instagram, facebook, tiktok, youtube, pinterest, quora)."],
+        : ["Give people a reason to come back: the price guide, the plan page, a new gallery each week.", "Ask every lead where they found you, and tag every shared link with ?src= (instagram, facebook, tiktok, youtube, pinterest, quora, gbp)."],
       tone: repeat >= 1.5 ? "good" : "info",
     },
     views: {
