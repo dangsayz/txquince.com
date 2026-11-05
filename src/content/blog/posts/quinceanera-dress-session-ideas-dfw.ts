@@ -101,7 +101,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "See more from this spot on our [Mandalay Canal Walk page](/venues/mandalay-canal-walk), and the other Irving backdrops families love on our [Irving quinceañera photographer page](/quinceanera-photographer/irving).",
+      text: "See all nine photos from this session on our [Mandalay Canal photo page](/irving/mandalay-canal), more from this spot on our [Mandalay Canal Walk venue page](/venues/mandalay-canal-walk), and the other Irving backdrops families love on our [Irving quinceañera photographer page](/quinceanera-photographer/irving).",
     },
     { type: "h2", text: "How to plan a dress session in DFW" },
     {

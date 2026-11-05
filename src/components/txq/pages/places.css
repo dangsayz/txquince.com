@@ -709,3 +709,16 @@
 .txq .tq-place-gallery {
   padding: 0 var(--pad) 80px;
 }
+
+/* Photo-spot row → its inspiration page. */
+.txq .tq-place-row__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: var(--text-primary);
+  font-weight: var(--weight-medium);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  white-space: nowrap;
+}

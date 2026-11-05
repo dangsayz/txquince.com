@@ -21,6 +21,7 @@ import { getEsPost } from "@/content/blog";
 import { portfolioFallback } from "@/content/portfolio-fallback";
 import { getFeaturedImages, getImagesByCity } from "@/lib/content-db";
 import { venuesByCity } from "@/content/venues";
+import { getInspoPlace } from "@/content/inspo-places";
 import "@/components/txq/pages/places.css";
 import { ContactButtons, ContactLine } from "@/components/ContactButtons";
 import { businessContactJsonLd } from "@/lib/contact";
@@ -369,6 +370,13 @@ export default async function CityPageEs({
                   <span className="tq-mono tq-place-row__k">[{pad(i + 1)}]</span>
                   <h3 className="tq-display tq-place-row__t">{s.name}</h3>
                   <p className="tq-place-row__b">{s.whyEs}</p>
+                  {s.inspo && getInspoPlace(s.inspo) ? (
+                    <p className="tq-place-row__b">
+                      <Link href={getInspoPlace(s.inspo)!.path.es} className="tq-place-row__link">
+                        Ver fotos de una sesión aquí <span aria-hidden>→</span>
+                      </Link>
+                    </p>
+                  ) : null}
                 </li>
               ))}
             </ol>

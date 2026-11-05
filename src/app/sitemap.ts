@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { INSPO_PLACES } from "@/content/inspo-places";
 import { site } from "@/content/site";
 import { locations } from "@/content/locations";
 import { getAllPosts, getAllEsPosts, esSlugForEn, enSlugForEs } from "@/content/blog";
@@ -49,6 +50,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/privacy", priority: 0.2 },
     { path: "/venues", priority: 0.7 },
     { path: "/vendors", priority: 0.6 },
+    // Photo-spot inspiration pages (EN + ES, hreflang pairs on the pages).
+    ...INSPO_PLACES.flatMap((p) => [
+      { path: p.path.en, priority: 0.7 },
+      { path: p.path.es, priority: 0.7 },
+    ]),
     // Venue landing pages — one per venue we shoot at (keyword targets).
     ...venues.map((v) => ({ path: `/venues/${v.slug}`, priority: 0.7 })),
     // Local SEO landing pages — one per DFW city served, EN + ES.
