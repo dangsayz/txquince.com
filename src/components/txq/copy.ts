@@ -231,6 +231,13 @@ const en = {
     sending: "Sending…",
     // 1 — Package
     packageDek: "Every price is shown up front. Choose the package you like, then press Next.",
+    // Homepage: the package list above the panel is the only picker.
+    listDek: "Pick a package in the list above. Its Reserve button brings you back here.",
+    listNone: "No package chosen yet.",
+    listSee: "See the packages",
+    listChange: "Change package",
+    listError: "Choose a package in the list above first.",
+    listTotalHint: "Choose a package to see your total.",
     packagesLabel: "Packages",
     choose: "Choose",
     chosen: "Chosen",
@@ -563,6 +570,12 @@ const es: Copy = {
     sending: "Enviando…",
     // 1 — Paquete
     packageDek: "Todos los precios a la vista. Elige el paquete que te guste y luego presiona Siguiente.",
+    listDek: "Elige un paquete en la lista de arriba. Su botón Reservar te trae de vuelta aquí.",
+    listNone: "Aún no eliges paquete.",
+    listSee: "Ver los paquetes",
+    listChange: "Cambiar paquete",
+    listError: "Primero elige un paquete en la lista de arriba.",
+    listTotalHint: "Elige un paquete para ver tu total.",
     packagesLabel: "Paquetes",
     choose: "Elegir",
     chosen: "Elegido",

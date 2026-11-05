@@ -95,11 +95,12 @@ export function EditorialHome({
       <Band films={films} />
       <Collage galleries={galleries} />
       <Feature />
-      <BudgetCta placement="home" />
       <Packages>
-        <Intake ref={intakeRef} />
+        <Intake ref={intakeRef} pickFromList="commissions" />
       </Packages>
       <MomsAsk />
+      {/* After the questions: "still unsure? tell us your budget". */}
+      <BudgetCta placement="home" />
       <JournalRow journal={journal} />
       <WhereWeWork cities={cities} />
       <WhatsAppFloat lang={lang} hidden={intakeOnScreen} />
@@ -149,7 +150,8 @@ function Hero({ overrides }: { overrides: HomeOverrides }) {
             </span>
           </h1>
           <div className="ed-hero__foot">
-            <a href={homeHref("#intake")} className="ed-btn ed-btn--light">
+            {/* To the package list: on the homepage it is the only package picker. */}
+            <a href={homeHref("#commissions")} className="ed-btn ed-btn--light">
               {e.reserve}
             </a>
             <p className="ed-hero__note">{e.heroNote(money(priceFloor(book)))}</p>
@@ -210,7 +212,6 @@ function Statement() {
   return (
     <section id="editorial" className="ed-statement" aria-labelledby="ed-statement-title">
       <div className="ed-statement__in" data-ed="drift">
-        <p className="ed-label">{s.label}</p>
         <h2 id="ed-statement-title" className="ed-display ed-display--lg">
           {s.title}
         </h2>
@@ -473,7 +474,7 @@ function Feature() {
         />
       </div>
       <div className="ed-feature__track">
-        <div className="ed-card">
+        <div className="ed-card" data-header-tone="light">
           <p className="ed-label">{e.feature.label}</p>
           <h2 id="ed-feature-title" className="ed-display ed-display--md">
             {tier.name[lang]}
@@ -519,7 +520,6 @@ function Packages({ children }: { children: ReactNode }) {
     <section id="commissions" className="ed-packages" aria-labelledby="ed-pk-title">
       <div className="ed-wrap">
         <div className="ed-head" data-ed="rise">
-          <p className="ed-label">{p.label}</p>
           <h2 id="ed-pk-title" className="ed-display ed-display--lg">
             {p.title}
           </h2>
@@ -604,7 +604,6 @@ function JournalRow({ journal }: { journal: Journal }) {
       <div className="ed-wrap">
         <div className="ed-journal__head">
           <div>
-            <p className="ed-label">{j.label}</p>
             <h2 id="ed-journal-title" className="ed-journal__title">
               {j.title}
             </h2>

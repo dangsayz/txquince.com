@@ -41,7 +41,6 @@ export function Owners({ lang, photo, admin }: { lang: "en" | "es"; photo: React
           {admin}
         </figure>
         <div className="ow-copy">
-          <p className="ow-label">{c.label}</p>
           <h2 id="ow-title" className="ow-title">
             {c.title}
           </h2>

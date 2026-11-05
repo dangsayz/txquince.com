@@ -58,3 +58,12 @@ inspo/
 # local price book store (dev / tests; production uses R2 config/pricing.json)
 /.pricing-local/
 /.claude/worktrees/
+
+# design-stack skills (installed per session by scripts/install-design-stack.sh;
+# ~110MB incl. native binaries, so not committed — skills-lock.json pins them)
+/.agents/
+/.cursor/
+/.codex/
+/.claude/skills/
+/.claude/agents/impeccable-*
+/.claude/settings.local.json

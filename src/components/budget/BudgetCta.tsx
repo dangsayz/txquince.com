@@ -21,7 +21,6 @@ const DEMO_BUDGETS = [700, 1500, 2800];
 
 const COPY = {
   en: {
-    eyebrow: "New · Only at TX Quince",
     title: "Tell us your budget. We'll show you what it covers.",
     dek: "Type any number. See the coverage it buys in seconds, or make us an offer. Free, no sign-up.",
     cta: "Try it with your budget",
@@ -31,7 +30,6 @@ const COPY = {
     film: "with film",
   },
   es: {
-    eyebrow: "Nuevo · Solo en TX Quince",
     title: "Dinos tu presupuesto. Te mostramos qué alcanza.",
     dek: "Escribe cualquier número. Mira en segundos qué cobertura alcanza, o haznos una oferta. Gratis, sin registro.",
     cta: "Pruébalo con tu presupuesto",
@@ -106,10 +104,6 @@ export function BudgetCta({ placement = "home" }: { placement?: string }) {
     <section ref={rootRef} className="bc" data-header-tone="dark" aria-labelledby={`bc-title-${placement}`}>
       <div className="bc-in">
         <div className="bc-copy">
-          <p className="bc-eyebrow">
-            <span className="bc-dot" aria-hidden />
-            {c.eyebrow}
-          </p>
           <h2 id={`bc-title-${placement}`} className="bc-title">
             {c.title}
           </h2>
