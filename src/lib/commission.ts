@@ -42,6 +42,23 @@ export const PUBLIC_TIER_IDS = ["study", "moments", "solo", "cinema", "trio"] as
 export type PublicTierId = (typeof PUBLIC_TIER_IDS)[number];
 export const isBookableTier = (id: TierId): id is PublicTierId => (PUBLIC_TIER_IDS as readonly TierId[]).includes(id);
 
+/**
+ * `?collection=` on /reserve (it redirects to /?collection=…#intake). Links
+ * have always carried the package id (`/reserve?collection=moments`); the two
+ * packages whose display name differs from their id also answer to that name,
+ * so a hand-typed `?collection=duo` or `?collection=portrait` still works.
+ * Anything else (retired or unknown) is null: the panel stays as it was.
+ */
+const COLLECTION_ALIASES = new Map<string, PublicTierId>([
+  ["duo", "cinema"],
+  ["portrait", "study"],
+]);
+export function collectionParamTier(value: string | null | undefined): PublicTierId | null {
+  const v = (value ?? "").trim().toLowerCase();
+  if ((PUBLIC_TIER_IDS as readonly string[]).includes(v)) return v as PublicTierId;
+  return COLLECTION_ALIASES.get(v) ?? null;
+}
+
 /** English names for Stripe line items, receipts and operator email. */
 export const TIER_NAME_EN: Record<TierId, string> = {
   study: "Portrait Session",

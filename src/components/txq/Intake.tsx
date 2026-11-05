@@ -19,7 +19,7 @@ import { motion } from "motion/react";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { getFirstTouch } from "@/components/Tracker";
 import { ContactLine } from "@/components/ContactButtons";
-import { BASE_CREW, COORDINATOR_INCLUDED, PUBLIC_TIER_IDS, momentsDateAllowed } from "@/lib/commission";
+import { BASE_CREW, COORDINATOR_INCLUDED, PUBLIC_TIER_IDS, collectionParamTier, momentsDateAllowed } from "@/lib/commission";
 import { HONEYPOT_FIELD } from "@/lib/inquiry";
 import { BUDGET_FOR_TIER, servicesForTier } from "@/lib/inquiry-package";
 import { usePriceBook } from "@/components/PriceBookProvider";
@@ -190,6 +190,8 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
   }, []);
 
   // "Book this" links anywhere: #book-<package> opens the panel at Hours & extras.
+  // So does /reserve?collection=<package> (redirected here as ?collection=…#intake);
+  // the parameter is then dropped so a reload keeps her own progress.
   useEffect(() => {
     const onHash = () => {
       const m = BOOK_HASH.exec(window.location.hash);
@@ -197,8 +199,17 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
       pickPackage(m[1] as TierId);
       history.replaceState(null, "", `${window.location.pathname}${window.location.search}#intake`);
     };
+    const onLoad = () => {
+      const url = new URL(window.location.href);
+      if (BOOK_HASH.test(url.hash) || !url.searchParams.has("collection")) return onHash();
+      const requested = collectionParamTier(url.searchParams.get("collection"));
+      if (!requested) return;
+      pickPackage(requested);
+      url.searchParams.delete("collection");
+      history.replaceState(null, "", `${url.pathname}${url.search}${url.hash || "#intake"}`);
+    };
     // After the draft restore (a parent effect) so the link wins over an old draft.
-    const id = window.setTimeout(onHash, 0);
+    const id = window.setTimeout(onLoad, 0);
     window.addEventListener("hashchange", onHash);
     return () => {
       window.clearTimeout(id);
