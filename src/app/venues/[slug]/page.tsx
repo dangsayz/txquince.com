@@ -13,6 +13,7 @@ import { site } from "@/content/site";
 import { priceCeiling, priceFloor, usd } from "@/lib/commission";
 import { getPriceBook } from "@/lib/pricing";
 import { venues, getVenue } from "@/content/venues";
+import { postsForVenue } from "@/content/blog";
 import { getLocation } from "@/content/locations";
 import { getImagesByVenue, getVenueCopy } from "@/lib/content-db";
 import { igUrl, websiteUrl, websiteLabel } from "@/lib/vendor-links";
@@ -178,6 +179,7 @@ export default async function VenuePage({
 
   const pad = (n: number) => String(n).padStart(2, "0");
   const faq = copy?.faq ?? [];
+  const stories = postsForVenue(venue.slug);
   const place = copy?.address ?? (copy?.area ? `${copy.area}, ${venue.city}` : null);
 
   return (
@@ -298,6 +300,25 @@ export default async function VenuePage({
               <Link href="/portfolio">Explore the portfolio</Link> to see our work elsewhere.
             </p>
           )}
+          {stories.length ? (
+            <div>
+              <h3 className="tq-mono tq-muted" style={{ margin: "40px 0 16px", fontSize: "0.875rem", fontWeight: 400 }}>
+                From the journal · shot at {venue.venue}
+              </h3>
+              <ol className="tq-place-guides">
+                {stories.map((g) => (
+                  <li key={g.slug}>
+                    <Link href={`/blog/${g.slug}`}>
+                      <span className="tq-mono tq-place-guides__cat">{g.category}</span>
+                      <span className="tq-display tq-place-guides__title"><span>{g.title}</span></span>
+                      <span className="tq-mono tq-muted tq-place-guides__read">{g.readMinutes} min read ↗</span>
+                      <span className="tq-place-guides__ex">{g.excerpt}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          ) : null}
         </div>
       </section>
 

@@ -3,22 +3,23 @@ import { PT } from "@/lib/price-text";
 
 const post: BlogPost = {
   slug: "quinceanera-dress-session-ideas-dfw",
-  title: "Quince Dress Session Ideas in DFW: Back Views, Trains and Tiaras",
-  metaTitle: "Quince Dress Session Ideas in DFW: Back Views, Trains & Tiaras",
+  title: "Quince Dress Session Ideas in DFW: Back Views, Trains and Tiaras at the Mandalay Canal",
+  metaTitle: "Quince Dress Session at Mandalay Canal, Las Colinas: Ideas",
   description:
-    "Dress session ideas for a quinceañera in Dallas–Fort Worth: back-view portraits, how to spread a train, tiara and hair details, and how to pick a courtyard or steps that make the gown the star.",
+    "Quinceañera dress session ideas from a red-gown shoot at the Mandalay Canal Walk in Las Colinas, Irving: back-view portraits, how to spread a train, tiara and hair details, and planning tips for DFW.",
   category: "Photography & Film",
   excerpt:
-    "Four photos from one red-gown dress session, and the ideas behind them: the back view, the train on the steps, the tiara from behind, and the corset detail.",
+    "Four photos from one red-gown dress session at the Mandalay Canal Walk in Las Colinas, and the ideas behind them: the back view, the train on the steps, the tiara from behind, and the corset detail.",
   publishedAt: "2026-11-05",
   readMinutes: 6,
   coverFull: true,
-  lead: "Most quince photos are about her face. The dress session is the one time the gown gets to be the main character. Some of the strongest frames from a dress session never show her face at all: the bow, the train, the tiara, the curls. Here are four from one red-gown session we photographed, and how to plan each one in Dallas–Fort Worth.",
+  venues: ["mandalay-canal-walk"],
+  lead: "Most quince photos are about her face. The dress session is the one time the gown gets to be the main character. Some of the strongest frames from a dress session never show her face at all: the bow, the train, the tiara, the curls. Here are four from one red-gown session we photographed at the Mandalay Canal Walk in Las Colinas, and how to plan each one in Dallas–Fort Worth.",
   content: [
     {
       type: "image",
       slug: "quinceanera-red-ball-gown-back-view-courtyard-dfw",
-      caption: "The back view: bow, train and an arched courtyard behind her.",
+      caption: "The back view: bow, train and an arched courtyard at the Mandalay Canal Walk, Las Colinas.",
     },
     { type: "h2", text: "Why the back of the dress deserves its own photos" },
     {
@@ -46,7 +47,7 @@ const post: BlogPost = {
     {
       type: "image",
       slug: "quinceanera-red-gown-train-stone-steps-dfw",
-      caption: "The train fanned over stone steps, framed by two dark doors.",
+      caption: "The train fanned over stone steps between two dark doors, Mandalay Canal Walk.",
     },
     { type: "h2", text: "Idea 2: the train on the steps" },
     {
@@ -65,7 +66,7 @@ const post: BlogPost = {
     {
       type: "image",
       slug: "quinceanera-gold-tiara-curls-back-view-dfw",
-      caption: "A gold tiara over half-up curls, with garden greenery behind.",
+      caption: "A gold tiara over half-up curls, with Las Colinas greenery behind.",
     },
     {
       type: "ul",
@@ -83,7 +84,24 @@ const post: BlogPost = {
     {
       type: "image",
       slug: "quinceanera-tiara-corset-back-detail-dfw",
-      caption: "Beaded corset back, tiara and curls, with a hand resting on her waist.",
+      caption: "Beaded corset back, tiara and curls at the Mandalay Canal Walk in Irving.",
+    },
+    { type: "h2", text: "Where we shot it: the Mandalay Canal Walk in Las Colinas" },
+    {
+      type: "p",
+      text: "All four photos come from one session at the Mandalay Canal Walk in Las Colinas, Irving. It is a Venetian-style canal with stone bridges, waterfalls and arched walkways under the Las Colinas towers, and one of the most European-looking backdrops in DFW. In one walk you get courtyards, steps, dark wood doors and greenery, so a whole dress session can happen without moving the car.",
+    },
+    {
+      type: "ul",
+      items: [
+        "It is a public walkway and it gets busy, so early light is the easiest time to keep the background clear.",
+        "Wear flats between spots. The walkways and steps are stone.",
+        "The Mustangs of Las Colinas at Williams Square are about ten minutes away if she wants a second, very different backdrop.",
+      ],
+    },
+    {
+      type: "p",
+      text: "See more from this spot on our [Mandalay Canal Walk page](/venues/mandalay-canal-walk), and the other Irving backdrops families love on our [Irving quinceañera photographer page](/quinceanera-photographer/irving).",
     },
     { type: "h2", text: "How to plan a dress session in DFW" },
     {
@@ -128,7 +146,7 @@ const post: BlogPost = {
     },
     {
       q: "Where can we take quince dress photos in Dallas–Fort Worth?",
-      a: "Look for courtyards, arched doorways, stone steps and gardens with plain backgrounds. Our guide to the best quinceañera photo locations in DFW covers real places, the time of day each one shoots best, and which ones need a permit.",
+      a: "The Mandalay Canal Walk in Las Colinas, Irving, where these photos were taken, has courtyards, steps and arched walkways in one place. Elsewhere, look for courtyards, arched doorways, stone steps and gardens with plain backgrounds. Our guide to the best quinceañera photo locations in DFW covers real places, the time of day each one shoots best, and which ones need a permit.",
     },
     {
       q: "How much is a quince dress session at TX Quince?",

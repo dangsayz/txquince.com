@@ -23,30 +23,30 @@ export type BlogPhoto = {
 const dir = "/blog/photos";
 
 export const BLOG_PHOTOS: Record<string, BlogPhoto> = {
-  // Red-gown dress session (story-01 to story-04).
+  // Red-gown dress session at the Mandalay Canal Walk, Las Colinas (story-01 to story-04).
   "quinceanera-red-ball-gown-back-view-courtyard-dfw": {
     src: `${dir}/quinceanera-red-ball-gown-back-view-courtyard-dfw.webp`,
     width: 1600,
     height: 2133,
-    alt: "Quinceañera in a red ball gown seen from behind, a big satin bow and long train spread across the paving of an arched stone courtyard during a Dallas–Fort Worth dress session",
+    alt: "Quinceañera in a red ball gown seen from behind, a big satin bow and long train spread across the paving of an arched stone courtyard at the Mandalay Canal Walk in Las Colinas, Irving",
   },
   "quinceanera-red-gown-train-stone-steps-dfw": {
     src: `${dir}/quinceanera-red-gown-train-stone-steps-dfw.webp`,
     width: 1600,
     height: 2400,
-    alt: "Back view of a quinceañera's red sparkle tulle gown with its train fanned out over stone steps between two dark wood doors, a tiara on her long braid, DFW dress session",
+    alt: "Back view of a quinceañera's red sparkle tulle gown with its train fanned out over stone steps between two dark wood doors, a tiara on her long braid, at the Mandalay Canal Walk in Las Colinas",
   },
   "quinceanera-gold-tiara-curls-back-view-dfw": {
     src: `${dir}/quinceanera-gold-tiara-curls-back-view-dfw.webp`,
     width: 1600,
     height: 2400,
-    alt: "Gold quinceañera tiara on a half-up hairstyle with long dark curls, photographed from behind against soft garden greenery and a stone building in Dallas–Fort Worth",
+    alt: "Gold quinceañera tiara on a half-up hairstyle with long dark curls, photographed from behind against garden greenery and stone buildings at the Mandalay Canal Walk in Las Colinas, Irving",
   },
   "quinceanera-tiara-corset-back-detail-dfw": {
     src: `${dir}/quinceanera-tiara-corset-back-detail-dfw.webp`,
     width: 1600,
     height: 2400,
-    alt: "Detail of a quinceañera's gold tiara, long curls and beaded red corset back, one hand on her waist, outdoors at a Spanish-style building during a DFW dress session",
+    alt: "Detail of a quinceañera's gold tiara, long curls and beaded red corset back, one hand on her waist, during a dress session at the Mandalay Canal Walk in Las Colinas, Irving",
   },
 
   // Pink-gown reception (story-05 to story-10).
