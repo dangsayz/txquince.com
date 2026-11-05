@@ -73,18 +73,18 @@ export function StudioPulse({ s, basePath, range, moves }: { s: RangedStats; bas
   ];
 
   const stats = [
-    { k: "booked" as const, label: "Booked value", v: money(s.bookedValue), n: `${s.paid} paid all-time`, c: "#30d158" },
-    { k: "pipeline" as const, label: "In the pipeline", v: money(s.pipelineValue), n: `${s.requests} requests · ${s.pendingHolds} holds`, c: "#ff9f0a" },
-    { k: "bounce" as const, label: "Bounce rate", v: `${s.bounceRate}%`, n: `${s.pagesPerSession} pages per visit`, c: s.bounceRate > 60 ? "#ff453a" : "#0a84ff" },
-    { k: "live" as const, label: "On the site now", v: String(s.liveNow.length), n: "Active in the last 5 min", c: "#0a84ff" },
+    { k: "booked" as const, label: "Booked value", v: money(s.bookedValue), n: `${s.paid} paid all-time`, c: "#248a3d" },
+    { k: "pipeline" as const, label: "In the pipeline", v: money(s.pipelineValue), n: `${s.requests} requests · ${s.pendingHolds} holds`, c: "#c93400" },
+    { k: "bounce" as const, label: "Bounce rate", v: `${s.bounceRate}%`, n: `${s.pagesPerSession} pages per visit`, c: s.bounceRate > 60 ? "#d70015" : "#0071e3" },
+    { k: "live" as const, label: "On the site now", v: String(s.liveNow.length), n: "Active in the last 5 min", c: "#0071e3" },
   ];
 
   return (
     <section aria-labelledby="pulse-title" className="hud mt-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="min-w-0">
-          <p className="hud-label m-0" style={{ color: "rgba(235,235,245,0.6)" }}>Studio pulse</p>
-          <h2 id="pulse-title" className="mt-1 text-xl font-normal tracking-[-0.02em] text-[#ffffff] sm:text-2xl">How the site is doing</h2>
+          <p className="hud-label m-0" style={{ color: "#6e6e73" }}>Studio pulse</p>
+          <h2 id="pulse-title" className="mt-1 text-xl font-normal tracking-[-0.02em] text-[#1d1d1f] sm:text-2xl">How the site is doing</h2>
         </div>
         <nav aria-label="Period" className="hud-seg">
           {PULSE_RANGES.map((r) => (
@@ -96,7 +96,7 @@ export function StudioPulse({ s, basePath, range, moves }: { s: RangedStats; bas
       </div>
 
       {!s.configured ? (
-        <p className="hud-card mt-4 px-5 py-6 text-sm text-[rgba(235,235,245,0.6)]">Analytics appear here once the database connection is available.</p>
+        <p className="hud-card mt-4 px-5 py-6 text-sm text-[#6e6e73]">Analytics appear here once the database connection is available.</p>
       ) : (
         <div className="mt-4 grid gap-4">
           <Briefing lines={briefing(s)} />
@@ -120,13 +120,13 @@ export function StudioPulse({ s, basePath, range, moves }: { s: RangedStats; bas
           <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 lg:grid-cols-4">
             {stats.map((m, i) => (
               <HudIntel key={m.k} intel={intel[m.k]} side="top" align={i % 2 ? "right" : "left"}>
-                <button type="button" className="hud-card hud-focus hud-stat block w-full px-4 py-3.5 text-left transition-colors hover:border-[#48484A]">
+                <button type="button" className="hud-card hud-focus hud-stat block w-full px-4 py-3.5 text-left transition-colors hover:border-[#c7c7cc]">
                   <span className="hud-label flex items-center gap-1.5 whitespace-nowrap">
                     <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: m.c, boxShadow: `0 0 8px ${m.c}` }} />
                     <span className="truncate">{m.label}</span>
                   </span>
-                  <span className="hud-value mt-2 block text-[#ffffff]">{m.v}</span>
-                  <span className="hud-mono mt-1.5 block truncate text-[13px] text-[rgba(235,235,245,0.6)]">{m.n}</span>
+                  <span className="hud-value mt-2 block text-[#1d1d1f]">{m.v}</span>
+                  <span className="hud-mono mt-1.5 block truncate text-[13px] text-[#6e6e73]">{m.n}</span>
                 </button>
               </HudIntel>
             ))}

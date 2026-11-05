@@ -82,7 +82,7 @@ export function HudIntel({
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
-  const toneColor = intel.tone === "good" ? "#30d158" : intel.tone === "warn" ? "#ff9f0a" : "#0a84ff";
+  const toneColor = intel.tone === "good" ? "#248a3d" : intel.tone === "warn" ? "#c93400" : "#0071e3";
   const showDeep = open && (deep || intel.trying?.some((d) => d !== null));
 
   return (
@@ -116,7 +116,7 @@ export function HudIntel({
         <p className="hud-intel__k">What it is</p>
         <p className="hud-intel__p">{intel.what}</p>
         <p className="hud-intel__k">Right now</p>
-        <p className="hud-intel__p" style={{ color: "#ffffff" }}>{intel.read}</p>
+        <p className="hud-intel__p" style={{ color: "#1d1d1f" }}>{intel.read}</p>
         {showDeep && intel.todo.length ? (
           <div className="hud-intel__moves">
             <p className="hud-intel__k" style={{ color: toneColor }}>Next moves</p>
