@@ -11,6 +11,7 @@ export const ED = {
     heroLines: ["Every", "moment of", "her XV"],
     heroNote: (from: string) => `Packages from ${from} · We reply within a day`,
     heroFilms: "Watch our films on YouTube",
+    heroWhatsapp: "Chat on WhatsApp",
     statement: { label: "The studio", title: "Fifteen, forever." },
     details: { label: "Her day, moment by moment" },
     band: {
@@ -63,6 +64,7 @@ export const ED = {
     heroLines: ["Cada", "momento de", "sus XV"],
     heroNote: (from: string) => `Paquetes desde ${from} · Respondemos en un día`,
     heroFilms: "Mira nuestros videos en YouTube",
+    heroWhatsapp: "Escríbenos por WhatsApp",
     statement: { label: "El estudio", title: "Quince, para siempre." },
     details: { label: "Su día, momento a momento" },
     band: {
