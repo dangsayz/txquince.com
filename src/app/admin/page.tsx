@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AutoRefresh } from "@/components/admin/AutoRefresh";
+import { InquiryActions } from "@/components/admin/InquiryActions";
 import { buildLeadWork, countDue } from "@/lib/admin-workflow";
 import { getBookings, getInquiries, getInquiryActivity } from "@/lib/clients-db";
 import { formatEventDate } from "@/lib/booking";
@@ -121,9 +122,10 @@ export default async function AdminHome() {
               </div>
               <div>
                 {work.slice(0, 6).map(({ inquiry, priority, nextReminder, lastContact }) => (
-                  <Link key={inquiry.id} href={`/admin/inquiries/${inquiry.id}`} className="group flex flex-col gap-2 border-b border-[#e6e6e4] px-5 py-4 transition-colors last:border-b-0 hover:bg-[#f7f7f5] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-black sm:px-6 md:grid md:min-h-20 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,1.3fr)_auto] md:items-center md:gap-5">
+                  <div key={inquiry.id} className="group relative flex flex-col gap-2 border-b border-[#e6e6e4] px-5 py-4 pr-16 transition-colors last:border-b-0 hover:bg-[#f7f7f5] sm:px-6 sm:pr-16 md:grid md:min-h-20 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,1.3fr)_auto] md:items-center md:gap-5 md:pr-6">
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold text-[#252525] group-hover:underline">{inquiry.name}</p>
+                      {/* The name's link covers the row; the actions menu sits above it. */}
+                      <Link href={`/admin/inquiries/${inquiry.id}`} className="block truncate text-sm font-semibold text-[#252525] after:absolute after:inset-0 group-hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black">{inquiry.name}</Link>
                       <span className={`mt-1 inline-flex items-center gap-1.5 text-xs ${priority === "overdue" || priority === "due_today" ? "text-[#9b6918]" : priority === "unreplied" ? "text-[#8d4f4f]" : "text-[#72726e]"}`}>
                         <span aria-hidden="true" className={`h-1.5 w-1.5 rounded-full ${priority === "overdue" || priority === "due_today" ? "bg-[#bd8730]" : priority === "unreplied" ? "bg-[#a36363]" : "bg-[#aaa9a5]"}`} />
                         {priorityLabel[priority]}
@@ -131,8 +133,10 @@ export default async function AdminHome() {
                     </div>
                     <p className="min-w-0 truncate text-sm text-[#62625f]">{inquiry.event_date ? formatEventDate(inquiry.event_date) : "Date to confirm"}{inquiry.venue ? ` · ${inquiry.venue}` : ""}</p>
                     <p className="min-w-0 truncate text-sm text-[#62625f]">{nextReminder?.due_at ? `Follow up ${new Date(nextReminder.due_at).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/Chicago" })} · ${nextReminder.note}` : lastContact ? "No next step set" : "No personal contact recorded"}</p>
-                    <span aria-hidden="true" className="hidden text-base text-[#aaa9a5] group-hover:text-[#242424] md:block">↗</span>
-                  </Link>
+                    <div className="absolute right-3 top-3 z-10 md:static">
+                      <InquiryActions id={inquiry.id} name={inquiry.name} status={(inquiry.status ?? "new") as "new"} />
+                    </div>
+                  </div>
                 ))}
               </div>
             </>

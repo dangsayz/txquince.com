@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { StatusLabel } from "@/components/txq/Header";
-import { FooterAdmin } from "@/components/txq/Editorial";
+import { FooterAdmin, useAdminLogout } from "@/components/txq/Editorial";
+import { useIsAdmin } from "@/components/EditMode";
 import { useSite } from "@/components/txq/state";
 import type { Lang } from "@/components/txq/data";
 import { trackEvent } from "@/components/Tracker";
@@ -35,6 +36,43 @@ function Lang2({ className }: { className?: string }) {
   );
 }
 
+/** Small key-shaped admin icon (decorative; the link carries the text). */
+function AdminIcon() {
+  return (
+    <svg className="sh-admin__icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden focusable="false">
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6l7-3z M9.5 12l1.8 1.8L15 10"
+      />
+    </svg>
+  );
+}
+
+/** Owner controls in the open menu: shown only to a signed-in admin. */
+function MenuAdmin({ onNavigate }: { onNavigate: () => void }) {
+  const { lang } = useSite();
+  const { busy, logOut } = useAdminLogout();
+  const es = lang === "es";
+  return (
+    <div className="sm-admin">
+      <p className="sm-admin__label">{es ? "Sesión de admin" : "Signed in as admin"}</p>
+      <div className="sm-admin__row">
+        <a href="/admin" className="sm-admin__btn sm-admin__btn--solid" rel="nofollow" onClick={onNavigate}>
+          <AdminIcon />
+          {es ? "Abrir admin" : "Open admin"}
+        </a>
+        <button type="button" className="sm-admin__btn" onClick={logOut} disabled={busy}>
+          {busy ? (es ? "Cerrando…" : "Logging out…") : es ? "Cerrar sesión" : "Log out"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 /**
  * The global header: nothing but a menu button, the wordmark and one action,
  * floating over the page. It reads the section beneath it — over a photo or
@@ -49,6 +87,7 @@ export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const menuBtn = useRef<HTMLButtonElement>(null);
   const closeBtn = useRef<HTMLButtonElement>(null);
+  const isAdmin = useIsAdmin();
 
   // Tone: is a dark section (data-header-tone="dark") under the header bar?
   useEffect(() => {
@@ -117,6 +156,14 @@ export function SiteHeader() {
             TX QUINCE
           </a>
           <div className="sh-right">
+            {isAdmin ? (
+              <a href="/admin" className="sh-admin" rel="nofollow" aria-label="Admin">
+                <span className="sh-admin__pill">
+                  <AdminIcon />
+                  <span className="sh-admin__text">Admin</span>
+                </span>
+              </a>
+            ) : null}
             <Lang2 className="sh-lang" />
             <a href={homeHref("#intake")} className="sh-reserve" aria-label={e.reserve}>
               <span className="sh-reserve__long">{e.reserve}</span>
@@ -171,6 +218,7 @@ export function SiteHeader() {
                 WhatsApp
               </a>
               <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+              {isAdmin ? <MenuAdmin onNavigate={() => setOpen(false)} /> : null}
             </div>
           </div>
         </div>

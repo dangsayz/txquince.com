@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { InquiryActions } from "@/components/admin/InquiryActions";
 import { getInquiries, getInquiryActivity } from "@/lib/clients-db";
 import { buildLeadWork, countDue } from "@/lib/admin-workflow";
 import { formatEventDate } from "@/lib/booking";
@@ -104,10 +105,10 @@ export default async function AdminInquiries({ searchParams }: { searchParams: P
             <table className="w-full table-fixed border-collapse text-left">
               <thead><tr className="border-b border-[#e5e5e3] text-[11px] font-semibold uppercase tracking-[0.14em] text-[#62625f]">
                 <th scope="col" className="w-[30%] px-5 py-4 font-semibold">Client</th>
-                <th scope="col" className="w-[24%] px-4 py-4 font-semibold">Celebration</th>
+                <th scope="col" className="w-[22%] px-4 py-4 font-semibold">Celebration</th>
                 <th scope="col" className="w-[26%] px-4 py-4 font-semibold">Next step</th>
                 <th scope="col" className="w-[14%] px-4 py-4 font-semibold">Status</th>
-                <th scope="col" className="w-[6%] px-2 py-4"><span className="sr-only">Open</span></th>
+                <th scope="col" className="w-[8%] px-2 py-4"><span className="sr-only">Actions</span></th>
               </tr></thead>
               <tbody>
                 {filtered.map((item) => {
@@ -127,7 +128,7 @@ export default async function AdminInquiries({ searchParams }: { searchParams: P
                     </td>
                     <td className="px-4 py-5 align-top text-sm text-[#575753]"><span className="block truncate">{nextStep}</span></td>
                     <td className="px-4 py-5 align-top"><span className={`inline-flex max-w-full truncate rounded-full px-2.5 py-1 text-xs font-medium ${statusClass(label)}`}>{label}</span></td>
-                    <td className="px-2 py-3 text-right align-top"><Link href={`/admin/inquiries/${item.id}`} aria-label={`Open ${item.name}`} className="inline-flex min-h-11 min-w-11 items-center justify-center text-[#555] hover:text-black focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#252525]">↗</Link></td>
+                    <td className="px-2 py-3 text-right align-top"><span className="inline-flex items-center gap-1"><Link href={`/admin/inquiries/${item.id}`} aria-label={`Open ${item.name}`} className="inline-flex min-h-11 min-w-11 items-center justify-center text-[#555] hover:text-black focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#252525]">↗</Link><InquiryActions id={item.id} name={item.name} status={(item.status ?? "new") as "new"} /></span></td>
                   </tr>;
                 })}
               </tbody>
@@ -137,9 +138,10 @@ export default async function AdminInquiries({ searchParams }: { searchParams: P
             {filtered.map((item) => {
               const next = byId.get(item.id);
               const label = statusLabel(item);
-              return <li key={item.id}>
-                <Link href={`/admin/inquiries/${item.id}`} className="block px-1 py-5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#252525]">
-                  <span className="flex items-start justify-between gap-3"><span className="min-w-0 break-words text-base font-medium">{item.name}</span><span aria-hidden="true" className="text-[#777]">↗</span></span>
+              return <li key={item.id} className="relative">
+                <div className="absolute right-0 top-3 z-10"><InquiryActions id={item.id} name={item.name} status={(item.status ?? "new") as "new"} /></div>
+                <Link href={`/admin/inquiries/${item.id}`} className="block px-1 py-5 pr-14 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#252525]">
+                  <span className="flex items-start justify-between gap-3"><span className="min-w-0 break-words text-base font-medium">{item.name}</span></span>
                   <span className="mt-1 block break-all text-xs text-[#62625f]">{item.email}</span>
                   <span className="mt-2 block text-sm text-[#62625e]">{item.event_date ? formatEventDate(item.event_date) : "Date to confirm"}{item.venue ? ` · ${item.venue}` : ""}</span>
                   <span className="mt-2 block text-xs text-[#696965]">{next?.nextReminder?.due_at
