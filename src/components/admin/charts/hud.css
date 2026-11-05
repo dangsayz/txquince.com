@@ -1,33 +1,32 @@
 /*
  * hud.css — the "Studio pulse" analytics panel: a dark heads-up display.
- * Palette (all text ≥ 4.5:1 on --hud-bg):
- *   cyan  #38e8ff  primary signal      violet #8b7bff  secondary
- *   lime  #3dffa8  up / good           rose   #ff6b8b  down
- *   amber #ffb547  bottleneck          text   #e6f4ff / muted #8fa0b8
+ * Palette — Apple dark mode system colors (all text ≥ 4.5:1 on its card):
+ *   blue   #0a84ff  primary signal     indigo #5e5ce6  secondary
+ *   green  #30d158  up / good          red    #ff453a  down
+ *   orange #ff9f0a  bottleneck         label  #f5f5f7 / secondary #8e8e93
+ *   panel #000, cards #1c1c1e, popovers #2c2c2e, hairline separators.
  * Motion: cell field, line draw-in, flow particles, live dot. All of it stops
  * under prefers-reduced-motion.
  */
 .hud {
-  --hud-bg: #05080f;
-  --hud-panel: rgba(12, 20, 34, 0.72);
-  --hud-line: rgba(56, 232, 255, 0.14);
-  --hud-line-strong: rgba(56, 232, 255, 0.35);
-  --hud-cyan: #38e8ff;
-  --hud-violet: #8b7bff;
-  --hud-lime: #3dffa8;
-  --hud-rose: #ff6b8b;
-  --hud-amber: #ffb547;
-  --hud-text: #e6f4ff;
-  --hud-muted: #8fa0b8;
-  --hud-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+  --hud-bg: #000000;
+  --hud-panel: rgba(28, 28, 30, 0.92);
+  --hud-line: rgba(255,255,255, 0.14);
+  --hud-line-strong: rgba(255,255,255, 0.35);
+  --hud-cyan: #0a84ff;
+  --hud-violet: #5e5ce6;
+  --hud-lime: #30d158;
+  --hud-rose: #ff453a;
+  --hud-amber: #ff9f0a;
+  --hud-text: #f5f5f7;
+  --hud-muted: #8e8e93;
+  /* SF Pro with tabular figures, like Stocks / Health; no monospace. */
+  --hud-mono: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", system-ui, sans-serif;
   position: relative;
   isolation: isolate;
   border: 1px solid var(--hud-line);
-  border-radius: 14px;
-  background:
-    radial-gradient(120% 80% at 85% -10%, rgba(139, 123, 255, 0.16), transparent 55%),
-    radial-gradient(90% 70% at 0% 0%, rgba(56, 232, 255, 0.12), transparent 50%),
-    var(--hud-bg);
+  border-radius: 22px;
+  background: var(--hud-bg);
   color: var(--hud-text);
   padding: clamp(14px, 2vw, 24px);
 }
@@ -35,7 +34,8 @@
 .hud-label {
   font-family: var(--hud-mono);
   font-size: 11px;
-  letter-spacing: 0.16em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--hud-muted);
 }
@@ -43,27 +43,15 @@
   position: relative;
   min-width: 0;
   border: 1px solid var(--hud-line);
-  border-radius: 10px;
+  border-radius: 16px;
   background: var(--hud-panel);
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(20px) saturate(1.4);
 }
-/* Corner brackets on cards */
-.hud-card::before,
-.hud-card::after {
-  content: "";
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  border: 1px solid var(--hud-line-strong);
-  pointer-events: none;
-}
-.hud-card::before { top: -1px; left: -1px; border-right: 0; border-bottom: 0; border-top-left-radius: 10px; }
-.hud-card::after { bottom: -1px; right: -1px; border-left: 0; border-top: 0; border-bottom-right-radius: 10px; }
 
 .hud-focus:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: 2px; }
 
 /* Range toggle */
-.hud-seg { display: inline-flex; padding: 3px; border: 1px solid var(--hud-line); border-radius: 9px; background: rgba(5, 8, 15, 0.6); }
+.hud-seg { display: inline-flex; padding: 2px; border-radius: 10px; background: rgba(118, 118, 128, 0.24); }
 .hud-seg a {
   display: inline-flex; align-items: center; justify-content: center;
   min-width: 48px; min-height: 44px; padding: 0 12px; border-radius: 7px;
@@ -72,8 +60,8 @@
 }
 .hud-seg a:hover { color: var(--hud-text); }
 .hud-seg a[aria-current="page"] {
-  color: #001018; background: var(--hud-cyan);
-  box-shadow: 0 0 18px rgba(56, 232, 255, 0.45);
+  color: #fff; background: #636366;
+  box-shadow: 0 0 12px rgba(255,255,255, 0.22);
 }
 
 /* Metric tabs */
@@ -82,20 +70,20 @@
   background: transparent; border: 0; color: inherit; cursor: pointer;
   transition: background 200ms ease;
 }
-.hud-tab:hover { background: rgba(56, 232, 255, 0.04); }
-.hud-tab[aria-selected="true"] { background: linear-gradient(180deg, rgba(56, 232, 255, 0.08), transparent); }
+.hud-tab:hover { background: rgba(255,255,255, 0.04); }
+.hud-tab[aria-selected="true"] { background: linear-gradient(180deg, rgba(255,255,255, 0.08), transparent); }
 .hud-tab[aria-selected="true"]::after {
   content: ""; position: absolute; left: 16px; right: 16px; bottom: 0; height: 2px; border-radius: 2px;
   background: linear-gradient(90deg, var(--hud-cyan), var(--hud-violet));
-  box-shadow: 0 0 12px rgba(56, 232, 255, 0.8);
+  box-shadow: 0 0 8px rgba(255,255,255, 0.4);
 }
 .hud-tab + .hud-tab { border-left: 1px solid var(--hud-line); }
-.hud-value { font-family: var(--hud-mono); font-weight: 500; letter-spacing: -0.02em; line-height: 1; font-size: clamp(1.45rem, 2.6vw, 2rem); }
+.hud-value { font-family: var(--hud-mono); font-weight: 600; letter-spacing: -0.02em; line-height: 1; font-size: clamp(1.45rem, 2.6vw, 2rem); }
 .hud-up { color: var(--hud-lime); }
 .hud-down { color: var(--hud-rose); }
 
 /* Chart */
-.hud-line { filter: drop-shadow(0 0 6px rgba(56, 232, 255, 0.55)); }
+.hud-line { filter: drop-shadow(0 0 4px rgba(255,255,255, 0.3)); }
 .hud-draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: hud-draw 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
 @keyframes hud-draw { to { stroke-dashoffset: 0; } }
 .hud-fade { opacity: 0; animation: hud-fade 900ms ease 250ms forwards; }
@@ -105,7 +93,7 @@
 .hud-tip {
   position: absolute; top: 0; z-index: 2; pointer-events: none; white-space: nowrap;
   padding: 8px 10px; border: 1px solid var(--hud-line-strong); border-radius: 8px;
-  background: rgba(5, 8, 15, 0.92); box-shadow: 0 0 24px rgba(56, 232, 255, 0.18);
+  background: rgba(0,0,0, 0.92); box-shadow: 0 0 24px rgba(255,255,255, 0.18);
   font-family: var(--hud-mono); font-size: 12px;
 }
 
@@ -115,7 +103,7 @@
 @keyframes hud-flow { to { stroke-dashoffset: -24; } }
 
 /* Ranked rows */
-.hud-bar { background: linear-gradient(90deg, rgba(56, 232, 255, 0.22), rgba(139, 123, 255, 0.08)); border-right: 1px solid rgba(56, 232, 255, 0.55); }
+.hud-bar { background: linear-gradient(90deg, rgba(255,255,255, 0.22), rgba(94,92,230, 0.08)); border-right: 1px solid rgba(255,255,255, 0.55); }
 
 @media (prefers-reduced-motion: reduce) {
   .hud-draw, .hud-fade { animation: none; stroke-dashoffset: 0; opacity: 1; }
@@ -126,9 +114,9 @@
 .hud-intel {
   padding: 12px 14px 14px;
   border: 1px solid var(--hud-line-strong);
-  border-radius: 10px;
-  background: rgba(4, 8, 16, 0.97);
-  box-shadow: 0 0 0 1px rgba(56, 232, 255, 0.05), 0 18px 48px rgba(0, 0, 0, 0.55), 0 0 28px rgba(56, 232, 255, 0.12);
+  border-radius: 14px;
+  background: rgba(44, 44, 46, 0.98);
+  box-shadow: 0 0 0 1px rgba(255,255,255, 0.05), 0 18px 48px rgba(0, 0, 0, 0.55), 0 0 20px rgba(255,255,255, 0.06);
   color: var(--hud-muted);
   text-align: left;
   font-size: 13px;
@@ -138,7 +126,7 @@
 @keyframes hud-pop { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
 .hud-intel__head { display: flex; align-items: center; gap: 8px; font-family: var(--hud-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--hud-text); }
 .hud-intel__dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
-.hud-intel__tag { margin-left: auto; padding: 1px 6px; border: 1px solid var(--hud-line-strong); border-radius: 4px; font-size: 10px; color: var(--hud-cyan); }
+.hud-intel__tag { margin-left: auto; padding: 1px 7px; border: 0; border-radius: 999px; background: rgba(10, 132, 255, 0.16); font-size: 10px; color: var(--hud-cyan); }
 .hud-intel__k { margin: 10px 0 2px; font-family: var(--hud-mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--hud-muted); }
 .hud-intel__p { margin: 0; }
 .hud-intel__moves { margin-top: 10px; padding-top: 4px; border-top: 1px dashed var(--hud-line-strong); }
@@ -170,13 +158,13 @@
 .hud-scan { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; border-radius: inherit; }
 .hud-scan::after {
   content: ""; position: absolute; left: 0; right: 0; top: -30%; height: 30%;
-  background: linear-gradient(180deg, transparent, rgba(56, 232, 255, 0.05), transparent);
+  background: linear-gradient(180deg, transparent, rgba(255,255,255, 0.03), transparent);
   animation: hud-scan 7s linear infinite;
 }
 @keyframes hud-scan { to { transform: translateY(440%); } }
 .hud-grid-bg {
   position: absolute; inset: 0; z-index: -2; pointer-events: none;
-  background-image: linear-gradient(rgba(56, 232, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(56, 232, 255, 0.05) 1px, transparent 1px);
+  background-image: linear-gradient(rgba(255,255,255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255, 0.03) 1px, transparent 1px);
   background-size: 36px 36px;
   mask-image: radial-gradient(80% 60% at 50% 0%, #000, transparent);
 }
@@ -188,3 +176,15 @@
 
 /* The card with an open intel card rises above its neighbours (cards are stacking contexts). */
 .hud-card:has(.hud-intel:not(.sr-only)), .hud-raise:has(.hud-intel:not(.sr-only)) { z-index: 40; }
+
+/* Next-move actions */
+.hud-move-btn {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px;
+  border: 0; border-radius: 999px; background: rgba(10, 132, 255, 0.16); font-weight: 600;
+  font-family: var(--hud-mono); font-size: 12px; letter-spacing: 0.06em; color: var(--hud-cyan); cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+.hud-move-btn:hover { background: rgba(255,255,255, 0.08); border-color: var(--hud-cyan); }
+.hud-move-btn:disabled { opacity: 0.6; cursor: progress; }
+.hud-move-on { display: inline-flex; align-items: center; min-height: 32px; font-size: 11px; letter-spacing: 0.1em; color: var(--hud-lime); }
+.hud-pill { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 999px; border: 1px solid currentColor; font-family: var(--hud-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; white-space: nowrap; }

@@ -29,6 +29,13 @@ export type RangedStats = {
   flow: { label: string; value: number }[];
   /** The step whose drop-off is worst vs. a healthy baseline (null = not enough data yet). */
   flowBottleneck: { step: number; rate: number; baseline: number; action: string } | null;
+  /** Why visits don't reach the work: where they landed / came from, and how many of each went on. */
+  dropoff: {
+    lost: number;
+    onePage: number;
+    landings: { label: string; sessions: number; reached: number }[];
+    sources: { label: string; sessions: number; reached: number }[];
+  };
   topPages: { label: string; count: number }[];
   topReferrers: { label: string; count: number }[];
   utmSources: { label: string; count: number }[];
@@ -69,7 +76,7 @@ type PV = {
   utm_medium: string | null;
   created_at: string;
 };
-type LE = { event_type: string };
+type LE = { event_type: string; session_id?: string | null; target?: string | null };
 
 function hostOf(ref: string | null): string | null {
   if (!ref) return null;
@@ -109,6 +116,7 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     rangeBooked: 0,
     flow: [],
     flowBottleneck: null,
+    dropoff: { lost: 0, onePage: 0, landings: [], sources: [] },
     topPages: [],
     topReferrers: [],
     utmSources: [],
@@ -163,7 +171,7 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
                   .order("created_at", { ascending: true })
               : res,
           ),
-        supabase.from("lead_events").select("event_type").gte("created_at", startRange),
+        supabase.from("lead_events").select("event_type, session_id, target").gte("created_at", startRange),
         getBookings(),
         getInquiries(),
         // Flywheel inputs: fresh proof + iteration cadence.
@@ -345,10 +353,18 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
 
     // ---- bottleneck finder: weakest funnel edge vs. healthy baseline ----
     // Only judge an edge once its denominator is meaningful (≥20).
-    const moneyPageSessions = Array.from(journeys.values()).filter((steps) =>
-      steps.some((s) => /^\/(es\/)?(investment|portfolio|reserve|photos|fotos-recientes|plan|quince-prices-dfw|precios-quince-dfw)/.test(s.path) || /^\/(es\/)?(blog|venues)\//.test(s.path)),
-    ).length;
-    const intentTotal = ctaClicks + formStarts + dateChecks;
+    // "Saw work or prices": opened a gallery / price / plan page or a blog or
+    // venue article, or scrolled the homepage's own galleries into view
+    // (work_viewed events, sent by the Tracker).
+    const WORK_PAGE = /^\/(es\/)?(investment|portfolio|reserve|photos|fotos-recientes|plan|budget|presupuesto|quince-prices-dfw|precios-quince-dfw|saved|check-your-date|consulta|quinceanera-photo|sesion-de-fotos|quinceanera-videographer|videografo|fotografo|quinceanera-photographer)/;
+    const workViewSids = new Set(events.filter((e) => e.event_type === "work_viewed" && e.session_id).map((e) => e.session_id!));
+    const reachedWork = (sid: string, steps: { path: string }[]) =>
+      workViewSids.has(sid) || steps.some((st) => WORK_PAGE.test(st.path) || /^\/(es\/)?(blog|venues|salones)\//.test(st.path));
+    const moneyPageSessions = Array.from(journeys.entries()).filter(([sid, steps]) => reachedWork(sid, steps)).length;
+    const INTENT = new Set(["cta_clicked", "form_started", "date_checked"]);
+    const intentEvents = events.filter((e) => INTENT.has(e.event_type));
+    // People, not clicks: one session tapping three buttons is one "took action".
+    const intentTotal = new Set(intentEvents.map((e, i) => e.session_id ?? `anon-${i}`)).size;
     const totalRequests = bookings.filter((b) =>
       ["requested", "pending_payment", "paid"].includes(b.status),
     ).length;
@@ -466,6 +482,37 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
       booked: bookings.filter((b) => b.status === "paid" && (paidAt(b) ?? "") >= startPrev && (paidAt(b) ?? "") < startRange).length,
     };
 
+    // ---- drop-off: where visits that never reached the work came in ----
+    const firstRow = new Map<string, PV>();
+    for (const r of rows) {
+      const sid = r.session_id ?? "anon";
+      if (!firstRow.has(sid)) firstRow.set(sid, r);
+    }
+    const landAgg = new Map<string, { sessions: number; reached: number }>();
+    const srcAgg = new Map<string, { sessions: number; reached: number }>();
+    let lost = 0;
+    let onePage = 0;
+    for (const [sid, steps] of journeys) {
+      const first = firstRow.get(sid);
+      if (!first) continue;
+      const ok = reachedWork(sid, steps);
+      if (!ok) {
+        lost += 1;
+        if (new Set(steps.map((x) => x.path)).size === 1) onePage += 1;
+      }
+      const land = first.path === "/" ? "Homepage" : first.path === "/es" ? "Spanish homepage" : first.path;
+      const src = first.utm_source || hostOf(first.referrer) || "Direct / app";
+      for (const [m, k] of [[landAgg, land], [srcAgg, src]] as const) {
+        const row = m.get(k) ?? { sessions: 0, reached: 0 };
+        row.sessions += 1;
+        if (ok) row.reached += 1;
+        m.set(k, row);
+      }
+    }
+    const topAgg = (m: Map<string, { sessions: number; reached: number }>) =>
+      Array.from(m.entries()).map(([label, v]) => ({ label, ...v })).sort((a, b) => b.sessions - a.sessions).slice(0, 5);
+    const dropoff = { lost, onePage, landings: topAgg(landAgg), sources: topAgg(srcAgg) };
+
     // ---- the flow: one window, five steps ----
     const flow = [
       { label: "Visits", value: uniqueSessions },
@@ -504,6 +551,7 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
       rangeBooked,
       flow,
       flowBottleneck,
+      dropoff,
       today,
       last7,
       rangeViews,

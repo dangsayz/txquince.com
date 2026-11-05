@@ -5,6 +5,7 @@ import { requireAdmin } from "@/lib/require-admin";
 import { unauthorizedAdminResponse } from "@/lib/admin-auth";
 import { getServiceSupabase } from "@/lib/supabase-server";
 import { getDashboardStats } from "@/lib/analytics-db";
+import { metricValue } from "@/lib/pulse-intel";
 
 export const dynamic = "force-dynamic";
 
@@ -19,6 +20,7 @@ const CreateSchema = z.object({
 const PatchSchema = z.object({
   id: z.string().uuid(),
   status: z.enum(["active", "reviewed", "archived"]),
+  notes: z.string().max(2000).optional(),
 });
 
 export async function POST(request: Request) {
@@ -41,6 +43,10 @@ export async function POST(request: Request) {
     bounceRate: stats.bounceRate,
     uniqueSessions: stats.uniqueSessions,
     rangeViews: stats.rangeViews,
+    // A dashboard "next move": the exact number it will be judged by.
+    ...(parsed.data.area?.startsWith("pulse:") && parsed.data.target_metric
+      ? { metric: { key: parsed.data.target_metric, ...metricValue(stats, parsed.data.target_metric), range: 14 } }
+      : {}),
   };
 
   const supabase = getServiceSupabase();
@@ -72,12 +78,12 @@ export async function PATCH(request: Request) {
       { status: 400 },
     );
   }
-  const { id, status } = parsed.data;
+  const { id, status, notes } = parsed.data;
 
   const supabase = getServiceSupabase();
   const { data, error } = await supabase
     .from("conversion_changes")
-    .update({ status })
+    .update(notes === undefined ? { status } : { status, notes })
     .eq("id", id)
     .select("*")
     .single();

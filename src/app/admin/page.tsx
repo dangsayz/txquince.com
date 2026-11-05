@@ -8,6 +8,7 @@ import { requireAdminPage } from "@/lib/require-admin";
 import { getPriceBook } from "@/lib/pricing";
 import { PUBLIC_TIER_IDS, TIER_NAME_EN, usd } from "@/lib/commission";
 import { getDashboardStats } from "@/lib/analytics-db";
+import { getPulseMoves } from "@/lib/pulse-moves";
 import { StudioPulse, PULSE_RANGES } from "@/components/admin/charts/StudioPulse";
 
 export const dynamic = "force-dynamic";
@@ -24,7 +25,7 @@ export default async function AdminHome({ searchParams }: { searchParams: Promis
   await requireAdminPage("/admin"); // server-side gate; middleware is not enough
   const { range: rangeParam } = await searchParams;
   const range = (PULSE_RANGES as readonly number[]).includes(Number(rangeParam)) ? Number(rangeParam) : 14;
-  const [inquiries, activity, bookings, book, stats] = await Promise.all([getInquiries(), getInquiryActivity(), getBookings(), getPriceBook(), getDashboardStats(range)]);
+  const [inquiries, activity, bookings, book, stats, moves] = await Promise.all([getInquiries(), getInquiryActivity(), getBookings(), getPriceBook(), getDashboardStats(range), getPulseMoves()]);
   const work = buildLeadWork(inquiries, activity);
   const due = countDue(work);
   const unreplied = work.filter((item) => item.priority === "unreplied").length;
@@ -66,7 +67,7 @@ export default async function AdminHome({ searchParams }: { searchParams: Promis
         ))}
       </div>
 
-      <StudioPulse s={stats} basePath="/admin" range={range} />
+      <StudioPulse s={stats} basePath="/admin" range={range} moves={moves} />
 
       <section aria-labelledby="prices-title" className="mt-6 border border-[#111110] bg-white text-[#111110]">
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#e6e6e4] px-5 py-5 sm:px-6">

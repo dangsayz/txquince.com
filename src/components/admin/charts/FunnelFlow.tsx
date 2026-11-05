@@ -16,57 +16,45 @@ type Step = { label: string; value: number };
 type Bottleneck = { step: number; rate: number; baseline: number; action: string } | null;
 
 const H = 190;
-const AMBER = "#ffb547";
+const AMBER = "#ff9f0a";
 
 function heights(steps: Step[]) {
   const max = Math.max(...steps.map((s) => s.value), 1);
-  return steps.map((s) => Math.max(Math.sqrt(s.value / max) * (H - 24), s.value > 0 ? 6 : 2));
+  // Square-root scale with a floor, so small later steps still read as a band.
+  return steps.map((s) => 18 + Math.sqrt(s.value / max) * (H - 18 - 20));
 }
 
-function bandPath(hs: number[], W: number, offset = 0, scale = 1) {
+/**
+ * One smooth edge through every step's center: flat runs out to the card's
+ * edges, an S-curve (horizontal tangents) between neighbouring centers, so
+ * the band narrows gradually instead of pinching.
+ */
+function edge(hs: number[], W: number, y: (h: number) => number) {
   const n = hs.length;
   const cw = W / n;
-  const top = (h: number) => (H - h * scale) / 2 + offset * h;
-  const bot = (h: number) => (H + h * scale) / 2 + offset * h;
-  let d = `M0,${top(hs[0])}`;
-  for (let i = 0; i < n; i++) {
-    const flatEnd = i * cw + cw * 0.5;
-    d += ` L${flatEnd},${top(hs[i])}`;
-    if (i < n - 1) {
-      const x1 = (i + 1) * cw;
-      const mid = (flatEnd + x1) / 2;
-      d += ` C${mid},${top(hs[i])} ${mid},${top(hs[i + 1])} ${x1},${top(hs[i + 1])}`;
-    } else d += ` L${W},${top(hs[i])}`;
+  const cx = (i: number) => i * cw + cw / 2;
+  let d = `L0,${y(hs[0])} L${cx(0)},${y(hs[0])}`;
+  for (let i = 0; i < n - 1; i++) {
+    const x0 = cx(i);
+    const x1 = cx(i + 1);
+    const k = (x1 - x0) * 0.5;
+    d += ` C${x0 + k},${y(hs[i])} ${x1 - k},${y(hs[i + 1])} ${x1},${y(hs[i + 1])}`;
   }
-  d += ` L${W},${bot(hs[n - 1])}`;
-  for (let i = n - 1; i >= 0; i--) {
-    const flatEnd = i * cw + cw * 0.5;
-    if (i < n - 1) {
-      const x1 = (i + 1) * cw;
-      const mid = (flatEnd + x1) / 2;
-      d += ` L${x1},${bot(hs[i + 1])} C${mid},${bot(hs[i + 1])} ${mid},${bot(hs[i])} ${flatEnd},${bot(hs[i])}`;
-    }
-    d += ` L${i * cw},${bot(hs[i])}`;
-  }
-  return `${d} Z`;
+  return `${d} L${W},${y(hs[n - 1])}`;
 }
 
-/** A centerline through the band at a relative offset (-0.5..0.5 of its height). */
+function bandPath(hs: number[], W: number, scale = 1) {
+  const top = edge(hs, W, (h) => (H - h * scale) / 2);
+  const rev = [...hs].reverse();
+  const bottom = edge(rev, W, (h) => (H + h * scale) / 2)
+    // mirror the reversed edge back onto the x axis
+    .replace(/(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/g, (_, x, yy) => `${W - Number(x)},${yy}`);
+  return `M0,${(H - hs[0] * scale) / 2} ${top.slice(1)} ${bottom.replace(/^L/, "L")} Z`;
+}
+
+/** A line through the band at a relative offset (-0.5..0.5 of its height). */
 function flowLine(hs: number[], W: number, k: number) {
-  const n = hs.length;
-  const cw = W / n;
-  const y = (h: number) => H / 2 + k * h;
-  let d = `M0,${y(hs[0])}`;
-  for (let i = 0; i < n; i++) {
-    const flatEnd = i * cw + cw * 0.5;
-    d += ` L${flatEnd},${y(hs[i])}`;
-    if (i < n - 1) {
-      const x1 = (i + 1) * cw;
-      const mid = (flatEnd + x1) / 2;
-      d += ` C${mid},${y(hs[i])} ${mid},${y(hs[i + 1])} ${x1},${y(hs[i + 1])}`;
-    } else d += ` L${W},${y(hs[i])}`;
-  }
-  return d;
+  return `M0,${H / 2 + k * hs[0]} ${edge(hs, W, (h) => H / 2 + k * h).slice(1)}`;
 }
 
 const pctOf = (steps: Step[], i: number) =>
@@ -102,11 +90,11 @@ export function FunnelFlow({
 
   return (
     <section aria-labelledby={`funnel-${gid}`} className="hud-card min-w-0">
-      <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[rgba(56,232,255,0.14)] px-4 py-3.5 sm:px-5">
-        <h2 id={`funnel-${gid}`} className="hud-label m-0" style={{ color: "#e6f4ff" }}>
+      <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[rgba(255,255,255,0.14)] px-4 py-3.5 sm:px-5">
+        <h2 id={`funnel-${gid}`} className="hud-label m-0" style={{ color: "#f5f5f7" }}>
           Booking funnel
         </h2>
-        <p className="hud-mono m-0 text-[11px] text-[#8fa0b8]">LAST {range}D · % OF STEP BEFORE · HOVER A STEP</p>
+        <p className="hud-mono m-0 text-[11px] text-[#8e8e93]">LAST {range}D · % OF STEP BEFORE · HOVER A STEP</p>
       </div>
 
       {/* Desktop / tablet: the stream */}
@@ -117,12 +105,12 @@ export function FunnelFlow({
             const isB = b?.step === i;
             return (
               <HudIntel key={s.label} intel={intel[i]} align={i >= steps.length - 2 ? "right" : "left"}>
-                <button type="button" className={`hud-focus block w-full min-w-0 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-[rgba(56,232,255,0.05)] ${i ? "border-l border-[rgba(56,232,255,0.12)]" : ""}`}>
+                <button type="button" className={`hud-focus block w-full min-w-0 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-[rgba(255,255,255,0.05)] ${i ? "border-l border-[rgba(255,255,255,0.12)]" : ""}`}>
                   <span className="hud-label block truncate">{s.label}</span>
                   <span className="hud-value mt-1.5 block" style={isB ? { color: AMBER, textShadow: `0 0 14px ${AMBER}66` } : undefined}>
                     {s.value.toLocaleString("en-US")}
                   </span>
-                  <span className="hud-mono mt-1 block text-[11px]" style={{ color: isB ? AMBER : "#8fa0b8" }}>
+                  <span className="hud-mono mt-1 block text-[11px]" style={{ color: isB ? AMBER : "#8e8e93" }}>
                     {pct === null ? "SOURCE" : `${pct}%`}
                     {isB ? " · BOTTLENECK" : ""}
                   </span>
@@ -136,8 +124,8 @@ export function FunnelFlow({
             <svg width={W} height={H} className="absolute inset-0 overflow-visible" role="img" aria-label={steps.map((s) => `${s.label} ${s.value}`).join(", ")}>
               <defs>
                 <linearGradient id={`band-${gid}`} x1="0" x2="1" y1="0" y2="0">
-                  <stop offset="0%" stopColor="#38e8ff" stopOpacity="0.85" />
-                  <stop offset="100%" stopColor="#8b7bff" stopOpacity="0.7" />
+                  <stop offset="0%" stopColor="#0a84ff" stopOpacity="0.85" />
+                  <stop offset="100%" stopColor="#5e5ce6" stopOpacity="0.7" />
                 </linearGradient>
                 <clipPath id={`clip-${gid}`}>
                   <path d={bandPath(hs, W)} />
@@ -152,28 +140,28 @@ export function FunnelFlow({
                 </filter>
               </defs>
               {/* glow underlay */}
-              <path d={bandPath(hs, W)} fill={`url(#band-${gid})`} opacity="0.45" filter={`url(#glow-${gid})`} />
-              <path d={bandPath(hs, W)} fill={`url(#band-${gid})`} opacity="0.32" />
-              <path d={bandPath(hs, W, 0, 0.55)} fill={`url(#band-${gid})`} opacity="0.35" />
+              <path d={bandPath(hs, W)} fill={`url(#band-${gid})`} opacity="0.22" filter={`url(#glow-${gid})`} />
+              <path d={bandPath(hs, W)} fill={`url(#band-${gid})`} opacity="0.26" />
+              <path d={bandPath(hs, W, 0.55)} fill={`url(#band-${gid})`} opacity="0.35" />
               {b ? (
                 <g clipPath={`url(#b-${gid})`} className="hud-bneck">
-                  <path d={bandPath(hs, W)} fill={AMBER} opacity="0.55" />
+                  <path d={bandPath(hs, W)} fill={AMBER} opacity="0.4" />
                 </g>
               ) : null}
               {/* particles flowing through the stream */}
               <g clipPath={`url(#clip-${gid})`}>
                 {[-0.32, -0.16, 0, 0.16, 0.32].map((k, i) => (
-                  <path key={k} d={flowLine(hs, W, k)} fill="none" stroke="#e6f4ff" strokeOpacity={i === 2 ? 0.9 : 0.55} strokeWidth={i === 2 ? 2 : 1.4} strokeLinecap="round" className={`hud-flow ${i % 2 ? "hud-flow--slow" : ""}`} />
+                  <path key={k} d={flowLine(hs, W, k)} fill="none" stroke="#f5f5f7" strokeOpacity={i === 2 ? 0.7 : 0.4} strokeWidth={i === 2 ? 2 : 1.4} strokeLinecap="round" className={`hud-flow ${i % 2 ? "hud-flow--slow" : ""}`} />
                 ))}
               </g>
               {/* step markers */}
               {steps.map((s, i) => {
-                const x = i * cw + cw * 0.25;
+                const x = i * cw + cw / 2;
                 const top = (H - hs[i]) / 2;
                 return (
                   <g key={s.label}>
-                    <line x1={i * cw} x2={i * cw} y1="0" y2={H} stroke="rgba(56,232,255,0.14)" strokeDasharray="2 4" />
-                    <circle cx={x} cy={top} r="3" fill="#05080f" stroke={b?.step === i ? AMBER : "#38e8ff"} strokeWidth="1.5" />
+                    <line x1={i * cw} x2={i * cw} y1="0" y2={H} stroke="rgba(255,255,255,0.14)" strokeDasharray="2 4" />
+                    <circle cx={x} cy={top} r="3" fill="#000000" stroke={b?.step === i ? AMBER : "#0a84ff"} strokeWidth="1.5" />
                   </g>
                 );
               })}
@@ -193,18 +181,18 @@ export function FunnelFlow({
                 <button type="button" className="hud-focus block min-h-11 w-full rounded-md px-1.5 py-1 text-left">
                   <span className="flex items-baseline justify-between gap-3">
                     <span className="hud-label min-w-0 truncate">{s.label}</span>
-                    <span className="hud-mono shrink-0 text-sm text-[#e6f4ff]">
+                    <span className="hud-mono shrink-0 text-sm text-[#f5f5f7]">
                       {s.value.toLocaleString("en-US")}
-                      {pct !== null ? <span className="ml-2 text-xs" style={{ color: isB ? AMBER : "#8fa0b8" }}>{pct}%</span> : null}
+                      {pct !== null ? <span className="ml-2 text-xs" style={{ color: isB ? AMBER : "#8e8e93" }}>{pct}%</span> : null}
                     </span>
                   </span>
-                  <span className="mt-1.5 block h-2 overflow-hidden rounded-full bg-[rgba(56,232,255,0.08)]">
+                  <span className="mt-1.5 block h-2 overflow-hidden rounded-full bg-[rgba(255,255,255,0.08)]">
                     <span
                       className={`block h-full rounded-full ${isB ? "hud-bneck" : ""}`}
                       style={{
                         width: `${Math.max(Math.sqrt(s.value / max) * 100, s.value ? 3 : 0)}%`,
-                        background: isB ? AMBER : "linear-gradient(90deg,#38e8ff,#8b7bff)",
-                        boxShadow: `0 0 12px ${isB ? AMBER : "#38e8ff"}88`,
+                        background: isB ? AMBER : "linear-gradient(90deg,#0a84ff,#5e5ce6)",
+                        boxShadow: `0 0 12px ${isB ? AMBER : "#0a84ff"}88`,
                       }}
                     />
                   </span>
@@ -216,18 +204,18 @@ export function FunnelFlow({
       </ol>
 
       {b ? (
-        <div className="border-t border-[rgba(56,232,255,0.14)] px-4 py-3.5 sm:px-5">
+        <div className="border-t border-[rgba(255,255,255,0.14)] px-4 py-3.5 sm:px-5">
           <p className="hud-label m-0" style={{ color: AMBER }}>
             ⚠ Bottleneck · {steps[b.step - 1].label} → {steps[b.step].label}
           </p>
-          <p className="mt-1.5 text-base text-[#e6f4ff]">
+          <p className="mt-1.5 text-base text-[#f5f5f7]">
             <span className="hud-mono" style={{ color: AMBER }}>{b.rate}%</span> make it through. Healthy is about{" "}
             <span className="hud-mono">{b.baseline}%</span>.
           </p>
-          <p className="mt-1 text-sm leading-6 text-[#a9b9cf]">{b.action}</p>
+          <p className="mt-1 text-sm leading-6 text-[#aeaeb2]">{b.action}</p>
         </div>
       ) : (
-        <p className="hud-mono border-t border-[rgba(56,232,255,0.14)] px-4 py-3.5 text-xs text-[#8fa0b8] sm:px-5">
+        <p className="hud-mono border-t border-[rgba(255,255,255,0.14)] px-4 py-3.5 text-xs text-[#8e8e93] sm:px-5">
           BOTTLENECK DETECTION STARTS ONCE 10 PEOPLE REACH A STEP.
         </p>
       )}

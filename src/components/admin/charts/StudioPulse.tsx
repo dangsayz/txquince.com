@@ -1,6 +1,9 @@
 import Link from "next/link";
 import type { RangedStats } from "@/lib/analytics-db";
-import { briefing, metricIntel, stepIntel } from "@/lib/pulse-intel";
+import { briefing, metricIntel, stepIntel, type Intel } from "@/lib/pulse-intel";
+import type { PulseMove } from "@/lib/pulse-moves";
+import { DropOff } from "./DropOff";
+import { MovesLog } from "./MovesLog";
 import { TrendChart } from "./TrendChart";
 import { FunnelFlow } from "./FunnelFlow";
 import { RankedTabs } from "./RankedTabs";
@@ -20,8 +23,20 @@ const money = (n: number) =>
  * focus or tap any number for what it is, what it says right now, and (stay
  * a second) what to do next. Data: getDashboardStats (first-party).
  */
-export function StudioPulse({ s, basePath, range }: { s: RangedStats; basePath: string; range: number }) {
-  const intel = metricIntel(s);
+export function StudioPulse({ s, basePath, range, moves }: { s: RangedStats; basePath: string; range: number; moves?: PulseMove[] }) {
+  const running = (moves ?? []).filter((m) => m.status === "active");
+  // Mark moves already being tried, so the card shows "TRYING · DAY n".
+  const track = (it: Intel): Intel => ({
+    ...it,
+    trying: it.todo.map((t) => running.find((m) => m.title === t.slice(0, 200) && m.metric === it.metric)?.days ?? null),
+  });
+  const raw = metricIntel(s);
+  const intel = Object.fromEntries(Object.entries(raw).map(([k, v]) => [k, track(v)])) as typeof raw;
+  const steps = s.flow.map((_, i) => track(stepIntel(s, i)));
+  const b = s.flowBottleneck;
+  const tried = new Set((moves ?? []).map((m) => `${m.metric}|${m.title}`));
+  const nextTodo = b ? steps[b.step].todo.find((t) => !tried.has(`${steps[b.step].metric}|${t.slice(0, 200)}`)) : undefined;
+  const nextUp = b && nextTodo ? { title: nextTodo, metric: `step:${b.step}` } : null;
   const tabs = [
     {
       id: "pages",
@@ -58,20 +73,18 @@ export function StudioPulse({ s, basePath, range }: { s: RangedStats; basePath: 
   ];
 
   const stats = [
-    { k: "booked" as const, label: "Booked value", v: money(s.bookedValue), n: `${s.paid} paid all-time`, c: "#3dffa8" },
-    { k: "pipeline" as const, label: "In the pipeline", v: money(s.pipelineValue), n: `${s.requests} requests · ${s.pendingHolds} holds`, c: "#ffb547" },
-    { k: "bounce" as const, label: "Bounce rate", v: `${s.bounceRate}%`, n: `${s.pagesPerSession} pages per visit`, c: s.bounceRate > 60 ? "#ff6b8b" : "#38e8ff" },
-    { k: "live" as const, label: "On the site now", v: String(s.liveNow.length), n: "Active in the last 5 min", c: "#38e8ff" },
+    { k: "booked" as const, label: "Booked value", v: money(s.bookedValue), n: `${s.paid} paid all-time`, c: "#30d158" },
+    { k: "pipeline" as const, label: "In the pipeline", v: money(s.pipelineValue), n: `${s.requests} requests · ${s.pendingHolds} holds`, c: "#ff9f0a" },
+    { k: "bounce" as const, label: "Bounce rate", v: `${s.bounceRate}%`, n: `${s.pagesPerSession} pages per visit`, c: s.bounceRate > 60 ? "#ff453a" : "#0a84ff" },
+    { k: "live" as const, label: "On the site now", v: String(s.liveNow.length), n: "Active in the last 5 min", c: "#0a84ff" },
   ];
 
   return (
     <section aria-labelledby="pulse-title" className="hud mt-10">
-      <span aria-hidden className="hud-grid-bg" />
-      <span aria-hidden className="hud-scan" />
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="min-w-0">
-          <p className="hud-label m-0" style={{ color: "#38e8ff" }}>TXQ // Studio pulse</p>
-          <h2 id="pulse-title" className="mt-1 text-xl font-normal tracking-[-0.02em] text-[#e6f4ff] sm:text-2xl">How the site is doing</h2>
+          <p className="hud-label m-0" style={{ color: "#8e8e93" }}>Studio pulse</p>
+          <h2 id="pulse-title" className="mt-1 text-xl font-normal tracking-[-0.02em] text-[#f5f5f7] sm:text-2xl">How the site is doing</h2>
         </div>
         <nav aria-label="Period" className="hud-seg">
           {PULSE_RANGES.map((r) => (
@@ -83,7 +96,7 @@ export function StudioPulse({ s, basePath, range }: { s: RangedStats; basePath: 
       </div>
 
       {!s.configured ? (
-        <p className="hud-card mt-4 px-5 py-6 text-sm text-[#8fa0b8]">Analytics appear here once the database connection is available.</p>
+        <p className="hud-card mt-4 px-5 py-6 text-sm text-[#8e8e93]">Analytics appear here once the database connection is available.</p>
       ) : (
         <div className="mt-4 grid gap-4">
           <Briefing lines={briefing(s)} />
@@ -95,19 +108,25 @@ export function StudioPulse({ s, basePath, range }: { s: RangedStats; basePath: 
             intel={{ visitors: intel.visits, unique: intel.unique, views: intel.views, leads: intel.leads }}
           />
           <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
-            <FunnelFlow steps={s.flow} bottleneck={s.flowBottleneck} range={range} intel={s.flow.map((_, i) => stepIntel(s, i))} />
+            <FunnelFlow steps={s.flow} bottleneck={s.flowBottleneck} range={range} intel={steps} />
             <RankedTabs title="Where visits and leads come from" tabs={tabs} />
           </div>
+          {moves ? (
+            <div className="grid items-start gap-4 xl:grid-cols-2">
+              <DropOff d={s.dropoff} visits={s.uniqueSessions} range={range} />
+              <MovesLog moves={moves} nextUp={nextUp} />
+            </div>
+          ) : null}
           <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 lg:grid-cols-4">
             {stats.map((m, i) => (
               <HudIntel key={m.k} intel={intel[m.k]} side="top" align={i % 2 ? "right" : "left"}>
-                <button type="button" className="hud-card hud-focus hud-stat block w-full px-4 py-3.5 text-left transition-colors hover:border-[rgba(56,232,255,0.35)]">
+                <button type="button" className="hud-card hud-focus hud-stat block w-full px-4 py-3.5 text-left transition-colors hover:border-[rgba(255,255,255,0.35)]">
                   <span className="hud-label flex items-center gap-1.5 whitespace-nowrap">
                     <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: m.c, boxShadow: `0 0 8px ${m.c}` }} />
                     <span className="truncate">{m.label}</span>
                   </span>
-                  <span className="hud-value mt-2 block text-[#e6f4ff]">{m.v}</span>
-                  <span className="hud-mono mt-1.5 block truncate text-[11px] text-[#8fa0b8]">{m.n}</span>
+                  <span className="hud-value mt-2 block text-[#f5f5f7]">{m.v}</span>
+                  <span className="hud-mono mt-1.5 block truncate text-[11px] text-[#8e8e93]">{m.n}</span>
                 </button>
               </HudIntel>
             ))}

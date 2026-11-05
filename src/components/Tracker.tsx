@@ -134,6 +134,41 @@ export function Tracker() {
     });
   }, [pathname, search]);
 
+  // "Saw the work" on pages that show it inline (homepage galleries, films,
+  // packages): once per section per session, when it reaches the middle of the screen.
+  useEffect(() => {
+    if (pathname.startsWith("/admin") || typeof IntersectionObserver === "undefined") return;
+    let io: IntersectionObserver | null = null;
+    const t = window.setTimeout(() => {
+      const els = document.querySelectorAll<HTMLElement>(".fv, #archive, #cinema, #commissions, [data-track-view]");
+      if (!els.length) return;
+      io = new IntersectionObserver(
+        (entries) => {
+          for (const en of entries) {
+            if (!en.isIntersecting) continue;
+            const el = en.target as HTMLElement;
+            const label = el.dataset.trackView || el.id || "favorites";
+            const key = `txq_wv:${pathname}:${label}`;
+            io?.unobserve(el);
+            try {
+              if (sessionStorage.getItem(key)) continue;
+              sessionStorage.setItem(key, "1");
+            } catch {
+              /* still count it */
+            }
+            trackEvent("work_viewed", label);
+          }
+        },
+        { rootMargin: "-35% 0px -35% 0px" },
+      );
+      els.forEach((el) => io!.observe(el));
+    }, 600);
+    return () => {
+      window.clearTimeout(t);
+      io?.disconnect();
+    };
+  }, [pathname]);
+
   // Delegated CTA tracking: any click on a link to the intake is booking intent.
   useEffect(() => {
     function onClick(e: MouseEvent) {
