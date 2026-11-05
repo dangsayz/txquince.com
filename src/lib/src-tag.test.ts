@@ -3,13 +3,13 @@ import { normalizeSrc, sourceKey } from "./src-tag";
 import { sanitizeAttribution } from "./attribution";
 
 describe("src tags", () => {
-  it("accepts only the six platform tags, lower-cased", () => {
-    for (const t of ["instagram", "facebook", "tiktok", "youtube", "pinterest", "quora"]) expect(normalizeSrc(t)).toBe(t);
+  it("accepts only the seven platform tags, lower-cased", () => {
+    for (const t of ["instagram", "facebook", "tiktok", "youtube", "pinterest", "quora", "gbp"]) expect(normalizeSrc(t)).toBe(t);
     expect(normalizeSrc(" Instagram ")).toBe("instagram");
   });
 
   it("drops anything else", () => {
-    for (const t of ["", "mandalay", "arboretum", "blog", "gbp", "fb-group", "<script>", 42, null]) expect(normalizeSrc(t)).toBeNull();
+    for (const t of ["", "mandalay", "arboretum", "blog", "reddit", "fb-group", "<script>", 42, null]) expect(normalizeSrc(t)).toBeNull();
   });
 
   it("is saved with an inquiry's attribution", () => {
