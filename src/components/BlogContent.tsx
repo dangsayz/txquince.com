@@ -187,7 +187,13 @@ function renderInline(text: string): ReactNode[] {
   while ((m = LINK_RE.exec(text)) !== null) {
     if (m.index > last) nodes.push(text.slice(last, m.index));
     const [, label, href] = m;
-    if (href.startsWith("/")) {
+    if (/^(tel|sms|mailto):/i.test(href)) {
+      nodes.push(
+        <a key={i++} href={href} className="tq-blog-link">
+          {label}
+        </a>,
+      );
+    } else if (href.startsWith("/")) {
       nodes.push(
         <Link key={i++} href={href} className="tq-blog-link">
           {label}
@@ -699,7 +705,12 @@ export function BlogArticleView({
             </div>
           </header>
 
-          <figure className="tq-blog-cover" data-capped={coverVars ? "true" : undefined} style={coverVars}>
+          <figure
+            className="tq-blog-cover"
+            data-capped={coverVars ? "true" : undefined}
+            data-full={post.coverFull && coverVars ? "true" : undefined}
+            style={coverVars}
+          >
             <div className="tq-blog-cover__media">
               <SlotImage
                 slot={blogCoverSlotId(post.slug, lang)}

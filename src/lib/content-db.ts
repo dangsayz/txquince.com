@@ -4,6 +4,7 @@ import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server"
 import type { VideoProvider } from "@/lib/video";
 import type { BlogBlock } from "@/content/blog";
 import { getVenue, venueSlugify } from "@/content/venues";
+import { getBlogPhoto } from "@/content/blog-photos";
 import { resolveHeroFocus } from "@/lib/hero-focus";
 import { IMAGE_PIPELINE_EPOCH } from "@/lib/image-derivative";
 import { heroImageSource, HeroStoredSchema } from "@/lib/hero-cover";
@@ -232,6 +233,12 @@ export async function getBlogImages(
   const out: Record<string, ResolvedBlogImage> = {};
   await Promise.all(
     slugs.map(async (s) => {
+      // Photos that ship with the site (public/blog/photos) resolve first.
+      const local = getBlogPhoto(s);
+      if (local) {
+        out[s] = { url: local.src, width: local.width, height: local.height, alt: local.alt, caption: null };
+        return;
+      }
       const im = await getImageBySlug(s);
       if (im?.slug) {
         out[im.slug] = {
