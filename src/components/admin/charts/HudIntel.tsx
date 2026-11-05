@@ -82,7 +82,7 @@ export function HudIntel({
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
-  const toneColor = intel.tone === "good" ? "#248a3d" : intel.tone === "warn" ? "#c93400" : "#0071e3";
+  const toneColor = intel.tone === "good" ? "#248a3d" : intel.tone === "warn" ? "#d70015" : "#0071e3";
   const showDeep = open && (deep || intel.trying?.some((d) => d !== null));
 
   return (

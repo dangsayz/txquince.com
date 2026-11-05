@@ -16,9 +16,9 @@ type Step = { label: string; value: number };
 type Bottleneck = { step: number; rate: number; baseline: number; action: string } | null;
 
 const H = 150;
-const AMBER = "#c93400";
-/** Fill for the bottleneck band / bar: Apple orange (marks only, never text). */
-const AMBER_FILL = "#ff9500";
+const AMBER = "#d70015"; // bottleneck text (Apple red, 5:1 on white)
+/** Fill for the bottleneck band / bar: Apple red (marks only, never text). */
+const AMBER_FILL = "#ff3b30";
 
 function heights(steps: Step[]) {
   const max = Math.max(...steps.map((s) => s.value), 1);
@@ -109,7 +109,7 @@ export function FunnelFlow({
               <HudIntel key={s.label} intel={intel[i]} align={i >= steps.length - 2 ? "right" : "left"}>
                 <button type="button" className={`hud-focus block w-full min-w-0 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-[rgba(0,0,0,0.05)] ${i ? "border-l border-[#d2d2d7]" : ""}`}>
                   <span className="hud-label block truncate">{s.label}</span>
-                  <span className="hud-value mt-1.5 block" style={isB ? { color: AMBER, textShadow: `0 0 14px ${AMBER}66` } : undefined}>
+                  <span className="hud-value mt-1.5 block" style={isB ? { color: AMBER } : undefined}>
                     {s.value.toLocaleString("en-US")}
                   </span>
                   <span className="hud-mono mt-1 block text-[13px]" style={{ color: isB ? AMBER : "#6e6e73" }}>
@@ -137,13 +137,13 @@ export function FunnelFlow({
                   </>
                 ) : null}
               </defs>
-              {/* One flat band with a hairline edge; the bottleneck stretch is orange, not blended. */}
+              {/* One flat band with a hairline edge; the bottleneck stretch is a soft red, not blended. */}
               <g mask={b ? `url(#m-${gid})` : undefined}>
                 <path d={bandPath(hs, W)} fill="#0071e3" fillOpacity="0.1" stroke="#0071e3" strokeOpacity="0.45" strokeWidth="1" />
               </g>
               {b ? (
                 <g clipPath={`url(#b-${gid})`}>
-                  <path d={bandPath(hs, W)} fill={AMBER_FILL} fillOpacity="0.18" stroke={AMBER_FILL} strokeOpacity="0.8" strokeWidth="1" />
+                  <path d={bandPath(hs, W)} fill={AMBER_FILL} fillOpacity="0.1" stroke={AMBER_FILL} strokeOpacity="0.7" strokeWidth="1" />
                 </g>
               ) : null}
               {/* a single thin flow line through the middle */}
