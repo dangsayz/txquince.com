@@ -123,3 +123,62 @@ test("savePriceBook (called directly): validates, refuses stale versions, record
   const live = JSON.parse(await readFile(join(dir, "config", "pricing.json"), "utf8"));
   assert.equal(live.packages.trio.price, 5200);
 });
+
+test("savePriceBook (called directly): package wording and half hours are validated on the server", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "txq-pricing-wording-"));
+  process.env.PRICING_LOCAL_DIR = dir;
+  const { savePriceBook, readPriceBook, PricingError } = await import("../src/lib/pricing.ts");
+  const invalid = (e) => e instanceof PricingError && e.code === "invalid";
+
+  // Whatever a hand-built request sends, these never reach storage.
+  for (const mutate of [
+    (b) => (b.content.solo.team.en = ""), // a package must say who comes
+    (b) => (b.content.trio.bullets = []), // a card needs at least one point
+    (b) => (b.content.moments.photos = "x".repeat(200)), // short fields stay short
+    (b) => (b.content.trio.extra = { en: "x", es: "x" }), // unknown field
+    (b) => (b.content.production = structuredClone(b.content.trio)), // retired packages aren't editable
+    (b) => (b.packages.moments.hours = 1.25), // half-hour steps only
+    (b) => (b.packages.solo.maxHours = 4), // can't grow to fewer hours than it includes
+    (b) => (b.planHoldUsd = 0),
+    (b) => (b.momentsSaturdayDays = -1),
+  ]) {
+    const b = structuredClone(DEFAULT_PRICE_BOOK);
+    mutate(b);
+    await assert.rejects(savePriceBook(b, "none", "owner@test"), invalid);
+  }
+  assert.equal((await readPriceBook()).version, "none");
+
+  const next = structuredClone(DEFAULT_PRICE_BOOK);
+  next.packages.moments.hours = 1.5;
+  next.content.moments.photos = "200–300";
+  next.content.solo.cameras = "2";
+  const saved = await savePriceBook(next, "none", "owner@test");
+  assert.equal(saved.book.packages.moments.hours, 1.5);
+  assert.ok(saved.changes.includes("Just the Moments hours included: 2 → 1.5 hours"));
+  assert.ok(saved.changes.includes("Just the Moments wording: photo count"));
+  assert.ok(saved.changes.includes("The Solo wording: cameras"));
+  const live = await readPriceBook();
+  assert.equal(live.book.content.moments.photos, "200–300");
+  // Tokens in written copy read the saved wording.
+  assert.equal(fillPrices(`${PT.photos.moments} · ${PT.cameras.solo} · ${PT.hours.moments}`, live.book), "200–300 · 2 · 1.5");
+});
+
+test("a book saved before wording existed reads with the launch wording; partial wording keeps what was saved", async () => {
+  const { parseStoredBook } = await import("../src/lib/pricing.ts");
+  const old = JSON.parse(JSON.stringify(DEFAULT_PRICE_BOOK));
+  for (const k of ["content", "addOnNotes", "sessionPhotos", "planHoldUsd", "momentsSaturdayDays"]) delete old[k];
+  for (const p of Object.values(old.packages)) delete p.maxHours;
+  const b = parseStoredBook(old);
+  assert.ok(b);
+  assert.deepEqual(b.content, DEFAULT_PRICE_BOOK.content);
+  assert.equal(b.packages.solo.maxHours, 6);
+  assert.equal(b.planHoldUsd, 500);
+  assert.equal(b.momentsSaturdayDays, 30);
+
+  const saved = JSON.parse(JSON.stringify(DEFAULT_PRICE_BOOK));
+  saved.content.solo.photos = "175+";
+  delete saved.content.solo.photosNote;
+  const c = parseStoredBook(saved);
+  assert.equal(c.content.solo.photos, "175+");
+  assert.deepEqual(c.content.solo.photosNote, DEFAULT_PRICE_BOOK.content.solo.photosNote);
+});

@@ -69,9 +69,14 @@ export default async function AdminHome() {
               Change them here. When you press Save, the homepage, package cards, comparison table, inquiry form and every page update at once.
             </p>
           </div>
-          <Link href="/admin/prices" className="inline-flex min-h-12 items-center gap-3 whitespace-nowrap bg-[#111110] px-5 text-base font-medium text-white transition-colors hover:bg-[#333] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black">
-            Change prices <span aria-hidden="true">→</span>
-          </Link>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/admin/prices" className="inline-flex min-h-12 items-center gap-3 whitespace-nowrap bg-[#111110] px-5 text-base font-medium text-white transition-colors hover:bg-[#333] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black">
+              Change prices <span aria-hidden="true">→</span>
+            </Link>
+            <Link href="/admin/packages" className="inline-flex min-h-12 items-center gap-3 whitespace-nowrap border border-[#111110] px-5 text-base font-medium text-[#111110] transition-colors hover:bg-[#f2f2f0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black">
+              Change what&apos;s included <span aria-hidden="true">→</span>
+            </Link>
+          </div>
         </div>
         <dl className="grid grid-cols-2 lg:grid-cols-4">
           {PUBLIC_TIER_IDS.map((id, index) => (

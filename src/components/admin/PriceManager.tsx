@@ -14,6 +14,7 @@ import {
   PUBLIC_TIER_IDS,
   TIER_IDS,
   describeChanges,
+  maxHoursFor,
   priceBookSchema,
   quoteCommission,
   usd,
@@ -36,7 +37,7 @@ export type PricesSnapshot = {
 /* ---------------- form <-> book ---------------- */
 
 type Form = {
-  packages: Record<TierId, { price: string; hours: string; extraHour: string }>;
+  packages: Record<TierId, { price: string; hours: string; extraHour: string; maxHours: string }>;
   addOns: Record<AddOnId, string>;
   maxHours: string;
   depositPercent: string;
@@ -44,6 +45,8 @@ type Form = {
   holdDays: string;
   trioSpotsTotal: string;
   trioSpotsLeft: string;
+  planHoldUsd: string;
+  momentsSaturdayDays: string;
 };
 
 const toForm = (b: PriceBook): Form => ({
@@ -54,6 +57,7 @@ const toForm = (b: PriceBook): Form => ({
         price: String(b.packages[id].price),
         hours: String(b.packages[id].hours),
         extraHour: String(b.packages[id].extraHour),
+        maxHours: String(b.packages[id].maxHours),
       },
     ]),
   ) as Form["packages"],
@@ -64,19 +68,26 @@ const toForm = (b: PriceBook): Form => ({
   holdDays: String(b.holdDays),
   trioSpotsTotal: String(b.trioSpotsTotal),
   trioSpotsLeft: String(b.trioSpotsLeft),
+  planHoldUsd: String(b.planHoldUsd),
+  momentsSaturdayDays: String(b.momentsSaturdayDays),
 });
 
-/** "$4,900" / "4900" / " 4,900 " → 4900; anything else → NaN (zod reports it). */
+/** "$4,900" / "4900" / " 4,900 " → 4900, "1.5" → 1.5; anything else → NaN (zod reports it). */
 const num = (v: string) => {
   const t = v.replace(/[$,\s%]/g, "");
-  return /^\d+$/.test(t) ? Number(t) : Number.NaN;
+  return /^\d+(\.\d+)?$/.test(t) ? Number(t) : Number.NaN;
 };
 
 const fromForm = (f: Form, base: PriceBook): unknown => ({
   packages: Object.fromEntries(
     TIER_IDS.map((id) => [
       id,
-      { price: num(f.packages[id].price), hours: num(f.packages[id].hours), extraHour: num(f.packages[id].extraHour) },
+      {
+        price: num(f.packages[id].price),
+        hours: num(f.packages[id].hours),
+        extraHour: num(f.packages[id].extraHour),
+        maxHours: num(f.packages[id].maxHours),
+      },
     ]),
   ),
   addOns: Object.fromEntries(ADD_ON_IDS.map((id) => [id, num(f.addOns[id])])),
@@ -86,6 +97,12 @@ const fromForm = (f: Form, base: PriceBook): unknown => ({
   holdDays: num(f.holdDays),
   trioSpotsTotal: num(f.trioSpotsTotal),
   trioSpotsLeft: num(f.trioSpotsLeft),
+  planHoldUsd: num(f.planHoldUsd),
+  momentsSaturdayDays: num(f.momentsSaturdayDays),
+  // Package wording is edited at /admin/packages; this page keeps it as saved.
+  sessionPhotos: base.sessionPhotos,
+  content: base.content,
+  addOnNotes: base.addOnNotes,
   updatedAt: base.updatedAt,
   updatedBy: base.updatedBy,
 });
@@ -96,7 +113,7 @@ function validate(f: Form, base: PriceBook) {
   const errors: Record<string, string> = {};
   for (const i of r.error.issues) {
     const key = i.path.join(".");
-    if (!errors[key]) errors[key] = /expected number|NaN/i.test(i.message) ? "Enter a whole number." : i.message;
+    if (!errors[key]) errors[key] = /expected number|NaN/i.test(i.message) ? "Enter a number (half hours like 1.5 are OK for hours)." : i.message;
   }
   return { book: null, errors };
 }
@@ -190,8 +207,8 @@ function Preview({ book }: { book: PriceBook | null }) {
     );
   }
   const pkg = book.packages[tier];
-  const canAdd = pkg.extraHour > 0 && book.maxHours > pkg.hours;
-  const maxExtra = canAdd ? book.maxHours - pkg.hours : 0;
+  const maxExtra = Math.max(0, maxHoursFor(book, tier) - pkg.hours);
+  const canAdd = maxExtra > 0;
   const extraNow = Math.min(extra, maxExtra);
   const q = quoteCommission(book, tier, addOns, pkg.hours + extraNow);
   const name = (id: TierId) => tierById(id).name.en;
@@ -223,9 +240,9 @@ function Preview({ book }: { book: PriceBook | null }) {
           <div className="mt-1.5 flex items-center gap-3" role="group" aria-labelledby="pv-hours-label">
             <button
               type="button"
-              aria-label="One extra hour less"
+              aria-label="Half an hour less"
               disabled={extraNow <= 0}
-              onClick={() => setExtra(Math.max(0, extraNow - 1))}
+              onClick={() => setExtra(Math.max(0, extraNow - 0.5))}
               className="grid h-12 w-12 place-items-center rounded-lg border border-[#c9cac7] bg-white text-xl disabled:opacity-40"
             >
               −
@@ -235,9 +252,9 @@ function Preview({ book }: { book: PriceBook | null }) {
             </output>
             <button
               type="button"
-              aria-label="One extra hour more"
+              aria-label="Half an hour more"
               disabled={extraNow >= maxExtra}
-              onClick={() => setExtra(Math.min(maxExtra, extraNow + 1))}
+              onClick={() => setExtra(Math.min(maxExtra, extraNow + 0.5))}
               className="grid h-12 w-12 place-items-center rounded-lg border border-[#c9cac7] bg-white text-xl disabled:opacity-40"
             >
               +
@@ -306,7 +323,8 @@ export function PriceManager({ initial }: { initial: PricesSnapshot }) {
   const { book: draft, errors } = useMemo(() => validate(form, snap.book), [form, snap.book]);
   const changes = useMemo(() => (draft ? describeChanges(snap.book, draft) : []), [draft, snap.book]);
   const dirty = JSON.stringify(form) !== JSON.stringify(toForm(snap.book));
-  const isDefault = draft ? describeChanges(snap.defaults, draft).length === 0 : false;
+  // Prices only: the wording on /admin/packages has its own reset.
+  const isDefault = JSON.stringify(form) === JSON.stringify(toForm(snap.defaults));
   const canWrite = snap.storage !== "none";
 
   const set = (fn: (f: Form) => Form) => {
@@ -385,14 +403,17 @@ export function PriceManager({ initial }: { initial: PricesSnapshot }) {
         }}
         noValidate
       >
-        <Section title="Packages" dek="The price of each package and how many hours of coverage it includes. Each extra hour is what families pay for every hour they add.">
+        <Section
+          title="Packages"
+          dek="The price of each package and how many hours it includes. Hours can be half hours (1.5 = 1 hour 30 minutes). Each extra hour is what families pay for every hour they add; an extra half hour costs half. Most hours is the longest a family can make that package. What each package includes, in words, is on the Packages page."
+        >
           <div className="grid gap-4 md:grid-cols-2">
             {/* Retired packages (the Two-Day Celebration) keep their saved
                 numbers for old bookings but are no longer edited here. */}
             {PUBLIC_TIER_IDS.map((id) => (
               <fieldset key={id} className="min-w-0 rounded-xl border border-line p-4 sm:p-5">
                 <legend className="px-1 text-base font-medium text-ink">{tierName(id)}</legend>
-                <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid grid-cols-2 gap-4">
                   <Field
                     id={`p-${id}-price`}
                     label="Price"
@@ -423,6 +444,16 @@ export function PriceManager({ initial }: { initial: PricesSnapshot }) {
                     })}
                     error={err(`packages.${id}.extraHour`)}
                   />
+                  <Field
+                    id={`p-${id}-max`}
+                    label="Most hours"
+                    suffix="hrs"
+                    value={form.packages[id].maxHours}
+                    onChange={(v) => edit((f) => {
+                      f.packages[id].maxHours = v;
+                    })}
+                    error={err(`packages.${id}.maxHours`)}
+                  />
                 </div>
                 {num(form.packages[id].extraHour) === 0 ? (
                   <p className="mt-2 text-sm text-ink-soft">Extra hour $0 means families can&apos;t add hours to this package.</p>
@@ -435,7 +466,7 @@ export function PriceManager({ initial }: { initial: PricesSnapshot }) {
               id="max-hours"
               label="Longest day we cover"
               suffix="hours"
-              hint="Families can add hours up to this."
+              hint="No package can go past this, whatever its own most hours says."
               value={form.maxHours}
               onChange={(v) => edit((f) => {
                       f.maxHours = v;
@@ -527,6 +558,33 @@ export function PriceManager({ initial }: { initial: PricesSnapshot }) {
                       f.holdDays = v;
                     })}
               error={err("holdDays")}
+            />
+          </div>
+        </Section>
+
+        <Section title="Holding a date and Saturdays" dek="The flat deposit on a quince plan's “Hold my date” button, and how close to the date Just the Moments can take a Saturday.">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field
+              id="plan-hold"
+              label="“Hold my date” deposit"
+              prefix="$"
+              hint={`Between ${usd(L.planHold.min)} and ${usd(L.planHold.max)}. Goes toward their package total.`}
+              value={form.planHoldUsd}
+              onChange={(v) => edit((f) => {
+                      f.planHoldUsd = v;
+                    })}
+              error={err("planHoldUsd")}
+            />
+            <Field
+              id="sat-days"
+              label="Just the Moments on a Saturday"
+              suffix="days before"
+              hint="Saturdays open this many days before the date. 0 = never on a Saturday."
+              value={form.momentsSaturdayDays}
+              onChange={(v) => edit((f) => {
+                      f.momentsSaturdayDays = v;
+                    })}
+              error={err("momentsSaturdayDays")}
             />
           </div>
         </Section>

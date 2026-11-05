@@ -9,7 +9,7 @@ import { getFirstTouch, trackEvent } from "@/components/Tracker";
 import { HONEYPOT_FIELD } from "@/lib/inquiry";
 import { BUDGET_FOR_TIER, servicesForTier } from "@/lib/inquiry-package";
 import { coverageForBudget, smallestCoverage, EVENT_TIERS, type CoverageOption, type EventTier } from "@/lib/budget-options";
-import { MOMENTS_SATURDAY_WINDOW_DAYS, momentsDateAllowed, usd, type AddOnId } from "@/lib/commission";
+import { hourSteps, momentsDateAllowed, usd, type AddOnId } from "@/lib/commission";
 import { todayInDallas } from "@/lib/plan";
 import { BUDGET_COPY } from "./budget-copy";
 import { detailsFor, goodToKnow } from "./budget-details";
@@ -73,7 +73,7 @@ export function BudgetPlanner() {
   const hoursForOffer = Math.min(Math.max(offerHours, book.packages[offerTier].hours), maxHours(offerTier));
   const ourPrice = quote(offerTier, offerAddOns, hoursForOffer).totalUsd;
   const today = todayInDallas();
-  const satBlocked = Boolean(date) && !momentsDateAllowed(offerTier, date, today);
+  const satBlocked = Boolean(date) && !momentsDateAllowed(book, offerTier, date, today);
 
   const pickOfferTier = (t: EventTier) => {
     setOfferTier(t);
@@ -98,7 +98,7 @@ export function BudgetPlanner() {
     const e: typeof errors = {};
     if (!amount || amount < 50) e.amount = c.errors.amount;
     if (!date || date <= today) e.date = c.errors.date;
-    else if (satBlocked) e.date = c.errors.saturday(MOMENTS_SATURDAY_WINDOW_DAYS);
+    else if (satBlocked) e.date = c.errors.saturday(book.momentsSaturdayDays);
     if (name.trim().length < 2) e.name = c.errors.name;
     if (!EMAIL.test(email.trim())) e.email = c.errors.email;
     if (!Object.keys(e).length && SHOW_TURNSTILE && !token) e.form = c.errors.verify;
@@ -222,7 +222,7 @@ export function BudgetPlanner() {
                     {label(o)} · {o.video ? c.includesVideo : c.photosOnly}
                   </p>
                   <WhatYouGet option={o} />
-                  {o.tier === "moments" ? <p className="bp-hint bp-hint--note">{c.satNote(MOMENTS_SATURDAY_WINDOW_DAYS)}</p> : null}
+                  {o.tier === "moments" ? <p className="bp-hint bp-hint--note">{c.satNote(book.momentsSaturdayDays)}</p> : null}
                   <button type="button" className="bp-btn" onClick={() => choose(o)} aria-label={c.chooseAria(t.name[lang])}>
                     {c.choose} <span aria-hidden>→</span>
                   </button>
@@ -302,7 +302,7 @@ export function BudgetPlanner() {
             <div className="bp-row">
               <label className="bp-label" htmlFor={`${uid}-hrs`}>{c.offerHours}</label>
               <select id={`${uid}-hrs`} className="bp-input" value={hoursForOffer} onChange={(e) => setOfferHours(Number(e.target.value))}>
-                {Array.from({ length: maxHours(offerTier) - book.packages[offerTier].hours + 1 }, (_, i) => book.packages[offerTier].hours + i).map((h) => (
+                {hourSteps(book, offerTier).map((h) => (
                   <option key={h} value={h}>{c.hours(h)}</option>
                 ))}
               </select>
@@ -317,7 +317,7 @@ export function BudgetPlanner() {
 
             <label className="bp-label" htmlFor={`${uid}-date`}>{c.date}</label>
             <input id={`${uid}-date`} type="date" className="bp-input" min={today} value={date} onChange={(e) => setDate(e.target.value)} aria-invalid={Boolean(errors.date)} />
-            {errors.date ? <p className="bp-err">{errors.date}</p> : satBlocked ? <p className="bp-err">{c.errors.saturday(MOMENTS_SATURDAY_WINDOW_DAYS)}</p> : null}
+            {errors.date ? <p className="bp-err">{errors.date}</p> : satBlocked ? <p className="bp-err">{c.errors.saturday(book.momentsSaturdayDays)}</p> : null}
 
             <label className="bp-label" htmlFor={`${uid}-name`}>{c.name}</label>
             <input id={`${uid}-name`} className="bp-input" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} aria-invalid={Boolean(errors.name)} />

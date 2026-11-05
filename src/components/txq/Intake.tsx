@@ -19,7 +19,7 @@ import { motion } from "motion/react";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { getFirstTouch } from "@/components/Tracker";
 import { ContactLine } from "@/components/ContactButtons";
-import { BASE_CREW, COORDINATOR_INCLUDED, PUBLIC_TIER_IDS, MOMENTS_SATURDAY_WINDOW_DAYS, momentsDateAllowed } from "@/lib/commission";
+import { BASE_CREW, COORDINATOR_INCLUDED, PUBLIC_TIER_IDS, momentsDateAllowed } from "@/lib/commission";
 import { HONEYPOT_FIELD } from "@/lib/inquiry";
 import { BUDGET_FOR_TIER, servicesForTier } from "@/lib/inquiry-package";
 import { usePriceBook } from "@/components/PriceBookProvider";
@@ -74,6 +74,7 @@ const isTextField = (el: EventTarget | null) =>
 export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) {
   const { t, lang, tier, addOns, crew, hours, booking: b, updateBooking, resetBooking, draftRestored, pickPackage, pickTick } =
     useSite();
+  const { book } = usePriceBook();
   const avail = useAvailability();
   const quote = useQuote();
   const step = b.step;
@@ -108,7 +109,7 @@ export const Intake = forwardRef<HTMLDivElement | null>(function Intake(_, ref) 
     const e: Errors = {};
     if (s === 2) {
       if (!b.date) e.date = t.booking.errors.date;
-      else if (!momentsDateAllowed(tier, b.date, isoDate(new Date()))) e.date = t.booking.errors.momentsSaturday(MOMENTS_SATURDAY_WINDOW_DAYS);
+      else if (!momentsDateAllowed(book, tier, b.date, isoDate(new Date()))) e.date = t.booking.errors.momentsSaturday(book.momentsSaturdayDays);
       if (!b.city) e.city = t.booking.errors.city;
     }
     if (s === 3) {
@@ -920,6 +921,7 @@ function Calendar({
   error?: string;
 }) {
   const { t, lang, tier } = useSite();
+  const { book } = usePriceBook();
   const { taken } = useAvailability();
   const today = useMemo(() => {
     const d = new Date();
@@ -1002,7 +1004,7 @@ function Calendar({
             const past = d <= today;
             const isTaken = taken.has(iso);
             // Just the Moments: Saturdays open only close to the date (server-enforced too).
-            const satClosed = !past && !momentsDateAllowed(tier, iso, isoDate(today));
+            const satClosed = !past && !momentsDateAllowed(book, tier, iso, isoDate(today));
             return (
               <button
                 key={iso}
@@ -1021,7 +1023,7 @@ function Calendar({
             );
           })}
         </div>
-        {tier === "moments" ? <p className="tq-bk-hint tq-cal__note">{t.booking.momentsSatNote(MOMENTS_SATURDAY_WINDOW_DAYS)}</p> : null}
+        {tier === "moments" ? <p className="tq-bk-hint tq-cal__note">{t.booking.momentsSatNote(book.momentsSaturdayDays)}</p> : null}
         <div className="tq-cal__legend" aria-hidden>
           <span>
             <i className="tq-cal__key" /> {t.booking.legendOpen}

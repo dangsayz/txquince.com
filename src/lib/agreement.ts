@@ -23,6 +23,7 @@ import { addOnAllowed,
   type TierId,
 } from "@/lib/commission";
 import { tierById, ADD_ONS, matrixFor, type Lang } from "@/components/txq/data";
+import { fillDeep } from "@/lib/price-text";
 
 /** Bump when the wording below changes; stored with every signature. */
 export const AGREEMENT_VERSION = "2026-10-31.2";
@@ -103,7 +104,7 @@ const T = {
       "If you cancel, your deposit is not refundable, because we save your date and turn other families away.",
       "If we ever have to cancel, we refund everything you've paid.",
     ],
-    teamSolo: "Your team: 1 hybrid shooter taking photos and video at the same time, with a 2–3 camera setup",
+    teamSolo: "Your team: 1 hybrid shooter taking photos and video at the same time, with a {{cameras.solo}} camera setup",
     crew: "Who covers your day",
     crewLines: [
       "Your day is covered by TX Quince team photographers and videographers, assigned by the studio. Requests for specific team members, including the owners, are not accepted.",
@@ -159,7 +160,7 @@ const T = {
       "Si cancelas, el depósito no es reembolsable, porque apartamos tu fecha y rechazamos a otras familias.",
       "Si nosotros tuviéramos que cancelar, te devolvemos todo lo que hayas pagado.",
     ],
-    teamSolo: "Tu equipo: 1 fotógrafo y videógrafo en uno, que toma fotos y graba al mismo tiempo con 2–3 cámaras",
+    teamSolo: "Tu equipo: 1 fotógrafo y videógrafo en uno, que toma fotos y graba al mismo tiempo con {{cameras.solo}} cámaras",
     crew: "Quién cubre tu día",
     crewLines: [
       "Tu día lo cubren fotógrafos y videógrafos del equipo de TX Quince, asignados por el estudio. No se aceptan peticiones de miembros específicos del equipo, incluidos los dueños.",
@@ -187,7 +188,8 @@ function longDate(iso: string, lang: Lang) {
 }
 
 export function buildAgreement(input: AgreementInput, book: PriceBook): Agreement {
-  const t = T[input.lang];
+  // Wording carries live tokens (the Solo's camera count): fill from the same book.
+  const t = fillDeep(T[input.lang], book);
   const q = quoteCommission(book, input.tier, input.addOns, input.hours);
   const crew = normalizeCrew(input.tier, input.crew);
   // tierById also finds retired packages, so an older booking still gets its agreement.

@@ -31,7 +31,7 @@ describe("what a budget covers", () => {
   });
 
   it("reads every number from the price book it's given", () => {
-    const book = { ...B, packages: { ...B.packages, moments: { price: 600, hours: 2, extraHour: 300 } } };
+    const book = { ...B, packages: { ...B.packages, moments: { price: 600, hours: 2, extraHour: 300, maxHours: 4 } } };
     expect(coverageForBudget(book, 600, false).fits[0]).toMatchObject({ tier: "moments", totalUsd: 600 });
   });
 });

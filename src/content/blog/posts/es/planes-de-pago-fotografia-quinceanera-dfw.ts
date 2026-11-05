@@ -93,7 +93,7 @@ const post: BlogPost = {
       type: "ul",
       items: [
         `Firme primero el contrato. Le apartamos la fecha ${hold} días mientras lo revisamos, y no se cobra nada hasta que esté aprobado. ¿Quiere platicarlo? Pida una llamada rápida sobre el horario y qué paquete le conviene.`,
-        `Empiece con la Sesión de retratos. Por ${PT.price.study}, es nuestro paquete de solo foto: una sesión de ${PT.hours.study} hora con un fotógrafo y 60 fotos editadas, con un depósito de ${PT.deposit.study}.`,
+        `Empiece con la Sesión de retratos. Por ${PT.price.study}, es nuestro paquete de solo foto: una sesión de ${PT.hours.study} hora con un fotógrafo y {{photos.study}} fotos editadas, con un depósito de ${PT.deposit.study}.`,
       ],
     },
     {

@@ -45,7 +45,7 @@ const post: BlogPost = {
       items: [
         "Coverage hours — a quince day runs long: getting ready, la misa, portraits, and the reception. Full-day coverage is the difference between a highlight and the whole story.",
         `One artist vs. a team — one photographer and one videographer on the Duo (${BASE_CREW.cinema} in all), two photographers and one videographer on the Trio (${BASE_CREW.trio}) — means the church and the reception entrance are both covered at once, with reverse angles you can't fake with one camera. A coordinator who runs the day can be added for ${PT.addon.coordinator} a day.`,
-        "Photo vs. photo + video — video is a separate craft and a separate edit. Our Solo gets you both from one shooter running a 2–3 camera setup, so a camera is on the action wherever it happens; the Duo and the Trio put a dedicated photographer and videographer on the day.",
+        "Photo vs. photo + video — video is a separate craft and a separate edit. Our Solo gets you both from one shooter running a {{cameras.solo}} camera setup, so a camera is on the action wherever it happens; the Duo and the Trio put a dedicated photographer and videographer on the day.",
         "Delivery — a private online gallery, and on the video packages the full-length film of her whole day plus a highlight (1 minute on the Duo, 3–5 minutes on the Trio, an add-on with the Solo). The Trio adds a printed album.",
       ],
     },

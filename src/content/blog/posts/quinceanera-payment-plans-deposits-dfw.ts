@@ -93,7 +93,7 @@ const post: BlogPost = {
       type: "ul",
       items: [
         `Sign the agreement first. We hold your date for ${hold} days while we review it, and nothing is charged until it's approved. Want to talk it through? Ask for a quick call about the timeline and which package fits.`,
-        `Start with the Portrait Session. At ${PT.price.study}, it's our photo-only package — a ${PT.hours.study}-hour session with one photographer and 60 edited photos — with a ${PT.deposit.study} deposit.`,
+        `Start with the Portrait Session. At ${PT.price.study}, it's our photo-only package — a ${PT.hours.study}-hour session with one photographer and {{photos.study}} edited photos — with a ${PT.deposit.study} deposit.`,
       ],
     },
     {

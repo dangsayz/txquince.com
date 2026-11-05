@@ -84,7 +84,8 @@ export const site = {
    * amount here and every surface (form, emails, success page) updates.
    */
   booking: {
-    depositCents: 50_000, // $500 — flat deposit to reserve any date
+    // Legacy: the live "Hold my date" deposit is planHoldUsd in the price book (/admin/prices).
+    depositCents: 50_000,
     depositLabel: "$500",
     currency: "usd",
     holdMinutes: 30, // how long the date is held during Stripe checkout

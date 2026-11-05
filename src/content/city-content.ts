@@ -47,12 +47,12 @@ export const cityContent: Record<string, CityContent> = {
     "intro": [
       "Grand Prairie is split right down the Dallas–Tarrant county line, and it carries one of the most Mexican neighborhoods in the metroplex along with it. Close to half the city is Hispanic, and the roots run deeper than most people realize — Dalworth, on the northeast side, was its own incorporated town before Grand Prairie annexed it back in 1942, and it has stayed a tight Mexican-American community ever since. You feel that every Cinco de Mayo out at Traders Village, and you feel it in how families here still do a quinceañera the full way: the Mass, the court, the vals, all of it.",
       "A Grand Prairie quince day usually opens with a morning misa at a parish on the north or central side of town, moves into portraits, and lands at a reception hall for the night. Plenty of families shoot pictures out at Joe Pool Lake or in front of the Uptown Theater's old marquee on Main Street, then head to a banquet hall along Pioneer Parkway or out toward the Highway 161 corridor near EpicCentral. Tell me your church and your salón and I'll build the timeline so nothing gets rushed and nobody's chasing the light at the end of the day.",
-      `Your daughter's celebration is covered start to finish by a TX Quince team, and every gallery and film is edited by us, the owners. Everything runs in English and Spanish, so your tías and your padrinos always know what comes next. Packages run from ${STUDY} for the Portrait Session to ${TRIO} for the Trio, and the Trio is the one we recommend for most celebrations: ${HRS_TRIO} hours of photo and video with a team of ${CREW_TRIO} — two photographers and a videographer — a dress or save-the-date session after the deposit, the full-length film of her whole day with a 3–5 minute highlight film, and 700+ edited photos with a printed album. There's no travel fee anywhere in DFW, Grand Prairie included.`
+      `Your daughter's celebration is covered start to finish by a TX Quince team, and every gallery and film is edited by us, the owners. Everything runs in English and Spanish, so your tías and your padrinos always know what comes next. Packages run from ${STUDY} for the Portrait Session to ${TRIO} for the Trio, and the Trio is the one we recommend for most celebrations: ${HRS_TRIO} hours of photo and video with a team of ${CREW_TRIO} — two photographers and a videographer — a dress or save-the-date session after the deposit, the full-length film of her whole day with a 3–5 minute highlight film, and {{photos.trio}} edited photos with a printed album. There's no travel fee anywhere in DFW, Grand Prairie included.`
     ],
     "introEs": [
       "Grand Prairie está partido justo por la línea de los condados de Dallas y Tarrant, y trae consigo uno de los barrios más mexicanos del metroplex. Casi la mitad de la ciudad es hispana, y la raíz viene de más atrás de lo que muchos creen: Dalworth, por el lado noreste, fue su propio pueblo antes de que Grand Prairie lo anexara en 1942, y desde entonces sigue siendo una comunidad mexicana bien unida. Eso se siente cada Cinco de Mayo en Traders Village, y se siente en cómo las familias de aquí todavía hacen la quinceañera completa: la misa, la corte, el vals, todo.",
       "Un día de quince en Grand Prairie casi siempre empieza con una misa de mañana en una parroquia del norte o del centro de la ciudad, sigue con las fotos y termina en un salón por la noche. Muchas familias toman fotos en Joe Pool Lake o frente a la marquesina vieja del Uptown Theater en Main Street, y luego se van a un salón por Pioneer Parkway o rumbo al corredor de la Highway 161 cerca de EpicCentral. Díme tu iglesia y tu salón y armo el itinerario para que nada se haga a las prisas y nadie ande corriendo por la luz al final del día.",
-      `Un equipo de TX Quince cubre la celebración de tu hija de principio a fin, y nosotros, los dueños, editamos cada galería y cada video. Todo lo manejamos en inglés y español, para que tus tías y tus padrinos siempre sepan qué sigue. Los paquetes van de ${STUDY} con la Sesión de retratos a ${TRIO} con el Trío, que es el que recomendamos para la mayoría de las celebraciones: ${HRS_TRIO} horas de foto y video con un equipo de ${CREW_TRIO} —dos fotógrafos y un videógrafo—, una sesión con el vestido o de save the date después del depósito, el video completo de todo su día con un resumen de 3 a 5 minutos y más de 700 fotos editadas con un álbum impreso. No hay cargo por traslado en ningún lugar de DFW, Grand Prairie incluido.`
+      `Un equipo de TX Quince cubre la celebración de tu hija de principio a fin, y nosotros, los dueños, editamos cada galería y cada video. Todo lo manejamos en inglés y español, para que tus tías y tus padrinos siempre sepan qué sigue. Los paquetes van de ${STUDY} con la Sesión de retratos a ${TRIO} con el Trío, que es el que recomendamos para la mayoría de las celebraciones: ${HRS_TRIO} horas de foto y video con un equipo de ${CREW_TRIO} —dos fotógrafos y un videógrafo—, una sesión con el vestido o de save the date después del depósito, el video completo de todo su día con un resumen de 3 a 5 minutos y {{photos.trio}} fotos editadas con un álbum impreso. No hay cargo por traslado en ningún lugar de DFW, Grand Prairie incluido.`
     ],
     "photoSpots": [
       {
@@ -84,7 +84,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqs": [
       {
         "q": "How much does a quinceañera photographer cost in Grand Prairie?",
-        "a": `Packages start at ${STUDY} for the Portrait Session (photos only, a ${HRS_STUDY}-hour session with one photographer), then ${SOLO} for the Solo (photos and video from one shooter with a 2–3 camera setup), ${CINEMA} for the Duo and ${TRIO} for the Trio — the one I recommend for most Grand Prairie celebrations. Once your signed agreement is approved, a ${RETAINER_PCT} deposit locks in your date and goes toward your total, and there's no travel fee anywhere in DFW. Compare all four on our Packages & Prices page.`
+        "a": `Packages start at ${STUDY} for the Portrait Session (photos only, a ${HRS_STUDY}-hour session with one photographer), then ${SOLO} for the Solo (photos and video from one shooter with a {{cameras.solo}} camera setup), ${CINEMA} for the Duo and ${TRIO} for the Trio — the one I recommend for most Grand Prairie celebrations. Once your signed agreement is approved, a ${RETAINER_PCT} deposit locks in your date and goes toward your total, and there's no travel fee anywhere in DFW. Compare all four on our Packages & Prices page.`
       },
       {
         "q": "Where are the best places to take quince pictures in Grand Prairie?",
@@ -96,7 +96,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer both photo and video for quinceañeras in Grand Prairie?",
-        "a": `Yes. The Solo (${SOLO}) is the budget-friendly way to get both: one shooter with a 2–3 camera setup takes the photos and films at the same time, for the full-length film of her day and 150+ edited photos. The Duo and the Trio put a dedicated team on the day: one photographer and one videographer with the Duo, or two photographers and a videographer with the Trio. Each one delivers the full-length film of her whole day in 4K — la misa, every presentation and toast in full and 15–20 minutes of the dance floor — with a 1-minute highlight in the Duo, and a 3–5 minute highlight film and four short vertical videos for social media in the Trio. Whichever you choose, every gallery and film is edited by us, the owners.`
+        "a": `Yes. The Solo (${SOLO}) is the budget-friendly way to get both: one shooter with a {{cameras.solo}} camera setup takes the photos and films at the same time, for the full-length film of her day and {{photos.solo}} edited photos. The Duo and the Trio put a dedicated team on the day: one photographer and one videographer with the Duo, or two photographers and a videographer with the Trio. Each one delivers the full-length film of her whole day in 4K — la misa, every presentation and toast in full and 15–20 minutes of the dance floor — with a 1-minute highlight in the Duo, and a 3–5 minute highlight film and four short vertical videos for social media in the Trio. Whichever you choose, every gallery and film is edited by us, the owners.`
       },
       {
         "q": "What areas near Grand Prairie do you serve?",
@@ -106,7 +106,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqsEs": [
       {
         "q": "¿Cuánto cuesta un fotógrafo de quinceañeras en Grand Prairie?",
-        "a": `Los paquetes empiezan en ${STUDY} con la Sesión de retratos (solo fotos, una sesión de ${HRS_STUDY} h con un fotógrafo); siguen ${SOLO} con el Solo (foto y video con una sola persona y 2–3 cámaras), ${CINEMA} con el Dúo y ${TRIO} con el Trío, el que recomiendo para la mayoría de las celebraciones en Grand Prairie. Ya aprobado tu contrato firmado, un depósito del ${RETAINER_PCT} asegura tu fecha y se abona a tu total, y no hay cargo por traslado en ningún lugar de DFW. Compara los cuatro en nuestra página de Paquetes y precios.`
+        "a": `Los paquetes empiezan en ${STUDY} con la Sesión de retratos (solo fotos, una sesión de ${HRS_STUDY} h con un fotógrafo); siguen ${SOLO} con el Solo (foto y video con una sola persona y {{cameras.solo}} cámaras), ${CINEMA} con el Dúo y ${TRIO} con el Trío, el que recomiendo para la mayoría de las celebraciones en Grand Prairie. Ya aprobado tu contrato firmado, un depósito del ${RETAINER_PCT} asegura tu fecha y se abona a tu total, y no hay cargo por traslado en ningún lugar de DFW. Compara los cuatro en nuestra página de Paquetes y precios.`
       },
       {
         "q": "¿Cuáles son los mejores lugares para tomar fotos de quince en Grand Prairie?",
@@ -118,7 +118,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video para quinceañeras en Grand Prairie?",
-        "a": `Sí. El Solo (${SOLO}) es la forma más económica de tener las dos cosas: una sola persona con 2–3 cámaras toma las fotos y graba al mismo tiempo, para el video completo de su día y más de 150 fotos editadas. El Dúo y el Trío ponen un equipo dedicado ese día: un fotógrafo y un videógrafo con el Dúo, o dos fotógrafos y un videógrafo con el Trío. Los dos entregan el video completo en 4K de todo su día —la misa, cada presentación y cada brindis completos, y de 15 a 20 minutos de la pista de baile—, con un resumen de 1 minuto en el Dúo, y un resumen de 3 a 5 minutos y cuatro videos verticales cortos para redes sociales en el Trío. Elijas el que elijas, nosotros, los dueños, editamos cada galería y cada video.`
+        "a": `Sí. El Solo (${SOLO}) es la forma más económica de tener las dos cosas: una sola persona con {{cameras.solo}} cámaras toma las fotos y graba al mismo tiempo, para el video completo de su día y {{photos.solo}} fotos editadas. El Dúo y el Trío ponen un equipo dedicado ese día: un fotógrafo y un videógrafo con el Dúo, o dos fotógrafos y un videógrafo con el Trío. Los dos entregan el video completo en 4K de todo su día —la misa, cada presentación y cada brindis completos, y de 15 a 20 minutos de la pista de baile—, con un resumen de 1 minuto en el Dúo, y un resumen de 3 a 5 minutos y cuatro videos verticales cortos para redes sociales en el Trío. Elijas el que elijas, nosotros, los dueños, editamos cada galería y cada video.`
       },
       {
         "q": "¿Qué áreas cerca de Grand Prairie cubres?",
@@ -172,7 +172,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqs": [
       {
         "q": "How much does a quinceañera photographer cost in Irving?",
-        "a": `My packages run from ${STUDY} (Portrait Session) to ${TRIO} (the Trio). The Trio is the one I recommend for most celebrations — ${HRS_TRIO} hours with two photographers and a videographer, a dress or save-the-date session after the deposit (the Mandalay Canal is a natural pick), the full-length film of her whole day with a 3–5 minute highlight film, 700+ edited photos and a printed album. The Duo, at ${CINEMA}, covers ${HRS_CINEMA} hours with one photographer and one videographer, the same dress or save-the-date session, and the full-length film with a 1-minute highlight. The Solo, at ${SOLO}, is one shooter with a 2–3 camera setup taking photos and video at once for ${HRS_SOLO} hours: the full-length film of her day and 150+ edited photos. If you'd like someone to run the day, the Day-of Coordinator is ${COORDINATOR} a day. There's no travel fee anywhere in Irving or the rest of DFW; see every inclusion on our Packages & Prices page.`
+        "a": `My packages run from ${STUDY} (Portrait Session) to ${TRIO} (the Trio). The Trio is the one I recommend for most celebrations — ${HRS_TRIO} hours with two photographers and a videographer, a dress or save-the-date session after the deposit (the Mandalay Canal is a natural pick), the full-length film of her whole day with a 3–5 minute highlight film, {{photos.trio}} edited photos and a printed album. The Duo, at ${CINEMA}, covers ${HRS_CINEMA} hours with one photographer and one videographer, the same dress or save-the-date session, and the full-length film with a 1-minute highlight. The Solo, at ${SOLO}, is one shooter with a {{cameras.solo}} camera setup taking photos and video at once for ${HRS_SOLO} hours: the full-length film of her day and {{photos.solo}} edited photos. If you'd like someone to run the day, the Day-of Coordinator is ${COORDINATOR} a day. There's no travel fee anywhere in Irving or the rest of DFW; see every inclusion on our Packages & Prices page.`
       },
       {
         "q": "Where are the best places to take quince pictures in Irving?",
@@ -184,7 +184,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer photo and video for quinceañeras in Irving?",
-        "a": `Yes. The Duo (${CINEMA}) and the Trio (${TRIO}) both include photography and the full-length 4K film of her whole day, shot the same day by one team of ${CREW_CINEMA} or ${CREW_TRIO} people. If you'd like a short highlight video to share right away, the Same-Day Edit (ready in 24 hours) is ${SAMEDAY}. On a tighter budget, the Solo (${SOLO}) covers photos and the full-length film with one shooter and a 2–3 camera setup, plus 150+ edited photos.`
+        "a": `Yes. The Duo (${CINEMA}) and the Trio (${TRIO}) both include photography and the full-length 4K film of her whole day, shot the same day by one team of ${CREW_CINEMA} or ${CREW_TRIO} people. If you'd like a short highlight video to share right away, the Same-Day Edit (ready in 24 hours) is ${SAMEDAY}. On a tighter budget, the Solo (${SOLO}) covers photos and the full-length film with one shooter and a {{cameras.solo}} camera setup, plus {{photos.solo}} edited photos.`
       },
       {
         "q": "What areas near Irving do you cover?",
@@ -194,7 +194,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqsEs": [
       {
         "q": "¿Cuánto cuesta un fotógrafo de quinceañera en Irving?",
-        "a": `Mis paquetes van de ${STUDY} (Sesión de retratos) a ${TRIO} (el Trío). El Trío es el que recomiendo para la mayoría de las celebraciones: ${HRS_TRIO} horas con dos fotógrafos y un videógrafo, una sesión con el vestido o de save the date después del depósito (el Mandalay Canal es la opción natural), el video completo de todo su día con un resumen de 3 a 5 minutos, más de 700 fotos editadas y un álbum impreso. El Dúo, en ${CINEMA}, cubre ${HRS_CINEMA} horas con un fotógrafo y un videógrafo, la misma sesión con el vestido o de save the date y el video completo con un resumen de 1 minuto. El Solo, en ${SOLO}, es una sola persona con 2–3 cámaras que toma fotos y graba a la vez durante ${HRS_SOLO} horas: el video completo de su día y más de 150 fotos editadas. Si quieres a alguien que lleve el día, la Coordinadora del día cuesta ${COORDINATOR} por día. No hay cargo por traslado en Irving ni en el resto de DFW; mira todo lo que incluye cada uno en nuestra página de Paquetes y precios.`
+        "a": `Mis paquetes van de ${STUDY} (Sesión de retratos) a ${TRIO} (el Trío). El Trío es el que recomiendo para la mayoría de las celebraciones: ${HRS_TRIO} horas con dos fotógrafos y un videógrafo, una sesión con el vestido o de save the date después del depósito (el Mandalay Canal es la opción natural), el video completo de todo su día con un resumen de 3 a 5 minutos, {{photos.trio}} fotos editadas y un álbum impreso. El Dúo, en ${CINEMA}, cubre ${HRS_CINEMA} horas con un fotógrafo y un videógrafo, la misma sesión con el vestido o de save the date y el video completo con un resumen de 1 minuto. El Solo, en ${SOLO}, es una sola persona con {{cameras.solo}} cámaras que toma fotos y graba a la vez durante ${HRS_SOLO} horas: el video completo de su día y {{photos.solo}} fotos editadas. Si quieres a alguien que lleve el día, la Coordinadora del día cuesta ${COORDINATOR} por día. No hay cargo por traslado en Irving ni en el resto de DFW; mira todo lo que incluye cada uno en nuestra página de Paquetes y precios.`
       },
       {
         "q": "¿Cuáles son los mejores lugares para tomar fotos de quince en Irving?",
@@ -206,7 +206,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video para quinceañeras en Irving?",
-        "a": `Sí. El Dúo (${CINEMA}) y el Trío (${TRIO}) incluyen fotografía y el video completo en 4K de todo su día, grabados el mismo día por un solo equipo de ${CREW_CINEMA} o ${CREW_TRIO} personas. Si quieres un video corto para compartir enseguida, la Edición el mismo día (lista en 24 horas) cuesta ${SAMEDAY}. Con un presupuesto más ajustado, el Solo (${SOLO}) cubre las fotos y el video completo con una sola persona y 2–3 cámaras, más de 150 fotos editadas.`
+        "a": `Sí. El Dúo (${CINEMA}) y el Trío (${TRIO}) incluyen fotografía y el video completo en 4K de todo su día, grabados el mismo día por un solo equipo de ${CREW_CINEMA} o ${CREW_TRIO} personas. Si quieres un video corto para compartir enseguida, la Edición el mismo día (lista en 24 horas) cuesta ${SAMEDAY}. Con un presupuesto más ajustado, el Solo (${SOLO}) cubre las fotos y el video completo con una sola persona y {{cameras.solo}} cámaras, {{photos.solo}} fotos editadas.`
       },
       {
         "q": "¿Qué zonas cerca de Irving cubres?",
@@ -255,7 +255,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqs": [
       {
         "q": "How much does a quinceañera photographer cost in Garland?",
-        "a": `Packages run from ${STUDY} for the photo-only Portrait Session to ${TRIO} for the Trio, the one I recommend for most celebrations, with two photographers and a videographer for ${HRS_TRIO} hours. In between are the Solo at ${SOLO}, ${HRS_SOLO} hours with one shooter taking photos and video at once from a 2–3 camera setup, and the Duo at ${CINEMA} — ${HRS_CINEMA} hours with one photographer and one videographer. There's no travel fee anywhere in DFW, so your Garland day is priced exactly like one in Dallas — see our Packages & Prices page for what's in each.`
+        "a": `Packages run from ${STUDY} for the photo-only Portrait Session to ${TRIO} for the Trio, the one I recommend for most celebrations, with two photographers and a videographer for ${HRS_TRIO} hours. In between are the Solo at ${SOLO}, ${HRS_SOLO} hours with one shooter taking photos and video at once from a {{cameras.solo}} camera setup, and the Duo at ${CINEMA} — ${HRS_CINEMA} hours with one photographer and one videographer. There's no travel fee anywhere in DFW, so your Garland day is priced exactly like one in Dallas — see our Packages & Prices page for what's in each.`
       },
       {
         "q": "Where are the best places to take quince pictures in Garland?",
@@ -267,7 +267,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer photo and video in Garland?",
-        "a": `Yes. The Duo (${CINEMA}) pairs one photographer with one videographer for the full-length 4K film of her whole day, a 1-minute highlight and 400+ edited photos; the Trio (${TRIO}) adds a second photographer, a 3–5 minute highlight film, 700+ edited photos and a 40-page printed photo album. Both include a dress or save-the-date session (30–40 edited photos) after the deposit, and a Day-of Coordinator who runs the day can be added for ${COORDINATOR} a day. For a smaller budget, the Solo (${SOLO}) gets you photos and the full-length film from one shooter with a 2–3 camera setup, with 150+ edited photos. If you only want portraits, the Portrait Session (${STUDY}) is photo only.`
+        "a": `Yes. The Duo (${CINEMA}) pairs one photographer with one videographer for the full-length 4K film of her whole day, a 1-minute highlight and {{photos.cinema}} edited photos; the Trio (${TRIO}) adds a second photographer, a 3–5 minute highlight film, {{photos.trio}} edited photos and a 40-page printed photo album. Both include a dress or save-the-date session ({{session.photos}} edited photos) after the deposit, and a Day-of Coordinator who runs the day can be added for ${COORDINATOR} a day. For a smaller budget, the Solo (${SOLO}) gets you photos and the full-length film from one shooter with a {{cameras.solo}} camera setup, with {{photos.solo}} edited photos. If you only want portraits, the Portrait Session (${STUDY}) is photo only.`
       },
       {
         "q": "What areas around Garland do you cover?",
@@ -277,7 +277,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqsEs": [
       {
         "q": "¿Cuánto cuesta un fotógrafo de quinceañera en Garland?",
-        "a": `Los paquetes van de ${STUDY} con la Sesión de retratos, solo de foto, a ${TRIO} con el Trío, el que recomiendo para la mayoría de las celebraciones, con dos fotógrafos y un videógrafo durante ${HRS_TRIO} horas. En medio están el Solo, en ${SOLO}: ${HRS_SOLO} horas con una sola persona que toma fotos y graba a la vez con 2–3 cámaras; y el Dúo, en ${CINEMA}: ${HRS_CINEMA} horas con un fotógrafo y un videógrafo. No hay cargo por traslado en ningún lugar de DFW, así que tu día en Garland cuesta igual que uno en Dallas — mira nuestra página de Paquetes y precios para ver qué trae cada uno.`
+        "a": `Los paquetes van de ${STUDY} con la Sesión de retratos, solo de foto, a ${TRIO} con el Trío, el que recomiendo para la mayoría de las celebraciones, con dos fotógrafos y un videógrafo durante ${HRS_TRIO} horas. En medio están el Solo, en ${SOLO}: ${HRS_SOLO} horas con una sola persona que toma fotos y graba a la vez con {{cameras.solo}} cámaras; y el Dúo, en ${CINEMA}: ${HRS_CINEMA} horas con un fotógrafo y un videógrafo. No hay cargo por traslado en ningún lugar de DFW, así que tu día en Garland cuesta igual que uno en Dallas — mira nuestra página de Paquetes y precios para ver qué trae cada uno.`
       },
       {
         "q": "¿Cuáles son los mejores lugares para tomar fotos de quince en Garland?",
@@ -289,7 +289,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video en Garland?",
-        "a": `Sí. El Dúo (${CINEMA}) junta a un fotógrafo con un videógrafo para el video completo en 4K de todo su día, un resumen de 1 minuto y más de 400 fotos editadas; el Trío (${TRIO}) suma un segundo fotógrafo, un resumen de 3 a 5 minutos, más de 700 fotos editadas y un álbum de fotos impreso de 40 páginas. Los dos incluyen una sesión con el vestido o de save the date (30–40 fotos editadas) después del depósito, y puedes sumar una Coordinadora del día que lleve el día por ${COORDINATOR} por día. Con un presupuesto más chico, el Solo (${SOLO}) te da fotos y el video completo con una sola persona y 2–3 cámaras, con más de 150 fotos editadas. Si solo quieres retratos, la Sesión de retratos (${STUDY}) es solo de foto.`
+        "a": `Sí. El Dúo (${CINEMA}) junta a un fotógrafo con un videógrafo para el video completo en 4K de todo su día, un resumen de 1 minuto y {{photos.cinema}} fotos editadas; el Trío (${TRIO}) suma un segundo fotógrafo, un resumen de 3 a 5 minutos, {{photos.trio}} fotos editadas y un álbum de fotos impreso de 40 páginas. Los dos incluyen una sesión con el vestido o de save the date ({{session.photos}} fotos editadas) después del depósito, y puedes sumar una Coordinadora del día que lleve el día por ${COORDINATOR} por día. Con un presupuesto más chico, el Solo (${SOLO}) te da fotos y el video completo con una sola persona y {{cameras.solo}} cámaras, con {{photos.solo}} fotos editadas. Si solo quieres retratos, la Sesión de retratos (${STUDY}) es solo de foto.`
       },
       {
         "q": "¿Qué zonas alrededor de Garland cubres?",
@@ -355,7 +355,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer both photo and video for quinceañeras in Dallas?",
-        "a": `Yes. The Duo and the Trio pair photos with the full-length 4K film of her whole day — la misa, every presentation and toast in full and 15–20 minutes of the dance floor — plus a highlight: 1 minute with the Duo, 3–5 minutes with the Trio. The Solo (${SOLO}) is the budget-friendly way to get both: one shooter with a 2–3 camera setup, the full-length film of her day and 150+ edited photos. Everything is offered fully in English or Spanish.`
+        "a": `Yes. The Duo and the Trio pair photos with the full-length 4K film of her whole day — la misa, every presentation and toast in full and 15–20 minutes of the dance floor — plus a highlight: 1 minute with the Duo, 3–5 minutes with the Trio. The Solo (${SOLO}) is the budget-friendly way to get both: one shooter with a {{cameras.solo}} camera setup, the full-length film of her day and {{photos.solo}} edited photos. Everything is offered fully in English or Spanish.`
       },
       {
         "q": "Do you cover the suburbs around Dallas too?",
@@ -377,7 +377,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video para quinceañeras en Dallas?",
-        "a": `Sí. El Dúo y el Trío combinan las fotos con el video completo en 4K de todo su día —la misa, cada presentación y cada brindis completos, y de 15 a 20 minutos de la pista de baile— más un resumen: de 1 minuto con el Dúo, de 3 a 5 minutos con el Trío. El Solo (${SOLO}) es la forma más económica de tener los dos: una sola persona con 2–3 cámaras, el video completo de su día y más de 150 fotos editadas. Todo se ofrece por completo en inglés o español.`
+        "a": `Sí. El Dúo y el Trío combinan las fotos con el video completo en 4K de todo su día —la misa, cada presentación y cada brindis completos, y de 15 a 20 minutos de la pista de baile— más un resumen: de 1 minuto con el Dúo, de 3 a 5 minutos con el Trío. El Solo (${SOLO}) es la forma más económica de tener los dos: una sola persona con {{cameras.solo}} cámaras, el video completo de su día y {{photos.solo}} fotos editadas. Todo se ofrece por completo en inglés o español.`
       },
       {
         "q": "¿También cubres los suburbios alrededor de Dallas?",
@@ -443,7 +443,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer photo and video for Fort Worth quinceañeras?",
-        "a": `Yes. The Duo and the Trio come with a team of ${CREW_CINEMA} or ${CREW_TRIO} — one photographer and one videographer with the Duo, two photographers and a videographer with the Trio — so you get both, with a short highlight and short vertical videos for social media alongside the full-length film. The Solo (${SOLO}) gets you both on a smaller budget: one shooter with a 2–3 camera setup, the full-length film of her day and 150+ edited photos. If you only want portraits, the Portrait Session (${STUDY}) is photos only: a ${HRS_STUDY}-hour session with one photographer.`
+        "a": `Yes. The Duo and the Trio come with a team of ${CREW_CINEMA} or ${CREW_TRIO} — one photographer and one videographer with the Duo, two photographers and a videographer with the Trio — so you get both, with a short highlight and short vertical videos for social media alongside the full-length film. The Solo (${SOLO}) gets you both on a smaller budget: one shooter with a {{cameras.solo}} camera setup, the full-length film of her day and {{photos.solo}} edited photos. If you only want portraits, the Portrait Session (${STUDY}) is photos only: a ${HRS_STUDY}-hour session with one photographer.`
       },
       {
         "q": "What areas around Fort Worth do you cover?",
@@ -465,7 +465,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video para quinceañeras en Fort Worth?",
-        "a": `Sí. El Dúo y el Trío traen un equipo de ${CREW_CINEMA} o ${CREW_TRIO} personas —un fotógrafo y un videógrafo con el Dúo, dos fotógrafos y un videógrafo con el Trío— para que tengas los dos, con un resumen corto y videos verticales cortos para redes sociales junto con el video completo. El Solo (${SOLO}) te da las dos cosas con un presupuesto más chico: una sola persona con 2–3 cámaras, el video completo de su día y más de 150 fotos editadas. Si solo quieres retratos, la Sesión de retratos (${STUDY}) es solo de fotos: una sesión de ${HRS_STUDY} h con un fotógrafo.`
+        "a": `Sí. El Dúo y el Trío traen un equipo de ${CREW_CINEMA} o ${CREW_TRIO} personas —un fotógrafo y un videógrafo con el Dúo, dos fotógrafos y un videógrafo con el Trío— para que tengas los dos, con un resumen corto y videos verticales cortos para redes sociales junto con el video completo. El Solo (${SOLO}) te da las dos cosas con un presupuesto más chico: una sola persona con {{cameras.solo}} cámaras, el video completo de su día y {{photos.solo}} fotos editadas. Si solo quieres retratos, la Sesión de retratos (${STUDY}) es solo de fotos: una sesión de ${HRS_STUDY} h con un fotógrafo.`
       },
       {
         "q": "¿Qué zonas alrededor de Fort Worth cubres?",
@@ -519,7 +519,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqs": [
       {
         "q": "How much does a quinceañera photographer cost in Arlington?",
-        "a": `My packages run from ${STUDY} (Portrait Session) to ${TRIO} (the Trio), and the Trio is the one I recommend for most celebrations: two photographers and a videographer, a dress or save-the-date session after the deposit, the full-length film of her whole day with a 3–5 minute highlight film, 700+ edited photos and a 40-page printed photo album. The Solo is ${SOLO} and the Duo is ${CINEMA}. There's no travel fee anywhere in Arlington or the rest of DFW. You can see exactly what's in each one on our Packages & Prices page.`
+        "a": `My packages run from ${STUDY} (Portrait Session) to ${TRIO} (the Trio), and the Trio is the one I recommend for most celebrations: two photographers and a videographer, a dress or save-the-date session after the deposit, the full-length film of her whole day with a 3–5 minute highlight film, {{photos.trio}} edited photos and a 40-page printed photo album. The Solo is ${SOLO} and the Duo is ${CINEMA}. There's no travel fee anywhere in Arlington or the rest of DFW. You can see exactly what's in each one on our Packages & Prices page.`
       },
       {
         "q": "Where are the best places to take quince pictures in Arlington?",
@@ -531,7 +531,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer photo and video for a quinceañera in Arlington?",
-        "a": `Yes. The Duo (${CINEMA}) pairs photos with the full-length 4K film of her whole day and a 1-minute highlight, and the Trio (${TRIO}) adds a second photographer, a 3–5 minute highlight film and four short vertical videos for social media. And if you can't wait to share it, the Same-Day Edit (${SAMEDAY}) gives you a short highlight video within 24 hours. On a tighter budget, the Solo (${SOLO}) covers photos and the full-length film with one shooter and a 2–3 camera setup, plus 150+ edited photos.`
+        "a": `Yes. The Duo (${CINEMA}) pairs photos with the full-length 4K film of her whole day and a 1-minute highlight, and the Trio (${TRIO}) adds a second photographer, a 3–5 minute highlight film and four short vertical videos for social media. And if you can't wait to share it, the Same-Day Edit (${SAMEDAY}) gives you a short highlight video within 24 hours. On a tighter budget, the Solo (${SOLO}) covers photos and the full-length film with one shooter and a {{cameras.solo}} camera setup, plus {{photos.solo}} edited photos.`
       },
       {
         "q": "What areas around Arlington do you serve?",
@@ -541,7 +541,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqsEs": [
       {
         "q": "¿Cuánto cuesta un fotógrafo de quinceañera en Arlington?",
-        "a": `Mis paquetes van de ${STUDY} (Sesión de retratos) a ${TRIO} (el Trío), y el Trío es el que recomiendo para la mayoría de las celebraciones: dos fotógrafos y un videógrafo, una sesión con el vestido o de save the date después del depósito, el video completo de todo su día con un resumen de 3 a 5 minutos, más de 700 fotos editadas y un álbum de fotos impreso de 40 páginas. El Solo cuesta ${SOLO} y el Dúo, ${CINEMA}. No hay cargo por traslado en Arlington ni en el resto de DFW. Puedes ver todo lo que incluye cada uno en nuestra página de Paquetes y precios.`
+        "a": `Mis paquetes van de ${STUDY} (Sesión de retratos) a ${TRIO} (el Trío), y el Trío es el que recomiendo para la mayoría de las celebraciones: dos fotógrafos y un videógrafo, una sesión con el vestido o de save the date después del depósito, el video completo de todo su día con un resumen de 3 a 5 minutos, {{photos.trio}} fotos editadas y un álbum de fotos impreso de 40 páginas. El Solo cuesta ${SOLO} y el Dúo, ${CINEMA}. No hay cargo por traslado en Arlington ni en el resto de DFW. Puedes ver todo lo que incluye cada uno en nuestra página de Paquetes y precios.`
       },
       {
         "q": "¿Cuáles son los mejores lugares para tomar fotos de quince en Arlington?",
@@ -553,7 +553,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video para una quinceañera en Arlington?",
-        "a": `Sí. El Dúo (${CINEMA}) junta las fotos con el video completo en 4K de todo su día y un resumen de 1 minuto, y el Trío (${TRIO}) suma un segundo fotógrafo, un resumen de 3 a 5 minutos y cuatro videos verticales cortos para redes sociales. Y si no puedes esperar para compartirlo, la Edición el mismo día (${SAMEDAY}) te da un video corto de lo mejor en 24 horas. Con un presupuesto más ajustado, el Solo (${SOLO}) cubre las fotos y el video completo con una sola persona y 2–3 cámaras, más de 150 fotos editadas.`
+        "a": `Sí. El Dúo (${CINEMA}) junta las fotos con el video completo en 4K de todo su día y un resumen de 1 minuto, y el Trío (${TRIO}) suma un segundo fotógrafo, un resumen de 3 a 5 minutos y cuatro videos verticales cortos para redes sociales. Y si no puedes esperar para compartirlo, la Edición el mismo día (${SAMEDAY}) te da un video corto de lo mejor en 24 horas. Con un presupuesto más ajustado, el Solo (${SOLO}) cubre las fotos y el video completo con una sola persona y {{cameras.solo}} cámaras, {{photos.solo}} fotos editadas.`
       },
       {
         "q": "¿Qué zonas alrededor de Arlington cubres?",
@@ -619,7 +619,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer both photo and video for a Mansfield quinceañera?",
-        "a": `Yes. The Duo (${CINEMA}) and the Trio (${TRIO}) pair photos with the full-length 4K film of her whole day, and both include a dress or save-the-date session after the deposit; the Trio goes further — a team of ${CREW_TRIO}, ${HRS_TRIO} hours, a 3–5 minute highlight film and a printed photo album. For a separate day of portraits in her dress, the Second Portrait Day (${SECONDDAY}) adds photos and video at up to 2 locations. On a tighter budget, the Solo (${SOLO}) covers both with one shooter and a 2–3 camera setup: the full-length film of her day and 150+ edited photos. If you don't need video, the Portrait Session (${STUDY}) is photo only.`
+        "a": `Yes. The Duo (${CINEMA}) and the Trio (${TRIO}) pair photos with the full-length 4K film of her whole day, and both include a dress or save-the-date session after the deposit; the Trio goes further — a team of ${CREW_TRIO}, ${HRS_TRIO} hours, a 3–5 minute highlight film and a printed photo album. For a separate day of portraits in her dress, the Second Portrait Day (${SECONDDAY}) adds photos and video at up to 2 locations. On a tighter budget, the Solo (${SOLO}) covers both with one shooter and a {{cameras.solo}} camera setup: the full-length film of her day and {{photos.solo}} edited photos. If you don't need video, the Portrait Session (${STUDY}) is photo only.`
       },
       {
         "q": "Which areas near Mansfield do you cover?",
@@ -641,7 +641,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video para una quinceañera en Mansfield?",
-        "a": `Sí. El Dúo (${CINEMA}) y el Trío (${TRIO}) combinan las fotos con el video completo en 4K de todo su día, y los dos incluyen una sesión con el vestido o de save the date después del depósito; el Trío va más allá: un equipo de ${CREW_TRIO}, ${HRS_TRIO} horas, un resumen de 3 a 5 minutos y un álbum de fotos impreso. Para un día aparte de retratos con su vestido, el Segundo día de retratos (${SECONDDAY}) suma fotos y video en hasta 2 lugares. Con un presupuesto más ajustado, el Solo (${SOLO}) cubre las dos cosas con una sola persona y 2–3 cámaras: el video completo de su día y más de 150 fotos editadas. Si no necesitas video, la Sesión de retratos (${STUDY}) es solo de foto.`
+        "a": `Sí. El Dúo (${CINEMA}) y el Trío (${TRIO}) combinan las fotos con el video completo en 4K de todo su día, y los dos incluyen una sesión con el vestido o de save the date después del depósito; el Trío va más allá: un equipo de ${CREW_TRIO}, ${HRS_TRIO} horas, un resumen de 3 a 5 minutos y un álbum de fotos impreso. Para un día aparte de retratos con su vestido, el Segundo día de retratos (${SECONDDAY}) suma fotos y video en hasta 2 lugares. Con un presupuesto más ajustado, el Solo (${SOLO}) cubre las dos cosas con una sola persona y {{cameras.solo}} cámaras: el video completo de su día y {{photos.solo}} fotos editadas. Si no necesitas video, la Sesión de retratos (${STUDY}) es solo de foto.`
       },
       {
         "q": "¿Qué zonas cerca de Mansfield cubres?",
@@ -702,7 +702,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer both photo and video in Farmers Branch?",
-        "a": `Yes. The Duo (${CINEMA}) and the Trio (${TRIO}) both pair photos with video, so you get the photos and the full-length 4K film of her whole day: the misa, the vals, every toast and the reception. If your family wants the look of real old-style video, the Vintage Film Clip (Super 8) is ${SUPER8}. On a tighter budget, the Solo (${SOLO}) pairs photos and video too, with one shooter filming and taking photos at once from a 2–3 camera setup.`
+        "a": `Yes. The Duo (${CINEMA}) and the Trio (${TRIO}) both pair photos with video, so you get the photos and the full-length 4K film of her whole day: the misa, the vals, every toast and the reception. If your family wants the look of real old-style video, the Vintage Film Clip (Super 8) is ${SUPER8}. On a tighter budget, the Solo (${SOLO}) pairs photos and video too, with one shooter filming and taking photos at once from a {{cameras.solo}} camera setup.`
       },
       {
         "q": "What areas near Farmers Branch do you serve?",
@@ -724,7 +724,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video en Farmers Branch?",
-        "a": `Sí. El Dúo (${CINEMA}) y el Trío (${TRIO}) combinan fotos con video, así te llevas las fotos y el video completo en 4K de todo su día: la misa, el vals, cada brindis y la recepción. Si tu familia quiere el look de video antigua de verdad, el Clip de película vintage (Super 8) cuesta ${SUPER8}. Con un presupuesto más ajustado, el Solo (${SOLO}) también combina foto y video, con una sola persona que toma fotos y graba a la vez con 2–3 cámaras.`
+        "a": `Sí. El Dúo (${CINEMA}) y el Trío (${TRIO}) combinan fotos con video, así te llevas las fotos y el video completo en 4K de todo su día: la misa, el vals, cada brindis y la recepción. Si tu familia quiere el look de video antigua de verdad, el Clip de película vintage (Super 8) cuesta ${SUPER8}. Con un presupuesto más ajustado, el Solo (${SOLO}) también combina foto y video, con una sola persona que toma fotos y graba a la vez con {{cameras.solo}} cámaras.`
       },
       {
         "q": "¿Qué áreas cerca de Farmers Branch cubres?",
@@ -736,12 +736,12 @@ export const cityContent: Record<string, CityContent> = {
     "intro": [
       "Frisco has been one of the fastest-growing cities in the country for two decades, and a quinceañera here is often planned like a destination event: a hotel or resort ballroom, a full court, and relatives driving up from across Texas for the weekend. The city straddles the Collin–Denton county line, and the families who celebrate here keep the whole tradition intact — the misa, the court of honor, the vals with Papá, the baile sorpresa — just set against a newer, more polished backdrop than the older parts of the metroplex.",
       "That backdrop is the point. The Star in Frisco gives you glass, steel and open plazas around the Ford Center; Frisco Square has the civic lawns and tree-lined streets around City Hall; and a few blocks east, the Rail District along Main Street keeps the brick, the murals and the railroad history of the original town. For something green, Frisco Commons Park has water features, a pond and big open lawns a short walk from Frisco Square, so we can move from city to garden without losing the afternoon light.",
-      `A TX Quince team covers your day in English and Spanish, with no travel fee anywhere in DFW — Frisco included — and we, the owners, edit every gallery and film ourselves. For most Frisco families we recommend the Trio (${TRIO}): ${HRS_TRIO} hours with two photographers and a videographer, a dress or save-the-date session after the deposit, the full-length film of her whole day with a 3–5 minute highlight film, 700+ edited photos and a 40-page printed photo album. If you want a coordinator who runs the day, add the Day-of Coordinator (${COORDINATOR} a day). And if your family wants a separate day for portraits in her dress, the Second Portrait Day (${SECONDDAY}) adds one, with photos and video at up to 2 locations.`
+      `A TX Quince team covers your day in English and Spanish, with no travel fee anywhere in DFW — Frisco included — and we, the owners, edit every gallery and film ourselves. For most Frisco families we recommend the Trio (${TRIO}): ${HRS_TRIO} hours with two photographers and a videographer, a dress or save-the-date session after the deposit, the full-length film of her whole day with a 3–5 minute highlight film, {{photos.trio}} edited photos and a 40-page printed photo album. If you want a coordinator who runs the day, add the Day-of Coordinator (${COORDINATOR} a day). And if your family wants a separate day for portraits in her dress, the Second Portrait Day (${SECONDDAY}) adds one, with photos and video at up to 2 locations.`
     ],
     "introEs": [
       "Frisco lleva dos décadas entre las ciudades que más crecen en el país, y aquí una quinceañera muchas veces se planea como evento de destino: un salón de hotel o de resort, la corte completa y parientes que llegan de todo Texas para el fin de semana. La ciudad está partida entre los condados de Collin y Denton, y las familias que celebran aquí mantienen la tradición completa —la misa, la corte de honor, el vals con papá, el baile sorpresa—, solo que con un fondo más nuevo y pulido que el de las zonas más antiguas del metroplex.",
       "Ese fondo es justo lo especial. The Star in Frisco te da cristal, acero y plazas abiertas alrededor del Ford Center; Frisco Square tiene los jardines cívicos y las calles arboladas alrededor del City Hall; y unas cuadras al este, el Rail District sobre Main Street conserva el ladrillo, los murales y la historia ferroviaria del pueblo original. Si quieres verde, Frisco Commons Park tiene fuentes, un estanque y prados amplios a unos pasos de Frisco Square, así que pasamos de la ciudad al jardín sin perder la luz de la tarde.",
-      `Un equipo de TX Quince cubre tu día en inglés y español, sin cargo por traslado en ningún lugar de DFW, Frisco incluido, y nosotros, los dueños, editamos cada galería y cada video. Para la mayoría de las familias de Frisco recomendamos el Trío (${TRIO}): ${HRS_TRIO} horas con dos fotógrafos y un videógrafo, una sesión con el vestido o de save the date después del depósito, el video completo de todo su día con un resumen de 3 a 5 minutos, más de 700 fotos editadas y un álbum de fotos impreso de 40 páginas. Si quieres una coordinadora que lleve el día, suma la Coordinadora del día (${COORDINATOR} por día). Y si tu familia quiere un día aparte para retratos con su vestido, el Segundo día de retratos (${SECONDDAY}) lo suma, con fotos y video en hasta 2 lugares.`
+      `Un equipo de TX Quince cubre tu día en inglés y español, sin cargo por traslado en ningún lugar de DFW, Frisco incluido, y nosotros, los dueños, editamos cada galería y cada video. Para la mayoría de las familias de Frisco recomendamos el Trío (${TRIO}): ${HRS_TRIO} horas con dos fotógrafos y un videógrafo, una sesión con el vestido o de save the date después del depósito, el video completo de todo su día con un resumen de 3 a 5 minutos, {{photos.trio}} fotos editadas y un álbum de fotos impreso de 40 páginas. Si quieres una coordinadora que lleve el día, suma la Coordinadora del día (${COORDINATOR} por día). Y si tu familia quiere un día aparte para retratos con su vestido, el Segundo día de retratos (${SECONDDAY}) lo suma, con fotos y video en hasta 2 lugares.`
     ],
     "photoSpots": [
       {
@@ -785,7 +785,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer photo and video for quinceañeras in Frisco?",
-        "a": `Yes. The Duo (${CINEMA}) and the Trio (${TRIO}) both put photographers and videographers on the same day — a team of ${CREW_CINEMA} or ${CREW_TRIO}. For families who want to share right away, the Same-Day Edit (${SAMEDAY}) is a short highlight video ready within 24 hours. On a tighter budget, the Solo (${SOLO}) gets you photos and video from one shooter with a 2–3 camera setup.`
+        "a": `Yes. The Duo (${CINEMA}) and the Trio (${TRIO}) both put photographers and videographers on the same day — a team of ${CREW_CINEMA} or ${CREW_TRIO}. For families who want to share right away, the Same-Day Edit (${SAMEDAY}) is a short highlight video ready within 24 hours. On a tighter budget, the Solo (${SOLO}) gets you photos and video from one shooter with a {{cameras.solo}} camera setup.`
       },
       {
         "q": "What areas near Frisco do you serve?",
@@ -807,7 +807,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video para quinceañeras en Frisco?",
-        "a": `Sí. El Dúo (${CINEMA}) y el Trío (${TRIO}) juntan fotógrafos y videógrafos el mismo día: un equipo de ${CREW_CINEMA} o ${CREW_TRIO} personas. Para las familias que quieren compartir enseguida, la Edición el mismo día (${SAMEDAY}) es un video corto de lo mejor, listo en 24 horas. Con un presupuesto más ajustado, el Solo (${SOLO}) te da fotos y video con una sola persona y 2–3 cámaras.`
+        "a": `Sí. El Dúo (${CINEMA}) y el Trío (${TRIO}) juntan fotógrafos y videógrafos el mismo día: un equipo de ${CREW_CINEMA} o ${CREW_TRIO} personas. Para las familias que quieren compartir enseguida, la Edición el mismo día (${SAMEDAY}) es un video corto de lo mejor, listo en 24 horas. Con un presupuesto más ajustado, el Solo (${SOLO}) te da fotos y video con una sola persona y {{cameras.solo}} cámaras.`
       },
       {
         "q": "¿Qué zonas cerca de Frisco cubres?",
@@ -868,7 +868,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer both photo and video for quinceañeras in Plano?",
-        "a": `Yes. The Duo (${CINEMA}) pairs one photographer and one videographer for the full-length 4K film of her whole day and a 1-minute highlight; the Trio (${TRIO}) adds a second photographer, a 3–5 minute highlight film and four short vertical videos for social media. Both include a dress or save-the-date session — 30–40 edited photos of her in her dress before the big day — booked after the deposit. On a tighter budget, the Solo (${SOLO}) gets you photos and the full-length film from one shooter with a 2–3 camera setup.`
+        "a": `Yes. The Duo (${CINEMA}) pairs one photographer and one videographer for the full-length 4K film of her whole day and a 1-minute highlight; the Trio (${TRIO}) adds a second photographer, a 3–5 minute highlight film and four short vertical videos for social media. Both include a dress or save-the-date session — {{session.photos}} edited photos of her in her dress before the big day — booked after the deposit. On a tighter budget, the Solo (${SOLO}) gets you photos and the full-length film from one shooter with a {{cameras.solo}} camera setup.`
       },
       {
         "q": "What areas near Plano do you cover?",
@@ -890,7 +890,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video para quinceañeras en Plano?",
-        "a": `Sí. El Dúo (${CINEMA}) junta a un fotógrafo y un videógrafo para el video completo en 4K de todo su día y un resumen de 1 minuto; el Trío (${TRIO}) suma un segundo fotógrafo, un resumen de 3 a 5 minutos y cuatro videos verticales cortos para redes sociales. Los dos incluyen una sesión con el vestido o de save the date —30–40 fotos editadas de ella con su vestido antes del gran día—, que se agenda después del depósito. Con un presupuesto más ajustado, el Solo (${SOLO}) te da fotos y el video completo con una sola persona y 2–3 cámaras.`
+        "a": `Sí. El Dúo (${CINEMA}) junta a un fotógrafo y un videógrafo para el video completo en 4K de todo su día y un resumen de 1 minuto; el Trío (${TRIO}) suma un segundo fotógrafo, un resumen de 3 a 5 minutos y cuatro videos verticales cortos para redes sociales. Los dos incluyen una sesión con el vestido o de save the date —{{session.photos}} fotos editadas de ella con su vestido antes del gran día—, que se agenda después del depósito. Con un presupuesto más ajustado, el Solo (${SOLO}) te da fotos y el video completo con una sola persona y {{cameras.solo}} cámaras.`
       },
       {
         "q": "¿Qué zonas cerca de Plano cubres?",
@@ -902,12 +902,12 @@ export const cityContent: Record<string, CityContent> = {
     "intro": [
       "McKinney has something most of Collin County doesn't: a real historic downtown, built around the old Collin County courthouse on the square — now the McKinney Performing Arts Center — with more than a century of brick storefronts around it. It's the county seat, with some of its longest-rooted Hispanic families on the east side and newer ones arriving every year as the city grows north and west. A McKinney quinceañera tends to feel like a hometown celebration — the parish, the square, the reception — even as the city has grown up around it.",
       "The portrait options match that hometown-meets-new-growth character. Downtown, the square gives you brick, ironwork and old storefront signs; a few blocks south, Chestnut Square Historic Village has restored 1800s homes, gardens and shaded lawns. Out west near Stonebridge Ranch, Adriatica Village is a Croatian-inspired hillside of stone lanes, archways and a bell tower — the closest thing to a European backdrop in North Texas. For water and open sky, Towne Lake gives you a lakeside trail at sunset, and the Heard Natural Science Museum & Wildlife Sanctuary adds wetland boardwalks and native prairie.",
-      `A TX Quince team photographs your McKinney celebration, fully bilingual and with no travel fee anywhere in DFW, and the finished gallery and film come from us: the owners edit every one. For most McKinney celebrations we recommend the Trio (${TRIO}): ${HRS_TRIO} hours with two photographers and a videographer, a dress or save-the-date session after the deposit — Adriatica or Chestnut Square are natural picks — the full-length film of her whole day, 700+ edited photos and a 40-page printed photo album. Families who want a matching keepsake for both households can add Albums for Mom & Dad (${PARENTS} for the pair), and a Day-of Coordinator who runs the day is ${COORDINATOR} a day.`
+      `A TX Quince team photographs your McKinney celebration, fully bilingual and with no travel fee anywhere in DFW, and the finished gallery and film come from us: the owners edit every one. For most McKinney celebrations we recommend the Trio (${TRIO}): ${HRS_TRIO} hours with two photographers and a videographer, a dress or save-the-date session after the deposit — Adriatica or Chestnut Square are natural picks — the full-length film of her whole day, {{photos.trio}} edited photos and a 40-page printed photo album. Families who want a matching keepsake for both households can add Albums for Mom & Dad (${PARENTS} for the pair), and a Day-of Coordinator who runs the day is ${COORDINATOR} a day.`
     ],
     "introEs": [
       "McKinney tiene algo que casi nadie más tiene en el condado de Collin: un centro histórico de verdad, construido alrededor del antiguo juzgado del condado en la plaza —hoy el McKinney Performing Arts Center— con más de un siglo de fachadas de ladrillo a su alrededor. Es la cabecera del condado, con algunas de sus familias hispanas de raíces más hondas en el lado este y nuevas que llegan cada año mientras la ciudad crece hacia el norte y el oeste. Una quinceañera en McKinney suele sentirse como fiesta de pueblo —la parroquia, la plaza, la recepción—, aunque la ciudad haya crecido tanto a su alrededor.",
       "Las opciones para fotos van con ese carácter de pueblo que crece. En el centro, la plaza te da ladrillo, herrería y letreros antiguos; unas cuadras al sur, Chestnut Square Historic Village tiene casas restauradas del siglo XIX, jardines y prados con sombra. Hacia el oeste, cerca de Stonebridge Ranch, Adriatica Village es una colina inspirada en Croacia con callejones de piedra, arcos y un campanario: lo más parecido a un fondo europeo en el norte de Texas. Para agua y cielo abierto, Towne Lake te da un sendero junto al lago al atardecer, y el Heard Natural Science Museum & Wildlife Sanctuary suma puentes de madera sobre humedales y pradera nativa.",
-      `Un equipo de TX Quince fotografía tu celebración en McKinney, todo bilingüe y sin cargo por traslado en ningún lugar de DFW, y la galería y el video terminados salen de nuestras manos: los dueños editamos cada uno. Para la mayoría de las celebraciones en McKinney recomendamos el Trío (${TRIO}): ${HRS_TRIO} horas con dos fotógrafos y un videógrafo, una sesión con el vestido o de save the date después del depósito —Adriatica o Chestnut Square son opciones naturales—, el video completo de todo su día, más de 700 fotos editadas y un álbum de fotos impreso de 40 páginas. Las familias que quieren un recuerdo igual para cada hogar pueden sumar los Álbumes para mamá y papá (${PARENTS} el par), y una Coordinadora del día que lleve el día cuesta ${COORDINATOR} por día.`
+      `Un equipo de TX Quince fotografía tu celebración en McKinney, todo bilingüe y sin cargo por traslado en ningún lugar de DFW, y la galería y el video terminados salen de nuestras manos: los dueños editamos cada uno. Para la mayoría de las celebraciones en McKinney recomendamos el Trío (${TRIO}): ${HRS_TRIO} horas con dos fotógrafos y un videógrafo, una sesión con el vestido o de save the date después del depósito —Adriatica o Chestnut Square son opciones naturales—, el video completo de todo su día, {{photos.trio}} fotos editadas y un álbum de fotos impreso de 40 páginas. Las familias que quieren un recuerdo igual para cada hogar pueden sumar los Álbumes para mamá y papá (${PARENTS} el par), y una Coordinadora del día que lleve el día cuesta ${COORDINATOR} por día.`
     ],
     "photoSpots": [
       {
@@ -939,7 +939,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqs": [
       {
         "q": "How much does a quinceañera photographer cost in McKinney?",
-        "a": `Packages begin at ${STUDY} for the Portrait Session — photos only, a ${HRS_STUDY}-hour session with one photographer and 60 edited photos — and run through ${SOLO} for the Solo and ${CINEMA} for the Duo to ${TRIO} for the Trio, the one I recommend for most celebrations. Sign the agreement online and I'll hold your date for ${HOLD_DAYS} days while we review it; once it's approved, a ${RETAINER_PCT} deposit locks it in. Want to talk first? Ask for a quick call. There's no travel fee to McKinney.`
+        "a": `Packages begin at ${STUDY} for the Portrait Session — photos only, a ${HRS_STUDY}-hour session with one photographer and {{photos.study}} edited photos — and run through ${SOLO} for the Solo and ${CINEMA} for the Duo to ${TRIO} for the Trio, the one I recommend for most celebrations. Sign the agreement online and I'll hold your date for ${HOLD_DAYS} days while we review it; once it's approved, a ${RETAINER_PCT} deposit locks it in. Want to talk first? Ask for a quick call. There's no travel fee to McKinney.`
       },
       {
         "q": "Where are the best places to take quince pictures in McKinney?",
@@ -951,7 +951,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "Do you offer photo and video for a McKinney quinceañera?",
-        "a": `Yes. The Duo (${CINEMA}) delivers the full-length 4K film of her whole day, a 1-minute highlight and 400+ edited photos; the Trio (${TRIO}) adds a second photographer, a 3–5 minute highlight film, four short videos for social media, 700+ edited photos and the printed photo album. Both include a dress or save-the-date session (30–40 edited photos) after the deposit. A Vintage Film Clip (Super 8) can be added to either full-length film for ${SUPER8}. On a tighter budget, the Solo (${SOLO}) covers photos and the full-length film with one shooter and a 2–3 camera setup, plus 150+ edited photos.`
+        "a": `Yes. The Duo (${CINEMA}) delivers the full-length 4K film of her whole day, a 1-minute highlight and {{photos.cinema}} edited photos; the Trio (${TRIO}) adds a second photographer, a 3–5 minute highlight film, four short videos for social media, {{photos.trio}} edited photos and the printed photo album. Both include a dress or save-the-date session ({{session.photos}} edited photos) after the deposit. A Vintage Film Clip (Super 8) can be added to either full-length film for ${SUPER8}. On a tighter budget, the Solo (${SOLO}) covers photos and the full-length film with one shooter and a {{cameras.solo}} camera setup, plus {{photos.solo}} edited photos.`
       },
       {
         "q": "What areas near McKinney do you serve?",
@@ -961,7 +961,7 @@ export const cityContent: Record<string, CityContent> = {
     "faqsEs": [
       {
         "q": "¿Cuánto cuesta un fotógrafo de quinceañera en McKinney?",
-        "a": `Los paquetes empiezan en ${STUDY} con la Sesión de retratos —solo fotos, una sesión de ${HRS_STUDY} h con un fotógrafo y 60 fotos editadas—; siguen ${SOLO} con el Solo y ${CINEMA} con el Dúo, y llegan a ${TRIO} con el Trío, el que recomiendo para la mayoría de las celebraciones. Firma el contrato en línea y te aparto la fecha ${HOLD_DAYS} días mientras lo revisamos; ya aprobado, un depósito del ${RETAINER_PCT} la asegura. ¿Quieres platicar primero? Pide una llamada rápida. No hay cargo por traslado a McKinney.`
+        "a": `Los paquetes empiezan en ${STUDY} con la Sesión de retratos —solo fotos, una sesión de ${HRS_STUDY} h con un fotógrafo y {{photos.study}} fotos editadas—; siguen ${SOLO} con el Solo y ${CINEMA} con el Dúo, y llegan a ${TRIO} con el Trío, el que recomiendo para la mayoría de las celebraciones. Firma el contrato en línea y te aparto la fecha ${HOLD_DAYS} días mientras lo revisamos; ya aprobado, un depósito del ${RETAINER_PCT} la asegura. ¿Quieres platicar primero? Pide una llamada rápida. No hay cargo por traslado a McKinney.`
       },
       {
         "q": "¿Cuáles son los mejores lugares para tomar fotos de quince en McKinney?",
@@ -973,7 +973,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "q": "¿Ofreces foto y video para una quinceañera en McKinney?",
-        "a": `Sí. El Dúo (${CINEMA}) entrega el video completo en 4K de todo su día, un resumen de 1 minuto y más de 400 fotos editadas; el Trío (${TRIO}) suma un segundo fotógrafo, un resumen de 3 a 5 minutos, cuatro videos cortos para redes, más de 700 fotos editadas y el álbum de fotos impreso. Los dos incluyen una sesión con el vestido o de save the date (30–40 fotos editadas) después del depósito. Se puede sumar un Clip de película vintage (Super 8) a cualquiera de los dos videos completos por ${SUPER8}. Con un presupuesto más ajustado, el Solo (${SOLO}) cubre las fotos y el video completo con una sola persona y 2–3 cámaras, más de 150 fotos editadas.`
+        "a": `Sí. El Dúo (${CINEMA}) entrega el video completo en 4K de todo su día, un resumen de 1 minuto y {{photos.cinema}} fotos editadas; el Trío (${TRIO}) suma un segundo fotógrafo, un resumen de 3 a 5 minutos, cuatro videos cortos para redes, {{photos.trio}} fotos editadas y el álbum de fotos impreso. Los dos incluyen una sesión con el vestido o de save the date ({{session.photos}} fotos editadas) después del depósito. Se puede sumar un Clip de película vintage (Super 8) a cualquiera de los dos videos completos por ${SUPER8}. Con un presupuesto más ajustado, el Solo (${SOLO}) cubre las fotos y el video completo con una sola persona y {{cameras.solo}} cámaras, {{photos.solo}} fotos editadas.`
       },
       {
         "q": "¿Qué zonas cerca de McKinney cubres?",

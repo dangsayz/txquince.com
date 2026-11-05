@@ -10,7 +10,7 @@
  * anything public-facing. (content/packages.ts remains only so historic
  * bookings, analytics and admin tools can still label old rows.)
  */
-import { matrixFor, TIERS, type L, type Lang } from "@/components/txq/data";
+import { matrixFor, TIERS, tierSummary, type L, type Lang } from "@/components/txq/data";
 import { depositFor, usd, type PriceBook, type TierId } from "@/lib/commission";
 import { PT } from "@/lib/price-text";
 
@@ -57,7 +57,7 @@ export function commissionsFor(book: PriceBook): Commission[] {
       id: t.id,
       numeral: t.numeral,
       name: t.name,
-      summary: t.summary,
+      summary: tierSummary(book, t.id),
       price,
       priceLabel: usd(price),
       retainerLabel: usd(depositFor(book, price)),
