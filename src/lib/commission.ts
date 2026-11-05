@@ -49,6 +49,17 @@ export const isBookableTier = (id: TierId): id is PublicTierId => (PUBLIC_TIER_I
  * so a hand-typed `?collection=duo` or `?collection=portrait` still works.
  * Anything else (retired or unknown) is null: the panel stays as it was.
  */
+/**
+ * Where the /reserve redirect leaves `collection`: before the hash under
+ * `next dev` (`/?collection=duo#intake`), inside it in production, where
+ * OpenNext appends the query to the destination (`/#intake?collection=duo`).
+ */
+export function collectionFromLocation(search: string, hash: string): string | null {
+  const q = new URLSearchParams(search).get("collection");
+  if (q !== null) return q;
+  const i = hash.indexOf("?");
+  return i < 0 ? null : new URLSearchParams(hash.slice(i + 1)).get("collection");
+}
 const COLLECTION_ALIASES = new Map<string, PublicTierId>([
   ["duo", "cinema"],
   ["portrait", "study"],

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { PUBLIC_TIER_IDS, collectionParamTier } from "./commission";
+import { PUBLIC_TIER_IDS, collectionFromLocation, collectionParamTier } from "./commission";
 
 describe("/reserve?collection=", () => {
   it("accepts every package families can choose, by id", () => {
@@ -16,6 +16,23 @@ describe("/reserve?collection=", () => {
   it("ignores retired and unknown packages", () => {
     for (const v of ["production", "archive", "essential", "signature", "legacy", "the-duo", "", "constructor", "__proto__", null, undefined]) {
       expect(collectionParamTier(v)).toBeNull();
+    }
+  });
+});
+
+describe("where the /reserve redirect puts ?collection=", () => {
+  it("reads it before the hash (next dev)", () => {
+    expect(collectionFromLocation("?collection=duo", "#intake")).toBe("duo");
+  });
+
+  it("reads it inside the hash (production: /#intake?collection=duo)", () => {
+    expect(collectionFromLocation("", "#intake?collection=duo")).toBe("duo");
+    expect(collectionFromLocation("", "#intake?src=instagram&collection=trio")).toBe("trio");
+  });
+
+  it("is null when there is none", () => {
+    for (const [s, h] of [["", ""], ["", "#intake"], ["?src=gbp", "#intake"], ["", "#intake?src=gbp"]]) {
+      expect(collectionFromLocation(s, h)).toBeNull();
     }
   });
 });
