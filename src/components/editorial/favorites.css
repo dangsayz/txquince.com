@@ -34,6 +34,8 @@
 }
 .fv-filter {
   min-height: 44px;
+  min-width: 44px; /* Gate 2: "All" was 20px wide */
+  text-align: left;
   padding: 0;
   border: 0;
   background: none;
