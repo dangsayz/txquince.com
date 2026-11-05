@@ -8,13 +8,23 @@
 import type { RangedStats } from "@/lib/analytics-db";
 
 export type Tone = "good" | "warn" | "info";
-export type Intel = { title: string; what: string; read: string; todo: string[]; tone: Tone };
+export type Intel = {
+  title: string;
+  what: string;
+  read: string;
+  todo: string[];
+  tone: Tone;
+  /** Metric key a move on this card is measured by (see metricValue). */
+  metric?: string;
+  /** Per todo: day number if that move is being tried right now. */
+  trying?: (number | null)[];
+};
 export type PulseStats = Pick<
   RangedStats,
   | "range" | "uniqueSessions" | "uniqueVisitors" | "rangeViews" | "rangeLeads" | "rangeBooked" | "previous"
   | "bounceRate" | "pagesPerSession" | "flow" | "flowBottleneck" | "topReferrers" | "topPages" | "utmSources"
   | "liveNow" | "bookedValue" | "pipelineValue" | "requests" | "pendingHolds" | "paid"
->;
+> & Partial<Pick<RangedStats, "dropoff">>;
 
 const pct = (now: number, before: number) => (before ? Math.round(((now - before) / before) * 100) : null);
 const n = (v: number) => v.toLocaleString("en-US");
@@ -34,6 +44,7 @@ export function metricIntel(s: PulseStats): Record<"visits" | "unique" | "views"
 
   return {
     visits: {
+      metric: "visits",
       title: "Visits",
       what: "Every time someone opens the site in a browser tab. One mom opening your link three times is three visits. Your own browsing on this computer isn't counted.",
       read: change(s.uniqueSessions, s.previous.visitors, "visits") + (topRef ? ` Most arrive from ${topRef.label}.` : ""),
@@ -43,6 +54,7 @@ export function metricIntel(s: PulseStats): Record<"visits" | "unique" | "views"
       tone: visitsUp ? "good" : "info",
     },
     unique: {
+      metric: "unique",
       title: "Unique visitors",
       what: "Different people (browsers), counted once each however many times they come back. Visits counts every return; this counts the person. Visits from before the upgrade count each tab, so this number gets more exact from now on.",
       read: s.uniqueVisitors
@@ -54,6 +66,7 @@ export function metricIntel(s: PulseStats): Record<"visits" | "unique" | "views"
       tone: repeat >= 1.5 ? "good" : "info",
     },
     views: {
+      metric: "views",
       title: "Page views",
       what: "Every page opened, across all visits. More page views per visit means people are exploring, not bouncing.",
       read: `${change(s.rangeViews, s.previous.views, "page views")} About ${s.pagesPerSession} pages per visit.`,
@@ -63,6 +76,7 @@ export function metricIntel(s: PulseStats): Record<"visits" | "unique" | "views"
       tone: s.pagesPerSession < 2 ? "warn" : "good",
     },
     leads: {
+      metric: "leads",
       title: "Leads",
       what: "New inquiries plus new quince plans in this period: people who gave you a way to reach them.",
       read: s.rangeLeads
@@ -74,6 +88,7 @@ export function metricIntel(s: PulseStats): Record<"visits" | "unique" | "views"
       tone: s.rangeLeads ? "good" : "warn",
     },
     bounce: {
+      metric: "bounce",
       title: "Bounce rate",
       what: "Share of visits that saw only one page and left.",
       read: `${s.bounceRate}% of visits leave after one page.`,
@@ -83,6 +98,7 @@ export function metricIntel(s: PulseStats): Record<"visits" | "unique" | "views"
       tone: s.bounceRate > 60 ? "warn" : "good",
     },
     booked: {
+      metric: "booked",
       title: "Booked value",
       what: "Total value of every paid booking, from the price each family booked at.",
       read: `${usd(s.bookedValue)} booked across ${s.paid} paid ${s.paid === 1 ? "celebration" : "celebrations"}${s.rangeBooked ? `, ${s.rangeBooked} in the last ${s.range} days` : ""}.`,
@@ -90,6 +106,7 @@ export function metricIntel(s: PulseStats): Record<"visits" | "unique" | "views"
       tone: s.rangeBooked ? "good" : "info",
     },
     pipeline: {
+      metric: "leads",
       title: "In the pipeline",
       what: "Value of date requests and holds that haven't paid yet.",
       read: s.pipelineValue ? `${usd(s.pipelineValue)} waiting: ${s.requests} requests and ${s.pendingHolds} holds.` : "Nothing waiting on payment.",
@@ -97,6 +114,7 @@ export function metricIntel(s: PulseStats): Record<"visits" | "unique" | "views"
       tone: s.pipelineValue ? "warn" : "info",
     },
     live: {
+      metric: "visits",
       title: "On the site now",
       what: "People active in the last 5 minutes.",
       read: s.liveNow.length ? `${s.liveNow.length} on the site right now${s.liveNow[0] ? `, one on ${s.liveNow[0].path === "/" ? "the homepage" : s.liveNow[0].path}` : ""}.` : "Nobody on the site this minute.",
@@ -127,6 +145,7 @@ export function stepIntel(s: PulseStats, i: number): Intel {
       : `${n(step.value)} visits started the funnel.`,
     todo: isB && s.flowBottleneck ? [s.flowBottleneck.action, ...(STEP_INTEL[i]?.todo ?? [])] : STEP_INTEL[i]?.todo ?? [],
     tone: isB ? "warn" : "info",
+    metric: i ? `step:${i}` : "visits",
   };
 }
 
@@ -147,4 +166,62 @@ export function briefing(s: PulseStats): string[] {
   if (s.pipelineValue) lines.push(`${usd(s.pipelineValue)} is waiting on a deposit.`);
   else if (s.topReferrers[0]) lines.push(`Top source: ${s.topReferrers[0].label}.`);
   return lines.slice(0, 4);
+}
+
+// ---- Moves: measure a suggested move against its baseline ----
+
+type MetricDef = { label: string; unit: "%" | "/day"; higherIsBetter: boolean };
+export const MOVE_METRICS: Record<string, MetricDef> = {
+  visits: { label: "Visits per day", unit: "/day", higherIsBetter: true },
+  unique: { label: "Unique visitors per day", unit: "/day", higherIsBetter: true },
+  views: { label: "Page views per day", unit: "/day", higherIsBetter: true },
+  leads: { label: "Leads per day", unit: "/day", higherIsBetter: true },
+  booked: { label: "Bookings per day", unit: "/day", higherIsBetter: true },
+  bounce: { label: "Bounce rate", unit: "%", higherIsBetter: false },
+  "step:1": { label: "Visits → saw work or prices", unit: "%", higherIsBetter: true },
+  "step:2": { label: "Saw work → took action", unit: "%", higherIsBetter: true },
+  "step:3": { label: "Took action → lead", unit: "%", higherIsBetter: true },
+  "step:4": { label: "Lead → booked", unit: "%", higherIsBetter: true },
+};
+
+type MetricInput = Pick<RangedStats, "range" | "uniqueSessions" | "uniqueVisitors" | "rangeViews" | "rangeLeads" | "rangeBooked" | "bounceRate" | "flow">;
+
+/** The value a move is judged by, plus how many people it is based on. */
+export function metricValue(s: MetricInput, key: string): { value: number; base: number } | null {
+  const days = Math.max(s.range, 1);
+  const perDay = (v: number) => Math.round((v / days) * 100) / 100;
+  switch (key) {
+    case "visits": return { value: perDay(s.uniqueSessions), base: s.uniqueSessions };
+    case "unique": return { value: perDay(s.uniqueVisitors), base: s.uniqueVisitors };
+    case "views": return { value: perDay(s.rangeViews), base: s.uniqueSessions };
+    case "leads": return { value: perDay(s.rangeLeads), base: s.uniqueSessions };
+    case "booked": return { value: perDay(s.rangeBooked), base: s.rangeLeads };
+    case "bounce": return { value: s.bounceRate, base: s.uniqueSessions };
+  }
+  const m = /^step:([1-4])$/.exec(key);
+  if (!m) return null;
+  const i = Number(m[1]);
+  const den = s.flow[i - 1]?.value ?? 0;
+  const num = s.flow[i]?.value ?? 0;
+  return { value: den ? Math.round((num / den) * 1000) / 10 : 0, base: den };
+}
+
+export type MoveVerdict = { state: "measuring" | "working" | "not-working" | "flat"; text: string; change: number | null };
+
+/**
+ * Honest scoring: no verdict before 7 days or ~30 people; ±15% (relative)
+ * counts as a real move, anything smaller is noise until 3 weeks have passed.
+ */
+export function judgeMove(key: string, before: number, now: number, sample: number, days: number): MoveVerdict {
+  const def = MOVE_METRICS[key];
+  const unit = def?.unit ?? "";
+  const fmt = (v: number) => `${v}${unit === "%" ? "%" : unit}`;
+  const raw = before ? (now - before) / before : now > 0 ? 1 : 0;
+  const change = Math.round((def?.higherIsBetter === false ? -raw : raw) * 100);
+  if (days < 7) return { state: "measuring", text: `Day ${days}. Give it at least 7 days before judging.`, change: null };
+  if (sample < 30) return { state: "measuring", text: `Only ${sample} people so far. About 30 are needed to tell.`, change: null };
+  if (change >= 15) return { state: "working", text: `${fmt(before)} → ${fmt(now)}. It's working: keep it and move to the next bottleneck.`, change };
+  if (change <= -15) return { state: "not-working", text: `${fmt(before)} → ${fmt(now)}. Worse: undo it and try the next move.`, change };
+  if (days >= 21) return { state: "flat", text: `${fmt(before)} → ${fmt(now)} after ${days} days. No real change: drop it and try the next move.`, change };
+  return { state: "measuring", text: `${fmt(before)} → ${fmt(now)} so far. Too close to call; check again at day 21.`, change };
 }
