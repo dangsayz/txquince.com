@@ -16,7 +16,7 @@ describe("contact links", () => {
   it("prefills the WhatsApp message in the page's language", () => {
     const en = new URL(whatsappHref("en"));
     const es = new URL(whatsappHref("es"));
-    expect(`${en.origin}${en.pathname}`).toBe("https://wa.me/19452001939");
+    expect(`${en.origin}${en.pathname}`).toBe("https://wa.me/19729148617"); // WhatsApp has its own number
     expect(en.searchParams.get("text")).toBe("Hi! I'd like to check my quinceañera date.");
     expect(es.searchParams.get("text")).toBe("¡Hola! Quiero consultar la fecha de mi quinceañera.");
   });
@@ -32,7 +32,8 @@ describe("contact links", () => {
   it("speaks the number to screen readers in both languages", () => {
     for (const lang of ["en", "es"] as const) {
       const c = CONTACT_COPY[lang];
-      for (const label of [c.textAria, c.whatsappAria, c.callAria]) expect(label).toContain(site.contact.phone);
+      for (const label of [c.textAria, c.callAria]) expect(label).toContain(site.contact.phone);
+      expect(c.whatsappAria).toContain(site.contact.whatsappPhone);
     }
     expect(CONTACT_COPY.es.text).toBe("Envíanos un texto");
     expect(CONTACT_COPY.es.call).toBe("Llámanos");

@@ -72,8 +72,14 @@ export function StudioPulse({ s, basePath, range, moves, social }: { s: RangedSt
     {
       id: "sources",
       label: "Lead sources",
-      unit: "Leads",
-      rows: s.bySource.map((r) => ({ label: r.source, value: r.leads, note: r.bookedValue ? `${money(r.bookedValue)} booked` : undefined })),
+      unit: "Leads & chats",
+      rows: s.bySource
+        .filter((r) => r.leads || r.chats || r.bookedValue)
+        .map((r) => ({
+          label: r.source === "gbp" ? "Google Business" : r.source === "whatsapp" ? "WhatsApp" : r.source,
+          value: r.leads + r.chats,
+          note: [r.chats ? `${r.chats} WhatsApp chat${r.chats === 1 ? "" : "s"}` : "", r.bookedValue ? `${money(r.bookedValue)} booked` : ""].filter(Boolean).join(" · ") || undefined,
+        })),
       empty: "Leads appear here with the source that brought them.",
       tip: "The source with the most booked value is where your next hour of posting should go.",
     },

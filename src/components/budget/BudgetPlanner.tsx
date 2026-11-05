@@ -17,6 +17,7 @@ import { DetailIcon } from "./DetailIcon";
 import { ShareBar } from "./ShareBar";
 import "./budget.css";
 import { TrustLine } from "@/components/TrustLine";
+import { WhatsAppChatButton } from "@/components/WhatsAppChatButton";
 
 const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 // Turnstile is locked to production hostnames; local dev skips it (as Intake does).
@@ -162,6 +163,9 @@ export function BudgetPlanner() {
         <h1 className="bp-title">{c.title}</h1>
         <p className="bp-dek">{c.dek}</p>
         <TrustLine lang={lang} />
+        <div className="bp-wa">
+          <WhatsAppChatButton lang={lang} placement="budget-top" />
+        </div>
         <a className="bp-sharelink" href="#share-bottom">
           {c.shareTop} <span aria-hidden>↓</span>
         </a>

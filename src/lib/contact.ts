@@ -28,7 +28,7 @@ export const CONTACT_COPY = {
     call: "Call",
     /** Spoken labels for screen readers (the number is not in the visible label). */
     textAria: `Text us at ${site.contact.phone}`,
-    whatsappAria: `Message us on WhatsApp at ${site.contact.phone}`,
+    whatsappAria: `Message us on WhatsApp at ${site.contact.whatsappPhone}`,
     callAria: `Call us at ${site.contact.phone}`,
     groupLabel: "Text, WhatsApp or call us",
     /** Small line under the buttons. */
@@ -42,7 +42,7 @@ export const CONTACT_COPY = {
     whatsapp: "WhatsApp",
     call: "Llámanos",
     textAria: `Envíanos un texto al ${site.contact.phone}`,
-    whatsappAria: `Escríbenos por WhatsApp al ${site.contact.phone}`,
+    whatsappAria: `Escríbenos por WhatsApp al ${site.contact.whatsappPhone}`,
     callAria: `Llámanos al ${site.contact.phone}`,
     groupLabel: "Escríbenos o llámanos",
     note: `${site.contact.phone} · en español o inglés`,

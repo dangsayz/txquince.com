@@ -9,6 +9,7 @@ import { HREFLANG, OG_LOCALE, languageAlternates } from "@/lib/hreflang";
 import { ContactButtons } from "@/components/ContactButtons";
 import "@/components/txq/pages/places.css";
 import "@/components/txq/pages/inspo.css";
+import { WhatsAppChatButton } from "@/components/WhatsAppChatButton";
 
 /**
  * InspoPlacePage — the photo-spot inspiration page template (one per location,
@@ -248,6 +249,9 @@ export async function InspoPlacePage({ place, lang }: { place: InspoPlace; lang:
             <Link href={ui.check} className="tq-btn tq-btn--ghost">{ui.checkLabel}</Link>
           </div>
           <p className="tq-inspo-talk">{ui.talk}</p>
+          <div className="tq-inspo-actions">
+            <WhatsAppChatButton lang={lang} placement={`inspo-${place.slug}`} />
+          </div>
           <ContactButtons lang={lang} placement={`inspo-${place.slug}`} primary={false} />
         </section>
 

@@ -188,15 +188,16 @@ export default async function AdminDashboard({
           Revenue &amp; leads by source
         </p>
         <p className="mt-1 text-xs text-ink-soft">
-          Where each booking &amp; lead came from: the link tag when there is one (tag links you share
+          Where each visit, booking &amp; lead came from: the link tag when there is one (tag links you share
           outside the site with <code className="text-ink">?src=</code>: instagram, facebook, tiktok, youtube,
-          pinterest, quora or gbp (Google Business posts), e.g. <code className="text-ink">?src=pinterest</code>; links between our own
-          pages get no tag), otherwise the site they first came from.
+          pinterest, quora, gbp (Google Business posts) or whatsapp (links sent in WhatsApp chats), e.g.{" "}
+          <code className="text-ink">?src=gbp</code>; links between our own pages get no tag), otherwise the site
+          they first came from. <strong className="text-ink">WhatsApp chats</strong> counts taps on the site&apos;s
+          WhatsApp buttons, on their own &ldquo;whatsapp&rdquo; row.
         </p>
         {s.bySource.length === 0 ? (
           <p className="mt-4 text-base text-ink-faint">
-            No attributed leads or bookings yet — they&apos;ll appear here as inquiries and date
-            requests come in.
+            No visits, chats, leads or bookings in this period yet.
           </p>
         ) : (
           <div className="mt-4 overflow-x-auto">
@@ -204,6 +205,8 @@ export default async function AdminDashboard({
               <thead>
                 <tr className="text-left text-xs uppercase tracking-[0.14em] text-ink-faint">
                   <th className="pb-2 font-medium">Source</th>
+                  <th className="pb-2 text-right font-medium">Visits</th>
+                  <th className="pb-2 text-right font-medium">WhatsApp chats</th>
                   <th className="pb-2 text-right font-medium">Leads</th>
                   <th className="pb-2 text-right font-medium">Requests</th>
                   <th className="pb-2 text-right font-medium">Booked&nbsp;$</th>
@@ -212,7 +215,9 @@ export default async function AdminDashboard({
               <tbody className="divide-y divide-line">
                 {s.bySource.map((r) => (
                   <tr key={r.source}>
-                    <td className="py-2 capitalize text-ink">{r.source}</td>
+                    <td className="py-2 text-ink">{r.source === "gbp" ? "Google Business (gbp)" : r.source === "whatsapp" ? "WhatsApp" : r.source}</td>
+                    <td className="py-2 text-right tabular-nums text-ink-soft">{r.visits || "—"}</td>
+                    <td className="py-2 text-right tabular-nums text-ink-soft">{r.chats || "—"}</td>
                     <td className="py-2 text-right tabular-nums text-ink-soft">{r.leads}</td>
                     <td className="py-2 text-right tabular-nums text-ink-soft">{r.requests}</td>
                     <td className="py-2 text-right tabular-nums font-medium text-ink">

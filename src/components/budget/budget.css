@@ -189,3 +189,4 @@
 .txq .bp-share__ico { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 999px; background: var(--bp-fill); }
 .txq .bp-sharelink { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; margin-top: 12px; color: var(--bp-ink); font-size: 15px; text-decoration: underline; text-underline-offset: 5px; }
 .txq .bp-share { scroll-margin-top: calc(var(--header-h, 64px) + 16px); }
+.txq .bp-wa { margin-top: 16px; }

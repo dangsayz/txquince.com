@@ -25,6 +25,9 @@ import { Favorites } from "./Favorites";
 import { Owners, SocialIcon } from "@/components/owners/Owners";
 import type { Favorite } from "@/lib/favorites";
 import { useScenes } from "./scenes";
+import { CONTACT_EVENT, whatsappHref } from "@/lib/contact";
+import { trackEvent } from "@/components/Tracker";
+import { WhatsAppFloat } from "@/components/WhatsAppFloat";
 import "./editorial.css";
 
 /**
@@ -59,6 +62,8 @@ export function EditorialHome({
   favorites?: Favorite[];
 }) {
   const { setDockHidden } = useShell();
+  const { lang } = useSite();
+  const [intakeOnScreen, setIntakeOnScreen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const intakeRef = useRef<HTMLDivElement>(null);
   useScenes(rootRef);
@@ -68,7 +73,10 @@ export function EditorialHome({
   useEffect(() => {
     const el = intakeRef.current;
     if (!el) return;
-    const io = new IntersectionObserver(([e]) => setDockHidden(e.isIntersecting), {
+    const io = new IntersectionObserver(([e]) => {
+      setDockHidden(e.isIntersecting);
+      setIntakeOnScreen(e.isIntersecting);
+    }, {
       rootMargin: "0px 0px -30% 0px",
     });
     io.observe(el);
@@ -94,6 +102,7 @@ export function EditorialHome({
       <MomsAsk />
       <JournalRow journal={journal} />
       <WhereWeWork cities={cities} />
+      <WhatsAppFloat lang={lang} hidden={intakeOnScreen} />
     </div>
   );
 }
@@ -154,6 +163,11 @@ function Hero({ overrides }: { overrides: HomeOverrides }) {
             <li>
               <a href={site.social.instagram} target="_blank" rel="noopener noreferrer">
                 <SocialIcon name="instagram" /> @txquince
+              </a>
+            </li>
+            <li>
+              <a href={whatsappHref(lang)} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent(CONTACT_EVENT.whatsapp, "hero")}>
+                <SocialIcon name="whatsapp" /> {e.heroWhatsapp}
               </a>
             </li>
           </ul>
