@@ -51,14 +51,18 @@ export async function POST(req: NextRequest) {
         session_id,
       });
     } else {
-      await supabase.from("page_views").insert({
+      const row: Record<string, string | null> = {
         path,
         referrer: clip(body.ref, 300),
         session_id,
         utm_source: clip(body.us, 80),
         utm_medium: clip(body.um, 80),
         utm_campaign: clip(body.uc, 80),
-      });
+      };
+      const visitor_id = clip(body.vid, 64);
+      // visitor_id arrives with migration 0025; until it runs, store the row without it.
+      const { error } = await supabase.from("page_views").insert(visitor_id ? { ...row, visitor_id } : row);
+      if (error && visitor_id) await supabase.from("page_views").insert(row);
     }
   } catch {
     /* analytics must never break the page */
