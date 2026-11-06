@@ -1,3 +1,5 @@
+@HOW-WE-WORK.md
+
 @AGENTS.md
 
 ## SEO standard (shared across all Dang's sites)
