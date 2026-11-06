@@ -20,6 +20,7 @@ import { venues, getVenue } from "@/content/venues";
 import { postsForVenue } from "@/content/blog";
 import { getLocation } from "@/content/locations";
 import { getImagesByVenue, getVenueCopy } from "@/lib/content-db";
+import { withAlbums } from "@/content/albums";
 import { igUrl, websiteUrl, websiteLabel } from "@/lib/vendor-links";
 import { VenueEvents } from "@/components/venue/VenueEvents";
 import { venueEvents } from "@/lib/venue-events";
@@ -43,7 +44,8 @@ export async function generateMetadata({
   const { slug } = await params;
   const venue = getVenue(slug);
   if (!venue) return {};
-  const [copy, book, photos] = await Promise.all([getVenueCopy(slug), getPriceBook(), getImagesByVenue(slug)]);
+  const [copy, book, dbPhotos] = await Promise.all([getVenueCopy(slug), getPriceBook(), getImagesByVenue(slug)]);
+  const photos = withAlbums(dbPhotos, slug);
   const commissionsFromLabel = usd(priceFloor(book));
   const title = `${venue.venue} Quinceañera Photographer — ${venue.city}, TX`;
   const description =
@@ -74,7 +76,9 @@ export default async function VenuePage({
   const venue = getVenue(slug);
   if (!venue) notFound();
 
-  const [copy, photos, book] = await Promise.all([getVenueCopy(slug), getImagesByVenue(slug), getPriceBook()]);
+  const [copy, dbPhotos, book] = await Promise.all([getVenueCopy(slug), getImagesByVenue(slug), getPriceBook()]);
+  // Database photos plus any curated 12img album for this venue (src/content/albums.ts).
+  const photos = withAlbums(dbPhotos, venue.slug);
   const commissionsFromLabel = usd(priceFloor(book));
   const heroPhoto = photos[0] ?? null;
   const cityLoc = venue.citySlug ? getLocation(venue.citySlug) : undefined;
@@ -298,7 +302,7 @@ export default async function VenuePage({
             </h2>
           </header>
           {items.length ? (
-            <VenueEvents venue={venue.venue} askHref={askHref} events={events} brand={site.brand} />
+            <VenueEvents venue={venue.venue} askHref={askHref} pageHref={`/venues/${venue.slug}`} events={events} brand={site.brand} />
           ) : (
             <p className="tq-place-empty">
               No photographs from this venue are published yet.{" "}

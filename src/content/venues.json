@@ -54,5 +54,13 @@
     "venue": "VM Ballroom",
     "venueFull": "VM Ballroom in Balch Springs",
     "section": "celebration"
+  },
+  {
+    "folder": "FGS Ranch",
+    "citySlug": null,
+    "city": "Burleson",
+    "venue": "FGS Ranch",
+    "venueFull": "FGS Ranch in Burleson",
+    "section": "portraits"
   }
 ]

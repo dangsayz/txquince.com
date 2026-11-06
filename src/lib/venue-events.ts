@@ -22,7 +22,7 @@
  *      in the photos' own alt/caption), else nothing: the title falls back to
  *      "Quinceañera 01". Never invented.
  */
-import { groupForCategory, type GroupId } from "@/content/portfolio-taxonomy";
+import { CATEGORIES, categoryLabel, groupForCategory, type GroupId } from "@/content/portfolio-taxonomy";
 import { colorLabel, imageColors, type ColorId } from "@/lib/quince-colors";
 
 /** The fields read from a portfolio row (a subset of PortfolioImage). */
@@ -58,6 +58,8 @@ export type VenueEvent<P extends VenueEventPhoto = VenueEventPhoto> = {
   colors: ColorId[];
   /** Moments present, in the order of the day. */
   moments: EventMoment[];
+  /** Specific named moments present (Grand Entrance, El Vals, Crowning…), taxonomy order. */
+  highlights: { id: string; label: string }[];
   /** Photos in the order of the day (before → misa → portraits → party → details). */
   photos: P[];
   /** Up to 5 photos for the collapsed mosaic: a portrait lead, then variety across moments. */
@@ -82,6 +84,9 @@ const MOMENT_LABEL: Record<GroupId, { en: string; es: string }> = {
 };
 
 const PREVIEW_SIZE = 5;
+
+/** Catch-all categories that say nothing specific about a moment. */
+const GENERIC = new Set(["portraits", "celebration", "the-details", "venue-decor", "films"]);
 
 /** `xv:` and `theme:` values from a comma-separated tag string. */
 export function tagValue(tags: string | null | undefined, key: "xv" | "theme"): string | null {
@@ -186,6 +191,7 @@ export function venueEvents<P extends VenueEventPhoto>(photos: readonly P[], ven
       anchor: `xv-${String(number).padStart(2, "0")}`,
       theme: themeFor(byDay, colors),
       colors,
+      highlights: CATEGORIES.filter((c) => !GENERIC.has(c.id) && byDay.some((p) => p.section === c.id)).map((c) => ({ id: c.id, label: categoryLabel(c.id) })),
       moments: DAY_ORDER.filter((g) => momentCount.has(g)).map((g) => ({ id: g, label: MOMENT_LABEL[g], count: momentCount.get(g)! })),
       photos: byDay,
       preview: pickPreview(byDay),
