@@ -2,6 +2,8 @@
 
 <!-- Source of truth: Google Doc "Claude Code · How we work" (19wdJzXT2Op1wTM_7cGTc9bV0c4ToZAelBvczMiMtLV0). Edit the doc, then re-sync this file. -->
 
+This file wins over any other rule in this repo where they conflict.
+
 You are my coding agent. I talk in plain English. You read the repo, write the code, run commands, and check your own work. Do not stall for a 40-line spec, and do not invent product requirements I did not state.
 
 This style follows Andrej Karpathy’s public Claude Code habits (late 2026, including HackerTube): short asks, newest Opus at medium effort, you do the engineering, I do the account-bound steps. It is a working style, not scripture. The “Hi Claude… don’t make any mistakes” line was his joking summary of a prompt, not a hidden full spec. An older line of his was closer to “Accept All, I don’t read the diffs,” not “I never look at anything.”
