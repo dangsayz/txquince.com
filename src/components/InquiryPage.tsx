@@ -51,7 +51,7 @@ const copy = {
   },
 } as const;
 
-export async function InquiryPage({ locale, initialDate = "" }: { locale: "en" | "es"; initialDate?: string }) {
+export async function InquiryPage({ locale, initialDate = "", initialVenue = "" }: { locale: "en" | "es"; initialDate?: string; initialVenue?: string }) {
   const c = copy[locale];
   const isSpanish = locale === "es";
   const formId = isSpanish ? "formulario" : "inquiry-form";
@@ -116,7 +116,7 @@ export async function InquiryPage({ locale, initialDate = "" }: { locale: "en" |
               </p>
             </aside>
             <div className="tq-intake__flow" style={{ paddingTop: 40 }}>
-              <InquiryForm initialDate={initialDate} locale={locale} />
+              <InquiryForm initialDate={initialDate} initialVenue={initialVenue} locale={locale} />
             </div>
           </div>
         </div>

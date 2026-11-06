@@ -4,6 +4,10 @@
  * at {Venue}". Venue facts come from the registry (src/content/venues.ts);
  * unique copy (about + FAQ) from the venues DB table; photos auto-matched by the
  * location the ingest pipeline stamps. Place + ImageGallery + FAQPage schema.
+ *
+ * The work is shown per quinceañera (src/lib/venue-events.ts): each event is a
+ * short themed block that opens to its full set, so the page stays easy to
+ * read as events are added. Every "ask" keeps the venue (?venue=<slug>).
  */
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -17,7 +21,8 @@ import { postsForVenue } from "@/content/blog";
 import { getLocation } from "@/content/locations";
 import { getImagesByVenue, getVenueCopy } from "@/lib/content-db";
 import { igUrl, websiteUrl, websiteLabel } from "@/lib/vendor-links";
-import { PortfolioGallery, type GalleryItem } from "@/components/PortfolioGallery";
+import { VenueEvents } from "@/components/venue/VenueEvents";
+import { venueEvents } from "@/lib/venue-events";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import "@/components/txq/pages/places.css";
@@ -38,7 +43,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const venue = getVenue(slug);
   if (!venue) return {};
-  const [copy, book] = await Promise.all([getVenueCopy(slug), getPriceBook()]);
+  const [copy, book, photos] = await Promise.all([getVenueCopy(slug), getPriceBook(), getImagesByVenue(slug)]);
   const commissionsFromLabel = usd(priceFloor(book));
   const title = `${venue.venue} Quinceañera Photographer — ${venue.city}, TX`;
   const description =
@@ -49,6 +54,9 @@ export async function generateMetadata({
     description,
     keywords: `${venue.venue} quinceañera photographer, quinceañera at ${venue.venue}, ${venue.venue} ${venue.city}, quinceañera photography ${venue.city} TX`,
     alternates: { canonical: `/venues/${slug}` },
+    // A venue page with no photos yet is a dead end for a family: keep it out
+    // of search until the first shoot is published (links still count).
+    ...(photos.length ? {} : { robots: { index: false, follow: true } }),
     openGraph: {
       title: `${venue.venue} · Quinceañera Photography`,
       description,
@@ -74,29 +82,18 @@ export default async function VenuePage({
   const web = websiteUrl(copy?.website);
   const url = `${site.url}/venues/${slug}`;
 
-  const items: GalleryItem[] = photos.map((i) => {
-    const photoCopy = publicPhotoCopy(i, altPhraseFor(i.section));
-    return {
-      url: i.url,
-      alt: photoCopy.alt,
-      title: photoCopy.title,
-      caption: photoCopy.description,
-      city: i.city,
-      ratio: i.is_feature ? "landscape" : "portrait",
-      feature: i.is_feature,
-      width: i.width,
-      height: i.height,
-      slug: i.slug,
-      section: i.section,
-      id: i.id,
-      fx: i.focus_x,
-      fy: i.focus_y,
-    };
-  });
+  // Public copy (alt) per photo, then grouped into the quinceañeras shot here.
+  const events = venueEvents(
+    photos.map((i) => ({ ...i, alt: publicPhotoCopy(i, altPhraseFor(i.section)).alt })),
+    venue.slug,
+  );
+  const items = photos;
+  const askHref = `/check-your-date?venue=${encodeURIComponent(venue.slug)}`;
+  const quinceCount = events.length;
 
   const about =
     copy?.about ||
-    `Planning a quinceañera at ${venue.venue} in ${venue.city}? Explore our photos and videos, then tell us about your date and the moments your family wants documented.`;
+    `Planning a quinceañera at ${venue.venue} in ${venue.city}? See the quinceañeras we've photographed here, then tell us about your date and the moments your family wants documented.`;
 
   const sameAs = [ig, web].filter(Boolean) as string[];
   const jsonLd = {
@@ -264,19 +261,27 @@ export default async function VenuePage({
                 </div>
               ) : null}
               <div>
-                <dt>Frames</dt>
-                <dd className="tq-nums">{items.length}</dd>
+                <dt>Photographer</dt>
+                <dd>{site.brand}</dd>
+              </div>
+              <div>
+                <dt>Photos</dt>
+                <dd className="tq-nums">
+                  {items.length
+                    ? `${items.length} from ${quinceCount} quinceañera${quinceCount === 1 ? "" : "s"}`
+                    : "Coming soon"}
+                </dd>
               </div>
             </dl>
           </div>
           <div className="tq-action">
             <span className="tq-mono tq-muted">[ Ask about a date at {venue.venue} ]</span>
             <div style={{ display: "grid", gap: 12 }}>
-              <Link href={site.cta.href} className="tq-action__link">
+              <Link href={askHref} className="tq-action__link">
                 <span>Ask about a date</span>
                 <span className="tq-arrow" aria-hidden>→</span>
               </Link>
-              <span className="tq-mono tq-muted">Packages from {commissionsFromLabel}</span>
+              <Link href="/budget" className="tq-mono tq-muted">Packages from {commissionsFromLabel} · see what&apos;s included</Link>
             </div>
           </div>
         </div>
@@ -287,13 +292,13 @@ export default async function VenuePage({
           <header className="tq-head tq-place-head--long">
             <p className="tq-head__index tq-mono" style={{ margin: 0 }}>[01 / The work · {venue.city}]</p>
             <h2 id="venue-work-title" className="tq-display tq-head__title">
-              {items.length ? `Quinceañeras at ${venue.venue}.` : `Explore the work before your day at ${venue.venue}.`}
+              {items.length
+                ? `${quinceCount === 1 ? "A quinceañera" : `${quinceCount} quinceañeras`} we photographed at ${venue.venue}.`
+                : `Explore the work before your day at ${venue.venue}.`}
             </h2>
           </header>
           {items.length ? (
-            <div className="tq-place-gallery">
-              <PortfolioGallery images={items} editorial imageSizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw" />
-            </div>
+            <VenueEvents venue={venue.venue} askHref={askHref} events={events} brand={site.brand} />
           ) : (
             <p className="tq-place-empty">
               No photographs from this venue are published yet.{" "}
@@ -361,7 +366,7 @@ export default async function VenuePage({
             <div className="tq-place-cta__side">
               <p>Tell us your date and the moments your family wants documented. We confirm availability personally.</p>
               <div className="tq-place-actions">
-                <Link href={site.cta.href} className="tq-btn tq-btn--lg">
+                <Link href={askHref} className="tq-btn tq-btn--lg">
                   Ask about a date <span className="tq-arrow" aria-hidden>↗</span>
                 </Link>
                 {cityLoc ? (

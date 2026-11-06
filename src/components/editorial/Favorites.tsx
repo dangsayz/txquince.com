@@ -177,7 +177,10 @@ export function Favorites({ favorites }: { favorites: Favorite[] }) {
   );
 }
 
-function Lightbox({
+/** What the lightbox needs from a photo (favorites and venue events both fit). */
+export type LightboxItem = Pick<Favorite, "id" | "src" | "width" | "height" | "alt" | "href">;
+
+export function Lightbox({
   items,
   index,
   onIndex,
@@ -185,7 +188,7 @@ function Lightbox({
   lang,
   labels,
 }: {
-  items: Favorite[];
+  items: LightboxItem[];
   lang: "en" | "es";
   index: number;
   onIndex: (i: number) => void;
