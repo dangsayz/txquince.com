@@ -174,7 +174,7 @@ export default async function PhotoPage({
                 <p>{copy.description}</p>
               </div>
             ) : null}
-            <PhotoActions section={img.section} slug={slug} title={copy.title} pageUrl={pageUrl} bookingHref={site.cta.href} />
+            <PhotoActions section={img.section} slug={slug} title={copy.title} pageUrl={pageUrl} bookingHref={site.cta.href} image={{ src: img.url, alt: copy.alt }} />
           </div>
         </section>
 

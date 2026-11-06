@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { trackEvent } from "@/components/Tracker";
+import { pinCreateUrl, pinDescription, pinMedia } from "@/lib/pinterest";
 import "@/components/txq/pages/pages.css";
 
 type Channel = {
@@ -98,13 +99,26 @@ export function ShareModal({
   open,
   url,
   title,
+  image,
   onClose,
 }: {
   open: boolean;
   url: string;
   title: string;
+  /** The photo's src; when given, a Pinterest channel pins it back to `url`. */
+  image?: { src: string; alt: string };
   onClose: () => void;
 }) {
+  const channels: Channel[] = image
+    ? [
+        ...CHANNELS,
+        {
+          label: "Pinterest",
+          href: (u) => pinCreateUrl({ page: u, image: pinMedia(image.src), description: pinDescription(image.alt || title) }),
+          icon: SHARE_ICONS.pinterest,
+        },
+      ]
+    : CHANNELS;
   const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
@@ -179,7 +193,7 @@ export function ShareModal({
       </div>
       <div style={{ padding: 20 }}>
         <ul className="tq-pg-share">
-          {CHANNELS.map((c) => (
+          {channels.map((c) => (
             <li key={c.label}>
               <a
                 href={c.href(url, title)}

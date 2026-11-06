@@ -41,7 +41,7 @@ export function PortfolioGallery({
   const [sort, setSort] = useState<"curated" | "title">("curated");
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [zoomed, setZoomed] = useState(false);
-  const [share, setShare] = useState<{ url: string; title: string } | null>(null);
+  const [share, setShare] = useState<{ url: string; title: string; image?: { src: string; alt: string } } | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const touchStart = useRef<number | null>(null);
   const { saved } = useSavedPhotos();
@@ -83,7 +83,11 @@ export function PortfolioGallery({
   const pathFor = (item: GalleryItem) => item.detailAvailable !== false && item.slug && item.section ? `/photos/${item.section}/${item.slug}` : "/portfolio";
   const shareItem = (item: GalleryItem) => {
     setActiveIndex(null);
-    setShare({ url: `${window.location.origin}${pathFor(item)}`, title: `${labelFor(item)} · TX Quince` });
+    setShare({
+      url: `${window.location.origin}${pathFor(item)}`,
+      title: `${labelFor(item)} · TX Quince`,
+      image: item.url ? { src: item.url, alt: copyFor(item).alt || item.alt } : undefined,
+    });
   };
 
   const sectionTitle = (item: GalleryItem) => sections.find((section) => section.id === item.section)?.title;
@@ -283,7 +287,7 @@ export function PortfolioGallery({
           </div>
         ) : null}
       </dialog>
-      <ShareModal open={share !== null} url={share?.url || ""} title={share?.title || ""} onClose={() => setShare(null)} />
+      <ShareModal open={share !== null} url={share?.url || ""} title={share?.title || ""} image={share?.image} onClose={() => setShare(null)} />
     </div>
   );
 }

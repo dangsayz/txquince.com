@@ -78,8 +78,25 @@
   .fv-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 }
 .fv-cell {
+  position: relative;
   aspect-ratio: 4 / 5; /* reserves the space: no layout shift */
   min-width: 0;
+}
+/* Pinterest "Save": revealed on hover/keyboard focus where there is a mouse;
+   touch devices save from the lightbox (a tap opens it). */
+.fv-pin {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  opacity: 0;
+  pointer-events: none;
+}
+@media (hover: hover) {
+  .fv-cell:hover .fv-pin { opacity: 1; pointer-events: auto; }
+}
+.fv-cell:focus-within .fv-pin { opacity: 1; pointer-events: auto; }
+@media (hover: none) {
+  .fv-pin { display: none; }
 }
 .fv-hit {
   display: flex;
@@ -206,6 +223,11 @@
   cursor: pointer;
 }
 .fv-lb__btn:focus-visible { outline: 2px solid var(--ed-ink); outline-offset: 2px; }
+.fv-lb__pin {
+  position: absolute;
+  top: max(6px, env(safe-area-inset-top));
+  left: max(8px, env(safe-area-inset-left));
+}
 .fv-lb__close { top: max(4px, env(safe-area-inset-top)); right: max(4px, env(safe-area-inset-right)); }
 .fv-lb__prev,
 .fv-lb__next { bottom: max(4px, env(safe-area-inset-bottom)); }
