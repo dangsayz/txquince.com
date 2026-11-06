@@ -85,10 +85,7 @@ export function InquiryActions({
   return (
     <div className="mt-4 border-t border-line pt-4">
       <div className="flex flex-wrap items-center gap-3">
-        <span className="text-sm uppercase tracking-[0.14em] text-ink-soft">
-          Status
-        </span>
-        <div className="flex flex-wrap gap-2">
+        <div role="group" aria-label="Status" className="flex flex-wrap gap-2">
           {STATUSES.map((s) => {
             const active = current === s.value;
             return (
@@ -97,11 +94,8 @@ export function InquiryActions({
                 type="button"
                 disabled={pending}
                 onClick={() => choose(s.value)}
-                className={`min-h-11 min-w-11 whitespace-nowrap rounded-md !px-4 !py-2 text-base font-medium ring-1 transition-colors disabled:opacity-50 ${
-                  active
-                    ? "bg-ink text-cream ring-ink"
-                    : "bg-ivory text-ink-soft ring-line hover:text-ink"
-                }`}
+                aria-pressed={active}
+                className="st-filter disabled:opacity-50"
               >
                 {s.label}
               </button>
@@ -117,7 +111,7 @@ export function InquiryActions({
             onChange={(e) => setReason(e.target.value)}
             disabled={pending}
             aria-label="Reason lost"
-            className="min-h-12 rounded-md border border-line bg-white px-3 py-2 text-base text-ink"
+            className="st-input"
           >
             <option value="">Why lost…</option>
             {LOST_REASONS.map((r) => (
@@ -135,7 +129,7 @@ export function InquiryActions({
               disabled={pending}
               placeholder="Competitor (optional)"
               maxLength={120}
-              className="min-h-12 rounded-md border border-line bg-white px-3 py-2 text-base text-ink placeholder:text-ink-faint"
+              className="st-input"
             />
           )}
 
@@ -143,14 +137,14 @@ export function InquiryActions({
             type="button"
             disabled={pending || !reason}
             onClick={saveLost}
-            className="min-h-12 rounded-md bg-ink px-5 py-2 text-base font-medium text-cream transition-colors hover:bg-ink/85 disabled:opacity-50"
+            className="st-btn"
           >
             Save
           </button>
         </div>
       )}
 
-      {error && <p role="alert" className="mt-3 text-base text-red-700">{error}</p>}
+      {error && <p role="alert" className="mt-3 text-base text-[var(--tq-status-down)]">{error}</p>}
     </div>
   );
 }

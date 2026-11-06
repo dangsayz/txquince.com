@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AutoRefresh } from "@/components/admin/AutoRefresh";
+import { StudioBars } from "@/components/admin/StudioBars";
 import { ArrowIcon } from "@/components/admin/StudioIcons";
 import type { LeadWorkItem } from "@/lib/admin-workflow";
 import type { BookingRow } from "@/lib/clients-db";
@@ -60,7 +61,6 @@ export function TodayView({ pulse, work, review, upcoming }: TodayData) {
   const joined = summary.length > 1 ? `${summary.slice(0, -1).join(", ")} and ${summary.at(-1)}` : summary[0];
   const sentence = `${joined}.`;
 
-  const peak = Math.max(1, ...pulse.week.map((d) => d.visitors));
 
   return (
     <main className="mx-auto max-w-[72rem] px-4 pb-20 pt-8 sm:px-8 lg:pt-12">
@@ -70,14 +70,14 @@ export function TodayView({ pulse, work, review, upcoming }: TodayData) {
         <p className="m-0 text-[15px] text-[var(--tq-ink-mute)]">
           <time dateTime={today}>{todayLabel}</time>
         </p>
-        <h1 className="m-0 mt-1 text-[clamp(2rem,1.6rem+2vw,2.75rem)] font-normal leading-[var(--tq-leading-tight)] tracking-[-0.035em]">{greeting}</h1>
+        <h1 className="st-h1 mt-1">{greeting}</h1>
         <p className="m-0 mt-3 text-[length:var(--tq-text-lg)] leading-[1.45]">{sentence.charAt(0).toUpperCase() + sentence.slice(1)}</p>
       </header>
 
       {/* 1. The site today */}
       <section aria-labelledby="site-title" className="st-card mt-8">
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-5 pt-5 sm:px-6">
-          <h2 id="site-title" className="m-0 text-[length:var(--tq-text-h3)] font-normal tracking-[var(--tq-tracking-display)]">Your site today</h2>
+          <h2 id="site-title" className="st-h2">Your site today</h2>
           <Link href="/admin/insights" className="st-link">
             Full report <ArrowIcon />
           </Link>
@@ -104,32 +104,9 @@ export function TodayView({ pulse, work, review, upcoming }: TodayData) {
 
             <div className="px-5 pb-5 pt-5 sm:px-6">
               <h3 className="m-0 text-[15px] font-medium">Visitors, last 7 days</h3>
-              <ol className="st-week m-0 mt-4 grid list-none grid-cols-7 gap-2 p-0 sm:gap-4" aria-label="Visitors per day, last 7 days">
-                {pulse.week.map((d, i) => {
-                  const isToday = i === pulse.week.length - 1;
-                  return (
-                    <li key={d.date} className="flex min-w-0 flex-col items-center">
-                      <span className="sr-only">
-                        {dayLabel(d.date, { weekday: "long", month: "short", day: "numeric" })}: {plural(d.visitors, "visitor")}
-                        {d.families ? `, ${plural(d.families, "new family", "new families")}` : ""}
-                      </span>
-                      <span aria-hidden="true" className="st-num text-sm">{num(d.visitors)}</span>
-                      <span aria-hidden="true" className="mt-1.5 flex h-28 w-full items-end">
-                        <span
-                          className={`st-bar w-full rounded-t-[var(--tq-radius-xs)] ${isToday ? "bg-[var(--tq-ink)]" : "bg-[var(--tq-surface-2)]"}`}
-                          style={{ height: `${Math.max(3, (d.visitors / peak) * 100)}%`, animationDelay: `${i * 40}ms` }}
-                        />
-                      </span>
-                      <span aria-hidden="true" className={`mt-2 text-[13px] ${isToday ? "font-semibold" : "text-[var(--tq-ink-mute)]"}`}>
-                        {isToday ? "Today" : dayLabel(d.date, { weekday: "short" })}
-                      </span>
-                      <span aria-hidden="true" className="h-5 text-[13px] text-[var(--tq-status-open)]">
-                        {d.families ? `+${d.families}` : ""}
-                      </span>
-                    </li>
-                  );
-                })}
-              </ol>
+              <div className="mt-4">
+                <StudioBars days={pulse.week.map((d) => ({ date: d.date, value: d.visitors, extra: d.families }))} unit={["visitor", "visitors"]} extraUnit={["new family", "new families"]} />
+              </div>
               <p className="m-0 mt-1 text-sm text-[var(--tq-ink-mute)]">
                 <span className="text-[var(--tq-status-open)]">+n</span> under a day = new families who reached out that day.
               </p>
@@ -142,7 +119,7 @@ export function TodayView({ pulse, work, review, upcoming }: TodayData) {
         {/* 2. What needs you */}
         <section aria-labelledby="needs-title" className="st-card">
           <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-5 pb-3 pt-5 sm:px-6">
-            <h2 id="needs-title" className="m-0 text-[length:var(--tq-text-h3)] font-normal tracking-[var(--tq-tracking-display)]">
+            <h2 id="needs-title" className="st-h2">
               Needs you {todo > 0 && <span className="st-num text-[var(--tq-ink-mute)]">{todo}</span>}
             </h2>
             <Link href="/admin/inquiries" className="st-link">
@@ -182,7 +159,7 @@ export function TodayView({ pulse, work, review, upcoming }: TodayData) {
 
         {/* 3. Coming up */}
         <section aria-labelledby="upcoming-title" className="st-card px-5 pb-2 pt-5 sm:px-6">
-          <h2 id="upcoming-title" className="m-0 text-[length:var(--tq-text-h3)] font-normal tracking-[var(--tq-tracking-display)]">Coming up</h2>
+          <h2 id="upcoming-title" className="st-h2">Coming up</h2>
           {upcoming.length ? (
             <ul className="m-0 mt-3 list-none p-0">
               {upcoming.slice(0, 4).map((b) => (

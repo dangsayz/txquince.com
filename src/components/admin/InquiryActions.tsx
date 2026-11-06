@@ -117,7 +117,7 @@ export function InquiryActions({ id, name, status }: { id: string; name: string;
             </>
           ) : step === "lost" ? (
             <>
-              <p className="px-3 pb-1 pt-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#62625f]">Why was it lost?</p>
+              <p className="px-3 pb-1 pt-2 text-[13px] font-semibold text-[var(--tq-ink-mute)]">Why was it lost?</p>
               {REASONS.map((r) => (
                 <button key={r.id} type="button" role="menuitem" className={item} disabled={busy} onClick={() => send("PATCH", { status: "lost", lost_reason: r.id })}>
                   {r.label}

@@ -43,30 +43,30 @@ function OriginPanel({ origin, journey, linkTag }: { origin: ReturnType<typeof s
   const shown = rows.filter(([, v]) => v);
   return (
     <section aria-labelledby="origin-heading">
-      <h2 id="origin-heading" className="text-base font-medium tracking-[-0.02em]">Where they came from</h2>
+      <h2 id="origin-heading" className="st-h2">Where they came from</h2>
       {!shown.length ? (
-        <p className="mt-2 text-sm text-[#5f5f5b]">Not recorded. Inquiries sent before tracking was added, or from a browser that blocks storage, have no source.</p>
+        <p className="mt-2 text-sm text-[var(--tq-ink-mute)]">Not recorded. Inquiries sent before tracking was added, or from a browser that blocks storage, have no source.</p>
       ) : (
-        <dl className="mt-3 divide-y divide-[#ededeb] border-y border-[#ededeb] text-sm">
+        <dl className="mt-3 divide-y divide-[var(--tq-surface-2)] border-y border-[var(--tq-surface-2)] text-sm">
           {shown.map(([label, value]) => <div key={label} className="grid gap-1 py-3 sm:grid-cols-[7rem_minmax(0,1fr)] sm:gap-3">
-            <dt className="text-[#62625f]">{label}</dt>
-            <dd className="min-w-0 break-words font-medium text-[#333]">{value}</dd>
+            <dt className="text-[var(--tq-ink-mute)]">{label}</dt>
+            <dd className="min-w-0 break-words font-medium text-[var(--tq-ink)]">{value}</dd>
           </div>)}
         </dl>
       )}
-      {journey && <div className="mt-2 border-t border-[#ededeb] pt-4">
-        <h3 className="text-sm text-[#62625f]">Their path to inquiring</h3>
-        <p className="mt-1 text-sm text-[#41413e]">
+      {journey && <div className="mt-2 border-t border-[var(--tq-surface-2)] pt-4">
+        <h3 className="text-sm text-[var(--tq-ink-mute)]">Their path to inquiring</h3>
+        <p className="mt-1 text-sm text-[var(--tq-ink)]">
           <span className="tabular-nums">{journey.pageViews}</span> {journey.pageViews === 1 ? "page" : "pages"} over <span className="tabular-nums">{journey.visits}</span> {journey.visits === 1 ? "visit" : "visits"}
           {journey.daysToInquire > 0 ? <>, <span className="tabular-nums">{journey.daysToInquire}</span> {journey.daysToInquire === 1 ? "day" : "days"} from first visit</> : ", same day"}
         </p>
         <ol className="mt-4 space-y-0">
           {journey.steps.map((step, i) => <li key={`${step.at}-${i}`}>
-            {journey.hidden > 0 && i === 4 && <p className="py-1.5 pl-5 text-xs text-[#62625f]">… {journey.hidden} more {journey.hidden === 1 ? "page" : "pages"}</p>}
-            {step.newVisit && i > 0 && <p className="mt-2 border-t border-dashed border-[#e5e5e3] pt-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#62625f]">New visit</p>}
+            {journey.hidden > 0 && i === 4 && <p className="py-1.5 pl-5 text-xs text-[var(--tq-ink-mute)]">… {journey.hidden} more {journey.hidden === 1 ? "page" : "pages"}</p>}
+            {step.newVisit && i > 0 && <p className="mt-2 border-t border-dashed border-[var(--tq-surface-2)] pt-2 text-[13px] font-medium text-[var(--tq-ink-mute)]">New visit</p>}
             <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-3 py-1.5 text-sm">
-              <span className="min-w-0 break-words text-[#333]">{step.path}{step.count > 1 && <span className="ml-1 text-xs text-[#62625f]">×{step.count}</span>}</span>
-              <time dateTime={step.at} className="whitespace-nowrap text-xs tabular-nums text-[#62625f]">{when(step.at)}</time>
+              <span className="min-w-0 break-words text-[var(--tq-ink)]">{step.path}{step.count > 1 && <span className="ml-1 text-xs text-[var(--tq-ink-mute)]">×{step.count}</span>}</span>
+              <time dateTime={step.at} className="whitespace-nowrap text-xs tabular-nums text-[var(--tq-ink-mute)]">{when(step.at)}</time>
             </div>
           </li>)}
         </ol>

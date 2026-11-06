@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { StudioPage, StudioSection } from "@/components/admin/StudioPage";
 import { requireAdminPage } from "@/lib/require-admin";
 import { listAvailability, listBookedDates, type AvailabilityRow } from "@/lib/plan-db";
 import { formatPlanDate, todayInDallas } from "@/lib/plan";
@@ -7,11 +7,7 @@ import { BOOKINGS_PER_DATE } from "@/lib/booking-capacity";
 
 export const dynamic = "force-dynamic";
 
-const CHIP: Record<string, string> = {
-  available: "bg-[#e9f1e9] text-[#365c43]",
-  limited: "bg-[#fdf1dd] text-[#76520f]",
-  booked: "bg-[#f8e8e7] text-[#8f4039]",
-};
+const TONE: Record<string, "good" | "urgent" | undefined> = { available: "good", limited: "urgent", booked: "urgent" };
 
 export default async function AdminAvailability() {
   await requireAdminPage("/admin/availability");
@@ -25,55 +21,50 @@ export default async function AdminAvailability() {
   const booked = await listBookedDates().catch(() => []);
 
   return (
-    <main className="mx-auto max-w-[60rem] px-5 pb-24 pt-8 text-[#252525] sm:px-8 lg:pt-11">
-      <div className="border-b border-[#e5e5e3] pb-7">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#62625f]"><Link href="/admin/plans" className="underline">Plans</Link> / Availability</p>
-        <h1 className="mt-3 text-[clamp(1.7rem,2.5vw,2.25rem)] font-normal leading-tight tracking-[-0.035em]">Date availability</h1>
-        <p className="mt-3 max-w-[60ch] text-sm leading-6 text-[#575753]">
-          Every date is <strong>Available</strong> unless you mark it here. A date that already has {BOOKINGS_PER_DATE} live holds or paid bookings always shows as <strong>Booked</strong> on plan pages, no matter what this list says.
-        </p>
-      </div>
+    <StudioPage
+      title="Date availability"
+      back={{ href: "/admin/plans", label: "Plans" }}
+      intro={<>Every date shows as Available unless you mark it here. A date with {BOOKINGS_PER_DATE} live holds or paid bookings always shows as Booked.</>}
+    >
+      {loadError ? <p role="alert" className="st-card m-0 px-5 py-4 text-[15px] text-[var(--tq-status-down)]">{loadError}</p> : null}
 
-      {loadError ? <p role="alert" className="mt-6 rounded-sm border border-[#f0c9c5] bg-[#f8e8e7] px-4 py-3 text-sm text-[#8f4039]">{loadError}</p> : null}
-
-      <section aria-labelledby="set-date" className="mt-8 grid gap-3">
-        <h2 id="set-date" className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#62625f]">Set a date</h2>
+      <StudioSection title="Mark a date">
         <AvailabilityEditor minDate={todayInDallas()} />
-      </section>
+      </StudioSection>
 
-      <section aria-labelledby="marked" className="mt-10">
-        <h2 id="marked" className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#62625f]">Marked dates ({rows.length})</h2>
-        {rows.length ? (
-          <ul className="mt-3 divide-y divide-[#ededeb] border-y border-[#e5e5e3] bg-white">
-            {rows.map((r) => (
-              <li key={r.event_date} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 text-sm">
-                <span className="min-w-0">
-                  <span className="font-medium">{formatPlanDate(r.event_date, "en")}</span>
-                  {r.note ? <span className="block text-xs text-[#696965]">{r.note}</span> : null}
-                </span>
-                <span className="flex items-center gap-3">
-                  <span className={`rounded-full px-2.5 py-1 text-xs font-medium capitalize ${CHIP[r.status]}`}>{r.status}</span>
-                  <ClearDateButton date={r.event_date} />
-                </span>
-              </li>
-            ))}
-          </ul>
-        ) : <p className="mt-3 text-sm text-[#696965]">No dates marked. Everything shows as Available.</p>}
-      </section>
+      <div className="grid items-start gap-6 lg:grid-cols-2">
+        <StudioSection title={`Marked dates (${rows.length})`} id="marked" flush>
+          {rows.length ? (
+            <ul className="m-0 list-none divide-y divide-[var(--tq-surface-2)] border-t border-[var(--tq-surface-2)] p-0">
+              {rows.map((r) => (
+                <li key={r.event_date} className="flex flex-wrap items-center justify-between gap-3 px-5 py-3 text-[15px] sm:px-6">
+                  <span className="min-w-0">
+                    <span className="font-medium">{formatPlanDate(r.event_date, "en")}</span>
+                    {r.note ? <span className="block text-[13px] text-[var(--tq-ink-mute)]">{r.note}</span> : null}
+                  </span>
+                  <span className="flex items-center gap-3">
+                    <span className="st-chip capitalize" data-tone={TONE[r.status]}>{r.status}</span>
+                    <ClearDateButton date={r.event_date} />
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : <p className="st-note px-5 pb-5 sm:px-6">No dates marked. Every date shows as Available.</p>}
+        </StudioSection>
 
-      <section aria-labelledby="held" className="mt-10">
-        <h2 id="held" className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#62625f]">Held or booked in Bookings ({booked.length})</h2>
-        {booked.length ? (
-          <ul className="mt-3 divide-y divide-[#ededeb] border-y border-[#e5e5e3] bg-white">
-            {booked.map((b) => (
-              <li key={`${b.event_date}-${b.status}`} className="flex items-center justify-between gap-3 px-4 py-3 text-sm">
-                <span className="font-medium">{formatPlanDate(b.event_date, "en")}</span>
-                <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${CHIP.booked}`}>{b.status === "paid" ? "Booked (paid)" : "On hold"}</span>
-              </li>
-            ))}
-          </ul>
-        ) : <p className="mt-3 text-sm text-[#696965]">No upcoming holds or paid bookings.</p>}
-      </section>
-    </main>
+        <StudioSection title={`Held or booked (${booked.length})`} id="held" intro="From Bookings. You can't change these here." flush>
+          {booked.length ? (
+            <ul className="m-0 list-none divide-y divide-[var(--tq-surface-2)] border-t border-[var(--tq-surface-2)] p-0">
+              {booked.map((b) => (
+                <li key={`${b.event_date}-${b.status}`} className="flex min-h-12 items-center justify-between gap-3 px-5 py-3 text-[15px] sm:px-6">
+                  <span className="font-medium">{formatPlanDate(b.event_date, "en")}</span>
+                  <span className="st-chip" data-tone={b.status === "paid" ? "good" : "urgent"}>{b.status === "paid" ? "Booked (paid)" : "On hold"}</span>
+                </li>
+              ))}
+            </ul>
+          ) : <p className="st-note px-5 pb-5 sm:px-6">No upcoming holds or paid bookings.</p>}
+        </StudioSection>
+      </div>
+    </StudioPage>
   );
 }

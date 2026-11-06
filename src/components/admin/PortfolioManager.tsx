@@ -869,14 +869,14 @@ export function PortfolioManager({
           multiple
           disabled={busy}
           onChange={(e) => handleFiles(e.target.files)}
-          className="min-h-11 text-base text-ink-soft file:mr-3 file:min-h-11 file:rounded-lg file:border file:border-accent file:bg-white file:px-5 file:py-2 file:text-base file:font-medium file:text-accent"
+          className="min-h-11 w-full max-w-full text-base text-ink-soft file:mr-3 file:min-h-11 file:rounded-lg file:border file:border-accent file:bg-white file:px-5 file:py-2 file:text-base file:font-medium file:text-accent"
         />
         {images.some((i) => !i.width || !i.height) ? (
           <button
             type="button"
             onClick={backfillDimensions}
             disabled={busy}
-            className="min-h-11 rounded-lg border border-line px-4 py-2 text-base font-medium text-ink-soft transition-colors hover:border-accent hover:text-accent disabled:opacity-50"
+            className="st-btn-ghost disabled:opacity-50"
             title="Read sizes for older images so the public grid loads without shifting"
           >
             Fix image sizes
@@ -887,7 +887,7 @@ export function PortfolioManager({
             type="button"
             onClick={describeBlankAlts}
             disabled={busy}
-            className="min-h-11 rounded-lg border border-line px-4 py-2 text-base font-medium text-ink-soft transition-colors hover:border-accent hover:text-accent disabled:opacity-50"
+            className="st-btn-ghost disabled:opacity-50"
             title="Draft alt text with AI for every image still missing it (you can edit after)"
           >
             Write blank alt text
@@ -898,7 +898,7 @@ export function PortfolioManager({
             type="button"
             onClick={aiWriteAll}
             disabled={busy}
-            className="min-h-11 rounded-lg border border-accent/40 px-4 py-2 text-base font-medium text-accent transition-colors hover:border-accent hover:bg-accent hover:text-cream disabled:opacity-50"
+            className="st-btn-ghost disabled:opacity-50"
             title="Use AI to (re)write alt, SEO description, hook, and tags for every image — maximum image SEO"
           >
             AI: full SEO (all)
@@ -1028,7 +1028,7 @@ export function PortfolioManager({
                         disabled={describing.has(img.id)}
                         title="Draft alt text with AI (you can edit it)"
                         aria-label="Draft alt text with AI"
-                        className="min-h-11 min-w-11 shrink-0 rounded-lg border border-line px-2 py-1 text-sm font-medium text-ink-soft transition-colors hover:border-accent hover:text-accent disabled:opacity-40"
+                        className="st-btn-ghost min-w-11 !px-3 shrink-0 disabled:opacity-40"
                       >
                         {describing.has(img.id) ? "…" : "AI"}
                       </button>
@@ -1054,7 +1054,7 @@ export function PortfolioManager({
                         disabled={describing.has(img.id)}
                         title="Draft an SEO description with AI (you can edit it)"
                         aria-label="Draft SEO description with AI"
-                        className="min-h-11 min-w-11 shrink-0 rounded-lg border border-line px-2 py-1 text-sm font-medium text-ink-soft transition-colors hover:border-accent hover:text-accent disabled:opacity-40"
+                        className="st-btn-ghost min-w-11 !px-3 shrink-0 disabled:opacity-40"
                       >
                         {describing.has(img.id) ? "…" : "AI"}
                       </button>
@@ -1078,7 +1078,7 @@ export function PortfolioManager({
                         disabled={describing.has(img.id)}
                         title="Draft a hook with AI (you can edit it)"
                         aria-label="Draft hook with AI"
-                        className="min-h-11 min-w-11 shrink-0 rounded-lg border border-line px-2 py-1 text-sm font-medium text-ink-soft transition-colors hover:border-accent hover:text-accent disabled:opacity-40"
+                        className="st-btn-ghost min-w-11 !px-3 shrink-0 disabled:opacity-40"
                       >
                         {describing.has(img.id) ? "…" : "AI"}
                       </button>
@@ -1102,7 +1102,7 @@ export function PortfolioManager({
                         disabled={describing.has(img.id)}
                         title="Draft keyword tags with AI (you can edit them)"
                         aria-label="Draft keyword tags with AI"
-                        className="min-h-11 min-w-11 shrink-0 rounded-lg border border-line px-2 py-1 text-sm font-medium text-ink-soft transition-colors hover:border-accent hover:text-accent disabled:opacity-40"
+                        className="st-btn-ghost min-w-11 !px-3 shrink-0 disabled:opacity-40"
                       >
                         {describing.has(img.id) ? "…" : "AI"}
                       </button>
@@ -1167,7 +1167,7 @@ export function PortfolioManager({
                         <button
                           onClick={() => move(s.value, i, -1)}
                           disabled={i === 0}
-                          className="grid h-11 w-11 place-items-center rounded-lg border border-line text-ink-soft disabled:opacity-30"
+                          className="st-btn-ghost w-11 !px-0 disabled:opacity-30"
                           aria-label="Move up"
                         >
                           ↑
@@ -1175,14 +1175,14 @@ export function PortfolioManager({
                         <button
                           onClick={() => move(s.value, i, 1)}
                           disabled={i === grouped[s.value].length - 1}
-                          className="grid h-11 w-11 place-items-center rounded-lg border border-line text-ink-soft disabled:opacity-30"
+                          className="st-btn-ghost w-11 !px-0 disabled:opacity-30"
                           aria-label="Move down"
                         >
                           ↓
                         </button>
                         <button
                           onClick={() => remove(img.id)}
-                          className="grid h-11 w-11 place-items-center rounded-lg border border-line text-accent"
+                          className="st-btn-ghost w-11 !px-0"
                           aria-label="Delete"
                         >
                           ✕

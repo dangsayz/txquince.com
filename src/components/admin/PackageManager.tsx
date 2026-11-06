@@ -176,7 +176,7 @@ function ListEditor({
                   [next[i - 1], next[i]] = [next[i], next[i - 1]];
                   onChange(next);
                 }}
-                className="min-h-11 whitespace-nowrap rounded-lg border border-[#c9cac7] px-4 text-sm disabled:opacity-40"
+                className="st-btn-ghost disabled:opacity-40"
               >
                 Move up
               </button>
@@ -184,7 +184,7 @@ function ListEditor({
                 type="button"
                 disabled={items.length <= min}
                 onClick={() => onChange(items.filter((_, j) => j !== i))}
-                className="min-h-11 whitespace-nowrap rounded-lg border border-[#c9cac7] px-4 text-sm disabled:opacity-40"
+                className="st-btn-ghost disabled:opacity-40"
               >
                 Remove
               </button>
@@ -196,7 +196,7 @@ function ListEditor({
         type="button"
         disabled={items.length >= max}
         onClick={() => onChange([...items, { en: "", es: "" }])}
-        className="mt-3 min-h-11 whitespace-nowrap rounded-lg border border-ink px-4 text-sm font-medium text-ink disabled:opacity-40"
+        className="st-btn-ghost mt-3 disabled:opacity-40"
       >
         Add a line
       </button>
@@ -234,7 +234,7 @@ function Row({ label, value, empty = "Empty: not shown", bad, children }: { labe
 function Group({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="min-w-0">
-      <h2 className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-soft">{title}</h2>
+      <h2 className="st-h2">{title}</h2>
       <div className="mt-2 rounded-xl border border-line bg-white px-4">{children}</div>
     </section>
   );
@@ -264,16 +264,16 @@ function Preview({ book, tier }: { book: PriceBook; tier: PublicTierId }) {
           ))}
         </div>
       </div>
-      <h3 className="mt-4 text-xs font-semibold uppercase tracking-[0.12em] text-ink-soft">Package card</h3>
+      <h3 className="mt-4 text-[15px] font-semibold">Package card</h3>
       <p className="mt-1 text-[15px] leading-relaxed text-ink">{tierSummary(book, tier)[lang]}</p>
       <ul className="mt-2 list-disc pl-5 text-[15px] leading-relaxed text-ink">
         {tierBullets(book, tier).map((b, i) => (
           <li key={i}>{b[lang]}</li>
         ))}
       </ul>
-      <h3 className="mt-4 text-xs font-semibold uppercase tracking-[0.12em] text-ink-soft">Home page line</h3>
+      <h3 className="mt-4 text-[15px] font-semibold">Home page line</h3>
       <p className="mt-1 text-[15px] text-ink">{tierDetail(book, tier)[lang]}</p>
-      <h3 className="mt-4 text-xs font-semibold uppercase tracking-[0.12em] text-ink-soft">Comparison table</h3>
+      <h3 className="mt-4 text-[15px] font-semibold">Comparison table</h3>
       <dl className="mt-1 grid gap-1 text-[15px]">
         {table.map((r) => (
           <div key={r.label.en} className="grid grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-3">
@@ -284,7 +284,7 @@ function Preview({ book, tier }: { book: PriceBook; tier: PublicTierId }) {
       </dl>
       {budget ? (
         <>
-          <h3 className="mt-4 text-xs font-semibold uppercase tracking-[0.12em] text-ink-soft">Budget page · what you get</h3>
+          <h3 className="mt-4 text-[15px] font-semibold">Budget page · what you get</h3>
           <ul className="mt-1 grid gap-1 text-[15px]">
             {budget.included.map((l, i) => (
               <li key={i}>
@@ -419,7 +419,8 @@ export function PackageManager({ initial }: { initial: PricesSnapshot }) {
                 setTab(id);
                 setLastTier(id);
               }}
-              className={`min-h-11 shrink-0 whitespace-nowrap rounded-lg border px-4 text-[15px] ${tab === id ? "border-ink bg-ink text-white" : "border-[#c9cac7] bg-white text-ink"}`}
+              data-on={tab === id || undefined}
+              className="st-filter shrink-0"
             >
               {TIER_NAME_EN[id]}
               {badTiers.has(id) ? <span className="ml-1.5 text-red-300" aria-label="has a problem"> •</span> : null}
@@ -430,7 +431,8 @@ export function PackageManager({ initial }: { initial: PricesSnapshot }) {
             role="tab"
             aria-selected={tab === "extras"}
             onClick={() => setTab("extras")}
-            className={`min-h-11 shrink-0 whitespace-nowrap rounded-lg border px-4 text-[15px] ${tab === "extras" ? "border-ink bg-ink text-white" : "border-dashed border-[#c9cac7] bg-white text-ink"}`}
+            data-on={tab === "extras" || undefined}
+            className="st-filter shrink-0"
           >
             For every package
             {errors.sessionPhotos || Object.keys(errors).some((k) => k.startsWith("addOnNotes")) ? <span className="ml-1.5 text-red-300" aria-label="has a problem"> •</span> : null}
@@ -478,7 +480,7 @@ export function PackageManager({ initial }: { initial: PricesSnapshot }) {
         <div className="flex min-w-0 flex-col gap-6">
           {/* Quick facts: the most-edited fields, first. */}
           <section aria-labelledby="pk-quick" className="rounded-xl border border-line bg-white p-4 sm:p-5">
-            <h2 id="pk-quick" className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-soft">
+            <h2 id="pk-quick" className="st-h2">
               Quick facts · {TIER_NAME_EN[tier]}
             </h2>
             <div className="mt-3 grid gap-4 sm:grid-cols-2">
@@ -561,7 +563,7 @@ export function PackageManager({ initial }: { initial: PricesSnapshot }) {
           <button
             type="button"
             onClick={() => update((w) => void (w.content[tier] = structuredClone(snap.defaults.content[tier])))}
-            className="min-h-11 self-start whitespace-nowrap rounded-lg border border-[#c9cac7] px-4 text-sm text-ink"
+            className="st-btn-ghost max-w-full self-start whitespace-normal py-2 text-left"
           >
             Reset {TIER_NAME_EN[tier]} to launch wording
           </button>
@@ -574,7 +576,7 @@ export function PackageManager({ initial }: { initial: PricesSnapshot }) {
               type="button"
               aria-expanded={showPreview}
               onClick={() => setShowPreview((v) => !v)}
-              className="min-h-11 w-full whitespace-nowrap rounded-lg border border-[#c9cac7] bg-white px-4 text-[15px] text-ink lg:hidden"
+              className="st-btn-ghost w-full lg:hidden"
             >
               {showPreview ? "Hide preview" : "Show preview"}
             </button>
@@ -589,7 +591,7 @@ export function PackageManager({ initial }: { initial: PricesSnapshot }) {
         ) : null}
 
         {/* Save bar: sticky on small screens so the main action stays in thumb reach. */}
-        <div className="sticky bottom-0 z-20 -mx-5 border-t border-line bg-white/95 px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 shadow-[0_-8px_24px_rgba(0,0,0,0.06)] backdrop-blur sm:-mx-8 sm:px-8 lg:col-span-2 lg:-mx-12 lg:px-12">
+        <div className="sticky bottom-0 z-20 -mx-4 sm:-mx-8 border-t border-line bg-white px-4 sm:px-8 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 shadow-[0_-8px_24px_rgba(0,0,0,0.06)] lg:col-span-2">
           {message ? (
             <p role={message.kind === "error" ? "alert" : "status"} className={`mb-3 text-[15px] font-medium ${message.kind === "error" ? "text-red-800" : "text-green-800"}`}>
               {message.text}
@@ -606,10 +608,10 @@ export function PackageManager({ initial }: { initial: PricesSnapshot }) {
                 ))}
               </ul>
               <div className="mt-4 flex flex-wrap gap-3">
-                <button type="button" onClick={save} disabled={saving} className="min-h-12 whitespace-nowrap rounded-lg bg-ink px-6 text-base font-medium text-white disabled:opacity-50">
+                <button type="button" onClick={save} disabled={saving} className="st-btn disabled:opacity-50">
                   {saving ? "Saving…" : "Yes, save"}
                 </button>
-                <button type="button" onClick={() => setConfirming(false)} disabled={saving} className="min-h-12 whitespace-nowrap rounded-lg border border-ink px-5 text-base font-medium text-ink">
+                <button type="button" onClick={() => setConfirming(false)} disabled={saving} className="st-btn-ghost">
                   Cancel
                 </button>
               </div>
@@ -619,7 +621,7 @@ export function PackageManager({ initial }: { initial: PricesSnapshot }) {
               <button
                 type="submit"
                 disabled={!book || !changes.length || !canWrite}
-                className="min-h-12 whitespace-nowrap rounded-lg bg-ink px-6 text-base font-medium text-white disabled:opacity-40"
+                className="st-btn disabled:opacity-40"
               >
                 Save wording
               </button>
@@ -630,7 +632,7 @@ export function PackageManager({ initial }: { initial: PricesSnapshot }) {
                     setDraft(wordingOf(snap.book));
                     setConfirming(false);
                   }}
-                  className="min-h-12 whitespace-nowrap rounded-lg border border-[#c9cac7] px-5 text-base text-ink"
+                  className="st-btn-ghost"
                 >
                   Undo my edits
                 </button>
@@ -649,7 +651,7 @@ export function PackageManager({ initial }: { initial: PricesSnapshot }) {
 
       <details className="group mt-12 border-t border-line pt-7" aria-labelledby="pk-history">
         <summary className="flex min-h-11 cursor-pointer list-none items-center gap-3 [&::-webkit-details-marker]:hidden">
-          <h2 id="pk-history" className="text-lg font-medium tracking-[-0.02em] text-ink">
+          <h2 id="pk-history" className="st-h2">
             History
           </h2>
           <span className="text-sm text-ink-soft">Saves from this page and the Prices page</span>

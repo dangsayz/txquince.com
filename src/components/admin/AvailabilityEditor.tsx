@@ -52,14 +52,14 @@ export function AvailabilityEditor({ minDate }: { minDate: string }) {
     router.refresh();
   }
 
-  const field = "min-h-11 w-full rounded-sm border border-[#dcdcd9] bg-white px-3 text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#252525]";
+  const field = "st-input w-full";
   return (
-    <form onSubmit={save} className="grid gap-5 border border-[#e5e5e3] bg-white p-5">
+    <form onSubmit={save} className="grid gap-5">
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="grid gap-1.5 text-sm font-medium">Date (or start of a range)
           <input type="date" min={minDate} value={from} onChange={(e) => setFrom(e.target.value)} className={field} required />
         </label>
-        <label className="grid gap-1.5 text-sm font-medium">Through <span className="font-normal text-[#696965]">— optional, for a range</span>
+        <label className="grid gap-1.5 text-sm font-medium">Through <span className="font-normal text-[var(--tq-ink-mute)]">— optional, for a range</span>
           <input type="date" min={from || minDate} value={to} onChange={(e) => setTo(e.target.value)} className={field} />
         </label>
       </div>
@@ -73,22 +73,22 @@ export function AvailabilityEditor({ minDate }: { minDate: string }) {
         <legend className="mb-1 text-sm font-medium">Status</legend>
         <div className="flex flex-wrap gap-2">
           {STATUS.map((s) => (
-            <label key={s.id} className={`inline-flex min-h-11 cursor-pointer items-center rounded-full border px-4 text-sm ${status === s.id ? "border-[#252525] bg-[#252525] text-white" : "border-[#dcdcd9]"}`}>
+            <label key={s.id} data-on={status === s.id || undefined} className="st-filter cursor-pointer has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[var(--tq-ink)]">
               <input type="radio" name="status" value={s.id} checked={status === s.id} onChange={() => setStatus(s.id)} className="sr-only" />
               {s.label}
             </label>
           ))}
         </div>
-        <p className="text-xs text-[#696965]">{STATUS.find((s) => s.id === status)?.hint}</p>
+        <p className="text-[13px] text-[var(--tq-ink-mute)]">{STATUS.find((s) => s.id === status)?.hint}</p>
       </fieldset>
-      <label className="grid gap-1.5 text-sm font-medium">Private note <span className="font-normal text-[#696965]">— optional, never shown to families</span>
+      <label className="grid gap-1.5 text-sm font-medium">Private note <span className="font-normal text-[var(--tq-ink-mute)]">— optional, never shown to families</span>
         <input type="text" maxLength={200} value={note} onChange={(e) => setNote(e.target.value)} className={field} placeholder="e.g. second shooter only" />
       </label>
       <div className="flex flex-wrap items-center gap-4">
-        <button type="submit" disabled={busy} className="min-h-12 rounded-sm bg-[#242424] px-5 text-sm font-medium text-white hover:bg-[#444] disabled:opacity-50">
+        <button type="submit" disabled={busy} className="st-btn">
           {busy ? "Saving…" : dates.length > 1 ? `Save ${dates.length} dates` : "Save"}
         </button>
-        {msg ? <p role={msg.ok ? "status" : "alert"} className={`text-sm ${msg.ok ? "text-[#365c43]" : "text-[#8f4039]"}`}>{msg.text}</p> : null}
+        {msg ? <p role={msg.ok ? "status" : "alert"} className={`text-sm ${msg.ok ? "text-[var(--tq-status-open)]" : "text-[var(--tq-status-down)]"}`}>{msg.text}</p> : null}
       </div>
     </form>
   );
@@ -112,7 +112,7 @@ export function ClearDateButton({ date }: { date: string }) {
         router.refresh();
       }}
       aria-label={`Clear ${date} back to available`}
-      className="min-h-11 rounded-sm border border-[#dcdcd9] px-3 text-sm hover:border-[#252525] disabled:opacity-50"
+      className="st-btn-ghost"
     >
       {busy ? "…" : "Clear"}
     </button>

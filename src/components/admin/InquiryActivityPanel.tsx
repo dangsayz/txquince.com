@@ -43,10 +43,10 @@ export function InquiryActivityPanel({ inquiryId, activity, canSchedule }: { inq
 
   return (
     <div className="space-y-7">
-      {error && <p role="alert" className="border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{error}</p>}
-      <section className="border border-line bg-white" aria-labelledby="follow-ups-title">
+      {error && <p role="alert" className="st-card m-0 px-5 py-4 text-[15px] text-[var(--tq-status-down)]">{error}</p>}
+      <section className="st-card" aria-labelledby="follow-ups-title">
         <div className="flex items-center justify-between border-b border-line px-5 py-4 sm:px-6">
-          <h2 id="follow-ups-title" className="text-base font-medium text-ink">Follow-ups</h2>
+          <h2 id="follow-ups-title" className="st-h2">Follow-ups</h2>
           <span className="text-xs tabular-nums text-ink-faint">{openReminders.length} planned</span>
         </div>
         {openReminders.length ? (
@@ -57,15 +57,15 @@ export function InquiryActivityPanel({ inquiryId, activity, canSchedule }: { inq
                   <p className="text-sm font-medium text-ink">{row.note || "Follow up with client"}</p>
                   <p className="mt-1 text-xs text-ink-soft">{row.due_at ? `Due ${new Date(row.due_at).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short", timeZone: "America/Chicago" })}` : "Date to set"}</p>
                 </div>
-                <button type="button" disabled={pending} onClick={() => void complete(row.id)} className="min-h-11 border border-line px-4 text-sm font-medium text-ink hover:border-ink disabled:opacity-50">Mark complete</button>
+                <button type="button" disabled={pending} onClick={() => void complete(row.id)} className="st-btn-ghost">Mark complete</button>
               </li>
             ))}
           </ul>
         ) : <p className="px-5 py-5 text-sm text-ink-soft sm:px-6">No follow-up planned yet.</p>}
       </section>
 
-      <section className="border border-line bg-white px-5 py-5 sm:px-6" aria-labelledby="record-title">
-        <h2 id="record-title" className="text-base font-medium text-ink">Record activity</h2>
+      <section className="st-card px-5 py-5 sm:px-6" aria-labelledby="record-title">
+        <h2 id="record-title" className="st-h2">Record activity</h2>
         <p className="mt-1 text-sm text-ink-soft">This is an internal record. It does not send a message to the client.</p>
         <form onSubmit={(event) => void save(event)} className="mt-5 space-y-4">
           <div className="flex flex-wrap gap-5 border-b border-line">
@@ -75,16 +75,16 @@ export function InquiryActivityPanel({ inquiryId, activity, canSchedule }: { inq
           </div>
           <div>
             <label htmlFor="activity-note" className="block text-sm font-medium text-ink">{kind === "contact" ? "What happened? (optional)" : kind === "reminder" ? "What should happen next? (optional)" : "Note"}</label>
-            <textarea id="activity-note" value={note} onChange={(event) => setNote(event.target.value)} required={kind === "note"} maxLength={2000} rows={4} className="mt-2 w-full border border-line bg-white p-3 text-base text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink" placeholder={kind === "contact" ? "Called, emailed, or spoke in person…" : "Add helpful context for next time…"} />
+            <textarea id="activity-note" value={note} onChange={(event) => setNote(event.target.value)} required={kind === "note"} maxLength={2000} rows={4} className="st-input mt-2 w-full py-3 text-base text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink" placeholder={kind === "contact" ? "Called, emailed, or spoke in person…" : "Add helpful context for next time…"} />
           </div>
-          {kind === "reminder" && <div><label htmlFor="activity-due" className="block text-sm font-medium text-ink">Follow-up date and time</label><input id="activity-due" type="datetime-local" value={due} onChange={(event) => setDue(event.target.value)} required className="mt-2 min-h-11 w-full border border-line bg-white px-3 text-base text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink sm:w-auto" /></div>}
-          <button type="submit" disabled={pending || (kind === "reminder" && !due) || (kind === "note" && !note.trim())} className="min-h-12 rounded-sm !bg-[#242424] !px-5 text-sm font-medium !text-white hover:!bg-[#444] disabled:opacity-60">{pending ? "Saving…" : "Save activity"}</button>
+          {kind === "reminder" && <div><label htmlFor="activity-due" className="block text-sm font-medium text-ink">Follow-up date and time</label><input id="activity-due" type="datetime-local" value={due} onChange={(event) => setDue(event.target.value)} required className="st-input mt-2 w-full border border-line bg-white px-3 text-base text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink sm:w-auto" /></div>}
+          <button type="submit" disabled={pending || (kind === "reminder" && !due) || (kind === "note" && !note.trim())} className="st-btn">{pending ? "Saving…" : "Save activity"}</button>
         </form>
       </section>
 
-      <section className="border border-line bg-white px-5 py-5 sm:px-6" aria-labelledby="activity-title">
+      <section className="st-card px-5 py-5 sm:px-6" aria-labelledby="activity-title">
         <div className="flex items-center justify-between">
-          <h2 id="activity-title" className="text-base font-medium text-ink">Activity</h2>
+          <h2 id="activity-title" className="st-h2">Activity</h2>
           <span className="text-xs tabular-nums text-ink-faint">{history.length} entries</span>
         </div>
         {history.length ? (

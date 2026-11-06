@@ -41,7 +41,7 @@ Claude is design + frontend lead for every page, template and rewrite here. Neve
 6. **Motion** — transitions.dev patterns only; `--tq-ease` / `--tq-dur-*`; honor `prefers-reduced-motion`; never `transition: all`.
 7. **web-design-guidelines** (Vercel) on changed files: a11y, focus, forms, images, CLS. Plus the web design standard gates above.
 8. **Impeccable critique** (`npx impeccable detect` on the running page) before done. If it still looks template, it doesn't ship.
-Admin ("TX Quince Studio") pages use the same kit through `src/app/admin/studio.css`: `.st-card` (the only card), `.st-btn` (carbon pill, primary), `.st-btn-ghost` (outline pill), `.st-link`, `.st-label`, and `ArrowIcon`/`MenuIcon` from `components/admin/StudioIcons.tsx`. The full process for a redesign is `/redesign`.
+Admin ("TX Quince Studio") pages use the same kit through `src/app/admin/studio.css`: `.st-card` (the only card), `.st-btn` (carbon pill, primary), `.st-btn-ghost` (outline pill), `.st-link`, `.st-h1`/`.st-h2`, `.st-tabs`, `.st-filter`, `.st-chip`, `.st-table`, `.st-input`, and `ArrowIcon`/`MenuIcon` from `components/admin/StudioIcons.tsx`. Every admin page wraps in `<StudioPage>` (title, one plain sentence, actions; no label above the title) and sections in `<StudioSection>`; charts use `<StudioBars>`. Today = what needs you; Insights = numbers + Ideas board; Website = hub of everything editable. The full process for a redesign is `/redesign`.
 
 9. **Done** only when: brand kit used, Mobbin cited, guidelines clean, no AI slop. Never invent brand facts, prices or testimonials. If a skill fails, name it and continue.
 

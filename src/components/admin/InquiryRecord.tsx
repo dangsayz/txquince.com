@@ -21,19 +21,17 @@ import { venues } from "@/content/venues";
 type Tone = "urgent" | "due" | "calm" | "done" | "stop";
 
 const TONE: Record<Tone, { band: string; pill: string }> = {
-  urgent: { band: "border-[#c0574d] bg-[#fbf0ef]", pill: "bg-[#f8e8e7] text-[#8f4039]" },
-  due: { band: "border-[#b98a2c] bg-[#fdf6e8]", pill: "bg-[#fdf1dd] text-[#76520f]" },
-  calm: { band: "border-[#c9c9c4] bg-white", pill: "bg-[#f0f0ee] text-[#555550]" },
-  done: { band: "border-[#6f9a7c] bg-[#f2f7f2]", pill: "bg-[#e9f1e9] text-[#365c43]" },
-  stop: { band: "border-[#a96c30] bg-[#f9f2e9]", pill: "bg-[#f9f2e9] text-[#65451e]" },
+  urgent: { band: "st-card", pill: "urgent" },
+  due: { band: "st-card", pill: "urgent" },
+  calm: { band: "st-card", pill: "" },
+  done: { band: "st-card", pill: "good" },
+  stop: { band: "st-card", pill: "" },
 };
 
-const btn =
-  "inline-flex min-h-12 items-center justify-center gap-2 whitespace-nowrap rounded-sm px-5 text-sm font-medium transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#252525]";
 // `!text-white`: the site sheet sets `.txq :where(a) { color: inherit }`, unlayered, which beats
 // Tailwind's layered text colors on links. Without it the label is dark on dark.
-const btnPrimary = `${btn} bg-[#242424] !text-white hover:bg-[#444]`;
-const btnGhost = `${btn} border border-[#cfcfcb] bg-white text-[#252525] hover:border-[#252525]`;
+const btnPrimary = "st-btn";
+const btnGhost = "st-btn-ghost bg-white";
 
 function firstName(name: string): string {
   return name.trim().split(/\s+/)[0] || name;
@@ -128,50 +126,50 @@ export function InquiryRecord({
   ].filter(([, v]) => v) as [string, string][];
 
   return (
-    <main className="mx-auto max-w-[86rem] px-5 pb-24 pt-8 text-[#252525] sm:px-8 lg:px-12 lg:pt-11">
-      <Link href="/admin/inquiries" className="inline-flex min-h-11 items-center text-sm text-[#5f5f5b] hover:text-[#252525] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#252525]">← All inquiries</Link>
+    <main className="mx-auto max-w-[72rem] px-4 pb-20 pt-8 sm:px-8 lg:pt-12">
+      <Link href="/admin/inquiries" className="st-link -mt-2 text-[var(--tq-ink-mute)]"><span aria-hidden="true">←</span> All inquiries</Link>
 
       {/* Who and when */}
-      <header className="mt-4">
+      <header className="mt-1">
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <h1 className="min-w-0 break-words text-[clamp(1.8rem,3vw,2.5rem)] font-normal leading-[1.15] tracking-[-0.04em]">{inquiry.name}</h1>
-          <span className={`inline-flex whitespace-nowrap rounded-full px-3 py-1 text-xs font-medium ${TONE[tone].pill}`}>{status}</span>
+          <h1 className="st-h1 min-w-0 break-words">{inquiry.name}</h1>
+          <span className="st-chip" data-tone={TONE[tone].pill || undefined}>{status}</span>
         </div>
-        <p className="mt-2 text-sm text-[#5f5f5b]">
+        <p className="mt-2 text-sm text-[var(--tq-ink-mute)]">
           Received <time dateTime={inquiry.created_at}>{received}</time>
           <span aria-hidden> · </span>
-          <span className="font-medium text-[#252525]">{waited === "Just now" ? "just now" : `${waited} ago`}</span>
+          <span className="font-medium text-[var(--tq-ink)]">{waited === "Just now" ? "just now" : `${waited} ago`}</span>
         </p>
       </header>
 
       {/* What to do now */}
-      <section aria-labelledby="next-title" className={`mt-6 border-l-[3px] px-5 py-5 sm:px-6 ${TONE[tone].band}`}>
-        <h2 id="next-title" className="text-lg font-medium tracking-[-0.02em]">{headline}</h2>
-        <p className="mt-1 text-sm text-[#4d4d49]">{detail}</p>
+      <section aria-labelledby="next-title" className={`mt-8 px-5 py-5 sm:px-6 ${TONE[tone].band}`}>
+        <h2 id="next-title" className="st-h2">{headline}</h2>
+        <p className="mt-1 text-sm text-[var(--tq-ink-mute)]">{detail}</p>
         {canContact && inquiry.status !== "lost" ? (
           <>
-            <div className="mt-4 flex flex-wrap gap-2">
+            <div className="mt-4 flex flex-wrap gap-3">
               <a href={mailto} className={btnPrimary}>Email {name} ↗</a>
               {digits ? <a href={`sms:+${digits}?&body=${encodeURIComponent(text)}`} className={btnGhost}>Text</a> : null}
               {digits ? <a href={`tel:+${digits}`} className={btnGhost}>Call</a> : null}
               {digits ? <a href={`https://wa.me/${digits}?text=${encodeURIComponent(text)}`} target="_blank" rel="noopener noreferrer" className={btnGhost}>WhatsApp ↗</a> : null}
             </div>
-            {!lastContact ? <p className="mt-3 text-xs text-[#5f5f5b]">Email and text open pre-written. After you reach out, log it under Record activity so the clock stops.</p> : null}
+            {!lastContact ? <p className="mt-3 text-[13px] text-[var(--tq-ink-mute)]">Email and text open pre-written. After you reach out, log it under Record activity so the clock stops.</p> : null}
           </>
         ) : null}
       </section>
 
       {/* The celebration at a glance */}
-      <dl className="mt-8 grid grid-cols-2 border-y border-[#e5e5e3] md:grid-cols-4">
-        {facts.map((f, i) => (
-          <div key={f.label} className={`min-w-0 py-4 pr-4 ${i % 2 ? "pl-4 border-l border-[#ededeb]" : ""} ${i > 1 ? "border-t border-[#ededeb] md:border-t-0" : ""} ${i === 2 ? "md:border-l md:pl-4" : ""}`}>
-            <dt className="text-xs text-[#5f5f5b]">{f.label}</dt>
+      <dl className="st-card m-0 mt-6 grid grid-cols-2 gap-px overflow-hidden bg-[var(--tq-surface-2)] md:grid-cols-4">
+        {facts.map((f) => (
+          <div key={f.label} className="min-w-0 bg-white px-5 py-4">
+            <dt className="text-[13px] text-[var(--tq-ink-mute)]">{f.label}</dt>
             <dd className="mt-1 break-words text-base font-medium leading-snug">{f.value}</dd>
             {f.sub ? (
               f.href ? (
-                <dd><Link href={f.href} className="mt-1 inline-flex min-h-11 items-center text-xs text-[#5f5f5b] underline underline-offset-4 hover:text-[#252525]">{f.sub}</Link></dd>
+                <dd><Link href={f.href} className="mt-1 inline-flex min-h-11 items-center text-[13px] text-[var(--tq-ink-mute)] underline underline-offset-4 hover:text-[var(--tq-ink)]">{f.sub}</Link></dd>
               ) : (
-                <dd className="mt-1 text-xs text-[#5f5f5b]">{f.sub}</dd>
+                <dd className="mt-1 text-[13px] text-[var(--tq-ink-mute)]">{f.sub}</dd>
               )
             ) : null}
           </div>
@@ -179,38 +177,37 @@ export function InquiryRecord({
       </dl>
 
       {inquiry.message ? (
-        <figure className="mt-8 max-w-3xl">
-          <figcaption className="text-xs text-[#5f5f5b]">Their message</figcaption>
-          <blockquote className="mt-2 whitespace-pre-wrap break-words border-l-2 border-[#d6d6d2] pl-4 text-base leading-7 text-[#3a3a37]">{inquiry.message}</blockquote>
+        <figure className="st-card m-0 mt-6 px-5 py-5 sm:px-6">
+          <figcaption className="st-h2">Their message</figcaption>
+          <blockquote className="m-0 mt-3 max-w-[44rem] whitespace-pre-wrap break-words text-[17px] leading-7">{inquiry.message}</blockquote>
         </figure>
       ) : null}
 
-      <div className="mt-10 grid items-start gap-10 xl:grid-cols-[minmax(0,1.5fr)_minmax(19rem,0.8fr)]">
+      <div className="mt-6 grid items-start gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(18rem,1fr)]">
         <div>
-          <h2 className="mb-4 text-lg font-medium tracking-[-0.02em]">Activity</h2>
           <InquiryActivityPanel inquiryId={inquiry.id} activity={activity} canSchedule={canSchedule} />
         </div>
 
-        <aside className="space-y-8">
+        <aside className="st-card grid gap-8 px-5 py-5 sm:px-6">
           <section aria-labelledby="contact-title">
-            <h2 id="contact-title" className="text-base font-medium tracking-[-0.02em]">Contact</h2>
-            <dl className="mt-3 divide-y divide-[#ededeb] border-y border-[#ededeb] text-sm">
+            <h2 id="contact-title" className="st-h2">Contact</h2>
+            <dl className="mt-3 divide-y divide-[var(--tq-surface-2)] border-y border-[var(--tq-surface-2)] text-sm">
               <div className="grid gap-1 py-3 sm:grid-cols-[7rem_minmax(0,1fr)] sm:gap-3">
-                <dt className="text-[#5f5f5b]">Email</dt>
+                <dt className="text-[var(--tq-ink-mute)]">Email</dt>
                 <dd className="min-w-0 break-all font-medium"><a href={`mailto:${inquiry.email}`} className="hover:underline">{inquiry.email}</a></dd>
               </div>
               <div className="grid gap-1 py-3 sm:grid-cols-[7rem_minmax(0,1fr)] sm:gap-3">
-                <dt className="text-[#5f5f5b]">Phone</dt>
+                <dt className="text-[var(--tq-ink-mute)]">Phone</dt>
                 <dd className="font-medium tabular-nums">{inquiry.phone ? (digits ? <a href={`tel:+${digits}`} className="hover:underline">{formatPhone(inquiry.phone)}</a> : inquiry.phone) : "Not given"}</dd>
               </div>
               {inquiry.referral ? (
                 <div className="grid gap-1 py-3 sm:grid-cols-[7rem_minmax(0,1fr)] sm:gap-3">
-                  <dt className="text-[#5f5f5b]">Heard about us</dt>
+                  <dt className="text-[var(--tq-ink-mute)]">Heard about us</dt>
                   <dd className="min-w-0 break-words font-medium">{inquiry.referral}</dd>
                 </div>
               ) : null}
               <div className="grid gap-1 py-3 sm:grid-cols-[7rem_minmax(0,1fr)] sm:gap-3">
-                <dt className="text-[#5f5f5b]">Last contact</dt>
+                <dt className="text-[var(--tq-ink-mute)]">Last contact</dt>
                 <dd className="font-medium">{lastContact ? `${dallasDateTime(lastContact.created_at)} (${waitLabel(lastContact.created_at, now)} ago)` : "Not recorded"}</dd>
               </div>
             </dl>
@@ -218,11 +215,11 @@ export function InquiryRecord({
 
           {originPanel ?? (source.length ? (
             <section aria-labelledby="source-title">
-              <h2 id="source-title" className="text-base font-medium tracking-[-0.02em]">Where they came from</h2>
-              <dl className="mt-3 divide-y divide-[#ededeb] border-y border-[#ededeb] text-sm">
+              <h2 id="source-title" className="st-h2">Where they came from</h2>
+              <dl className="mt-3 divide-y divide-[var(--tq-surface-2)] border-y border-[var(--tq-surface-2)] text-sm">
                 {source.map(([label, value]) => (
                   <div key={label} className="grid gap-1 py-3 sm:grid-cols-[7rem_minmax(0,1fr)] sm:gap-3">
-                    <dt className="text-[#5f5f5b]">{label}</dt>
+                    <dt className="text-[var(--tq-ink-mute)]">{label}</dt>
                     <dd className="min-w-0 break-words font-medium">{value}</dd>
                   </div>
                 ))}
@@ -231,8 +228,8 @@ export function InquiryRecord({
           ) : null)}
 
           <section aria-labelledby="pipeline-title">
-            <h2 id="pipeline-title" className="text-base font-medium tracking-[-0.02em]">Booked or closed?</h2>
-            <p className="mt-1 text-sm text-[#5f5f5b]">Update when the family books or decides not to.</p>
+            <h2 id="pipeline-title" className="st-h2">Booked or closed?</h2>
+            <p className="mt-1 text-sm text-[var(--tq-ink-mute)]">Update when the family books or decides not to.</p>
             <InquiryActions id={inquiry.id} status={inquiry.status} lostReason={inquiry.lost_reason} competitorName={inquiry.competitor_name} />
           </section>
         </aside>

@@ -1,245 +1,195 @@
 import Link from "next/link";
-import { getDashboardStats, getConversionChanges, type RangedStats } from "@/lib/analytics-db";
-import { ChangeLog } from "@/components/admin/ChangeLog";
+import { getDashboardStats, getConversionChanges } from "@/lib/analytics-db";
 import { AutoRefresh } from "@/components/admin/AutoRefresh";
 import { requireAdminPage } from "@/lib/require-admin";
-import { StudioPulse, PULSE_RANGES } from "@/components/admin/charts/StudioPulse";
 import { getPulseMoves } from "@/lib/pulse-moves";
-import { getSocialSheet } from "@/lib/social";
-
-function mins(s: number) {
-  return s >= 60 ? `${Math.floor(s / 60)}m ${s % 60}s` : `${s}s`;
-}
+import { getSocialSheet, summarize, PLATFORM_LABEL } from "@/lib/social";
+import { stepIntel, todayFocus } from "@/lib/pulse-intel";
+import { StudioPage, StudioSection } from "@/components/admin/StudioPage";
+import { StudioBars } from "@/components/admin/StudioBars";
+import { IdeasBoard } from "@/components/admin/IdeasBoard";
 
 export const dynamic = "force-dynamic";
 
-const RANGES = PULSE_RANGES;
+const PULSE_RANGES = [7, 14, 30] as const;
 
-function money(n: number) {
-  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(n);
+const num = (n: number) => n.toLocaleString("en-US");
+const money = (n: number) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(n);
+const pageName = (p: string) => (p === "/" ? "Homepage" : p === "/es" ? "Spanish homepage" : p);
+
+/** "+12% vs the 14 days before" — or nothing when there is no earlier number. */
+function versus(now: number, before: number, range: number) {
+  if (!before) return `Last ${range} days`;
+  const pct = Math.round(((now - before) / before) * 100);
+  return `${pct >= 0 ? "+" : ""}${pct}% vs the ${range} days before`;
 }
 
-function InsightPanel({ insights }: { insights: RangedStats["insights"] }) {
-  const tone = {
-    success: "text-emerald-700",
-    warning: "text-amber-700",
-    info: "text-ink-soft",
-  };
-  return (
-    <div className="border border-line bg-white p-5">
-      <p className="text-sm font-medium text-ink">What to do next</p>
-      <ul className="mt-4 space-y-3">
-        {insights.length === 0 ? (
-          <li className="text-base text-ink-faint">Insights appear as data comes in.</li>
-        ) : (
-          insights.map((ins, i) => (
-            <li key={i} className={`flex gap-2.5 text-base leading-relaxed ${tone[ins.type]}`}>
-              <span aria-hidden className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-current" />
-              {ins.text}
-            </li>
-          ))
-        )}
-      </ul>
-    </div>
-  );
-}
-
-export default async function AdminDashboard({
-  searchParams,
-}: {
-  searchParams: Promise<{ range?: string }>;
-}) {
+/**
+ * Insights — how the site did, where families come from, where they stop,
+ * and ideas to try. Replaces the old 15-panel report: the live list and
+ * payment alert live on Today; the HUD, briefing, drop-off and flywheel
+ * panels are folded into "Path to booking" and the Ideas board.
+ */
+export default async function AdminInsights({ searchParams }: { searchParams: Promise<{ range?: string }> }) {
   await requireAdminPage("/admin/insights"); // server-side gate; middleware is not enough
   const { range: rangeParam } = await searchParams;
-  const range = RANGES.includes(Number(rangeParam) as (typeof RANGES)[number])
-    ? (Number(rangeParam) as number)
-    : 14;
+  const range = (PULSE_RANGES as readonly number[]).includes(Number(rangeParam)) ? Number(rangeParam) : 14;
   const [s, changes, moves, social] = await Promise.all([getDashboardStats(range), getConversionChanges(), getPulseMoves(), getSocialSheet()]);
 
+  // The one suggestion: the bottleneck's next untried move (same logic as before).
+  const running = moves.filter((m) => m.status === "active");
+  const tried = new Set(moves.map((m) => `${m.metric}|${m.title}`));
+  const b = s.flowBottleneck;
+  const step = b ? stepIntel(s, b.step) : null;
+  const nextTodo = b && step ? step.todo.find((t) => !tried.has(`${step.metric}|${t.slice(0, 200)}`)) : undefined;
+  const started = b ? running.find((m) => m.metric === `step:${b.step}`) : undefined;
+  const focus = todayFocus(s, started ? { title: started.title, metric: started.metric } : b && nextTodo ? { title: nextTodo, metric: `step:${b.step}` } : null);
+  const focusDay = focus.move ? running.find((m) => m.title === focus.move!.title.slice(0, 200) && m.metric === focus.move!.metric)?.days ?? null : null;
+  const ideas = changes.filter((c) => !c.area?.startsWith("pulse:") && c.status === "active");
+  const suggestions = [...s.insights.filter((i) => i.type !== "info" && !/payment/i.test(i.text)).map((i) => i.text), ...s.flywheel.filter((f) => !f.done).map((f) => `${f.label}: ${f.detail}`)]
+    .filter((t) => !ideas.some((c) => c.title === t.slice(0, 200)))
+    .slice(0, 4);
+
+  const sources = s.bySource.filter((r) => r.visits || r.leads || r.bookedValue).slice(0, 8);
+  const pages = s.engagement.slice(0, 8);
+  const socialRows = social.configured && social.ok ? summarize(social.rows, range).filter((r) => r.followers !== null || r.reach || r.views || r.linkClicks) : [];
+
   return (
-    <main className="mx-auto max-w-[90rem] px-5 pb-20 pt-8 md:px-10 md:pt-12 lg:px-16">
-      <AutoRefresh seconds={30} />
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-faint">Studio / Business</p>
-          <h1 className="mt-3 text-[clamp(1.7rem,2.4vw,2.15rem)] font-medium tracking-[-0.04em] text-ink">Insights</h1>
-          <p className="mt-2 text-sm text-ink-soft">
-            {s.configured
-              ? `Live traffic, bookings, and what to do next — last ${range} days.`
-              : "Live analytics will appear when the data connection is available."}
-          </p>
-        </div>
-      </div>
-
-      {/* payment-review alert — money collected but NOT auto-confirmed. Must never
-          be silently missed: a family paid and may be owed their date or a refund. */}
-      {s.paymentReview > 0 ? (
-        <Link
-          href="/admin/bookings"
-          className="mt-6 flex items-center justify-between gap-4 rounded-lg border border-amber-400 bg-amber-50 p-5 transition-colors hover:border-amber-600"
-        >
-          <div>
-            <p className="text-xs uppercase tracking-[0.18em] text-amber-700">Needs review</p>
-            <p className="mt-1 text-base text-ink">
-              {s.paymentReview} payment{s.paymentReview === 1 ? "" : "s"} collected but not auto-confirmed
-              {s.paymentReviewValue ? ` · ${money(s.paymentReviewValue)} held` : ""} — verify the date or refund.
-            </p>
-          </div>
-          <span className="shrink-0 text-xs uppercase tracking-[0.16em] text-amber-700">Open →</span>
-        </Link>
-      ) : null}
-
-      <section className="mt-4 rounded-lg border border-line bg-white p-5">
-        <div className="flex items-center justify-between">
-          <p className="text-xs uppercase tracking-[0.18em] text-ink-faint">
-            On the site right now
-          </p>
-          <span className="flex items-center gap-1.5 text-xs text-ink-soft">
-            <span aria-hidden className={`h-2 w-2 rounded-full ${s.liveNow.length ? "bg-emerald-500" : "bg-line"}`} />
-            {s.liveNow.length} visitor{s.liveNow.length === 1 ? "" : "s"}
-          </span>
-        </div>
-        {s.liveNow.length ? (
-          <ul className="mt-3 divide-y divide-line">
-            {s.liveNow.map((v, i) => (
-              <li key={i} className="flex items-baseline justify-between gap-3 py-2 text-base">
-                <span className="truncate text-ink">{v.path === "/" ? "Homepage" : v.path}</span>
-                <span className="shrink-0 tabular-nums text-ink-soft">
-                  {v.pages} pg · {mins(v.seconds)}
-                </span>
-              </li>
+    <StudioPage
+      title="Insights"
+      intro="How the site is doing, where families come from, and ideas to try next."
+      actions={
+        s.configured ? (
+          <nav aria-label="Period" className="flex gap-2">
+            {PULSE_RANGES.map((r) => (
+              <Link key={r} href={`/admin/insights?range=${r}`} scroll={false} aria-current={r === range ? "page" : undefined} className="st-filter">
+                {r} days
+              </Link>
             ))}
-          </ul>
-        ) : (
-          <p className="mt-3 text-base text-ink-faint">Quiet right now — refreshes every 30s.</p>
-        )}
-      </section>
-
-      <StudioPulse s={s} basePath="/admin/insights" range={range} moves={moves} social={social} />
-
-      <section className="mt-4">
-        <InsightPanel insights={s.insights} />
-      </section>
-
-      <section className="mt-4 rounded-lg border border-line bg-white p-5">
-        <p className="text-xs uppercase tracking-[0.18em] text-ink-faint">
-          Page behavior · time on page &amp; exits
-        </p>
-        <div className="mt-4 overflow-x-auto">
-          <table className="w-full min-w-[420px] text-base">
-            <thead>
-              <tr className="text-left text-xs uppercase tracking-[0.14em] text-ink-faint">
-                <th className="pb-2 font-medium">Page</th>
-                <th className="pb-2 text-right font-medium">Views</th>
-                <th className="pb-2 text-right font-medium">Avg time</th>
-                <th className="pb-2 text-right font-medium">Exit %</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-line">
-              {s.engagement.map((p) => (
-                <tr key={p.path}>
-                  <td className="max-w-[14rem] truncate py-2 text-ink">
-                    {p.path === "/" ? "Homepage" : p.path}
-                  </td>
-                  <td className="py-2 text-right tabular-nums text-ink-soft">{p.views}</td>
-                  <td className="py-2 text-right tabular-nums text-ink-soft">
-                    {p.avgSeconds ? mins(p.avgSeconds) : "—"}
-                  </td>
-                  <td className={`py-2 text-right tabular-nums ${p.exitRate >= 70 ? "font-medium text-accent-strong" : "text-ink-soft"}`}>
-                    {p.exitRate}%
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <p className="mt-3 text-xs text-ink-faint">
-          High exit % on a money page (investment, reserve) = the leak to fix. High exit on
-          blog posts is normal.
-        </p>
-      </section>
-
-      <section className="mt-4 rounded-lg border border-line bg-white p-5">
-        <p className="text-xs uppercase tracking-[0.18em] text-ink-faint">
-          This week&apos;s flywheel · computed from live data
-        </p>
-        <ul className="mt-4 space-y-3">
-          {s.flywheel.map((f) => (
-            <li key={f.label} className="flex gap-3">
-              <span
-                aria-hidden
-                className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-sm ${
-                  f.done ? "bg-emerald-600 text-white" : "border border-accent text-accent"
-                }`}
-              >
-                {f.done ? "✓" : "!"}
-              </span>
-              <span className="text-base leading-snug">
-                <span className={f.done ? "text-ink-soft line-through decoration-ink/30" : "font-medium text-ink"}>
-                  {f.label}
-                </span>
-                <span className="block text-xs text-ink-faint">{f.detail}</span>
-              </span>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section className="mt-4 rounded-lg border border-line bg-white p-5">
-        <p className="text-xs uppercase tracking-[0.18em] text-ink-faint">
-          Revenue &amp; leads by source
-        </p>
-        <p className="mt-1 text-xs text-ink-soft">
-          Where each visit, booking &amp; lead came from: the link tag when there is one (tag links you share
-          outside the site with <code className="text-ink">?src=</code>: instagram, facebook, tiktok, youtube,
-          pinterest, quora, gbp (Google Business posts) or whatsapp (links sent in WhatsApp chats), e.g.{" "}
-          <code className="text-ink">?src=gbp</code>; links between our own pages get no tag), otherwise the site
-          they first came from. <strong className="text-ink">WhatsApp chats</strong> counts taps on the site&apos;s
-          WhatsApp buttons, on their own &ldquo;whatsapp&rdquo; row.
-        </p>
-        {s.bySource.length === 0 ? (
-          <p className="mt-4 text-base text-ink-faint">
-            No visits, chats, leads or bookings in this period yet.
-          </p>
-        ) : (
-          <div className="mt-4 overflow-x-auto">
-            <table className="w-full text-base">
-              <thead>
-                <tr className="text-left text-xs uppercase tracking-[0.14em] text-ink-faint">
-                  <th className="pb-2 font-medium">Source</th>
-                  <th className="pb-2 text-right font-medium">Visits</th>
-                  <th className="pb-2 text-right font-medium">WhatsApp chats</th>
-                  <th className="pb-2 text-right font-medium">Leads</th>
-                  <th className="pb-2 text-right font-medium">Requests</th>
-                  <th className="pb-2 text-right font-medium">Booked&nbsp;$</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-line">
-                {s.bySource.map((r) => (
-                  <tr key={r.source}>
-                    <td className="py-2 text-ink">{r.source === "gbp" ? "Google Business (gbp)" : r.source === "whatsapp" ? "WhatsApp" : r.source}</td>
-                    <td className="py-2 text-right tabular-nums text-ink-soft">{r.visits || "—"}</td>
-                    <td className="py-2 text-right tabular-nums text-ink-soft">{r.chats || "—"}</td>
-                    <td className="py-2 text-right tabular-nums text-ink-soft">{r.leads}</td>
-                    <td className="py-2 text-right tabular-nums text-ink-soft">{r.requests}</td>
-                    <td className="py-2 text-right tabular-nums font-medium text-ink">
-                      {r.bookedValue ? money(r.bookedValue) : "—"}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </section>
-
-      <section className="mt-4">
-        <ChangeLog initial={changes} />
-      </section>
-
+          </nav>
+        ) : null
+      }
+    >
+      <AutoRefresh seconds={60} />
       {!s.configured ? (
-        <p className="mt-8 text-base text-ink-faint">Analytics tables are ready; data will populate as visitors browse the live site.</p>
-      ) : null}
-    </main>
+        <div className="st-card st-empty"><p className="st-note">Numbers appear here once the database connection is available.</p></div>
+      ) : (
+        <>
+          <section aria-labelledby="numbers-title" className="st-card">
+            <div className="px-5 pt-5 sm:px-6">
+              <h2 id="numbers-title" className="st-h2">Last {range} days</h2>
+            </div>
+            <dl className="m-0 mt-4 grid grid-cols-2 gap-px border-y border-[var(--tq-surface-2)] bg-[var(--tq-surface-2)] lg:grid-cols-4">
+              {[
+                { label: "Visits", value: num(s.uniqueSessions), note: versus(s.uniqueSessions, s.previous.visitors, range) },
+                { label: "New families", value: num(s.rangeLeads), note: versus(s.rangeLeads, s.previous.leads, range) },
+                { label: "Bookings", value: num(s.rangeBooked), note: versus(s.rangeBooked, s.previous.booked, range) },
+                { label: "Left after one page", value: `${s.bounceRate}%`, note: `${s.pagesPerSession} ${s.pagesPerSession === 1 ? "page" : "pages"} per visit` },
+              ].map((m) => (
+                <div key={m.label} className="flex min-w-0 flex-col bg-white px-5 py-4 sm:px-6">
+                  <dt className="text-[15px] text-[var(--tq-ink-mute)]">{m.label}</dt>
+                  <dd className="st-num m-0 mt-2 text-[2.25rem] leading-none">{m.value}</dd>
+                  <dd className="m-0 mt-2 text-sm text-[var(--tq-ink-mute)]">{m.note}</dd>
+                </div>
+              ))}
+            </dl>
+            <div className="px-5 pb-5 pt-5 sm:px-6">
+              <h3 className="m-0 mb-4 text-[15px] font-medium">Visits per day</h3>
+              <StudioBars days={s.series.map((d) => ({ date: d.date, value: d.visitors, extra: d.leads }))} unit={["visit", "visits"]} extraUnit={["new family", "new families"]} />
+            </div>
+          </section>
+
+          <IdeasBoard focus={focus} focusDay={focusDay} moves={moves} ideas={ideas} suggestions={suggestions} />
+
+          {s.flow.length ? (
+            <StudioSection
+              title="Path to booking"
+              intro={b ? `The weakest step is marked. ${b.action}` : "Each step shows how many went on from the step before."}
+              flush
+            >
+              <ol className="m-0 grid list-none grid-cols-2 gap-px border-t border-[var(--tq-surface-2)] bg-[var(--tq-surface-2)] p-0 sm:grid-cols-5">
+                {s.flow.map((f, i) => {
+                  const prev = i ? s.flow[i - 1].value : 0;
+                  const pct = i === 0 ? null : prev ? Math.round((f.value / prev) * 100) : 0;
+                  const weak = b?.step === i;
+                  return (
+                    <li key={f.label} className={`min-w-0 px-5 py-4 ${weak ? "bg-[var(--st-tint-warn)]" : "bg-white"}`}>
+                      <p className="m-0 text-[15px] text-[var(--tq-ink-mute)]">{f.label}</p>
+                      <p className="st-num m-0 mt-2 text-[1.75rem] leading-none">{num(f.value)}</p>
+                      <p className={`m-0 mt-2 text-sm ${weak ? "font-medium text-[var(--tq-status-down)]" : "text-[var(--tq-ink-mute)]"}`}>
+                        {pct === null ? "Start" : `${pct}% went on`}{weak ? " · weakest" : ""}
+                      </p>
+                    </li>
+                  );
+                })}
+              </ol>
+            </StudioSection>
+          ) : null}
+
+          <div className="grid items-start gap-6 lg:grid-cols-2">
+            <StudioSection title="Where families come from" intro="Tag links you share with ?src= (for example ?src=instagram) so each post is counted." flush>
+              {sources.length ? (
+                <div className="overflow-x-auto border-t border-[var(--tq-surface-2)]">
+                  <table className="st-table text-[15px]">
+                    <thead><tr><th scope="col">Source</th><th scope="col" className="text-right">Visits</th><th scope="col" className="text-right">Families</th><th scope="col" className="text-right">Booked</th></tr></thead>
+                    <tbody>
+                      {sources.map((r) => (
+                        <tr key={r.source}>
+                          <th scope="row" className="font-medium">{r.source === "gbp" ? "Google Business" : r.source === "whatsapp" ? "WhatsApp" : r.source}</th>
+                          <td className="st-num text-right">{r.visits ? num(r.visits) : "—"}</td>
+                          <td className="st-num text-right">{r.leads + r.chats ? num(r.leads + r.chats) : "—"}</td>
+                          <td className="st-num text-right">{r.bookedValue ? money(r.bookedValue) : "—"}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : <p className="st-note px-5 pb-5 sm:px-6">No visits in this period yet.</p>}
+            </StudioSection>
+
+            <StudioSection title="Top pages" intro="A high “left here” on a price or booking page is the leak to fix." flush>
+              {pages.length ? (
+                <div className="overflow-x-auto border-t border-[var(--tq-surface-2)]">
+                  <table className="st-table text-[15px]">
+                    <thead><tr><th scope="col">Page</th><th scope="col" className="text-right">Views</th><th scope="col" className="text-right">Left here</th></tr></thead>
+                    <tbody>
+                      {pages.map((p) => (
+                        <tr key={p.path}>
+                          <th scope="row" className="max-w-[14rem] truncate font-medium">{pageName(p.path)}</th>
+                          <td className="st-num text-right">{num(p.views)}</td>
+                          <td className={`st-num text-right ${p.exitRate >= 70 ? "font-medium text-[var(--tq-status-down)]" : ""}`}>{p.exitRate}%</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : <p className="st-note px-5 pb-5 sm:px-6">No page views in this period yet.</p>}
+            </StudioSection>
+          </div>
+
+          {socialRows.length ? (
+            <StudioSection title="Social" intro="Followers and reach from Grokbot's sheet. Site visits and families are counted by the site." flush>
+              <div className="overflow-x-auto border-t border-[var(--tq-surface-2)]">
+                <table className="st-table text-[15px]">
+                  <thead><tr><th scope="col">Platform</th><th scope="col" className="text-right">Followers</th><th scope="col" className="text-right">Reach</th><th scope="col" className="text-right">Link clicks</th><th scope="col" className="text-right">Site visits</th><th scope="col" className="text-right">Families</th></tr></thead>
+                  <tbody>
+                    {socialRows.map((r) => (
+                      <tr key={r.platform}>
+                        <th scope="row" className="font-medium">{PLATFORM_LABEL[r.platform]}</th>
+                        <td className="st-num text-right">{r.followers !== null ? num(r.followers) : "—"}{r.followersChange ? <span className="text-[13px] text-[var(--tq-ink-mute)]"> ({r.followersChange > 0 ? "+" : ""}{r.followersChange})</span> : null}</td>
+                        <td className="st-num text-right">{r.reach || r.views ? num(r.reach || r.views) : "—"}</td>
+                        <td className="st-num text-right">{r.linkClicks ? num(r.linkClicks) : "—"}</td>
+                        <td className="st-num text-right">{num(s.byPlatform[r.platform].visits)}</td>
+                        <td className="st-num text-right">{num(s.byPlatform[r.platform].leads)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </StudioSection>
+          ) : null}
+        </>
+      )}
+    </StudioPage>
   );
 }

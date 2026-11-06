@@ -74,13 +74,13 @@ export function BookingActions({
   }
 
   return (
-    <div className="mt-4 border-t border-line pt-4">
+    <div className="mt-3">
       <div className="flex flex-wrap items-center gap-2">
         <button
           type="button"
           disabled={busy}
           onClick={sendDepositLink}
-          className="inline-flex min-h-12 items-center justify-center rounded-md bg-ink px-5 text-base font-medium text-white transition-colors hover:bg-ink/85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:opacity-50"
+          className="st-btn"
         >
           {busy
             ? "Working…"
@@ -103,7 +103,7 @@ export function BookingActions({
                 : "Release this date? It frees the calendar so others can book it.",
             )
           }
-          className="inline-flex min-h-11 items-center rounded-md border border-line bg-white px-4 text-base font-medium text-ink transition-colors hover:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:opacity-50"
+          className="st-btn-ghost bg-white"
         >
           {signed ? "Decline" : "Release date"}
         </button>
@@ -113,21 +113,21 @@ export function BookingActions({
           onClick={() =>
             patch("paid", "Mark this booking as paid? Do this once the deposit has cleared.")
           }
-          className="inline-flex min-h-11 items-center rounded-md border border-line bg-white px-4 text-base font-medium text-ink transition-colors hover:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:opacity-50"
+          className="st-btn-ghost bg-white"
         >
           Mark paid
         </button>
       </div>
 
       {sent ? (
-        <div role="status" className="mt-4 rounded-lg border border-line bg-ivory p-4 text-base text-ink-soft">
+        <div role="status" className="mt-4 rounded-[var(--tq-radius-sm)] bg-[var(--tq-canvas)] p-4 text-base text-[var(--tq-ink-mute)]">
           {sent.emailed ? "✓ Emailed the pay link to the family." : "Link created (email not sent — check Resend config)."}
           <a href={sent.url} target="_blank" rel="noopener noreferrer" className="mt-1 block break-all text-ink underline underline-offset-4">
             {sent.url}
           </a>
         </div>
       ) : null}
-      {error ? <p role="alert" className="mt-3 text-base text-red-700">{error}</p> : null}
+      {error ? <p role="alert" className="mt-3 text-base text-[var(--tq-status-down)]">{error}</p> : null}
     </div>
   );
 }

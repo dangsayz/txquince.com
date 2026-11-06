@@ -35,10 +35,10 @@ export function PriceGuideImporter() {
   }
 
   return (
-    <div className="grid gap-4 border border-[#e5e5e3] bg-white p-5">
+    <div className="grid gap-4">
       <label className="grid gap-2 text-sm font-medium">
         Paste rows from your lead sheet
-        <span className="font-normal text-[#696965]">
+        <span className="font-normal text-[var(--tq-ink-mute)]">
           Columns in this order, or with a header row: category · category in Spanish · low · typical · high · sample count · last updated
         </span>
         <textarea
@@ -46,32 +46,32 @@ export function PriceGuideImporter() {
           onChange={(e) => { setText(e.target.value); setRows(null); setSaved(false); }}
           rows={8}
           spellCheck={false}
-          className="w-full rounded-sm border border-[#dcdcd9] p-3 font-mono text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#252525]"
+          className="st-input w-full py-3 font-[family-name:var(--tq-font-mono)]"
           placeholder={"Category\tCategoría\tLow\tTypical\tHigh\tSamples\tUpdated\nPhotography\tFotografía\t$900\t$1,800\t$3,500\t42\t10/30/2026"}
         />
       </label>
       <div className="flex flex-wrap gap-3">
-        <button type="button" disabled={busy || !text.trim()} onClick={() => send(true)} className="min-h-12 rounded-sm border border-[#252525] px-5 text-sm font-medium disabled:opacity-50">Preview</button>
-        <button type="button" disabled={busy || !rows?.length || errors.length > 0} onClick={() => send(false)} className="min-h-12 rounded-sm bg-[#242424] px-5 text-sm font-medium text-white hover:bg-[#444] disabled:opacity-50">
+        <button type="button" disabled={busy || !text.trim()} onClick={() => send(true)} className="st-btn-ghost">Preview</button>
+        <button type="button" disabled={busy || !rows?.length || errors.length > 0} onClick={() => send(false)} className="st-btn">
           {busy ? "Working…" : "Replace the price guide"}
         </button>
       </div>
       {errors.length ? (
-        <ul role="alert" className="grid gap-1 rounded-sm border border-[#f0c9c5] bg-[#f8e8e7] px-4 py-3 text-sm text-[#8f4039]">
+        <ul role="alert" className="m-0 grid gap-1 rounded-[var(--tq-radius-sm)] bg-[var(--st-tint-warn)] px-4 py-3 text-[15px] text-[var(--tq-status-down)]">
           {errors.map((e) => <li key={e}>{e}</li>)}
         </ul>
       ) : null}
-      {saved ? <p role="status" className="text-sm text-[#365c43]">Saved. The public pages now show these {rows?.length} rows.</p> : null}
+      {saved ? <p role="status" className="text-sm text-[var(--tq-status-open)]">Saved. The public pages now show these {rows?.length} rows.</p> : null}
       {rows?.length && !saved ? (
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[36rem] border-collapse text-left text-sm">
-            <thead><tr className="border-b border-[#e5e5e3] text-xs uppercase tracking-[0.1em] text-[#62625f]"><th className="py-2 pr-3">Category</th><th className="py-2 pr-3">Español</th><th className="py-2 pr-3">Low</th><th className="py-2 pr-3">Typical</th><th className="py-2 pr-3">High</th><th className="py-2 pr-3">Samples</th><th className="py-2">Updated</th></tr></thead>
+          <table className="st-table min-w-[36rem] text-[15px]">
+            <thead><tr><th scope="col">Category</th><th scope="col">Español</th><th scope="col">Low</th><th scope="col">Typical</th><th scope="col">High</th><th scope="col">Samples</th><th scope="col">Updated</th></tr></thead>
             <tbody>
               {rows.map((r) => (
-                <tr key={r.sort_order} className="border-b border-[#ededeb]">
-                  <td className="py-2 pr-3">{r.category}</td><td className="py-2 pr-3">{r.category_es ?? "—"}</td>
-                  <td className="py-2 pr-3 tabular-nums">{guideUsd(r.low_usd)}</td><td className="py-2 pr-3 tabular-nums">{guideUsd(r.typical_usd)}</td><td className="py-2 pr-3 tabular-nums">{guideUsd(r.high_usd)}</td>
-                  <td className="py-2 pr-3 tabular-nums">{r.sample_count}</td><td className="py-2 tabular-nums">{r.last_updated}</td>
+                <tr key={r.sort_order}>
+                  <td>{r.category}</td><td>{r.category_es ?? "—"}</td>
+                  <td className="st-num">{guideUsd(r.low_usd)}</td><td className="st-num">{guideUsd(r.typical_usd)}</td><td className="st-num">{guideUsd(r.high_usd)}</td>
+                  <td className="st-num">{r.sample_count}</td><td className="st-num">{r.last_updated}</td>
                 </tr>
               ))}
             </tbody>
