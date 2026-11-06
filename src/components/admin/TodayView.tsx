@@ -217,7 +217,7 @@ export function TodayView({ work, due, unreplied, paid, review, upcoming, book, 
       </div>
 
       <div className="mt-14">
-        <StudioPulse s={stats} basePath="/admin" range={range} moves={moves} social={social} />
+        <StudioPulse s={stats} basePath="/admin" range={range} moves={moves} social={social} phoneSummary={{ href: `/admin/insights?range=${range}` }} />
       </div>
 
       <section aria-labelledby="prices-title" className="st-card mt-14">
