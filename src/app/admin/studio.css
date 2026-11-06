@@ -5,8 +5,13 @@
  *   .st-btn        primary: carbon pill, 48px (money / main actions)
  *   .st-btn-ghost  secondary: outline pill, 44px+
  *   .st-link       tertiary: text link with an arrow
- *   .st-label      Jost uppercase, for column heads and small group names
+ *   .st-label      Jost uppercase, for table column heads only
  *                  (never as an eyebrow above a heading)
+ *   .st-h1 / .st-h2  the only page and section heading sizes
+ *   .st-tabs/.st-tab view tabs · .st-filter pill filter/toggle (aria-current, aria-pressed or data-on)
+ *   .st-input · .st-table · .st-chip (data-tone="urgent|good|ink") · .st-note · .st-empty
+ * Every page uses <StudioPage> (components/admin/StudioPage.tsx): one width,
+ * title + one sentence + actions. Sections use <StudioSection> or .st-card.
  * Legacy --color-* names below keep older admin pages on the same palette.
  */
 .studio-skin {
@@ -21,6 +26,9 @@
   --color-accent-strong: var(--tq-ink);
   --color-accent-soft: var(--tq-surface);
   --color-clay: var(--tq-stone);
+  /* status tints (chips, the weakest funnel step); text on them uses --tq-status-* */
+  --st-tint-warn: #fbeee2;
+  --st-tint-good: #e8f0ea;
   color: var(--tq-ink);
   background: var(--tq-canvas);
   font-family: var(--tq-font-sans);
@@ -148,3 +156,111 @@ a:hover > .st-arrow {
 @media (prefers-reduced-motion: reduce) {
   .st-bar { animation: none; }
 }
+
+/* ---- One heading scale, tabs, inputs, tables and status chips ---- */
+.st-h1 {
+  margin: 0;
+  font-size: clamp(2rem, 1.6rem + 2vw, 2.75rem);
+  font-weight: 400;
+  line-height: var(--tq-leading-tight);
+  letter-spacing: -0.035em;
+}
+.st-h2 {
+  margin: 0;
+  font-size: var(--tq-text-h3);
+  font-weight: 400;
+  letter-spacing: var(--tq-tracking-display);
+}
+.st-tabs {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--tq-surface-2);
+  scrollbar-width: none;
+}
+.st-tab {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+  border-bottom: 2px solid transparent;
+  color: var(--tq-ink-mute);
+  font-size: 15px;
+  white-space: nowrap;
+  transition: color var(--tq-dur-fast) var(--tq-ease), border-color var(--tq-dur-fast) var(--tq-ease);
+}
+.st-tab:hover { color: var(--tq-ink); }
+.st-tab[aria-current] {
+  border-color: var(--tq-ink);
+  color: var(--tq-ink);
+  font-weight: var(--tq-weight-semibold);
+}
+.st-tab .st-count { font-size: 13px; font-weight: 400; color: var(--tq-ink-mute); font-variant-numeric: tabular-nums; }
+.st-input {
+  min-height: var(--tq-tap);
+  min-width: 0;
+  border: 1px solid var(--tq-stone);
+  border-radius: var(--tq-radius-sm);
+  background: #ffffff;
+  padding: 0 0.875rem;
+  color: var(--tq-ink);
+  font-size: 1rem;
+}
+.st-input::placeholder { color: var(--tq-ink-mute); }
+.st-input:focus-visible { outline: 2px solid var(--tq-ink); outline-offset: 1px; }
+.st-table { width: 100%; border-collapse: collapse; text-align: left; }
+.st-table thead tr { border-bottom: 1px solid var(--tq-surface-2); }
+.st-table th[scope="col"] {
+  padding: 0.75rem 1rem;
+  font-family: var(--tq-font-label);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tq-ink-mute);
+}
+.st-table tbody tr { border-bottom: 1px solid var(--tq-surface-2); }
+.st-table tbody tr:last-child { border-bottom: 0; }
+.st-table tbody tr:hover { background: var(--tq-canvas); }
+.st-table :is(td, tbody th) { padding: 1rem; vertical-align: top; }
+.st-table :is(th, td):first-child { padding-left: 1.5rem; }
+.st-table :is(th, td):last-child { padding-right: 1.5rem; }
+.st-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  max-width: 100%;
+  border-radius: var(--tq-radius-pill);
+  padding: 0.25rem 0.625rem;
+  background: var(--tq-surface);
+  color: var(--tq-ink-mute);
+  font-size: 13px;
+  font-weight: var(--tq-weight-medium);
+  white-space: nowrap;
+}
+.st-chip[data-tone="urgent"] { background: var(--st-tint-warn); color: var(--tq-status-down); }
+.st-chip[data-tone="good"] { background: var(--st-tint-good); color: var(--tq-status-open); }
+.st-chip[data-tone="ink"] { background: var(--tq-ink); color: var(--tq-ink-on); }
+.st-note { margin: 0; font-size: 14px; line-height: 1.5; color: var(--tq-ink-mute); }
+.st-empty { padding: 2.5rem 1.5rem; }
+.st-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: var(--tq-tap);
+  padding: 0 1rem;
+  border-radius: var(--tq-radius-pill);
+  box-shadow: inset 0 0 0 1px var(--tq-surface-2);
+  background: #ffffff;
+  font-size: 15px;
+  white-space: nowrap;
+  transition: box-shadow var(--tq-dur-fast) var(--tq-ease), background-color var(--tq-dur-fast) var(--tq-ease);
+}
+.st-filter:hover { box-shadow: inset 0 0 0 1px var(--tq-stone); }
+.st-filter[aria-current] { background: var(--tq-ink); color: var(--tq-ink-on); box-shadow: none; }
+.st-filter[aria-current] .st-count { color: var(--tq-ink-on); }
+.st-filter[aria-pressed="true"] { background: var(--tq-ink); color: var(--tq-ink-on); box-shadow: none; }
+.st-filter[data-on] { background: var(--tq-ink); color: var(--tq-ink-on); box-shadow: none; }
+/* Gate 2: short labels ("All", "Save", "Done") still get a 44px-wide target. */
+.st-link, .st-tab { min-width: var(--tq-tap); justify-content: center; }
