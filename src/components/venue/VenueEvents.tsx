@@ -25,6 +25,8 @@ export type VenueEventsProps = {
   venue: string;
   /** Booking link that keeps the venue (check-your-date?venue=…). */
   askHref: string;
+  /** Where a pin of a photo without its own page links (the venue page). */
+  pageHref: string;
   events: VenueEvent<VenueEventPhoto>[];
   brand: string;
   lang?: "en" | "es";
@@ -82,10 +84,9 @@ const noSave = {
 } as const;
 
 const focus = (p: VenueEventPhoto) => `${Math.round((p.focus_x ?? 0.5) * 100)}% ${Math.round((p.focus_y ?? 0.5) * 100)}%`;
-const photoHref = (p: VenueEventPhoto) => (p.slug ? `/photos/${p.section}/${p.slug}` : null);
-
-function toLightbox(p: VenueEventPhoto): LightboxItem {
-  return { id: p.id, src: p.url, width: p.width ?? 1600, height: p.height ?? 2400, alt: p.alt, href: photoHref(p) };
+function toLightbox(p: VenueEventPhoto, fallback: string): LightboxItem {
+  const href = p.slug ? `/photos/${p.section}/${p.slug}` : fallback;
+  return { id: p.id, src: p.url, width: p.width ?? 1600, height: p.height ?? 2400, alt: p.alt, href };
 }
 
 function Thumb({ p, sizes, onOpen, label, eager = false }: { p: VenueEventPhoto; sizes: string; onOpen: () => void; label: string; eager?: boolean }) {
@@ -108,14 +109,14 @@ function Thumb({ p, sizes, onOpen, label, eager = false }: { p: VenueEventPhoto;
   );
 }
 
-export function VenueEvents({ venue, askHref, events, brand, lang = "en" }: VenueEventsProps) {
+export function VenueEvents({ venue, askHref, pageHref, events, brand, lang = "en" }: VenueEventsProps) {
   const t = COPY[lang];
   const [openSets, setOpenSets] = useState<Set<number>>(() => new Set());
   const [showAll, setShowAll] = useState(false);
   const [box, setBox] = useState<{ event: number; index: number } | null>(null);
   const heads = useRef<Map<number, HTMLElement>>(new Map());
   const visible = showAll ? events : events.slice(0, FIRST_EVENTS);
-  const lightItems = useMemo(() => (box ? events[box.event].photos.map(toLightbox) : []), [box, events]);
+  const lightItems = useMemo(() => (box ? events[box.event].photos.map((p) => toLightbox(p, `${pageHref}#${events[box.event].anchor}`)) : []), [box, events, pageHref]);
 
   const toggle = (i: number) => {
     setOpenSets((prev) => {
@@ -182,9 +183,9 @@ export function VenueEvents({ venue, askHref, events, brand, lang = "en" }: Venu
                     <dt className="tq-mono">{t.moments}</dt>
                     <dd>
                       <ul className="vx-chips">
-                        {e.moments.map((m) => (
-                          <li key={m.id}>{m.label[lang]}</li>
-                        ))}
+                        {lang === "en" && e.highlights.length
+                          ? e.highlights.map((h) => <li key={h.id}>{h.label}</li>)
+                          : e.moments.map((m) => <li key={m.id}>{m.label[lang]}</li>)}
                       </ul>
                     </dd>
                   </div>

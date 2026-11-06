@@ -99,8 +99,12 @@ import vmBallroom from "./blog/posts/quinceanera-at-vm-ballroom-balch-springs";
 import dressSessionIdeas from "./blog/posts/quinceanera-dress-session-ideas-dfw";
 import receptionDetails from "./blog/posts/quinceanera-reception-details-to-photograph";
 import lastDoll from "./blog/posts/what-is-the-last-doll-quinceanera";
+import fgsRanchHorse from "./blog/posts/quinceanera-photoshoot-with-horse-fgs-ranch-burleson";
+import horseIdeas from "./blog/posts/quinceanera-horse-photoshoot-ideas-dfw";
 
 export const posts: BlogPost[] = [
+  fgsRanchHorse,
+  horseIdeas,
   dressSessionIdeas,
   receptionDetails,
   lastDoll,
@@ -173,6 +177,8 @@ function relatedFrom(
 // World-class native Spanish posts, served at /es/blog/<slug>. Populated as the
 // ES posts are written (mirrors the EN registry pattern above).
 import esCosto from "./blog/posts/es/cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth";
+import esFgsRanch from "./blog/posts/es/fotos-de-quinceanera-con-caballo-fgs-ranch-burleson";
+import esCaballoIdeas from "./blog/posts/es/ideas-sesion-de-fotos-quinceanera-con-caballo";
 import esPlanesPago from "./blog/posts/es/planes-de-pago-fotografia-quinceanera-dfw";
 import esCuandoReservar from "./blog/posts/es/cuando-reservar-fotografo-quinceanera-dfw";
 import esPreguntas from "./blog/posts/es/preguntas-para-tu-fotografo-de-quinceanera";
@@ -196,6 +202,8 @@ import esEntrega from "./blog/posts/es/cuanto-tardan-las-fotos-y-video-de-quince
 import esProveedores from "./blog/posts/es/como-contratar-proveedores-de-quinceanera-sin-que-le-estafen";
 
 export const esPosts: BlogPost[] = [
+  esFgsRanch,
+  esCaballoIdeas,
   esProveedores,
   esEntrega,
   esCosto,
@@ -234,6 +242,8 @@ export function relatedEsPosts(post: BlogPost, n = 3): BlogPost[] {
 
 /** EN ↔ ES slug pairs, for hreflang alternates linking each translation. */
 const EN_ES_PAIRS: { en: string; es: string }[] = [
+  { en: "quinceanera-photoshoot-with-horse-fgs-ranch-burleson", es: "fotos-de-quinceanera-con-caballo-fgs-ranch-burleson" },
+  { en: "quinceanera-horse-photoshoot-ideas-dfw", es: "ideas-sesion-de-fotos-quinceanera-con-caballo" },
   { en: "how-long-to-get-quinceanera-photos-video-back", es: "cuanto-tardan-las-fotos-y-video-de-quinceanera" },
   { en: "hire-quinceanera-vendors-without-getting-burned-texas", es: "como-contratar-proveedores-de-quinceanera-sin-que-le-estafen" },
   { en: "quinceanera-at-vm-ballroom-balch-springs", es: "quinceanera-en-vm-ballroom-balch-springs" },

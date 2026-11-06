@@ -19,6 +19,7 @@ import { getPortfolioBucket, storageKeyFromUrl } from "@/lib/r2-portfolio";
 import { imageTransformForWidth } from "@/lib/image-derivative";
 import { site } from "@/content/site";
 import { isPinterestHost } from "@/lib/pinterest";
+import { albumObjectKey } from "@/content/albums";
 
 export const dynamic = "force-dynamic";
 
@@ -132,6 +133,11 @@ async function serve(
   let sourceUrl: string | null = null;
   if (slug === "hero") {
     sourceUrl = await getHeroRawImageUrl();
+  } else if (slug.startsWith("album-")) {
+    // Curated 12img albums (src/content/albums.ts): originals live in the same
+    // private bucket under albums/, resolved by the registry, never by the URL.
+    const key = albumObjectKey(slug);
+    if (key) sourceUrl = storageUrl(key);
   } else if (isCover) {
     sourceUrl = await getCoverRawImageUrl(slug.slice("cover-".length));
   } else {

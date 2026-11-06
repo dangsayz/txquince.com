@@ -12,6 +12,8 @@
  * caption; record the real pixel size so the frame reserves its space (no
  * layout shift).
  */
+import { ALBUMS, albumPhotos } from "@/content/albums";
+
 export type BlogPhoto = {
   /** Path under public/. */
   src: string;
@@ -89,5 +91,11 @@ export const BLOG_PHOTOS: Record<string, BlogPhoto> = {
 };
 
 export function getBlogPhoto(slug: string): BlogPhoto | undefined {
-  return BLOG_PHOTOS[slug];
+  if (BLOG_PHOTOS[slug]) return BLOG_PHOTOS[slug];
+  // Album photos (src/content/albums.ts) are served by /api/img like portfolio photos.
+  for (const album of ALBUMS) {
+    const photo = albumPhotos(album).find((p) => p.id === slug);
+    if (photo) return { src: photo.url, width: photo.width ?? 1600, height: photo.height ?? 2400, alt: photo.alt };
+  }
+  return undefined;
 }

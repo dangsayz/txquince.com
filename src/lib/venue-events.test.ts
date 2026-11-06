@@ -68,3 +68,13 @@ describe("venueEvents", () => {
     expect(e.vendors).toEqual([{ name: "Bloom Co", slug: "bloom", role: null, category: "florist" }]);
   });
 });
+
+describe("highlights", () => {
+  it("names specific moments and skips catch-alls", () => {
+    const [e] = venueEvents(
+      [photo({ section: "el-vals" }), photo({ section: "grand-entrance" }), photo({ section: "celebration" }), photo({ section: "portraits" })],
+      V,
+    );
+    expect(e.highlights.map((h) => h.id)).toEqual(["grand-entrance", "el-vals"]);
+  });
+});
