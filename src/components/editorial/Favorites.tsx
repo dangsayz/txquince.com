@@ -14,6 +14,7 @@ import {
   sizedSrc,
   type Favorite,
 } from "@/lib/favorites";
+import { PinButton } from "@/components/pin/PinButton";
 import "./favorites.css";
 
 /**
@@ -29,6 +30,9 @@ import "./favorites.css";
  * hotlink-checked derivatives, never the original): grid images top out at
  * 828px, the lightbox at 1440px, right-click/drag/long-press save is off, and
  * the lightbox carries a small credit.
+ *
+ * Pinterest: every cell (on hover/focus) and the open lightbox carry a "Save"
+ * pill. The pin's link is the photo's own page, so pinners land on that frame.
  */
 
 const COPY = {
@@ -139,6 +143,7 @@ export function Favorites({ favorites }: { favorites: Favorite[] }) {
                     {img}
                   </button>
                 )}
+                {f.href ? <PinButton page={f.href} src={f.src} alt={f.alt} lang={lang} className="fv-pin" /> : null}
               </li>
             );
           })}
@@ -164,6 +169,7 @@ export function Favorites({ favorites }: { favorites: Favorite[] }) {
           index={open}
           onIndex={setOpen}
           onClose={() => setOpen(null)}
+          lang={lang}
           labels={{ close: t.close, prev: t.prev, next: t.next }}
         />
       ) : null}
@@ -176,9 +182,11 @@ function Lightbox({
   index,
   onIndex,
   onClose,
+  lang,
   labels,
 }: {
   items: Favorite[];
+  lang: "en" | "es";
   index: number;
   onIndex: (i: number) => void;
   onClose: () => void;
@@ -239,6 +247,7 @@ function Lightbox({
       <p className="fv-lb__count" aria-live="polite">
         {index + 1} / {items.length}
       </p>
+      {f.href ? <PinButton key={`pin-${f.id}`} page={f.href} src={f.src} alt={f.alt} lang={lang} className="fv-lb__pin" /> : null}
       <button ref={closeRef} type="button" className="fv-lb__btn fv-lb__close" aria-label={labels.close} onClick={onClose}>
         ×
       </button>

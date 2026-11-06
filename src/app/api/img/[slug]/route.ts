@@ -5,7 +5,8 @@
  * derivative via the Cloudflare Images binding:
  *   · responsive widths via ?w= (snapped to fixed steps, capped at 2400px wide)
  *   · WebP, quality-tuned; EXIF stripped by the transform pipeline
- *   · hotlink-checked (empty referer allowed — iMessage/OG fetchers send none)
+ *   · hotlink-checked (empty referer allowed — iMessage/OG fetchers send none;
+ *     Pinterest allowed so its "Save" picker can preview the pin image)
  *   · immutable edge cache (slugs are permanent)
  *
  * `hero` is a reserved slug serving the admin-set homepage hero.
@@ -17,6 +18,7 @@ import { getImageBySlug, getHeroRawImageUrl, getCoverRawImageUrl, storageUrl } f
 import { getPortfolioBucket, storageKeyFromUrl } from "@/lib/r2-portfolio";
 import { imageTransformForWidth } from "@/lib/image-derivative";
 import { site } from "@/content/site";
+import { isPinterestHost } from "@/lib/pinterest";
 
 export const dynamic = "force-dynamic";
 
@@ -47,7 +49,7 @@ function hotlinked(req: Request): boolean {
   if (!ref) return false; // direct opens, iMessage/OG/Google fetchers
   try {
     const host = new URL(ref).hostname;
-    return !ALLOWED_HOSTS.includes(host) && !PREVIEW_HOST.test(host);
+    return !ALLOWED_HOSTS.includes(host) && !PREVIEW_HOST.test(host) && !isPinterestHost(host);
   } catch {
     return false;
   }

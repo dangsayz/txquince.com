@@ -6,12 +6,14 @@ import { FavoriteButton } from "@/components/gallery/Favorites";
 import { ShareModal } from "@/components/ShareModal";
 import "@/components/txq/pages/pages.css";
 
-export function PhotoActions({ section, slug, title, pageUrl, bookingHref }: {
+export function PhotoActions({ section, slug, title, pageUrl, bookingHref, image }: {
   section: string;
   slug: string;
   title: string;
   pageUrl: string;
   bookingHref: string;
+  /** The photo (src + alt) so Share can offer "Save to Pinterest". */
+  image?: { src: string; alt: string };
 }) {
   const [shareOpen, setShareOpen] = useState(false);
 
@@ -26,7 +28,7 @@ export function PhotoActions({ section, slug, title, pageUrl, bookingHref }: {
           Share
         </button>
       </div>
-      <ShareModal open={shareOpen} url={pageUrl} title={`${title} · TX Quince`} onClose={() => setShareOpen(false)} />
+      <ShareModal open={shareOpen} url={pageUrl} title={`${title} · TX Quince`} image={image} onClose={() => setShareOpen(false)} />
     </>
   );
 }

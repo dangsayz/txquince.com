@@ -1,0 +1,26 @@
+/* "Save to Pinterest" pill — ink on white, 44px target (web design standard Gate 2). */
+.tq-pin {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px 0 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  color: #101010;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+  transition: background-color var(--tq-dur-fast, 150ms) var(--tq-ease, ease), opacity var(--tq-dur-fast, 150ms) var(--tq-ease, ease);
+}
+.tq-pin:hover { background: #ffffff; }
+.tq-pin:focus-visible { outline: 2px solid #101010; outline-offset: 2px; }
+.tq-pin__mark { display: inline-flex; width: 20px; height: 20px; }
+.tq-pin__mark svg { width: 100%; height: 100%; }
+@media (prefers-reduced-motion: reduce) {
+  .tq-pin { transition: none; }
+}
