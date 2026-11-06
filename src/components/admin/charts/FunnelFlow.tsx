@@ -16,7 +16,7 @@ type Step = { label: string; value: number };
 type Bottleneck = { step: number; rate: number; baseline: number; action: string } | null;
 
 const H = 150;
-const AMBER = "#a14f12"; // bottleneck text (Apple red, 5:1 on white)
+const AMBER = "#a14f12"; // bottleneck text: --tq-status-down, 5.8:1 on white
 /** Fill for the bottleneck band / bar: Apple red (marks only, never text). */
 const AMBER_FILL = "#a14f12";
 
@@ -190,11 +190,10 @@ export function FunnelFlow({
           <p className="hud-label m-0" style={{ color: AMBER }}>
             Bottleneck · {steps[b.step - 1].label} → {steps[b.step].label}
           </p>
-          <p className="mt-1.5 text-base text-[#111110]">
-            <span className="hud-mono" style={{ color: AMBER }}>{b.rate}%</span> make it through. Healthy is about{" "}
-            <span className="hud-mono">{b.baseline}%</span>.
+          {/* The rate and the fix live once, in "Do this today" (TodayFocus). */}
+          <p className="mt-1 text-sm leading-6 text-[#4d4b48]">
+            Healthy is about <span className="hud-mono">{b.baseline}%</span>. What to do about it is at the top, under Do this today.
           </p>
-          <p className="mt-1 text-sm leading-6 text-[#4d4b48]">{b.action}</p>
         </div>
       ) : (
         <p className="hud-mono border-t border-[#e2ddd5] px-4 py-3.5 text-xs text-[#4d4b48] sm:px-5">

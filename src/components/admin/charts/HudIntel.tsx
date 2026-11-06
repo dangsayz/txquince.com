@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
-import { useRouter } from "next/navigation";
+import { useMoveStarter } from "./useMoveStarter";
 import type { Intel } from "@/lib/pulse-intel";
 
 /**
@@ -30,26 +30,9 @@ export function HudIntel({
   const [deep, setDeep] = useState(false);
   const timers = useRef<number[]>([]);
   const id = useId();
-  const router = useRouter();
-  const [saving, setSaving] = useState<number | null>(null);
-  const [started, setStarted] = useState<number[]>([]);
-  const [failed, setFailed] = useState<number | null>(null);
-
-  async function tryMove(i: number, title: string) {
-    if (!intel.metric) return;
-    setSaving(i);
-    setFailed(null);
-    const res = await fetch("/api/admin/changes", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ title: title.slice(0, 200), area: `pulse:${intel.metric}`, target_metric: intel.metric, reason: intel.read.slice(0, 2000) }),
-    }).catch(() => null);
-    setSaving(null);
-    if (res?.ok) {
-      setStarted((s) => [...s, i]);
-      router.refresh();
-    } else setFailed(i);
-  }
+  const { start, undo, saving, failed, started, undoable } = useMoveStarter<number>();
+  const tryMove = (i: number, title: string) =>
+    intel.metric ? start(i, { title, area: `pulse:${intel.metric}`, target_metric: intel.metric, reason: intel.read.slice(0, 2000) }) : undefined;
 
   const clear = () => {
     timers.current.forEach((t) => window.clearTimeout(t));
@@ -129,8 +112,15 @@ export function HudIntel({
                   {intel.metric ? (
                     <span className="mt-1.5 block">
                       {intel.trying?.[i] != null || started.includes(i) ? (
-                        <span className="hud-mono hud-move-on">
-                          Trying{intel.trying?.[i] != null ? ` · day ${intel.trying[i]}` : " · day 1"}
+                        <span className="flex flex-wrap items-center gap-x-3" aria-live="polite">
+                          <span className="hud-mono hud-move-on">
+                            Trying{intel.trying?.[i] != null ? ` · day ${intel.trying[i]}` : " · day 1"}
+                          </span>
+                          {undoable?.key === i ? (
+                            <button type="button" className="hud-move-btn hud-move-btn--quiet hud-focus" disabled={saving === i} onClick={undo}>
+                              {saving === i ? "Undoing…" : "Undo"}
+                            </button>
+                          ) : null}
                         </span>
                       ) : (
                         <button type="button" className="hud-move-btn hud-focus" disabled={saving === i} onClick={() => tryMove(i, t)}>
@@ -139,8 +129,10 @@ export function HudIntel({
                       )}
                     </span>
                   ) : null}
-                  {failed === i ? (
-                    <span role="alert" className="mt-1 block text-[13px] text-[#a14f12]">Couldn&apos;t save. Try again.</span>
+                  {failed?.key === i ? (
+                    <span role="alert" className="mt-1 block text-[13px] text-[#a14f12]">
+                      {failed.what === "undo" ? "Couldn't undo. Use Drop it in the Moves log." : "Couldn't save. Try again."}
+                    </span>
                   ) : null}
                 </li>
               ))}

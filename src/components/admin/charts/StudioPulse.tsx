@@ -26,7 +26,22 @@ const money = (n: number) =>
  * focus or tap any number for what it is, what it says right now, and (stay
  * a second) what to do next. Data: getDashboardStats (first-party).
  */
-export function StudioPulse({ s, basePath, range, moves, social }: { s: RangedStats; basePath: string; range: number; moves?: PulseMove[]; social?: SocialSheet }) {
+export function StudioPulse({
+  s,
+  basePath,
+  range,
+  moves,
+  social,
+  phoneSummary,
+}: {
+  s: RangedStats;
+  basePath: string;
+  range: number;
+  moves?: PulseMove[];
+  social?: SocialSheet;
+  /** On phones (<768px) show only Do this today + four totals and link here for the rest. */
+  phoneSummary?: { href: string };
+}) {
   const running = (moves ?? []).filter((m) => m.status === "active");
   // Mark moves already being tried, so the card shows "TRYING · DAY n".
   const track = (it: Intel): Intel => ({
@@ -113,6 +128,28 @@ export function StudioPulse({ s, basePath, range, moves, social }: { s: RangedSt
       ) : (
         <div className="mt-4 grid gap-4">
           <TodayFocus focus={focus} trying={focusDay} />
+          {phoneSummary ? (
+            <div className="grid gap-4 md:hidden">
+              <dl className="hud-card m-0 grid grid-cols-2 gap-px overflow-hidden bg-[#e2ddd5]">
+                {[
+                  { label: "Visits", v: s.uniqueSessions.toLocaleString("en-US"), n: `last ${range} days` },
+                  { label: "Leads", v: s.rangeLeads.toLocaleString("en-US"), n: `last ${range} days` },
+                  { label: "Booked value", v: money(s.bookedValue), n: `${s.paid} paid all-time` },
+                  { label: "In the pipeline", v: money(s.pipelineValue), n: `${s.requests} requests · ${s.pendingHolds} holds` },
+                ].map((t) => (
+                  <div key={t.label} className="min-w-0 bg-white px-4 py-3.5">
+                    <dt className="hud-label truncate">{t.label}</dt>
+                    <dd className="hud-value m-0 mt-2 text-[#111110]">{t.v}</dd>
+                    <dd className="hud-mono m-0 mt-1.5 text-[13px] leading-5 text-[#4d4b48]">{t.n}</dd>
+                  </div>
+                ))}
+              </dl>
+              <Link href={phoneSummary.href} className="st-btn-ghost w-full">
+                See all numbers
+              </Link>
+            </div>
+          ) : null}
+          <div className={phoneSummary ? "hidden md:contents" : "contents"}>
           <Briefing lines={briefing(s)} />
           <TrendChart
             series={s.series}
@@ -152,6 +189,7 @@ export function StudioPulse({ s, basePath, range, moves, social }: { s: RangedSt
                 </button>
               </HudIntel>
             ))}
+          </div>
           </div>
         </div>
       )}
