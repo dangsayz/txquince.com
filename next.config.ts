@@ -38,7 +38,8 @@ const nextConfig: NextConfig = {
       ...WWW_REDIRECTS,
       { source: "/investment", destination: "/#commissions", permanent: true },
       { source: "/payment-plans", destination: "/#commissions", permanent: true },
-      { source: "/reserve", destination: "/#intake", permanent: true },
+      // /reserve is a route handler (src/app/reserve/route.ts), not a rule here:
+      // it has to keep ?collection= and ?src= in front of the #intake hash.
       // Addresses families type or guess: packages live on the homepage,
       // contact is the check-your-date inquiry page.
       { source: "/packages", destination: "/#commissions", permanent: true },
