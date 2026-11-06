@@ -74,6 +74,34 @@ const isTextField = (el: EventTarget | null) =>
   el.matches("textarea, select, input:not([type=radio]):not([type=checkbox]):not([type=button]):not([type=submit])");
 
 /**
+ * Keep `panel`'s top at its scroll-margin-top for the first few seconds of a
+ * page load, while photos above it load and push it down. Stops for good the
+ * moment the visitor scrolls, taps or presses a key. Jumps (no smooth scroll),
+ * so it is fine under prefers-reduced-motion. Returns a cleanup.
+ */
+function holdInView(getPanel: () => HTMLElement | null): () => void {
+  let stopped = false;
+  const stop = () => (stopped = true);
+  const opts = { passive: true, once: true } as const;
+  const events = ["wheel", "touchstart", "keydown", "pointerdown"] as const;
+  events.forEach((e) => window.addEventListener(e, stop, opts));
+  const align = () => {
+    const panel = getPanel();
+    if (stopped || !panel) return;
+    const header = parseFloat(getComputedStyle(panel).scrollMarginTop) || 64;
+    const top = panel.getBoundingClientRect().top;
+    if (Math.abs(top - header) > 24) window.scrollBy({ top: top - header, behavior: "auto" });
+  };
+  const ids = [0, 150, 400, 800, 1300, 2000, 3000].map((ms) => window.setTimeout(align, ms));
+  window.addEventListener("load", align, { once: true });
+  return () => {
+    ids.forEach((id) => window.clearTimeout(id));
+    window.removeEventListener("load", align);
+    events.forEach((e) => window.removeEventListener(e, stop));
+  };
+}
+
+/**
  * `pickFromList`: the id of a package list on the same page (the homepage's
  * #commissions). That list becomes the only package picker: step 1 shows the
  * chosen package in one line (or asks her to pick one) instead of a second
@@ -186,25 +214,7 @@ export const Intake = forwardRef<HTMLDivElement | null, { pickFromList?: string 
   // late layout shifts can otherwise leave a fresh page at the top.
   useEffect(() => {
     if (!/^#intake(\?|$)/.test(window.location.hash)) return;
-    let stopped = false;
-    const stop = () => (stopped = true);
-    const opts = { passive: true, once: true } as const;
-    const events = ["wheel", "touchstart", "keydown", "pointerdown"] as const;
-    events.forEach((e) => window.addEventListener(e, stop, opts));
-    const align = () => {
-      const panel = panelRef.current;
-      if (stopped || !panel) return;
-      const header = parseFloat(getComputedStyle(panel).scrollMarginTop) || 64;
-      const top = panel.getBoundingClientRect().top;
-      if (Math.abs(top - header) > 24) window.scrollBy({ top: top - header, behavior: "auto" });
-    };
-    const ids = [0, 150, 400, 800, 1300, 2000, 3000].map((ms) => window.setTimeout(align, ms));
-    window.addEventListener("load", align, { once: true });
-    return () => {
-      ids.forEach((id) => window.clearTimeout(id));
-      window.removeEventListener("load", align);
-      events.forEach((e) => window.removeEventListener(e, stop));
-    };
+    return holdInView(() => panelRef.current);
   }, []);
 
   // "Book this" links anywhere: #book-<package> opens the panel at Hours & extras.
@@ -229,11 +239,21 @@ export const Intake = forwardRef<HTMLDivElement | null, { pickFromList?: string 
       const query = rest.toString();
       history.replaceState(null, "", `${pathname}${query ? `?${query}` : ""}#intake`);
     };
+    // A fresh load at #book-<package> skips the /#intake arrival hold above
+    // (the hash isn't #intake yet at mount), so hold the panel in view here too:
+    // one scrollIntoView alone lands short once the photos above it load.
+    let release: (() => void) | undefined;
+    const onFirstLoad = () => {
+      const book = BOOK_HASH.test(window.location.hash);
+      onLoad();
+      if (book) release = holdInView(() => panelRef.current);
+    };
     // After the draft restore (a parent effect) so the link wins over an old draft.
-    const id = window.setTimeout(onLoad, 0);
+    const id = window.setTimeout(onFirstLoad, 0);
     window.addEventListener("hashchange", onHash);
     return () => {
       window.clearTimeout(id);
+      release?.();
       window.removeEventListener("hashchange", onHash);
     };
   }, [pickPackage]);
