@@ -9,8 +9,12 @@
  * YouTube.
  *
  * Idempotent: the slug is derived from the venue + original filename, so
- * re-running skips anything already ingested. Curates with a per-venue cap
- * (even spread across the shoot) so a 90-photo folder doesn't dump.
+ * re-running skips anything already ingested. Curates PER QUINCEAÑERA: a
+ * venue folder can hold several shoots (files are grouped by name, frame
+ * numbers dropped — "Ana-12.jpg" and "Ana-433.jpg" are one shoot), and each
+ * shoot keeps up to --cap photos (default 40, about half a typical album),
+ * spread evenly across the day. The venue page groups them the same way
+ * (src/lib/venue-events.ts), one section per quinceañera.
  *
  * Run:  node --env-file=.env.local scripts/ingest-venues.mjs [--cap N] [--dry]
  */
@@ -29,7 +33,7 @@ const LONG_EDGE = 2200;
 const args = process.argv.slice(2);
 const DRY = args.includes("--dry");
 const capArg = args.indexOf("--cap");
-const CAP = capArg >= 0 ? parseInt(args[capArg + 1], 10) : 8;
+const CAP = capArg >= 0 ? parseInt(args[capArg + 1], 10) : 40;
 
 // Venue registry — SINGLE SOURCE OF TRUTH, shared with the app's venue landing
 // pages (src/content/venues.ts reads the same file). Add a venue once here and
@@ -85,7 +89,14 @@ for (const [folder, meta] of Object.entries(VENUES)) {
   if (!existsSync(dir)) { report.push(`—  ${meta.city}/${meta.venue}: folder missing`); continue; }
   const all = (await readdir(dir)).filter((f) => IMG_RE.test(f) && !f.startsWith(".")).sort();
   if (!all.length) { report.push(`0  ${meta.city}/${meta.venue}: empty (awaiting photos)`); continue; }
-  const chosen = spread(all, CAP);
+  // One shoot = the file stem without frame numbers (see header).
+  const shoots = new Map();
+  for (const f of all) {
+    const key = cleanStem(f).split("-").filter((w) => w && !/^\d+$/.test(w)).join("-") || "_";
+    if (!shoots.has(key)) shoots.set(key, []);
+    shoots.get(key).push(f);
+  }
+  const chosen = [...shoots.values()].flatMap((files) => spread(files, CAP));
   const venueSlug = slugify(meta.venue);
   let n = 0;
   for (const file of chosen) {

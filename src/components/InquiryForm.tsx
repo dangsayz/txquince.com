@@ -68,7 +68,7 @@ function localizeErrors(errors: FieldErrors): FieldErrors {
   return Object.fromEntries(Object.entries(errors).map(([key, messages]) => [key, messages?.map(spanishError)]));
 }
 
-export function InquiryForm({ initialDate = "", locale = "en" }: { initialDate?: string; locale?: "en" | "es" }) {
+export function InquiryForm({ initialDate = "", initialVenue = "", locale = "en" }: { initialDate?: string; initialVenue?: string; locale?: "en" | "es" }) {
   const es = locale === "es";
   const { fill } = usePriceBook();
   const router = useRouter();
@@ -236,7 +236,7 @@ export function InquiryForm({ initialDate = "", locale = "en" }: { initialDate?:
             <input id={fid("event_date")} name="event_date" type="date" min={todayStr} max={maxStr} defaultValue={initialDate} className="tq-input" {...aria("event_date", true)} />
           </Field>
           <Field id={fid("venue")} label={es ? spanish.venue : "Venue or city"} optional={optional} error={errors.venue}>
-            <input id={fid("venue")} name="venue" type="text" autoComplete="off" className="tq-input" placeholder={es ? spanish.venuePlaceholder : "Church, hall, or city"} {...aria("venue")} />
+            <input id={fid("venue")} name="venue" type="text" autoComplete="off" className="tq-input" defaultValue={initialVenue || undefined} placeholder={es ? spanish.venuePlaceholder : "Church, hall, or city"} {...aria("venue")} />
           </Field>
         </div>
 
