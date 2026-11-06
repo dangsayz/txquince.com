@@ -59,6 +59,7 @@ const F = {
   homeHeroA: { phone: "3 / 4", desktop: "6 / 5" },
   homeHeroB: { phone: "3 / 5", desktop: "3 / 5" },
   card: { phone: "4 / 5", desktop: "4 / 5" },
+  faq: { phone: "3 / 2", desktop: "4 / 5" },
   wideCard: { phone: "4 / 3", desktop: "4 / 3" },
   pagePlate: { phone: "4 / 5", desktop: "21 / 9" },
   shortPlate: { phone: "4 / 3", desktop: "3 / 1" },
@@ -72,6 +73,7 @@ const SIZES = {
   full: "100vw",
   third: "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw",
   duo: "(max-width: 960px) 100vw, 40vw",
+  faq: "(max-width: 959px) 100vw, 36vw",
   placeCard: "(min-width: 1280px) 25vw, (min-width: 960px) 33vw, (min-width: 640px) 50vw, 100vw",
   blogCover:
     "(max-width: 639px) calc(100vw - 48px), (max-width: 959px) calc(100vw - 96px), (max-width: 1279px) calc(100vw - 144px), calc(100vw - 160px)",
@@ -163,6 +165,16 @@ const pageSlots: SlotDef[] = [
     defaultWidth: 1200,
     defaultHeight: 1500,
   },
+  // "What moms ask" (homepage questions): one photo per group of questions,
+  // shown beside the open group.
+  ...([
+    ["booking", "Questions — Prices & booking photo", "/portfolio/canal.webp"],
+    ["team", "Questions — Your team photo", "/portfolio/reception.webp"],
+    ["day", "Questions — The day photo", "/portfolio/dance.webp"],
+    ["after", "Questions — After the party photo", "/portfolio/gown-overhead.webp"],
+  ] as const).map(([g, label, url]) =>
+    staticSlot({ id: `home.faq.${g}`, group: "Homepage", page: "/", paths: HOME, label, crops: F.faq, sizes: SIZES.faq }, url),
+  ),
   staticSlot(
     { id: "about.portrait", group: "About", page: "/about", paths: ["/about"], label: "About — portrait beside the story", crops: F.card, sizes: SIZES.duo },
     "/portfolio/red-garden.webp",
