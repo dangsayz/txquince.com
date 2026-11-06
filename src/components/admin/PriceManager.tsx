@@ -186,7 +186,7 @@ function Field({
 function Section({ title, dek, children }: { title: string; dek?: string; children: React.ReactNode }) {
   return (
     <section className="border-t border-line pt-7">
-      <h2 className="text-lg font-medium tracking-[-0.02em] text-ink">{title}</h2>
+      <h2 className="st-h2">{title}</h2>
       {dek ? <p className="mt-1 max-w-[60ch] text-[15px] leading-relaxed text-ink-soft">{dek}</p> : null}
       <div className="mt-5">{children}</div>
     </section>
@@ -243,7 +243,7 @@ function Preview({ book }: { book: PriceBook | null }) {
               aria-label="Half an hour less"
               disabled={extraNow <= 0}
               onClick={() => setExtra(Math.max(0, extraNow - 0.5))}
-              className="grid h-12 w-12 place-items-center rounded-lg border border-[#c9cac7] bg-white text-xl disabled:opacity-40"
+              className="st-btn-ghost w-12 !px-0 disabled:opacity-40"
             >
               −
             </button>
@@ -255,7 +255,7 @@ function Preview({ book }: { book: PriceBook | null }) {
               aria-label="Half an hour more"
               disabled={extraNow >= maxExtra}
               onClick={() => setExtra(Math.min(maxExtra, extraNow + 0.5))}
-              className="grid h-12 w-12 place-items-center rounded-lg border border-[#c9cac7] bg-white text-xl disabled:opacity-40"
+              className="st-btn-ghost w-12 !px-0 disabled:opacity-40"
             >
               +
             </button>
@@ -595,7 +595,7 @@ export function PriceManager({ initial }: { initial: PricesSnapshot }) {
 
         {/* Save bar: pinned to the bottom of the screen at every size, so Save is
             always one click away from whatever field was just changed. */}
-        <div className="sticky bottom-0 z-20 -mx-5 border-t border-line bg-white/95 px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 shadow-[0_-8px_24px_rgba(0,0,0,0.06)] backdrop-blur sm:-mx-8 sm:px-8 lg:-mx-12 lg:px-12">
+        <div className="sticky bottom-0 z-20 -mx-4 sm:-mx-8 border-t border-line bg-white px-4 sm:px-8 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 shadow-[0_-8px_24px_rgba(0,0,0,0.06)] ">
           {message ? (
             <p
               role={message.kind === "error" ? "alert" : "status"}
@@ -621,7 +621,7 @@ export function PriceManager({ initial }: { initial: PricesSnapshot }) {
                   type="button"
                   onClick={save}
                   disabled={saving}
-                  className="min-h-12 whitespace-nowrap rounded-lg bg-ink px-6 text-base font-medium text-white disabled:opacity-50"
+                  className="st-btn disabled:opacity-50"
                 >
                   {saving ? "Saving…" : "Yes, save new prices"}
                 </button>
@@ -629,7 +629,7 @@ export function PriceManager({ initial }: { initial: PricesSnapshot }) {
                   type="button"
                   onClick={() => setConfirming(false)}
                   disabled={saving}
-                  className="min-h-12 whitespace-nowrap rounded-lg border border-ink px-5 text-base font-medium text-ink"
+                  className="st-btn-ghost"
                 >
                   Cancel
                 </button>
@@ -640,7 +640,7 @@ export function PriceManager({ initial }: { initial: PricesSnapshot }) {
               <button
                 type="submit"
                 disabled={!draft || !changes.length || !canWrite}
-                className="min-h-12 whitespace-nowrap rounded-lg bg-ink px-6 text-base font-medium text-white disabled:opacity-40"
+                className="st-btn disabled:opacity-40"
               >
                 Save new prices
               </button>
@@ -648,7 +648,7 @@ export function PriceManager({ initial }: { initial: PricesSnapshot }) {
                 <button
                   type="button"
                   onClick={() => set(() => toForm(snap.book))}
-                  className="min-h-12 whitespace-nowrap rounded-lg border border-[#c9cac7] px-5 text-base text-ink"
+                  className="st-btn-ghost"
                 >
                   Undo my edits
                 </button>
@@ -657,7 +657,7 @@ export function PriceManager({ initial }: { initial: PricesSnapshot }) {
                 type="button"
                 onClick={() => set(() => toForm(snap.defaults))}
                 disabled={isDefault}
-                className="min-h-12 whitespace-nowrap rounded-lg border border-[#c9cac7] px-5 text-base text-ink disabled:opacity-40"
+                className="st-btn-ghost disabled:opacity-40"
               >
                 Reset to launch prices
               </button>
@@ -674,7 +674,7 @@ export function PriceManager({ initial }: { initial: PricesSnapshot }) {
       </form>
 
       <section className="mt-12 border-t border-line pt-7" aria-labelledby="history-title">
-        <h2 id="history-title" className="text-lg font-medium tracking-[-0.02em] text-ink">
+        <h2 id="history-title" className="st-h2">
           Price history
         </h2>
         {snap.history.length ? (

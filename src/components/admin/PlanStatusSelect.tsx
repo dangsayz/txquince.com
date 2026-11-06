@@ -35,13 +35,13 @@ export function PlanStatusSelect({ id, status, family }: { id: string; status: P
         value={value}
         onChange={(e) => change(e.target.value as PlanStatus)}
         disabled={state === "saving"}
-        className="min-h-11 rounded-sm border border-[#dcdcd9] bg-white px-2.5 text-base text-[#252525] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#252525]"
+        className="st-input pr-2"
       >
         {(Object.keys(LABEL) as PlanStatus[]).map((s) => (
           <option key={s} value={s}>{LABEL[s]}</option>
         ))}
       </select>
-      {state === "error" ? <span role="alert" className="text-xs text-[#8f4039]">Not saved</span> : null}
+      {state === "error" ? <span role="alert" className="text-[13px] text-[var(--tq-status-down)]">Not saved</span> : null}
     </span>
   );
 }

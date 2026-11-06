@@ -1,4 +1,5 @@
 import { requireAdminPage } from "@/lib/require-admin";
+import { StudioPage, StudioSection } from "@/components/admin/StudioPage";
 import { listPriceGuide, type PriceGuideRow } from "@/lib/plan-db";
 import { guideUsd } from "@/lib/price-guide";
 import { PriceGuideImporter } from "@/components/admin/PriceGuideImporter";
@@ -15,38 +16,29 @@ export default async function AdminPriceGuide() {
     loadError = err instanceof Error ? err.message : "Could not load the price guide.";
   }
   return (
-    <main className="mx-auto max-w-[64rem] px-5 pb-24 pt-8 text-[#252525] sm:px-8 lg:pt-11">
-      <div className="border-b border-[#e5e5e3] pb-7">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#62625f]">Website / Price guide</p>
-        <h1 className="mt-3 text-[clamp(1.7rem,2.5vw,2.25rem)] font-normal leading-tight tracking-[-0.035em]">DFW quince price guide</h1>
-        <p className="mt-3 max-w-[64ch] text-sm leading-6 text-[#575753]">
-          Shown at <a href="/precios-quince-dfw" target="_blank" className="underline">/precios-quince-dfw</a> and <a href="/quince-prices-dfw" target="_blank" className="underline">/quince-prices-dfw</a>. The FAQ on those pages is written from these numbers. While the guide is empty, both pages ask search engines not to index them.
-        </p>
-      </div>
-      {loadError ? <p role="alert" className="mt-6 rounded-sm border border-[#f0c9c5] bg-[#f8e8e7] px-4 py-3 text-sm text-[#8f4039]">{loadError}</p> : null}
-      <section className="mt-8 grid gap-3" aria-labelledby="import">
-        <h2 id="import" className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#62625f]">Update from your lead sheet</h2>
+    <StudioPage title="DFW price guide" intro={<>Shown at <a href="/quince-prices-dfw" target="_blank" rel="noreferrer" className="underline underline-offset-4">/quince-prices-dfw</a> and <a href="/precios-quince-dfw" target="_blank" rel="noreferrer" className="underline underline-offset-4">/precios-quince-dfw</a>. While it is empty, both pages stay out of Google.</>}>
+      {loadError ? <p role="alert" className="st-card m-0 px-5 py-4 text-[15px] text-[var(--tq-status-down)]">{loadError}</p> : null}
+      <StudioSection title="Update from your lead sheet" id="import">
         <PriceGuideImporter />
-      </section>
-      <section className="mt-10" aria-labelledby="current">
-        <h2 id="current" className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#62625f]">Live now ({rows.length})</h2>
+      </StudioSection>
+      <StudioSection title={`Live now (${rows.length})`} id="current" flush>
         {rows.length ? (
-          <div className="mt-3 overflow-x-auto border-y border-[#e5e5e3] bg-white">
-            <table className="w-full min-w-[36rem] border-collapse text-left text-sm">
-              <thead><tr className="border-b border-[#e5e5e3] text-xs uppercase tracking-[0.1em] text-[#62625f]"><th className="px-4 py-3">Category</th><th className="px-3 py-3">Español</th><th className="px-3 py-3">Low</th><th className="px-3 py-3">Typical</th><th className="px-3 py-3">High</th><th className="px-3 py-3">Samples</th><th className="px-3 py-3">Updated</th></tr></thead>
+          <div className="overflow-x-auto border-t border-[var(--tq-surface-2)]">
+            <table className="st-table min-w-[36rem] text-[15px]">
+              <thead><tr><th scope="col">Category</th><th scope="col">Español</th><th scope="col">Low</th><th scope="col">Typical</th><th scope="col">High</th><th scope="col">Samples</th><th scope="col">Updated</th></tr></thead>
               <tbody>
                 {rows.map((r) => (
-                  <tr key={r.id} className="border-b border-[#ededeb] last:border-0">
-                    <td className="px-4 py-3">{r.category}</td><td className="px-3 py-3">{r.category_es ?? "—"}</td>
-                    <td className="px-3 py-3 tabular-nums">{guideUsd(r.low_usd)}</td><td className="px-3 py-3 tabular-nums">{guideUsd(r.typical_usd)}</td><td className="px-3 py-3 tabular-nums">{guideUsd(r.high_usd)}</td>
-                    <td className="px-3 py-3 tabular-nums">{r.sample_count}</td><td className="px-3 py-3 tabular-nums">{r.last_updated}</td>
+                  <tr key={r.id}>
+                    <td>{r.category}</td><td>{r.category_es ?? "—"}</td>
+                    <td className="st-num">{guideUsd(r.low_usd)}</td><td className="st-num">{guideUsd(r.typical_usd)}</td><td className="st-num">{guideUsd(r.high_usd)}</td>
+                    <td className="st-num">{r.sample_count}</td><td className="st-num">{r.last_updated}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-        ) : !loadError ? <p className="mt-3 text-sm text-[#696965]">Empty. Paste your first rows above.</p> : null}
-      </section>
-    </main>
+        ) : !loadError ? <p className="st-note px-5 pb-5 sm:px-6">Empty. Paste your first rows above.</p> : null}
+      </StudioSection>
+    </StudioPage>
   );
 }

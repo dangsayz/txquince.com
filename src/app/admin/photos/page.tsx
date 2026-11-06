@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { StudioPage } from "@/components/admin/StudioPage";
 import { readManifest } from "@/lib/photo-dump";
 import { HERO_SLOTS } from "@/lib/photo-dump-shared";
 import { HERO_PLATES } from "@/components/txq/data";
@@ -21,15 +22,8 @@ export default async function AdminPhotosPage() {
   ];
 
   return (
-    <main className="mx-auto max-w-[90rem] px-4 pb-24 pt-8 sm:px-8 md:pt-12 lg:px-16">
-      <div className="border-b border-neutral-200 pb-7">
-        <p className="text-[13px] font-semibold uppercase tracking-[0.14em] text-neutral-950">Website / Photos</p>
-        <h1 className="mt-3 text-[clamp(1.8rem,2.6vw,2.3rem)] font-medium tracking-[-0.04em] text-neutral-950">Photo dump</h1>
-        <p className="mt-2 max-w-[60ch] text-base leading-7 text-neutral-950">
-          Add as many photos as you like. They show up on the homepage under &ldquo;Latest photos&rdquo;, newest first, with any starred photos on top.
-        </p>
-      </div>
+    <StudioPage wide title="Photo dump" intro={<>Add as many photos as you like. They show on the homepage under &ldquo;Latest photos&rdquo;, newest first, starred photos on top.</>}>
       <PhotosManager initial={read?.manifest ?? null} slots={slots} />
-    </main>
+    </StudioPage>
   );
 }

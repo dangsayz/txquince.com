@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { StudioPage } from "@/components/admin/StudioPage";
 import { getBookings, countPaid, type BookingRow } from "@/lib/clients-db";
 import { formatEventDate, formatMoney, packageLabel } from "@/lib/booking";
 import { BookingActions } from "@/components/admin/BookingActions";
@@ -18,17 +18,17 @@ const COLLECTION_LABEL: Record<string, string> = {
 function statusPill(status: string, signed: boolean): { label: string; cls: string } {
   switch (status) {
     case "requested": return signed
-      ? { label: "Signed — needs approval", cls: "bg-[#eceff2] text-[#44515d]" }
-      : { label: "Requested", cls: "bg-[#eceff2] text-[#44515d]" };
-    case "paid": return { label: "Paid", cls: "bg-[#e9f1e9] text-[#365c43]" };
+      ? { label: "Signed — needs approval", cls: "" }
+      : { label: "Requested", cls: "" };
+    case "paid": return { label: "Paid", cls: "good" };
     case "pending_payment": return signed
-      ? { label: "Approved — awaiting deposit", cls: "bg-[#fdf1dd] text-[#76520f]" }
-      : { label: "Pending", cls: "bg-[#fdf1dd] text-[#76520f]" };
-    case "payment_review": return { label: "Review", cls: "bg-[#faeee5] text-[#81532a]" };
-    case "refunded": return { label: "Refunded", cls: "bg-[#f8e8e7] text-[#8f4039]" };
-    case "cancelled": return { label: "Cancelled", cls: "bg-[#f0f0ee] text-[#666662]" };
-    case "expired": return { label: "Expired", cls: "bg-[#f0f0ee] text-[#696965]" };
-    default: return { label: status, cls: "bg-[#f0f0ee] text-[#666662]" };
+      ? { label: "Approved — awaiting deposit", cls: "urgent" }
+      : { label: "Pending", cls: "urgent" };
+    case "payment_review": return { label: "Review", cls: "urgent" };
+    case "refunded": return { label: "Refunded", cls: "urgent" };
+    case "cancelled": return { label: "Cancelled", cls: "" };
+    case "expired": return { label: "Expired", cls: "" };
+    default: return { label: status, cls: "" };
   }
 }
 
@@ -52,53 +52,53 @@ function BookingRecord({ booking }: { booking: BookingRow }) {
         : null;
 
   return (
-    <article id={booking.id} className="scroll-mt-6 border-b border-[#ededeb] bg-white px-5 py-6 last:border-0 sm:px-6">
-      <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1.2fr)_minmax(0,1.2fr)_minmax(0,0.9fr)_auto] lg:items-start lg:gap-5">
+    <article id={booking.id} className="scroll-mt-6 border-b border-[var(--tq-surface-2)] px-5 py-5 last:border-0 sm:px-6">
+      <dl className="m-0 grid gap-4 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1.2fr)_minmax(0,1.2fr)_minmax(0,0.8fr)_auto] lg:items-start lg:gap-5">
         <div className="min-w-0">
-          <dt className="mb-1 text-xs text-[#62625f] lg:sr-only">Client</dt>
-          <dd><h2 className="break-words text-base font-medium text-[#252525]">{booking.name}</h2><p className="mt-1 break-all text-xs text-[#696965]">{booking.email}</p></dd>
+          <dt className="mb-1 text-[13px] text-[var(--tq-ink-mute)] lg:sr-only">Client</dt>
+          <dd><p className="m-0 break-words text-[15px] font-semibold">{booking.name}</p><p className="mt-1 break-all text-[13px] text-[var(--tq-ink-mute)]">{booking.email}</p></dd>
         </div>
         <div className="min-w-0">
-          <dt className="mb-1 text-xs text-[#62625f] lg:sr-only">Celebration</dt>
-          <dd><p className="text-sm text-[#333]">{formatEventDate(booking.event_date)}</p><p className="mt-1 text-xs text-[#62625f]">Reserved {shortDateTime(booking.created_at)}</p></dd>
+          <dt className="mb-1 text-[13px] text-[var(--tq-ink-mute)] lg:sr-only">Celebration</dt>
+          <dd><p className="text-sm text-[var(--tq-ink)]">{formatEventDate(booking.event_date)}</p><p className="mt-1 text-[13px] text-[var(--tq-ink-mute)]">Reserved {shortDateTime(booking.created_at)}</p></dd>
         </div>
         <div className="min-w-0">
-          <dt className="mb-1 text-xs text-[#62625f] lg:sr-only">Collection</dt>
-          <dd><p className="text-sm text-[#333]">{collection ?? "—"}</p><p className="mt-1 break-words text-xs text-[#62625f]">{packageLabel(booking.package)}</p></dd>
+          <dt className="mb-1 text-[13px] text-[var(--tq-ink-mute)] lg:sr-only">Collection</dt>
+          <dd><p className="text-sm text-[var(--tq-ink)]">{collection ?? "—"}</p><p className="mt-1 break-words text-[13px] text-[var(--tq-ink-mute)]">{packageLabel(booking.package)}</p></dd>
         </div>
         <div className="min-w-0">
-          <dt className="mb-1 text-xs text-[#62625f] lg:sr-only">Deposit</dt>
-          <dd><p className="text-sm font-medium tabular-nums text-[#333]">{formatMoney(booking.deposit_amount_cents, booking.currency)}</p>{booking.paid_at && <p className="mt-1 text-xs text-[#62625f]">Paid {shortDateTime(booking.paid_at)}</p>}</dd>
+          <dt className="mb-1 text-[13px] text-[var(--tq-ink-mute)] lg:sr-only">Deposit</dt>
+          <dd><p className="text-sm font-medium tabular-nums text-[var(--tq-ink)]">{formatMoney(booking.deposit_amount_cents, booking.currency)}</p>{booking.paid_at && <p className="mt-1 text-[13px] text-[var(--tq-ink-mute)]">Paid {shortDateTime(booking.paid_at)}</p>}</dd>
         </div>
-        <div><dt className="mb-1 text-xs text-[#62625f] lg:sr-only">Status</dt><dd><span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${pill.cls}`}>{pill.label}</span></dd></div>
+        <div><dt className="mb-1 text-[13px] text-[var(--tq-ink-mute)] lg:sr-only">Status</dt><dd><span className="st-chip" data-tone={pill.cls || undefined}>{pill.label}</span></dd></div>
       </dl>
 
-      {(booking.phone || booking.notes) && <div className="mt-5 grid gap-x-8 gap-y-3 border-t border-[#f0f0ee] pt-4 text-sm sm:grid-cols-2">
-        {booking.phone && <div><span className="mr-3 text-[#62625f]">Phone</span><a href={`tel:${booking.phone}`} className="break-all text-[#333] underline decoration-[#bbb] underline-offset-2 hover:decoration-[#333]">{booking.phone}</a></div>}
-        {booking.notes && <div className="sm:col-span-2"><span className="text-[#62625f]">Notes</span><p className="mt-1 whitespace-pre-wrap break-words text-[#555]">{booking.notes}</p></div>}
+      {(booking.phone || booking.notes) && <div className="mt-5 grid gap-x-8 gap-y-3 border-t border-[var(--tq-surface-2)] pt-4 text-sm sm:grid-cols-2">
+        {booking.phone && <div><span className="mr-3 text-[var(--tq-ink-mute)]">Phone</span><a href={`tel:${booking.phone}`} className="break-all text-[var(--tq-ink)] underline decoration-[var(--tq-stone)] underline-offset-2 hover:decoration-[var(--tq-ink)]">{booking.phone}</a></div>}
+        {booking.notes && <div className="sm:col-span-2"><span className="text-[var(--tq-ink-mute)]">Notes</span><p className="mt-1 whitespace-pre-wrap break-words text-[var(--tq-ink-mute)]">{booking.notes}</p></div>}
       </div>}
       {agreement ? (
-        <details className="mt-5 border-t border-[#f0f0ee] pt-4 text-sm">
-          <summary className="inline-flex min-h-11 cursor-pointer items-center font-medium text-[#252525]">
+        <details className="mt-5 border-t border-[var(--tq-surface-2)] pt-4 text-sm">
+          <summary className="inline-flex min-h-11 cursor-pointer items-center font-medium text-[var(--tq-ink)]">
             Signed agreement · {agreement.signedName} · {shortDateTime(agreement.signedAt)}
             {agreement.approvedAt ? ` · approved ${shortDateTime(agreement.approvedAt)}` : ""}
           </summary>
-          <div className="mt-3 max-w-3xl space-y-4 text-[#333]">
+          <div className="mt-3 max-w-3xl space-y-4 text-[var(--tq-ink)]">
             <p className="font-medium">{agreement.title}</p>
             <p>{agreement.intro}</p>
             {agreement.sections.map((sec) => (
               <div key={sec.title}>
-                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#252525]">{sec.title}</p>
+                <p className="font-semibold">{sec.title}</p>
                 <ul className="mt-1 list-disc space-y-0.5 pl-5">{sec.lines.map((l) => <li key={l}>{l}</li>)}</ul>
               </div>
             ))}
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={agreement.signature} alt={`Signature of ${agreement.signedName}`} width={300} height={100} className="border border-[#e5e5e3] bg-white" />
-            <p className="text-xs text-[#555]">Signed {new Date(agreement.signedAt).toUTCString()} · IP {agreement.ip} · version {agreement.version}</p>
+            <img src={agreement.signature} alt={`Signature of ${agreement.signedName}`} width={300} height={100} className="border border-[var(--tq-surface-2)] bg-white" />
+            <p className="text-[13px] text-[var(--tq-ink-mute)]">Signed {new Date(agreement.signedAt).toUTCString()} · IP {agreement.ip} · version {agreement.version}</p>
           </div>
         </details>
       ) : null}
-      <a href={`mailto:${booking.email}`} className="mt-4 inline-flex min-h-11 items-center text-sm text-[#444] underline decoration-[#bbb] underline-offset-4 hover:decoration-[#333] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#252525]">Email client ↗</a>
+      <a href={`mailto:${booking.email}`} className="st-link mt-2">Email {booking.name.split(" ")[0]}</a>
       <BookingActions id={booking.id} status={booking.status} signed={Boolean(agreement)} />
     </article>
   );
@@ -107,34 +107,40 @@ function BookingRecord({ booking }: { booking: BookingRow }) {
 export default async function AdminBookings() {
   await requireAdminPage("/admin/bookings"); // server-side gate; middleware is not enough
   const bookings = await getBookings();
-  const paid = countPaid(bookings);
-  const pending = bookings.filter((booking) => booking.status === "pending_payment").length;
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Chicago" }).format(new Date());
+  const needs = bookings.filter((b) => ["payment_review", "requested", "pending_payment"].includes(b.status));
+  const upcoming = bookings.filter((b) => b.status === "paid" && b.event_date >= today).sort((a, b) => a.event_date.localeCompare(b.event_date));
+  const past = bookings.filter((b) => !needs.includes(b) && !upcoming.includes(b));
+  const groups = [
+    { id: "needs", title: "Needs you", intro: "Check the date, approve, or wait for the deposit.", rows: needs },
+    { id: "upcoming", title: "Coming up", intro: "Paid celebrations, soonest first.", rows: upcoming },
+    { id: "past", title: "Past and closed", intro: "Finished, refunded, cancelled or expired.", rows: past },
+  ].filter((g) => g.rows.length);
 
   return (
-    <main className="mx-auto max-w-[86rem] px-5 pb-24 pt-8 text-[#252525] sm:px-8 lg:px-12 lg:pt-11">
-      <header className="flex flex-wrap items-end justify-between gap-5 border-b border-[#e5e5e3] pb-7">
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#62625f]">Client work / Bookings</p>
-          <h1 className="mt-3 text-[clamp(1.7rem,2.5vw,2.25rem)] font-normal leading-tight tracking-[-0.035em]">Bookings</h1>
+    <StudioPage
+      title="Bookings"
+      intro={`${countPaid(bookings)} paid · ${upcoming.length} coming up${needs.length ? ` · ${needs.length} need${needs.length === 1 ? "s" : ""} you` : ""}.`}
+    >
+      {bookings.length === 0 ? (
+        <div className="st-card st-empty">
+          <p className="m-0 text-lg font-medium">No bookings yet.</p>
+          <p className="st-note mt-1">When a family reserves a date, their package, deposit and contact details show up here.</p>
         </div>
-        <Link href="/admin" className="inline-flex min-h-11 items-center text-sm text-[#696965] hover:text-[#252525] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#252525]">← Today</Link>
-      </header>
-
-      <div className="grid grid-cols-3 gap-4 border-b border-[#e5e5e3] py-7 sm:max-w-xl sm:gap-8">
-        <div><p className="text-[11px] uppercase tracking-[0.14em] text-[#62625f]">Total</p><p className="mt-1 text-2xl font-normal tabular-nums tracking-[-0.04em]">{bookings.length}</p></div>
-        <div><p className="text-[11px] uppercase tracking-[0.14em] text-[#62625f]">Paid</p><p className="mt-1 text-2xl font-normal tabular-nums tracking-[-0.04em]">{paid}</p></div>
-        <div><p className="text-[11px] uppercase tracking-[0.14em] text-[#62625f]">Pending</p><p className="mt-1 text-2xl font-normal tabular-nums tracking-[-0.04em]">{pending}</p></div>
-      </div>
-
-      {bookings.length === 0 ? <div className="border-b border-[#e5e5e3] px-5 py-16 text-center">
-        <h2 className="text-lg font-medium tracking-[-0.02em]">No bookings yet</h2>
-        <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[#696965]">When a client reserves a date, their package, deposit, and contact details will appear here.</p>
-      </div> : <section aria-label="Bookings" className="mt-7 border-y border-[#e5e5e3] bg-white">
-        <div aria-hidden="true" className="hidden grid-cols-[minmax(0,1.5fr)_minmax(0,1.2fr)_minmax(0,1.2fr)_minmax(0,0.9fr)_auto] gap-5 border-b border-[#e5e5e3] px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#62625f] lg:grid">
-          <span>Client</span><span>Celebration</span><span>Collection</span><span>Deposit</span><span>Status</span>
-        </div>
-        {bookings.map((booking) => <BookingRecord key={booking.id} booking={booking} />)}
-      </section>}
-    </main>
+      ) : groups.map((g) => (
+        <section key={g.id} aria-labelledby={`b-${g.id}`} className="st-card overflow-hidden">
+          <div className="px-5 pt-5 sm:px-6">
+            <h2 id={`b-${g.id}`} className="st-h2">{g.title} <span className="st-num text-[var(--tq-ink-mute)]">{g.rows.length}</span></h2>
+            <p className="st-note mt-1">{g.intro}</p>
+          </div>
+          <div aria-hidden="true" className="st-label mt-4 hidden grid-cols-[minmax(0,1.4fr)_minmax(0,1.2fr)_minmax(0,1.2fr)_minmax(0,0.8fr)_auto] gap-5 border-t border-[var(--tq-surface-2)] px-6 py-3 lg:grid">
+            <span>Family</span><span>Celebration</span><span>Collection</span><span>Deposit</span><span>Status</span>
+          </div>
+          <div className="mt-4 border-t border-[var(--tq-surface-2)] lg:mt-0">
+            {g.rows.map((booking) => <BookingRecord key={booking.id} booking={booking} />)}
+          </div>
+        </section>
+      ))}
+    </StudioPage>
   );
 }

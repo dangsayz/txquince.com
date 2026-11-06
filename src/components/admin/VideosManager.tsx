@@ -178,9 +178,9 @@ export function VideosManager({ initial }: { initial: VideoRow[] }) {
                   />
                 </label>
                 <div className="flex items-center gap-2 text-ink-soft">
-                  <button onClick={() => move(i, -1)} disabled={i === 0} className="min-h-11 min-w-11 rounded-lg border border-line disabled:opacity-30" aria-label="Up">↑</button>
-                  <button onClick={() => move(i, 1)} disabled={i === videos.length - 1} className="min-h-11 min-w-11 rounded-lg border border-line disabled:opacity-30" aria-label="Down">↓</button>
-                  <button onClick={() => remove(v.id)} className="min-h-11 min-w-11 rounded-lg border border-line text-danger" aria-label="Delete">✕</button>
+                  <button onClick={() => move(i, -1)} disabled={i === 0} className="st-btn-ghost min-w-11 !px-3 disabled:opacity-30" aria-label="Up">↑</button>
+                  <button onClick={() => move(i, 1)} disabled={i === videos.length - 1} className="st-btn-ghost min-w-11 !px-3 disabled:opacity-30" aria-label="Down">↓</button>
+                  <button onClick={() => remove(v.id)} className="st-btn-ghost min-w-11 !px-3 text-[var(--tq-status-down)]" aria-label="Delete">✕</button>
                 </div>
               </div>
             );

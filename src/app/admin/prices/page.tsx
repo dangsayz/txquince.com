@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { StudioPage } from "@/components/admin/StudioPage";
 import { getAdminEmail } from "@/lib/require-admin";
 import { DEFAULT_PRICE_BOOK } from "@/lib/commission";
 import { listPriceHistory, readPriceBook } from "@/lib/pricing";
@@ -15,15 +16,8 @@ export default async function AdminPrices() {
   const [current, history] = await Promise.all([readPriceBook(), listPriceHistory()]);
 
   return (
-    <main className="mx-auto max-w-[72rem] px-5 pb-20 pt-8 sm:px-8 md:pt-12 lg:px-12">
-      <div className="border-b border-neutral-200 pb-7">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-neutral-500">Website / Prices</p>
-        <h1 className="mt-3 text-[clamp(1.7rem,2.4vw,2.15rem)] font-medium tracking-[-0.04em] text-neutral-950">Prices</h1>
-        <p className="mt-2 max-w-[60ch] text-[15px] leading-relaxed text-neutral-600">
-          Change what families pay. Every page, the booking form, the FAQ and the agreement use these numbers.
-        </p>
-      </div>
-      <div className="mt-8">
+    <StudioPage title="Prices" intro="What families pay. Every page, the booking form, the FAQ and the agreement use these numbers.">
+      <div className="min-w-0">
         <PriceManager
           initial={{
             book: current.book,
@@ -35,6 +29,6 @@ export default async function AdminPrices() {
           }}
         />
       </div>
-    </main>
+    </StudioPage>
   );
 }

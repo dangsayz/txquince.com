@@ -4,8 +4,19 @@ import { platformOf, PLATFORMS, type Platform } from "@/lib/social";
 import { getBookings, getInquiries } from "@/lib/clients-db";
 import { releasedTestimonials } from "@/content/testimonials";
 import { collectionById } from "@/content/packages";
-import type { ConversionChange } from "@/components/admin/ChangeLog";
 import { sourceKey, visitSourceKey, WHATSAPP_SOURCE } from "@/lib/src-tag";
+
+export type ConversionChange = {
+  id: string;
+  created_at: string;
+  title: string;
+  area: string | null;
+  reason: string | null;
+  target_metric: string | null;
+  baseline: Record<string, number> | null;
+  status: string;
+  notes: string | null;
+};
 
 export type RangedStats = {
   configured: boolean;

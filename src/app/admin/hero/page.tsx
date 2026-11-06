@@ -1,3 +1,4 @@
+import { StudioPage } from "@/components/admin/StudioPage";
 import {
   getHeroMedia,
   getPageHero,
@@ -45,13 +46,8 @@ export default async function AdminHero() {
   });
 
   return (
-    <main className="mx-auto max-w-[90rem] px-5 pb-20 pt-8 md:px-10 md:pt-12 lg:px-16">
-      <div className="border-b border-neutral-200 pb-7">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-neutral-500">Website / Art direction</p>
-        <h1 className="mt-3 text-[clamp(1.7rem,2.4vw,2.15rem)] font-medium tracking-[-0.04em] text-neutral-950">Page imagery</h1>
-        <p className="mt-2 text-sm text-neutral-600">Choose the opening image or film for each page.</p>
-      </div>
-      <div className="mt-8">
+    <StudioPage wide title="Page imagery" intro="The first image or film on each page.">
+      <div className="min-w-0">
         <HeroManager initial={media} library={allImages.flatMap((image) => image.slug ? [{
           slug: image.slug,
           url: image.url,
@@ -63,13 +59,13 @@ export default async function AdminHero() {
         }] : [])} />
       </div>
 
-      <div className="mt-14 border-t border-neutral-200 pt-10">
-        <h2 className="text-xl font-medium tracking-[-0.03em] text-neutral-950">Other pages</h2>
-        <p className="mt-2 text-sm text-neutral-600">Select a portfolio photograph or use the featured image automatically.</p>
-        <div className="mt-8">
+      <div className="mt-8 border-t border-[var(--tq-surface-2)] pt-8">
+        <h2 className="st-h2">Other pages</h2>
+        <p className="st-note mt-1">Pick a portfolio photograph, or leave it on the featured image.</p>
+        <div className="mt-6">
           <PageHeroManager pages={pages} library={library} />
         </div>
       </div>
-    </main>
+    </StudioPage>
   );
 }

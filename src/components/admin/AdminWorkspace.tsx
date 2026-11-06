@@ -12,19 +12,20 @@ const mainLinks = [
   { href: "/admin/plans", label: "Plans" },
   { href: "/admin/bookings", label: "Bookings" },
   { href: "/admin/insights", label: "Insights" },
-  { href: "/admin/portfolio", label: "Website" },
+  { href: "/admin/website", label: "Website" },
 ] as const;
 
 const websiteLinks = [
-  { href: "/admin/portfolio", label: "Portfolio" },
+  { href: "/admin/website", label: "Overview" },
   { href: "/admin/photos", label: "Photo dump" },
+  { href: "/admin/portfolio", label: "Portfolio" },
   { href: "/admin/videos", label: "Films" },
-  { href: "/admin/venues", label: "Venues" },
   { href: "/admin/hero", label: "Page imagery" },
+  { href: "/admin/images", label: "Every image" },
   { href: "/admin/prices", label: "Prices" },
   { href: "/admin/packages", label: "Packages" },
   { href: "/admin/price-guide", label: "Price guide" },
-  { href: "/admin/images", label: "Every image" },
+  { href: "/admin/venues", label: "Venues" },
 ] as const;
 
 function isActive(pathname: string, href: string) {
@@ -140,10 +141,9 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
 
         {websiteActive && (
           <nav aria-label="Website management" className="hidden border-t border-[var(--tq-surface-2)] lg:block">
-            <div className="mx-auto flex max-w-[96rem] items-center gap-6 px-4 sm:px-8 lg:px-12">
-              <span className="st-label mr-2">Website</span>
+            <div className="mx-auto flex max-w-[96rem] items-center gap-6 overflow-x-auto px-4 sm:px-8 lg:px-12">
               {websiteLinks.map((link) => (
-                <Link key={link.href} href={link.href} aria-current={isActive(pathname, link.href) ? "page" : undefined} className={`inline-flex min-h-12 items-center border-b-2 text-[15px] transition-colors duration-[var(--tq-dur-fast)] ${isActive(pathname, link.href) ? "border-[var(--tq-ink)] font-medium text-[var(--tq-ink)]" : "border-transparent text-[var(--tq-ink-mute)] hover:text-[var(--tq-ink)]"}`}>
+                <Link key={link.href} href={link.href} aria-current={isActive(pathname, link.href) ? "page" : undefined} className={`inline-flex min-h-12 min-w-11 shrink-0 items-center justify-center whitespace-nowrap border-b-2 text-[15px] transition-colors duration-[var(--tq-dur-fast)] ${isActive(pathname, link.href) ? "border-[var(--tq-ink)] font-medium text-[var(--tq-ink)]" : "border-transparent text-[var(--tq-ink-mute)] hover:text-[var(--tq-ink)]"}`}>
                   {link.label}
                 </Link>
               ))}
@@ -156,7 +156,7 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
             <div className="flex flex-col border-t border-[var(--tq-surface-2)] py-3">
               <MainNavigation pathname={pathname} onNavigate={() => setMenuOpen(false)} />
             </div>
-            <p className="st-label m-0 border-t border-[var(--tq-surface-2)] pt-5">Manage website</p>
+            <p className="m-0 border-t border-[var(--tq-surface-2)] pt-5 text-[15px] font-semibold">Website</p>
             <div className="mt-2 grid grid-cols-2 gap-x-4">
               {websiteLinks.map((link) => (
                 <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)} aria-current={isActive(pathname, link.href) ? "page" : undefined} className={`inline-flex min-h-12 items-center border-b border-[var(--tq-surface-2)] text-[15px] ${isActive(pathname, link.href) ? "font-semibold text-[var(--tq-ink)]" : "text-[var(--tq-ink-mute)]"}`}>{link.label}</Link>

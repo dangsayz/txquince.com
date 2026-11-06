@@ -113,7 +113,7 @@ function VenueCard({ venue, initial }: { venue: VenueRow; initial: Copy }) {
 
       <div className="mt-4 flex flex-col gap-4">
         <label className="block">
-          <span className="text-sm uppercase tracking-[0.14em] text-ink-faint">
+          <span className="text-[15px] font-medium">
             About (intro paragraph + meta description)
           </span>
           <textarea
@@ -128,7 +128,7 @@ function VenueCard({ venue, initial }: { venue: VenueRow; initial: Copy }) {
         {/* FAQ editor */}
         <div>
           <div className="flex items-center justify-between">
-            <span className="text-sm uppercase tracking-[0.14em] text-ink-faint">
+            <span className="text-[15px] font-medium">
               FAQ (shows on page + FAQ rich-result schema)
             </span>
             <button
@@ -183,19 +183,19 @@ function VenueCard({ venue, initial }: { venue: VenueRow; initial: Copy }) {
         {/* Facts */}
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block">
-            <span className="text-sm uppercase tracking-[0.14em] text-ink-faint">Address</span>
+            <span className="text-[15px] font-medium">Address</span>
             <input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="123 Main St, City, TX" className={`${field} mt-1`} />
           </label>
           <label className="block">
-            <span className="text-sm uppercase tracking-[0.14em] text-ink-faint">Area / neighborhood</span>
+            <span className="text-[15px] font-medium">Area / neighborhood</span>
             <input value={area} onChange={(e) => setArea(e.target.value)} placeholder="Las Colinas" className={`${field} mt-1`} />
           </label>
           <label className="block">
-            <span className="text-sm uppercase tracking-[0.14em] text-ink-faint">Venue Instagram</span>
+            <span className="text-[15px] font-medium">Venue Instagram</span>
             <input value={ig} onChange={(e) => setIg(e.target.value)} placeholder="@venuehandle" className={`${field} mt-1`} />
           </label>
           <label className="block">
-            <span className="text-sm uppercase tracking-[0.14em] text-ink-faint">Venue website</span>
+            <span className="text-[15px] font-medium">Venue website</span>
             <input value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="venue.com" className={`${field} mt-1`} />
           </label>
         </div>
@@ -213,7 +213,7 @@ function VenueCard({ venue, initial }: { venue: VenueRow; initial: Copy }) {
             type="button"
             onClick={aiDraft}
             disabled={busy}
-            className="min-h-12 rounded-lg border border-accent/40 px-5 text-base font-medium text-accent transition-colors hover:border-accent hover:bg-accent hover:text-cream disabled:opacity-50"
+            className="st-btn-ghost disabled:opacity-50"
             title="Draft the about paragraph + FAQ with AI (you edit, then Save)"
           >
             AI: write venue copy
