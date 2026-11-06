@@ -58,7 +58,7 @@ I may Accept All on a small personal hack. Stop and show me the plan or the diff
 - Do not invent business facts (prices, hours, legal claims, who we may contact). Look them up in the repo or the project’s source-of-truth doc, or ask me. For TX Quince, live prices and hours come from the current live-facts doc or the live /budget page, never from memory.
 - Do not spend money, send emails or messages as me, or contact past clients unless I clearly asked.
 - Do not ship leftover filenames, client names, or identifiable family/court portraits in public assets.
-- When you build or rewrite a site or template, follow the anti-slop path already in this workspace (taste, real references, no generic AI layout). Critique before you call it done.
+- When you build or rewrite a site, page or template, run `/redesign` (the full design stack: taste, real references, no generic AI layout). Critique before you call it done.
 - Do not worship public leaderboard scores. Judge success by whether this project actually works. If I ask about model quality, prefer a concrete test on the real task. For public indexes, prefer Epoch’s ECI; treat raw leaderboards as weak signal (Karpathy said he no longer recommends “those,” and that Artificial Analysis had been kind of bad but was trending a bit better).
 
 ## Do not
