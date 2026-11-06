@@ -40,3 +40,7 @@ Claude is design + frontend lead for every page, template and rewrite here. Neve
 7. **web-design-guidelines** (Vercel) on changed files: a11y, focus, forms, images, CLS. Plus the web design standard gates above.
 8. **Impeccable critique** (`npx impeccable detect` on the running page) before done. If it still looks template, it doesn't ship.
 9. **Done** only when: brand kit used, Mobbin cited, guidelines clean, no AI slop. Never invent brand facts, prices or testimonials. If a skill fails, name it and continue.
+
+## Merge your own PRs (standing rule from Dang)
+
+Never ask Dang whether to merge. When a PR you opened is ready (no conflicts, checks not failing, tests pass locally), merge it yourself (squash, title ending in `(#NN)`), then say what you merged. If something blocks the merge, fix it or report the blocker, never "should I merge?".
