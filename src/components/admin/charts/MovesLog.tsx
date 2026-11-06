@@ -11,7 +11,7 @@ import { MOVE_METRICS } from "@/lib/pulse-intel";
  * judged, Keep or Drop files them (with the result) so the track record
  * builds up: what was tried, for how long, and whether it moved the number.
  */
-const TONE: Record<string, string> = { working: "#248a3d", "not-working": "#d70015", flat: "#d70015", measuring: "#0071e3" };
+const TONE: Record<string, string> = { working: "#2e6f40", "not-working": "#a14f12", flat: "#a14f12", measuring: "#111110" };
 const STATE_LABEL: Record<string, string> = { working: "Working", "not-working": "Not working", flat: "No change", measuring: "Measuring" };
 
 export function MovesLog({ moves, nextUp }: { moves: PulseMove[]; nextUp: { title: string; metric: string } | null }) {
@@ -47,34 +47,34 @@ export function MovesLog({ moves, nextUp }: { moves: PulseMove[]; nextUp: { titl
 
   return (
     <section aria-labelledby="moves-title" className="hud-card min-w-0">
-      <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[#d2d2d7] px-4 py-3.5 sm:px-5">
-        <h2 id="moves-title" className="hud-label m-0" style={{ color: "#1d1d1f" }}>
+      <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[#e2ddd5] px-4 py-3.5 sm:px-5">
+        <h2 id="moves-title" className="hud-label m-0" style={{ color: "#111110" }}>
           Moves log
         </h2>
-        <p className="hud-mono m-0 text-[13px] text-[#6e6e73]">
+        <p className="hud-mono m-0 text-[13px] text-[#4d4b48]">
           {moves.length ? `${active.length} running · ${done.length} finished · ${kept.length} kept` : "Nothing tried yet"}
         </p>
       </div>
 
       {nextUp && !active.some((m) => m.title === nextUp.title) ? (
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-dashed border-[#d2d2d7] px-4 py-3 sm:px-5">
-          <p className="m-0 min-w-0 flex-1 text-sm leading-6 text-[#1d1d1f]">
-            <span className="hud-mono mr-2 text-[13px] text-[#d70015]">Next up</span>
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-dashed border-[#e2ddd5] px-4 py-3 sm:px-5">
+          <p className="m-0 min-w-0 flex-1 text-sm leading-6 text-[#111110]">
+            <span className="hud-mono mr-2 text-[13px] text-[#a14f12]">Next up</span>
             {nextUp.title}
           </p>
           <button type="button" className="hud-move-btn hud-focus" disabled={busy === "next"} onClick={startNext}>
-            {busy === "next" ? "Saving…" : "Try this →"}
+            {busy === "next" ? "Saving…" : "Try this"}
           </button>
         </div>
       ) : null}
 
       {moves.length === 0 ? (
-        <p className="m-0 px-4 py-4 text-sm leading-6 text-[#6e6e73] sm:px-5">
-          Hover any number, hold for Next moves, and press <span className="hud-mono text-[#0071e3]">Try this</span>. It saves today&apos;s number, then this log
+        <p className="m-0 px-4 py-4 text-sm leading-6 text-[#4d4b48] sm:px-5">
+          Hover any number, hold for Next moves, and press <span className="hud-mono text-[#111110]">Try this</span>. It saves today&apos;s number, then this log
           tells you after 7 to 21 days whether the move worked.
         </p>
       ) : (
-        <ol className="m-0 list-none divide-y divide-[#d2d2d7] p-0">
+        <ol className="m-0 list-none divide-y divide-[#e2ddd5] p-0">
           {[...active, ...done].slice(0, 8).map((m) => {
             const state = m.status === "active" ? m.verdict?.state ?? "measuring" : m.status === "reviewed" ? "working" : "not-working";
             const color = TONE[state];
@@ -82,23 +82,23 @@ export function MovesLog({ moves, nextUp }: { moves: PulseMove[]; nextUp: { titl
             return (
               <li key={m.id} className="px-4 py-3.5 sm:px-5">
                 <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1.5">
-                  <p className="m-0 min-w-0 flex-1 text-sm leading-6 text-[#1d1d1f]">{m.title}</p>
+                  <p className="m-0 min-w-0 flex-1 text-sm leading-6 text-[#111110]">{m.title}</p>
                   <span className="hud-pill" style={{ color }}>
                     {m.status === "active" ? STATE_LABEL[state] : m.status === "reviewed" ? "Kept" : "Dropped"}
                   </span>
                 </div>
-                <p className="hud-mono m-0 mt-1 text-[13px] text-[#6e6e73]">
+                <p className="hud-mono m-0 mt-1 text-[13px] text-[#4d4b48]">
                   {m.metricLabel} · day {m.days}
                   {m.before !== null ? ` · started at ${m.before}${u}` : ""}
                   {m.now !== null ? ` · now ${m.now}${u}` : ""}
                 </p>
-                <p className="m-0 mt-1 text-[13px] leading-5 text-[#6e6e73]">{m.status === "active" ? m.verdict?.text ?? "Measuring." : m.notes}</p>
+                <p className="m-0 mt-1 text-[13px] leading-5 text-[#4d4b48]">{m.status === "active" ? m.verdict?.text ?? "Measuring." : m.notes}</p>
                 {m.status === "active" && m.verdict && m.verdict.state !== "measuring" ? (
                   <div className="mt-2 flex flex-wrap gap-2">
                     <button type="button" className="hud-move-btn hud-focus" disabled={busy === m.id} onClick={() => file(m, "reviewed")}>
                       Keep it
                     </button>
-                    <button type="button" className="hud-move-btn hud-focus" style={{ color: "#d70015" }} disabled={busy === m.id} onClick={() => file(m, "archived")}>
+                    <button type="button" className="hud-move-btn hud-move-btn--quiet hud-focus" disabled={busy === m.id} onClick={() => file(m, "archived")}>
                       Drop it
                     </button>
                   </div>

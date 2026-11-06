@@ -68,7 +68,7 @@ const fmtDay = (iso: string) =>
   new Date(`${iso}T12:00:00Z`).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
 
 function Delta({ now, before }: { now: number; before: number }) {
-  if (before === 0 && now === 0) return <span className="hud-mono text-xs text-[#6e6e73]">±0</span>;
+  if (before === 0 && now === 0) return <span className="hud-mono text-xs text-[#4d4b48]">±0</span>;
   if (before === 0) return <span className="hud-mono hud-up text-xs">New</span>;
   const pct = Math.round(((now - before) / before) * 100);
   return (
@@ -141,7 +141,7 @@ export function TrendChart({
 
   return (
     <div className="hud-card">
-      <div role="tablist" aria-label="Metric" className="grid grid-cols-2 border-b border-[#d2d2d7] lg:grid-cols-4">
+      <div role="tablist" aria-label="Metric" className="grid grid-cols-2 border-b border-[#e2ddd5] lg:grid-cols-4">
         {METRICS.map((m, i) => {
           const tab = (
             <button role="tab" type="button" aria-selected={m.key === metric} onClick={() => setMetric(m.key)} className="hud-tab hud-focus h-full w-full">
@@ -162,7 +162,7 @@ export function TrendChart({
               </span>
             </button>
           );
-          const edge = `${i % 2 ? "border-l" : ""} ${i >= 2 ? "border-t lg:border-t-0" : ""} ${i === 2 ? "lg:border-l" : ""} border-[#d2d2d7]`;
+          const edge = `${i % 2 ? "border-l" : ""} ${i >= 2 ? "border-t lg:border-t-0" : ""} ${i === 2 ? "lg:border-l" : ""} border-[#e2ddd5]`;
           const it = intel?.[m.key];
           return it ? (
             <HudIntel key={m.key} intel={it} align={i % 2 || i === 3 ? "right" : "left"} className={edge}>
@@ -179,7 +179,7 @@ export function TrendChart({
           {label}: {totals[metric]} in the last {range} days, versus {previous[metric]} in the {range} days before.
         </p>
         <div className="relative flex gap-3">
-          <div aria-hidden className="hud-mono flex flex-col justify-between text-right text-[13px] text-[#6e6e73]" style={{ height: H, paddingTop: PAD_TOP - 6, paddingBottom: PAD_BOTTOM - 4 }}>
+          <div aria-hidden className="hud-mono flex flex-col justify-between text-right text-[13px] text-[#4d4b48]" style={{ height: H, paddingTop: PAD_TOP - 6, paddingBottom: PAD_BOTTOM - 4 }}>
             <span>{max}</span>
             <span>{max / 2}</span>
             <span>0</span>
@@ -196,16 +196,16 @@ export function TrendChart({
               <svg width={W} height={H} className="absolute inset-0 overflow-visible" aria-hidden>
                 <defs>
                   <linearGradient id={`stroke-${gid}`} x1="0" x2="1" y1="0" y2="0">
-                    <stop offset="0%" stopColor="#0071e3" />
-                    <stop offset="100%" stopColor="#0071e3" />
+                    <stop offset="0%" stopColor="#111110" />
+                    <stop offset="100%" stopColor="#111110" />
                   </linearGradient>
                   <linearGradient id={`fill-${gid}`} x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#0071e3" stopOpacity="0.1" />
-                    <stop offset="100%" stopColor="#0071e3" stopOpacity="0" />
+                    <stop offset="0%" stopColor="#111110" stopOpacity="0.1" />
+                    <stop offset="100%" stopColor="#111110" stopOpacity="0" />
                   </linearGradient>
                 </defs>
                 {[yOf(max), yOf(max / 2), yOf(0)].map((y) => (
-                  <line key={y} x1="0" x2={W} y1={y} y2={y} stroke="#ececef" />
+                  <line key={y} x1="0" x2={W} y1={y} y2={y} stroke="#f2efe9" />
                 ))}
                 {!empty ? <path key={`a-${metric}-${range}`} className="hud-fade" d={area} fill={`url(#fill-${gid})`} /> : null}
                 <path
@@ -214,43 +214,42 @@ export function TrendChart({
                   pathLength={1}
                   d={line}
                   fill="none"
-                  stroke={empty ? "rgba(142,142,147,0.4)" : `url(#stroke-${gid})`}
+                  stroke={empty ? "rgba(140,135,127,0.4)" : `url(#stroke-${gid})`}
                   strokeWidth="1.5"
                   strokeLinejoin="round"
                   strokeLinecap="round"
                 />
                 {!empty && pts.length ? (
                   <g>
-                    <circle className="hud-live" cx={pts[pts.length - 1][0]} cy={pts[pts.length - 1][1]} r="3" fill="#0071e3" />
-                    <circle cx={pts[pts.length - 1][0]} cy={pts[pts.length - 1][1]} r="3" fill="#ffffff" stroke="#0071e3" strokeWidth="1.5" />
+                                        <circle cx={pts[pts.length - 1][0]} cy={pts[pts.length - 1][1]} r="3" fill="#ffffff" stroke="#111110" strokeWidth="1.5" />
                   </g>
                 ) : null}
                 {hp ? (
                   <g>
-                    <line x1={hp[0]} x2={hp[0]} y1="0" y2={H} stroke="#d2d2d7" />
-                    <circle cx={hp[0]} cy={hp[1]} r="3.5" fill="#ffffff" stroke="#0071e3" strokeWidth="1.5" />
+                    <line x1={hp[0]} x2={hp[0]} y1="0" y2={H} stroke="#e2ddd5" />
+                    <circle cx={hp[0]} cy={hp[1]} r="3.5" fill="#ffffff" stroke="#111110" strokeWidth="1.5" />
                   </g>
                 ) : null}
               </svg>
             ) : null}
             {hp && hd ? (
               <span className="hud-tip" style={{ left: hp[0], transform: `translateX(${hp[0] > W * 0.7 ? "calc(-100% - 14px)" : "14px"})` }}>
-                <span className="block text-[#6e6e73]">{fmtDay(hd.date)}</span>
-                <span className="text-[#1d1d1f]">
-                  <span className="text-[#0071e3]">{hd[metric].toLocaleString("en-US")}</span> {label.toLowerCase()}
+                <span className="block text-[#4d4b48]">{fmtDay(hd.date)}</span>
+                <span className="text-[#111110]">
+                  <span className="text-[#111110]">{hd[metric].toLocaleString("en-US")}</span> {label.toLowerCase()}
                 </span>
               </span>
             ) : null}
             {empty ? (
-              <p className="hud-mono absolute inset-0 grid place-items-center text-sm text-[#6e6e73]">No {label.toLowerCase()} yet in this period</p>
+              <p className="hud-mono absolute inset-0 grid place-items-center text-sm text-[#4d4b48]">No {label.toLowerCase()} yet in this period</p>
             ) : null}
           </div>
         </div>
         {series.length ? (
-          <div aria-hidden className="hud-mono relative ml-9 mt-2 flex justify-between text-[13px] text-[#6e6e73]">
+          <div aria-hidden className="hud-mono relative ml-9 mt-2 flex justify-between text-[13px] text-[#4d4b48]">
             <span>{fmtDay(series[0].date)}</span>
             <span>{fmtDay(series[Math.floor((series.length - 1) / 2)].date)}</span>
-            <span className="text-[#0071e3]">● Live</span>
+            <span className="text-[#111110]">Live</span>
           </div>
         ) : null}
       </div>

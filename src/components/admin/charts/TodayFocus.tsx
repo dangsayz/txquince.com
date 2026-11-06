@@ -12,10 +12,12 @@ export function TodayFocus({ focus, trying }: { focus: Focus; trying: number | n
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
+  const [failed, setFailed] = useState(false);
 
   async function start() {
     if (!focus.move) return;
     setBusy(true);
+    setFailed(false);
     const res = await fetch("/api/admin/changes", {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -25,29 +27,34 @@ export function TodayFocus({ focus, trying }: { focus: Focus; trying: number | n
     if (res?.ok) {
       setDone(true);
       router.refresh();
-    }
+    } else setFailed(true);
   }
 
   return (
     <section aria-labelledby="today-title" className="hud-card px-5 py-5 sm:px-6">
-      <h2 id="today-title" className="hud-label m-0" style={{ color: "#0071e3", fontWeight: 600 }}>
+      <h2 id="today-title" className="hud-label m-0">
         Do this today
       </h2>
       <div className="mt-2 flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
         <div className="min-w-0 max-w-3xl flex-1">
-          <p className="m-0 text-[22px] font-semibold leading-snug tracking-[-0.01em] text-[#1d1d1f] sm:text-[24px]">{focus.headline}</p>
-          <p className="m-0 mt-2 text-[15px] leading-6 text-[#6e6e73]">{focus.why}</p>
+          <p className="m-0 text-[22px] font-medium leading-snug tracking-[-0.02em] text-balance text-[#111110] sm:text-[24px]">{focus.headline}</p>
+          <p className="m-0 mt-2 text-[15px] leading-6 text-[#4d4b48]">{focus.why}</p>
         </div>
         {focus.move ? (
           trying !== null || done ? (
-            <p className="hud-move-on m-0">● Tracking{trying !== null ? ` · day ${trying}` : ""} in the Moves log</p>
+            <p className="hud-move-on m-0">Tracking{trying !== null ? ` · day ${trying}` : ""} in the Moves log</p>
           ) : (
-            <button type="button" className="hud-move-btn hud-focus shrink-0" style={{ minHeight: 48 }} disabled={busy} onClick={start}>
-              {busy ? "Saving…" : "Try this →"}
+            <button type="button" className="hud-move-btn hud-focus shrink-0" style={{ minHeight: "var(--tq-tap-primary)" }} disabled={busy} onClick={start}>
+              {busy ? "Saving…" : "Try this"}
             </button>
           )
         ) : null}
       </div>
+      {failed ? (
+        <p role="alert" className="m-0 mt-3 text-sm text-[#a14f12]">
+          Couldn&apos;t save that move. Check your connection and press Try this again.
+        </p>
+      ) : null}
     </section>
   );
 }

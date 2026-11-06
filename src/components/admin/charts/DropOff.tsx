@@ -20,11 +20,11 @@ function Table({ title, rows }: { title: string; rows: Row[] }) {
           const weak = r.sessions >= 10 && pct < 20;
           return (
             <li key={r.label} className="relative isolate flex min-h-10 items-center justify-between gap-3 px-1 text-sm">
-              <span aria-hidden className="absolute inset-y-1.5 left-0 -z-10 rounded-[3px] bg-[rgba(0,113,227,0.08)]" style={{ width: `${Math.max(pct, 2)}%` }} />
-              <span className="min-w-0 truncate text-[#1d1d1f]">{r.label}</span>
-              <span className="hud-mono shrink-0 text-[13px] text-[#1d1d1f]">
+              <span aria-hidden className="absolute inset-y-1.5 left-0 -z-10 rounded-[3px] bg-[rgba(17,17,16,0.06)]" style={{ width: `${Math.max(pct, 2)}%` }} />
+              <span className="min-w-0 truncate text-[#111110]">{r.label}</span>
+              <span className="hud-mono shrink-0 text-[13px] text-[#111110]">
                 {r.sessions}
-                <span className="ml-2 inline-block w-10 text-right" style={{ color: weak ? "#d70015" : "#6e6e73" }}>{pct}%</span>
+                <span className="ml-2 inline-block w-10 text-right" style={{ color: weak ? "#a14f12" : "#4d4b48" }}>{pct}%</span>
               </span>
             </li>
           );
@@ -44,20 +44,20 @@ export function DropOff({ d, visits, range }: { d: RangedStats["dropoff"]; visit
     .sort((a, b) => a.reached / a.sessions - b.reached / b.sessions || b.sessions - a.sessions)[0];
   return (
     <section aria-labelledby="drop-title" className="hud-card min-w-0">
-      <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[#d2d2d7] px-4 py-3.5 sm:px-5">
-        <h2 id="drop-title" className="hud-label m-0" style={{ color: "#1d1d1f" }}>
+      <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[#e2ddd5] px-4 py-3.5 sm:px-5">
+        <h2 id="drop-title" className="hud-label m-0" style={{ color: "#111110" }}>
           Why they drop off
         </h2>
-        <p className="hud-mono m-0 text-[13px] text-[#6e6e73]">Last {range} days · visits that never saw work or prices</p>
+        <p className="hud-mono m-0 text-[13px] text-[#4d4b48]">Last {range} days · visits that never saw work or prices</p>
       </div>
       <div className="px-4 pt-3.5 sm:px-5">
-        <p className="m-0 text-base leading-7 text-[#1d1d1f]">
-          <span className="hud-mono text-[#d70015]">{d.lost.toLocaleString("en-US")}</span> of {visits.toLocaleString("en-US")} visits ({lostPct}%) never saw your work or
-          prices. <span className="hud-mono text-[#d70015]">{onePct}%</span> of those opened one page and left.
+        <p className="m-0 text-base leading-7 text-[#111110]">
+          <span className="hud-mono text-[#a14f12]">{d.lost.toLocaleString("en-US")}</span> of {visits.toLocaleString("en-US")} visits ({lostPct}%) never saw your work or
+          prices. <span className="hud-mono text-[#a14f12]">{onePct}%</span> of those opened one page and left.
         </p>
         {worst ? (
-          <p className="m-0 mt-1.5 text-[13px] leading-5 text-[#6e6e73]">
-            <span className="hud-mono mr-1.5 text-[13px] text-[#0071e3]">Fix first:</span>
+          <p className="m-0 mt-1.5 text-[13px] leading-5 text-[#4d4b48]">
+            <span className="hud-mono mr-1.5 text-[13px] text-[#111110]">Fix first:</span>
             {d.devices.some((v) => v.label === worst.label) ? `On ${worst.label.toLowerCase()}s` : worst.label}: only {Math.round((worst.reached / worst.sessions) * 100)}% of its {worst.sessions} visits went on. Put real photos and one clear button
             (see the work, check your date) in its first screen.
           </p>
@@ -73,27 +73,27 @@ export function DropOff({ d, visits, range }: { d: RangedStats["dropoff"]; visit
               const share = devTotal ? Math.round((v.sessions / devTotal) * 100) : 0;
               const weak = v.sessions >= 10 && went < 20;
               return (
-                <div key={v.label} className="rounded-xl bg-[#f5f5f7] px-3.5 py-3">
-                  <p className="m-0 flex items-baseline justify-between gap-2 text-[15px] font-semibold text-[#1d1d1f]">
+                <div key={v.label} className="rounded-xl bg-[#f2efe9] px-3.5 py-3">
+                  <p className="m-0 flex items-baseline justify-between gap-2 text-[15px] font-semibold text-[#111110]">
                     {v.label}
-                    <span className="hud-mono text-[13px] font-normal text-[#6e6e73]">{share}% of visits</span>
+                    <span className="hud-mono text-[13px] font-normal text-[#4d4b48]">{share}% of visits</span>
                   </p>
-                  <p className="hud-mono m-0 mt-1 text-[13px] leading-5 text-[#6e6e73]">
-                    <span style={{ color: weak ? "#d70015" : "#1d1d1f" }}>{went}%</span> went on · {left}% left after one page
+                  <p className="hud-mono m-0 mt-1 text-[13px] leading-5 text-[#4d4b48]">
+                    <span style={{ color: weak ? "#a14f12" : "#111110" }}>{went}%</span> went on · {left}% left after one page
                   </p>
                 </div>
               );
             })}
           </div>
         ) : (
-          <p className="m-0 text-[13px] leading-5 text-[#6e6e73]">Phone vs. desktop appears here once the device update (migration 0026) has run and new visits come in.</p>
+          <p className="m-0 text-[13px] leading-5 text-[#4d4b48]">Phone vs. desktop appears here once the device update (migration 0026) has run and new visits come in.</p>
         )}
       </div>
       <div className="grid gap-5 px-3 pb-4 pt-4 sm:px-4 md:grid-cols-2">
         <Table title="Landed on" rows={d.landings} />
         <Table title="Came from" rows={d.sources} />
       </div>
-      <p className="hud-mono m-0 border-t border-[#d2d2d7] px-4 py-3 text-[13px] leading-5 text-[#6e6e73] sm:px-5">
+      <p className="hud-mono m-0 border-t border-[#e2ddd5] px-4 py-3 text-[13px] leading-5 text-[#4d4b48] sm:px-5">
         Now counted as “saw work”: scrolling to the homepage galleries, films or packages, plus /budget and the price and plan pages.
       </p>
     </section>
