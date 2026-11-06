@@ -5,6 +5,7 @@ import { buildLeadWork, countDue } from "@/lib/admin-workflow";
 import { formatEventDate } from "@/lib/booking";
 import { requireAdminPage } from "@/lib/require-admin";
 import { summarizeAttribution } from "@/lib/attribution";
+import { dallasDateTime, hoursSince, waitLabel } from "@/lib/inquiry-time";
 
 export const dynamic = "force-dynamic";
 
@@ -17,6 +18,13 @@ const views: { id: View; label: string }[] = [
 export default async function AdminInquiries({ searchParams }: { searchParams: Promise<{ view?: string; q?: string }> }) {
   await requireAdminPage("/admin/inquiries"); // server-side gate; middleware is not enough
   const [inquiries, activity, params] = await Promise.all([getInquiries(), getInquiryActivity(), searchParams]);
+  const now = new Date();
+  /** "3 h ago", red once a family has waited a day without a reply. */
+  const receivedAgo = (item: (typeof inquiries)[number]) => {
+    const w = waitLabel(item.created_at, now);
+    return w === "Just now" ? "Just now" : `${w} ago`;
+  };
+  const waitingLong = (item: (typeof inquiries)[number]) => byId.get(item.id)?.priority === "unreplied" && hoursSince(item.created_at, now) >= 24;
   const work = buildLeadWork(inquiries, activity);
   const byId = new Map(work.map((item) => [item.inquiry.id, item]));
   const rankById = new Map(work.map((item, index) => [item.inquiry.id, index]));
@@ -112,10 +120,11 @@ export default async function AdminInquiries({ searchParams }: { searchParams: P
           <div className="hidden md:block">
             <table className="w-full table-fixed border-collapse text-left">
               <thead><tr className="border-b border-[#e5e5e3] text-[11px] font-semibold uppercase tracking-[0.14em] text-[#62625f]">
-                <th scope="col" className="w-[30%] px-5 py-4 font-semibold">Client</th>
-                <th scope="col" className="w-[22%] px-4 py-4 font-semibold">Celebration</th>
-                <th scope="col" className="w-[26%] px-4 py-4 font-semibold">Next step</th>
-                <th scope="col" className="w-[14%] px-4 py-4 font-semibold">Status</th>
+                <th scope="col" className="w-[26%] px-5 py-4 font-semibold">Client</th>
+                <th scope="col" className="w-[14%] px-4 py-4 font-semibold">Received</th>
+                <th scope="col" className="w-[20%] px-4 py-4 font-semibold">Celebration</th>
+                <th scope="col" className="w-[19%] px-4 py-4 font-semibold">Next step</th>
+                <th scope="col" className="w-[13%] px-4 py-4 font-semibold">Status</th>
                 <th scope="col" className="w-[8%] px-2 py-4"><span className="sr-only">Actions</span></th>
               </tr></thead>
               <tbody>
@@ -131,6 +140,10 @@ export default async function AdminInquiries({ searchParams }: { searchParams: P
                       <span className="mt-1 block truncate text-xs font-normal text-[#696965]">{item.email}</span>
                       {originLine(item) && <span className="mt-1 block truncate text-xs font-normal text-[#62625f]">via {originLine(item)}</span>}
                     </th>
+                    <td className="px-4 py-5 align-top text-sm">
+                      <time dateTime={item.created_at} title={dallasDateTime(item.created_at)} className={`block truncate font-medium ${waitingLong(item) ? "text-[#8f4039]" : "text-[#252525]"}`}>{receivedAgo(item)}</time>
+                      <span className="mt-1 block truncate text-xs text-[#696965]">{new Date(item.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/Chicago" })}</span>
+                    </td>
                     <td className="px-4 py-5 align-top text-sm text-[#4d4d49]">
                       <span className="block truncate">{item.event_date ? formatEventDate(item.event_date) : "Date to confirm"}</span>
                       {item.venue && <span className="mt-1 block truncate text-xs text-[#696965]">{item.venue}</span>}
@@ -153,6 +166,7 @@ export default async function AdminInquiries({ searchParams }: { searchParams: P
                   <span className="flex items-start justify-between gap-3"><span className="min-w-0 break-words text-base font-medium">{item.name}</span></span>
                   <span className="mt-1 block break-all text-xs text-[#62625f]">{item.email}</span>
                   {originLine(item) && <span className="mt-1 block break-words text-xs text-[#62625f]">via {originLine(item)}</span>}
+                  <span className={`mt-2 block text-xs font-medium ${waitingLong(item) ? "text-[#8f4039]" : "text-[#4d4d49]"}`}>Received {receivedAgo(item)} · {dallasDateTime(item.created_at)}</span>
                   <span className="mt-2 block text-sm text-[#62625e]">{item.event_date ? formatEventDate(item.event_date) : "Date to confirm"}{item.venue ? ` · ${item.venue}` : ""}</span>
                   <span className="mt-2 block text-xs text-[#696965]">{next?.nextReminder?.due_at
                     ? `Follow up ${new Date(next.nextReminder.due_at).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/Chicago" })}`

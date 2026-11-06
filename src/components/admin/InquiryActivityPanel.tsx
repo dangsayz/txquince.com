@@ -78,7 +78,7 @@ export function InquiryActivityPanel({ inquiryId, activity, canSchedule }: { inq
             <textarea id="activity-note" value={note} onChange={(event) => setNote(event.target.value)} required={kind === "note"} maxLength={2000} rows={4} className="mt-2 w-full border border-line bg-white p-3 text-base text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink" placeholder={kind === "contact" ? "Called, emailed, or spoke in person…" : "Add helpful context for next time…"} />
           </div>
           {kind === "reminder" && <div><label htmlFor="activity-due" className="block text-sm font-medium text-ink">Follow-up date and time</label><input id="activity-due" type="datetime-local" value={due} onChange={(event) => setDue(event.target.value)} required className="mt-2 min-h-11 w-full border border-line bg-white px-3 text-base text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink sm:w-auto" /></div>}
-          <button type="submit" disabled={pending || (kind === "reminder" && !due) || (kind === "note" && !note.trim())} className="min-h-11 bg-ink px-5 text-sm font-medium text-white hover:bg-ink/85 disabled:opacity-50">{pending ? "Saving…" : "Save activity"}</button>
+          <button type="submit" disabled={pending || (kind === "reminder" && !due) || (kind === "note" && !note.trim())} className="min-h-12 rounded-sm !bg-[#242424] !px-5 text-sm font-medium !text-white hover:!bg-[#444] disabled:opacity-60">{pending ? "Saving…" : "Save activity"}</button>
         </form>
       </section>
 

@@ -97,7 +97,7 @@ export function InquiryActions({
                 type="button"
                 disabled={pending}
                 onClick={() => choose(s.value)}
-                className={`min-h-11 rounded-md px-4 py-2 text-base font-medium ring-1 transition-colors disabled:opacity-50 ${
+                className={`min-h-11 min-w-11 whitespace-nowrap rounded-md !px-4 !py-2 text-base font-medium ring-1 transition-colors disabled:opacity-50 ${
                   active
                     ? "bg-ink text-cream ring-ink"
                     : "bg-ivory text-ink-soft ring-line hover:text-ink"
