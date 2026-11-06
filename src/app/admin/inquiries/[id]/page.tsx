@@ -5,6 +5,8 @@ import { formatEventDate, packageLabel } from "@/lib/booking";
 import { InquiryActions } from "@/components/InquiryActions";
 import { InquiryActivityPanel } from "@/components/admin/InquiryActivityPanel";
 import { requireAdminPage } from "@/lib/require-admin";
+import { summarizeAttribution } from "@/lib/attribution";
+import { getJourney, type Journey } from "@/lib/inquiry-journey";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +15,8 @@ export default async function InquiryDetail({ params }: { params: Promise<{ id: 
   const [{ id }, inquiries, activity] = await Promise.all([params, getInquiries(), getInquiryActivity()]);
   const inquiry = inquiries.find((row) => row.id === id);
   if (!inquiry) notFound();
+  const origin = summarizeAttribution(inquiry.attribution);
+  const journey = await getJourney(inquiry.attribution?.vid, inquiry.created_at);
   const clientActivity = activity.filter((row) => row.inquiry_id === id);
   const lastContact = clientActivity.find((row) => row.kind === "contact");
   const canContact = !inquiry.unsubscribed_at;
@@ -23,9 +27,7 @@ export default async function InquiryDetail({ params }: { params: Promise<{ id: 
     ["Services", serviceLabel],
     ["Budget", inquiry.budget_range],
     ["Venue", inquiry.venue],
-    ["How they found us", inquiry.referral || inquiry.attribution?.source],
-    ["Link tag (?src=)", inquiry.attribution?.src ? `${inquiry.attribution.src}${inquiry.attribution.srcLanding ? ` (on ${inquiry.attribution.srcLanding})` : ""}` : inquiry.attribution?.ref ?? null],
-    ["First came from", inquiry.attribution?.source ? `${inquiry.attribution.source}${inquiry.attribution.landing ? ` → ${inquiry.attribution.landing}` : ""}` : null],
+    ["Heard about us", inquiry.referral],
     ["Email", inquiry.email],
     ["Phone", inquiry.phone],
     ["Received", new Date(inquiry.created_at).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short", timeZone: "America/Chicago" })],
@@ -76,6 +78,7 @@ export default async function InquiryDetail({ params }: { params: Promise<{ id: 
             </dl>
             {inquiry.message && <div className="border-t border-[#ededeb] pt-4"><h3 className="text-sm text-[#62625f]">Their message</h3><p className="mt-2 whitespace-pre-wrap break-words text-sm leading-6 text-[#41413e]">{inquiry.message}</p></div>}
           </section>
+          <OriginPanel origin={origin} journey={journey} linkTag={inquiry.attribution?.src ?? inquiry.attribution?.ref ?? null} />
           <section className="border border-[#e5e5e3] bg-white px-5 py-6 sm:px-6">
             <h2 className="text-base font-medium tracking-[-0.02em]">Pipeline status</h2>
             <p className="mt-1 text-sm text-[#696965]">Update this when the inquiry is booked or closed.</p>
@@ -84,5 +87,56 @@ export default async function InquiryDetail({ params }: { params: Promise<{ id: 
         </aside>
       </div>
     </main>
+  );
+}
+
+const CT = "America/Chicago";
+const when = (iso: string) => new Date(iso).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZone: CT });
+const day = (iso: string) => new Date(iso).toLocaleDateString("en-US", { dateStyle: "medium", timeZone: CT });
+
+/** Where the inquiry came from: source, the page it was sent from, and the pages seen before. */
+function OriginPanel({ origin, journey, linkTag }: { origin: ReturnType<typeof summarizeAttribution>; journey: Journey | null; linkTag: string | null }) {
+  const rows: [string, string | null][] = origin ? [
+    ["Source", origin.source],
+    ["Sent from", origin.sentFrom],
+    ["First landed on", origin.firstLanded],
+    ["Referring site", origin.referrer],
+    ["Link tag", linkTag ? `?src=${linkTag}` : null],
+    ["Campaign", origin.campaign],
+    ["Device", origin.device ? origin.device[0].toUpperCase() + origin.device.slice(1) : null],
+    ["First visit", journey?.firstSeen ? day(journey.firstSeen) : origin.firstSeen ? day(origin.firstSeen) : null],
+  ] : [];
+  const shown = rows.filter(([, v]) => v);
+  return (
+    <section aria-labelledby="origin-heading" className="border border-[#e5e5e3] bg-white px-5 py-6 sm:px-6">
+      <h2 id="origin-heading" className="text-base font-medium tracking-[-0.02em]">Where they came from</h2>
+      {!shown.length ? (
+        <p className="mt-2 text-sm text-[#696965]">Not recorded. Inquiries sent before tracking was added, or from a browser that blocks storage, have no source.</p>
+      ) : (
+        <dl className="mt-5 divide-y divide-[#ededeb] text-sm">
+          {shown.map(([label, value]) => <div key={label} className="grid gap-1 py-3 first:pt-0 sm:grid-cols-[8rem_minmax(0,1fr)] sm:gap-3">
+            <dt className="text-[#62625f]">{label}</dt>
+            <dd className="min-w-0 break-words font-medium text-[#333]">{value}</dd>
+          </div>)}
+        </dl>
+      )}
+      {journey && <div className="mt-2 border-t border-[#ededeb] pt-4">
+        <h3 className="text-sm text-[#62625f]">Their path to inquiring</h3>
+        <p className="mt-1 text-sm text-[#41413e]">
+          <span className="tabular-nums">{journey.pageViews}</span> {journey.pageViews === 1 ? "page" : "pages"} over <span className="tabular-nums">{journey.visits}</span> {journey.visits === 1 ? "visit" : "visits"}
+          {journey.daysToInquire > 0 ? <>, <span className="tabular-nums">{journey.daysToInquire}</span> {journey.daysToInquire === 1 ? "day" : "days"} from first visit</> : ", same day"}
+        </p>
+        <ol className="mt-4 space-y-0">
+          {journey.steps.map((step, i) => <li key={`${step.at}-${i}`}>
+            {journey.hidden > 0 && i === 4 && <p className="py-1.5 pl-5 text-xs text-[#62625f]">… {journey.hidden} more {journey.hidden === 1 ? "page" : "pages"}</p>}
+            {step.newVisit && i > 0 && <p className="mt-2 border-t border-dashed border-[#e5e5e3] pt-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#62625f]">New visit</p>}
+            <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-3 py-1.5 text-sm">
+              <span className="min-w-0 break-words text-[#333]">{step.path}{step.count > 1 && <span className="ml-1 text-xs text-[#62625f]">×{step.count}</span>}</span>
+              <time dateTime={step.at} className="whitespace-nowrap text-xs tabular-nums text-[#62625f]">{when(step.at)}</time>
+            </div>
+          </li>)}
+        </ol>
+      </div>}
+    </section>
   );
 }

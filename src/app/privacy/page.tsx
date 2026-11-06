@@ -18,7 +18,10 @@ const SECTIONS: { id: string; title: string; body: React.ReactNode }[] = [
       <p>
         When you use the inquiry form, we collect the information you provide: your name and email (required), and
         optionally your phone number, event date, venue or city, the services you&apos;re interested in, a budget range,
-        how you heard about us, and any message you write.
+        how you heard about us, and any message you write. We also note how you found the site (for example a link
+        from Instagram or a Google search), the page you sent the form from, the pages of this site you viewed before
+        it, and whether you used a phone or computer. That browsing record is anonymous until you send the form, uses
+        no cookies, and is only used to understand which pages help families decide.
       </p>
     ),
   },
