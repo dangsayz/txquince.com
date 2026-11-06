@@ -136,3 +136,15 @@ a:hover > .st-arrow {
 .studio-skin p {
   text-wrap: pretty;
 }
+
+/* Admin home: the 7-day visitor bars grow once on load (the page's one moment). */
+.st-bar {
+  transform-origin: bottom;
+  animation: st-bar-grow var(--tq-dur-slow) var(--tq-ease) both;
+}
+@keyframes st-bar-grow {
+  from { transform: scaleY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .st-bar { animation: none; }
+}

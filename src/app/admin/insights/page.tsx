@@ -4,6 +4,8 @@ import { ChangeLog } from "@/components/admin/ChangeLog";
 import { AutoRefresh } from "@/components/admin/AutoRefresh";
 import { requireAdminPage } from "@/lib/require-admin";
 import { StudioPulse, PULSE_RANGES } from "@/components/admin/charts/StudioPulse";
+import { getPulseMoves } from "@/lib/pulse-moves";
+import { getSocialSheet } from "@/lib/social";
 
 function mins(s: number) {
   return s >= 60 ? `${Math.floor(s / 60)}m ${s % 60}s` : `${s}s`;
@@ -52,7 +54,7 @@ export default async function AdminDashboard({
   const range = RANGES.includes(Number(rangeParam) as (typeof RANGES)[number])
     ? (Number(rangeParam) as number)
     : 14;
-  const [s, changes] = await Promise.all([getDashboardStats(range), getConversionChanges()]);
+  const [s, changes, moves, social] = await Promise.all([getDashboardStats(range), getConversionChanges(), getPulseMoves(), getSocialSheet()]);
 
   return (
     <main className="mx-auto max-w-[90rem] px-5 pb-20 pt-8 md:px-10 md:pt-12 lg:px-16">
@@ -113,7 +115,7 @@ export default async function AdminDashboard({
         )}
       </section>
 
-      <StudioPulse s={s} basePath="/admin/insights" range={range} />
+      <StudioPulse s={s} basePath="/admin/insights" range={range} moves={moves} social={social} />
 
       <section className="mt-4">
         <InsightPanel insights={s.insights} />
