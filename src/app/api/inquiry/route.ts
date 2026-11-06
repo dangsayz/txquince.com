@@ -155,7 +155,7 @@ export async function POST(req: NextRequest) {
       budget_range: data.budget_range,
       referral: data.referral || null,
       message: data.message || null,
-      attribution: sanitizeAttribution(body.attribution),
+      attribution: sanitizeAttribution(body.attribution, req.headers.get("user-agent")),
     });
     if (error) {
       console.error("[inquiry] Supabase insert error:", error.message);

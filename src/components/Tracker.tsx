@@ -67,7 +67,9 @@ function captureFirstTouch(pathname: string, search: URLSearchParams) {
 
 /**
  * Read the stored attribution for a form submission: the first touch, plus the
- * latest ?src= tag (src, srcLanding, srcTs) when there is one.
+ * latest ?src= tag (src, srcLanding, srcTs) when there is one, plus the page the
+ * form was sent from (`page`) and this browser's anonymous visitor id (`vid`),
+ * which lets the admin show the pages she looked at before inquiring.
  */
 export function getFirstTouch(): Record<string, string> | null {
   if (typeof window === "undefined") return null;
@@ -75,8 +77,8 @@ export function getFirstTouch(): Record<string, string> | null {
     const raw = localStorage.getItem(FIRST_TOUCH_KEY);
     const ft = raw ? (JSON.parse(raw) as Record<string, string>) : null;
     const src = storedSrc();
-    if (!ft && !src) return null;
-    return { ...(ft ?? {}), ...(src ?? {}) };
+    const vid = visitorId();
+    return { ...(ft ?? {}), ...(src ?? {}), page: window.location.pathname, ...(vid ? { vid } : {}) };
   } catch {
     return null;
   }

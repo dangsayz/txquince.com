@@ -4,6 +4,7 @@ import { getInquiries, getInquiryActivity } from "@/lib/clients-db";
 import { buildLeadWork, countDue } from "@/lib/admin-workflow";
 import { formatEventDate } from "@/lib/booking";
 import { requireAdminPage } from "@/lib/require-admin";
+import { summarizeAttribution } from "@/lib/attribution";
 
 export const dynamic = "force-dynamic";
 
@@ -28,7 +29,7 @@ export default async function AdminInquiries({ searchParams }: { searchParams: P
     if (view === "open" && (item.status !== "new" || item.unsubscribed_at)) return false;
     if (view === "won" && item.status !== "won") return false;
     if (view === "lost" && item.status !== "lost") return false;
-    return !query || [item.name, item.email, item.venue, item.services].some((value) => value?.toLowerCase().includes(query));
+    return !query || [item.name, item.email, item.venue, item.services, originLine(item)].some((value) => value?.toLowerCase().includes(query));
   }).sort((a, b) => {
     const aRank = rankById.get(a.id);
     const bRank = rankById.get(b.id);
@@ -45,6 +46,13 @@ export default async function AdminInquiries({ searchParams }: { searchParams: P
     won: inquiries.filter((item) => item.status === "won").length,
     lost: inquiries.filter((item) => item.status === "lost").length,
   };
+
+  /** "Instagram · sent from /budget" (shown as "via …") — one line on where the lead came from. */
+  function originLine(item: (typeof inquiries)[number]) {
+    const o = summarizeAttribution(item.attribution);
+    if (!o) return null;
+    return o.sentFrom ? `${o.source} · sent from ${o.sentFrom}` : o.source;
+  }
 
   function statusLabel(item: (typeof inquiries)[number]) {
     const priority = byId.get(item.id)?.priority;
@@ -92,7 +100,7 @@ export default async function AdminInquiries({ searchParams }: { searchParams: P
         <p className="text-sm text-[#696965]">Showing <span className="font-medium tabular-nums text-[#252525]">{filtered.length}</span> {filtered.length === 1 ? "inquiry" : "inquiries"}</p>
         <form action="/admin/inquiries" className="flex w-full max-w-md items-stretch gap-2 sm:w-auto sm:flex-1">
           <label htmlFor="inquiry-search" className="sr-only">Search inquiries</label>
-          <input id="inquiry-search" name="q" defaultValue={params.q ?? ""} placeholder="Search name, email, venue, or service"
+          <input id="inquiry-search" name="q" defaultValue={params.q ?? ""} placeholder="Search name, email, venue, service, or source"
             className="min-h-11 min-w-0 flex-1 rounded-sm border border-[#dcdcd9] bg-white px-3.5 text-sm text-[#252525] placeholder:text-[#62625f] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#252525]" />
           <input type="hidden" name="view" value={view} />
           <button type="submit" className="min-h-11 rounded-sm bg-[#242424] px-4 text-sm font-medium text-white transition-colors hover:bg-[#444] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#252525]">Search</button>
@@ -121,6 +129,7 @@ export default async function AdminInquiries({ searchParams }: { searchParams: P
                     <th scope="row" className="px-5 py-5 text-sm font-medium">
                       <Link href={`/admin/inquiries/${item.id}`} className="block truncate text-[#252525] hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#252525]">{item.name}</Link>
                       <span className="mt-1 block truncate text-xs font-normal text-[#696965]">{item.email}</span>
+                      {originLine(item) && <span className="mt-1 block truncate text-xs font-normal text-[#62625f]">via {originLine(item)}</span>}
                     </th>
                     <td className="px-4 py-5 align-top text-sm text-[#4d4d49]">
                       <span className="block truncate">{item.event_date ? formatEventDate(item.event_date) : "Date to confirm"}</span>
@@ -143,6 +152,7 @@ export default async function AdminInquiries({ searchParams }: { searchParams: P
                 <Link href={`/admin/inquiries/${item.id}`} className="block px-1 py-5 pr-14 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#252525]">
                   <span className="flex items-start justify-between gap-3"><span className="min-w-0 break-words text-base font-medium">{item.name}</span></span>
                   <span className="mt-1 block break-all text-xs text-[#62625f]">{item.email}</span>
+                  {originLine(item) && <span className="mt-1 block break-words text-xs text-[#62625f]">via {originLine(item)}</span>}
                   <span className="mt-2 block text-sm text-[#62625e]">{item.event_date ? formatEventDate(item.event_date) : "Date to confirm"}{item.venue ? ` · ${item.venue}` : ""}</span>
                   <span className="mt-2 block text-xs text-[#696965]">{next?.nextReminder?.due_at
                     ? `Follow up ${new Date(next.nextReminder.due_at).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/Chicago" })}`

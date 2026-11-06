@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
   // 5) Save.
   let plan;
   try {
-    const attribution = sanitizeAttribution(typeof body.attribution === "string" ? safeJson(body.attribution) : body.attribution);
+    const attribution = sanitizeAttribution(typeof body.attribution === "string" ? safeJson(body.attribution) : body.attribution, req.headers.get("user-agent"));
     plan = await createPlan(parsed.data, contact, {
       // The link's ?src= on /plan, else the latest ?src= the browser carried in.
       source: normalizeSrc(parsed.data.src) ?? attribution?.src ?? null,
