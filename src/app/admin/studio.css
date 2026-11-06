@@ -1,17 +1,35 @@
+/*
+ * studio.css — the admin ("TX Quince Studio") skin, on the brand kit
+ * (src/app/brand.css, docs/brand-kit.md). One system for every admin page:
+ *   .st-card       the only card: white on canvas, greige hairline, radius md
+ *   .st-btn        primary: carbon pill, 48px (money / main actions)
+ *   .st-btn-ghost  secondary: outline pill, 44px+
+ *   .st-link       tertiary: text link with an arrow
+ *   .st-label      Jost uppercase, for column heads and small group names
+ *                  (never as an eyebrow above a heading)
+ * Legacy --color-* names below keep older admin pages on the same palette.
+ */
 .studio-skin {
-  --color-cream: #ffffff;
-  --color-ivory: #f7f7f5;
-  --color-greige: #f1f1ef;
-  --color-ink: #202124;
-  --color-ink-soft: #5e6062;
-  --color-ink-faint: #62656a;
-  --color-line: #e2e3e1;
-  --color-accent: #202124;
-  --color-accent-strong: #111214;
-  --color-accent-soft: #f0f0ee;
-  --color-clay: #a6a8a8;
-  color: var(--color-ink);
-  background: var(--color-cream);
+  --color-cream: var(--tq-canvas);
+  --color-ivory: var(--tq-surface);
+  --color-greige: var(--tq-surface);
+  --color-ink: var(--tq-ink);
+  --color-ink-soft: var(--tq-ink-mute);
+  --color-ink-faint: var(--tq-ink-mute);
+  --color-line: var(--tq-surface-2);
+  --color-accent: var(--tq-ink);
+  --color-accent-strong: var(--tq-ink);
+  --color-accent-soft: var(--tq-surface);
+  --color-clay: var(--tq-stone);
+  color: var(--tq-ink);
+  background: var(--tq-canvas);
+  font-family: var(--tq-font-sans);
+  letter-spacing: var(--tq-tracking-body);
+}
+
+.studio-skin ::selection {
+  background: var(--tq-ink);
+  color: var(--tq-ink-on);
 }
 
 .studio-skin .font-display {
@@ -21,4 +39,100 @@
 
 .studio-skin summary::-webkit-details-marker {
   display: none;
+}
+
+.st-card {
+  min-width: 0;
+  border: 1px solid var(--tq-surface-2);
+  border-radius: var(--tq-radius-md);
+  background: #ffffff;
+}
+
+.st-label {
+  font-family: var(--tq-font-label);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tq-ink-mute);
+}
+
+.st-num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tq-tracking-display);
+}
+
+.st-btn,
+.st-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: var(--tq-tap-primary);
+  padding: 0 1.375rem;
+  border-radius: var(--tq-radius-pill);
+  font-size: 1rem;
+  font-weight: var(--tq-weight-medium);
+  white-space: nowrap;
+  text-decoration: none;
+  transition:
+    background-color var(--tq-dur-fast) var(--tq-ease),
+    color var(--tq-dur-fast) var(--tq-ease),
+    box-shadow var(--tq-dur-fast) var(--tq-ease);
+}
+.st-btn {
+  background: var(--tq-ink);
+  color: var(--tq-ink-on);
+}
+.st-btn:hover {
+  background: var(--tq-ink-mute);
+}
+.st-btn-ghost {
+  min-height: var(--tq-tap);
+  background: transparent;
+  color: var(--tq-ink);
+  box-shadow: inset 0 0 0 1px var(--tq-stone);
+}
+.st-btn-ghost:hover {
+  background: var(--tq-surface);
+}
+.st-btn:disabled,
+.st-btn-ghost:disabled {
+  opacity: 0.55;
+  cursor: progress;
+}
+
+.st-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: var(--tq-tap);
+  color: var(--tq-ink);
+  font-size: 0.9375rem;
+  font-weight: var(--tq-weight-medium);
+  text-decoration: underline;
+  text-decoration-color: var(--tq-surface-2);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+  transition: text-decoration-color var(--tq-dur-fast) var(--tq-ease);
+}
+.st-link:hover {
+  text-decoration-color: var(--tq-ink);
+}
+
+.st-arrow {
+  flex: none;
+  transition: transform var(--tq-dur-fast) var(--tq-ease);
+}
+a:hover > .st-arrow {
+  transform: translateX(2px);
+}
+
+.studio-skin :is(a, button, [tabindex]):focus-visible {
+  outline: 2px solid var(--tq-ink);
+  outline-offset: 2px;
+}
+
+.studio-skin p {
+  text-wrap: pretty;
 }

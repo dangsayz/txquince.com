@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { MenuIcon } from "@/components/admin/StudioIcons";
 
 const mainLinks = [
   { href: "/admin", label: "Today" },
@@ -45,7 +46,7 @@ function MainNavigation({ pathname, onNavigate }: { pathname: string; onNavigate
         href={link.href}
         onClick={onNavigate}
         aria-current={active && link.label !== "Website" ? "page" : undefined}
-        className={`inline-flex min-h-12 items-center border-b-2 px-1 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black ${active ? "border-[#222] font-semibold text-[#222]" : "border-transparent text-[#62625f] hover:text-[#222]"}`}
+        className={`inline-flex min-h-12 min-w-11 items-center border-b-2 px-1.5 text-[15px] transition-colors duration-[var(--tq-dur-fast)] ${active ? "border-[var(--tq-ink)] font-semibold text-[var(--tq-ink)]" : "border-transparent text-[var(--tq-ink-mute)] hover:text-[var(--tq-ink)]"}`}
       >
         {link.label}
       </Link>
@@ -101,34 +102,28 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="min-h-dvh bg-[#fafaf9] text-[#242424]">
-      <header className="relative z-30 border-b border-[#e7e7e5] bg-white">
-        <div className="mx-auto flex min-h-[76px] max-w-[96rem] items-center gap-7 px-5 sm:px-8 lg:px-12">
-          <Link href="/admin" className="group inline-flex min-h-11 shrink-0 items-center gap-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black" aria-label="TX Quince Studio, Today">
-            <span aria-hidden="true" className="flex h-9 w-9 items-center justify-center bg-[#242424] text-[11px] font-semibold tracking-[-0.08em] text-white">TQ</span>
-            <span className="flex flex-col leading-tight">
-              <span className="text-sm font-semibold tracking-[-0.03em] group-hover:text-[#62625f]">TX Quince</span>
-              <span className="mt-0.5 text-[10px] font-medium uppercase tracking-[0.2em] text-[#62625f]">Studio</span>
-            </span>
+    <div className="min-h-dvh bg-[var(--tq-canvas)] text-[var(--tq-ink)]">
+      <header className="relative z-30 border-b border-[var(--tq-surface-2)] bg-[var(--tq-canvas)]">
+        <div className="mx-auto flex min-h-[68px] max-w-[96rem] items-center gap-6 px-4 sm:px-8 lg:px-12">
+          <Link href="/admin" className="inline-flex min-h-11 shrink-0 items-baseline gap-2.5 whitespace-nowrap" aria-label="TX Quince Studio, Today">
+            <span aria-hidden="true" className="font-[family-name:var(--tq-font-label)] text-[15px] font-medium uppercase tracking-[0.22em]">TX Quince</span>
+            <span aria-hidden="true" className="text-[13px] text-[var(--tq-ink-mute)]">Studio</span>
           </Link>
 
-          <nav aria-label="Studio navigation" className="hidden min-h-[76px] items-stretch gap-5 lg:flex xl:gap-8">
+          <nav aria-label="Studio navigation" className="hidden min-h-[68px] items-stretch gap-4 lg:flex xl:gap-7">
             <MainNavigation pathname={pathname} />
           </nav>
 
           <div className="ml-auto hidden shrink-0 items-center gap-5 lg:flex">
-            <Link href="/" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center text-sm text-[#242424] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black">
-              View site <span aria-hidden="true" className="ml-1.5">↗</span>
+            <Link href="/" target="_blank" rel="noopener noreferrer" className="st-link">
+              View site <span className="sr-only">(opens in a new tab)</span>
             </Link>
-            <span aria-hidden="true" className="h-5 w-px bg-[#e5e5e3]" />
-            <button type="button" disabled={signingOut} onClick={signOut} className="inline-flex min-h-11 items-center border border-[#242424] px-4 text-sm font-medium hover:bg-[#242424] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:opacity-50">
+            <span aria-hidden="true" className="h-5 w-px bg-[var(--tq-surface-2)]" />
+            <button type="button" disabled={signingOut} onClick={signOut} className="st-btn-ghost text-[15px]">
               {signingOut ? "Logging out…" : "Log out"}
             </button>
           </div>
 
-          <button type="button" disabled={signingOut} onClick={signOut} className="ml-auto inline-flex min-h-11 shrink-0 items-center border border-[#242424] px-3 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:opacity-50 lg:hidden">
-            {signingOut ? "Logging out…" : "Log out"}
-          </button>
 
           <button
             ref={menuButtonRef}
@@ -137,18 +132,18 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
             aria-expanded={menuOpen}
             aria-controls={menuOpen ? "studio-mobile-navigation" : undefined}
             onClick={() => setMenuOpen((open) => !open)}
-            className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center border border-[#dededb] text-xl leading-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black lg:hidden"
+            className="ml-auto inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-full shadow-[inset_0_0_0_1px_var(--tq-stone)] transition-colors duration-[var(--tq-dur-fast)] hover:bg-[var(--tq-surface)] lg:hidden"
           >
-            <span aria-hidden="true">{menuOpen ? "×" : "☰"}</span>
+            <MenuIcon open={menuOpen} />
           </button>
         </div>
 
         {websiteActive && (
-          <nav aria-label="Website management" className="hidden border-t border-[#f0f0ee] lg:block">
-            <div className="mx-auto flex max-w-[96rem] items-center gap-7 px-5 sm:px-8 lg:px-12">
-              <span className="mr-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#62625f]">Website</span>
+          <nav aria-label="Website management" className="hidden border-t border-[var(--tq-surface-2)] lg:block">
+            <div className="mx-auto flex max-w-[96rem] items-center gap-6 px-4 sm:px-8 lg:px-12">
+              <span className="st-label mr-2">Website</span>
               {websiteLinks.map((link) => (
-                <Link key={link.href} href={link.href} aria-current={isActive(pathname, link.href) ? "page" : undefined} className={`inline-flex min-h-12 items-center border-b-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black ${isActive(pathname, link.href) ? "border-[#222] font-medium text-[#222]" : "border-transparent text-[#6e6e6a] hover:text-[#222]"}`}>
+                <Link key={link.href} href={link.href} aria-current={isActive(pathname, link.href) ? "page" : undefined} className={`inline-flex min-h-12 items-center border-b-2 text-[15px] transition-colors duration-[var(--tq-dur-fast)] ${isActive(pathname, link.href) ? "border-[var(--tq-ink)] font-medium text-[var(--tq-ink)]" : "border-transparent text-[var(--tq-ink-mute)] hover:text-[var(--tq-ink)]"}`}>
                   {link.label}
                 </Link>
               ))}
@@ -157,19 +152,19 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
         )}
 
         {menuOpen && (
-          <nav id="studio-mobile-navigation" aria-label="Studio navigation" className="absolute left-0 right-0 top-full max-h-[calc(100dvh-76px)] overflow-y-auto border-b border-[#e7e7e5] bg-white px-5 pb-7 shadow-lg lg:hidden sm:px-8">
-            <div className="flex flex-col border-t border-[#efefed] py-3">
+          <nav id="studio-mobile-navigation" aria-label="Studio navigation" className="absolute left-0 right-0 top-full max-h-[calc(100dvh-68px)] overflow-y-auto border-b border-[var(--tq-surface-2)] bg-[var(--tq-canvas)] px-4 pb-[max(1.75rem,env(safe-area-inset-bottom))] shadow-[var(--tq-shadow-overlay)] sm:px-8 lg:hidden">
+            <div className="flex flex-col border-t border-[var(--tq-surface-2)] py-3">
               <MainNavigation pathname={pathname} onNavigate={() => setMenuOpen(false)} />
             </div>
-            <p className="border-t border-[#efefed] pt-5 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#62625f]">Manage website</p>
+            <p className="st-label m-0 border-t border-[var(--tq-surface-2)] pt-5">Manage website</p>
             <div className="mt-2 grid grid-cols-2 gap-x-4">
               {websiteLinks.map((link) => (
-                <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)} aria-current={isActive(pathname, link.href) ? "page" : undefined} className={`inline-flex min-h-12 items-center border-b border-[#efefed] text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black ${isActive(pathname, link.href) ? "font-semibold text-[#222]" : "text-[#62625f]"}`}>{link.label}</Link>
+                <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)} aria-current={isActive(pathname, link.href) ? "page" : undefined} className={`inline-flex min-h-12 items-center border-b border-[var(--tq-surface-2)] text-[15px] ${isActive(pathname, link.href) ? "font-semibold text-[var(--tq-ink)]" : "text-[var(--tq-ink-mute)]"}`}>{link.label}</Link>
               ))}
             </div>
-            <div className="mt-6 flex items-center justify-between gap-4 border-t border-[#efefed] pt-4 text-sm">
-              <Link href="/" target="_blank" rel="noopener noreferrer" onClick={() => setMenuOpen(false)} className="inline-flex min-h-11 items-center text-[#242424]">View site ↗</Link>
-              <button type="button" disabled={signingOut} onClick={signOut} className="inline-flex min-h-11 items-center border border-[#242424] px-4 font-medium disabled:opacity-50">{signingOut ? "Logging out…" : "Log out"}</button>
+            <div className="mt-6 flex items-center justify-between gap-4 border-t border-[var(--tq-surface-2)] pt-4">
+              <Link href="/" target="_blank" rel="noopener noreferrer" onClick={() => setMenuOpen(false)} className="st-link">View site <span className="sr-only">(opens in a new tab)</span></Link>
+              <button type="button" disabled={signingOut} onClick={signOut} className="st-btn-ghost text-[15px]">{signingOut ? "Logging out…" : "Log out"}</button>
             </div>
           </nav>
         )}

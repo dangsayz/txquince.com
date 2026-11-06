@@ -33,10 +33,12 @@ export function HudIntel({
   const router = useRouter();
   const [saving, setSaving] = useState<number | null>(null);
   const [started, setStarted] = useState<number[]>([]);
+  const [failed, setFailed] = useState<number | null>(null);
 
   async function tryMove(i: number, title: string) {
     if (!intel.metric) return;
     setSaving(i);
+    setFailed(null);
     const res = await fetch("/api/admin/changes", {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -46,7 +48,7 @@ export function HudIntel({
     if (res?.ok) {
       setStarted((s) => [...s, i]);
       router.refresh();
-    }
+    } else setFailed(i);
   }
 
   const clear = () => {
@@ -82,7 +84,7 @@ export function HudIntel({
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
-  const toneColor = intel.tone === "good" ? "#248a3d" : intel.tone === "warn" ? "#d70015" : "#0071e3";
+  const toneColor = intel.tone === "good" ? "#2e6f40" : intel.tone === "warn" ? "#a14f12" : "#111110";
   const showDeep = open && (deep || intel.trying?.some((d) => d !== null));
 
   return (
@@ -106,17 +108,17 @@ export function HudIntel({
       {children}
       <div
         id={id}
-        className={`hud-intel absolute z-30 ${side === "top" ? "bottom-full mb-2" : "top-full mt-2"} w-[min(340px,calc(100vw-40px))] ${align === "right" ? "right-0" : "left-0"} ${open ? "" : "sr-only"}`}
+        className={`hud-intel absolute z-30 ${side === "top" ? "bottom-full mb-2" : "top-full mt-2"} ${align === "right" ? "right-0" : "left-0"} ${open ? "w-[min(340px,calc(100vw-40px))]" : "hidden"}`}
       >
         <div className="hud-intel__head">
-          <span className="hud-intel__dot" style={{ background: toneColor, boxShadow: `0 0 10px ${toneColor}` }} />
+          <span className="hud-intel__dot" style={{ background: toneColor }} />
           <span>{intel.title}</span>
           <span className="hud-intel__tag">Intel</span>
         </div>
         <p className="hud-intel__k">What it is</p>
         <p className="hud-intel__p">{intel.what}</p>
         <p className="hud-intel__k">Right now</p>
-        <p className="hud-intel__p" style={{ color: "#1d1d1f" }}>{intel.read}</p>
+        <p className="hud-intel__p" style={{ color: "#111110" }}>{intel.read}</p>
         {showDeep && intel.todo.length ? (
           <div className="hud-intel__moves">
             <p className="hud-intel__k" style={{ color: toneColor }}>Next moves</p>
@@ -128,21 +130,24 @@ export function HudIntel({
                     <span className="mt-1.5 block">
                       {intel.trying?.[i] != null || started.includes(i) ? (
                         <span className="hud-mono hud-move-on">
-                          ● Trying{intel.trying?.[i] != null ? ` · day ${intel.trying[i]}` : " · day 1"}
+                          Trying{intel.trying?.[i] != null ? ` · day ${intel.trying[i]}` : " · day 1"}
                         </span>
                       ) : (
                         <button type="button" className="hud-move-btn hud-focus" disabled={saving === i} onClick={() => tryMove(i, t)}>
-                          {saving === i ? "Saving…" : "Try this →"}
+                          {saving === i ? "Saving…" : "Try this"}
                         </button>
                       )}
                     </span>
+                  ) : null}
+                  {failed === i ? (
+                    <span role="alert" className="mt-1 block text-[13px] text-[#a14f12]">Couldn&apos;t save. Try again.</span>
                   ) : null}
                 </li>
               ))}
             </ol>
           </div>
         ) : open && intel.todo.length ? (
-          <p className="hud-intel__hint">Hold on this number for what to do next…</p>
+          <p className="hud-intel__hint">Stay on this number for what to do next.</p>
         ) : null}
       </div>
     </div>

@@ -16,9 +16,9 @@ type Step = { label: string; value: number };
 type Bottleneck = { step: number; rate: number; baseline: number; action: string } | null;
 
 const H = 150;
-const AMBER = "#d70015"; // bottleneck text (Apple red, 5:1 on white)
+const AMBER = "#a14f12"; // bottleneck text (Apple red, 5:1 on white)
 /** Fill for the bottleneck band / bar: Apple red (marks only, never text). */
-const AMBER_FILL = "#ff3b30";
+const AMBER_FILL = "#a14f12";
 
 function heights(steps: Step[]) {
   const max = Math.max(...steps.map((s) => s.value), 1);
@@ -92,11 +92,11 @@ export function FunnelFlow({
 
   return (
     <section aria-labelledby={`funnel-${gid}`} className="hud-card min-w-0">
-      <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[#d2d2d7] px-4 py-3.5 sm:px-5">
-        <h2 id={`funnel-${gid}`} className="hud-label m-0" style={{ color: "#1d1d1f" }}>
+      <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[#e2ddd5] px-4 py-3.5 sm:px-5">
+        <h2 id={`funnel-${gid}`} className="hud-label m-0" style={{ color: "#111110" }}>
           Booking funnel
         </h2>
-        <p className="hud-mono m-0 text-[13px] text-[#6e6e73]">Last {range} days · % of the step before · hover a step</p>
+        <p className="hud-mono m-0 text-[13px] text-[#4d4b48]">Last {range} days · % of the step before · hover a step</p>
       </div>
 
       {/* Desktop / tablet: the stream */}
@@ -107,12 +107,12 @@ export function FunnelFlow({
             const isB = b?.step === i;
             return (
               <HudIntel key={s.label} intel={intel[i]} align={i >= steps.length - 2 ? "right" : "left"}>
-                <button type="button" className={`hud-focus block w-full min-w-0 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-[rgba(0,0,0,0.05)] ${i ? "border-l border-[#d2d2d7]" : ""}`}>
+                <button type="button" className={`hud-focus block w-full min-w-0 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-[rgba(0,0,0,0.05)] ${i ? "border-l border-[#e2ddd5]" : ""}`}>
                   <span className="hud-label block truncate">{s.label}</span>
                   <span className="hud-value mt-1.5 block" style={isB ? { color: AMBER } : undefined}>
                     {s.value.toLocaleString("en-US")}
                   </span>
-                  <span className="hud-mono mt-1 block text-[13px]" style={{ color: isB ? AMBER : "#6e6e73" }}>
+                  <span className="hud-mono mt-1 block text-[13px]" style={{ color: isB ? AMBER : "#4d4b48" }}>
                     {pct === null ? "Start" : `${pct}%`}
                     {isB ? " · Bottleneck" : ""}
                   </span>
@@ -139,7 +139,7 @@ export function FunnelFlow({
               </defs>
               {/* One flat band with a hairline edge; the bottleneck stretch is a soft red, not blended. */}
               <g mask={b ? `url(#m-${gid})` : undefined}>
-                <path d={bandPath(hs, W)} fill="#0071e3" fillOpacity="0.1" stroke="#0071e3" strokeOpacity="0.45" strokeWidth="1" />
+                <path d={bandPath(hs, W)} fill="#111110" fillOpacity="0.1" stroke="#111110" strokeOpacity="0.45" strokeWidth="1" />
               </g>
               {b ? (
                 <g clipPath={`url(#b-${gid})`}>
@@ -147,7 +147,7 @@ export function FunnelFlow({
                 </g>
               ) : null}
               {/* a single thin flow line through the middle */}
-              <path d={flowLine(hs, W, 0)} fill="none" stroke="#0071e3" strokeOpacity="0.35" strokeWidth="1" strokeLinecap="round" className="hud-flow hud-flow--slow" />
+              <path d={flowLine(hs, W, 0)} fill="none" stroke="#111110" strokeOpacity="0.35" strokeWidth="1" strokeLinecap="round" />
             </svg>
           ) : null}
         </div>
@@ -164,17 +164,17 @@ export function FunnelFlow({
                 <button type="button" className="hud-focus block min-h-11 w-full rounded-md px-1.5 py-1 text-left">
                   <span className="flex items-baseline justify-between gap-3">
                     <span className="hud-label min-w-0 truncate">{s.label}</span>
-                    <span className="hud-mono shrink-0 text-sm text-[#1d1d1f]">
+                    <span className="hud-mono shrink-0 text-sm text-[#111110]">
                       {s.value.toLocaleString("en-US")}
-                      {pct !== null ? <span className="ml-2 text-xs" style={{ color: isB ? AMBER : "#6e6e73" }}>{pct}%</span> : null}
+                      {pct !== null ? <span className="ml-2 text-xs" style={{ color: isB ? AMBER : "#4d4b48" }}>{pct}%</span> : null}
                     </span>
                   </span>
                   <span className="mt-1.5 block h-2 overflow-hidden rounded-full bg-[rgba(0,0,0,0.08)]">
                     <span
-                      className={`block h-full rounded-full ${isB ? "hud-bneck" : ""}`}
+                      className={`block h-full rounded-full `}
                       style={{
                         width: `${Math.max(Math.sqrt(s.value / max) * 100, s.value ? 3 : 0)}%`,
-                        background: isB ? AMBER_FILL : "#0071e3",
+                        background: isB ? AMBER_FILL : "#111110",
                       }}
                     />
                   </span>
@@ -186,18 +186,18 @@ export function FunnelFlow({
       </ol>
 
       {b ? (
-        <div className="border-t border-[#d2d2d7] px-4 py-3.5 sm:px-5">
+        <div className="border-t border-[#e2ddd5] px-4 py-3.5 sm:px-5">
           <p className="hud-label m-0" style={{ color: AMBER }}>
             Bottleneck · {steps[b.step - 1].label} → {steps[b.step].label}
           </p>
-          <p className="mt-1.5 text-base text-[#1d1d1f]">
+          <p className="mt-1.5 text-base text-[#111110]">
             <span className="hud-mono" style={{ color: AMBER }}>{b.rate}%</span> make it through. Healthy is about{" "}
             <span className="hud-mono">{b.baseline}%</span>.
           </p>
-          <p className="mt-1 text-sm leading-6 text-[#6e6e73]">{b.action}</p>
+          <p className="mt-1 text-sm leading-6 text-[#4d4b48]">{b.action}</p>
         </div>
       ) : (
-        <p className="hud-mono border-t border-[#d2d2d7] px-4 py-3.5 text-xs text-[#6e6e73] sm:px-5">
+        <p className="hud-mono border-t border-[#e2ddd5] px-4 py-3.5 text-xs text-[#4d4b48] sm:px-5">
           Bottleneck detection starts once 10 people reach a step.
         </p>
       )}

@@ -26,6 +26,7 @@
   --tq-cinema-line: #2a2925;
   --tq-status-open: #2e6f40; /* date open */
   --tq-status-limited: #b85d19; /* date limited */
+  --tq-status-down: #a14f12; /* text-safe "needs work" (5.4:1 on canvas); status-limited is 4.3:1, dots/borders only */
 
   /* ---- Type: Inter (UI + display), Jost 500 (uppercase labels/wordmark),
      Geist Mono (index labels). Loaded in app/_shell/root.tsx. ---- */
