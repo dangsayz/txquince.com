@@ -265,7 +265,8 @@ a:hover > .st-arrow {
 /* Gate 2: short labels ("All", "Save", "Done") still get a 44px-wide target. */
 .st-link, .st-tab { min-width: var(--tq-tap); justify-content: center; }
 
-/* Studio header navigation: quiet text, the current page sits in a soft white pill. */
+/* Studio header navigation. Main: quiet text, the current page in a carbon pill
+   (same as .st-filter). Sub (Website): smaller text, current page underlined. */
 .st-nav {
   display: inline-flex;
   flex: none;
@@ -274,7 +275,7 @@ a:hover > .st-arrow {
   gap: 0.375rem;
   min-height: var(--tq-tap);
   min-width: var(--tq-tap);
-  padding: 0 0.875rem;
+  padding: 0 0.9375rem;
   border-radius: var(--tq-radius-pill);
   color: var(--tq-ink-mute);
   font-size: 15px;
@@ -286,17 +287,25 @@ a:hover > .st-arrow {
 }
 .st-nav:hover { color: var(--tq-ink); background: var(--tq-surface); }
 .st-nav:is([aria-current], [data-on]) {
-  color: var(--tq-ink);
-  background: #ffffff;
-  box-shadow: inset 0 0 0 1px var(--tq-surface-2);
+  color: var(--tq-ink-on);
+  background: var(--tq-ink);
   font-weight: var(--tq-weight-medium);
 }
-.st-nav--sub { padding: 0 0.75rem; }
 .st-nav:disabled { opacity: 0.55; cursor: progress; }
-/* Tables inside an unclipped card (row menus must overflow it): round the corner cells instead. */
-.st-card > .st-table thead tr:first-child > :first-child,
-.st-card > div > .st-table thead tr:first-child > :first-child { border-top-left-radius: var(--tq-radius-md); }
-.st-card > .st-table thead tr:first-child > :last-child,
-.st-card > div > .st-table thead tr:first-child > :last-child { border-top-right-radius: var(--tq-radius-md); }
-.st-card .st-table tbody tr:last-child > :first-child { border-bottom-left-radius: var(--tq-radius-md); }
-.st-card .st-table tbody tr:last-child > :last-child { border-bottom-right-radius: var(--tq-radius-md); }
+.st-subnav {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  min-height: var(--tq-tap);
+  min-width: var(--tq-tap);
+  justify-content: center;
+  padding: 0 0.75rem;
+  color: var(--tq-ink-mute);
+  font-size: 14px;
+  white-space: nowrap;
+  transition: color var(--tq-dur-fast) var(--tq-ease), box-shadow var(--tq-dur-fast) var(--tq-ease);
+}
+.st-subnav:hover { color: var(--tq-ink); }
+.st-subnav[aria-current] { color: var(--tq-ink); font-weight: var(--tq-weight-medium); box-shadow: inset 0 -2px 0 var(--tq-ink); }
+/* In the phone menu every row reads left to right. */
+.st-menu .st-nav { justify-content: flex-start; }
