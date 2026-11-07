@@ -47,7 +47,8 @@ function MainNavigation({ pathname, onNavigate }: { pathname: string; onNavigate
         href={link.href}
         onClick={onNavigate}
         aria-current={active && link.label !== "Website" ? "page" : undefined}
-        className={`inline-flex min-h-12 min-w-11 items-center border-b-2 px-1.5 text-[15px] transition-colors duration-[var(--tq-dur-fast)] ${active ? "border-[var(--tq-ink)] font-semibold text-[var(--tq-ink)]" : "border-transparent text-[var(--tq-ink-mute)] hover:text-[var(--tq-ink)]"}`}
+        data-on={active || undefined}
+        className="st-nav"
       >
         {link.label}
       </Link>
@@ -105,22 +106,23 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-dvh bg-[var(--tq-canvas)] text-[var(--tq-ink)]">
       <header className="relative z-30 border-b border-[var(--tq-surface-2)] bg-[var(--tq-canvas)]">
-        <div className="mx-auto flex min-h-[68px] max-w-[96rem] items-center gap-6 px-4 sm:px-8 lg:px-12">
-          <Link href="/admin" className="inline-flex min-h-11 shrink-0 items-baseline gap-2.5 whitespace-nowrap" aria-label="TX Quince Studio, Today">
+        <div className="mx-auto flex min-h-16 max-w-[96rem] items-center gap-5 px-4 sm:px-8 xl:max-w-[72rem]">
+          <Link href="/admin" className="mr-3 inline-flex min-h-11 shrink-0 items-center whitespace-nowrap" aria-label="TX Quince Studio, Today">
+            <span className="inline-flex items-baseline gap-2.5">
             <span aria-hidden="true" className="font-[family-name:var(--tq-font-label)] text-[15px] font-medium uppercase tracking-[0.22em]">TX Quince</span>
-            <span aria-hidden="true" className="text-[13px] text-[var(--tq-ink-mute)]">Studio</span>
+            <span aria-hidden="true" className="text-[13px] text-[var(--tq-ink-mute)] lg:max-xl:hidden">Studio</span>
+            </span>
           </Link>
 
-          <nav aria-label="Studio navigation" className="hidden min-h-[68px] items-stretch gap-4 lg:flex xl:gap-7">
+          <nav aria-label="Studio navigation" className="hidden items-center gap-1 lg:flex">
             <MainNavigation pathname={pathname} />
           </nav>
 
-          <div className="ml-auto hidden shrink-0 items-center gap-5 lg:flex">
-            <Link href="/" target="_blank" rel="noopener noreferrer" className="st-link">
-              View site <span className="sr-only">(opens in a new tab)</span>
+          <div className="ml-auto hidden shrink-0 items-center gap-1 lg:flex">
+            <Link href="/" target="_blank" rel="noopener noreferrer" className="st-nav">
+              View site <span aria-hidden="true">↗</span><span className="sr-only">(opens in a new tab)</span>
             </Link>
-            <span aria-hidden="true" className="h-5 w-px bg-[var(--tq-surface-2)]" />
-            <button type="button" disabled={signingOut} onClick={signOut} className="st-btn-ghost text-[15px]">
+            <button type="button" disabled={signingOut} onClick={signOut} className="st-nav">
               {signingOut ? "Logging out…" : "Log out"}
             </button>
           </div>
@@ -140,10 +142,10 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
         </div>
 
         {websiteActive && (
-          <nav aria-label="Website management" className="hidden border-t border-[var(--tq-surface-2)] lg:block">
-            <div className="mx-auto flex max-w-[96rem] items-center gap-6 overflow-x-auto px-4 sm:px-8 lg:px-12">
+          <nav aria-label="Website management" className="hidden lg:block">
+            <div className="mx-auto flex max-w-[96rem] items-center gap-1 overflow-x-auto px-4 pb-3 [scrollbar-width:none] sm:px-8 xl:max-w-[72rem]">
               {websiteLinks.map((link) => (
-                <Link key={link.href} href={link.href} aria-current={isActive(pathname, link.href) ? "page" : undefined} className={`inline-flex min-h-12 min-w-11 shrink-0 items-center justify-center whitespace-nowrap border-b-2 text-[15px] transition-colors duration-[var(--tq-dur-fast)] ${isActive(pathname, link.href) ? "border-[var(--tq-ink)] font-medium text-[var(--tq-ink)]" : "border-transparent text-[var(--tq-ink-mute)] hover:text-[var(--tq-ink)]"}`}>
+                <Link key={link.href} href={link.href} aria-current={isActive(pathname, link.href) ? "page" : undefined} className="st-nav st-nav--sub">
                   {link.label}
                 </Link>
               ))}
@@ -152,19 +154,19 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
         )}
 
         {menuOpen && (
-          <nav id="studio-mobile-navigation" aria-label="Studio navigation" className="absolute left-0 right-0 top-full max-h-[calc(100dvh-68px)] overflow-y-auto border-b border-[var(--tq-surface-2)] bg-[var(--tq-canvas)] px-4 pb-[max(1.75rem,env(safe-area-inset-bottom))] shadow-[var(--tq-shadow-overlay)] sm:px-8 lg:hidden">
-            <div className="flex flex-col border-t border-[var(--tq-surface-2)] py-3">
+          <nav id="studio-mobile-navigation" aria-label="Studio navigation" className="absolute left-0 right-0 top-full max-h-[calc(100dvh-4rem)] overflow-y-auto border-b border-[var(--tq-surface-2)] bg-[var(--tq-canvas)] px-4 pb-[max(1.75rem,env(safe-area-inset-bottom))] shadow-[var(--tq-shadow-overlay)] sm:px-8 lg:hidden">
+            <div className="flex flex-col gap-1 border-t border-[var(--tq-surface-2)] py-3 [&>a]:justify-start">
               <MainNavigation pathname={pathname} onNavigate={() => setMenuOpen(false)} />
             </div>
             <p className="m-0 border-t border-[var(--tq-surface-2)] pt-5 text-[15px] font-semibold">Website</p>
-            <div className="mt-2 grid grid-cols-2 gap-x-4">
+            <div className="mt-2 grid grid-cols-2 gap-1">
               {websiteLinks.map((link) => (
-                <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)} aria-current={isActive(pathname, link.href) ? "page" : undefined} className={`inline-flex min-h-12 items-center border-b border-[var(--tq-surface-2)] text-[15px] ${isActive(pathname, link.href) ? "font-semibold text-[var(--tq-ink)]" : "text-[var(--tq-ink-mute)]"}`}>{link.label}</Link>
+                <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)} aria-current={isActive(pathname, link.href) ? "page" : undefined} className="st-nav justify-start">{link.label}</Link>
               ))}
             </div>
             <div className="mt-6 flex items-center justify-between gap-4 border-t border-[var(--tq-surface-2)] pt-4">
               <Link href="/" target="_blank" rel="noopener noreferrer" onClick={() => setMenuOpen(false)} className="st-link">View site <span className="sr-only">(opens in a new tab)</span></Link>
-              <button type="button" disabled={signingOut} onClick={signOut} className="st-btn-ghost text-[15px]">{signingOut ? "Logging out…" : "Log out"}</button>
+              <button type="button" disabled={signingOut} onClick={signOut} className="st-nav">{signingOut ? "Logging out…" : "Log out"}</button>
             </div>
           </nav>
         )}
