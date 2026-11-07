@@ -309,3 +309,5 @@ a:hover > .st-arrow {
 .st-subnav[aria-current] { color: var(--tq-ink); font-weight: var(--tq-weight-medium); box-shadow: inset 0 -2px 0 var(--tq-ink); }
 /* In the phone menu every row reads left to right. */
 .st-menu .st-nav { justify-content: flex-start; }
+/* Phone menu: website pages mark the current one quietly, so only the section is a black pill. */
+.st-nav--quiet:is([aria-current], [data-on]) { background: var(--tq-surface); color: var(--tq-ink); }

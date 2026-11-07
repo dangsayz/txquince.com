@@ -161,7 +161,7 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
             <p className="m-0 border-t border-[var(--tq-surface-2)] pt-4 text-[13px] text-[var(--tq-ink-mute)]">Website pages</p>
             <div className="mt-2 grid grid-cols-2 gap-1">
               {websiteLinks.map((link) => (
-                <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)} aria-current={isActive(pathname, link.href) ? "page" : undefined} className="st-nav">{link.label}</Link>
+                <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)} aria-current={isActive(pathname, link.href) ? "page" : undefined} className="st-nav st-nav--quiet">{link.label}</Link>
               ))}
             </div>
             <div className="mt-6 flex items-center justify-between gap-4 border-t border-[var(--tq-surface-2)] pt-4">
