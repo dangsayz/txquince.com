@@ -40,7 +40,7 @@ export const ED = {
       title: "Packages & prices",
       dek: "Every price is shown up front. Nothing is charged today.",
       book: "Reserve",
-      bookAria: (name: string) => `Reserve the ${name}`,
+      bookAria: (name: string) => `Reserve ${name}`,
       hours: (h: number) => (h === 1 ? "1 hour" : `${h} hours`),
       pick: "Our pick",
       offer: (left: number, total: number, price: string) => `Only ${left} of ${total} dates left at ${price}`,

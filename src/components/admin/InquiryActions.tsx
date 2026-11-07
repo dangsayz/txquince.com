@@ -19,7 +19,7 @@ const REASONS = [
 ] as const;
 
 const item =
-  "flex min-h-11 w-full items-center whitespace-nowrap rounded-md px-3 text-left text-[15px] text-[#252525] hover:bg-[#f2f2f0] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#252525] disabled:opacity-40";
+  "flex min-h-11 w-full items-center whitespace-nowrap rounded-md px-3 text-left text-[15px] text-[var(--tq-ink)] hover:bg-[var(--tq-surface)] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--tq-ink)] disabled:opacity-40";
 
 export function InquiryActions({ id, name, status }: { id: string; name: string; status: Status }) {
   const router = useRouter();
@@ -29,14 +29,26 @@ export function InquiryActions({ id, name, status }: { id: string; name: string;
   const [error, setError] = useState<string | null>(null);
   const root = useRef<HTMLDivElement>(null);
   const button = useRef<HTMLButtonElement>(null);
+  const menu = useRef<HTMLDivElement>(null);
+  /** Open upward when the row sits near the bottom of the window. */
+  const [up, setUp] = useState(false);
 
   useEffect(() => {
     if (!open) return;
+    // Focus the first item so the keyboard lands inside the menu; arrows move between items.
+    menu.current?.querySelector<HTMLElement>("[role=menuitem]:not(:disabled)")?.focus();
     const onDown = (e: MouseEvent) => !root.current?.contains(e.target as Node) && setOpen(false);
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setOpen(false);
         button.current?.focus();
+      }
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        const items = [...(menu.current?.querySelectorAll<HTMLElement>("[role=menuitem]:not(:disabled)") ?? [])];
+        if (!items.length) return;
+        e.preventDefault();
+        const i = items.indexOf(document.activeElement as HTMLElement);
+        items[(i + (e.key === "ArrowDown" ? 1 : items.length - 1)) % items.length].focus();
       }
     };
     document.addEventListener("mousedown", onDown);
@@ -79,6 +91,8 @@ export function InquiryActions({ id, name, status }: { id: string; name: string;
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={() => {
+          const r = button.current?.getBoundingClientRect();
+          setUp(r ? window.innerHeight - r.bottom < 260 && r.top > 260 : false);
           setOpen((o) => !o);
           setStep("menu");
           setError(null);
@@ -89,9 +103,10 @@ export function InquiryActions({ id, name, status }: { id: string; name: string;
       </button>
       {open ? (
         <div
+          ref={menu}
           role="menu"
           aria-label={`Actions for ${name}`}
-          className="absolute right-0 top-full z-30 mt-1 w-64 max-w-[calc(100vw-2rem)] rounded-lg border border-[#dcdcd9] bg-white p-1.5 shadow-[0_12px_32px_rgba(0,0,0,0.12)]"
+          className={`absolute right-0 z-30 ${up ? "bottom-full mb-1" : "top-full mt-1"} w-64 max-w-[calc(100vw-2rem)] rounded-[var(--tq-radius-md)] border border-[var(--tq-surface-2)] bg-white p-1.5 text-left shadow-[var(--tq-shadow-overlay)]`}
         >
           {step === "menu" ? (
             <>

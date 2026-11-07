@@ -24,9 +24,9 @@ import { HONEYPOT_FIELD } from "@/lib/inquiry";
 import { BUDGET_FOR_TIER, servicesForTier } from "@/lib/inquiry-package";
 import { site } from "@/content/site";
 import { usePriceBook } from "@/components/PriceBookProvider";
-import { ADD_ONS, CITIES, money, pick, tierById, type Lang, type TierId } from "./data";
+import { ADD_ONS, CITIES, TIERS, money, pick, tierById, tierTeam, type Lang, type TierId } from "./data";
 import { BOOKING_STEPS, isoDate, useAvailability, useQuote, useSite } from "./state";
-import { ExtrasStep, PackageStep, useTween } from "./Commissions";
+import { CompareDialog, ExtrasStep, PackageStep, useTween } from "./Commissions";
 import "./booking-glass.css";
 import { TrustLine } from "@/components/TrustLine";
 
@@ -80,7 +80,7 @@ const isTextField = (el: EventTarget | null) =>
  * set of cards, and nothing is preselected until she picks.
  */
 export const Intake = forwardRef<HTMLDivElement | null, { pickFromList?: string }>(function Intake({ pickFromList }, ref) {
-  const { t, lang, tier, addOns, crew, hours, booking: b, updateBooking, resetBooking, draftRestored, pickPackage, pickTick } =
+  const { t, lang, tier, setTier, addOns, crew, hours, booking: b, updateBooking, resetBooking, draftRestored, pickPackage, pickTick } =
     useSite();
   const { book } = usePriceBook();
   const avail = useAvailability();
@@ -113,13 +113,7 @@ export const Intake = forwardRef<HTMLDivElement | null, { pickFromList?: string 
   const listMode = Boolean(pickFromList);
   /** Has she picked a package? Always true with the in-panel picker (it starts on Our pick). */
   const chosen = !listMode || b.reached >= 1 || step >= 1;
-  const toList = () => {
-    const list = pickFromList ? document.getElementById(pickFromList) : null;
-    if (!list) return;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    list.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
-    list.querySelector<HTMLElement>(".ed-pkg a[href], .ed-pkg button")?.focus({ preventScroll: true });
-  };
+
 
   /* ---------- step moves ---------- */
 
@@ -438,7 +432,19 @@ export const Intake = forwardRef<HTMLDivElement | null, { pickFromList?: string 
                 </div>
 
                 {step === 0 &&
-                  (listMode ? <ListPick chosen={chosen} error={errors.package} onToList={toList} /> : <PackageStep />)}
+                  (listMode ? (
+                    <PackageRows
+                      chosen={chosen}
+                      error={errors.package}
+                      onPick={(id) => {
+                        setTier(id);
+                        updateBooking({ reached: Math.max(b.reached, 1) });
+                        clearError("package");
+                      }}
+                    />
+                  ) : (
+                    <PackageStep />
+                  ))}
 
                 {step === 1 && <ExtrasStep onChangePackage={() => go(0)} />}
 
@@ -634,6 +640,7 @@ export const Intake = forwardRef<HTMLDivElement | null, { pickFromList?: string 
                         ))}
                       </ol>
                       <p className="tq-bk-nocharge">{t.booking.noCharge}</p>
+                      <p className="tq-bk-team">{t.commissions.fine}</p>
                       <p className="tq-bk-team">{t.booking.teamNote}</p>
                       <p className="tq-bk-team">{t.booking.proofLead}</p>
                       <p className="tq-bk-proof">
@@ -725,35 +732,43 @@ export const Intake = forwardRef<HTMLDivElement | null, { pickFromList?: string 
 /* Step 1 when the page's package list is the picker                  */
 /* ------------------------------------------------------------------ */
 
-function ListPick({ chosen, error, onToList }: { chosen: boolean; error?: string; onToList: () => void }) {
+/**
+ * Homepage step 1: every package as one tappable row (name, what it is,
+ * price), so she picks right here instead of scrolling back up to the list.
+ */
+function PackageRows({ chosen, error, onPick }: { chosen: boolean; error?: string; onPick: (id: TierId) => void }) {
   const { t, lang, tier } = useSite();
-  const q = useQuote();
-  const x = tierById(tier);
+  const { book } = usePriceBook();
   return (
-    <div className="tq-bk-listpick" data-chosen={chosen}>
-      {chosen ? (
-        <p className="tq-bk-listpick__pick tq-nums">
-          <strong>{pick(lang, x.name)}</strong>
-          <span>{money(q.tierUsd)}</span>
-        </p>
-      ) : (
-        <p className="tq-bk-listpick__pick">{t.booking.listNone}</p>
-      )}
-      <button
-        type="button"
-        className="tq-btn tq-btn--ghost"
-        onClick={onToList}
-        data-invalid={error ? "true" : undefined}
-        aria-describedby={error ? "tq-bk-listpick-err" : undefined}
-      >
-        {chosen ? t.booking.listChange : t.booking.listSee} <span className="tq-arrow" aria-hidden>↑</span>
-      </button>
+    <fieldset className="tq-bk-rows" aria-describedby={error ? "tq-bk-rows-err" : undefined}>
+      <legend className="tq-sr">{t.booking.packagesLabel}</legend>
+      {TIERS.map((x) => {
+        const p = book.packages[x.id];
+        const sel = chosen && tier === x.id;
+        return (
+          <label key={x.id} className="tq-bk-row" data-sel={sel}>
+            <input type="radio" name="tq-pkg-row" value={x.id} checked={sel} onChange={() => onPick(x.id)} />
+            <span className="tq-bk-row__dot" aria-hidden />
+            <span className="tq-bk-row__main">
+              <span className="tq-bk-row__name">
+                {pick(lang, x.name)}
+                {x.recommended ? <span className="tq-bk-row__tag">{t.booking.recommended}</span> : null}
+              </span>
+              <span className="tq-bk-row__meta">
+                {x.id === "archive" ? t.booking.hoursBothDays(p.hours) : t.booking.hoursIncluded(p.hours)} · {pick(lang, tierTeam(book, x.id))}
+              </span>
+            </span>
+            <span className="tq-bk-row__price tq-nums">{money(p.price)}</span>
+          </label>
+        );
+      })}
       {error ? (
-        <p id="tq-bk-listpick-err" className="tq-bk-listpick__err" role="alert">
+        <p id="tq-bk-rows-err" className="tq-bk-listpick__err" role="alert">
           {error}
         </p>
       ) : null}
-    </div>
+      <CompareDialog />
+    </fieldset>
   );
 }
 

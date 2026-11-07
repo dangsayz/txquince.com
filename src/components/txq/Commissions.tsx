@@ -107,7 +107,7 @@ function PackageCard({ tier: x }: { tier: Tier }) {
 }
 
 /** "Compare all packages" — the full comparison behind a button, in a native modal dialog. */
-function CompareDialog() {
+export function CompareDialog() {
   const { t, lang, pickPackage } = useSite();
   const { book } = usePriceBook();
   const ref = useRef<HTMLDialogElement>(null);
@@ -267,6 +267,9 @@ export function ExtrasStep({ onChangePackage }: { onChangePackage: () => void })
   const p = book.packages[tier];
   const x = tierById(tier);
   const options = hourSteps(book, tier);
+  const at = Math.max(0, options.indexOf(hours));
+  const extras = ADD_ONS.filter((a) => addOnAllowed(tier, a.id));
+  const has = tierBullets(book, tier);
 
   return (
     <>
@@ -280,21 +283,37 @@ export function ExtrasStep({ onChangePackage }: { onChangePackage: () => void })
         </button>
       </div>
 
+      {has.length ? (
+        <div className="tq-bk-has">
+          <p className="tq-bk-has__title">{t.booking.hasTitle}</p>
+          <ul>
+            {has.map((b) => (
+              <li key={b.en}>{pick(lang, b)}</li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
       <fieldset className="tq-bk-group">
         <legend className="tq-bk-label">{t.booking.hoursTitle}</legend>
-        {canAddHours(tier) ? (
+        {canAddHours(tier) && options.length > 1 ? (
           <>
             <p className="tq-bk-hint">{t.booking.hoursNote(p.hours, money(p.extraHour), maxHours(tier))}</p>
-            <div className="tq-hours">
-              {options.map((h) => (
-                <label key={h} className="tq-hour">
-                  <input type="radio" name="tq-hours" value={h} checked={hours === h} onChange={() => setHours(h)} />
-                  <span className="tq-hour__h">{t.booking.hourOption(h)}</span>
-                  <span className="tq-hour__p tq-nums">
-                    {h === p.hours ? t.booking.includedTag : `+${money(Math.round((h - p.hours) * p.extraHour))}`}
-                  </span>
-                </label>
-              ))}
+            <div className="tq-bk-hourstep">
+              <span className="tq-bk-hourstep__value" aria-live="polite">
+                <span className="tq-bk-hourstep__h">{t.booking.hourOption(hours)}</span>
+                <span className="tq-bk-hourstep__p tq-nums">
+                  {hours <= p.hours ? t.booking.includedTag : `+${money(Math.round((hours - p.hours) * p.extraHour))}`}
+                </span>
+              </span>
+              <span className="tq-stepper-ctl">
+                <button type="button" aria-label={t.booking.hoursLess} disabled={at === 0} onClick={() => setHours(options[at - 1])}>
+                  −
+                </button>
+                <button type="button" aria-label={t.booking.hoursMoreAria} disabled={at >= options.length - 1} onClick={() => setHours(options[at + 1])}>
+                  +
+                </button>
+              </span>
             </div>
           </>
         ) : (
@@ -302,38 +321,38 @@ export function ExtrasStep({ onChangePackage }: { onChangePackage: () => void })
         )}
       </fieldset>
 
-      {BASE_CREW[tier] > 1 ? (
+      {extras.length ? (
         <fieldset className="tq-bk-group">
           <legend className="tq-bk-label">
-            {t.booking.teamTitle} <span className="tq-bk-opt">— {t.booking.optional}</span>
+            {t.booking.extrasTitle} <span className="tq-bk-opt">— {t.booking.optional}</span>
           </legend>
-          <p className="tq-bk-hint">{t.crew.dek(BASE_CREW[tier])}</p>
-          <CrewControl />
+          <div className="tq-addons">
+            {extras.map((a) => {
+              const on = addOns.includes(a.id);
+              return (
+                <button key={a.id} type="button" className="tq-addon" aria-pressed={on} onClick={() => toggleAddOn(a.id)}>
+                  <span className="tq-addon__name">{pick(lang, a.name)}</span>
+                  <span className="tq-addon__state tq-nums">
+                    +{money(book.addOns[a.id])}
+                    <span className="tq-addon__box" aria-hidden>
+                      {on ? "✓" : ""}
+                    </span>
+                  </span>
+                  <span className="tq-addon__note">{pick(lang, addOnNote(book, a.id))}</span>
+                </button>
+              );
+            })}
+          </div>
         </fieldset>
       ) : null}
 
-      <fieldset className="tq-bk-group">
-        <legend className="tq-bk-label">
-          {t.booking.extrasTitle} <span className="tq-bk-opt">— {t.booking.optional}</span>
-        </legend>
-        <div className="tq-addons">
-          {ADD_ONS.filter((a) => addOnAllowed(tier, a.id)).map((a) => {
-            const on = addOns.includes(a.id);
-            return (
-              <button key={a.id} type="button" className="tq-addon" aria-pressed={on} onClick={() => toggleAddOn(a.id)}>
-                <span className="tq-addon__name">{pick(lang, a.name)}</span>
-                <span className="tq-addon__state tq-nums">
-                  +{money(book.addOns[a.id])}
-                  <span className="tq-addon__box" aria-hidden>
-                    {on ? "✓" : ""}
-                  </span>
-                </span>
-                <span className="tq-addon__note">{pick(lang, addOnNote(book, a.id))}</span>
-              </button>
-            );
-          })}
-        </div>
-      </fieldset>
+      {BASE_CREW[tier] > 1 ? (
+        <details className="tq-bk-group tq-bk-more">
+          <summary>{t.booking.mixToggle}</summary>
+          <p className="tq-bk-hint">{t.crew.dek(BASE_CREW[tier])}</p>
+          <CrewControl />
+        </details>
+      ) : null}
     </>
   );
 }

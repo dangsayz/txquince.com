@@ -107,7 +107,7 @@ export default async function AdminInquiries({ searchParams }: { searchParams: P
         </form>
       </div>
 
-      <section aria-label="Inquiry results" className="st-card overflow-hidden">
+      <section aria-label="Inquiry results" className="st-card">
         {filtered.length ? <>
           <div className="hidden md:block">
             <table className="st-table table-fixed">
