@@ -293,3 +293,10 @@ a:hover > .st-arrow {
 }
 .st-nav--sub { padding: 0 0.75rem; }
 .st-nav:disabled { opacity: 0.55; cursor: progress; }
+/* Tables inside an unclipped card (row menus must overflow it): round the corner cells instead. */
+.st-card > .st-table thead tr:first-child > :first-child,
+.st-card > div > .st-table thead tr:first-child > :first-child { border-top-left-radius: var(--tq-radius-md); }
+.st-card > .st-table thead tr:first-child > :last-child,
+.st-card > div > .st-table thead tr:first-child > :last-child { border-top-right-radius: var(--tq-radius-md); }
+.st-card .st-table tbody tr:last-child > :first-child { border-bottom-left-radius: var(--tq-radius-md); }
+.st-card .st-table tbody tr:last-child > :last-child { border-bottom-right-radius: var(--tq-radius-md); }

@@ -91,7 +91,7 @@ export function InquiryActions({ id, name, status }: { id: string; name: string;
         <div
           role="menu"
           aria-label={`Actions for ${name}`}
-          className="absolute right-0 top-full z-30 mt-1 w-64 max-w-[calc(100vw-2rem)] rounded-lg border border-[#dcdcd9] bg-white p-1.5 shadow-[0_12px_32px_rgba(0,0,0,0.12)]"
+          className="absolute right-0 top-full z-30 mt-1 w-64 max-w-[calc(100vw-2rem)] rounded-[var(--tq-radius-md)] border border-[var(--tq-surface-2)] bg-white p-1.5 text-left shadow-[var(--tq-shadow-overlay)]"
         >
           {step === "menu" ? (
             <>
