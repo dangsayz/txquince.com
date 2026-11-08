@@ -52,7 +52,7 @@ export default async function InicioEs() {
       <FavoritesJsonLd favorites={favorites} lang="es" />
       <SlotProvider slots={await resolveHomeSlots(overrides)}>
         <div className={editorialFonts}>
-          <EditorialHome journal={fillDeep(latestJournal(), book)} films={films} overrides={overrides} galleries={galleriesFromImages(portfolio)} cities={homeCities()} favorites={favorites} />
+          <EditorialHome journal={fillDeep(latestJournal(), book)} films={films} overrides={overrides} galleries={galleriesFromImages(portfolio)} work={galleriesFromImages(portfolio, 12)} cities={homeCities()} favorites={favorites} />
         </div>
       </SlotProvider>
     </>
