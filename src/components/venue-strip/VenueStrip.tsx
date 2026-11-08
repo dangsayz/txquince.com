@@ -6,7 +6,7 @@ import type { HomeGallery } from "@/lib/home-galleries";
 import "./venue-strip.css";
 
 /**
- * "Venues we've worked at": a sideways strip of real venue galleries (the
+ * "From the dress session to the dance floor": a sideways strip of real venue galleries (the
  * portfolio grouped by venue, see home-galleries.ts), each card linking to
  * that venue's gallery. Swipe on a phone; ← → page it on desktop, with a
  * "01 / 12" position counter. Native scroll-snap, no library. Shown on /,
@@ -17,21 +17,21 @@ import "./venue-strip.css";
  */
 const COPY = {
   en: {
-    title: "Venues we’ve worked at",
-    lede: "Real quinceañeras we photographed, by venue. Open one to see the gallery.",
-    prev: "Previous venues",
-    next: "More venues",
+    title: "From the dress session to the dance floor",
+    lede: "The ballrooms, halls and outdoor spots across DFW where we’ve photographed real quinceañeras. Open one to see the gallery.",
+    prev: "Previous locations",
+    next: "More locations",
     photos: (n: number) => `${n} photos`,
-    all: "See all venues",
+    all: "See all locations",
     allHref: "/venues",
   },
   es: {
-    title: "Salones donde hemos trabajado",
-    lede: "Quinceañeras reales que fotografiamos, por salón. Abre uno para ver la galería.",
-    prev: "Salones anteriores",
-    next: "Más salones",
+    title: "De la sesión del vestido a la pista de baile",
+    lede: "Los salones y lugares al aire libre en DFW donde hemos fotografiado quinceañeras reales. Abre uno para ver la galería.",
+    prev: "Lugares anteriores",
+    next: "Más lugares",
     photos: (n: number) => `${n} fotos`,
-    all: "Ver todos los salones",
+    all: "Ver todos los lugares",
     allHref: "/es/salones",
   },
 } as const;
