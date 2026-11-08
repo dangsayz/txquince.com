@@ -9,6 +9,8 @@
   --ed-display: var(--tq-font-label);
   display: grid;
   gap: 0;
+  /* Keep text off the page frame's hairlines (same inset as .tq-inner). */
+  padding-inline: var(--pad, 0px);
 }
 
 /* ---------- Index ledger (2+ events) ---------- */

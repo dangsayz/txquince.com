@@ -10,6 +10,9 @@
 }
 
 /* ---------- Hero ---------- */
+/* Hero + blocks sit inside the hairline frame: inset like .tq-inner. */
+.txq .tq-inspo-hero,
+.txq .tq-inspo-block { padding-inline: var(--pad); }
 .txq .tq-inspo-hero {
   display: grid;
   gap: 40px;
