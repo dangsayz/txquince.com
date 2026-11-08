@@ -1,0 +1,156 @@
+/* "Venues we've worked at" (VenueStrip.tsx). Brand kit tokens only (src/app/brand.css). */
+.vs {
+  background: var(--tq-canvas);
+  color: var(--tq-ink);
+  font-family: var(--tq-font-sans);
+  padding: var(--tq-space-section) 0;
+}
+.vs-head,
+.vs-foot {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--tq-space-4);
+}
+.vs-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--tq-space-6);
+  margin-bottom: var(--tq-space-8);
+}
+.vs-intro { max-width: 36rem; }
+.vs h2.vs-title {
+  margin: 0 0 var(--tq-space-4);
+  font-family: var(--tq-font-sans);
+  font-size: var(--tq-text-h2);
+  font-weight: var(--tq-weight-semibold);
+  line-height: var(--tq-leading-tight);
+  letter-spacing: var(--tq-tracking-display);
+  text-transform: none;
+  text-wrap: balance;
+}
+.vs p.vs-lede {
+  margin: 0;
+  font-size: var(--tq-text-lg);
+  line-height: var(--tq-leading-body);
+  letter-spacing: var(--tq-tracking-body);
+  color: var(--tq-ink-mute);
+}
+.vs-controls { display: flex; align-items: center; gap: var(--tq-space-3); }
+.vs-count {
+  margin-right: var(--tq-space-2);
+  font-family: var(--tq-font-mono);
+  font-size: var(--tq-text-sm);
+  color: var(--tq-ink-mute);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.vs-btn {
+  display: inline-grid;
+  place-items: center;
+  width: var(--tq-tap-primary);
+  height: var(--tq-tap-primary);
+  border-radius: var(--tq-radius-pill);
+  border: 1px solid var(--tq-stone);
+  background: transparent;
+  color: var(--tq-ink);
+  cursor: pointer;
+  transition: background-color var(--tq-dur-fast) var(--tq-ease), opacity var(--tq-dur-fast) var(--tq-ease);
+}
+.vs-btn:hover:not(:disabled) { background: var(--tq-surface); }
+.vs-btn:disabled { opacity: 0.35; cursor: default; }
+.vs-btn:focus-visible,
+.vs-all:focus-visible { outline: 2px solid var(--tq-ink); outline-offset: 2px; }
+
+/* Specificity beats the editorial list reset (.txq .ed :where(ul)). */
+.vs ul.vs-track {
+  list-style: none;
+  margin: 0;
+  padding: var(--tq-space-2) var(--tq-space-4);
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min(74%, 320px);
+  gap: var(--tq-space-4);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--tq-space-4);
+  scrollbar-width: none;
+}
+.vs ul.vs-track::-webkit-scrollbar { display: none; }
+.vs-item { scroll-snap-align: start; min-width: 0; }
+.vs-card {
+  display: flex;
+  flex-direction: column;
+  color: var(--tq-ink);
+  text-decoration: none;
+  border-radius: var(--tq-radius-lg);
+}
+.vs-card:focus-visible { outline: 2px solid var(--tq-ink); outline-offset: 4px; }
+.vs-media {
+  display: block;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: var(--tq-radius-lg);
+  background: var(--tq-surface);
+  margin-bottom: var(--tq-space-4);
+}
+.vs-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--tq-dur-slow) var(--tq-ease);
+}
+.vs-card:hover .vs-media img { transform: scale(1.03); }
+.vs-name {
+  font-size: var(--tq-text-lg);
+  font-weight: var(--tq-weight-medium);
+  line-height: 1.3;
+  letter-spacing: var(--tq-tracking-body);
+}
+.vs-meta {
+  margin-top: var(--tq-space-1);
+  font-family: var(--tq-font-mono);
+  font-size: var(--tq-text-sm);
+  color: var(--tq-ink-mute);
+}
+.vs-foot { margin-top: var(--tq-space-8); }
+.vs-all {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tq-space-2);
+  min-height: var(--tq-tap-primary);
+  padding: 0 var(--tq-space-6);
+  border-radius: var(--tq-radius-pill);
+  border: 1px solid var(--tq-stone);
+  color: var(--tq-ink);
+  font-size: var(--tq-text-body);
+  font-weight: var(--tq-weight-medium);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color var(--tq-dur-fast) var(--tq-ease);
+}
+.vs-all:hover { background: var(--tq-surface); }
+
+@media (min-width: 900px) {
+  .vs { padding: var(--tq-space-section-lg) 0; }
+  .vs-head,
+  .vs-foot { padding: 0 var(--tq-space-12); }
+  .vs ul.vs-track {
+    padding: var(--tq-space-2) var(--tq-space-12);
+    scroll-padding-inline: var(--tq-space-12);
+    grid-auto-columns: 320px;
+    gap: var(--tq-space-6);
+  }
+}
+/* Wide screens: the strip starts on the page's 1200px column, then runs to the edge. */
+@media (min-width: 1296px) {
+  .vs ul.vs-track {
+    padding-left: calc((100% - 1200px) / 2 + var(--tq-space-12));
+    scroll-padding-inline: calc((100% - 1200px) / 2 + var(--tq-space-12));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vs-card:hover .vs-media img { transform: none; }
+}

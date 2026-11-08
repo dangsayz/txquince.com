@@ -67,3 +67,5 @@ inspo/
 /.claude/skills/
 /.claude/agents/impeccable-*
 /.claude/settings.local.json
+/.claude/skills/*
+!/.claude/skills/redesign/

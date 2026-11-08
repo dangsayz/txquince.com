@@ -22,7 +22,8 @@ import { ED } from "./copy";
 import { BAND_VIDEO, DETAILS, FEATURE_STILL, HERO, JOURNAL_PHOTO, JOURNAL_PHOTO_FALLBACK } from "./media";
 import { LazyVideo } from "./LazyVideo";
 import { Favorites } from "./Favorites";
-import { Owners, SocialIcon } from "@/components/owners/Owners";
+import { SocialIcon } from "@/components/SocialIcon";
+import { VenueStrip } from "@/components/venue-strip/VenueStrip";
 import type { Favorite } from "@/lib/favorites";
 import { useScenes } from "./scenes";
 import { CONTACT_EVENT, whatsappHref } from "@/lib/contact";
@@ -105,7 +106,7 @@ export function EditorialHome({
     <div ref={rootRef} className="ed">
       <Hero overrides={overrides} />
       <Statement />
-      <HomeOwners galleries={work.length ? work : galleries} />
+      <VenueStrip lang={lang} galleries={work.length ? work : galleries} />
       <FavoritesSection favorites={favorites} />
       <Band films={films} />
       <Collage galleries={galleries} />
@@ -192,15 +193,6 @@ function Hero({ overrides }: { overrides: HomeOverrides }) {
       </div>
     </section>
   );
-}
-
-/* ------------------------------------------------------------------ */
-/* Dang and Yvonne                                                     */
-/* ------------------------------------------------------------------ */
-
-function HomeOwners({ galleries }: { galleries: HomeGallery[] }) {
-  const { lang } = useSite();
-  return <Owners lang={lang} galleries={galleries} />;
 }
 
 /* ------------------------------------------------------------------ */
