@@ -37,7 +37,7 @@
   letter-spacing: var(--tq-tracking-body);
   color: var(--tq-ink-mute);
 }
-.vs-controls { display: flex; align-items: center; gap: var(--tq-space-2); }
+.vs-controls { display: flex; align-items: center; gap: var(--tq-space-3); }
 .vs-count {
   margin-right: var(--tq-space-2);
   font-family: var(--tq-font-mono);

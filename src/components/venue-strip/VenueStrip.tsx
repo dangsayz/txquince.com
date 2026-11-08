@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type FocusEvent } from "react";
 import Link from "next/link";
 import type { HomeGallery } from "@/lib/home-galleries";
 import "./venue-strip.css";
@@ -67,11 +67,24 @@ export function VenueStrip({ lang, galleries }: { lang: "en" | "es"; galleries: 
     return () => ro.disconnect();
   }, [update]);
 
+  // Page by whole cards (card + gap), so Next and Prev land on the same
+  // snap points and no card is skipped.
   const page = (dir: 1 | -1) => {
     const el = trackRef.current;
-    if (!el) return;
+    const card = el?.firstElementChild as HTMLElement | null;
+    if (!el || !card) return;
+    const step = card.offsetWidth + parseFloat(getComputedStyle(el).columnGap || "0");
+    const perView = Math.max(1, Math.floor((el.clientWidth - step * 0.2) / step));
+    // From a partial position (the end stop), Prev rounds up so it mirrors Next.
+    const at = dir < 0 ? Math.ceil(el.scrollLeft / step - 0.05) : Math.round(el.scrollLeft / step);
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    el.scrollBy({ left: dir * el.clientWidth * 0.9, behavior: reduce ? "auto" : "smooth" });
+    el.scrollTo({ left: Math.max(0, (at + dir * perView) * step), behavior: reduce ? "auto" : "smooth" });
+  };
+
+  // Keyboard: bring a focused card fully into view.
+  const reveal = (e: FocusEvent<HTMLElement>) => {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    e.currentTarget.closest("li")?.scrollIntoView({ inline: "nearest", block: "nearest", behavior: reduce ? "auto" : "smooth" });
   };
 
   if (!galleries.length) return null;
@@ -104,7 +117,7 @@ export function VenueStrip({ lang, galleries }: { lang: "en" | "es"; galleries: 
       <ul ref={trackRef} className="vs-track" onScroll={update} aria-label={c.title}>
         {galleries.map((g) => (
           <li key={g.key} className="vs-item">
-            <Link href={g.href} className="vs-card">
+            <Link href={g.href} className="vs-card" onFocus={reveal}>
               <span className="vs-media">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
