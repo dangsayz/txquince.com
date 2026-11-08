@@ -118,7 +118,7 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      <VenueStrip lang="en" galleries={galleriesFromImages(await getPortfolioImages(), 12)} />
+      <VenueStrip lang="en" galleries={galleriesFromImages(await getPortfolioImages(), 50)} />
 
       <section className="tq-section" aria-labelledby="approach-title">
         <div className="tq-wrap">

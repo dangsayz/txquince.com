@@ -39,8 +39,11 @@ const COPY = {
 const titleCase = (s: string) => (/[A-Z]/.test(s) ? s : s.replace(/\b\p{Ll}/gu, (c) => c.toUpperCase()));
 const pad = (n: number) => String(n).padStart(2, "0");
 
-export function VenueStrip({ lang, galleries }: { lang: "en" | "es"; galleries: HomeGallery[] }) {
+export function VenueStrip({ lang, galleries: all }: { lang: "en" | "es"; galleries: HomeGallery[] }) {
   const c = COPY[lang];
+  // Only real venues (the venue registry, each with its own page). Bare
+  // places the portfolio carries ("irving", "country") are not venues.
+  const galleries = all.filter((g) => g.key.startsWith("venue:"));
   const trackRef = useRef<HTMLUListElement>(null);
   const [pos, setPos] = useState({ first: 1, last: 1, start: true, end: false });
 
