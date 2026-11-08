@@ -44,7 +44,7 @@ const post: BlogPost = {
     { type: "h2", text: "What Enchanted Event Hall is, and who it fits" },
     {
       type: "p",
-      text: "Enchanted Event Hall sits in a shopping center on South Carrier Parkway in south Grand Prairie, a short drive from I-20 and Highway 360. That makes it easy for families coming from Arlington, Mansfield, Cedar Hill, Duncanville and Oak Cliff. Its listing puts the room at up to 200 seated guests (250 standing), which is mid-size for a DFW quinceañera.",
+      text: "Enchanted Event Hall sits in a shopping center on South Carrier Parkway in south Grand Prairie, an easy drive for families coming from Arlington, Mansfield, Cedar Hill, Duncanville and Oak Cliff. Its listing puts the room at up to 200 seated guests (250 standing), which is mid-size for a DFW quinceañera.",
     },
     {
       type: "ul",
@@ -58,7 +58,7 @@ const post: BlogPost = {
     { type: "h2", text: "The entrance: gold script, red ropes, iron doors" },
     {
       type: "p",
-      text: "The front of the building does more work than most halls. A big gold-and-white script sign reads \"Enchanted Event Hall\" over the entry, the staff sets out gold stanchions with red velvet ropes, and the doors are a pair of arched black iron doors with scrollwork. At night, colored uplighting glows through the glass. It is a ready-made red-carpet moment for arrivals: the quinceañera stepping out of the car, the court lined up along the ropes, the family walking in together.",
+      text: "The front of the building does more work than most halls. A big gold-and-white script sign reads \"Enchanted Event Hall\" over the entry, the night we were there, gold stanchions with red velvet ropes lined the walk, and the doors are a pair of arched black iron doors with scrollwork. At night, colored uplighting glows through the glass. It is a ready-made red-carpet moment for arrivals: the quinceañera stepping out of the car, the court lined up along the ropes, the family walking in together.",
     },
     // PHOTO SLOT — the arrival at the iron doors / court along the red ropes.
     {
@@ -128,7 +128,7 @@ const post: BlogPost = {
   faqs: [
     {
       q: "Where is Enchanted Event Hall?",
-      a: "3005 S Carrier Pkwy, Suite 112, Grand Prairie, TX 75052, in a shopping center in south Grand Prairie near I-20.",
+      a: "3005 S Carrier Pkwy, Suite 112, Grand Prairie, TX 75052, in a shopping center in south Grand Prairie.",
     },
     {
       q: "How many guests fit at Enchanted Event Hall?",

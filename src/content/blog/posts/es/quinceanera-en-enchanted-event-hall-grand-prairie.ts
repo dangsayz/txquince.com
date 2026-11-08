@@ -30,7 +30,7 @@ const post: BlogPost = {
     { type: "h2", text: "Qué es Enchanted Event Hall y para quién es" },
     {
       type: "p",
-      text: "Enchanted Event Hall está en una plaza comercial sobre South Carrier Parkway, en el sur de Grand Prairie, cerca de la I-20 y la Highway 360. Queda cómodo para familias de Arlington, Mansfield, Cedar Hill, Duncanville y Oak Cliff. Según su anuncio, el salón recibe hasta 200 invitados sentados (250 de pie), un tamaño mediano para una quinceañera en DFW.",
+      text: "Enchanted Event Hall está en una plaza comercial sobre South Carrier Parkway, en el sur de Grand Prairie. Queda cómodo para familias de Arlington, Mansfield, Cedar Hill, Duncanville y Oak Cliff. Según su anuncio, el salón recibe hasta 200 invitados sentados (250 de pie), un tamaño mediano para una quinceañera en DFW.",
     },
     {
       type: "ul",
@@ -44,7 +44,7 @@ const post: BlogPost = {
     { type: "h2", text: "La entrada: letras doradas, cordones rojos y puertas de hierro" },
     {
       type: "p",
-      text: "El frente del edificio ayuda más que en muchos salones. Un letrero grande en letra cursiva dorada y blanca dice \"Enchanted Event Hall\", el personal pone postes dorados con cordones de terciopelo rojo, y la entrada es un par de puertas de hierro negro en arco. De noche, la luz de color se ve a través del vidrio. Es una alfombra roja lista para la llegada: la quinceañera bajando del carro, la corte a los lados de los cordones, la familia entrando junta.",
+      text: "El frente del edificio ayuda más que en muchos salones. Un letrero grande en letra cursiva dorada y blanca dice \"Enchanted Event Hall\", la noche que fuimos había postes dorados con cordones de terciopelo rojo, y la entrada es un par de puertas de hierro negro en arco. De noche, la luz de color se ve a través del vidrio. Es una alfombra roja lista para la llegada: la quinceañera bajando del carro, la corte a los lados de los cordones, la familia entrando junta.",
     },
     // FOTO — la llegada en las puertas de hierro.
     { type: "h2", text: "Nuestra quinceañera en Enchanted Event Hall" },
