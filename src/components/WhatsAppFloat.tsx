@@ -16,7 +16,7 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { CONTACT_COPY, CONTACT_EVENT, whatsappHref, type ContactLang } from "@/lib/contact";
 import { trackEvent } from "@/components/Tracker";
-import { SocialIcon } from "@/components/owners/Owners";
+import { SocialIcon } from "@/components/SocialIcon";
 import "./whatsapp-float.css";
 
 const KEY = "txq_wa_float_closed";

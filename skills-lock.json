@@ -5,7 +5,7 @@
       "source": "Leonxlnx/taste-skill",
       "sourceType": "github",
       "skillPath": "skills/taste-skill/SKILL.md",
-      "computedHash": "23b3930015c478034b222e1a015da03a962c8ab48aee9fb4f3f69d977034feaa"
+      "computedHash": "acda6bf83f200405aa200eb245448fdc11cfce43d97bc2d9b8bf13a27f362d95"
     },
     "pick-ui-library": {
       "source": "emilkowalski/skills",
@@ -17,7 +17,7 @@
       "source": "Jakubantalik/transitions.dev",
       "sourceType": "github",
       "skillPath": "skills/transitions-dev/SKILL.md",
-      "computedHash": "c7f9b40c6676ecc6d890db4ffecafa1ddebdb4ebaed3098521928e5115bd871f"
+      "computedHash": "b7836f609ef9bd930cd38a67a778605491090968b30edf96c681c86624b62b09"
     },
     "transitions-polish": {
       "source": "Jakubantalik/transitions.dev",

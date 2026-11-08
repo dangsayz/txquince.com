@@ -7,7 +7,7 @@ import { galleriesFromImages } from "@/lib/home-galleries";
 import { mediaUrl } from "@/content/media";
 import { SlotImage } from "@/components/SlotImage";
 import { FinalCTA } from "@/components/FinalCTA";
-import { Owners } from "@/components/owners/Owners";
+import { VenueStrip } from "@/components/venue-strip/VenueStrip";
 import { commissionLinks } from "@/content/commissions";
 import "@/components/txq/pages/pages.css";
 
@@ -118,7 +118,7 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      <Owners lang="en" galleries={galleriesFromImages(await getPortfolioImages(), 12)} />
+      <VenueStrip lang="en" galleries={galleriesFromImages(await getPortfolioImages(), 12)} />
 
       <section className="tq-section" aria-labelledby="approach-title">
         <div className="tq-wrap">
