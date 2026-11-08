@@ -20,7 +20,7 @@
   margin-bottom: var(--tq-space-8);
 }
 .vs-intro { max-width: 36rem; }
-.vs .vs-title {
+.vs h2.vs-title {
   margin: 0 0 var(--tq-space-4);
   font-family: var(--tq-font-sans);
   font-size: var(--tq-text-h2);
@@ -30,7 +30,7 @@
   text-transform: none;
   text-wrap: balance;
 }
-.vs .vs-lede {
+.vs p.vs-lede {
   margin: 0;
   font-size: var(--tq-text-lg);
   line-height: var(--tq-leading-body);

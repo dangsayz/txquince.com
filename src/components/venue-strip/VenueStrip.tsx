@@ -42,15 +42,17 @@ const pad = (n: number) => String(n).padStart(2, "0");
 export function VenueStrip({ lang, galleries }: { lang: "en" | "es"; galleries: HomeGallery[] }) {
   const c = COPY[lang];
   const trackRef = useRef<HTMLUListElement>(null);
-  const [pos, setPos] = useState({ index: 0, start: true, end: false });
+  const [pos, setPos] = useState({ first: 1, last: 1, start: true, end: false });
 
   const update = useCallback(() => {
     const el = trackRef.current;
     if (!el) return;
-    const first = el.firstElementChild as HTMLElement | null;
-    const step = first ? first.offsetWidth + parseFloat(getComputedStyle(el).columnGap || "0") : 1;
+    const card = el.firstElementChild as HTMLElement | null;
+    const step = card ? card.offsetWidth + parseFloat(getComputedStyle(el).columnGap || "0") : 1;
+    const first = Math.round(el.scrollLeft / step) + 1;
     setPos({
-      index: Math.round(el.scrollLeft / step),
+      first,
+      last: first + Math.max(0, Math.floor((el.clientWidth - step * 0.2) / step) - 1),
       start: el.scrollLeft <= 4,
       end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 4,
     });
@@ -73,7 +75,9 @@ export function VenueStrip({ lang, galleries }: { lang: "en" | "es"; galleries: 
   };
 
   if (!galleries.length) return null;
-  const shown = pos.end ? galleries.length : Math.min(pos.index + 1, galleries.length);
+  const n = galleries.length;
+  const last = pos.end ? n : Math.min(pos.last, n);
+  const first = Math.min(pos.first, last);
 
   return (
     <section id="venues-strip" className="vs" aria-labelledby="vs-title">
@@ -86,7 +90,7 @@ export function VenueStrip({ lang, galleries }: { lang: "en" | "es"; galleries: 
         </div>
         <div className="vs-controls">
           <span className="vs-count" aria-hidden>
-            {pad(shown)} / {pad(galleries.length)}
+            {first === last ? pad(first) : `${pad(first)}–${pad(last)}`} / {pad(n)}
           </span>
           <button type="button" className="vs-btn" onClick={() => page(-1)} disabled={pos.start} aria-label={c.prev}>
             <Arrow dir="left" />
@@ -97,7 +101,7 @@ export function VenueStrip({ lang, galleries }: { lang: "en" | "es"; galleries: 
         </div>
       </div>
 
-      <ul ref={trackRef} className="vs-track" onScroll={update}>
+      <ul ref={trackRef} className="vs-track" onScroll={update} aria-label={c.title}>
         {galleries.map((g) => (
           <li key={g.key} className="vs-item">
             <Link href={g.href} className="vs-card">
