@@ -49,6 +49,7 @@ export function EditorialHome({
   galleries = [],
   cities = [],
   favorites = [],
+  work = [],
 }: {
   journal: Journal;
   films: CinemaFilm[];
@@ -60,6 +61,8 @@ export function EditorialHome({
   cities?: HomeCity[];
   /** Starred portfolio photos (Admin → Portfolio → Feature), up to 100. */
   favorites?: Favorite[];
+  /** Venue galleries for the "Some of our work" strip (more than the collage shows). */
+  work?: HomeGallery[];
 }) {
   const { setDockHidden } = useShell();
   const { lang } = useSite();
@@ -102,7 +105,7 @@ export function EditorialHome({
     <div ref={rootRef} className="ed">
       <Hero overrides={overrides} />
       <Statement />
-      <HomeOwners />
+      <HomeOwners galleries={work.length ? work : galleries} />
       <FavoritesSection favorites={favorites} />
       <Band films={films} />
       <Collage galleries={galleries} />
@@ -195,23 +198,9 @@ function Hero({ overrides }: { overrides: HomeOverrides }) {
 /* Dang and Yvonne                                                     */
 /* ------------------------------------------------------------------ */
 
-const OWNERS_FALLBACK = {
-  src: "/portfolio/owners-placeholder.webp",
-  alt: { en: "Dang and Yvonne, the owners of TX Quince", es: "Dang y Yvonne, los dueños de TX Quince" },
-  width: 1200,
-  height: 1500,
-};
-
-function HomeOwners() {
+function HomeOwners({ galleries }: { galleries: HomeGallery[] }) {
   const { lang } = useSite();
-  const image = useSlot("home.owners", OWNERS_FALLBACK, "(max-width: 960px) 100vw, 40vw");
-  return (
-    <Owners
-      lang={lang}
-      photo={<SlotPicture image={image} lang={lang} fill sizes="(max-width: 960px) 100vw, 40vw" />}
-      admin={<SlotAdminControl slot="home.owners" />}
-    />
-  );
+  return <Owners lang={lang} galleries={galleries} />;
 }
 
 /* ------------------------------------------------------------------ */

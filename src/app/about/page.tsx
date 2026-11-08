@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { about } from "@/content/about";
 import { site } from "@/content/site";
-import { getImageBySlug, getImagesBySection, getFeaturedImages, getPageHero } from "@/lib/content-db";
+import { getImageBySlug, getImagesBySection, getFeaturedImages, getPageHero, getPortfolioImages } from "@/lib/content-db";
+import { galleriesFromImages } from "@/lib/home-galleries";
 import { mediaUrl } from "@/content/media";
 import { SlotImage } from "@/components/SlotImage";
 import { FinalCTA } from "@/components/FinalCTA";
@@ -117,18 +118,7 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      <Owners
-        lang="en"
-        photo={
-          <SlotImage
-            slot="home.owners"
-            lang="en"
-            fill
-            sizes="(max-width: 960px) 100vw, 40vw"
-            fallback={{ src: "/portfolio/owners-placeholder.webp", alt: "Dang and Yvonne, the owners of TX Quince", width: 1200, height: 1500 }}
-          />
-        }
-      />
+      <Owners lang="en" galleries={galleriesFromImages(await getPortfolioImages(), 12)} />
 
       <section className="tq-section" aria-labelledby="approach-title">
         <div className="tq-wrap">

@@ -1,12 +1,13 @@
-import type { ReactNode } from "react";
 import { site } from "@/content/site";
+import type { HomeGallery } from "@/lib/home-galleries";
+import { WorkSlider } from "./WorkSlider";
 import "./owners.css";
 
 /**
- * "Hi, we're Dang and Yvonne": the owners, with their photo (the home.owners
- * image slot, replaceable from the site) and links to the films and Instagram.
+ * "Hi, we're Dang and Yvonne": the owners, links to the films and Instagram,
+ * and below it a sideways strip of real venue galleries ("Some of our work").
  * Plain component (no hooks), so the homepage (client) and About (server)
- * both use it and pass in their own photo element.
+ * both use it; each passes in the real galleries it read from the portfolio.
  */
 export const OWNERS_COPY = {
   en: {
@@ -31,15 +32,11 @@ export const OWNERS_COPY = {
   },
 } as const;
 
-export function Owners({ lang, photo, admin }: { lang: "en" | "es"; photo: ReactNode; admin?: ReactNode }) {
+export function Owners({ lang, galleries }: { lang: "en" | "es"; galleries: HomeGallery[] }) {
   const c = OWNERS_COPY[lang];
   return (
     <section id="owners" className="ow" aria-labelledby="ow-title">
       <div className="ow-in">
-        <figure className="ow-photo">
-          {photo}
-          {admin}
-        </figure>
         <div className="ow-copy">
           <h2 id="ow-title" className="ow-title">
             {c.title}
@@ -63,6 +60,7 @@ export function Owners({ lang, photo, admin }: { lang: "en" | "es"; photo: React
           </ul>
         </div>
       </div>
+      <WorkSlider lang={lang} galleries={galleries} />
     </section>
   );
 }
