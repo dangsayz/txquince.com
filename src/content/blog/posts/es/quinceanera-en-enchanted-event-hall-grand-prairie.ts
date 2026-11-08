@@ -54,6 +54,16 @@ const post: BlogPost = {
       text: "TX Quince fotografió una quinceañera en Enchanted Event Hall en noviembre de 2026. Conocer el salón antes del día importa: dónde se ve mejor la entrada, dónde pararse para el vals y el baile sorpresa, y cuándo tomar las fotos familiares sin quitarle a la quinceañera su propia fiesta.",
     },
     // FOTOS + VIDEO.
+    { type: "h2", text: "Los proveedores de la noche" },
+    {
+      type: "ul",
+      items: [
+        "Coreografía: [Izzy Peña Choreography](https://www.instagram.com/izzypenachoreography/) (@izzypenachoreography) montó y dirigió los bailes. Izzy también hace coreografías para Sweet 16 y bodas, y da clases privadas.",
+        // DJ — agregar cuando Dang lo mande.
+        "Salón: Enchanted Event Hall, Grand Prairie",
+        "Foto y video: TX Quince",
+      ],
+    },
     { type: "h2", text: "Cuánto cuesta una quinceañera en Enchanted Event Hall" },
     {
       type: "p",

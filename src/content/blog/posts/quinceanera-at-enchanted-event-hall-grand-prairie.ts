@@ -10,6 +10,7 @@ import { PT } from "@/lib/price-text";
  *      ingest; replace each PHOTO SLOT below with an `image` block
  *      ({ type: "image", slug, alt, caption }). No names in slugs, alt or captions.
  *   3. Videos arrive → link the film / reel where marked.
+ *   3b. DJ credit: Dang will send it from his footage; slot is in the vendors list.
  *   4. Fill the EVENT STORY section with what actually happened (theme, colors,
  *      moments) — only true details from Dang.
  *   5. Register: import in blog.ts (posts + esPosts), add the EN↔ES pair, set
@@ -79,6 +80,18 @@ const post: BlogPost = {
     },
     // PHOTO SLOTS — entrance, vals, surprise dance, family portrait, details.
     // VIDEO — link the highlight film / reel here when it is ready.
+    { type: "h2", text: "The vendors who made the night" },
+    // Credits come only from Dang (business cards, his footage). Public links
+    // only: Instagram / website. Never a vendor's phone or email.
+    {
+      type: "ul",
+      items: [
+        "Choreography: [Izzy Peña Choreography](https://www.instagram.com/izzypenachoreography/) (@izzypenachoreography) choreographed and ran the dances. Izzy also choreographs Sweet 16s and weddings, and gives private lessons.",
+        // DJ — add when Dang sends it: "DJ: [Name](https://www.instagram.com/handle/) (@handle)".
+        "Venue: Enchanted Event Hall, Grand Prairie",
+        "Photo and video: TX Quince",
+      ],
+    },
     { type: "h2", text: "What a quinceañera at Enchanted Event Hall costs" },
     {
       type: "p",
