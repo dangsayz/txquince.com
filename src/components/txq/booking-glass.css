@@ -259,6 +259,20 @@
   background: var(--g-fill);
   padding: 24px;
 }
+/* Desktop: the totals card floats free of the step strip's hairline and the
+   sticky header instead of butting against them. */
+@media (min-width: 1024px) {
+  .txq .tq-bk .tq-bk-side {
+    margin-top: 40px;
+    top: calc(var(--header-h) + 24px);
+  }
+}
+/* Step headings and notices take focus on step change so screen readers
+   announce them; they are not controls, so no ring boxing the text. */
+.txq .tq-bk [tabindex="-1"]:focus,
+.txq .tq-bk [tabindex="-1"]:focus-visible { outline: none; }
+/* Help line under Back / Next: clear space from the buttons. */
+.txq .tq-bk .tq-bk-help { margin-top: 20px; }
 .txq .tq-bk .tq-bk-side__total { font-family: var(--font-sans); font-weight: 600; letter-spacing: -0.03em; }
 .txq .tq-bk .tq-bk-lines div { border-color: rgba(0, 0, 0, 0.08); }
 .txq .tq-bk .tq-bk-summary {
