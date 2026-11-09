@@ -31,7 +31,7 @@ export default async function AdminReviews() {
     >
       {loadError ? (
         <p role="alert" className="st-card px-5 py-4 text-[15px]">
-          Reviews could not load: {loadError}. If this is the first time, run migration <code>0027_reviews.sql</code>.
+          Reviews could not load: {loadError}. If this is the first time, apply the D1 migration: <code>npx wrangler d1 migrations apply txquince --remote</code>.
         </p>
       ) : null}
       <ReviewsManager initial={reviews} />
