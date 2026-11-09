@@ -18,6 +18,7 @@ import { favoritesFromImages } from "@/lib/favorites";
 import { FavoritesJsonLd } from "@/components/editorial/FavoritesJsonLd";
 import { homeCities } from "@/content/home-places";
 import { site } from "@/content/site";
+import { getPublicReviews } from "@/lib/reviews-db";
 import { languageAlternates } from "@/lib/hreflang";
 
 // Films come from the admin video library; admin edits revalidate at once.
@@ -43,11 +44,12 @@ export default async function HomePage() {
   // are empty (section hidden, original images) when storage is unreachable.
   // The gallery section is the real portfolio, grouped by shoot (empty when
   // the database is unreachable; the section then shows real photos instead).
-  const [films, overrides, book, portfolio] = await Promise.all([
+  const [films, overrides, book, portfolio, reviews] = await Promise.all([
     getCinemaFilms(),
     getHomeOverrides(),
     getPriceBook(),
     getPortfolioImages(),
+    getPublicReviews(),
   ]);
   const favorites = favoritesFromImages(portfolio);
   return (
@@ -56,7 +58,7 @@ export default async function HomePage() {
       <FavoritesJsonLd favorites={favorites} lang="en" />
       <SlotProvider slots={await resolveHomeSlots(overrides)}>
         <div className={editorialFonts}>
-          <EditorialHome journal={fillDeep(latestJournal(), book)} films={films} overrides={overrides} galleries={galleriesFromImages(portfolio)} work={homeLocations(portfolio, getAllPosts(), "/blog")} cities={homeCities()} favorites={favorites} />
+          <EditorialHome journal={fillDeep(latestJournal(), book)} films={films} overrides={overrides} galleries={galleriesFromImages(portfolio)} work={homeLocations(portfolio, getAllPosts(), "/blog")} cities={homeCities()} favorites={favorites} reviews={reviews} />
         </div>
       </SlotProvider>
     </>

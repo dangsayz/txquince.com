@@ -29,6 +29,8 @@ import { useScenes } from "./scenes";
 import { CONTACT_EVENT, whatsappHref } from "@/lib/contact";
 import { trackEvent } from "@/components/Tracker";
 import { WhatsAppFloat } from "@/components/WhatsAppFloat";
+import { ReviewStrip } from "@/components/review/ReviewStrip";
+import type { PublicReview } from "@/lib/review-public";
 import "./editorial.css";
 
 /**
@@ -51,6 +53,7 @@ export function EditorialHome({
   cities = [],
   favorites = [],
   work = [],
+  reviews = [],
 }: {
   journal: Journal;
   films: CinemaFilm[];
@@ -64,6 +67,8 @@ export function EditorialHome({
   favorites?: Favorite[];
   /** Venue galleries for the "Some of our work" strip (more than the collage shows). */
   work?: HomeGallery[];
+  /** Approved first-party reviews (Admin → Reviews); the strip hides when empty. */
+  reviews?: PublicReview[];
 }) {
   const { setDockHidden } = useShell();
   const { lang } = useSite();
@@ -111,6 +116,7 @@ export function EditorialHome({
       <Band films={films} />
       <Collage galleries={galleries} />
       <Feature />
+      <ReviewStrip reviews={reviews} lang={lang} />
       <Packages>
         <Intake ref={intakeRef} pickFromList="commissions" />
       </Packages>

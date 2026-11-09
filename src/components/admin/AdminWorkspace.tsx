@@ -15,7 +15,7 @@ const mainLinks = [
   { href: "/admin/website", label: "Website" },
 ] as const;
 
-// group: a hairline sits between groups in the desktop sub-nav, so ten links read as three sets.
+// group: a hairline sits between groups in the desktop sub-nav, so the links read as sets.
 const websiteLinks: { href: string; label: string; icon: WebsiteIconName; group: number }[] = [
   { href: "/admin/website", label: "Overview", icon: "overview", group: 0 },
   { href: "/admin/photos", label: "Photo dump", icon: "photos", group: 1 },
@@ -27,6 +27,7 @@ const websiteLinks: { href: string; label: string; icon: WebsiteIconName; group:
   { href: "/admin/packages", label: "Packages", icon: "packages", group: 2 },
   { href: "/admin/price-guide", label: "Price guide", icon: "guide", group: 2 },
   { href: "/admin/venues", label: "Venues", icon: "venues", group: 3 },
+  { href: "/admin/reviews", label: "Reviews", icon: "reviews", group: 3 },
 ];
 
 function isActive(pathname: string, href: string) {

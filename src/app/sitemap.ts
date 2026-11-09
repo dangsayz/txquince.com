@@ -5,6 +5,7 @@ import { locations } from "@/content/locations";
 import { getAllPosts, getAllEsPosts, esSlugForEn, enSlugForEs } from "@/content/blog";
 import { getVendors } from "@/lib/content-db";
 import { getPriceGuide } from "@/lib/plan-db";
+import { getPublicReviews } from "@/lib/reviews-db";
 import { guideUpdated } from "@/lib/price-guide";
 import { venues } from "@/content/venues";
 import { languageAlternates } from "@/lib/hreflang";
@@ -138,6 +139,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }))
     : [];
 
+  // /reviews only once it has a review (it is noindex while empty).
+  const reviews = await getPublicReviews();
+  const reviewEntries: MetadataRoute.Sitemap = reviews.length
+    ? [{ url: `${site.url}/reviews`, changeFrequency: "weekly", priority: 0.7 }]
+    : [];
+
   return [
     ...staticRoutes.map((r) => ({
       url: `${site.url}${r.path}`,
@@ -148,5 +155,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...blogEntries,
     ...guideEntries,
     ...vendorEntries,
+    ...reviewEntries,
   ];
 }

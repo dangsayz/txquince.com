@@ -1,0 +1,214 @@
+/*
+ * review.css — the mom's review form (/review/<slug>) and the public review
+ * list (/reviews, homepage). Built from the shared tokens (txq.css, brand.css).
+ * Gates: one column from 360px, ≥44px targets (stars 48px), 16px inputs,
+ * photo tiles keep a fixed 1:1 box (no layout shift), motion only on
+ * colour and honours prefers-reduced-motion.
+ */
+
+.rv-private { margin: 0; }
+
+/* ---------- Stars ---------- */
+.rv-stars {
+  display: flex;
+  gap: 8px;
+}
+.rv-star {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  color: var(--border-control);
+}
+.rv-star input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+.rv-star svg {
+  width: 32px;
+  height: 32px;
+  fill: transparent;
+  stroke: currentColor;
+  stroke-width: 1.2;
+}
+.rv-star[data-on] { color: var(--text-primary); }
+.rv-star[data-on] svg { fill: currentColor; }
+.rv-star:has(input:focus-visible) {
+  outline: 2px solid var(--text-primary);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .rv-star svg { transition: fill var(--tq-dur-fast) var(--tq-ease), color var(--tq-dur-fast) var(--tq-ease); }
+}
+
+/* ---------- Photos ---------- */
+.rv-photos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 8px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+}
+.rv-photo {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--bg-surface);
+}
+.rv-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.rv-photo[data-state="waiting"] img,
+.rv-photo[data-state="preparing"] img,
+.rv-photo[data-state="uploading"] img { opacity: 0.55; }
+.rv-photo__state {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 4px 6px;
+  background: rgba(17, 17, 16, 0.72);
+  color: #fff;
+  font-size: 0.625rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.rv-photo[data-state="failed"] .rv-photo__state { background: #9a4a12; }
+.rv-photo__actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+}
+.rv-photo__btn {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-grid;
+  place-items: center;
+  padding: 0 8px;
+  border: 0;
+  background: rgba(17, 17, 16, 0.72);
+  color: #fff;
+  font: inherit;
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+.rv-photo__x svg { width: 16px; height: 16px; }
+.rv-add {
+  cursor: pointer;
+  white-space: nowrap;
+}
+.rv-add:has(input:focus-visible) {
+  outline: 2px solid var(--text-primary);
+  outline-offset: 2px;
+}
+
+/* ---------- Consent ---------- */
+.rv-consents {
+  display: grid;
+  gap: 12px;
+}
+.rv-check {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  min-height: 44px;
+  font-size: 1rem;
+  line-height: 1.5;
+  cursor: pointer;
+}
+.rv-check input {
+  width: 22px;
+  height: 22px;
+  margin: 1px 0 0;
+  accent-color: var(--text-primary);
+}
+
+/* ---------- Public list (/reviews) ---------- */
+.rv-page {
+  padding-block: 32px 96px;
+  display: grid;
+  gap: 40px;
+}
+@media (min-width: 960px) {
+  .rv-page { padding-block: 64px 128px; }
+}
+.rv-list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--border-hairline);
+}
+.rv-item {
+  display: grid;
+  gap: 16px;
+  padding: 32px 0;
+  border-bottom: 1px solid var(--border-hairline);
+  min-width: 0;
+}
+@media (min-width: 960px) {
+  .rv-item {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 7fr) minmax(0, 4fr);
+    gap: 32px;
+    padding: 48px 0;
+    align-items: start;
+  }
+}
+.rv-item__meta {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+.rv-item__name {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.rv-item__quote {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--weight-medium);
+  font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+  line-height: 1.4;
+  letter-spacing: -0.012em;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.rv-item__photos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.rv-item__photos li {
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--bg-surface);
+}
+.rv-item__photos li:only-child { grid-column: 1 / -1; }
+.rv-item__photos img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.rv-note {
+  margin: 0;
+  max-width: 60ch;
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+}
