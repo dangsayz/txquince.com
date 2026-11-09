@@ -649,6 +649,7 @@ export function BlogArticleView({
       ? ({ "--tq-nat-w": cover.width, "--tq-nat-h": cover.height } as CSSProperties)
       : undefined;
   const faqs: BlogFaq[] = post.faqs ?? [];
+  const split = Boolean(post.coverFull && cover.width && cover.height && cover.height > cover.width);
 
   const tocList = (
     <ol className="tq-blog-toc__list">
@@ -669,6 +670,9 @@ export function BlogArticleView({
     <div className="tq-blog">
       <article aria-labelledby="tq-blog-title">
         <div className="tq-wrap">
+          {/* A portrait cover shown whole (coverFull) sits beside the title on
+              wide screens instead of alone in the middle of the page. */}
+          <div className="tq-blog-hero" data-split={split ? "true" : undefined}>
           <header className="tq-blog-post__head">
             <nav aria-label={c.crumbs} className="tq-blog-crumbs tq-mono">
               <ol>
@@ -732,7 +736,11 @@ export function BlogArticleView({
                 lang={lang}
                 fill
                 priority
-                sizes="(max-width: 639px) calc(100vw - 48px), (max-width: 959px) calc(100vw - 96px), (max-width: 1279px) calc(100vw - 144px), calc(100vw - 160px)"
+                sizes={
+                  split
+                    ? "(max-width: 639px) calc(100vw - 48px), (max-width: 959px) calc(100vw - 96px), 40vw"
+                    : "(max-width: 639px) calc(100vw - 48px), (max-width: 959px) calc(100vw - 96px), (max-width: 1279px) calc(100vw - 144px), calc(100vw - 160px)"
+                }
                 fallback={{ src: coverUrl, alt: coverAlt, width: cover.width, height: cover.height, focus: focal(cover.focus_x, cover.focus_y) }}
               />
             </div>
@@ -743,6 +751,7 @@ export function BlogArticleView({
               </figcaption>
             ) : null}
           </figure>
+          </div>
 
           <div className="tq-blog-body">
             <aside className="tq-blog-rail" data-bare={toc.length >= 3 ? undefined : "true"}>
