@@ -16,7 +16,7 @@
  *   if (await rateLimited(clientIp(req))) return 429;
  */
 
-export type RateLimitName = "commission" | "inquiry" | "plan" | "pay" | "review" | "review-photo" | "track" | "csp-report";
+export type RateLimitName = "commission" | "inquiry" | "plan" | "pay" | "login" | "review" | "review-photo" | "track" | "csp-report";
 
 export type RateLimitPolicy = {
   /** Requests allowed per window. */
@@ -44,6 +44,8 @@ export const RATE_LIMITS: Record<RateLimitName, RateLimitPolicy> = {
   "review-photo": { limit: 60, windowMs: 60_000, binding: "RATE_LIMIT_TRACK" },
   // /api/booking/pay and /api/booking/balance (open checkout): per IP AND per booking.
   pay: { limit: 5, windowMs: 60_000, binding: "RATE_LIMIT_FORMS" },
+  // /api/login/code and /verify: per IP (codes also cap at 5 per email per 15 min, 5 tries each).
+  login: { limit: 5, windowMs: 60_000, binding: "RATE_LIMIT_FORMS" },
   track: { limit: 60, windowMs: 60_000, binding: "RATE_LIMIT_TRACK" },
   "csp-report": { limit: 60, windowMs: 60_000, binding: "RATE_LIMIT_TRACK" },
 };

@@ -7,7 +7,7 @@
  * visits, and the pages in order, up to the moment the form was sent.
  * No cookies, no fingerprinting: only views from the same browser link up.
  */
-import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
+import { getDb, isDbConfigured } from "@/lib/db";
 
 export type JourneyView = { path: string; created_at: string; session_id: string | null; referrer: string | null; utm_source: string | null };
 
@@ -73,9 +73,9 @@ export function buildJourney(rows: JourneyView[], inquiredAt: string): Journey |
 
 /** The journey for one visitor id, or null (no id, no views, or migration 0025 not run). */
 export async function getJourney(visitorId: string | null | undefined, inquiredAt: string): Promise<Journey | null> {
-  if (!visitorId || !isSupabaseConfigured()) return null;
+  if (!visitorId || !isDbConfigured()) return null;
   try {
-    const { data, error } = await getServiceSupabase()
+    const { data, error } = await getDb()
       .from("page_views")
       .select("path, created_at, session_id, referrer, utm_source")
       .eq("visitor_id", visitorId)

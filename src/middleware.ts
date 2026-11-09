@@ -1,5 +1,4 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { updateSession } from "@/lib/supabase/middleware";
 import { getLocation } from "@/content/locations";
 import { detectPlanLang } from "@/lib/plan-lang";
 
@@ -10,7 +9,7 @@ const CITY_PAGE = /^\/(?:quinceanera-photographer|es\/fotografo-de-quinceaneras)
 const NOT_FOUND_PATH = "/_txq-not-found";
 
 /**
- * Runs on /admin/* (Supabase session refresh) and on the two city-page routes
+ * Runs on /admin/* (bounce to sign-in when there is no session cookie) and on the two city-page routes
  * only; the rest of the public site stays untouched (and fast).
  *
  * City pages: a slug that is not in src/content/locations.ts must be a real
@@ -23,7 +22,7 @@ const NOT_FOUND_PATH = "/_txq-not-found";
  */
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  if (pathname === "/admin" || pathname.startsWith("/admin/")) return updateSession(request);
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) return adminGate(request);
   if (pathname === "/plan" || pathname === "/es/plan") return planLanguage(request);
 
   const slug = CITY_PAGE.exec(pathname)?.[1];
@@ -60,6 +59,23 @@ function planLanguage(request: NextRequest) {
   const res = NextResponse.redirect(next, 307);
   res.headers.set("Vary", "Accept-Language");
   return res;
+}
+
+/**
+ * /admin/*: no session cookie → the sign-in page. This is only the fast path;
+ * every admin page and API re-checks the session on the server
+ * (require-admin.ts), so a forged cookie gets nothing.
+ */
+function adminGate(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  if (pathname === "/admin/login") return NextResponse.next();
+  const hasCookie = request.cookies.has("__Host-txq_admin") || request.cookies.has("txq_admin");
+  if (hasCookie) return NextResponse.next();
+  const url = request.nextUrl.clone();
+  url.pathname = "/admin/login";
+  url.search = "";
+  url.searchParams.set("next", pathname);
+  return NextResponse.redirect(url);
 }
 
 function isKnownCity(slug: string): boolean {

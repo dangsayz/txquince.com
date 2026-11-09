@@ -24,7 +24,7 @@ function query(table: string) {
 }
 
 vi.mock("server-only", () => ({}));
-vi.mock("@/lib/supabase-server", () => ({ getServiceSupabase: () => ({ from: query }) }));
+vi.mock("@/lib/db", () => ({ getDb: () => ({ from: query }) }));
 vi.mock("resend", () => ({
   Resend: class {
     emails = { send: async (e: Row) => (emails.push(e), { error: null }) };

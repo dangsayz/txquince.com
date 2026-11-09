@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/require-admin";
 import { unauthorizedAdminResponse } from "@/lib/admin-auth";
-import { getServiceSupabase } from "@/lib/supabase-server";
+import { getDb } from "@/lib/db";
 import { getDashboardStats } from "@/lib/analytics-db";
 import { metricValue } from "@/lib/pulse-intel";
 
@@ -49,8 +49,8 @@ export async function POST(request: Request) {
       : {}),
   };
 
-  const supabase = getServiceSupabase();
-  const { data, error } = await supabase
+  const db = getDb();
+  const { data, error } = await db
     .from("conversion_changes")
     .insert({
       title: parsed.data.title,
@@ -80,8 +80,8 @@ export async function PATCH(request: Request) {
   }
   const { id, status, notes } = parsed.data;
 
-  const supabase = getServiceSupabase();
-  const { data, error } = await supabase
+  const db = getDb();
+  const { data, error } = await db
     .from("conversion_changes")
     .update(notes === undefined ? { status } : { status, notes })
     .eq("id", id)

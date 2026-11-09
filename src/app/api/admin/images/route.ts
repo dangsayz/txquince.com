@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/require-admin";
 import { unauthorizedAdminResponse } from "@/lib/admin-auth";
-import { getServiceSupabase } from "@/lib/supabase-server";
+import { getDb } from "@/lib/db";
 import { deletePortfolioObjects } from "@/lib/r2-portfolio";
 import { CATEGORY_IDS } from "@/content/portfolio-taxonomy";
 import { handleList } from "@/lib/image-slot-admin";
@@ -51,9 +51,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid storage path" }, { status: 400 });
   }
 
-  const supabase = getServiceSupabase();
+  const db = getDb();
   // place new image at the end of its section
-  const { data: maxRow } = await supabase
+  const { data: maxRow } = await db
     .from("portfolio_images")
     .select("sort_order")
     .eq("section", section)
@@ -73,7 +73,7 @@ export async function POST(request: Request) {
     .slice(0, 64);
   const slug = `${base}-${crypto.randomUUID().slice(0, 4)}`;
 
-  const { data, error } = await supabase
+  const { data, error } = await db
     .from("portfolio_images")
     .insert({ storage_path, alt, section, sort_order, width: width ?? null, height: height ?? null, location: location || null, hook: hook || null, tags: tags || null, slug, title: null })
     .select()
@@ -131,15 +131,15 @@ export async function PATCH(request: Request) {
   if (fields.storage_path && !fields.storage_path.startsWith("portfolio/")) {
     return NextResponse.json({ error: "Invalid storage path" }, { status: 400 });
   }
-  const supabase = getServiceSupabase();
+  const db = getDb();
 
   // Replace the image's vendor credits when vendor_ids is provided (idempotent:
   // clear then re-insert the given set, preserving order).
   if (vendor_ids) {
-    await supabase.from("portfolio_image_vendors").delete().eq("image_id", id);
+    await db.from("portfolio_image_vendors").delete().eq("image_id", id);
     if (vendor_ids.length) {
       const rows = vendor_ids.map((vendor_id) => ({ image_id: id, vendor_id }));
-      const { error: linkErr } = await supabase
+      const { error: linkErr } = await db
         .from("portfolio_image_vendors")
         .insert(rows);
       if (linkErr) return NextResponse.json({ error: linkErr.message }, { status: 500 });
@@ -148,7 +148,7 @@ export async function PATCH(request: Request) {
 
   // No column fields (vendor-only edit)? Return the current row.
   if (Object.keys(fields).length === 0) {
-    const { data } = await supabase
+    const { data } = await db
       .from("portfolio_images")
       .select()
       .eq("id", id)
@@ -160,7 +160,7 @@ export async function PATCH(request: Request) {
   // Replacing the file? Remember the old object so we can clean it up.
   let oldPath: string | null = null;
   if (fields.storage_path) {
-    const { data: row } = await supabase
+    const { data: row } = await db
       .from("portfolio_images")
       .select("storage_path")
       .eq("id", id)
@@ -168,7 +168,7 @@ export async function PATCH(request: Request) {
     oldPath = row?.storage_path ?? null;
   }
 
-  const { data, error } = await supabase
+  const { data, error } = await db
     .from("portfolio_images")
     .update(fields)
     .eq("id", id)
@@ -189,14 +189,14 @@ export async function DELETE(request: Request) {
   const { id } = (await request.json().catch(() => ({}))) as { id?: string };
   if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
-  const supabase = getServiceSupabase();
-  const { data: row } = await supabase
+  const db = getDb();
+  const { data: row } = await db
     .from("portfolio_images")
     .select("storage_path")
     .eq("id", id)
     .maybeSingle();
 
-  const { error } = await supabase.from("portfolio_images").delete().eq("id", id);
+  const { error } = await db.from("portfolio_images").delete().eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   if (row?.storage_path) {
     await deletePortfolioObjects([row.storage_path]);

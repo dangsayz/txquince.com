@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { isSignedAgreement, signedBalanceDue, signedDepositPercent, tokenMatches } from "@/lib/agreement";
 import { usd } from "@/lib/commission";
 import { PayButton } from "@/components/txq/PayButton";
@@ -131,9 +131,9 @@ export default async function BookingPage({
   searchParams: Promise<{ t?: string; paid?: string; balance?: string }>;
 }) {
   const [{ id }, { t: token, paid: paidParam, balance: balanceParam }] = await Promise.all([params, searchParams]);
-  if (!isSupabaseConfigured() || !/^[0-9a-f-]{36}$/i.test(id)) notFound();
+  if (!isDbConfigured() || !/^[0-9a-f-]{36}$/i.test(id)) notFound();
 
-  const { data: b } = await getServiceSupabase()
+  const { data: b } = await getDb()
     .from("bookings")
     .select("id, name, event_date, status, deposit_amount_cents, expires_at, metadata")
     .eq("id", id)
@@ -174,7 +174,7 @@ export default async function BookingPage({
   const balanceCents = balanceCentsFrom(agreement.balanceUsd);
   let balanceRows: Pick<BalancePaymentRow, "status" | "amount_cents">[] | null = null;
   if (state === "paid" && balanceCents !== null) {
-    const { data, error } = await getServiceSupabase()
+    const { data, error } = await getDb()
       .from("booking_payments")
       .select("status, amount_cents")
       .eq("booking_id", b.id)

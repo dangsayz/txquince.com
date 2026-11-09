@@ -8,7 +8,7 @@
  * never reveal whether an id exists.
  */
 import { NextResponse, type NextRequest } from "next/server";
-import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
+import { getDb, isDbConfigured } from "@/lib/db";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -17,10 +17,10 @@ const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 async function unsubscribe(id: string | null): Promise<void> {
-  if (!id || !UUID_RE.test(id) || !isSupabaseConfigured()) return;
+  if (!id || !UUID_RE.test(id) || !isDbConfigured()) return;
   try {
-    const supabase = getServiceSupabase();
-    await supabase
+    const db = getDb();
+    await db
       .from("inquiries")
       .update({ unsubscribed_at: new Date().toISOString(), status: "unsubscribed" })
       .eq("id", id);

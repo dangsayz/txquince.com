@@ -19,7 +19,7 @@ import {
   fulfillBalanceSession,
   refundBalancePayment,
 } from "@/lib/balance-fulfillment";
-import { getServiceSupabase } from "@/lib/supabase-server";
+import { getDb } from "@/lib/db";
 import type { StripeCheckoutSession } from "@/lib/stripe";
 
 export const runtime = "nodejs";
@@ -173,7 +173,7 @@ export async function POST(request: NextRequest) {
         // family returns, so an abandoned session must NOT release their date —
         // the approval hold (expires_at) governs that instead.
         if (session?.id && session.metadata?.flow !== "agreement") {
-          const { error } = await getServiceSupabase()
+          const { error } = await getDb()
             .from("bookings")
             .update({ status: "expired" })
             .eq("stripe_checkout_session_id", session.id)
@@ -189,7 +189,7 @@ export async function POST(request: NextRequest) {
         const pi = typeof charge.payment_intent === "string" ? charge.payment_intent : null;
         if (pi && charge.refunded === true) {
           await refundBalancePayment(pi);
-          const { error } = await getServiceSupabase()
+          const { error } = await getDb()
             .from("bookings")
             .update({ status: "refunded" })
             .eq("stripe_payment_intent_id", pi)

@@ -16,7 +16,7 @@
  * PRIVACY: success/cancel URLs carry only the random slug.
  */
 import { NextResponse, type NextRequest } from "next/server";
-import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { createStripeCheckoutSession, isStripeConfigured } from "@/lib/stripe";
 import { getDateStatus, getPlanBySlug } from "@/lib/plan-db";
 import { isPlanSlug } from "@/lib/plan-slug";
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
   const pageLang: PlanLang | null = body.lang === "es" || body.lang === "en" ? body.lang : null;
   if (!isPlanSlug(slug)) return NextResponse.json({ ok: false, error: "notFound" }, { status: 404 });
   if (await rateLimited(clientIp(req))) return NextResponse.json({ ok: false, error: "rateLimited" }, { status: 429 });
-  if (!isSupabaseConfigured() || !isStripeConfigured()) {
+  if (!isDbConfigured() || !isStripeConfigured()) {
     return NextResponse.json({ ok: false, error: "notLive" }, { status: 503 });
   }
 
@@ -53,11 +53,11 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
   if (!plan) return NextResponse.json({ ok: false, error: "notFound" }, { status: 404 });
   if (plan.status === "booked") return NextResponse.json({ ok: false, error: "yours" }, { status: 409 });
 
-  const supabase = getServiceSupabase();
+  const db = getDb();
 
   // Re-use this plan's own open checkout (a second tap, or back from Stripe).
   if (plan.booking_id) {
-    const { data: b } = await supabase
+    const { data: b } = await db
       .from("bookings")
       .select("id, status, metadata")
       .eq("id", plan.booking_id)
@@ -77,7 +77,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
 
   const holdCents = (await getPriceBook()).planHoldUsd * 100;
   const colors = plan.colors.map((c) => colorLabel(c, "en")).join(", ");
-  const { data: hold, error: holdErr } = await supabase.rpc("create_booking_hold", {
+  const { data: hold, error: holdErr } = await db.rpc("create_booking_hold", {
     p_name: plan.name,
     p_email: plan.email ?? "",
     p_phone: plan.phone ?? "",
@@ -139,13 +139,13 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
   } catch (err) {
     console.error("[plan/hold] checkout:", err);
     // Give the date back right away rather than waiting for the hold to lapse.
-    await supabase.from("bookings").update({ status: "cancelled", cancelled_at: new Date().toISOString() }).eq("id", bookingId);
+    await db.from("bookings").update({ status: "cancelled", cancelled_at: new Date().toISOString() }).eq("id", bookingId);
     return NextResponse.json({ ok: false, error: "error" }, { status: 502 });
   }
 
   // The webhook finds the booking by this session id, so if it can't be saved
   // the family must not reach a checkout we could never match to their date.
-  const { error: bErr } = await supabase
+  const { error: bErr } = await db
     .from("bookings")
     .update({
       stripe_checkout_session_id: session.id,
@@ -164,10 +164,10 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: stri
     .eq("id", bookingId);
   if (bErr) {
     console.error("[plan/hold] booking update:", bErr.message);
-    await supabase.from("bookings").update({ status: "cancelled", cancelled_at: new Date().toISOString() }).eq("id", bookingId);
+    await db.from("bookings").update({ status: "cancelled", cancelled_at: new Date().toISOString() }).eq("id", bookingId);
     return NextResponse.json({ ok: false, error: "error" }, { status: 500 });
   }
-  const { error: pErr } = await supabase.from("quince_plans").update({ booking_id: bookingId }).eq("id", plan.id);
+  const { error: pErr } = await db.from("quince_plans").update({ booking_id: bookingId }).eq("id", plan.id);
   if (pErr) console.error("[plan/hold] plan update:", pErr.message);
 
   return NextResponse.json({ ok: true, url: session.url });

@@ -75,7 +75,7 @@ function harness(options = {}) {
   const content = compile("src/lib/content-db.ts", {
     "server-only": {},
     react: { cache: (fn) => fn },
-    "@/lib/supabase-server": { getServiceSupabase: () => db, isSupabaseConfigured: () => true },
+    "@/lib/db": { getDb: () => db, isDbConfigured: () => true },
     "@/content/venues": {},
     "@/content/blog-photos": { getBlogPhoto: () => undefined },
     "@/lib/hero-focus": focus,
@@ -87,7 +87,7 @@ function harness(options = {}) {
     "next/cache": { revalidatePath: (value) => state.revalidations.push(value) },
     "@/lib/require-admin": { requireAdmin: async () => options.authorized !== false },
     "@/lib/admin-auth": { unauthorizedAdminResponse: () => Response.json({ error: "Unauthorized" }, { status: 401 }) },
-    "@/lib/supabase-server": { getServiceSupabase: () => db },
+    "@/lib/db": { getDb: () => db },
     "@/lib/video": video,
     "@/lib/hero-focus": focus,
     "@/lib/content-db": content,

@@ -4,7 +4,7 @@
  * with the metric's value at the start as its baseline; here every active
  * move is re-measured over the days since it started and judged.
  */
-import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { getDashboardStats, type RangedStats } from "@/lib/analytics-db";
 import { judgeMove, metricValue, MOVE_METRICS, type MoveVerdict } from "@/lib/pulse-intel";
 
@@ -34,8 +34,8 @@ type Row = {
 };
 
 export async function getPulseMoves(): Promise<PulseMove[]> {
-  if (!isSupabaseConfigured()) return [];
-  const { data, error } = await getServiceSupabase()
+  if (!isDbConfigured()) return [];
+  const { data, error } = await getDb()
     .from("conversion_changes")
     .select("id, created_at, title, area, target_metric, baseline, status, notes")
     .like("area", "pulse:%")

@@ -12,9 +12,9 @@ vi.mock("@/lib/resend", () => ({
   sendOperatorEmail: async () => ({ ok: true }),
   sendInquirerEmail: async () => ({ ok: true }),
 }));
-vi.mock("@/lib/supabase-server", () => ({
-  isSupabaseConfigured: () => true,
-  getServiceSupabase: () => ({
+vi.mock("@/lib/db", () => ({
+  isDbConfigured: () => true,
+  getDb: () => ({
     from: () => ({
       insert: async (row: Record<string, unknown>) => {
         inserted.push(row);

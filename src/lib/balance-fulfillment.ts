@@ -9,7 +9,7 @@
  */
 import "server-only";
 import { Resend } from "resend";
-import { getServiceSupabase } from "@/lib/supabase-server";
+import { getDb } from "@/lib/db";
 import type { StripeCheckoutSession } from "@/lib/stripe";
 import { isSignedAgreement } from "@/lib/agreement";
 import { balanceCentsFrom, paidCents } from "@/lib/balance";
@@ -24,7 +24,7 @@ const NOT_SETTLED = ["opening", "open", "processing", "expired", "failed"];
 type Row = { id: string; booking_id: string; amount_cents: number; currency: string; status: string };
 
 async function rowForSession(session: StripeCheckoutSession): Promise<Row | null> {
-  const { data } = await getServiceSupabase()
+  const { data } = await getDb()
     .from("booking_payments")
     .select("id, booking_id, amount_cents, currency, status")
     .eq("stripe_checkout_session_id", session.id)
@@ -37,7 +37,7 @@ async function rowForSession(session: StripeCheckoutSession): Promise<Row | null
 
 /** checkout.session.completed / async_payment_succeeded for a balance checkout. */
 export async function fulfillBalanceSession(session: StripeCheckoutSession): Promise<void> {
-  const supabase = getServiceSupabase();
+  const db = getDb();
   const row = await rowForSession(session);
   if (!row) {
     console.error(`[balance] no ledger row for session ${session.id}`);
@@ -46,7 +46,7 @@ export async function fulfillBalanceSession(session: StripeCheckoutSession): Pro
 
   // Completed but the money is still settling (bank-type methods).
   if (session.payment_status !== "paid") {
-    await supabase.from("booking_payments").update({ status: "processing" }).eq("id", row.id).in("status", ["opening", "open"]);
+    await db.from("booking_payments").update({ status: "processing" }).eq("id", row.id).in("status", ["opening", "open"]);
     return;
   }
 
@@ -54,7 +54,7 @@ export async function fulfillBalanceSession(session: StripeCheckoutSession): Pro
     session.amount_total === row.amount_cents &&
     (session.currency ?? "").toLowerCase() === row.currency.toLowerCase();
 
-  const { data: moved } = await supabase
+  const { data: moved } = await db
     .from("booking_payments")
     .update({
       status: amountOk ? "paid" : "review",
@@ -66,7 +66,7 @@ export async function fulfillBalanceSession(session: StripeCheckoutSession): Pro
     .select("id");
   if (!moved || moved.length === 0) return; // already handled (webhook retry/replay)
 
-  const { data: b } = await supabase
+  const { data: b } = await db
     .from("bookings")
     .select("id, name, email, event_date, metadata")
     .eq("id", row.booking_id)
@@ -75,7 +75,7 @@ export async function fulfillBalanceSession(session: StripeCheckoutSession): Pro
   const meta = (b.metadata ?? {}) as Record<string, unknown>;
   const agreement = isSignedAgreement(meta.agreement) ? meta.agreement : null;
 
-  const { data: all } = await supabase
+  const { data: all } = await db
     .from("booking_payments")
     .select("status, amount_cents")
     .eq("booking_id", row.booking_id)
@@ -128,7 +128,7 @@ export async function fulfillBalanceSession(session: StripeCheckoutSession): Pro
 
 /** checkout.session.expired for a balance checkout: just close the row. */
 export async function expireBalanceSession(session: StripeCheckoutSession): Promise<void> {
-  await getServiceSupabase()
+  await getDb()
     .from("booking_payments")
     .update({ status: "expired" })
     .eq("stripe_checkout_session_id", session.id)
@@ -137,7 +137,7 @@ export async function expireBalanceSession(session: StripeCheckoutSession): Prom
 
 /** checkout.session.async_payment_failed for a balance checkout. */
 export async function failBalanceSession(session: StripeCheckoutSession): Promise<void> {
-  await getServiceSupabase()
+  await getDb()
     .from("booking_payments")
     .update({ status: "failed" })
     .eq("stripe_checkout_session_id", session.id)
@@ -146,7 +146,7 @@ export async function failBalanceSession(session: StripeCheckoutSession): Promis
 
 /** charge.refunded (full refund) on a balance payment. */
 export async function refundBalancePayment(paymentIntentId: string): Promise<void> {
-  const { error } = await getServiceSupabase()
+  const { error } = await getDb()
     .from("booking_payments")
     .update({ status: "refunded" })
     .eq("stripe_payment_intent_id", paymentIntentId)

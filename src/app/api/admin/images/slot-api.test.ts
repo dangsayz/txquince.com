@@ -14,9 +14,10 @@ vi.mock("next/cache", () => ({ revalidatePath: (...a: unknown[]) => revalidatePa
 
 /* ---- auth: the real requireAdmin → admin-auth path, with the session mocked ---- */
 let sessionUser: { email: string } | null = null;
-vi.mock("@/lib/supabase/server", () => ({
-  createServerSupabaseClient: async () => ({ auth: { getUser: async () => ({ data: { user: sessionUser } }) } }),
-}));
+vi.mock("@/lib/admin-session", async () => {
+  const { isAuthorizedAdminEmail } = await import("@/lib/admin-auth");
+  return { getSessionEmail: async () => (sessionUser && isAuthorizedAdminEmail(sessionUser.email) ? sessionUser.email : null) };
+});
 
 /* ---- site_settings: an in-memory table with the PostgREST calls the store uses ---- */
 type Row = { key: string; value: unknown; updated_at: string };
@@ -74,9 +75,9 @@ class Query {
     return Promise.resolve(this.run()).then(resolve);
   }
 }
-vi.mock("@/lib/supabase-server", () => ({
-  isSupabaseConfigured: () => true,
-  getServiceSupabase: () => ({ from: () => new Query() }),
+vi.mock("@/lib/db", () => ({
+  isDbConfigured: () => true,
+  getDb: () => ({ from: () => new Query() }),
 }));
 
 /* ---- R2 ---- */

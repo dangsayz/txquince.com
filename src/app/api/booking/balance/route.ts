@@ -22,7 +22,7 @@
  */
 import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
-import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { createStripeCheckoutSession, expireStripeCheckoutSession, isStripeConfigured } from "@/lib/stripe";
 import { isSignedAgreement, tokenMatches } from "@/lib/agreement";
 import { balanceCentsFrom, checkAmount, LIVE_STATUSES, remainingCents, type BalancePaymentRow } from "@/lib/balance";
@@ -73,12 +73,12 @@ export async function POST(req: NextRequest) {
   const { id, t, amountCents } = parsed.data;
   if (await rateLimited(`booking:${id}`)) return fail(429, "Too many tries. Please wait a minute.");
 
-  if (!isSupabaseConfigured() || !isStripeConfigured()) {
+  if (!isDbConfigured() || !isStripeConfigured()) {
     return fail(503, "Payments are briefly unavailable. Please try again soon.");
   }
 
-  const supabase = getServiceSupabase();
-  const { data: b } = await supabase
+  const db = getDb();
+  const { data: b } = await db
     .from("bookings")
     .select("id, email, event_date, status, currency, metadata")
     .eq("id", id)
@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
   const balance = balanceCentsFrom(agreement.balanceUsd);
   if (balance === null) return fail(409, "Please contact us to pay your balance.");
 
-  const { data: rowsData, error: rowsError } = await supabase
+  const { data: rowsData, error: rowsError } = await db
     .from("booking_payments")
     .select("id, amount_cents, currency, status, checkout_url, checkout_expires_at, stripe_checkout_session_id, created_at")
     .eq("booking_id", b.id)
@@ -128,7 +128,7 @@ export async function POST(req: NextRequest) {
       if (Date.now() - new Date(live.created_at).getTime() < STALE_OPENING_MS) {
         return fail(409, "Checkout is opening. Please try again in a moment.");
       }
-      await supabase.from("booking_payments").update({ status: "failed" }).eq("id", live.id).eq("status", "opening");
+      await db.from("booking_payments").update({ status: "failed" }).eq("id", live.id).eq("status", "opening");
     } else {
       const left = live.checkout_expires_at ? new Date(live.checkout_expires_at).getTime() - Date.now() : 0;
       if (live.amount_cents === amount.cents && live.checkout_url && left > REUSE_MIN_LEFT_MS) {
@@ -144,18 +144,18 @@ export async function POST(req: NextRequest) {
           return fail(502, "We couldn't open secure checkout. Please try again.");
         }
         if (state === "complete") {
-          await supabase.from("booking_payments").update({ status: "processing" }).eq("id", live.id).eq("status", "open");
+          await db.from("booking_payments").update({ status: "processing" }).eq("id", live.id).eq("status", "open");
           return fail(409, "Your last payment is still processing. Please check back soon.");
         }
         if (state === "open") return fail(502, "We couldn't open secure checkout. Please try again.");
       }
-      await supabase.from("booking_payments").update({ status: "expired" }).eq("id", live.id).eq("status", "open");
+      await db.from("booking_payments").update({ status: "expired" }).eq("id", live.id).eq("status", "open");
     }
   }
 
   // Reserve the one live slot. A racing request loses here (unique index).
   const currency = (b.currency || "usd").toLowerCase();
-  const { data: row, error: insertError } = await supabase
+  const { data: row, error: insertError } = await db
     .from("booking_payments")
     .insert({ booking_id: b.id, kind: "balance", amount_cents: amount.cents, currency, status: "opening" })
     .select("id")
@@ -197,7 +197,7 @@ export async function POST(req: NextRequest) {
     });
     sessionId = session.id;
     if (!session.url) throw new Error("no checkout url");
-    const { error } = await supabase
+    const { error } = await db
       .from("booking_payments")
       .update({
         status: "open",
@@ -213,7 +213,7 @@ export async function POST(req: NextRequest) {
     console.error("[booking/balance] checkout:", err);
     // Never leave a payable session at Stripe that our ledger doesn't track.
     if (sessionId) await expireStripeCheckoutSession(sessionId).catch(() => null);
-    await supabase.from("booking_payments").update({ status: "failed" }).eq("id", row.id).eq("status", "opening");
+    await db.from("booking_payments").update({ status: "failed" }).eq("id", row.id).eq("status", "opening");
     return fail(502, "We couldn't open secure checkout. Please try again.");
   }
 }

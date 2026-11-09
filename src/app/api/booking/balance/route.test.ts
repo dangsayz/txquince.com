@@ -50,9 +50,9 @@ const stripe = {
 
 vi.mock("server-only", () => ({}));
 vi.mock("@/lib/rate-limit", () => ({ rateLimiter: () => async () => false }));
-vi.mock("@/lib/supabase-server", () => ({
-  isSupabaseConfigured: () => true,
-  getServiceSupabase: () => ({ from: (t: keyof typeof db) => query(t) }),
+vi.mock("@/lib/db", () => ({
+  isDbConfigured: () => true,
+  getDb: () => ({ from: (t: keyof typeof db) => query(t) }),
 }));
 vi.mock("@/lib/stripe", () => ({
   isStripeConfigured: () => true,

@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import { MenuIcon, WebsiteIcon, type WebsiteIconName } from "@/components/admin/StudioIcons";
 
@@ -80,19 +79,17 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, [menuOpen]);
 
-  if (pathname === "/admin/login" || pathname === "/admin/reset-password") return <>{children}</>;
+  if (pathname === "/admin/login") return <>{children}</>;
 
   async function signOut() {
     if (signingOut) return;
     setSigningOut(true);
     setSignOutError(false);
     try {
-      // Clear the session on the server (cookies) AND in the browser client,
+      // Revoke the session on the server (and clear its cookie),
       // drop the "this browser is an admin" hint, then land on the homepage.
       const response = await fetch("/api/admin/signout", { method: "POST" });
       if (!response.ok) throw new Error("Sign out failed");
-      const supabase = await createBrowserSupabaseClient();
-      await supabase.auth.signOut().catch(() => undefined);
       try {
         window.localStorage.removeItem("txq_admin");
       } catch {

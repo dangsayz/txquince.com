@@ -107,12 +107,8 @@ export function useAdminLogout() {
     if (busy) return;
     setBusy(true);
     try {
-      // Server route clears the auth cookies; the browser client clears its own
-      // copy (loaded on demand so visitors never download the auth library).
-      await fetch("/api/admin/signout", { method: "POST" }).catch(() => undefined);
-      const { createBrowserSupabaseClient } = await import("@/lib/supabase/client");
-      const supabase = await createBrowserSupabaseClient();
-      await supabase.auth.signOut();
+      // The server revokes the session and clears its HttpOnly cookie.
+      await fetch("/api/admin/signout", { method: "POST" });
     } catch {
       /* cookies are already cleared server-side */
     }

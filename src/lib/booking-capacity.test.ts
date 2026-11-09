@@ -4,9 +4,10 @@ import { BOOKINGS_PER_DATE, fullDates } from "@/lib/booking-capacity";
 
 describe("bookings per date", () => {
   it("matches the number the database enforces", () => {
-    const sql = readFileSync("supabase/migrations/0024_bookings_per_date.sql", "utf8");
-    const m = sql.match(/function public\.bookings_per_date\(\)[\s\S]*?\$\$\s*select\s+(\d+)\s*\$\$/);
-    expect(m?.[1]).toBe(String(BOOKINGS_PER_DATE));
+    // D1 triggers bookings_capacity_insert / _update (migrations/0002_core.sql).
+    const sql = readFileSync("migrations/0002_core.sql", "utf8");
+    const caps = [...sql.matchAll(/status IN \('requested', 'pending_payment', 'paid'\)(?: AND id <> NEW\.id)?\) >= (\d+)/g)].map((m) => m[1]);
+    expect(caps).toEqual([String(BOOKINGS_PER_DATE), String(BOOKINGS_PER_DATE)]);
   });
 
   it("calls a date full only once it holds as many bookings as the capacity", () => {

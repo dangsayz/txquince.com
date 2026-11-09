@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/require-admin";
 import { unauthorizedAdminResponse } from "@/lib/admin-auth";
-import { getServiceSupabase } from "@/lib/supabase-server";
+import { getDb } from "@/lib/db";
 import { getVenue } from "@/content/venues";
 
 export const dynamic = "force-dynamic";
@@ -11,8 +11,8 @@ export const dynamic = "force-dynamic";
 /** GET — all venue copy rows (admin). */
 export async function GET() {
   if (!(await requireAdmin())) return unauthorizedAdminResponse();
-  const supabase = getServiceSupabase();
-  const { data, error } = await supabase
+  const db = getDb();
+  const { data, error } = await db
     .from("venues")
     .select("slug, about, faq, address, area, ig_handle, website");
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
@@ -48,8 +48,8 @@ export async function PATCH(request: Request) {
   }
   const igClean = fields.ig_handle?.trim().replace(/^@+/, "").replace(/\s+/g, "") || null;
 
-  const supabase = getServiceSupabase();
-  const { data, error } = await supabase
+  const db = getDb();
+  const { data, error } = await db
     .from("venues")
     .upsert(
       {

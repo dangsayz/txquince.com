@@ -9,7 +9,7 @@
  */
 import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
-import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { createStripeCheckoutSession, isStripeConfigured } from "@/lib/stripe";
 import { isSignedAgreement, signedDepositPercent, tokenMatches } from "@/lib/agreement";
 import { TIER_NAME_EN, type TierId } from "@/lib/commission";
@@ -42,12 +42,12 @@ export async function POST(request: NextRequest) {
   if (await rateLimited(`booking:${parsed.data.id}`)) {
     return NextResponse.json({ error: "Too many tries. Please wait a minute." }, { status: 429 });
   }
-  if (!isSupabaseConfigured() || !isStripeConfigured()) {
+  if (!isDbConfigured() || !isStripeConfigured()) {
     return NextResponse.json({ error: "Payments are briefly unavailable. Please try again soon." }, { status: 503 });
   }
 
-  const supabase = getServiceSupabase();
-  const { data: b } = await supabase
+  const db = getDb();
+  const { data: b } = await db
     .from("bookings")
     .select("id, email, event_date, status, deposit_amount_cents, currency, expires_at, metadata")
     .eq("id", parsed.data.id)
@@ -98,7 +98,7 @@ export async function POST(request: NextRequest) {
       },
     });
     if (!session.url) throw new Error("no checkout url");
-    const { error } = await supabase
+    const { error } = await db
       .from("bookings")
       .update({
         stripe_checkout_session_id: session.id,
