@@ -10,6 +10,7 @@ import { getD1, requireD1 } from "@/lib/d1";
 import { generatePlanSlug } from "@/lib/plan-slug";
 import {
   REVIEW_STATUSES,
+  type ModerateInput,
   toPublicReview,
   type InviteInput,
   type PublicReview,
@@ -55,6 +56,19 @@ export function toRecord(row: Row): ReviewRecord {
     featured: Boolean(Number(row.featured)),
     show_photos: Boolean(Number(row.show_photos)),
     notes: str("notes"),
+    edit: row.edit_submitted_at
+      ? {
+          submitted_at: String(row.edit_submitted_at),
+          rating: Number(row.edit_rating),
+          body: String(row.edit_body ?? ""),
+          display_name: String(row.edit_display_name ?? ""),
+          daughter_name: str("edit_daughter_name"),
+          city: str("edit_city"),
+          language: row.edit_language === "es" ? "es" : "en",
+          photo_paths: parsePaths(row.edit_photo_paths),
+          consent_photos: Boolean(Number(row.edit_consent_photos)),
+        }
+      : null,
   };
 }
 
@@ -126,39 +140,86 @@ export async function listReviews(): Promise<ReviewRecord[]> {
   return results.map(toRecord);
 }
 
-export async function updateReview(
-  id: string,
-  fields: Partial<Pick<ReviewRecord, "status" | "featured" | "show_photos" | "notes">>,
-): Promise<void> {
+/**
+ * The mom updates her review from the same link. Not approved yet → the update
+ * simply replaces it (still pending). Approved or hidden → it waits in the
+ * edit_* columns and the live version stays until the owner decides.
+ * Returns "replaced", "queued", or null when there is nothing to update.
+ */
+export async function updateFromMom(slug: string, input: SubmitInput): Promise<"replaced" | "queued" | null> {
+  const db = await requireD1();
+  const t = now();
+  const photos = JSON.stringify(input.photos);
+  const replaced = await db
+    .prepare(
+      `UPDATE reviews SET submitted_at = ?, updated_at = ?, rating = ?, body = ?, display_name = ?, daughter_name = ?,
+         city = ?, language = ?, photo_paths = ?, consent_publish = 1, consent_photos = ?
+       WHERE slug = ? AND status = 'pending'`,
+    )
+    .bind(t, t, input.rating, input.body, input.display_name, input.daughter_name, input.city, input.language, photos, input.consent_photos ? 1 : 0, slug)
+    .run();
+  if (replaced.meta.changes === 1) return "replaced";
+  const queued = await db
+    .prepare(
+      `UPDATE reviews SET updated_at = ?, edit_submitted_at = ?, edit_rating = ?, edit_body = ?, edit_display_name = ?,
+         edit_daughter_name = ?, edit_city = ?, edit_language = ?, edit_photo_paths = ?, edit_consent_photos = ?
+       WHERE slug = ? AND status IN ('approved', 'hidden')`,
+    )
+    .bind(t, t, input.rating, input.body, input.display_name, input.daughter_name, input.city, input.language, photos, input.consent_photos ? 1 : 0, slug)
+    .run();
+  return queued.meta.changes === 1 ? "queued" : null;
+}
+
+const CLEAR_EDIT =
+  "edit_submitted_at = NULL, edit_rating = NULL, edit_body = NULL, edit_display_name = NULL, edit_daughter_name = NULL, edit_city = NULL, edit_language = NULL, edit_photo_paths = NULL, edit_consent_photos = NULL";
+
+/**
+ * Owner changes. Only a submitted review can be changed (an unused link has
+ * nothing to approve). The mom's words and stars change only through her own
+ * update ("edit: approve"), never directly.
+ */
+export async function updateReview(id: string, fields: Partial<Omit<ModerateInput, "id">>): Promise<void> {
   const sets: string[] = ["updated_at = ?"];
   const values: unknown[] = [now()];
+  const set = (col: string, v: unknown) => {
+    sets.push(`${col} = ?`);
+    values.push(v);
+  };
   if (fields.status !== undefined) {
-    sets.push("status = ?");
-    values.push(fields.status);
-    if (fields.status === "approved") {
-      sets.push("approved_at = ?");
-      values.push(now());
-    }
+    set("status", fields.status);
+    if (fields.status === "approved") set("approved_at", now());
   }
-  if (fields.featured !== undefined) {
-    sets.push("featured = ?");
-    values.push(fields.featured ? 1 : 0);
-  }
-  if (fields.show_photos !== undefined) {
-    sets.push("show_photos = ?");
-    values.push(fields.show_photos ? 1 : 0);
-  }
-  if (fields.notes !== undefined) {
-    sets.push("notes = ?");
-    values.push(fields.notes);
+  if (fields.featured !== undefined) set("featured", fields.featured ? 1 : 0);
+  if (fields.show_photos !== undefined) set("show_photos", fields.show_photos ? 1 : 0);
+  if (fields.notes !== undefined) set("notes", fields.notes);
+  if (fields.display_name !== undefined) set("display_name", fields.display_name);
+  if (fields.daughter_name !== undefined) set("daughter_name", fields.daughter_name);
+  if (fields.city !== undefined) set("city", fields.city);
+  if (fields.event_date !== undefined) set("event_date", fields.event_date);
+  if (fields.edit === "approve") {
+    sets.push(
+      `rating = edit_rating, body = edit_body, display_name = edit_display_name, daughter_name = edit_daughter_name,
+       city = edit_city, language = edit_language, photo_paths = edit_photo_paths, consent_photos = edit_consent_photos,
+       submitted_at = edit_submitted_at, ${CLEAR_EDIT}`,
+    );
+  } else if (fields.edit === "reject") {
+    sets.push(CLEAR_EDIT);
   }
   const db = await requireD1();
-  // Only a submitted review can be moderated (an unused link has nothing to approve).
+  const guard = fields.edit ? " AND edit_submitted_at IS NOT NULL" : "";
   const res = await db
-    .prepare(`UPDATE reviews SET ${sets.join(", ")} WHERE id = ? AND status != 'invited'`)
+    .prepare(`UPDATE reviews SET ${sets.join(", ")} WHERE id = ? AND status != 'invited'${guard}`)
     .bind(...values, id)
     .run();
-  if (res.meta.changes !== 1) throw new Error("This review has not been submitted yet.");
+  if (res.meta.changes !== 1) throw new Error(fields.edit ? "There is no update waiting on this review." : "This review has not been submitted yet.");
+}
+
+/** Deletes a review or link for good. Returns every photo key it held, for R2 cleanup. */
+export async function deleteReview(id: string): Promise<string[] | null> {
+  const db = await requireD1();
+  const row = await db.prepare("DELETE FROM reviews WHERE id = ? RETURNING photo_paths, edit_photo_paths").bind(id).first<Row>();
+  if (!row) return null;
+  return [...new Set([...parsePaths(row.photo_paths), ...parsePaths(row.edit_photo_paths)])];
 }
 
 /** Deletes an unused invite only (a submitted review is hidden, never deleted). */

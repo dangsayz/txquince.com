@@ -2,9 +2,11 @@
  * review.ts — first-party reviews (pure: types, validation, share text).
  *
  * Trust model: there is no public "leave a review" form. The owner makes one
- * link per family he worked with (/admin/reviews); the link works once, and
- * nothing is public until he approves it. Photos stay in the private bucket and
- * are only served once the review is approved.
+ * link per family he worked with (/admin/reviews), and nothing is public until
+ * he approves it. The mom can come back to the same link to update her review:
+ * before approval the update replaces it; after approval it waits as a pending
+ * update and the live version stays until the owner approves the update.
+ * Photos stay in the private bucket and are only served once approved.
  */
 import { z } from "zod";
 import { SLUG_RE } from "@/lib/plan-slug";
@@ -41,7 +43,38 @@ export type ReviewRecord = {
   featured: boolean;
   show_photos: boolean;
   notes: string | null;
+  /** The mom's update to an approved/hidden review, waiting for the owner. */
+  edit: ReviewEdit | null;
 };
+
+export type ReviewEdit = {
+  submitted_at: string;
+  rating: number;
+  body: string;
+  display_name: string;
+  daughter_name: string | null;
+  city: string | null;
+  language: ReviewLang;
+  photo_paths: string[];
+  consent_photos: boolean;
+};
+
+/** Needs the owner: a new review, or an update to one that is live/hidden. */
+export const needsOwner = (r: Pick<ReviewRecord, "status" | "edit">) => r.status === "pending" || r.edit !== null;
+
+/** What the mom sees when she reopens her link: her latest version. */
+export function latestVersion(r: ReviewRecord) {
+  const e = r.edit;
+  return {
+    rating: e?.rating ?? r.rating ?? 0,
+    body: e?.body ?? r.body ?? "",
+    display_name: e?.display_name ?? r.display_name ?? shortName(r.invite_name),
+    daughter_name: e ? e.daughter_name : r.daughter_name,
+    city: e ? e.city : r.city,
+    language: e?.language ?? r.language,
+    photo_paths: e ? e.photo_paths : r.photo_paths,
+  };
+}
 
 export const isReviewSlug = (v: unknown): v is string => typeof v === "string" && SLUG_RE.test(v);
 
@@ -85,30 +118,50 @@ export const SubmitSchema = z
   .refine((b) => b.photos.length === 0 || b.consent_photos, { path: ["consent_photos"] });
 export type SubmitInput = z.infer<typeof SubmitSchema>;
 
-/** Owner → moderation. */
+const optionalText = (max: number) =>
+  z.string().trim().max(max).nullable().optional().transform((v) => (v === undefined ? undefined : v || null));
+
+/**
+ * Owner → moderation and details. The mom's words and stars are never
+ * editable here (hide or delete instead): the public page promises they are
+ * hers.
+ */
 export const ModerateSchema = z
   .object({
     id: z.string().uuid(),
     status: z.enum(["pending", "approved", "hidden"]).optional(),
     featured: z.boolean().optional(),
     show_photos: z.boolean().optional(),
-    notes: z.string().max(4000).nullable().optional(),
+    notes: optionalText(4000),
+    display_name: z.string().trim().min(1).max(80).optional(),
+    daughter_name: optionalText(80),
+    city: optionalText(80),
+    event_date: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .or(z.literal(""))
+      .nullable()
+      .optional()
+      .transform((v) => (v === undefined ? undefined : v || null)),
+    /** The mom's pending update: put it live, or keep the old version. */
+    edit: z.enum(["approve", "reject"]).optional(),
   })
   .refine((b) => Object.keys(b).length > 1);
+export type ModerateInput = z.infer<typeof ModerateSchema>;
 
 export function reviewPath(slug: string): string {
   return `/review/${slug}`;
 }
 
+/** "yvonne" → "Yvonne" (names are often typed fast on a phone). */
+const cap = (w: string) => (w ? w[0].toLocaleUpperCase("es") + w.slice(1) : w);
+
 /** "Maria Garcia" → "Maria G." (the default signature; the mom can change it). */
 export function shortName(full: string): string {
   const parts = full.trim().split(/\s+/).filter(Boolean);
-  if (parts.length < 2) return parts[0] ?? "";
-  return `${parts[0]} ${parts[parts.length - 1][0].toUpperCase()}.`;
+  if (parts.length < 2) return cap(parts[0] ?? "");
+  return `${cap(parts[0])} ${parts[parts.length - 1][0].toUpperCase()}.`;
 }
-
-/** "yvonne" → "Yvonne" (names are often typed fast on a phone). */
-const cap = (w: string) => (w ? w[0].toLocaleUpperCase("es") + w.slice(1) : w);
 
 /** The message the owner copies and texts to the mom. Bilingual, short, no pressure. */
 export function inviteMessage(r: Pick<ReviewRecord, "invite_name" | "daughter_name">, url: string): string {

@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { ReviewRecord, ReviewStatus } from "@/lib/review";
+import { needsOwner, type ReviewRecord, type ReviewStatus } from "@/lib/review";
 
 export type AdminReview = ReviewRecord & { url: string; message: string };
 
 type View = "pending" | "approved" | "invited" | "hidden";
 const VIEWS: { id: View; label: string }[] = [
-  { id: "pending", label: "New" },
+  { id: "pending", label: "Needs you" },
   { id: "approved", label: "On the site" },
   { id: "invited", label: "Waiting for mom" },
   { id: "hidden", label: "Hidden" },
@@ -129,19 +129,99 @@ function Stars({ n }: { n: number }) {
   );
 }
 
-function ReviewCard({ r, onChange }: { r: AdminReview; onChange: (id: string, patch: Partial<AdminReview>) => void }) {
+function Photos({ r, set }: { r: AdminReview; set: "live" | "edit" }) {
+  const list = set === "edit" ? (r.edit?.photo_paths ?? []) : r.photo_paths;
+  if (!list.length) return null;
+  const q = set === "edit" ? "&set=edit" : "";
+  return (
+    <ul className="m-0 grid list-none grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-2 p-0">
+      {list.map((_, n) => (
+        <li key={n} className="aspect-square overflow-hidden rounded-[var(--tq-radius-sm)] bg-[var(--tq-canvas)]">
+          <a href={`/api/reviews/photo/${r.id}/${n}?w=1920${q}`} target="_blank" rel="noopener noreferrer" className="block h-full">
+            {/* eslint-disable-next-line @next/next/no-img-element -- admin preview */}
+            <img src={`/api/reviews/photo/${r.id}/${n}?w=384${q}`} alt={`Photo ${n + 1} from ${r.invite_name}`} className="h-full w-full object-cover" loading="lazy" />
+          </a>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+type Patch = { status?: ReviewStatus; featured?: boolean; show_photos?: boolean; edit?: "approve" | "reject"; display_name?: string; daughter_name?: string | null; city?: string | null; event_date?: string | null; notes?: string | null };
+
+function DetailsForm({ r, onSave, onCancel, busy }: { r: AdminReview; onSave: (p: Patch) => void; onCancel: () => void; busy: boolean }) {
+  return (
+    <form
+      className="grid gap-3 rounded-[var(--tq-radius-sm)] bg-[var(--tq-canvas)] p-4 sm:grid-cols-2"
+      onSubmit={(e) => {
+        e.preventDefault();
+        const fd = new FormData(e.currentTarget);
+        const v = (k: string) => String(fd.get(k) ?? "").trim();
+        onSave({ display_name: v("display_name") || r.display_name || r.invite_name, daughter_name: v("daughter_name") || null, city: v("city") || null, event_date: v("event_date") || null, notes: v("notes") || null });
+      }}
+    >
+      <label className="grid gap-1 text-sm">
+        Signed as
+        <input name="display_name" defaultValue={r.display_name ?? ""} maxLength={80} required className="st-input" />
+      </label>
+      <label className="grid gap-1 text-sm">
+        Daughter
+        <input name="daughter_name" defaultValue={r.daughter_name ?? ""} maxLength={80} className="st-input" />
+      </label>
+      <label className="grid gap-1 text-sm">
+        City
+        <input name="city" defaultValue={r.city ?? ""} maxLength={80} className="st-input" />
+      </label>
+      <label className="grid gap-1 text-sm">
+        Event date
+        <input name="event_date" type="date" defaultValue={r.event_date ?? ""} className="st-input" />
+      </label>
+      <label className="grid gap-1 text-sm sm:col-span-2">
+        Private note <span className="text-[var(--tq-ink-mute)]">(only you see this)</span>
+        <textarea name="notes" defaultValue={r.notes ?? ""} maxLength={4000} rows={2} className="st-input py-2" />
+      </label>
+      <p className="m-0 text-sm text-[var(--tq-ink-mute)] sm:col-span-2">Her words and stars can&apos;t be edited. She can update them from her own link; you approve the update.</p>
+      <div className="flex flex-wrap gap-2 sm:col-span-2">
+        <button type="submit" className="st-btn" disabled={busy}>Save details</button>
+        <button type="button" className="st-btn-ghost" onClick={onCancel}>Cancel</button>
+      </div>
+    </form>
+  );
+}
+
+function ReviewCard({ r, onChange, onDelete }: { r: AdminReview; onChange: (id: string, patch: Partial<AdminReview>) => void; onDelete: (id: string) => void }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [editing, setEditing] = useState(false);
 
-  async function patch(fields: { status?: ReviewStatus; featured?: boolean; show_photos?: boolean }) {
+  async function patch(fields: Patch) {
     setBusy(true);
     setError(null);
     const { ok, data } = await send("PATCH", { id: r.id, ...fields });
     setBusy(false);
     if (!ok) return setError(String(data.error ?? "Not saved."));
-    onChange(r.id, fields);
+    const { edit, ...rest } = fields;
+    if (edit === "approve" && r.edit) {
+      const e = r.edit;
+      onChange(r.id, { rating: e.rating, body: e.body, display_name: e.display_name, daughter_name: e.daughter_name, city: e.city, language: e.language, photo_paths: e.photo_paths, consent_photos: e.consent_photos, submitted_at: e.submitted_at, edit: null });
+    } else if (edit === "reject") {
+      onChange(r.id, { edit: null });
+    } else {
+      onChange(r.id, rest as Partial<AdminReview>);
+      setEditing(false);
+    }
   }
 
+  async function remove() {
+    if (!window.confirm(`Delete ${r.display_name || r.invite_name}'s review and its photos for good? This can't be undone. (Hide keeps it, just off the site.)`)) return;
+    setBusy(true);
+    const { ok, data } = await send("DELETE", { id: r.id });
+    setBusy(false);
+    if (!ok) return setError(String(data.error ?? "Not deleted."));
+    onDelete(r.id);
+  }
+
+  const live = r.status === "approved";
   return (
     <li className="grid gap-3 border-t border-[var(--tq-surface-2)] px-5 py-5 sm:px-6">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
@@ -156,24 +236,41 @@ function ReviewCard({ r, onChange }: { r: AdminReview; onChange: (id: string, pa
         </p>
         {r.rating ? <Stars n={r.rating} /> : null}
       </div>
-      <p className="m-0 whitespace-pre-line break-words text-base leading-7">{r.body}</p>
-      {r.photo_paths.length ? (
-        <ul className="m-0 grid list-none grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-2 p-0">
-          {r.photo_paths.map((_, n) => (
-            <li key={n} className="aspect-square overflow-hidden rounded-[var(--tq-radius-sm)] bg-[var(--tq-canvas)]">
-              <a href={`/api/reviews/photo/${r.id}/${n}?w=1920`} target="_blank" rel="noopener noreferrer" className="block h-full">
-                {/* eslint-disable-next-line @next/next/no-img-element -- admin preview */}
-                <img src={`/api/reviews/photo/${r.id}/${n}?w=384`} alt={`Photo ${n + 1} from ${r.invite_name}`} className="h-full w-full object-cover" loading="lazy" />
-              </a>
-            </li>
-          ))}
-        </ul>
+
+      {r.edit ? (
+        <div className="grid gap-3 rounded-[var(--tq-radius-sm)] border border-[var(--tq-ink)] p-4">
+          <p className="m-0 text-[15px]">
+            <strong>She updated her review</strong> <span className="text-[var(--tq-ink-mute)]">· {day(r.edit.submitted_at)} · {live ? "the old version stays on the site until you decide" : "not on the site"}</span>
+          </p>
+          <div className="flex flex-wrap items-baseline gap-x-3 text-[15px]">
+            <Stars n={r.edit.rating} />
+            <span className="text-[var(--tq-ink-mute)]">
+              signed {r.edit.display_name}
+              {r.edit.daughter_name ? ` · ${r.edit.daughter_name}` : ""}
+              {r.edit.city ? ` · ${r.edit.city}` : ""}
+            </span>
+          </div>
+          <p className="m-0 whitespace-pre-line break-words text-base leading-7">{r.edit.body}</p>
+          <Photos r={r} set="edit" />
+          <div className="flex flex-wrap gap-2">
+            <button type="button" className="st-btn" disabled={busy} onClick={() => patch({ edit: "approve" })}>Approve update</button>
+            <button type="button" className="st-btn-ghost" disabled={busy} onClick={() => patch({ edit: "reject" })}>Keep the old one</button>
+          </div>
+        </div>
       ) : null}
+      {r.edit ? <p className="m-0 text-sm font-semibold">{live ? "On the site now:" : "Before her update:"}</p> : null}
+
+      <p className="m-0 whitespace-pre-line break-words text-base leading-7">{r.body}</p>
+      <Photos r={r} set="live" />
       <p className="m-0 text-sm text-[var(--tq-ink-mute)]">
         {r.consent_publish ? "OK to show the review." : "Did not agree to show the review."}
         {r.photo_paths.length ? (r.consent_photos ? " OK to show the photos." : " Did not agree to show the photos.") : ""}
         {r.language === "es" ? " Wrote in Spanish." : ""}
+        {r.notes ? ` Note: ${r.notes}` : ""}
       </p>
+
+      {editing ? <DetailsForm r={r} busy={busy} onSave={patch} onCancel={() => setEditing(false)} /> : null}
+
       <div className="flex flex-wrap gap-2">
         {r.status !== "approved" ? (
           <button type="button" className="st-btn" disabled={busy || !r.consent_publish} onClick={() => patch({ status: "approved" })}>
@@ -195,6 +292,14 @@ function ReviewCard({ r, onChange }: { r: AdminReview; onChange: (id: string, pa
             {r.show_photos ? "Photos shown" : "Photos hidden"}
           </button>
         ) : null}
+        {!editing ? (
+          <button type="button" className="st-btn-ghost" disabled={busy} onClick={() => setEditing(true)}>
+            Edit details
+          </button>
+        ) : null}
+        <button type="button" className="st-btn-ghost" disabled={busy} onClick={remove}>
+          Delete
+        </button>
       </div>
       {error ? <p role="alert" className="m-0 text-[15px] text-[var(--tq-status-down)]">{error}</p> : null}
     </li>
@@ -237,9 +342,11 @@ function WaitingRow({ r, onDelete }: { r: AdminReview; onDelete: (id: string) =>
 export function ReviewsManager({ initial }: { initial: AdminReview[] }) {
   const router = useRouter();
   const [rows, setRows] = useState(initial);
-  const counts = Object.fromEntries(VIEWS.map((v) => [v.id, rows.filter((r) => r.status === v.id).length])) as Record<View, number>;
+  // "Needs you" = new reviews plus updates to live/hidden ones.
+  const inView = (r: AdminReview, v: View) => (v === "pending" ? needsOwner(r) : r.status === v && !(v !== "invited" && r.edit));
+  const counts = Object.fromEntries(VIEWS.map((v) => [v.id, rows.filter((r) => inView(r, v.id)).length])) as Record<View, number>;
   const [view, setView] = useState<View>(counts.pending ? "pending" : counts.approved ? "approved" : "invited");
-  const shown = rows.filter((r) => r.status === view);
+  const shown = rows.filter((r) => inView(r, view));
 
   const change = (id: string, patch: Partial<AdminReview>) => setRows((cur) => cur.map((r) => (r.id === id ? { ...r, ...patch } : r)));
   const remove = (id: string) => setRows((cur) => cur.filter((r) => r.id !== id));
@@ -264,12 +371,12 @@ export function ReviewsManager({ initial }: { initial: AdminReview[] }) {
         </nav>
         {shown.length ? (
           <ul className="m-0 list-none p-0">
-            {shown.map((r) => (r.status === "invited" ? <WaitingRow key={r.id} r={r} onDelete={remove} /> : <ReviewCard key={r.id} r={r} onChange={change} />))}
+            {shown.map((r) => (r.status === "invited" ? <WaitingRow key={r.id} r={r} onDelete={remove} /> : <ReviewCard key={r.id} r={r} onChange={change} onDelete={remove} />))}
           </ul>
         ) : (
           <p className="st-empty m-0 border-t border-[var(--tq-surface-2)] px-5 py-8 text-[15px] text-[var(--tq-ink-mute)] sm:px-6">
             {view === "pending"
-              ? "No new reviews. When a mom sends hers, it shows up here and you get an email."
+              ? "Nothing needs you. New reviews and moms' updates show up here, and you get an email."
               : view === "approved"
                 ? "Nothing on the site yet. Approve a review to show it on the homepage and /reviews."
                 : view === "invited"
@@ -279,7 +386,7 @@ export function ReviewsManager({ initial }: { initial: AdminReview[] }) {
         )}
       </section>
       <p className="m-0 text-sm leading-6 text-[var(--tq-ink-mute)]">
-        The public page says these are reviews you chose to show. Hide a review instead of editing it; the words are always the mom&apos;s own.
+        The public page says these are reviews you chose to show, in each mom&apos;s own words. You can hide, delete or edit the details; only she can change her words, from her link.
       </p>
     </>
   );

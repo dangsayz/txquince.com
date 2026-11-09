@@ -10,12 +10,25 @@ import "@/components/txq/pages/pages.css";
 import "@/components/plan/plan.css";
 import "./review.css";
 
+/** Her review as it stands, when she reopens her link to update it. */
+export type ExistingReview = {
+  rating: number;
+  body: string;
+  display_name: string;
+  daughter_name: string | null;
+  city: string | null;
+  photo_paths: string[];
+  consent_photos: boolean;
+};
+
 type Field = "rating" | "body" | "display_name" | "consent_publish" | "consent_photos" | "photos";
 
 /**
- * The mom's one-time review form. Photos upload one at a time as soon as she
- * picks them (each is shrunk and stripped of location data in the browser
- * first), so "Send" only sends text plus the saved photo keys.
+ * The mom's review form. Photos upload one at a time as soon as she picks
+ * them (each is shrunk and stripped of location data in the browser first),
+ * so "Send" only sends text plus the saved photo keys. With `existing`, she
+ * already sent one: she first sees a thank-you with "Edit my review", and the
+ * form opens filled in with her words and photos.
  */
 export function ReviewForm({
   slug,
@@ -23,16 +36,21 @@ export function ReviewForm({
   firstName,
   defaultSignature,
   defaultDaughter,
+  existing,
 }: {
   slug: string;
   lang: ReviewLang;
   firstName: string;
   defaultSignature: string;
   defaultDaughter: string;
+  existing?: ExistingReview;
 }) {
   const [lang, setLang] = useState<ReviewLang>(initialLang);
   const t = REVIEW_COPY[lang];
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState(existing?.rating ?? 0);
+  // "already": she sent one before and hasn't tapped Edit yet.
+  const [mode, setMode] = useState<"form" | "already">(existing ? "already" : "form");
+  const [kept, setKept] = useState<string[]>(existing?.photo_paths ?? []);
   const [items, setItems] = useState<QueueItem[]>([]);
   const [fieldErrors, setFieldErrors] = useState<Field[]>([]);
   const [formError, setFormError] = useState<ReviewErrorKey | "waitPhotos" | null>(null);
@@ -93,7 +111,8 @@ export function ReviewForm({
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
-    const photos = items.filter((i) => i.state === "done").map((i) => paths.current.get(i.id)).filter((p): p is string => !!p);
+    const uploaded = items.filter((i) => i.state === "done").map((i) => paths.current.get(i.id)).filter((p): p is string => !!p);
+    const photos = [...kept, ...uploaded];
     const payload = {
       rating,
       body: String(fd.get("body") ?? "").trim(),
@@ -137,7 +156,6 @@ export function ReviewForm({
         const fields = (data.fields ?? []).filter((f): f is Field => f in t.errors) as Field[];
         setFieldErrors(fields);
         setFormError(data.error && data.error in t.errors ? (data.error as ReviewErrorKey) : fields.length ? null : "generic");
-        if (data.error === "used") setDone(true);
         setBusy(false);
         return;
       }
@@ -148,13 +166,30 @@ export function ReviewForm({
     }
   }
 
+  if (mode === "already" && !done) {
+    return (
+      <div className="tq-wrap qp-intake rv rv-done" lang={lang}>
+        <header className="qp-intake__head">
+          <p className="tq-mono qp-eyebrow">[{t.eyebrow}]</p>
+          <h1 className="tq-display qp-intake__title">{t.alreadyTitle}</h1>
+          <p className="qp-intake__intro">{t.alreadyBody}</p>
+          <p>
+            <button type="button" className="tq-btn tq-btn--lg" onClick={() => setMode("form")}>
+              {t.edit} <span className="tq-arrow" aria-hidden>→</span>
+            </button>
+          </p>
+        </header>
+      </div>
+    );
+  }
+
   if (done) {
     return (
       <div className="tq-wrap qp-intake rv rv-done" lang={lang}>
         <header className="qp-intake__head" role="status">
           <p className="tq-mono qp-eyebrow">[{t.eyebrow}]</p>
-          <h1 ref={doneHeading} tabIndex={-1} className="tq-display qp-intake__title">{t.doneTitle}</h1>
-          <p className="qp-intake__intro">{t.doneBody}</p>
+          <h1 ref={doneHeading} tabIndex={-1} className="tq-display qp-intake__title">{existing ? t.doneUpdateTitle : t.doneTitle}</h1>
+          <p className="qp-intake__intro">{existing ? t.doneUpdateBody : t.doneBody}</p>
           <p>
             <Link href={lang === "es" ? "/es" : "/portfolio"} className="tq-btn tq-btn--lg tq-btn--ghost">
               {t.doneLink} <span className="tq-arrow" aria-hidden>↗</span>
@@ -181,7 +216,7 @@ export function ReviewForm({
       <header className="qp-intake__head">
         <p className="tq-mono qp-eyebrow">[{t.eyebrow}]</p>
         <h1 className="tq-display qp-intake__title">{firstName ? t.hello(firstName) : t.helloNoName}</h1>
-        <p className="qp-intake__intro">{t.intro}</p>
+        <p className="qp-intake__intro">{existing ? t.editIntro : t.intro}</p>
         <p className="tq-mono tq-muted rv-private">{t.private}</p>
       </header>
 
@@ -227,7 +262,7 @@ export function ReviewForm({
           <label htmlFor={fid("body")} className="tq-mono">
             {t.body} <span aria-hidden>*</span>
           </label>
-          <textarea id={fid("body")} name="body" required rows={6} maxLength={REVIEW_BODY_MAX} placeholder={t.bodyPlaceholder} className="tq-input" {...aria("body")} />
+          <textarea id={fid("body")} name="body" required rows={6} maxLength={REVIEW_BODY_MAX} placeholder={t.bodyPlaceholder} defaultValue={existing?.body} className="tq-input" {...aria("body")} />
           {err("body")}
         </div>
 
@@ -236,7 +271,7 @@ export function ReviewForm({
             <label htmlFor={fid("display_name")} className="tq-mono">
               {t.name} <span aria-hidden>*</span>
             </label>
-            <input id={fid("display_name")} name="display_name" type="text" required maxLength={80} defaultValue={defaultSignature} autoComplete="off" className="tq-input" {...aria("display_name")} aria-describedby={`${fid("display_name")}-hint${invalid("display_name") ? ` ${fid("display_name")}-err` : ""}`} />
+            <input id={fid("display_name")} name="display_name" type="text" required maxLength={80} defaultValue={existing?.display_name ?? defaultSignature} autoComplete="off" className="tq-input" {...aria("display_name")} aria-describedby={`${fid("display_name")}-hint${invalid("display_name") ? ` ${fid("display_name")}-err` : ""}`} />
             <p id={`${fid("display_name")}-hint`} className="tq-hint">{t.nameHint}</p>
             {err("display_name")}
           </div>
@@ -244,7 +279,7 @@ export function ReviewForm({
             <label htmlFor={fid("daughter_name")} className="tq-mono">
               {t.daughter} <span className="tq-muted">— {t.optional}</span>
             </label>
-            <input id={fid("daughter_name")} name="daughter_name" type="text" maxLength={80} defaultValue={defaultDaughter} autoComplete="off" className="tq-input" />
+            <input id={fid("daughter_name")} name="daughter_name" type="text" maxLength={80} defaultValue={existing ? (existing.daughter_name ?? "") : defaultDaughter} autoComplete="off" className="tq-input" />
           </div>
         </div>
 
@@ -252,7 +287,7 @@ export function ReviewForm({
           <label htmlFor={fid("city")} className="tq-mono">
             {t.city} <span className="tq-muted">— {t.optional}</span>
           </label>
-          <input id={fid("city")} name="city" type="text" maxLength={80} autoComplete="address-level2" placeholder={t.cityPlaceholder} className="tq-input" />
+          <input id={fid("city")} name="city" type="text" maxLength={80} autoComplete="address-level2" placeholder={t.cityPlaceholder} defaultValue={existing?.city ?? ""} className="tq-input" />
         </div>
 
         <fieldset className="tq-field" aria-describedby={`${fid("photos")}-hint`}>
@@ -260,8 +295,22 @@ export function ReviewForm({
             {t.photos} <span className="tq-muted">— {t.optional}</span>
           </legend>
           <p id={`${fid("photos")}-hint`} className="tq-hint qp-hint-top">{t.photosHint}</p>
-          {items.length ? (
+          {items.length || kept.length ? (
             <ul className="rv-photos">
+              {kept.map((key, n) => (
+                <li key={key} className="rv-photo" data-state="done">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- her own photo, served privately by her link */}
+                  <img src={`/api/reviews/${slug}/photo?key=${encodeURIComponent(key)}`} alt="" />
+                  <span className="rv-photo__state tq-mono">{t.uploaded}</span>
+                  <span className="rv-photo__actions">
+                    <button type="button" className="rv-photo__btn rv-photo__x" aria-label={t.remove(`${n + 1}`)} onClick={() => setKept((cur) => cur.filter((k) => k !== key))}>
+                      <svg viewBox="0 0 16 16" aria-hidden>
+                        <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                      </svg>
+                    </button>
+                  </span>
+                </li>
+              ))}
               {items.map((i) => (
                 <li key={i.id} className="rv-photo" data-state={i.state}>
                   {/* eslint-disable-next-line @next/next/no-img-element -- local blob preview */}
@@ -285,21 +334,21 @@ export function ReviewForm({
           ) : null}
           <label className="tq-btn tq-btn--lg tq-btn--ghost rv-add">
             <input id={fid("photos")} ref={fileInput} type="file" accept="image/*" multiple className="sr-only" onChange={(e) => pick(e.target.files)} />
-            {items.length ? t.addMore : t.addPhotos} <span aria-hidden>+</span>
+            {items.length || kept.length ? t.addMore : t.addPhotos} <span aria-hidden>+</span>
           </label>
           {err("photos")}
         </fieldset>
 
         <div className="rv-consents">
           <label className="rv-check">
-            <input id={fid("consent_publish")} type="checkbox" name="consent_publish" {...aria("consent_publish")} />
+            <input id={fid("consent_publish")} type="checkbox" name="consent_publish" defaultChecked={!!existing} {...aria("consent_publish")} />
             <span>{t.consentPublish}</span>
           </label>
           {err("consent_publish")}
-          {items.length ? (
+          {items.length || kept.length ? (
             <>
               <label className="rv-check">
-                <input id={fid("consent_photos")} type="checkbox" name="consent_photos" {...aria("consent_photos")} />
+                <input id={fid("consent_photos")} type="checkbox" name="consent_photos" defaultChecked={!!existing?.consent_photos} {...aria("consent_photos")} />
                 <span>{t.consentPhotos}</span>
               </label>
               {err("consent_photos")}
@@ -321,7 +370,7 @@ export function ReviewForm({
               </>
             ) : (
               <>
-                {t.submit} <span className="tq-arrow" aria-hidden>→</span>
+                {existing ? t.submitUpdate : t.submit} <span className="tq-arrow" aria-hidden>→</span>
               </>
             )}
           </button>

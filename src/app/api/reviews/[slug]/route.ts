@@ -1,14 +1,15 @@
 /**
- * POST /api/reviews/<slug> — a mom submits her review (once).
+ * POST /api/reviews/<slug> — a mom sends her review, or updates it.
  *
- * Gates: valid slug → per-IP rate limit → zod → the invite must still be
- * unused (checked again inside the UPDATE, so it can't be submitted twice) →
- * every photo key must be one this link uploaded. The review lands as
- * 'pending'; the owner is told by email and nothing is public until he
- * approves it at /admin/reviews.
+ * Gates: valid slug → per-IP rate limit → zod → every photo key must be one
+ * this link uploaded. First send: the unused link becomes 'pending' (checked
+ * inside the UPDATE, so two taps can't both win). Later sends are updates:
+ * before approval they replace the review; after approval they wait for the
+ * owner and the live version stays. Either way the owner gets an email and
+ * nothing new is public until he approves it at /admin/reviews.
  */
 import { NextResponse, type NextRequest } from "next/server";
-import { getReviewBySlug, submitReview } from "@/lib/reviews-db";
+import { getReviewBySlug, submitReview, updateFromMom } from "@/lib/reviews-db";
 import { isOwnPhotoKey, isReviewSlug, SubmitSchema } from "@/lib/review";
 import { sendReviewReceivedEmail } from "@/lib/review-email";
 import { clientIp } from "@/lib/client-ip";
@@ -40,18 +41,24 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ slu
     return NextResponse.json({ ok: false, error: "server" }, { status: 503 });
   }
   if (!review) return NextResponse.json({ ok: false, error: "not-found" }, { status: 404 });
-  if (review.status !== "invited") return NextResponse.json({ ok: false, error: "used" }, { status: 409 });
-
+  const photos = [...new Set(input.photos)];
+  let kind: "new" | "replaced" | "queued";
   try {
-    const won = await submitReview(slug, { ...input, photos: [...new Set(input.photos)] });
-    if (!won) return NextResponse.json({ ok: false, error: "used" }, { status: 409 });
+    if (review.status === "invited") {
+      // Lost the race to a second tap: fall through to an update of the same review.
+      kind = (await submitReview(slug, { ...input, photos })) ? "new" : ((await updateFromMom(slug, { ...input, photos })) ?? "replaced");
+    } else {
+      const res = await updateFromMom(slug, { ...input, photos });
+      if (!res) return NextResponse.json({ ok: false, error: "not-found" }, { status: 404 });
+      kind = res;
+    }
   } catch (err) {
     console.error("[reviews] submit failed:", err);
     return NextResponse.json({ ok: false, error: "server" }, { status: 500 });
   }
 
   // Best-effort heads-up to the owner; the review is saved either way.
-  await sendReviewReceivedEmail({ invite_name: review.invite_name, rating: input.rating, body: input.body, photos: input.photos }).catch((err) =>
+  await sendReviewReceivedEmail({ invite_name: review.invite_name, rating: input.rating, body: input.body, photos, updated: kind !== "new" }).catch((err) =>
     console.error("[reviews] owner email failed:", err),
   );
   return NextResponse.json({ ok: true });
