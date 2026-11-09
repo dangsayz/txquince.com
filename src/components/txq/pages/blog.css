@@ -420,6 +420,88 @@
   aspect-ratio: var(--tq-nat-w) / var(--tq-nat-h);
 }
 
+/* ---------- Post: split hero (portrait cover shown whole) ----------
+   From 960px the photo stands beside the title, top-aligned and whole, so a
+   tall photo no longer sits alone in the middle of a wide page. Below 960px
+   it stacks as before. The photo settles in once on load. */
+@media (min-width: 960px) {
+  .txq .tq-blog-hero[data-split] {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: 0 48px;
+    align-items: start;
+    padding-bottom: 72px;
+  }
+  .txq .tq-blog-hero[data-split] .tq-blog-post__head {
+    padding-bottom: 0;
+    padding-right: 0;
+  }
+  .txq .tq-blog-hero[data-split] .tq-blog-post__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px;
+    margin-top: 40px;
+  }
+  .txq .tq-blog-hero[data-split] .tq-blog-post__titles,
+  .txq .tq-blog-hero[data-split] .tq-blog-post__meta {
+    grid-column: auto;
+    grid-row: auto;
+  }
+  .txq .tq-blog-hero[data-split] .tq-blog-post__title {
+    font-size: clamp(2.25rem, 1rem + 2.6vw, 3.5rem);
+  }
+  .txq .tq-blog-hero[data-split] .tq-blog-post__meta {
+    flex-direction: row;
+    gap: 16px 40px;
+    margin-top: 0;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-hairline);
+  }
+  .txq .tq-blog-hero[data-split] .tq-blog-post__meta div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+  .txq .tq-blog-hero[data-split] .tq-blog-cover {
+    padding: 32px var(--pad) 0 0;
+  }
+  .txq .tq-blog-hero[data-split] .tq-blog-cover[data-full] > * {
+    max-width: min(100%, calc(var(--tq-nat-w) * 1px), calc(78svh * var(--tq-nat-w) / var(--tq-nat-h)));
+    margin-inline: auto 0;
+  }
+}
+/* Phones: the photo opens the post, then the title. */
+@media (max-width: 639px) {
+  .txq .tq-blog-hero[data-split] {
+    display: flex;
+    flex-direction: column;
+  }
+  .txq .tq-blog-hero[data-split] .tq-blog-cover {
+    order: -1;
+    padding-top: 16px;
+  }
+  .txq .tq-blog-hero[data-split] .tq-blog-cover[data-full] > * {
+    max-width: min(100%, calc(var(--tq-nat-w) * 1px), calc(56svh * var(--tq-nat-w) / var(--tq-nat-h)));
+  }
+  .txq .tq-blog-hero[data-split] .tq-blog-post__head {
+    padding-top: 8px;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .txq .tq-blog-hero[data-split] .tq-blog-cover__media {
+    animation: tq-cover-open var(--tq-dur-theme) var(--tq-ease) both;
+  }
+  .txq .tq-blog-hero[data-split] .tq-blog-cover__media img {
+    animation: tq-cover-settle 1400ms var(--tq-ease) both;
+  }
+}
+@keyframes tq-cover-open {
+  from { clip-path: inset(0 0 14% 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+@keyframes tq-cover-settle {
+  from { transform: scale(1.06); }
+  to { transform: scale(1); }
+}
+
 /* ---------- Post: body + rail ---------- */
 .txq .tq-blog-body {
   display: grid;
