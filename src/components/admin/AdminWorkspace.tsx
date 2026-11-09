@@ -142,8 +142,8 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
         </div>
 
         {websiteActive && (
-          <nav aria-label="Website management" className="hidden lg:block">
-            <div className="mx-auto flex max-w-[96rem] items-center gap-1 overflow-x-auto px-4 [scrollbar-width:none] sm:px-8 xl:max-w-[72rem]">
+          <nav aria-label="Website management" className="st-subbar hidden lg:block">
+            <div className="mx-auto flex max-w-[96rem] items-center gap-1 overflow-x-auto px-4 py-2 [scrollbar-width:none] sm:px-8 xl:max-w-[72rem]">
               {websiteLinks.map((link) => (
                 <Link key={link.href} href={link.href} aria-current={isActive(pathname, link.href) ? "page" : undefined} className="st-subnav">
                   {link.label}

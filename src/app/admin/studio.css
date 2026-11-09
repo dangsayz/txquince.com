@@ -292,6 +292,13 @@ a:hover > .st-arrow {
   font-weight: var(--tq-weight-medium);
 }
 .st-nav:disabled { opacity: 0.55; cursor: progress; }
+/* Website sub-nav: its own linen band under the header, so it reads as a
+   second level of Website, not more of the main nav. Current page = white
+   pill with a hairline (the main nav's current page is the carbon pill). */
+.st-subbar {
+  border-top: 1px solid var(--tq-surface-2);
+  background: var(--tq-surface);
+}
 .st-subnav {
   display: inline-flex;
   flex: none;
@@ -299,14 +306,23 @@ a:hover > .st-arrow {
   min-height: var(--tq-tap);
   min-width: var(--tq-tap);
   justify-content: center;
-  padding: 0 0.75rem;
+  padding: 0 0.875rem;
+  border-radius: var(--tq-radius-pill);
   color: var(--tq-ink-mute);
   font-size: 14px;
   white-space: nowrap;
-  transition: color var(--tq-dur-fast) var(--tq-ease), box-shadow var(--tq-dur-fast) var(--tq-ease);
+  transition:
+    color var(--tq-dur-fast) var(--tq-ease),
+    background-color var(--tq-dur-fast) var(--tq-ease),
+    box-shadow var(--tq-dur-fast) var(--tq-ease);
 }
-.st-subnav:hover { color: var(--tq-ink); }
-.st-subnav[aria-current] { color: var(--tq-ink); font-weight: var(--tq-weight-medium); box-shadow: inset 0 -2px 0 var(--tq-ink); }
+.st-subnav:hover { color: var(--tq-ink); background: var(--tq-hover); }
+.st-subnav[aria-current] {
+  color: var(--tq-ink);
+  background: #ffffff;
+  font-weight: var(--tq-weight-medium);
+  box-shadow: inset 0 0 0 1px var(--tq-surface-2), 0 1px 2px rgba(0, 0, 0, 0.06);
+}
 /* In the phone menu every row reads left to right. */
 .st-menu .st-nav { justify-content: flex-start; }
 /* Phone menu: website pages mark the current one quietly, so only the section is a black pill. */
