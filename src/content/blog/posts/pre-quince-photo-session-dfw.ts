@@ -89,7 +89,7 @@ const post: BlogPost = {
     {
       type: "cta",
       heading: "Book your pre-quince portrait session",
-      body: `Our Portrait Session (${PT.price.study}) is a ${PT.hours.study}-hour session with one photographer — {{photos.study}} edited photos. Pick your location and theme, and we'll handle the light.`,
+      body: `Our ${PT.name.study} (${PT.price.study}) is a ${PT.hours.study}-hour session with ${PT.team.study} — {{photos.study}} edited photos. Pick your location and theme, and we'll handle the light.`,
       href: "/#intake",
       label: "Reserve your session",
     },
@@ -134,7 +134,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `When you're ready, book it on its own as our Portrait Session, or see which [packages](/#commissions) already include one — the Duo and the Trio include a dress or save-the-date session, booked after the deposit is paid, and with either one a Second Portrait Day (${PT.addon.secondday}) adds a separate day of photos and video at up to two locations — browse [session galleries](/portfolio) for ideas, and [reserve your date](/#intake). If you're still choosing a photographer, start with [how to choose a quinceañera photographer in DFW](/blog/how-to-choose-quinceanera-photographer-dfw) — and if you're booking the whole celebration, our [quinceañera photographer in Dallas](/quinceanera-photographer/dallas) and [Fort Worth](/quinceanera-photographer/fort-worth) pages cover full event coverage.`,
+      text: `When you're ready, book it on its own as our ${PT.name.study}, or see which [packages](/#commissions) already include one — ${PT.sessionIn} include a dress or save-the-date session, booked after the deposit is paid, and with any of them a Second Portrait Day (${PT.addon.secondday}) adds a separate day of photos and video at up to two locations — browse [session galleries](/portfolio) for ideas, and [reserve your date](/#intake). If you're still choosing a photographer, start with [how to choose a quinceañera photographer in DFW](/blog/how-to-choose-quinceanera-photographer-dfw) — and if you're booking the whole celebration, our [quinceañera photographer in Dallas](/quinceanera-photographer/dallas) and [Fort Worth](/quinceanera-photographer/fort-worth) pages cover full event coverage.`,
     },
   ],
   faqs: [
@@ -160,7 +160,7 @@ const post: BlogPost = {
     },
     {
       q: "Is the pre-quince session included or an add-on?",
-      a: `It depends on the studio and the package. At TX Quince, the Portrait Session (${PT.price.study}) is the portrait session on its own; the Duo and the Trio include a dress or save-the-date session, booked after the deposit is paid, and with either one a Second Portrait Day — a separate day for portraits in her dress, photos and video, at up to two locations — can be added for ${PT.addon.secondday}. Compare every package before you reserve.`,
+      a: `It depends on the studio and the package. At TX Quince, ${PT.name.study} (${PT.price.study}) is the portrait session on its own; ${PT.sessionIn} include a dress or save-the-date session, booked after the deposit is paid, and with any of them a Second Portrait Day — a separate day for portraits in her dress, photos and video, at up to two locations — can be added for ${PT.addon.secondday}. Compare every package before you reserve.`,
     },
   ],
   related: [

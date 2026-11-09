@@ -24,7 +24,7 @@ import { HONEYPOT_FIELD } from "@/lib/inquiry";
 import { BUDGET_FOR_TIER, servicesForTier } from "@/lib/inquiry-package";
 import { site } from "@/content/site";
 import { usePriceBook } from "@/components/PriceBookProvider";
-import { ADD_ONS, CITIES, TIERS, money, pick, tierById, tierTeam, type Lang, type TierId } from "./data";
+import { ADD_ONS, CITIES, TIERS, money, pick, tierById, tierNameL, tierTeam, type Lang, type TierId } from "./data";
 import { BOOKING_STEPS, isoDate, useAvailability, useQuote, useSite } from "./state";
 import { CompareDialog, ExtrasStep, PackageStep, useTween } from "./Commissions";
 import "./booking-glass.css";
@@ -751,7 +751,7 @@ function PackageRows({ chosen, error, onPick }: { chosen: boolean; error?: strin
             <span className="tq-bk-row__dot" aria-hidden />
             <span className="tq-bk-row__main">
               <span className="tq-bk-row__name">
-                {pick(lang, x.name)}
+                {pick(lang, tierNameL(book, x.id))}
                 {x.recommended ? <span className="tq-bk-row__tag">{t.booking.recommended}</span> : null}
               </span>
               <span className="tq-bk-row__meta">
@@ -788,7 +788,7 @@ function Totals({ nextLabel, sending, chosen }: { nextLabel: string; sending: bo
           </p>
           <dl className="tq-bk-lines tq-nums">
             <div>
-              <dt>{pick(lang, x.name)}</dt>
+              <dt>{pick(lang, tierNameL(book, x.id))}</dt>
               <dd>{money(q.tierUsd)}</dd>
             </div>
             <div>
@@ -833,11 +833,12 @@ function Totals({ nextLabel, sending, chosen }: { nextLabel: string; sending: bo
 function Summary({ onEdit, language }: { onEdit: (step: number) => void; language: Lang }) {
   const { t, lang, tier, addOns, crew, hours, booking: b } = useSite();
   const q = useQuote();
+  const { book } = usePriceBook();
   const x = tierById(tier);
   const extras = ADD_ONS.filter((a) => addOns.includes(a.id));
   const city = CITIES.find((c) => c.id === b.city);
   const rows: { step: number; label: string; lines: string[] }[] = [
-    { step: 0, label: t.booking.rowPackage, lines: [`${pick(lang, x.name)} — ${money(q.tierUsd)}`] },
+    { step: 0, label: t.booking.rowPackage, lines: [`${pick(lang, tierNameL(book, x.id))} — ${money(q.tierUsd)}`] },
     {
       step: 1,
       label: t.booking.steps[1],

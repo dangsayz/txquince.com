@@ -6,7 +6,7 @@ import { Intake, bookHref } from "@/components/txq/Intake";
 import { BudgetCta } from "@/components/budget/BudgetCta";
 import { useShell } from "@/components/txq/SiteShell";
 import { useSite } from "@/components/txq/state";
-import { TIERS, money, tierBullets, tierDetail, tierTeam, type CinemaFilm } from "@/components/txq/data";
+import { TIERS, money, tierBullets, tierDetail, tierNameL, tierTeam, type CinemaFilm } from "@/components/txq/data";
 import type { Journal } from "@/components/txq/Editorial";
 import { usePriceBook } from "@/components/PriceBookProvider";
 import { SlotPicture } from "@/components/slots/SlotPicture";
@@ -469,7 +469,7 @@ function Feature() {
       <div className="ed-feature__track">
         <div className="ed-card" data-header-tone="light">
           <h2 id="ed-feature-title" className="ed-display ed-display--md">
-            {tier.name[lang]}
+            {tierNameL(book, tier.id)[lang]}
           </h2>
           <p className="ed-card__price">{money(p.price)}</p>
           {tier.id === "trio" && book.trioSpotsLeft > 0 && (
@@ -520,7 +520,7 @@ function Packages({ children }: { children: ReactNode }) {
         <ul className="ed-pkgs">
           {TIERS.map((x, i) => {
             const pp = book.packages[x.id];
-            const name = x.name[lang];
+            const name = tierNameL(book, x.id)[lang];
             const pick = !!x.recommended;
             return (
               <li key={x.id} className="ed-pkg">

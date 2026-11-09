@@ -1,5 +1,4 @@
 import type { BlogPost } from "@/content/blog";
-import { BASE_CREW } from "@/lib/commission";
 import { PT } from "@/lib/price-text";
 
 const retainerPct = PT.deposit.percent;
@@ -38,7 +37,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "What a good answer sounds like: a clear explanation of which one is included, whether the other is available, and what it costs if it is. There's no single right model here — what matters is that they tell you plainly, so you're not surprised by a session you assumed was included (or a fee you didn't budget for). Our [packages](/#commissions) spell out exactly what each one covers — the Duo and the Trio, for example, include a dress or save-the-date session, booked after the deposit is paid.",
+      text: `What a good answer sounds like: a clear explanation of which one is included, whether the other is available, and what it costs if it is. There's no single right model here — what matters is that they tell you plainly, so you're not surprised by a session you assumed was included (or a fee you didn't budget for). Our [packages](/#commissions) spell out exactly what each one covers — ${PT.sessionIn}, for example, include a dress or save-the-date session, booked after the deposit is paid.`,
     },
     { type: "h2", text: "3. How many edited photos will I get, and how and when are they delivered?" },
     {
@@ -47,7 +46,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "What a good answer sounds like: a delivery range and a turnaround time, in writing. A private online gallery you can download and share, an honest edit count tied to your coverage hours, and a date you can hold them to. On the Duo and the Trio the full-length film also comes with a short highlight — 1 minute with the Duo, a 3–5 minute highlight film with the Trio — the quick version you'll want to share with family; with the Solo, the highlight film is an add-on.",
+      text: `What a good answer sounds like: a delivery range and a turnaround time, in writing. A private online gallery you can download and share, an honest edit count tied to your coverage hours, and a date you can hold them to. On ${PT.name.cinema} and ${PT.name.trio} the full-length film also comes with a short highlight — ${PT.highlight.cinema} with ${PT.name.cinema}, ${PT.highlight.trio} with ${PT.name.trio} — the quick version you'll want to share with family; with ${PT.name.solo}, the highlight film is an add-on.`,
     },
     {
       type: "callout",
@@ -60,7 +59,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `What a good answer sounds like: whether a second shooter is included, available as an add-on, or not offered — and on which packages. With us, the Trio comes with two photographers and a videographer, and a coordinator who runs the day can be added for ${PT.addon.coordinator} a day. They're our own small in-house crew of photographers and videographers, sometimes with Dang or Yvonne, the owners, behind the camera, and every gallery and film is edited by the owners. You can see the reverse angles and dual-coverage moments they make possible across the [portfolio](/portfolio). If a photographer can't show you two-camera coverage, assume they work solo.`,
+      text: `What a good answer sounds like: whether a second shooter is included, available as an add-on, or not offered — and on which packages. With us, ${PT.name.trio} comes with ${PT.team.trio}, and a coordinator who runs the day can be added for ${PT.addon.coordinator} a day. They're our own small in-house crew of photographers and videographers, sometimes with Dang or Yvonne, the owners, behind the camera, and every gallery and film is edited by the owners. You can see the reverse angles and dual-coverage moments they make possible across the [portfolio](/portfolio). If a photographer can't show you two-camera coverage, assume they work solo.`,
     },
     { type: "h2", text: "5. Do I get full usage and print rights to the images?" },
     {
@@ -112,7 +111,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `What a good answer sounds like: a direct yes or no, and a straight answer about who is behind each camera. We offer photo + video on every package from the Solo up. The Solo is one shooter with a {{cameras.solo}} camera setup (a camera on them, a fixed side camera and the photo camera), so wherever the action is, a camera is pointed at it, and you get the full-length film of her day. The Duo and the Trio put a dedicated team of ${BASE_CREW.cinema} to ${BASE_CREW.trio} on the same day, with the full-length film of her whole day plus a short highlight. If you're weighing whether video is worth it at all, [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video) walks through the tradeoff honestly.`,
+      text: `What a good answer sounds like: a direct yes or no, and a straight answer about who is behind each camera. We offer photo + video on every package from ${PT.name.solo} up. ${PT.name.solo} is one shooter with a {{cameras.solo}} camera setup (a camera on them, a fixed side camera and the photo camera), so wherever the action is, a camera is pointed at it, and you get the full-length film of her day. ${PT.name.cinema} and ${PT.name.trio} put a dedicated team on the same day (${PT.team.cinema}, and ${PT.team.trio}, respectively), with the full-length film of her whole day plus a short highlight. If you're weighing whether video is worth it at all, [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video) walks through the tradeoff honestly.`,
     },
     { type: "h2", text: "Putting it together" },
     {

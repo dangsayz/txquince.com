@@ -23,8 +23,7 @@ const websiteLinks: { href: string; label: string; icon: WebsiteIconName; group:
   { href: "/admin/videos", label: "Films", icon: "films", group: 1 },
   { href: "/admin/hero", label: "Page imagery", icon: "imagery", group: 1 },
   { href: "/admin/images", label: "Every image", icon: "images", group: 1 },
-  { href: "/admin/prices", label: "Prices", icon: "prices", group: 2 },
-  { href: "/admin/packages", label: "Packages", icon: "packages", group: 2 },
+  { href: "/admin/packages", label: "Packages and prices", icon: "packages", group: 2 },
   { href: "/admin/price-guide", label: "Price guide", icon: "guide", group: 2 },
   { href: "/admin/venues", label: "Venues", icon: "venues", group: 3 },
 ];

@@ -105,7 +105,7 @@ const post: BlogPost = {
     { type: "h2", text: "Which package covers the details" },
     {
       type: "p",
-      text: `Detail photos need time on the timeline, so they fit best in a package that covers the day. The Solo (${PT.price.solo}, ${PT.hours.solo} hours) has one hybrid shooter taking photos and video. The Duo (${PT.price.cinema}, ${PT.hours.cinema} hours) has a photographer and a videographer. The Trio (${PT.price.trio}, ${PT.hours.trio} hours) has two photographers and a videographer. There is no travel fee anywhere in Dallas–Fort Worth, and every price is published.`,
+      text: `Detail photos need time on the timeline, so they fit best in a package that covers the day. ${PT.name.solo} (${PT.price.solo}, ${PT.hours.solo} hours) has ${PT.team.solo}. ${PT.name.cinema} (${PT.price.cinema}, ${PT.hours.cinema} hours) has ${PT.team.cinema}. ${PT.name.trio} (${PT.price.trio}, ${PT.hours.trio} hours) has ${PT.team.trio}. There is no travel fee anywhere in Dallas–Fort Worth, and every price is published.`,
     },
     {
       type: "cta",

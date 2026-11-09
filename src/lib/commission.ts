@@ -620,6 +620,7 @@ export function describeChanges(before: PriceBook, after: PriceBook): string[] {
 
 /** Plain names for the wording fields (history + admin). */
 export const CONTENT_FIELD_NAME: Record<keyof PackageContent, string> = {
+  name: "name",
   photos: "photo count",
   photosNote: "photo note",
   cameras: "cameras",

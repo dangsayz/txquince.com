@@ -25,6 +25,7 @@ import {
 import { collectionLabel } from "@/content/packages";
 import { TIER_NAME_EN, usd, type TierId } from "@/lib/commission";
 import { getPriceBook } from "@/lib/pricing";
+import { tierName } from "@/lib/price-text";
 import { isSignedAgreement, signedBalanceDue } from "@/lib/agreement";
 
 /**
@@ -39,9 +40,9 @@ async function balanceDue(booking: Pick<BookingRecord, "metadata"> | null, lang:
 }
 
 /** Package for homepage bookings (stored in metadata); legacy collection otherwise. */
-function tierLabel(booking: BookingRecord): string {
+async function tierLabel(booking: BookingRecord): Promise<string> {
   const tier = booking.metadata?.tier;
-  if (typeof tier === "string" && tier in TIER_NAME_EN) return TIER_NAME_EN[tier as TierId];
+  if (typeof tier === "string" && tier in TIER_NAME_EN) return tierName(await getPriceBook(), tier as TierId);
   return collectionLabel(booking.collection);
 }
 
@@ -221,6 +222,7 @@ export async function sendBookingOperatorEmail(
 
   const dateStr = formatEventDate(booking.event_date);
   const deposit = formatMoney(booking.deposit_amount_cents, booking.currency);
+  const pkgName = await tierLabel(booking);
   const headline = opts.review
     ? "DEPOSIT PAID — needs review (possible date conflict)."
     : `DATE RESERVED — ${deposit} deposit paid.`;
@@ -232,7 +234,7 @@ export async function sendBookingOperatorEmail(
     field("Email", booking.email),
     field("Phone", booking.phone ?? ""),
     field("Event date", dateStr),
-    field("Package", tierLabel(booking)),
+    field("Package", pkgName),
     field("Hours", hoursLabel(booking)),
     field("Coverage", packageLabel(booking.package)),
     field("Deposit paid", deposit),
@@ -250,7 +252,7 @@ export async function sendBookingOperatorEmail(
         ["Email", `<a href="mailto:${esc(booking.email)}">${esc(booking.email)}</a>`],
         ["Phone", booking.phone ? `<a href="tel:${esc(booking.phone)}">${esc(booking.phone)}</a>` : "—"],
         ["Event date", esc(dateStr)],
-        ["Package", esc(tierLabel(booking))],
+        ["Package", esc(pkgName)],
         ["Hours", esc(hoursLabel(booking))],
         ["Coverage", esc(packageLabel(booking.package))],
         ["Deposit paid", esc(deposit)],
@@ -523,7 +525,7 @@ export async function sendBookingRecoveryEmail(
   const firstName = booking.name.split(" ")[0] || "there";
   const siteUrl = getSiteUrl();
   const dateStr = formatEventDate(booking.event_date);
-  const tier = tierLabel(booking);
+  const tier = await tierLabel(booking);
   const tierSuffix = tier && tier !== "—" ? ` (${tier})` : "";
   // Resume with their collection preselected so it's truly two clicks back in.
   const ctaUrl = `${siteUrl}${site.cta.href}`;
@@ -586,7 +588,7 @@ export async function sendReservationRequestOperatorEmail(
   if (!to) return { ok: false, error: "operator-email-not-set" };
 
   const dateStr = formatEventDate(booking.event_date);
-  const tier = tierLabel(booking);
+  const tier = await tierLabel(booking);
   const deposit = formatMoney(booking.deposit_amount_cents, booking.currency);
 
   const rows: [string, string][] = [
@@ -649,7 +651,7 @@ export async function sendReservationRequestClientEmail(
   const firstName = booking.name.split(" ")[0] || "there";
   const siteUrl = getSiteUrl();
   const dateStr = formatEventDate(booking.event_date);
-  const tier = tierLabel(booking);
+  const tier = await tierLabel(booking);
 
   const subject = `${firstName}, I've got your date request — ${dateStr}`;
 
@@ -706,7 +708,7 @@ export async function sendDepositLinkEmail(
 
   const firstName = booking.name.split(" ")[0] || "there";
   const dateStr = formatEventDate(booking.event_date);
-  const tier = tierLabel(booking);
+  const tier = await tierLabel(booking);
   const deposit = (booking.deposit_amount_cents / 100).toLocaleString("en-US", {
     style: "currency",
     currency: (booking.currency || "usd").toUpperCase(),

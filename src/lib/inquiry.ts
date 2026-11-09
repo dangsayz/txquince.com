@@ -26,11 +26,11 @@ export const SERVICE_OPTIONS = [
  */
 const P = PT.price;
 export const BUDGET_OPTIONS = [
-  { value: "portrait", stored: `${P.study} portrait session`, label: `${P.study} — Portrait Session`, labelEs: `${P.study} — Sesión de retratos` },
-  { value: "moments", stored: `${P.moments}+ Just the Moments`, label: `${P.moments}+ — Just the Moments (2+ hours)`, labelEs: `${P.moments}+ — Los Momentos (2+ horas)` },
-  { value: "solo", stored: `${P.solo} The Solo`, label: `${P.solo} — The Solo (1 shooter, photo + video)`, labelEs: `${P.solo} — El Solo (1 persona, foto + video)` },
-  { value: "photo_video", stored: `${P.cinema} The Duo`, label: `${P.cinema} — The Duo (photo + video)`, labelEs: `${P.cinema} — El Dúo (foto + video)` },
-  { value: "trio", stored: `${P.trio} The Trio`, label: `${P.trio} — The Trio (2 photographers + 1 videographer)`, labelEs: `${P.trio} — El Trío (2 fotógrafos + 1 videógrafo)` },
+  { value: "portrait", stored: `${P.study} ${PT.name.study}`, label: `${P.study} — ${PT.name.study}`, labelEs: `${P.study} — ${PT.nameEs.study}` },
+  { value: "moments", stored: `${P.moments}+ ${PT.name.moments}`, label: `${P.moments}+ — ${PT.name.moments} (${PT.hours.moments}+ hours)`, labelEs: `${P.moments}+ — ${PT.nameEs.moments} (${PT.hours.moments}+ horas)` },
+  { value: "solo", stored: `${P.solo} ${PT.name.solo}`, label: `${P.solo} — ${PT.name.solo}, ${PT.team.solo}`, labelEs: `${P.solo} — ${PT.nameEs.solo}, ${PT.teamEs.solo}` },
+  { value: "photo_video", stored: `${P.cinema} ${PT.name.cinema}`, label: `${P.cinema} — ${PT.name.cinema} (${PT.team.cinema})`, labelEs: `${P.cinema} — ${PT.nameEs.cinema} (${PT.teamEs.cinema})` },
+  { value: "trio", stored: `${P.trio} ${PT.name.trio}`, label: `${P.trio} — ${PT.name.trio} (${PT.team.trio})`, labelEs: `${P.trio} — ${PT.nameEs.trio} (${PT.teamEs.trio})` },
 ] as const;
 
 /** The text saved on the inquiry for a chosen budget key, priced with the server's book. */

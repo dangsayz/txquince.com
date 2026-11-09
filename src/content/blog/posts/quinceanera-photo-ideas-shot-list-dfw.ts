@@ -1,5 +1,4 @@
 import type { BlogPost } from "@/content/blog";
-import { BASE_CREW } from "@/lib/commission";
 import { PT } from "@/lib/price-text";
 
 const post: BlogPost = {
@@ -204,7 +203,7 @@ const post: BlogPost = {
     },
     {
       q: "Do you need a second photographer for a quinceañera?",
-      a: `It's not required, but a second artist means two angles at once — someone on her face during the vals while the other catches the crowd, or one on getting-ready details while the other shoots her. At TX Quince the Duo and the Trio include at least one photographer and one videographer — the Trio brings two photographers and a videographer (${BASE_CREW.trio} in all) — which is why nothing important happens off-camera; the Solo gets you photo and video from one shooter with a {{cameras.solo}} camera setup. A coordinator who runs the day can be added for ${PT.addon.coordinator} a day.`,
+      a: `It's not required, but a second artist means two angles at once — someone on her face during the vals while the other catches the crowd, or one on getting-ready details while the other shoots her. At TX Quince ${PT.name.cinema} is ${PT.team.cinema} and ${PT.name.trio} is ${PT.team.trio} — which is why nothing important happens off-camera; ${PT.name.solo} gets you photo and video from one shooter with a {{cameras.solo}} camera setup. A coordinator who runs the day can be added for ${PT.addon.coordinator} a day.`,
     },
     {
       q: "How many edited photos do you get from a quinceañera?",

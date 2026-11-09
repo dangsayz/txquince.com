@@ -22,10 +22,21 @@
  *   session.photos     "30–40"           photos in the dress / save-the-date session
  *   moments.satDays    "30"              Just the Moments Saturday window
  *   plan.hold          "$500"            quince-plan "Hold my date" deposit
+ *
+ * Package wording (edited at /admin/packages), English / Spanish:
+ *   name.<tier>        "The Duo"         nameEs.<tier> "El Dúo"
+ *   team.<tier>        "1 photographer + 1 videographer"   teamEs.<tier>
+ *   highlight.<tier>   "1 minute"        highlightEs.<tier> "1 minuto" (empty = none)
+ *   sessionIn          "The Duo and The Trio"  sessionInEs "El Dúo y El Trío":
+ *                      the packages whose dress session is included
+ *
+ * Never type a package's name, crew, highlight length or hours into copy:
+ * use these tokens (src/content/package-facts.test.ts fails if you do).
  */
 import { RETIRED_PACKAGE_CONTENT, type PackageContent } from "./package-content";
 import {
   ADD_ON_IDS,
+  PUBLIC_TIER_IDS,
   TIER_IDS,
   depositFor,
   extraHourFrom,
@@ -60,7 +71,37 @@ export const PT = {
   sessionPhotos: tok("session.photos"),
   satDays: tok("moments.satDays"),
   planHold: tok("plan.hold"),
+  name: perTier("name"),
+  nameEs: perTier("nameEs"),
+  team: perTier("team"),
+  teamEs: perTier("teamEs"),
+  highlight: perTier("highlight"),
+  highlightEs: perTier("highlightEs"),
+  sessionIn: tok("sessionIn"),
+  sessionInEs: tok("sessionInEs"),
 } as const;
+
+/** A package's live name. */
+export function tierName(book: PriceBook, tier: TierId, lang: "en" | "es" = "en"): string {
+  return contentOf(book, tier).name[lang];
+}
+
+/** "A", "A and B", "A, B and C" (es: "y"). */
+function joinNames(names: string[], and: string): string {
+  if (names.length <= 1) return names[0] ?? "";
+  return `${names.slice(0, -1).join(", ")} ${and} ${names[names.length - 1]}`;
+}
+
+/** The short {photos}/{cameras}/{hours}/{maxhours}/{session} tokens a package's own wording may carry. */
+function fillShort(text: string, book: PriceBook, tier: TierId): string {
+  const c = contentOf(book, tier);
+  return text
+    .replace(/\{photos\}/g, c.photos)
+    .replace(/\{cameras\}/g, c.cameras)
+    .replace(/\{hours\}/g, fmtHours(book.packages[tier].hours))
+    .replace(/\{maxhours\}/g, fmtHours(maxHoursFor(book, tier)))
+    .replace(/\{session\}/g, book.sessionPhotos);
+}
 
 /** A package's wording: the live book for packages on sale, fixed wording for retired ones. */
 export function contentOf(book: PriceBook, tier: TierId): PackageContent {
@@ -80,7 +121,18 @@ export function priceTokenValues(book: PriceBook): Record<string, string> {
     v[`photos.${id}`] = c.photos;
     v[`cameras.${id}`] = c.cameras;
     v[`deposit.${id}`] = usd(depositFor(book, p.price));
+    v[`name.${id}`] = c.name.en;
+    v[`nameEs.${id}`] = c.name.es;
+    v[`team.${id}`] = fillShort(c.team.en, book, id);
+    v[`teamEs.${id}`] = fillShort(c.team.es, book, id);
+    v[`highlight.${id}`] = c.highlight.en;
+    v[`highlightEs.${id}`] = c.highlight.es;
   }
+  // The dress session counts as "included" when a package (other than the
+  // Portrait Session, which IS a session) has a session line.
+  const withSession = PUBLIC_TIER_IDS.filter((id) => id !== "study" && contentOf(book, id).session.en.trim());
+  v["sessionIn"] = joinNames(withSession.map((id) => contentOf(book, id).name.en), "and");
+  v["sessionInEs"] = joinNames(withSession.map((id) => contentOf(book, id).name.es), "y");
   for (const id of ADD_ON_IDS) v[`addon.${id}`] = usd(book.addOns[id]);
   v["price.floor"] = usd(priceFloor(book));
   v["price.ceiling"] = usd(priceCeiling(book));

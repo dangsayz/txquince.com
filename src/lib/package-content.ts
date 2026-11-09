@@ -23,6 +23,8 @@ import type { AddOnId, PublicTierId, TierId } from "./commission";
 export type L = { en: string; es: string };
 
 export type PackageContent = {
+  /** The package's name, as families see it: "The Duo" / "El Dúo". */
+  name: L;
   /** Photo count, the same in both languages: "150+", "200–300". */
   photos: string;
   /** Said after the photo count ("more for each added hour"); empty = nothing. */
@@ -68,6 +70,7 @@ const SESSION_INCLUDED = l("Included after your deposit · {session} photos", "I
 /** The launch wording. Only what the site already promised (Nov 2026). */
 export const DEFAULT_PACKAGE_CONTENT: Record<PublicTierId, PackageContent> = {
   study: {
+    name: l("Portrait Session", "Sesión de retratos"),
     photos: "60",
     photosNote: NONE,
     cameras: "",
@@ -92,6 +95,7 @@ export const DEFAULT_PACKAGE_CONTENT: Record<PublicTierId, PackageContent> = {
     notIncluded: [],
   },
   moments: {
+    name: l("Just the Moments", "Los Momentos"),
     photos: "50+",
     photosNote: l("more for each added hour", "más por cada hora extra"),
     cameras: "2–3",
@@ -127,6 +131,7 @@ export const DEFAULT_PACKAGE_CONTENT: Record<PublicTierId, PackageContent> = {
     ],
   },
   solo: {
+    name: l("The Solo", "El Solo"),
     photos: "150+",
     photosNote: NONE,
     cameras: "2–3",
@@ -162,6 +167,7 @@ export const DEFAULT_PACKAGE_CONTENT: Record<PublicTierId, PackageContent> = {
     ],
   },
   cinema: {
+    name: l("The Duo", "El Dúo"),
     photos: "400+",
     photosNote: NONE,
     cameras: "",
@@ -190,6 +196,7 @@ export const DEFAULT_PACKAGE_CONTENT: Record<PublicTierId, PackageContent> = {
     notIncluded: [l("Printed album", "Álbum impreso"), l("A second photographer", "Un segundo fotógrafo")],
   },
   trio: {
+    name: l("The Trio", "El Trío"),
     photos: "700+",
     photosNote: NONE,
     cameras: "",
@@ -225,6 +232,7 @@ export const DEFAULT_PACKAGE_CONTENT: Record<PublicTierId, PackageContent> = {
  */
 export const RETIRED_PACKAGE_CONTENT: Record<Exclude<TierId, PublicTierId>, PackageContent> = {
   production: {
+    name: l("Full Celebration", "Celebración completa"),
     photos: "700+",
     photosNote: NONE,
     cameras: "",
@@ -253,6 +261,7 @@ export const RETIRED_PACKAGE_CONTENT: Record<Exclude<TierId, PublicTierId>, Pack
     notIncluded: [],
   },
   archive: {
+    name: l("Two-Day Celebration", "Celebración de dos días"),
     photos: "1,000+",
     photosNote: NONE,
     cameras: "",
@@ -333,6 +342,7 @@ const C = CONTENT_LIMITS;
 export const packageContentSchema = (name: string) =>
   z
     .object({
+      name: lang(40, `${name} name`, true),
       photos: text(C.short, `${name} photo count`).min(1, `${name} photo count can't be empty.`),
       photosNote: lang(C.line, `${name} photo note`),
       cameras: text(C.short, `${name} cameras`),
@@ -361,6 +371,7 @@ export const sessionPhotosSchema = text(C.short, "Dress session photo count").mi
 
 /** Every package field, in the order the admin page shows them. */
 export const CONTENT_FIELDS = [
+  "name",
   "team",
   "photos",
   "photosNote",

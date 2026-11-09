@@ -2,7 +2,7 @@ import Link from "next/link";
 import { commissionLinks, commissionsFor } from "@/content/commissions";
 import { matrixFor } from "@/components/txq/data";
 import { getPriceBook } from "@/lib/pricing";
-import { fillDeep } from "@/lib/price-text";
+import { PT, fillDeep } from "@/lib/price-text";
 import { SlotImage } from "@/components/SlotImage";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { getFeaturedImages, getVideos } from "@/lib/content-db";
@@ -19,11 +19,11 @@ const copy = {
     films: "Real celebrations, real videos.",
     filmsIntro: "Watch our work before you ask about your date.",
     collections: "Video packages, clearly priced.",
-    one: "Video comes with every package from the Solo up. The Solo is one shooter with a {{cameras.solo}} camera setup who takes the photos and films at the same time, for the full-length film of her day; the Duo and the Trio put a dedicated videographer from our team on her day, with the full-length film in 4K, a short highlight and short vertical videos for social media. Only need video? Choose video only when you check your date and we'll fit the package to you.",
+    one: `Video comes with every package from ${PT.name.solo} up. ${PT.name.solo} is ${PT.team.solo}, taking the photos and filming at the same time, for the full-length film of her day; ${PT.name.cinema} and ${PT.name.trio} put a dedicated videographer from our team on her day, with the full-length film in 4K, a short highlight and short vertical videos for social media. Only need video? Choose video only when you check your date and we'll fit the package to you.`,
     faq: "Before you reserve",
     questions: [
-      ["Can we book video without photos?", "Yes. Choose video only when you check your date and we'll fit the package to video. Most families get both, and every package from the Solo up includes photos and video."],
-      ["How long is the video?", "The full-length film follows her day, so it has no set length. It's her whole day as it happened: la misa, the venue details and the guests, every presentation in full (the grand entrance, el vals, the surprise dance), every toast in full and 15–20 minutes of the dance floor. A highlight comes with the Duo and the Trio — 1 minute in the Duo, a 3–5 minute highlight film in the Trio — plus short vertical videos for social media. With the Solo, the 3–5 minute Highlight Film can be added."],
+      ["Can we book video without photos?", `Yes. Choose video only when you check your date and we'll fit the package to video. Most families get both, and every package from ${PT.name.solo} up includes photos and video.`],
+      ["How long is the video?", `The full-length film follows her day, so it has no set length. It's her whole day as it happened: la misa, the venue details and the guests, every presentation in full (the grand entrance, el vals, the surprise dance), every toast in full and 15–20 minutes of the dance floor. A highlight comes with ${PT.name.cinema} and ${PT.name.trio} — ${PT.highlight.cinema} in ${PT.name.cinema}, a ${PT.highlight.trio} highlight film in ${PT.name.trio} — plus short vertical videos for social media. With ${PT.name.solo}, the 3–5 minute Highlight Film can be added.`],
       ["Who films her day?", "Your day is covered by our small in-house crew of photographers and videographers, sometimes with Dang or Yvonne, the owners, behind the camera. Every gallery and every film is edited by the owners."],
       ["Do you travel across DFW?", "Yes. We cover quinceañeras across Dallas–Fort Worth, from the church through the reception."],
     ],
@@ -46,11 +46,11 @@ const copy = {
     films: "Celebraciones reales, videos reales.",
     filmsIntro: "Mira nuestro trabajo antes de consultar tu fecha.",
     collections: "Paquetes con video, con precios claros.",
-    one: "El video viene en cada paquete desde el Solo. El Solo es una sola persona con {{cameras.solo}} cámaras, fotógrafo y videógrafo en uno, que toma las fotos y graba al mismo tiempo, para el video completo de su día; el Dúo y el Trío ponen a un videógrafo dedicado de nuestro equipo en su día, con el video completo en 4K, un resumen corto y videos verticales cortos para redes sociales. ¿Solo necesitas video? Elige solo video al consultar tu fecha y ajustamos el paquete para ti.",
+    one: `El video viene en cada paquete desde ${PT.nameEs.solo}. ${PT.nameEs.solo} es ${PT.teamEs.solo}, que toma las fotos y graba al mismo tiempo, para el video completo de su día; ${PT.nameEs.cinema} y ${PT.nameEs.trio} ponen a un videógrafo dedicado de nuestro equipo en su día, con el video completo en 4K, un resumen corto y videos verticales cortos para redes sociales. ¿Solo necesitas video? Elige solo video al consultar tu fecha y ajustamos el paquete para ti.`,
     faq: "Antes de reservar",
     questions: [
-      ["¿Puedo contratar solo video?", "Sí. Elige solo video al consultar tu fecha y ajustamos el paquete al video. La mayoría de las familias elige los dos, y cada paquete desde el Solo incluye fotos y video."],
-      ["¿Cuánto dura el video?", "El video completo sigue su día, así que no tiene una duración fija. Es todo su día tal como pasó: la misa, los detalles del salón y los invitados, cada presentación completa (la entrada, el vals, el baile sorpresa), cada brindis completo y de 15 a 20 minutos de la pista de baile. El Dúo y el Trío traen un resumen —de 1 minuto en el Dúo y de 3 a 5 minutos en el Trío— y videos verticales cortos para redes sociales. Con el Solo, se puede agregar el video resumen de 3 a 5 minutos."],
+      ["¿Puedo contratar solo video?", `Sí. Elige solo video al consultar tu fecha y ajustamos el paquete al video. La mayoría de las familias elige los dos, y cada paquete desde ${PT.nameEs.solo} incluye fotos y video.`],
+      ["¿Cuánto dura el video?", `El video completo sigue su día, así que no tiene una duración fija. Es todo su día tal como pasó: la misa, los detalles del salón y los invitados, cada presentación completa (la entrada, el vals, el baile sorpresa), cada brindis completo y de 15 a 20 minutos de la pista de baile. ${PT.nameEs.cinema} y ${PT.nameEs.trio} traen un resumen —de ${PT.highlightEs.cinema} en ${PT.nameEs.cinema} y de ${PT.highlightEs.trio} en ${PT.nameEs.trio}— y videos verticales cortos para redes sociales. Con ${PT.nameEs.solo}, se puede agregar el video resumen de 3 a 5 minutos.`],
       ["¿Quién graba su día?", "Tu día lo cubre nuestro pequeño equipo de fotógrafos y videógrafos de casa, a veces con Dang o Yvonne, los dueños, detrás de la cámara. Los dueños editan cada galería y cada video."],
       ["¿Trabajan en todo DFW?", "Sí. Cubrimos quinceañeras en todo Dallas–Fort Worth, desde la iglesia hasta la recepción."],
     ],

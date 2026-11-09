@@ -20,8 +20,7 @@ const GROUPS: { title: string; links: { href: string; label: string; what: strin
   {
     title: "Prices and packages",
     links: [
-      { href: "/admin/prices", label: "Prices", what: "What families pay, the deposit and when the rest is due." },
-      { href: "/admin/packages", label: "Packages", what: "What each package includes, in words." },
+      { href: "/admin/packages", label: "Packages and prices", what: "Names, prices, hours, what each package includes, extras and the deposit. One save changes the whole site." },
       { href: "/admin/price-guide", label: "DFW price guide", what: "The public quince price guide, from your lead sheet." },
     ],
   },

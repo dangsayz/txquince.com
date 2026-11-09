@@ -1,5 +1,4 @@
 import type { BlogPost } from "@/content/blog";
-import { BASE_CREW } from "@/lib/commission";
 import { PT } from "@/lib/price-text";
 
 const retainerPct = PT.deposit.percent;
@@ -39,7 +38,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Así suena una buena respuesta: una explicación clara de cuál está incluida, si la otra está disponible y cuánto cuesta si la quiere agregar. No hay un único modelo correcto; lo que importa es que se lo digan con claridad, para que no le sorprenda una sesión que daba por incluida (ni un costo que no había contemplado). Nuestros [paquetes](/es#commissions) detallan exactamente qué cubre cada uno; El Dúo y El Trío, por ejemplo, incluyen una sesión con el vestido o de save-the-date, que se agenda después de pagar el depósito.",
+      text: `Así suena una buena respuesta: una explicación clara de cuál está incluida, si la otra está disponible y cuánto cuesta si la quiere agregar. No hay un único modelo correcto; lo que importa es que se lo digan con claridad, para que no le sorprenda una sesión que daba por incluida (ni un costo que no había contemplado). Nuestros [paquetes](/es#commissions) detallan exactamente qué cubre cada uno; ${PT.sessionInEs}, por ejemplo, incluyen una sesión con el vestido o de save-the-date, que se agenda después de pagar el depósito.`,
     },
     { type: "h2", text: "3. ¿Cuántas fotos editadas entrega y cómo y cuándo las recibo?" },
     {
@@ -48,7 +47,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Así suena una buena respuesta: un rango de entrega y un tiempo de entrega, por escrito. Una galería privada en línea que usted pueda descargar y compartir, una cantidad de fotos acorde a las horas de cobertura, y una fecha a la que pueda darle seguimiento. En El Dúo y El Trío, la película completa viene además con un resumen — de 1 minuto en El Dúo, y un video resumen de 3 a 5 minutos en El Trío —, la versión rápida que va a querer compartir con la familia; con El Solo, el video resumen se puede agregar.",
+      text: `Así suena una buena respuesta: un rango de entrega y un tiempo de entrega, por escrito. Una galería privada en línea que usted pueda descargar y compartir, una cantidad de fotos acorde a las horas de cobertura, y una fecha a la que pueda darle seguimiento. En ${PT.nameEs.cinema} y ${PT.nameEs.trio}, la película completa viene además con un resumen — de ${PT.highlightEs.cinema} en ${PT.nameEs.cinema}, y un video resumen de ${PT.highlightEs.trio} en ${PT.nameEs.trio} —, la versión rápida que va a querer compartir con la familia; con ${PT.nameEs.solo}, el video resumen se puede agregar.`,
     },
     {
       type: "callout",
@@ -61,7 +60,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Así suena una buena respuesta: si el segundo fotógrafo va incluido, si está disponible como complemento o si no se ofrece, y en cuáles paquetes. Con nosotros, El Trío trae dos fotógrafos y un videógrafo, y se puede agregar una coordinadora que dirija el día, por ${PT.addon.coordinator} al día. Son nuestro propio pequeño equipo de fotógrafos y videógrafos de casa, a veces con Dang o Yvonne, los dueños, detrás de la cámara, y cada galería y cada película la editan los dueños. Puede ver los ángulos inversos y los momentos de doble cobertura que hacen posibles en el [portafolio](/portfolio). Si un fotógrafo no puede mostrarle cobertura de dos cámaras, dé por hecho que trabaja solo.`,
+      text: `Así suena una buena respuesta: si el segundo fotógrafo va incluido, si está disponible como complemento o si no se ofrece, y en cuáles paquetes. Con nosotros, ${PT.nameEs.trio} trae ${PT.teamEs.trio}, y se puede agregar una coordinadora que dirija el día, por ${PT.addon.coordinator} al día. Son nuestro propio pequeño equipo de fotógrafos y videógrafos de casa, a veces con Dang o Yvonne, los dueños, detrás de la cámara, y cada galería y cada película la editan los dueños. Puede ver los ángulos inversos y los momentos de doble cobertura que hacen posibles en el [portafolio](/portfolio). Si un fotógrafo no puede mostrarle cobertura de dos cámaras, dé por hecho que trabaja solo.`,
     },
     { type: "h2", text: "5. ¿Me da los derechos de uso e impresión de las fotos?" },
     {
@@ -113,7 +112,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Así suena una buena respuesta: un sí o un no directo, y una respuesta clara sobre quién está detrás de cada cámara. Nosotros ofrecemos foto y video en cada paquete desde El Solo. El Solo es una sola persona con {{cameras.solo}} cámaras (una cámara que lleva encima, una cámara fija de lado y la cámara de fotos), un fotógrafo y videógrafo en uno, así que donde pase algo hay una cámara apuntando, y usted recibe la película completa de su día. El Dúo y El Trío ponen un equipo dedicado de ${BASE_CREW.cinema} a ${BASE_CREW.trio} personas trabajando el mismo día, con la película completa de su día más un resumen corto. Si todavía está decidiendo si vale la pena el video, [foto o video para la quinceañera](/es/blog/foto-o-video-quinceanera) sopesa esa decisión sin rodeos.`,
+      text: `Así suena una buena respuesta: un sí o un no directo, y una respuesta clara sobre quién está detrás de cada cámara. Nosotros ofrecemos foto y video en cada paquete desde ${PT.nameEs.solo}. ${PT.nameEs.solo} es una sola persona con {{cameras.solo}} cámaras (una cámara que lleva encima, una cámara fija de lado y la cámara de fotos), un fotógrafo y videógrafo en uno, así que donde pase algo hay una cámara apuntando, y usted recibe la película completa de su día. ${PT.nameEs.cinema} y ${PT.nameEs.trio} ponen un equipo dedicado a trabajar el mismo día (${PT.teamEs.cinema}, y ${PT.teamEs.trio}, respectivamente), con la película completa de su día más un resumen corto. Si todavía está decidiendo si vale la pena el video, [foto o video para la quinceañera](/es/blog/foto-o-video-quinceanera) sopesa esa decisión sin rodeos.`,
     },
     { type: "h2", text: "Para cerrar" },
     {

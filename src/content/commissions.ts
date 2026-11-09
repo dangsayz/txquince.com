@@ -10,7 +10,7 @@
  * anything public-facing. (content/packages.ts remains only so historic
  * bookings, analytics and admin tools can still label old rows.)
  */
-import { matrixFor, TIERS, tierSummary, type L, type Lang } from "@/components/txq/data";
+import { matrixFor, TIERS, tierNameL, tierSummary, type L, type Lang } from "@/components/txq/data";
 import { depositFor, usd, type PriceBook, type TierId } from "@/lib/commission";
 import { PT } from "@/lib/price-text";
 
@@ -56,7 +56,7 @@ export function commissionsFor(book: PriceBook): Commission[] {
     return {
       id: t.id,
       numeral: t.numeral,
-      name: t.name,
+      name: tierNameL(book, t.id),
       summary: tierSummary(book, t.id),
       price,
       priceLabel: usd(price),
@@ -109,7 +109,7 @@ export const bookingSteps: Record<Lang, BookingStep[]> = {
     },
     {
       title: "Your day, captured",
-      body: "From la misa to the last dance, we capture the whole day. The Duo and the Trio include a dress or save-the-date session, booked after your deposit, so we already know each other on the big day.",
+      body: `From la misa to the last dance, we capture the whole day. ${PT.sessionIn} include a dress or save-the-date session, booked after your deposit, so we already know each other on the big day.`,
     },
   ],
   es: [
@@ -127,7 +127,7 @@ export const bookingSteps: Record<Lang, BookingStep[]> = {
     },
     {
       title: "Tu día, para siempre",
-      body: "De la misa al último baile, capturamos todo el día. El Dúo y el Trío incluyen una sesión con el vestido o de save the date, que se agenda después de tu depósito, así que ya nos conocemos cuando llega el gran día.",
+      body: `De la misa al último baile, capturamos todo el día. ${PT.sessionInEs} incluyen una sesión con el vestido o de save the date, que se agenda después de tu depósito, así que ya nos conocemos cuando llega el gran día.`,
     },
   ],
 };

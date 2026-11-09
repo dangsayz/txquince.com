@@ -158,23 +158,23 @@ const en = {
     items: [
       {
         q: "How much does a quinceañera photographer and videographer cost in Dallas–Fort Worth?",
-        a: `Most DFW quinceañera studios charge between about $1,500 and $6,000. Our prices are all shown above: a Portrait Session is ${P.study}, Just the Moments (one photographer for the presentation and family portraits) starts at ${P.moments} for 2 hours, The Solo (one shooter taking photos and video with a {{cameras.solo}} camera setup) is ${P.solo}, The Duo (one photographer and one videographer) is ${P.cinema}, and The Trio (two photographers and one videographer), the package we recommend for most families, is ${P.trio}. Both the Duo and the Trio include a dress or save-the-date session ({{session.photos}} edited photos) once your deposit is paid.`,
+        a: `Most DFW quinceañera studios charge between about $1,500 and $6,000. Our prices are all shown above: the ${PT.name.study} is ${P.study}, ${PT.name.moments} (${PT.team.moments} for the presentation and family portraits) starts at ${P.moments} for ${PT.hours.moments} hours, ${PT.name.solo}, ${PT.team.solo}, is ${P.solo}, ${PT.name.cinema} (${PT.team.cinema}) is ${P.cinema}, and ${PT.name.trio} (${PT.team.trio}), the package we recommend for most families, is ${P.trio}. ${PT.sessionIn} include a dress or save-the-date session ({{session.photos}} edited photos) once your deposit is paid.`,
       },
       {
         q: "Is photography and film included together?",
-        a: "Yes, in The Solo, The Duo and The Trio, so you get the photos and the full-length film of her day. The Solo is one shooter running a {{cameras.solo}} camera setup, taking photos and filming at the same time; the Duo and the Trio put dedicated photographers and a videographer on the day. The Portrait Session is photos only.",
+        a: `Yes, in ${PT.name.solo}, ${PT.name.cinema} and ${PT.name.trio}, so you get the photos and the full-length film of her day. ${PT.name.solo} is ${PT.team.solo}, taking photos and filming at the same time; ${PT.name.cinema} and ${PT.name.trio} put dedicated photographers and a videographer on the day. The ${PT.name.study} is photos only.`,
       },
       {
         q: "How many photographers and videographers do we get?",
-        a: `It's included in the price: The Solo comes with one hybrid shooter who takes photos and films at once with a {{cameras.solo}} camera setup, The Duo with one photographer and one videographer, and The Trio with two photographers and one videographer. A coordinator who runs the schedule and lines up the court can be added for ${PT.addon.coordinator} a day, so your family can just enjoy it.`,
+        a: `It's included in the price: ${PT.name.solo} comes with ${PT.team.solo}, ${PT.name.cinema} with ${PT.team.cinema}, and ${PT.name.trio} with ${PT.team.trio}. A coordinator who runs the schedule and lines up the court can be added for ${PT.addon.coordinator} a day, so your family can just enjoy it.`,
       },
       {
         q: "How many hours of coverage does a quinceañera need?",
-        a: `Most families choose ${PT.hours.typicalLow} to ${PT.hours.max} hours: getting ready at home, the misa (about an hour), photos between church and the party, then the grand entrance, vals, surprise dance and toasts. The Solo includes ${PT.hours.solo} hours (up to ${SOLO_MAX}), The Duo ${PT.hours.cinema} and The Trio ${PT.hours.trio}, and you can add hours up to ${PT.hours.max} (from ${PT.extra.from} an hour).`,
+        a: `Most families choose ${PT.hours.typicalLow} to ${PT.hours.max} hours: getting ready at home, the misa (about an hour), photos between church and the party, then the grand entrance, vals, surprise dance and toasts. ${PT.name.solo} includes ${PT.hours.solo} hours (up to ${SOLO_MAX}), ${PT.name.cinema} ${PT.hours.cinema} and ${PT.name.trio} ${PT.hours.trio}, and you can add hours up to ${PT.hours.max} (from ${PT.extra.from} an hour).`,
       },
       {
         q: "What is in the full-length film?",
-        a: `Her whole day, as it happened: the misa, the venue and the guests arriving, every presentation in full (the grand entrance, the vals, the surprise dance), every toast in full, and 15 to 20 minutes of the dance floor. Its length follows her day. A short highlight to share comes with it: 1 minute with The Duo, 3 to 5 minutes with The Trio. The Solo's film is cut from its {{cameras.solo}} camera angles, and the Solo and the Duo can add the 3–5 minute highlight film for ${PT.addon.highlight}.`,
+        a: `Her whole day, as it happened: the misa, the venue and the guests arriving, every presentation in full (the grand entrance, the vals, the surprise dance), every toast in full, and 15 to 20 minutes of the dance floor. Its length follows her day. A short highlight to share comes with it: ${PT.highlight.cinema} with ${PT.name.cinema}, ${PT.highlight.trio} with ${PT.name.trio}. ${PT.name.solo}'s film is cut from its {{cameras.solo}} camera angles, and ${PT.name.solo} and ${PT.name.cinema} can add the 3–5 minute highlight film for ${PT.addon.highlight}.`,
       },
       {
         q: "How far in advance should we book?",
@@ -251,7 +251,7 @@ const en = {
     team: (n: number, coordinator: boolean) =>
       n === 1 ? "1 photographer" : `Team of ${n}${coordinator ? " + coordinator" : ""}`,
     /** The Solo: one person shooting photos and video at once. */
-    soloTeam: `1 hybrid shooter · ${PT.cameras.solo} cameras`,
+    soloTeam: PT.team.solo,
     compare: "Compare all packages",
     budgetLink: "Have a budget in mind? See what it covers",
     compareTitle: "Compare all packages",
@@ -284,7 +284,7 @@ const en = {
     welcomeSaved: "We saved your request right where you left off.",
     startOver: "Start over",
     momentsSatShort: `Saturdays open ${PT.satDays} days before for this package`,
-    momentsSatNote: (days: number) => `Just the Moments: Fridays, Sundays and weekdays are open any time. Saturdays open up ${days} days before the date.`,
+    momentsSatNote: (days: number) => `${PT.name.moments}: Fridays, Sundays and weekdays are open any time. Saturdays open up ${days} days before the date.`,
     legendPicked: "Your date",
     pickedPrefix: "Your date:",
     noDate: "No date picked yet.",
@@ -352,7 +352,7 @@ const en = {
       failed: "Something went wrong. Please try again, or text or email us.",
       taken: "Sorry — another family just booked that date. Please pick another.",
       verify: "Please complete the quick check below.",
-      momentsSaturday: (days: number) => `Just the Moments can take a Saturday only within ${days} days of the date. Pick a Friday or Sunday, or another package.`,
+      momentsSaturday: (days: number) => `${PT.name.moments} can take a Saturday only within ${days} days of the date. Pick a Friday or Sunday, or another package.`,
     },
   },
   footer: {
@@ -509,23 +509,23 @@ const es: Copy = {
     items: [
       {
         q: "¿Cuánto cuesta un fotógrafo y videógrafo de quinceañera en Dallas–Fort Worth?",
-        a: `La mayoría de los estudios de quinceañera en DFW cobran entre $1,500 y $6,000. Todos nuestros precios están arriba: la Sesión de retratos cuesta ${P.study}, Los Momentos (un fotógrafo para la presentación y las fotos con la familia) desde ${P.moments} por 2 horas, El Solo (una sola persona que toma fotos y graba con {{cameras.solo}} cámaras) ${P.solo}, El Dúo (un fotógrafo y un videógrafo) ${P.cinema} y El Trío (dos fotógrafos y un videógrafo), el paquete que recomendamos para la mayoría de las familias, ${P.trio}. El Dúo y El Trío incluyen una sesión con el vestido o de save the date ({{session.photos}} fotos editadas) una vez pagado tu depósito.`,
+        a: `La mayoría de los estudios de quinceañera en DFW cobran entre $1,500 y $6,000. Todos nuestros precios están arriba: ${PT.nameEs.study} cuesta ${P.study}, ${PT.nameEs.moments} (${PT.teamEs.moments} para la presentación y las fotos con la familia) desde ${P.moments} por ${PT.hours.moments} horas, ${PT.nameEs.solo}, ${PT.teamEs.solo}, ${P.solo}, ${PT.nameEs.cinema} (${PT.teamEs.cinema}) ${P.cinema} y ${PT.nameEs.trio} (${PT.teamEs.trio}), el paquete que recomendamos para la mayoría de las familias, ${P.trio}. ${PT.sessionInEs} incluyen una sesión con el vestido o de save the date ({{session.photos}} fotos editadas) una vez pagado tu depósito.`,
       },
       {
         q: "¿La foto y el video vienen juntos?",
-        a: "Sí, en El Solo, El Dúo y El Trío, así que tienes las fotos y el video completo de su día. El Solo es una sola persona con {{cameras.solo}} cámaras que toma fotos y graba al mismo tiempo; El Dúo y El Trío ponen fotógrafos y un videógrafo dedicados ese día. La Sesión de retratos es solo de fotos.",
+        a: `Sí, en ${PT.nameEs.solo}, ${PT.nameEs.cinema} y ${PT.nameEs.trio}, así que tienes las fotos y el video completo de su día. ${PT.nameEs.solo} es ${PT.teamEs.solo}, que toma fotos y graba al mismo tiempo; ${PT.nameEs.cinema} y ${PT.nameEs.trio} ponen fotógrafos y un videógrafo dedicados ese día. ${PT.nameEs.study} es solo de fotos.`,
       },
       {
         q: "¿Cuántos fotógrafos y videógrafos incluye?",
-        a: `Viene incluido en el precio: El Solo trae un fotógrafo y videógrafo en uno, que toma fotos y graba a la vez con {{cameras.solo}} cámaras, El Dúo un fotógrafo y un videógrafo, y El Trío dos fotógrafos y un videógrafo. Puedes agregar una coordinadora que lleva el horario y organiza a la corte por ${PT.addon.coordinator} al día, para que tu familia solo disfrute.`,
+        a: `Viene incluido en el precio: ${PT.nameEs.solo} trae ${PT.teamEs.solo}, ${PT.nameEs.cinema} ${PT.teamEs.cinema}, y ${PT.nameEs.trio} ${PT.teamEs.trio}. Puedes agregar una coordinadora que lleva el horario y organiza a la corte por ${PT.addon.coordinator} al día, para que tu familia solo disfrute.`,
       },
       {
         q: "¿Cuántas horas de cobertura necesita una quinceañera?",
-        a: `La mayoría de las familias escogen de ${PT.hours.typicalLow} a ${PT.hours.max} horas: el arreglo en casa, la misa (alrededor de una hora), fotos entre la iglesia y la fiesta, y luego la entrada, el vals, el baile sorpresa y los brindis. El Solo incluye ${PT.hours.solo} horas (hasta ${SOLO_MAX}), El Dúo ${PT.hours.cinema} y El Trío ${PT.hours.trio}, y puedes añadir horas hasta ${PT.hours.max} (desde ${PT.extra.from} la hora).`,
+        a: `La mayoría de las familias escogen de ${PT.hours.typicalLow} a ${PT.hours.max} horas: el arreglo en casa, la misa (alrededor de una hora), fotos entre la iglesia y la fiesta, y luego la entrada, el vals, el baile sorpresa y los brindis. ${PT.nameEs.solo} incluye ${PT.hours.solo} horas (hasta ${SOLO_MAX}), ${PT.nameEs.cinema} ${PT.hours.cinema} y ${PT.nameEs.trio} ${PT.hours.trio}, y puedes añadir horas hasta ${PT.hours.max} (desde ${PT.extra.from} la hora).`,
       },
       {
         q: "¿Qué incluye el video completo?",
-        a: `Todo su día, tal como pasó: la misa, el salón y la llegada de los invitados, cada presentación completa (la entrada, el vals, el baile sorpresa), cada brindis completo y de 15 a 20 minutos de baile. Su duración depende de su día. También recibes un resumen corto para compartir: de 1 minuto con El Dúo y de 3 a 5 minutos con El Trío. El video de El Solo se edita con sus {{cameras.solo}} ángulos de cámara, y El Solo y El Dúo pueden agregar el resumen de 3–5 minutos por ${PT.addon.highlight}.`,
+        a: `Todo su día, tal como pasó: la misa, el salón y la llegada de los invitados, cada presentación completa (la entrada, el vals, el baile sorpresa), cada brindis completo y de 15 a 20 minutos de baile. Su duración depende de su día. También recibes un resumen corto para compartir: de ${PT.highlightEs.cinema} con ${PT.nameEs.cinema} y de ${PT.highlightEs.trio} con ${PT.nameEs.trio}. El video de ${PT.nameEs.solo} se edita con sus {{cameras.solo}} ángulos de cámara, y ${PT.nameEs.solo} y ${PT.nameEs.cinema} pueden agregar el resumen de 3–5 minutos por ${PT.addon.highlight}.`,
       },
       {
         q: "¿Con cuánta anticipación debemos reservar?",
@@ -600,7 +600,7 @@ const es: Copy = {
     hoursBothDays: (h: number) => `${h} horas, ambos días`,
     team: (n: number, coordinator: boolean) =>
       n === 1 ? "1 fotógrafo" : `Equipo de ${n}${coordinator ? " + coordinadora" : ""}`,
-    soloTeam: `1 fotógrafo y videógrafo · ${PT.cameras.solo} cámaras`,
+    soloTeam: PT.teamEs.solo,
     compare: "Comparar paquetes",
     budgetLink: "¿Tienes un presupuesto? Mira qué alcanza",
     compareTitle: "Comparar paquetes",
@@ -633,7 +633,7 @@ const es: Copy = {
     welcomeSaved: "Guardamos tu solicitud justo donde la dejaste.",
     startOver: "Empezar de nuevo",
     momentsSatShort: `Los sábados se abren ${PT.satDays} días antes para este paquete`,
-    momentsSatNote: (days: number) => `Los Momentos: viernes, domingos y entre semana se pueden reservar cuando sea. Los sábados se abren ${days} días antes de la fecha.`,
+    momentsSatNote: (days: number) => `${PT.nameEs.moments}: viernes, domingos y entre semana se pueden reservar cuando sea. Los sábados se abren ${days} días antes de la fecha.`,
     legendPicked: "Tu fecha",
     pickedPrefix: "Tu fecha:",
     noDate: "Aún no eliges fecha.",
@@ -701,7 +701,7 @@ const es: Copy = {
       failed: "Algo salió mal. Inténtalo de nuevo, o escríbenos o mándanos un mensaje.",
       taken: "Lo sentimos — otra familia acaba de reservar esa fecha. Por favor elige otra.",
       verify: "Por favor completa la verificación de abajo.",
-      momentsSaturday: (days: number) => `Los Momentos solo se puede reservar en sábado dentro de los ${days} días antes de la fecha. Elige un viernes o domingo, u otro paquete.`,
+      momentsSaturday: (days: number) => `${PT.nameEs.moments} solo se puede reservar en sábado dentro de los ${days} días antes de la fecha. Elige un viernes o domingo, u otro paquete.`,
     },
   },
   footer: {

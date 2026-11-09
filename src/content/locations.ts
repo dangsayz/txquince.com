@@ -16,7 +16,6 @@
  * unique local content wrapped around the conversion flow — not a doorway page.
  */
 
-import { BASE_CREW } from "@/lib/commission";
 import { PT } from "@/lib/price-text";
 
 const RETAINER_PCT = PT.deposit.percent;
@@ -112,7 +111,7 @@ export const locations: Location[] = [
       },
       {
         q: "Can we do portraits in Las Colinas?",
-        a: "Absolutely. Williams Square and the Las Colinas canals make beautiful portrait backdrops. We can make them the setting for a portrait session before the celebration — the heart of the Portrait Session, and included in the Duo and the Trio as a dress or save-the-date session after the deposit — or fit portraits into the day's timeline.",
+        a: "Absolutely. Williams Square and the Las Colinas canals make beautiful portrait backdrops. We can make them the setting for a portrait session before the celebration — the heart of the {{name.study}}, and included in {{sessionIn}} as a dress or save-the-date session after the deposit — or fit portraits into the day's timeline.",
       },
     ],
     leadEs: "De las parroquias del sur de Irving a las torres de Las Colinas.",
@@ -127,7 +126,7 @@ export const locations: Location[] = [
       },
       {
         q: "¿Podemos hacer fotos en Las Colinas?",
-        a: "Claro que sí. Williams Square y los canales de Las Colinas son fondos preciosos. Ahí podemos hacer una sesión de retrato antes de la celebración —el corazón de la Sesión de retratos, e incluida en el Dúo y el Trío como sesión con el vestido o de save the date después del depósito— o acomodar las fotos en el itinerario del día.",
+        a: "Claro que sí. Williams Square y los canales de Las Colinas son fondos preciosos. Ahí podemos hacer una sesión de retrato antes de la celebración —el corazón de la {{nameEs.study}}, e incluida en {{sessionInEs}} como sesión con el vestido o de save the date después del depósito— o acomodar las fotos en el itinerario del día.",
       },
     ],
   },
@@ -318,32 +317,32 @@ export const locations: Location[] = [
     ],
     lead: "Where DFW families go all-out on the celebration.",
     intro: [
-      `Mansfield families tend to do a quinceañera in full — the complete day, the larger court, the video and the photo album to match. It's exactly the celebration the Trio is built for: a team of ${BASE_CREW.trio} — two photographers and a videographer — the full-length film of her whole day and a printed photo album that do a milestone like this justice.`,
+      `Mansfield families tend to do a quinceañera in full — the complete day, the larger court, the video and the photo album to match. It's exactly the celebration {{name.trio}} is built for: {{team.trio}}, the full-length film of her whole day and a printed photo album that do a milestone like this justice.`,
       "A TX Quince team gives your celebration everything — la misa, portraits around Historic Downtown Mansfield or the Mansfield National area, el vals, and a reception captured start to finish, nothing rushed. Then we, the owners, edit every gallery and film.",
     ],
     faqs: [
       {
         q: "Do you photograph quinceañeras in Mansfield?",
-        a: "Yes — Mansfield is part of my Dallas–Fort Worth service area with no travel fee. It's a natural fit for the Trio, which covers the day with photos, video and a printed photo album included.",
+        a: "Yes — Mansfield is part of my Dallas–Fort Worth service area with no travel fee. It's a natural fit for {{name.trio}}, which covers the day with photos, video and a printed photo album included.",
       },
       {
         q: "Which package do you recommend for a Mansfield quinceañera?",
-        a: `For most celebrations, the Trio (${PT.price.trio}) — ${PT.hours.trio} hours with a team of ${BASE_CREW.trio} (two photographers and a videographer), a dress or save-the-date session after the deposit, the full-length film of her whole day with a 3–5 minute highlight film, {{photos.trio}} edited photos and a 40-page printed photo album. Families who want someone to run the day can add the Day-of Coordinator (${PT.addon.coordinator} a day). For a separate day of portraits in her dress, add the Second Portrait Day (${PT.addon.secondday}). Compare all three on our Packages & Prices page.`,
+        a: `For most celebrations, {{name.trio}} (${PT.price.trio}) — ${PT.hours.trio} hours with {{team.trio}}, a dress or save-the-date session after the deposit, the full-length film of her whole day with a {{highlight.trio}} highlight film, {{photos.trio}} edited photos and a 40-page printed photo album. Families who want someone to run the day can add the Day-of Coordinator (${PT.addon.coordinator} a day). For a separate day of portraits in her dress, add the Second Portrait Day (${PT.addon.secondday}). Compare all three on our Packages & Prices page.`,
       },
     ],
     leadEs: "Donde las familias de DFW se lucen con la celebración.",
     introEs: [
-      `Las familias de Mansfield suelen hacer la quinceañera en grande: el día completo, la corte más grande, el video y el álbum a la altura. Es justo la celebración para la que está hecho el Trío: un equipo de ${BASE_CREW.trio} personas —dos fotógrafos y un videógrafo—, el video completo de todo su día y un álbum de fotos impreso que le hacen justicia a un momento así.`,
+      `Las familias de Mansfield suelen hacer la quinceañera en grande: el día completo, la corte más grande, el video y el álbum a la altura. Es justo la celebración para la que está hecho {{nameEs.trio}}: {{teamEs.trio}}, el video completo de todo su día y un álbum de fotos impreso que le hacen justicia a un momento así.`,
       "Un equipo de TX Quince le da todo a tu celebración: la misa, fotos por el Historic Downtown Mansfield o la zona de Mansfield National, el vals y una recepción capturada de principio a fin, sin prisas. Después, nosotros, los dueños, editamos cada galería y cada video.",
     ],
     faqsEs: [
       {
         q: "¿Fotografías quinceañeras en Mansfield?",
-        a: "Sí — Mansfield es parte de mi área de Dallas–Fort Worth, sin cargo por traslado. Encaja perfecto con el Trío, que cubre el día con fotos, video y un álbum de fotos impreso incluidos.",
+        a: "Sí — Mansfield es parte de mi área de Dallas–Fort Worth, sin cargo por traslado. Encaja perfecto con {{nameEs.trio}}, que cubre el día con fotos, video y un álbum de fotos impreso incluidos.",
       },
       {
         q: "¿Qué paquete recomiendas para una quinceañera en Mansfield?",
-        a: `Para la mayoría de las celebraciones, el Trío (${PT.price.trio}): ${PT.hours.trio} horas con un equipo de ${BASE_CREW.trio} (dos fotógrafos y un videógrafo), una sesión con el vestido o de save the date después del depósito, el video completo de todo su día con un resumen de 3 a 5 minutos, {{photos.trio}} fotos editadas y un álbum de fotos impreso de 40 páginas. Si quieren a alguien que lleve el día, pueden sumar la Coordinadora del día (${PT.addon.coordinator} por día). Para un día aparte de retratos con su vestido, suma el Segundo día de retratos (${PT.addon.secondday}). Compara los tres en nuestra página de Paquetes y precios.`,
+        a: `Para la mayoría de las celebraciones, {{nameEs.trio}} (${PT.price.trio}): ${PT.hours.trio} horas con {{teamEs.trio}}, una sesión con el vestido o de save the date después del depósito, el video completo de todo su día con un resumen de {{highlightEs.trio}}, {{photos.trio}} fotos editadas y un álbum de fotos impreso de 40 páginas. Si quieren a alguien que lleve el día, pueden sumar la Coordinadora del día (${PT.addon.coordinator} por día). Para un día aparte de retratos con su vestido, suma el Segundo día de retratos (${PT.addon.secondday}). Compara los tres en nuestra página de Paquetes y precios.`,
       },
     ],
   },
@@ -362,7 +361,7 @@ export const locations: Location[] = [
     lead: "An established community that celebrates in full.",
     intro: [
       "Farmers Branch pairs a strong, settled Mexican-American community with the means to do a quinceañera properly — and the families here tend to. From the church to portraits at the Historical Park or rose gardens and a full reception, I document the complete day the way it's meant to be remembered.",
-      "Your quinceañera gets a TX Quince team for la misa, el vals, the baile sorpresa, and the whole night, and every gallery and film is edited by us, the owners. The Trio — the package we recommend for most celebrations — puts two photographers and a videographer on exactly this kind of all-day celebration, and the Day-of Coordinator can be added to run the day.",
+      "Your quinceañera gets a TX Quince team for la misa, el vals, the baile sorpresa, and the whole night, and every gallery and film is edited by us, the owners. {{name.trio}} — the package we recommend for most celebrations — puts {{team.trio}} on exactly this kind of all-day celebration, and the Day-of Coordinator can be added to run the day.",
     ],
     faqs: [
       {
@@ -377,7 +376,7 @@ export const locations: Location[] = [
     leadEs: "Una comunidad establecida que celebra en grande.",
     introEs: [
       "Farmers Branch combina una comunidad mexicana fuerte y arraigada con los medios para hacer la quinceañera como se debe, y aquí las familias lo hacen. De la iglesia a las fotos en el Historical Park o los jardines de rosas y una recepción completa, documento todo el día como merece recordarse.",
-      "Tu quinceañera tiene un equipo de TX Quince para la misa, el vals, el baile sorpresa y toda la noche, y nosotros, los dueños, editamos cada galería y cada video. El Trío —el paquete que recomendamos para la mayoría de las celebraciones— pone a dos fotógrafos y un videógrafo justo en este tipo de celebración de día completo, y se puede sumar la Coordinadora del día para que lleve el día.",
+      "Tu quinceañera tiene un equipo de TX Quince para la misa, el vals, el baile sorpresa y toda la noche, y nosotros, los dueños, editamos cada galería y cada video. {{nameEs.trio}} —el paquete que recomendamos para la mayoría de las celebraciones— pone a {{teamEs.trio}} justo en este tipo de celebración de día completo, y se puede sumar la Coordinadora del día para que lleve el día.",
     ],
     faqsEs: [
       {
@@ -405,7 +404,7 @@ export const locations: Location[] = [
     lead: "Where the quinceañera is planned like a destination celebration.",
     intro: [
       "Frisco families tend to plan a quinceañera the way other cities plan a destination wedding — a hotel or resort ballroom, a full court, relatives driving up from across Texas for the weekend. From a morning misa to portraits around The Star or Frisco Square and a reception off the Dallas North Tollway, I photograph the whole tradition, set against the newest backdrops in the metroplex.",
-      `A Frisco celebration gets a full TX Quince crew for the full day, and every gallery and film is edited by us, the owners. The Trio (${PT.price.trio}) is the package we recommend for most families here — ${PT.hours.trio} hours of photo and video with two photographers and a videographer, a dress or save-the-date session after the deposit and a printed photo album. A coordinator who runs the day can be added for ${PT.addon.coordinator} a day.`,
+      `A Frisco celebration gets a full TX Quince crew for the full day, and every gallery and film is edited by us, the owners. {{name.trio}} (${PT.price.trio}) is the package we recommend for most families here — ${PT.hours.trio} hours of photo and video with {{team.trio}}, a dress or save-the-date session after the deposit and a printed photo album. A coordinator who runs the day can be added for ${PT.addon.coordinator} a day.`,
     ],
     faqs: [
       {
@@ -420,7 +419,7 @@ export const locations: Location[] = [
     leadEs: "Donde la quinceañera se planea como una celebración de destino.",
     introEs: [
       "Las familias de Frisco suelen planear la quinceañera como en otras ciudades se planea una boda de destino: un salón de hotel o de resort, la corte completa y parientes que llegan de todo Texas para el fin de semana. Desde la misa de la mañana hasta las fotos por The Star o Frisco Square y una recepción junto al Dallas North Tollway, fotografío la tradición completa con los fondos más nuevos del metroplex.",
-      `Una celebración en Frisco tiene a un equipo completo de TX Quince todo el día, y nosotros, los dueños, editamos cada galería y cada video. El Trío (${PT.price.trio}) es el paquete que recomendamos para la mayoría de las familias aquí: ${PT.hours.trio} horas de foto y video con dos fotógrafos y un videógrafo, una sesión con el vestido o de save the date después del depósito y un álbum de fotos impreso. Se puede sumar una coordinadora que lleve el día por ${PT.addon.coordinator} por día.`,
+      `Una celebración en Frisco tiene a un equipo completo de TX Quince todo el día, y nosotros, los dueños, editamos cada galería y cada video. {{nameEs.trio}} (${PT.price.trio}) es el paquete que recomendamos para la mayoría de las familias aquí: ${PT.hours.trio} horas de foto y video con {{teamEs.trio}}, una sesión con el vestido o de save the date después del depósito y un álbum de fotos impreso. Se puede sumar una coordinadora que lleve el día por ${PT.addon.coordinator} por día.`,
     ],
     faqsEs: [
       {
@@ -448,7 +447,7 @@ export const locations: Location[] = [
     lead: "From the brick of Historic Downtown to the ballrooms of Legacy West.",
     intro: [
       "Plano is really two cities, and a quinceañera here usually touches both — the older east side around Historic Downtown and 15th Street, home to much of the city's Hispanic community, and the west side of Legacy West and the corporate campuses, where the hotel ballrooms are. From a misa on the east side to portraits at Arbor Hills Nature Preserve and a reception near the tollway, I photograph the day the way Plano families actually plan it.",
-      `A TX Quince team covers la misa, the portraits, el vals and the whole reception, and we, the owners, edit every gallery and film. For a day that runs from downtown to Legacy, we recommend the Trio (${PT.price.trio}), with photos and video by one team and a printed photo album at the end.`,
+      `A TX Quince team covers la misa, the portraits, el vals and the whole reception, and we, the owners, edit every gallery and film. For a day that runs from downtown to Legacy, we recommend {{name.trio}} (${PT.price.trio}), with photos and video by one team and a printed photo album at the end.`,
     ],
     faqs: [
       {
@@ -463,7 +462,7 @@ export const locations: Location[] = [
     leadEs: "Del ladrillo del Historic Downtown a los salones de Legacy West.",
     introEs: [
       "Plano en realidad son dos ciudades, y una quinceañera aquí casi siempre toca las dos: el lado este, más antiguo, alrededor del Historic Downtown y la calle 15, donde vive buena parte de la comunidad hispana de la ciudad, y el lado oeste de Legacy West y los corporativos, donde están los salones de hotel. Desde una misa en el lado este hasta las fotos en Arbor Hills Nature Preserve y una recepción cerca del tollway, fotografío el día como de verdad lo planean las familias de Plano.",
-      `Un equipo de TX Quince cubre la misa, las fotos, el vals y toda la recepción, y nosotros, los dueños, editamos cada galería y cada video. Para un día que va del centro a Legacy, recomendamos el Trío (${PT.price.trio}), con fotos y video de un solo equipo y un álbum de fotos impreso al final.`,
+      `Un equipo de TX Quince cubre la misa, las fotos, el vals y toda la recepción, y nosotros, los dueños, editamos cada galería y cada video. Para un día que va del centro a Legacy, recomendamos {{nameEs.trio}} (${PT.price.trio}), con fotos y video de un solo equipo y un álbum de fotos impreso al final.`,
     ],
     faqsEs: [
       {
@@ -491,7 +490,7 @@ export const locations: Location[] = [
     lead: "A hometown square, a growing city, and a celebration done in full.",
     intro: [
       "McKinney has what most of Collin County doesn't: a real historic downtown, built around the old county courthouse on the square, with long-rooted families on the east side and newer ones arriving every year. A McKinney quinceañera often feels like a hometown celebration — the parish, portraits on the square or at Chestnut Square, a reception out toward Craig Ranch — and I photograph every part of it.",
-      `Your celebration gets a full TX Quince crew from the first church frame to the last dance, with every gallery and film edited by us, the owners. For most McKinney families we recommend the Trio (${PT.price.trio}), with a printed album included, and the Day-of Coordinator (${PT.addon.coordinator} a day) when you want someone to run the day; for portraits alone, the Portrait Session (${PT.price.study}) is a ${PT.hours.study}-hour session with one photographer.`,
+      `Your celebration gets a full TX Quince crew from the first church frame to the last dance, with every gallery and film edited by us, the owners. For most McKinney families we recommend {{name.trio}} (${PT.price.trio}), with a printed album included, and the Day-of Coordinator (${PT.addon.coordinator} a day) when you want someone to run the day; for portraits alone, the {{name.study}} (${PT.price.study}) is a ${PT.hours.study}-hour session with {{team.study}}.`,
     ],
     faqs: [
       {
@@ -506,7 +505,7 @@ export const locations: Location[] = [
     leadEs: "Una plaza de pueblo, una ciudad que crece y una celebración completa.",
     introEs: [
       "McKinney tiene lo que casi nadie más tiene en el condado de Collin: un centro histórico de verdad, alrededor del antiguo juzgado del condado en la plaza, con familias de raíces hondas en el lado este y nuevas que llegan cada año. Una quinceañera en McKinney muchas veces se siente como una fiesta de pueblo —la parroquia, fotos en la plaza o en Chestnut Square, la recepción rumbo a Craig Ranch— y yo fotografío cada parte.",
-      `Tu celebración tiene a un equipo completo de TX Quince desde la primera foto en la iglesia hasta el último baile, y nosotros, los dueños, editamos cada galería y cada video. Para la mayoría de las familias de McKinney recomendamos el Trío (${PT.price.trio}), con álbum impreso incluido, y la Coordinadora del día (${PT.addon.coordinator} por día) si quieres a alguien que lleve el día; si solo quieres retratos, la Sesión de retratos (${PT.price.study}) es una sesión de ${PT.hours.study} h con un fotógrafo.`,
+      `Tu celebración tiene a un equipo completo de TX Quince desde la primera foto en la iglesia hasta el último baile, y nosotros, los dueños, editamos cada galería y cada video. Para la mayoría de las familias de McKinney recomendamos {{nameEs.trio}} (${PT.price.trio}), con álbum impreso incluido, y la Coordinadora del día (${PT.addon.coordinator} por día) si quieres a alguien que lleve el día; si solo quieres retratos, la {{nameEs.study}} (${PT.price.study}) es una sesión de ${PT.hours.study} h con {{teamEs.study}}.`,
     ],
     faqsEs: [
       {

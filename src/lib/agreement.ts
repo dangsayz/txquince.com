@@ -22,7 +22,7 @@ import { addOnAllowed,
   type PriceBook,
   type TierId,
 } from "@/lib/commission";
-import { tierById, ADD_ONS, matrixFor, type Lang } from "@/components/txq/data";
+import { tierNameL, ADD_ONS, matrixFor, type Lang } from "@/components/txq/data";
 import { fillDeep } from "@/lib/price-text";
 
 /** Bump when the wording below changes; stored with every signature. */
@@ -192,8 +192,6 @@ export function buildAgreement(input: AgreementInput, book: PriceBook): Agreemen
   const t = fillDeep(T[input.lang], book);
   const q = quoteCommission(book, input.tier, input.addOns, input.hours);
   const crew = normalizeCrew(input.tier, input.crew);
-  // tierById also finds retired packages, so an older booking still gets its agreement.
-  const tier = tierById(input.tier);
   const base = q.baseHours;
   const extraHours = q.hours - base;
   // Same rule as the quote: an extra the package doesn't offer is never listed (or charged).
@@ -218,7 +216,7 @@ export function buildAgreement(input: AgreementInput, book: PriceBook): Agreemen
       ],
     },
     {
-      title: `${t.pkg}: ${tier.name[input.lang]}`,
+      title: `${t.pkg}: ${tierNameL(book, input.tier)[input.lang]}`,
       lines: [
         input.tier === "archive" ? t.hoursArchive(q.hours) : t.hours(q.hours, base),
         input.tier === "solo" ? t.teamSolo : t.team(crew.photo, crew.motion),

@@ -248,7 +248,7 @@ const mandalay: InspoPlace = {
       ],
       bookTitle: "Booking a session at the Mandalay Canal",
       book: [
-        `Book it on its own as our Portrait Session: ${PT.price.study} for a ${PT.hours.study}-hour session with one photographer and {{photos.study}} edited photos. The Duo and the Trio already include a dress or save-the-date session ({{session.photos}} photos), booked after the deposit.`,
+        `Book it on its own as our {{name.study}}: ${PT.price.study} for a ${PT.hours.study}-hour session with {{team.study}} and {{photos.study}} edited photos. {{sessionIn}} already include a dress or save-the-date session ({{session.photos}} photos), booked after the deposit.`,
         "There is no travel fee anywhere in Dallas–Fort Worth, and every price is published before you send anything.",
       ],
       ctaLabel: "See what fits your budget",
@@ -269,7 +269,7 @@ const mandalay: InspoPlace = {
         },
         {
           q: "How do we book a dress session there with TX Quince?",
-          a: `Book the Portrait Session (${PT.price.study}, ${PT.hours.study}-hour session, {{photos.study}} edited photos), or choose the Duo or the Trio, which include a dress or save-the-date session. Current prices are always on txquince.com/budget.`,
+          a: `Book the {{name.study}} (${PT.price.study}, ${PT.hours.study}-hour session, {{photos.study}} edited photos), or choose a package that includes the dress or save-the-date session ({{sessionIn}}). Current prices are always on txquince.com/budget.`,
         },
       ],
       crumbCity: "Irving",
@@ -319,7 +319,7 @@ const mandalay: InspoPlace = {
       ],
       bookTitle: "Cómo reservar una sesión en el Mandalay Canal",
       book: [
-        `Pueden reservarla sola como nuestra Sesión de retratos: ${PT.price.study} por una sesión de ${PT.hours.study} h con un fotógrafo y {{photos.study}} fotos editadas. El Dúo y el Trío ya incluyen una sesión con el vestido o de save the date ({{session.photos}} fotos), que se agenda después del depósito.`,
+        `Pueden reservarla sola como nuestra {{nameEs.study}}: ${PT.price.study} por una sesión de ${PT.hours.study} h con {{teamEs.study}} y {{photos.study}} fotos editadas. {{sessionInEs}} ya incluyen una sesión con el vestido o de save the date ({{session.photos}} fotos), que se agenda después del depósito.`,
         "No cobramos viáticos en ninguna parte de Dallas–Fort Worth, y todos los precios están publicados antes de que nos manden cualquier cosa.",
       ],
       ctaLabel: "Vean qué alcanza con su presupuesto",
@@ -340,7 +340,7 @@ const mandalay: InspoPlace = {
         },
         {
           q: "¿Cómo reservamos una sesión ahí con TX Quince?",
-          a: `Reserven la Sesión de retratos (${PT.price.study}, sesión de ${PT.hours.study} h, {{photos.study}} fotos editadas), o elijan el Dúo o el Trío, que incluyen una sesión con el vestido o de save the date. Los precios actuales siempre están en txquince.com/es/presupuesto.`,
+          a: `Reserven la {{nameEs.study}} (${PT.price.study}, sesión de ${PT.hours.study} h, {{photos.study}} fotos editadas), o elijan un paquete que incluya la sesión con el vestido o de save the date ({{sessionInEs}}). Los precios actuales siempre están en txquince.com/es/presupuesto.`,
         },
       ],
       crumbCity: "Irving",
