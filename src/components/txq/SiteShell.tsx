@@ -41,7 +41,8 @@ export function SiteShell({ children, book }: { children: ReactNode; book: Price
       <SiteProvider urlLang={urlLang} isHome={isHome}>
         <AvailabilityProvider>
           <MotionConfig reducedMotion="user">
-            <Frame key={pathname} dockStartsHidden={isHome}>
+            {/* A client's private review link is not a sales page: no booking dock, not even for a frame. */}
+            <Frame key={pathname} dockStartsHidden={isHome || pathname.startsWith("/review/")}>
               {children}
             </Frame>
           </MotionConfig>
