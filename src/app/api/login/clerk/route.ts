@@ -18,16 +18,19 @@ export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   const asked = req.nextUrl.searchParams.get("next") ?? "";
   const next = /^\/admin(?:[/?#]|$)/.test(asked) && !asked.startsWith("//") ? asked : "/admin";
-  const back = (error: string) => {
+  const back = (error: string, as?: string) => {
     const u = new URL("/admin/login", req.nextUrl.origin);
     u.searchParams.set("error", error);
+    // The signed-in account's own email, so the page can say which Google
+    // account this is (the owner has several) and offer to switch.
+    if (as) u.searchParams.set("as", as);
     return NextResponse.redirect(u, { headers: { "Cache-Control": "no-store" } });
   };
 
   const user = await getSignedInUser();
   if (!user) return back("google");
   const email = user.verifiedEmails.find((e) => isAuthorizedAdminEmail(e));
-  if (!email) return back("not-admin");
+  if (!email) return back("not-admin", user.verifiedEmails[0]);
 
   const token = await createAdminSession(email, req.headers.get("user-agent") ?? "");
   if (!token) return back("google");

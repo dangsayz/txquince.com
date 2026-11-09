@@ -29,8 +29,10 @@ function LoginForm() {
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const linkError = params.get("error");
+  // Which Google account came back as "not a Studio account" (shown, never trusted).
+  const wrongAccount = linkError === "not-admin" ? (params.get("as") ?? "").slice(0, 120) : "";
   const [error, setError] = useState<string | null>(
-    linkError === "not-admin"
+    linkError === "not-admin" && !wrongAccount
       ? "That Google account isn't a Studio account. Use the email on your admin list."
       : linkError === "google"
         ? "Google sign-in didn't finish. Please try again."
@@ -119,6 +121,21 @@ function LoginForm() {
             ? "Sign in with Google, or get a one-time code by email."
             : `If ${email.trim()} is a Studio account, a 6-digit code is on its way. It expires in 10 minutes.`}
         </p>
+
+        {step === "email" && wrongAccount ? (
+          <div role="alert" className="mt-6 rounded-lg border border-line bg-cream p-4">
+            <p className="m-0 text-base leading-7 text-ink">
+              You&apos;re signed in with Google as <strong className="break-all">{wrongAccount}</strong>. That email isn&apos;t a Studio account.
+            </p>
+            <a
+              href={`/logout?to=admin`}
+              className="mt-3 inline-flex min-h-12 w-full items-center justify-center rounded-lg bg-ink px-5 py-2.5 text-base font-medium text-white hover:bg-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+            >
+              Switch Google account
+            </a>
+            <p className="m-0 mt-3 text-sm leading-6 text-ink-soft">This logs that account out here. Then choose your Studio email, or get a code below.</p>
+          </div>
+        ) : null}
 
         {step === "email" ? (
           <>
