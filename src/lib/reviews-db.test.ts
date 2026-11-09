@@ -3,7 +3,7 @@
  * built on, with the real migration — so a typo in a column or a broken
  * one-time rule fails here, not in production.
  */
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -42,7 +42,8 @@ const db = await import("./reviews-db");
 
 beforeEach(() => {
   sqlite = new DatabaseSync(":memory:");
-  sqlite.exec(readFileSync(join(__dirname, "../../migrations/0001_reviews.sql"), "utf8"));
+  const dir = join(__dirname, "../../migrations");
+  for (const f of readdirSync(dir).filter((f) => f.endsWith(".sql")).sort()) sqlite.exec(readFileSync(join(dir, f), "utf8"));
 });
 
 const submission = {
@@ -90,5 +91,56 @@ describe("reviews on D1", () => {
     await db.submitReview(used.slug, submission);
     expect(await db.deleteInvite(used.id)).toBe(false);
     expect((await db.listReviews()).map((r) => r.invite_name)).toEqual(["Claudia"]);
+  });
+
+  it("an update before approval simply replaces the review", async () => {
+    const invite = await db.createInvite({ invite_name: "Maria", daughter_name: null, event_date: null });
+    await db.submitReview(invite.slug, submission);
+    expect(await db.updateFromMom(invite.slug, { ...submission, body: "Even better than I said." })).toBe("replaced");
+    const r = (await db.getReviewById(invite.id))!;
+    expect(r).toMatchObject({ status: "pending", body: "Even better than I said.", edit: null });
+  });
+
+  it("an update after approval waits; the live version stays until the owner decides", async () => {
+    const invite = await db.createInvite({ invite_name: "Maria", daughter_name: null, event_date: null });
+    await db.submitReview(invite.slug, submission);
+    await db.updateReview(invite.id, { status: "approved" });
+
+    expect(await db.updateFromMom(invite.slug, { ...submission, rating: 4, body: "Changed my words.", photos: [] , consent_photos: false })).toBe("queued");
+    let r = (await db.getReviewById(invite.id))!;
+    expect(r.body).toBe(submission.body);
+    expect(r.edit).toMatchObject({ rating: 4, body: "Changed my words.", photo_paths: [] });
+    expect((await db.getPublicReviews())[0].body).toBe(submission.body);
+
+    await db.updateReview(invite.id, { edit: "reject" });
+    r = (await db.getReviewById(invite.id))!;
+    expect(r.edit).toBeNull();
+    expect(r.body).toBe(submission.body);
+
+    await db.updateFromMom(invite.slug, { ...submission, body: "Second try, approved." });
+    await db.updateReview(invite.id, { edit: "approve" });
+    r = (await db.getReviewById(invite.id))!;
+    expect(r).toMatchObject({ status: "approved", body: "Second try, approved.", edit: null });
+    expect((await db.getPublicReviews())[0].body).toBe("Second try, approved.");
+    await expect(db.updateReview(invite.id, { edit: "approve" })).rejects.toThrow();
+  });
+
+  it("an unused link can't be updated", async () => {
+    const invite = await db.createInvite({ invite_name: "Rosa", daughter_name: null, event_date: null });
+    expect(await db.updateFromMom(invite.slug, submission)).toBeNull();
+  });
+
+  it("the owner edits details but never her words, and can delete with photo cleanup", async () => {
+    const invite = await db.createInvite({ invite_name: "Maria", daughter_name: null, event_date: null });
+    await db.submitReview(invite.slug, submission);
+    await db.updateReview(invite.id, { display_name: "Maria Garcia", city: null, event_date: "2026-03-14", notes: "met at Las Lomas" });
+    const r = (await db.getReviewById(invite.id))!;
+    expect(r).toMatchObject({ display_name: "Maria Garcia", city: null, event_date: "2026-03-14", notes: "met at Las Lomas", body: submission.body });
+
+    await db.updateReview(invite.id, { status: "approved" });
+    await db.updateFromMom(invite.slug, { ...submission, photos: ["reviews/x/2.webp"] });
+    expect((await db.deleteReview(invite.id))!.sort()).toEqual(["reviews/x/1.webp", "reviews/x/2.webp"]);
+    expect(await db.getReviewById(invite.id)).toBeNull();
+    expect(await db.deleteReview(invite.id)).toBeNull();
   });
 });

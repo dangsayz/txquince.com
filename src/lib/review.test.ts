@@ -25,6 +25,7 @@ const base: ReviewRecord = {
   featured: false,
   show_photos: true,
   notes: "private",
+  edit: null,
 };
 
 const submit = { rating: 5, body: "Beautiful photos, thank you!", display_name: "Maria G.", consent_publish: true };
@@ -54,6 +55,7 @@ describe("review links", () => {
   it("signs with first name + last initial by default", () => {
     expect(shortName("Maria  de la Garcia")).toBe("Maria G.");
     expect(shortName("Maria")).toBe("Maria");
+    expect(shortName("yvonne sierra")).toBe("Yvonne S.");
   });
 
   it("needs a name for a new link; daughter and date are optional", () => {

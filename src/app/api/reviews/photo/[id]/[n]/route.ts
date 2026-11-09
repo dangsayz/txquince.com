@@ -1,5 +1,6 @@
 /**
  * GET /api/reviews/photo/<review id>/<n>?w=1080 — photo n of a review.
+ * ?set=edit — photo n of the mom's pending update (admin only).
  *
  * Public only once the owner has approved the review, the mom agreed to show
  * her photos, and the owner left "show photos" on. Before that only a signed-in
@@ -43,10 +44,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
   const review = await getReviewById(id).catch(() => null);
   if (!review) return notFound();
-  const key = review.photo_paths[index];
+  const fromEdit = new URL(request.url).searchParams.get("set") === "edit";
+  const key = fromEdit ? review.edit?.photo_paths[index] : review.photo_paths[index];
   if (!key) return notFound();
 
-  const isPublic = review.status === "approved" && review.consent_publish && review.consent_photos && review.show_photos;
+  const isPublic = !fromEdit && review.status === "approved" && review.consent_publish && review.consent_photos && review.show_photos;
   if (!isPublic && !(await requireAdmin())) return notFound();
   // Hidden later = gone within the hour; admin previews are never cached.
   const cache = isPublic ? "public, max-age=3600" : "private, no-store";
