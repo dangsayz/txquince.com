@@ -1,7 +1,7 @@
 /**
  * polls.ts — the one-question polls a blog post can show.
  *
- * A poll stores only a counter per answer (migrations/0005_polls.sql): no
+ * A poll stores only a counter per answer (migrations/0006_polls.sql): no
  * name, no account, no free text. The English and Spanish posts share one
  * poll id, so both languages count into the same result.
  * No server imports: used by the client poll, the API and tests.

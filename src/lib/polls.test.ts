@@ -44,7 +44,7 @@ const poll = getPoll("guest-count")!;
 
 beforeEach(() => {
   sqlite = new DatabaseSync(":memory:");
-  sqlite.exec(readFileSync(join(process.cwd(), "migrations/0005_polls.sql"), "utf8"));
+  sqlite.exec(readFileSync(join(process.cwd(), "migrations/0006_polls.sql"), "utf8"));
 });
 
 describe("poll counters (SQL)", () => {

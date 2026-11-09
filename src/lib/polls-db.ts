@@ -1,6 +1,6 @@
 /**
  * polls-db.ts — SERVER-ONLY counters for blog quick polls (D1 table
- * poll_votes, migrations/0005_polls.sql). Callers check the poll and option
+ * poll_votes, migrations/0006_polls.sql). Callers check the poll and option
  * ids against src/content/polls.ts first.
  */
 import "server-only";
