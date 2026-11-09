@@ -285,7 +285,7 @@ export default async function VenuePage({
                 <span>Ask about a date</span>
                 <span className="tq-arrow" aria-hidden>→</span>
               </Link>
-              <Link href="/budget" className="tq-mono tq-muted">Packages from {commissionsFromLabel} · see what&apos;s included</Link>
+              <Link href="/budget" className="tq-mono tq-muted" style={{ display: "inline-flex", alignItems: "center", minHeight: 44 }}>Packages from {commissionsFromLabel} · see what&apos;s included</Link>
             </div>
           </div>
         </div>

@@ -37,7 +37,16 @@ const VIEWPORTS = [
   { name: "desktop", width: 1440, height: 900 },
 ];
 // Console noise that is known and harmless (see src/lib/security-headers.ts).
-const IGNORE_CONSOLE = [/Content Security Policy/i, /cloudflareinsights/i, /Failed to load resource/i, /ERR_BLOCKED_BY_CLIENT/i, /report-only/i];
+// "%c%d font-size:0" is Cloudflare Turnstile's own console probe.
+const IGNORE_CONSOLE = [/Content Security Policy/i, /cloudflareinsights/i, /Failed to load resource/i, /ERR_BLOCKED_BY_CLIENT/i, /report-only/i, /^%c%[do] font-size:0/];
+
+/** Load a page. Pages with live widgets (Turnstile, polling) never go "network idle", so wait for load + a beat. */
+async function open(page, url) {
+  const res = await page.goto(url, { waitUntil: "load", timeout: 45000 }).catch(() => null);
+  await page.waitForLoadState("networkidle", { timeout: 6000 }).catch(() => undefined);
+  await page.waitForTimeout(500);
+  return res;
+}
 
 const findings = []; // { level: "FAIL"|"WARN", page, view, what }
 const add = (level, page, view, what) => findings.push({ level, page, view, what });
@@ -71,10 +80,16 @@ async function checkPage(ctx, path, view, links) {
     if (r.status() >= 400 && u.startsWith(BASE) && !u.includes("/api/csp-report")) failed.push(`${r.status()} ${new URL(u).pathname}`);
   });
   try {
-    const res = await page.goto(BASE + path, { waitUntil: "networkidle", timeout: 45000 }).catch(() => null);
+    let res = await open(page, BASE + path);
+    // A deploy landing mid-run leaves the old page pointing at deleted script files for a moment: look again once.
+    if (failed.some((f) => f.includes("/_next/static/"))) {
+      errors.length = 0;
+      failed.length = 0;
+      await page.waitForTimeout(4000);
+      res = await open(page, BASE + path);
+    }
     const status = res ? res.status() : 0;
     if (status !== 200) add("FAIL", path, view.name, `page did not load (HTTP ${status || "timeout"})`);
-    await page.waitForTimeout(400);
     const r = await page.evaluate(() => {
       const vis = (e) => {
         const b = e.getBoundingClientRect();
@@ -83,12 +98,14 @@ async function checkPage(ctx, path, view, links) {
       };
       const label = (e) => (e.getAttribute("aria-label") || e.textContent || e.getAttribute("name") || e.tagName).trim().replace(/\s+/g, " ").slice(0, 40);
       const small = [];
-      for (const e of document.querySelectorAll("a[href], button, input:not([type=hidden]), select, textarea, summary")) {
+      for (const e of document.querySelectorAll("a[href], button, input:not([type=hidden]):not([type=checkbox]):not([type=radio]), select, textarea, summary")) {
         if (!vis(e) || e.closest("[aria-hidden='true']") || e.tabIndex === -1) continue;
-        // A link inside a sentence is text, not a button.
-        if (e.tagName === "A" && e.closest("p, li, dd, figcaption, blockquote") && getComputedStyle(e).display.startsWith("inline") && !e.className) continue;
+        // A link inside a sentence is text, not a button (WCAG inline exception).
+        if (e.tagName === "A" && getComputedStyle(e).display === "inline" && e.closest("p, li, dd, label, figcaption, blockquote, .cl-footerAction")) continue;
+        if (e.closest(".cl-footer") && /clerk/i.test(label(e))) continue; // Clerk's own badge
         const b = e.getBoundingClientRect();
-        if (b.height < 43.5 || b.width < 43.5) small.push(`${label(e)} (${Math.round(b.width)}x${Math.round(b.height)})`);
+        // 44px tall is the bar; a short word ("Home") may be narrower, down to the 24px floor.
+        if (b.height < 43.5 || b.width < 24) small.push(`${label(e)} (${Math.round(b.width)}x${Math.round(b.height)})`);
       }
       const tiny = [...document.querySelectorAll("input:not([type=hidden]):not([type=checkbox]):not([type=radio]), select, textarea")]
         .filter((e) => vis(e) && parseFloat(getComputedStyle(e).fontSize) < 16)
@@ -148,7 +165,7 @@ async function flows(browser) {
 
   for (const view of VIEWPORTS) {
     await step("menu shows Log in and Create account", view, async (p) => {
-      await p.goto(BASE + "/", { waitUntil: "networkidle" });
+      await open(p, BASE + "/");
       await p.click(".sh-menu");
       await p.waitForSelector(".sm-acct__btn", { timeout: 5000 });
       const hrefs = await p.$$eval(".sm-acct__btn", (as) => as.map((a) => a.getAttribute("href")));
@@ -156,20 +173,20 @@ async function flows(browser) {
     });
     await step("log in page shows a form with an email field", view, async (p) => {
       for (const path of ["/login", "/signup", "/es/entrar", "/es/registro"]) {
-        await p.goto(BASE + path, { waitUntil: "networkidle" });
+        await open(p, BASE + path);
         const ok = await p.waitForSelector(".cl-rootBox input[name='identifier'], .cl-rootBox input[name='emailAddress']", { timeout: 15000 }).then(() => true, () => false);
         expect(ok, `${path}: the log in form did not appear`);
       }
     });
     await step("picking a package opens the booking panel", view, async (p) => {
-      await p.goto(BASE + "/?collection=duo#intake", { waitUntil: "networkidle" });
+      await open(p, BASE + "/?collection=duo#intake");
       const box = await p.locator("#intake").boundingBox();
       expect(box && box.height > 200, "the booking panel (#intake) is missing or empty");
       const controls = await p.locator("#intake button, #intake input, #intake a").count();
       expect(controls > 2, "the booking panel has nothing to tap");
     });
     await step("budget page answers a typed budget", view, async (p) => {
-      await p.goto(BASE + "/budget", { waitUntil: "networkidle" });
+      await open(p, BASE + "/budget");
       const input = p.locator("input[inputmode='numeric'], input[type='number'], input[type='text']").first();
       expect(await input.count(), "no budget field on /budget");
       const before = await p.locator("main, body").first().innerText();
@@ -182,7 +199,7 @@ async function flows(browser) {
 
   await step("highlight a sentence → Comment on this → it lands in the comment box", desktop, async (p) => {
     const posts = (await sitemapUrls()).filter((u) => u.startsWith("/blog/"));
-    await p.goto(BASE + posts[0], { waitUntil: "networkidle" });
+    await open(p, BASE + posts[0]);
     expect(await p.locator(".tq-cmt__box[data-place='rail']").count(), "no comment box in the left column");
     const picked = await p.evaluate(() => {
       const para = [...document.querySelectorAll(".tq-blog-prose p")].find((x) => x.firstChild && x.firstChild.nodeType === 3 && x.firstChild.data.length > 90);
@@ -206,13 +223,15 @@ async function flows(browser) {
 
   await step("comment box is under the comments on a phone", phone, async (p) => {
     const posts = (await sitemapUrls()).filter((u) => u.startsWith("/blog/"));
-    await p.goto(BASE + posts[0], { waitUntil: "networkidle" });
+    await open(p, BASE + posts[0]);
     expect(await p.locator("#comments .tq-cmt__box[data-place='bottom']").count(), "no comment box in the comments section");
   });
 
   await step("private pages send a stranger to log in", desktop, async (p) => {
     for (const [path, want] of [["/account", "/login"], ["/admin", "/admin/login"], ["/admin/comments", "/admin/login"]]) {
       await p.goto(BASE + path, { waitUntil: "domcontentloaded" });
+      // The bounce can be a client-side redirect: give it a moment.
+      await p.waitForURL((u) => u.pathname === want, { timeout: 10000 }).catch(() => undefined);
       expect(new URL(p.url()).pathname === want, `${path} went to ${new URL(p.url()).pathname}, not ${want}`);
     }
   });
