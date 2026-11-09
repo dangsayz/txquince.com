@@ -10,13 +10,16 @@
  *   npx wrangler deploy
  *   npx wrangler secret put CRON_SECRET   # must match the app's CRON_SECRET env
  *
- * Schedule lives in wrangler.jsonc (triggers.crons). The matching app route is
- * /api/cron/followups, which 401s unless this exact secret is presented — so
- * nothing sends until both secrets are set.
+ * Schedule lives in wrangler.jsonc (triggers.crons). The app routes it calls
+ * (/api/cron/followups, /api/cron/booking-recovery, /api/cron/review-requests)
+ * 401 unless this exact secret is presented — so nothing sends until both
+ * secrets are set.
  */
 interface Env {
   TARGET_URL: string;
   CRON_SECRET: string;
+  /** "on" also runs lead follow-ups + abandoned-booking recovery (emails leads). Owner's call; off until he says so. */
+  LEAD_EMAILS?: string;
 }
 
 interface Ctx {
@@ -43,8 +46,12 @@ export default {
 
     ctx.waitUntil(
       Promise.all([
-        ping("/api/cron/followups", "followups-cron"),
-        ping("/api/cron/booking-recovery", "booking-recovery-cron"),
+        // Paid bookings 30–60 days after the event get their own review link.
+        // Once per booking (bookings.review_request_sent_at), max 50 per run.
+        ping("/api/cron/review-requests", "review-requests-cron"),
+        ...(env.LEAD_EMAILS === "on"
+          ? [ping("/api/cron/followups", "followups-cron"), ping("/api/cron/booking-recovery", "booking-recovery-cron")]
+          : []),
       ]).then(() => undefined),
     );
   },

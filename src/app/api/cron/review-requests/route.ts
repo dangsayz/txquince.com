@@ -7,8 +7,8 @@
  * involved. If the email fails, the link is deleted so nothing dangles, and
  * the booking is retried on the next run.
  *
- * Authenticated by CRON_SECRET. Not on a schedule yet: the cron Worker only
- * calls it once the owner turns it on (cron-worker/src/index.ts).
+ * Authenticated by CRON_SECRET. Called hourly by the cron Worker
+ * (cron-worker/src/index.ts); turned on by the owner on 2026-11-09.
  */
 import { NextResponse, type NextRequest } from "next/server";
 import { getDb, isDbConfigured } from "@/lib/db";
