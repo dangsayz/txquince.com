@@ -116,7 +116,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "A dress session is a calmer day than the party, with time for every frame. Tell us your date and the garden you want, and we will tell you what fits. Text or call (945) 200-1939.",
+      text: "A dress session is a calmer day than the party, with time for every frame. Tell us your date and the garden you want, and we will tell you what fits. Text or call (972) 914-8617.",
     },
     {
       type: "cta",

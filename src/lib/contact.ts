@@ -33,7 +33,7 @@ export const CONTACT_COPY = {
     groupLabel: "Text, WhatsApp or call us",
     /** Small line under the buttons. */
     note: `${site.contact.phone} · English or Spanish`,
-    /** The one-line prompt ("Prefer to text? (945) 200-1939"). */
+    /** The one-line prompt ("Prefer to text? (972) 914-8617"). */
     prefer: "Prefer to text?",
     orWhatsapp: "or WhatsApp",
   },
@@ -51,12 +51,12 @@ export const CONTACT_COPY = {
   },
 } as const;
 
-/** `sms:+19452001939` — opens the phone's messages app. */
+/** `sms:+19729148617` — opens the phone's messages app. */
 export function smsHref(): string {
   return `sms:${site.contact.phoneE164}`;
 }
 
-/** `tel:+19452001939`. */
+/** `tel:+19729148617`. */
 export function telHref(): string {
   return `tel:${site.contact.phoneE164}`;
 }

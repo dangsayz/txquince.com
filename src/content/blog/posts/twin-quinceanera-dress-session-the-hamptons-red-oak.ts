@@ -99,7 +99,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Planning a quince for twins? Tell us your date and what you have in mind for the dress session, and we will help you plan the shots for both girls. Text or call (945) 200-1939.",
+      text: "Planning a quince for twins? Tell us your date and what you have in mind for the dress session, and we will help you plan the shots for both girls. Text or call (972) 914-8617.",
     },
     {
       type: "cta",

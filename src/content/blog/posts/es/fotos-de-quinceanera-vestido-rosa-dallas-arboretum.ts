@@ -117,7 +117,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "La sesión del vestido es un día más tranquilo que la fiesta, con tiempo para cada foto. Cuéntanos tu fecha y el jardín que quieres, y te decimos qué te conviene. Manda mensaje o llama al (945) 200-1939.",
+      text: "La sesión del vestido es un día más tranquilo que la fiesta, con tiempo para cada foto. Cuéntanos tu fecha y el jardín que quieres, y te decimos qué te conviene. Manda mensaje o llama al (972) 914-8617.",
     },
     {
       type: "cta",
