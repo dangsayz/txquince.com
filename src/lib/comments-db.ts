@@ -113,6 +113,29 @@ export async function countPendingComments(): Promise<number> {
   }
 }
 
+/** Per post: comments all time, waiting, and written since `sinceIso` (hidden left out). */
+export async function countCommentsByPost(sinceIso: string): Promise<{ post_slug: string; lang: CommentLang; total: number; pending: number; recent: number }[]> {
+  const db = await getD1();
+  if (!db) return [];
+  try {
+    const { results } = await db
+      .prepare(
+        "SELECT post_slug, lang, COUNT(*) AS total, SUM(status = 'pending') AS pending, SUM(created_at >= ?) AS recent FROM blog_comments WHERE status != 'hidden' GROUP BY post_slug, lang",
+      )
+      .bind(sinceIso)
+      .all<Row>();
+    return results.map((r) => ({
+      post_slug: String(r.post_slug),
+      lang: r.lang === "es" ? "es" : "en",
+      total: Number(r.total ?? 0),
+      pending: Number(r.pending ?? 0),
+      recent: Number(r.recent ?? 0),
+    }));
+  } catch {
+    return [];
+  }
+}
+
 export async function getComment(id: string): Promise<CommentRecord | null> {
   const db = await requireD1();
   const row = await db.prepare("SELECT * FROM blog_comments WHERE id = ?").bind(id).first<Row>();

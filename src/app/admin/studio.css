@@ -578,3 +578,8 @@ a:hover > .st-arrow {
   .vb-stats > div:nth-child(1) dd, .vb-stats > div:nth-child(2) dd, .vb-stats > div:nth-child(4) dd { text-align: right; }
   .vb-depth, .vb-taps { grid-column: auto; order: 0; }
 }
+/* Your blog (components/admin/TodayPanels.tsx) reuses the rows above with five columns. */
+@media (min-width: 1024px) {
+  .vb-head.bp-cols,
+  .vb-row.bp-cols { grid-template-columns: minmax(0, 2.2fr) 4.5rem 7rem minmax(9rem, 1fr) 6rem; }
+}
