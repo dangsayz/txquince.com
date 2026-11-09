@@ -64,3 +64,9 @@
 @media (prefers-reduced-motion: reduce) {
   .tq-waf { transition: none; transform: none; }
 }
+
+/* Phones: the dock carries the contact button (text, WhatsApp, call, email,
+   Instagram), so the capsule only floats where there is no dock. */
+@media (max-width: 639px) {
+  .tq-waf { display: none; }
+}

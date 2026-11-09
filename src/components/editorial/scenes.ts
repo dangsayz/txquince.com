@@ -88,7 +88,7 @@ export function useScenes(rootRef: RefObject<HTMLElement | null>) {
         );
 
         q('[data-ed="lines"]').forEach((block) =>
-          gsap.fromTo(block.querySelectorAll("[data-line]"), { opacity: 0.25 }, { opacity: 1, ease: "none", stagger: 0.35, scrollTrigger: { trigger: block, start: "top 96%", end: "top 50%", scrub: true } }),
+          gsap.fromTo(block.querySelectorAll("[data-line]"), { opacity: 0.45 }, { opacity: 1, ease: "none", stagger: 0.35, scrollTrigger: { trigger: block, start: "top 96%", end: "top 60%", scrub: true } }),
         );
 
         q('[data-ed="band"]').forEach((band) =>
