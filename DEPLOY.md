@@ -10,7 +10,7 @@ Hosting is **Cloudflare Workers via OpenNext** (mirrors quincenetwork.com).
 ```bash
 npx wrangler login                 # auth to the Cloudflare account (one time)
 npm run preview:cloudflare         # optional: local Workers preview before shipping
-npm run deploy:cloudflare          # builds + deploys to Cloudflare
+npm run deploy:cloudflare          # installs packages, builds + deploys to Cloudflare
 ```
 
 - Worker name: `txquince` (see `wrangler.jsonc`).
