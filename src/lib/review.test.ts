@@ -44,9 +44,10 @@ describe("review links", () => {
   });
 
   it("builds the copy-paste message with the link in it, in both languages", () => {
-    const msg = inviteMessage({ invite_name: "Maria Garcia", daughter_name: "Ana" }, "https://txquince.com/review/abc23defgh");
+    const msg = inviteMessage({ invite_name: "maria Garcia", daughter_name: "ana" }, "https://txquince.com/review/abc23defgh");
     expect(msg).toContain("Hi Maria!");
     expect(msg).toContain("¡Hola Maria!");
+    expect(msg).toContain("Ana’s quinceañera");
     expect(msg).toContain("https://txquince.com/review/abc23defgh");
   });
 

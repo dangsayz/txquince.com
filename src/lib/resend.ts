@@ -757,7 +757,7 @@ export async function sendDepositLinkEmail(
   }
 }
 
-/** Existing post-event review request; called only by the authenticated cron. */
+/** Post-event review request with the mom's own one-time /review link; called only by the authenticated cron. */
 export async function sendReviewRequestEmail(
   booking: BookingRecord,
   reviewUrl: string,
@@ -771,7 +771,7 @@ export async function sendReviewRequestEmail(
     "",
     "Thank you for inviting us to be part of her quinceañera. We hope the photographs and video bring the day back every time you see them.",
     "",
-    "If you have a moment, would you share your experience with other families? Your honest review helps them choose with confidence:",
+    "If you have a moment, would you share your experience with other families? Your honest review helps them choose with confidence. You can add a photo or two from your gallery too. This link is just for you:",
     reviewUrl,
     "",
     "Thank you again,",
@@ -786,7 +786,7 @@ export async function sendReviewRequestEmail(
       text,
       html: followupHtml({
         firstName,
-        bodyHtml: `<p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">Thank you for inviting us to be part of her quinceañera. We hope the photographs and video bring the day back every time you see them.</p><p style="margin:0;font-size:15px;line-height:1.7;color:#56504a">If you have a moment, would you share your experience with other families? Your honest review helps them choose with confidence.</p>`,
+        bodyHtml: `<p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">Thank you for inviting us to be part of her quinceañera. We hope the photographs and video bring the day back every time you see them.</p><p style="margin:0;font-size:15px;line-height:1.7;color:#56504a">If you have a moment, would you share your experience with other families? Your honest review helps them choose with confidence. You can add a photo or two from your gallery too.</p>`,
         ctaUrl: reviewUrl,
         ctaLabel: "Share your experience",
       }),
