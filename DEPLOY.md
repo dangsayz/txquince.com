@@ -38,7 +38,7 @@ for runtime where noted):
 ```bash
 npx wrangler secret put SUPABASE_URL
 npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
-npx wrangler secret put ADMIN_EMAILS            # dangzr1@gmail.com,dangxaoj@gmail.com
+npx wrangler secret put ADMIN_EMAILS            # dangzr1@gmail.com,txquince@gmail.com (Studio login allowlist)
 npx wrangler secret put CLERK_SECRET_KEY        # Quince Network app, PRODUCTION secret (sk_live_…)
 npx wrangler secret put RESEND_API_KEY
 npx wrangler secret put OPERATOR_NOTIFY_EMAIL
