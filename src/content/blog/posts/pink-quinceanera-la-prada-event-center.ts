@@ -84,7 +84,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Planning a pink quince and want the details covered? Tell us your date and venue, and we will help you plan when each photo happens. Text or call (945) 200-1939.",
+      text: "Planning a pink quince and want the details covered? Tell us your date and venue, and we will help you plan when each photo happens. Text or call (972) 914-8617.",
     },
     {
       type: "cta",

@@ -104,7 +104,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Thinking about a garden session for your daughter's quince? Tell us your date and the colors of her gown, and we will help you plan the flow. Text or call (945) 200-1939.",
+      text: "Thinking about a garden session for your daughter's quince? Tell us your date and the colors of her gown, and we will help you plan the flow. Text or call (972) 914-8617.",
     },
     {
       type: "cta",

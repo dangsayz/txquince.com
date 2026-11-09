@@ -31,7 +31,8 @@ function track(kind: ContactKind, placement: string) {
   return () => trackEvent(CONTACT_EVENT[kind], placement);
 }
 
-function Icon({ kind }: { kind: ContactKind }) {
+/** The Text / WhatsApp / Call line icon (decorative). */
+export function ContactIcon({ kind }: { kind: ContactKind }) {
   const common = {
     width: 18,
     height: 18,
@@ -105,7 +106,7 @@ export function ContactButtons({
                 onClick={track(kind, placement)}
                 {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
               >
-                <Icon kind={kind} />
+                <ContactIcon kind={kind} />
                 <span>{label[kind]}</span>
               </a>
             </li>
@@ -118,7 +119,7 @@ export function ContactButtons({
 }
 
 /**
- * One quiet line: "Prefer to text? (945) 200-1939 · or WhatsApp". For places
+ * One quiet line: "Prefer to text? (972) 914-8617 · or WhatsApp". For places
  * where a full button row would crowd the main action (the booking panel).
  */
 export function ContactLine({ lang, placement, className }: { lang: ContactLang; placement: string; className?: string }) {

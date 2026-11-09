@@ -85,7 +85,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "¿Estás planeando unos quince en rosa y quieres que no se escape ningún detalle? Cuéntanos tu fecha y tu salón, y te ayudamos a planear cuándo va cada foto. Mándanos mensaje o llámanos al (945) 200-1939.",
+      text: "¿Estás planeando unos quince en rosa y quieres que no se escape ningún detalle? Cuéntanos tu fecha y tu salón, y te ayudamos a planear cuándo va cada foto. Mándanos mensaje o llámanos al (972) 914-8617.",
     },
     {
       type: "cta",

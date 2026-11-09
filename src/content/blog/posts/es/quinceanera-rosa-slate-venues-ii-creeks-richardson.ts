@@ -113,7 +113,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "¿Estás planeando una quince en rosa? Cuéntanos tu fecha y tu salón, y te ayudamos a planear los retratos y las fotos de decoración del día. Manda un mensaje o llama al (945) 200-1939.",
+      text: "¿Estás planeando una quince en rosa? Cuéntanos tu fecha y tu salón, y te ayudamos a planear los retratos y las fotos de decoración del día. Manda un mensaje o llama al (972) 914-8617.",
     },
     {
       type: "cta",

@@ -113,7 +113,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "¿Quieres fotos así en la quince de tu hija? Cuéntanos tu fecha y tu salón, y te decimos qué se ajusta a tus planes. Manda un mensaje o llama al (945) 200-1939.",
+      text: "¿Quieres fotos así en la quince de tu hija? Cuéntanos tu fecha y tu salón, y te decimos qué se ajusta a tus planes. Manda un mensaje o llama al (972) 914-8617.",
     },
     {
       type: "cta",

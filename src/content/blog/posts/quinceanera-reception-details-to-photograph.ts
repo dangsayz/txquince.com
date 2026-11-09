@@ -116,7 +116,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Prefer to talk it through? [Text](sms:+19452001939) or [call](tel:+19452001939) (945) 200-1939, in English or Spanish.",
+      text: "Prefer to talk it through? [Text](sms:+19729148617) or [call](tel:+19729148617) (972) 914-8617, in English or Spanish.",
     },
   ],
   faqs: [

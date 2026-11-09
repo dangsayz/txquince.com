@@ -112,7 +112,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Want photos like these at your daughter's quince? Tell us your date and venue, and we will tell you what fits your plans. Text or call (945) 200-1939.",
+      text: "Want photos like these at your daughter's quince? Tell us your date and venue, and we will tell you what fits your plans. Text or call (972) 914-8617.",
     },
     {
       type: "cta",

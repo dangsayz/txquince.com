@@ -101,7 +101,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "¿Estás planeando la quince de tus gemelas? Cuéntanos tu fecha y lo que tienes en mente para la sesión de vestido, y te ayudamos a planear las fotos de las dos. Manda un mensaje o llama al (945) 200-1939.",
+      text: "¿Estás planeando la quince de tus gemelas? Cuéntanos tu fecha y lo que tienes en mente para la sesión de vestido, y te ayudamos a planear las fotos de las dos. Manda un mensaje o llama al (972) 914-8617.",
     },
     {
       type: "cta",
