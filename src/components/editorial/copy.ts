@@ -55,6 +55,7 @@ export const ED = {
       askBody: "Text it to us. We reply within a day, in English or Spanish.",
       where: "Where we work",
     },
+    steps: { title: "How booking works" },
     text: "Text",
   },
   es: {
@@ -109,6 +110,7 @@ export const ED = {
       askBody: "Mándanosla por texto. Respondemos en un día, en español o inglés.",
       where: "Dónde trabajamos",
     },
+    steps: { title: "Cómo reservar" },
     text: "Texto",
   },
 } as const;

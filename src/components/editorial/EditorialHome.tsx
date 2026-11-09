@@ -23,6 +23,7 @@ import { ED } from "./copy";
 import { BAND_VIDEO, DETAILS, FEATURE_STILL, HERO, JOURNAL_PHOTO, JOURNAL_PHOTO_FALLBACK } from "./media";
 import { LazyVideo } from "./LazyVideo";
 import { Favorites } from "./Favorites";
+import { Steps, Story } from "./Story";
 import { SocialIcon } from "@/components/SocialIcon";
 import { VenueStrip } from "@/components/venue-strip/VenueStrip";
 import type { Favorite } from "@/lib/favorites";
@@ -111,12 +112,12 @@ export function EditorialHome({
   return (
     <div ref={rootRef} className="ed">
       <Hero overrides={overrides} />
-      <Statement />
-      <VenueStrip lang={lang} galleries={work.length ? work : galleries} />
-      <FavoritesSection favorites={favorites} />
-      <Band films={films} />
-      <Collage galleries={galleries} />
+      {/* Proof, then the price, then how to book: the browsing sections
+          (venues, galleries, blog) come after the questions. */}
+      <Story />
       <Feature />
+      <Band films={films} />
+      <FavoritesSection favorites={favorites} />
       <ReviewStrip reviews={reviews} lang={lang} />
       <Packages>
         <Intake ref={intakeRef} pickFromList="commissions" />
@@ -124,6 +125,8 @@ export function EditorialHome({
       <MomsAsk />
       {/* After the questions: "still unsure? tell us your budget". */}
       <BudgetCta placement="home" />
+      <VenueStrip lang={lang} galleries={work.length ? work : galleries} />
+      <Collage galleries={galleries} />
       <JournalRow journal={journal} />
       <WhereWeWork cities={cities} />
       <WhatsAppFloat lang={lang} hidden={intakeOnScreen} />
@@ -177,45 +180,22 @@ function Hero({ overrides }: { overrides: HomeOverrides }) {
             <a href={homeHref("#commissions")} className="ed-btn ed-btn--light">
               {e.reserve}
             </a>
-            <p className="ed-hero__note">{e.heroNote(money(priceFloor(book)))}</p>
+            <a
+              href={whatsappHref(lang)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ed-btn ed-btn--glass"
+              onClick={() => trackEvent(CONTACT_EVENT.whatsapp, "hero")}
+            >
+              <SocialIcon name="whatsapp" /> {e.heroWhatsapp}
+            </a>
           </div>
-          <ul className="ed-hero__social">
-            <li>
-              <a href={site.social.youtube} target="_blank" rel="noopener noreferrer">
-                <SocialIcon name="youtube" /> {e.heroFilms}
-              </a>
-            </li>
-            <li>
-              <a href={site.social.instagram} target="_blank" rel="noopener noreferrer">
-                <SocialIcon name="instagram" /> @txquince
-              </a>
-            </li>
-            <li>
-              <a href={whatsappHref(lang)} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent(CONTACT_EVENT.whatsapp, "hero")}>
-                <SocialIcon name="whatsapp" /> {e.heroWhatsapp}
-              </a>
-            </li>
+          <ul className="ed-hero__facts">
+            {[...e.heroNote(money(priceFloor(book))).split(" · "), t.editorial.principles[1].title].map((fact) => (
+              <li key={fact}>{fact}</li>
+            ))}
           </ul>
         </div>
-      </div>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Statement                                                           */
-/* ------------------------------------------------------------------ */
-
-function Statement() {
-  const { t, lang } = useSite();
-  const s = ED[lang].statement;
-  return (
-    <section id="editorial" className="ed-statement" aria-labelledby="ed-statement-title">
-      <div className="ed-statement__in" data-ed="drift">
-        <h2 id="ed-statement-title" className="ed-display ed-display--lg">
-          {s.title}
-        </h2>
-        <p className="ed-statement__body">{t.editorial.manifesto}</p>
       </div>
     </section>
   );
@@ -565,6 +545,7 @@ function Packages({ children }: { children: ReactNode }) {
           })}
         </ul>
         <p className="ed-crew">{p.crew}</p>
+        <Steps />
         <div className="ed-panel">
           <h3 className="ed-display ed-display--sm">{p.panelTitle}</h3>
           <p className="ed-dek">{p.panelDek}</p>
