@@ -17,11 +17,10 @@
  *   - images: same origin (/api/img, /api/photos/media), YouTube posters, the
  *     R2 public media domain, the Supabase origin (legacy storage URLs)
  *   - connect: same origin APIs, Supabase (legacy storage), Clerk, the analytics beacon
- *   - Clerk (shared Quince Network accounts; txquince.com is a satellite):
- *     its script and API come from clerk.txquince.com (this site's Frontend
- *     API) and clerk.quincenetwork.com (the primary), avatars from
- *     img.clerk.com, bot checks from Cloudflare Turnstile (already allowed).
- *     Loaded only on /login, /logout, /admin and for signed-in commenters.
+ *   - Clerk (TX Quince's own app): script, UI and API from clerk.txquince.com
+ *     (this site's Frontend API), avatars from img.clerk.com, bot checks from
+ *     Cloudflare Turnstile (already allowed). Loaded only on /login, /signup,
+ *     /logout, /admin and for signed-in commenters.
  *   - fonts: next/font self-hosts Google Fonts at build time, so 'self' is enough
  * Stripe Checkout is a full-page redirect (window.location), which CSP does
  * not govern, and Stripe.js is not loaded.
@@ -50,7 +49,7 @@ export type CspOptions = {
 };
 
 /** Clerk hosts. Dev keys use *.clerk.accounts.dev, allowed only in dev. */
-export const CLERK_ORIGINS = ["https://clerk.txquince.com", "https://clerk.quincenetwork.com"];
+export const CLERK_ORIGINS = ["https://clerk.txquince.com"];
 export const CLERK_IMG_ORIGIN = "https://img.clerk.com";
 
 export const DEFAULT_SUPABASE_ORIGIN = "https://db.txquince.com";

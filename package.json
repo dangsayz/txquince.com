@@ -16,6 +16,7 @@
     "check:prices": "node scripts/check-budget-parity.mjs"
   },
   "dependencies": {
+    "@clerk/localizations": "^4.24.6",
     "@clerk/nextjs": "^7.9.25",
     "@marsidev/react-turnstile": "^1.5.2",
     "@supabase/supabase-js": "^2.107.0",

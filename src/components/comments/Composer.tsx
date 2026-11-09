@@ -9,13 +9,7 @@ import { COPY, type CommentLang } from "./copy";
 /** Loaded on demand (signed-in visitors only): Clerk + the comment form. */
 export function Composer({ lang, slug, clerk }: { lang: CommentLang; slug: string; clerk: ClerkSettings }) {
   return (
-    <ClerkProvider
-      publishableKey={clerk.publishableKey}
-      isSatellite={clerk.isSatellite}
-      domain={clerk.domain}
-      signInUrl={clerk.signInUrl}
-      signUpUrl={clerk.signUpUrl}
-    >
+    <ClerkProvider publishableKey={clerk.publishableKey} signInUrl={clerk.signInUrl} signUpUrl={clerk.signUpUrl}>
       <Form lang={lang} slug={slug} />
     </ClerkProvider>
   );

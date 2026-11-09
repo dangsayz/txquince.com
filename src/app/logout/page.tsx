@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-/** Signs out of the shared account (TX Quince and Quince Network), then goes home. */
+/** Signs out of the TX Quince account, then goes home. */
 export default async function LogoutPage({ searchParams }: { searchParams: Promise<{ to?: string }> }) {
   const { to } = await searchParams;
   return (

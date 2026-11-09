@@ -1,6 +1,6 @@
 import { NextResponse, type NextFetchEvent, type NextRequest } from "next/server";
 import { clerkMiddleware } from "@clerk/nextjs/server";
-import { clerkServerEnabled, clerkSettings } from "@/lib/clerk-config";
+import { authorizedParties, clerkServerEnabled, clerkSettings } from "@/lib/clerk-config";
 import { getLocation } from "@/content/locations";
 import { detectPlanLang } from "@/lib/plan-lang";
 
@@ -14,12 +14,10 @@ const NOT_FOUND_PATH = "/_txq-not-found";
  * Runs on the routes in `config.matcher` only; the rest of the public site
  * stays untouched (and fast, and static).
  *
- * Clerk (shared Quince Network accounts, txquince.com as a satellite) wraps
- * every matched request so server code can call auth()/currentUser(). Any
- * route that checks a session (admin pages and APIs, comments, the login and
- * logout pages, private photo routes) MUST be in the matcher, or auth() there
- * answers "signed out". Clerk also finishes the satellite sync here when a
- * visitor comes back from signing in on quincenetwork.com.
+ * Clerk (TX Quince's own app) wraps every matched request so server code can
+ * call auth()/currentUser(). Any route that checks a session (admin pages and
+ * APIs, comments, the login/sign-up/logout pages, private photo routes) MUST
+ * be in the matcher, or auth() there answers "signed out".
  *
  * /admin: a signed-out visitor goes to /admin/login. Being signed in is not
  * being the admin; every admin page and API re-checks the allowlist itself.
@@ -34,15 +32,14 @@ const NOT_FOUND_PATH = "/_txq-not-found";
  */
 const withClerk = clerkMiddleware(
   async (auth, request) => route(request, (await auth()).userId ?? null),
-  () => {
+  (request) => {
     const s = clerkSettings()!;
     return {
       publishableKey: s.publishableKey,
       secretKey: process.env.CLERK_SECRET_KEY,
-      isSatellite: s.isSatellite,
-      domain: s.domain,
       signInUrl: s.signInUrl,
       signUpUrl: s.signUpUrl,
+      authorizedParties: authorizedParties(request.nextUrl.origin),
     };
   },
 );
@@ -121,8 +118,10 @@ export const config = {
     "/api/photos/media/:path*",
     "/api/reviews/photo/:path*",
     "/login",
+    "/signup",
     "/logout",
     "/es/entrar",
+    "/es/registro",
     "/quinceanera-photographer/:city",
     "/es/fotografo-de-quinceaneras/:city",
     "/plan",

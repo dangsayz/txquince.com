@@ -69,33 +69,30 @@ For a later migration:
 npx wrangler d1 migrations apply txquince --remote
 ```
 
-### Accounts (Clerk) — shared with Quince Network
+### Accounts (Clerk)
 
-There is no TX Quince Clerk app. txquince.com is a **satellite** of the
-Quince Network Clerk app (`app_3C96LQClQIJwBnJgOKEeKUq4zk7`, primary domain
-quincenetwork.com): one account works on both sites. Sign-in and sign-up
-happen on www.quincenetwork.com. The owner gets into `/admin` only with a
-**verified** email on `ADMIN_EMAILS`.
+TX Quince has its own Clerk app "TX Quince" (`app_3LsbmZ7P1ci9zz1YTrNcZQVwpSb`),
+production instance on txquince.com (created 2026-11-09). See `docs/clerk.md`.
+The owner gets into `/admin` only with a **verified** email on `ADMIN_EMAILS`.
 
-Before the first deploy with Clerk (in this order):
+Before the first deploy with Clerk:
 
-1. Clerk Dashboard → Quince Network → **Domains → Satellites → Add satellite
-   domain** → `txquince.com`. (Clerk may charge for satellite domains on some
-   plans; check that screen.)
-2. Add the DNS record Clerk shows: CNAME `clerk.txquince.com` →
-   `frontend-api.clerk.services` (Cloudflare DNS, **DNS only / grey cloud**).
-   Wait for "Verified".
-3. Quince Network codebase: add `https://txquince.com` (and
-   `https://www.txquince.com`) to `allowedRedirectOrigins` on its
-   `<ClerkProvider>`, and deploy it. See `docs/clerk-satellite.md`.
-4. `npx wrangler secret put CLERK_SECRET_KEY` (Quince Network **production**
-   secret key, Clerk Dashboard → API keys).
-5. ~~Comments table migration~~ — done 2026-11-09.
-6. `npm run deploy:cloudflare`, then log in at txquince.com/admin/login.
+1. Cloudflare DNS (zone txquince.com), all **CNAME, DNS only (grey cloud)**:
+   | Name | Target |
+   |---|---|
+   | `clerk` | `frontend-api.clerk.services` |
+   | `accounts` | `accounts.clerk.services` |
+   | `clkmail` | `mail.kzrzg600y6b1.clerk.services` |
+   | `clk._domainkey` | `dkim1.kzrzg600y6b1.clerk.services` |
+   | `clk2._domainkey` | `dkim2.kzrzg600y6b1.clerk.services` |
+   Wait until Clerk → Domains shows them verified.
+2. Clerk Dashboard → TX Quince → **Production** → API keys → copy the Secret
+   key, then `npx wrangler secret put CLERK_SECRET_KEY` and paste it.
+3. ~~Comments table migration~~ — done 2026-11-09.
+4. `npm run deploy:cloudflare`, then log in at txquince.com/admin/login with
+   the owner email (code arrives by email).
 
-Until steps 1–4 are done, /login and /admin/login say "Checking your account…"
-or "Log in is not reachable": **do not deploy this before step 4**, or the
-studio is locked.
+**Do not deploy before steps 1–2**, or the studio is locked (no login works).
 
 ## 4. Stripe (commission retainers)
 

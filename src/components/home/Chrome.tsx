@@ -64,7 +64,7 @@ function PersonIcon() {
 }
 
 /**
- * Signed in to the shared TX Quince × Quince Network account? Clerk keeps a
+ * Signed in to a TX Quince account? Clerk keeps a
  * small readable `__client_uat` cookie on this domain ("0" when signed out).
  * A display hint only; nothing is trusted from it. Visitors never load Clerk.
  */

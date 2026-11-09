@@ -85,7 +85,7 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
     setSignOutError(false);
     try {
       // Revoke the session on the server, then /logout clears the shared
-      // Clerk session in the browser (TX Quince + Quince Network) and goes home.
+      // Clerk session in the browser and goes home.
       const response = await fetch("/api/admin/signout", { method: "POST" });
       if (!response.ok) throw new Error("Sign out failed");
       try {

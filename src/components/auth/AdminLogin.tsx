@@ -43,7 +43,7 @@ function Check({ name, next, signOut }: { name: string; next: string; signOut: R
     <div className="tq-auth">
       <p className="tq-auth__lead" role="alert">
         {state === "denied"
-          ? `${name}, this account does not have studio access. Log in with the owner's account, or verify its email in your Quince Network account settings.`
+          ? `${name}, this account does not have studio access. Log out, then log in with the owner's email.`
           : "Could not check your access. Refresh and try again."}
       </p>
       <div className="tq-auth__actions">{signOut}</div>

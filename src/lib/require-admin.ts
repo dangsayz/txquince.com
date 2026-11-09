@@ -20,8 +20,7 @@ export async function requireAdminPage(next = "/admin"): Promise<string> {
 }
 
 /**
- * The admin's email, or null. Accounts are shared with Quince Network and
- * anyone can make one, so the gate is: a VERIFIED email on the Clerk account
+ * The admin's email, or null. Anyone can make an account, so the gate is: a VERIFIED email on the Clerk account
  * that is on the ADMIN_EMAILS allowlist. An account with the right address
  * typed in but never verified gets nothing.
  */

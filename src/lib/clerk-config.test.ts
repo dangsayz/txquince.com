@@ -20,6 +20,6 @@ describe("publicName", () => {
     expect(publicName("Maria", "Gonzalez", null)).toBe("Maria G.");
     expect(publicName("Maria", null, null)).toBe("Maria");
     expect(publicName(null, null, "quincemom")).toBe("quincemom");
-    expect(publicName(null, null, null)).toBe("Quince Network member");
+    expect(publicName(null, null, null)).toBe("TX Quince member");
   });
 });

@@ -1,5 +1,5 @@
 /**
- * POST /api/comments — a signed-in Quince Network account leaves a comment on
+ * POST /api/comments — a signed-in TX Quince account leaves a comment on
  * a Journal post. It is saved as 'pending' and stays private until the owner
  * approves it at /admin/comments. The owner gets an email for each one.
  *

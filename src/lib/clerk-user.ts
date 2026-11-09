@@ -1,5 +1,5 @@
 /**
- * clerk-user.ts — SERVER-ONLY: who is signed in (shared Quince Network
+ * clerk-user.ts — SERVER-ONLY: who is signed in (TX Quince
  * account, via Clerk). The one seam every server check goes through, so tests
  * mock this module and nothing else.
  *
@@ -53,11 +53,11 @@ export const getSignedInUser = cache(async (): Promise<SignedInUser | null> => {
   }
 });
 
-/** "Maria Gonzalez" → "Maria G." ; nothing usable → "Quince Network member". */
+/** "Maria Gonzalez" → "Maria G." ; nothing usable → "TX Quince member". */
 export function publicName(first?: string | null, last?: string | null, username?: string | null): string {
   const f = (first ?? "").trim();
   const l = (last ?? "").trim();
   if (f) return l ? `${f} ${l[0]!.toUpperCase()}.` : f;
   const u = (username ?? "").trim();
-  return u || "Quince Network member";
+  return u || "TX Quince member";
 }

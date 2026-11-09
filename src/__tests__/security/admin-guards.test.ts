@@ -204,7 +204,7 @@ describe("every protected /admin page gates itself on the server", () => {
   });
 
   it("an account with the owner's email that Clerk never verified is NOT the admin", async () => {
-    // Accounts are open (shared with Quince Network): anyone can type the
+    // Accounts are open: anyone can type the
     // owner's address into a new account. Only a verified address counts.
     session.user = { email: "owner@example.com", verified: false };
     const { getAdminEmail, requireAdminPage } = await import("@/lib/require-admin");

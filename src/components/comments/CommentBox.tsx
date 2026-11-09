@@ -29,7 +29,9 @@ export function CommentBox({ lang, slug, clerk }: { lang: CommentLang; slug: str
   if (state === "in") return <Composer lang={lang} slug={slug} clerk={clerk} />;
 
   const back = `${lang === "es" ? "/es" : ""}/blog/${slug}#comments`;
-  const login = `${lang === "es" ? "/es/entrar" : "/login"}?next=${encodeURIComponent(back)}`;
+  const q = `?next=${encodeURIComponent(back)}`;
+  const login = `${lang === "es" ? "/es/entrar" : "/login"}${q}`;
+  const signup = `${lang === "es" ? "/es/registro" : "/signup"}${q}`;
   return (
     <div className="tq-cmt__gate" aria-busy={state === "unknown" || undefined}>
       <p className="tq-cmt__gate-lead">{c.gate}</p>
@@ -37,7 +39,7 @@ export function CommentBox({ lang, slug, clerk }: { lang: CommentLang; slug: str
         <a className="tq-btn tq-btn--lg" href={login} rel="nofollow">
           {c.logIn} <span className="tq-arrow" aria-hidden>↗</span>
         </a>
-        <a className="tq-btn tq-btn--lg tq-btn--ghost" href={login} rel="nofollow">
+        <a className="tq-btn tq-btn--lg tq-btn--ghost" href={signup} rel="nofollow">
           {c.signUp}
         </a>
       </div>

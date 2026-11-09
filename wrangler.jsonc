@@ -63,14 +63,12 @@
   },
   "vars": {
     "NEXT_PUBLIC_SITE_URL": "https://txquince.com",
-    // Clerk (shared Quince Network accounts; this site is a satellite). Public
-    // values, read at runtime by src/lib/clerk-config.ts. The secret key is a
-    // Worker secret: npx wrangler secret put CLERK_SECRET_KEY
-    "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_live_Y2xlcmsucXVpbmNlbmV0d29yay5jb20k",
-    "NEXT_PUBLIC_CLERK_IS_SATELLITE": "true",
-    "NEXT_PUBLIC_CLERK_DOMAIN": "txquince.com",
-    "NEXT_PUBLIC_CLERK_SIGN_IN_URL": "https://www.quincenetwork.com/sign-in",
-    "NEXT_PUBLIC_CLERK_SIGN_UP_URL": "https://www.quincenetwork.com/sign-up"
+    // Clerk: TX Quince's own app (production on txquince.com). Public values,
+    // read at runtime by src/lib/clerk-config.ts. The secret key is a Worker
+    // secret: npx wrangler secret put CLERK_SECRET_KEY
+    "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_live_Y2xlcmsudHhxdWluY2UuY29tJA",
+    "NEXT_PUBLIC_CLERK_SIGN_IN_URL": "/login",
+    "NEXT_PUBLIC_CLERK_SIGN_UP_URL": "/signup"
   },
   "routes": [
     { "pattern": "txquince.com", "custom_domain": true },
