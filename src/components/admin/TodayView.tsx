@@ -5,6 +5,8 @@ import { ArrowIcon } from "@/components/admin/StudioIcons";
 import type { LeadWorkItem } from "@/lib/admin-workflow";
 import type { BookingRow } from "@/lib/clients-db";
 import type { DayPulse } from "@/lib/day-pulse";
+import type { BehaviorSummary } from "@/lib/page-behavior";
+import { VisitorBehavior } from "@/components/admin/VisitorBehavior";
 
 const TZ = "America/Chicago";
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
@@ -31,6 +33,7 @@ export type TodayData = {
   work: LeadWorkItem[];
   review: BookingRow[];
   upcoming: BookingRow[];
+  behavior?: BehaviorSummary & { configured: boolean; days: number };
   /** Journal comments waiting for approval. */
   comments?: number;
 };
@@ -44,7 +47,7 @@ export type TodayData = {
  * Refs (Mobbin): Square "Today vs Yesterday" traffic, Mintlify 7-day visitor
  * bars, HoneyBook greeting + short lists. Data comes from app/admin/page.tsx.
  */
-export function TodayView({ pulse, work, review, upcoming, comments = 0 }: TodayData) {
+export function TodayView({ pulse, work, review, upcoming, behavior, comments = 0 }: TodayData) {
   const now = new Date();
   const hour = Number(now.toLocaleString("en-US", { hour: "numeric", hour12: false, timeZone: TZ })) % 24;
   const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
@@ -116,6 +119,8 @@ export function TodayView({ pulse, work, review, upcoming, comments = 0 }: Today
           </>
         )}
       </section>
+
+      {behavior ? <VisitorBehavior data={behavior} /> : null}
 
       <div className="mt-6 grid items-start gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(18rem,1fr)]">
         {/* 2. What needs you */}

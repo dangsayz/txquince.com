@@ -15,7 +15,7 @@ import {
   HONEYPOT_FIELD,
   TURNSTILE_FIELD,
 } from "@/lib/inquiry";
-import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { sendOperatorEmail, sendInquirerEmail } from "@/lib/resend";
 import { sanitizeAttribution } from "@/lib/attribution";
@@ -135,7 +135,7 @@ export async function POST(req: NextRequest) {
   const data = { ...fields, budget_range: budgetStoredText(fields.budget_range, book) };
 
   // 5) Insert to Supabase (service role; RLS blocks anon entirely).
-  if (!isSupabaseConfigured()) {
+  if (!isDbConfigured()) {
     console.error("[inquiry] Supabase not configured — cannot save lead.");
     return NextResponse.json(
       { ok: false, error: "We couldn't save your inquiry. Please try again shortly." },
@@ -144,8 +144,8 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const supabase = getServiceSupabase();
-    const { error } = await supabase.from("inquiries").insert({
+    const db = getDb();
+    const { error } = await db.from("inquiries").insert({
       name: data.name,
       email: data.email,
       phone: data.phone || null,

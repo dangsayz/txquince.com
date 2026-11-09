@@ -1,8 +1,9 @@
 /**
  * /api/admin/reviews — the owner's review controls. Admin only.
  *   POST   { invite_name, daughter_name?, event_date? } → new one-time link
- *   PATCH  { id, status?, featured?, show_photos?, notes? } → moderate
- *   DELETE { id } → delete an UNUSED link (a submitted review is hidden, not deleted)
+ *   PATCH  { id, status?, featured?, show_photos?, notes?, display_name?,
+ *            daughter_name?, city?, event_date?, edit?: "approve"|"reject" }
+ *   DELETE { id } → delete a link or review for good, with its photos
  * Every change revalidates the public pages that show reviews.
  */
 import { NextResponse } from "next/server";
@@ -10,7 +11,8 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/require-admin";
 import { unauthorizedAdminResponse } from "@/lib/admin-auth";
-import { createInvite, deleteInvite, updateReview } from "@/lib/reviews-db";
+import { createInvite, deleteReview, updateReview } from "@/lib/reviews-db";
+import { deletePortfolioObjects } from "@/lib/r2-portfolio";
 import { InviteSchema, ModerateSchema, inviteMessage, reviewPath } from "@/lib/review";
 import { getSiteUrl } from "@/lib/site-url";
 
@@ -42,7 +44,7 @@ export async function PATCH(request: Request) {
   if (!parsed.success) return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
   const { id, ...fields } = parsed.data;
   try {
-    await updateReview(id, { ...fields, ...(fields.notes !== undefined ? { notes: fields.notes?.trim() || null } : {}) });
+    await updateReview(id, fields);
   } catch (err) {
     return fail(err);
   }
@@ -55,8 +57,9 @@ export async function DELETE(request: Request) {
   const parsed = z.object({ id: z.string().uuid() }).safeParse(await request.json().catch(() => ({})));
   if (!parsed.success) return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
   try {
-    const gone = await deleteInvite(parsed.data.id);
-    if (!gone) return NextResponse.json({ error: "Only an unused link can be deleted. Hide the review instead." }, { status: 409 });
+    const photos = await deleteReview(parsed.data.id);
+    if (!photos) return NextResponse.json({ error: "Already deleted." }, { status: 404 });
+    await deletePortfolioObjects(photos);
   } catch (err) {
     return fail(err);
   }

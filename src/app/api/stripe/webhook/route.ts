@@ -13,7 +13,13 @@
 import { createHmac, timingSafeEqual } from "crypto";
 import { NextResponse, type NextRequest } from "next/server";
 import { fulfillCheckoutSession } from "@/lib/booking-fulfillment";
-import { getServiceSupabase } from "@/lib/supabase-server";
+import {
+  expireBalanceSession,
+  failBalanceSession,
+  fulfillBalanceSession,
+  refundBalancePayment,
+} from "@/lib/balance-fulfillment";
+import { getDb } from "@/lib/db";
 import type { StripeCheckoutSession } from "@/lib/stripe";
 
 export const runtime = "nodejs";
@@ -123,6 +129,11 @@ function isTxQuinceSession(session: StripeCheckoutSession): boolean {
   return TXQ_SOURCES.has(session.metadata?.source ?? "");
 }
 
+/** Balance payments (after the deposit) live in booking_payments, never on `bookings`. */
+function isBalanceSession(session: StripeCheckoutSession): boolean {
+  return isTxQuinceSession(session) && session.metadata?.flow === "balance";
+}
+
 export async function POST(request: NextRequest) {
   const rawBody = await request.text();
   const signature = request.headers.get("stripe-signature");
@@ -143,7 +154,8 @@ export async function POST(request: NextRequest) {
       case "checkout.session.completed":
       case "checkout.session.async_payment_succeeded": {
         const session = checkoutSessionFromEvent(event.data.object);
-        if (session && isTxQuinceSession(session)) await fulfillCheckoutSession(session);
+        if (session && isBalanceSession(session)) await fulfillBalanceSession(session);
+        else if (session && isTxQuinceSession(session)) await fulfillCheckoutSession(session);
         break;
       }
 
@@ -152,11 +164,16 @@ export async function POST(request: NextRequest) {
       case "checkout.session.expired":
       case "checkout.session.async_payment_failed": {
         const session = checkoutSessionFromEvent(event.data.object);
+        if (session && isBalanceSession(session)) {
+          if (event.type === "checkout.session.expired") await expireBalanceSession(session);
+          else await failBalanceSession(session);
+          break;
+        }
         // An approved agreement's pay link opens a fresh checkout whenever the
         // family returns, so an abandoned session must NOT release their date —
         // the approval hold (expires_at) governs that instead.
         if (session?.id && session.metadata?.flow !== "agreement") {
-          const { error } = await getServiceSupabase()
+          const { error } = await getDb()
             .from("bookings")
             .update({ status: "expired" })
             .eq("stripe_checkout_session_id", session.id)
@@ -171,7 +188,8 @@ export async function POST(request: NextRequest) {
         const charge = event.data.object as { payment_intent?: unknown; refunded?: unknown };
         const pi = typeof charge.payment_intent === "string" ? charge.payment_intent : null;
         if (pi && charge.refunded === true) {
-          const { error } = await getServiceSupabase()
+          await refundBalancePayment(pi);
+          const { error } = await getDb()
             .from("bookings")
             .update({ status: "refunded" })
             .eq("stripe_payment_intent_id", pi)

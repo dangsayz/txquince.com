@@ -7,9 +7,9 @@
  * exists so a family can't end up with two live sessions, and otherwise opens
  * a fresh one (Stripe sessions last at most 24h; the date hold is longer).
  */
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
-import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { createStripeCheckoutSession, isStripeConfigured } from "@/lib/stripe";
 import { isSignedAgreement, signedDepositPercent, tokenMatches } from "@/lib/agreement";
 import { TIER_NAME_EN, type TierId } from "@/lib/commission";
@@ -18,6 +18,8 @@ import { tierName } from "@/lib/price-text";
 import { formatEventDate } from "@/lib/booking";
 import { getSiteUrl } from "@/lib/site-url";
 import { site } from "@/content/site";
+import { clientIp } from "@/lib/client-ip";
+import { rateLimiter } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -25,16 +27,27 @@ export const dynamic = "force-dynamic";
 const Schema = z.object({ id: z.string().uuid(), t: z.string().min(10).max(80) });
 const MIN_SESSION_MS = 31 * 60 * 1000; // Stripe's floor is 30 minutes
 const MAX_SESSION_MS = 23 * 3600 * 1000;
+const rateLimited = rateLimiter("pay");
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  const origin = request.headers.get("origin");
+  if (origin && origin !== new URL(getSiteUrl()).origin && origin !== request.nextUrl.origin) {
+    return NextResponse.json({ error: "Not allowed." }, { status: 403 });
+  }
+  if (await rateLimited(clientIp(request))) {
+    return NextResponse.json({ error: "Too many tries. Please wait a minute." }, { status: 429 });
+  }
   const parsed = Schema.safeParse(await request.json().catch(() => ({})));
   if (!parsed.success) return NextResponse.json({ error: "Invalid link." }, { status: 400 });
-  if (!isSupabaseConfigured() || !isStripeConfigured()) {
+  if (await rateLimited(`booking:${parsed.data.id}`)) {
+    return NextResponse.json({ error: "Too many tries. Please wait a minute." }, { status: 429 });
+  }
+  if (!isDbConfigured() || !isStripeConfigured()) {
     return NextResponse.json({ error: "Payments are briefly unavailable. Please try again soon." }, { status: 503 });
   }
 
-  const supabase = getServiceSupabase();
-  const { data: b } = await supabase
+  const db = getDb();
+  const { data: b } = await db
     .from("bookings")
     .select("id, email, event_date, status, deposit_amount_cents, currency, expires_at, metadata")
     .eq("id", parsed.data.id)
@@ -85,7 +98,7 @@ export async function POST(request: Request) {
       },
     });
     if (!session.url) throw new Error("no checkout url");
-    const { error } = await supabase
+    const { error } = await db
       .from("bookings")
       .update({
         stripe_checkout_session_id: session.id,

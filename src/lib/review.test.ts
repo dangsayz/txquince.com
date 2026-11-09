@@ -25,6 +25,7 @@ const base: ReviewRecord = {
   featured: false,
   show_photos: true,
   notes: "private",
+  edit: null,
 };
 
 const submit = { rating: 5, body: "Beautiful photos, thank you!", display_name: "Maria G.", consent_publish: true };
@@ -44,15 +45,17 @@ describe("review links", () => {
   });
 
   it("builds the copy-paste message with the link in it, in both languages", () => {
-    const msg = inviteMessage({ invite_name: "Maria Garcia", daughter_name: "Ana" }, "https://txquince.com/review/abc23defgh");
+    const msg = inviteMessage({ invite_name: "maria Garcia", daughter_name: "ana" }, "https://txquince.com/review/abc23defgh");
     expect(msg).toContain("Hi Maria!");
     expect(msg).toContain("¡Hola Maria!");
+    expect(msg).toContain("Ana’s quinceañera");
     expect(msg).toContain("https://txquince.com/review/abc23defgh");
   });
 
   it("signs with first name + last initial by default", () => {
     expect(shortName("Maria  de la Garcia")).toBe("Maria G.");
     expect(shortName("Maria")).toBe("Maria");
+    expect(shortName("yvonne sierra")).toBe("Yvonne S.");
   });
 
   it("needs a name for a new link; daughter and date are optional", () => {

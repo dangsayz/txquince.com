@@ -11,9 +11,9 @@ vi.mock("server-only", () => ({}));
 
 let rows: { key: string; value: unknown }[] = [];
 let failing = false;
-vi.mock("@/lib/supabase-server", () => ({
-  isSupabaseConfigured: () => true,
-  getServiceSupabase: () => ({
+vi.mock("@/lib/db", () => ({
+  isDbConfigured: () => true,
+  getDb: () => ({
     from: () => ({
       select: () => ({
         like: async () => (failing ? { data: null, error: { message: "down" } } : { data: rows, error: null }),

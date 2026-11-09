@@ -18,6 +18,8 @@ export type JournalItem = {
   /** ISO publish date (YYYY-MM-DD). */
   date?: string;
   excerpt?: string;
+  /** The post's own cover photo; absent → the card uses its category photo. */
+  image?: { src: string; alt: string; focusX: number | null; focusY: number | null };
 };
 export type Journal = { en: JournalItem[]; es: JournalItem[] };
 
@@ -106,15 +108,18 @@ export function useAdminLogout() {
   async function logOut() {
     if (busy) return;
     setBusy(true);
-    // Server route revokes the session; /logout then clears the shared Clerk
-    // session in the browser (loaded only there, so visitors never download it).
-    await fetch("/api/admin/signout", { method: "POST" }).catch(() => undefined);
+    try {
+      // The server revokes the session and clears its HttpOnly cookie.
+      await fetch("/api/admin/signout", { method: "POST" });
+    } catch {
+      /* cookies are already cleared server-side */
+    }
     try {
       window.localStorage.removeItem("txq_admin");
     } catch {
       /* ignore */
     }
-    window.location.assign(es ? "/logout?to=es" : "/logout");
+    window.location.assign(es ? "/es" : "/");
   }
   return { busy, logOut };
 }

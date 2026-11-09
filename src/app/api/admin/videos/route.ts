@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/require-admin";
 import { unauthorizedAdminResponse } from "@/lib/admin-auth";
-import { getServiceSupabase } from "@/lib/supabase-server";
+import { getDb } from "@/lib/db";
 import { parseVideoUrl, isShortsUrl } from "@/lib/video";
 
 export const dynamic = "force-dynamic";
@@ -36,8 +36,8 @@ export async function POST(request: Request) {
   const { url, title, poster_url, orientation } = parsed.data;
   const v = parseVideoUrl(url);
 
-  const supabase = getServiceSupabase();
-  const { data: maxRow } = await supabase
+  const db = getDb();
+  const { data: maxRow } = await db
     .from("videos")
     .select("sort_order")
     .order("sort_order", { ascending: false })
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
     .maybeSingle();
   const sort_order = (maxRow?.sort_order ?? -1) + 1;
 
-  const { data, error } = await supabase
+  const { data, error } = await db
     .from("videos")
     .insert({
       url: v.url,
@@ -79,8 +79,8 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
   }
   const { id, ...fields } = parsed.data;
-  const supabase = getServiceSupabase();
-  const { data, error } = await supabase
+  const db = getDb();
+  const { data, error } = await db
     .from("videos")
     .update(fields)
     .eq("id", id)
@@ -95,8 +95,8 @@ export async function DELETE(request: Request) {
   if (!(await requireAdmin())) return unauthorizedAdminResponse();
   const { id } = (await request.json().catch(() => ({}))) as { id?: string };
   if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
-  const supabase = getServiceSupabase();
-  const { error } = await supabase.from("videos").delete().eq("id", id);
+  const db = getDb();
+  const { error } = await db.from("videos").delete().eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   bust();
   return NextResponse.json({ ok: true });

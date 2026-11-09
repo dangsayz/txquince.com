@@ -4,7 +4,7 @@
  * them via the service role. No PII, no cookies. Admin paths are ignored.
  */
 import { NextResponse, type NextRequest } from "next/server";
-import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { clientIp } from "@/lib/client-ip";
 import { rateLimiter } from "@/lib/rate-limit";
 import { deviceOf } from "@/lib/device";
@@ -31,21 +31,21 @@ export async function POST(req: NextRequest) {
 
   if (await rateLimited(clientIp(req))) return NextResponse.json({ ok: true }); // silently drop
 
-  if (!isSupabaseConfigured()) return NextResponse.json({ ok: true });
+  if (!isDbConfigured()) return NextResponse.json({ ok: true });
 
   const path = clip(body.path, 300);
   if (!path || path.startsWith("/admin") || path.startsWith("/api")) {
     return NextResponse.json({ ok: true });
   }
 
-  const supabase = getServiceSupabase();
+  const db = getDb();
   const session_id = clip(body.sid, 64);
 
   try {
     if (body.t === "ev") {
       const event_type = clip(body.et, 40);
       if (!event_type) return NextResponse.json({ ok: true });
-      await supabase.from("lead_events").insert({
+      await db.from("lead_events").insert({
         event_type,
         path,
         target: clip(body.tg, 300),
@@ -63,8 +63,8 @@ export async function POST(req: NextRequest) {
       // visitor_id (migration 0025) and device (0026): until they run, the
       // insert fails and the row is stored without them.
       const extra = { visitor_id: clip(body.vid, 64), device: deviceOf(req.headers.get("user-agent")) };
-      const { error } = await supabase.from("page_views").insert({ ...row, ...extra });
-      if (error) await supabase.from("page_views").insert(row);
+      const { error } = await db.from("page_views").insert({ ...row, ...extra });
+      if (error) await db.from("page_views").insert(row);
     }
   } catch {
     /* analytics must never break the page */

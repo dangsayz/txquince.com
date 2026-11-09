@@ -1,4 +1,6 @@
--- Blog comments. Apply: npx wrangler d1 migrations apply txquince --remote
+-- Blog comments. APPLIED to production 2026-11-09 under this exact name.
+-- It shares the 0002 number with 0002_review_edits.sql (built in parallel);
+-- D1 tracks migrations by file name, so never rename this file.
 --
 -- Anyone with a Quince Network account (Clerk, shared with txquince.com) can
 -- write one. Nothing is public until the owner approves it at /admin/comments.

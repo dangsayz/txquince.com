@@ -29,6 +29,9 @@ const websiteLinks: { href: string; label: string; icon: WebsiteIconName; group:
   { href: "/admin/comments", label: "Comments", icon: "comments", group: 3 },
 ];
 
+/** Group names for the phone menu (desktop separates groups with a hairline). */
+const WEBSITE_GROUPS: Record<number, string> = { 1: "Photos and films", 2: "Packages and prices", 3: "Places and reviews" };
+
 function isActive(pathname: string, href: string) {
   return (
     pathname === href ||
@@ -77,15 +80,15 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, [menuOpen]);
 
-  if (pathname === "/admin/login" || pathname === "/admin/reset-password") return <>{children}</>;
+  if (pathname === "/admin/login") return <>{children}</>;
 
   async function signOut() {
     if (signingOut) return;
     setSigningOut(true);
     setSignOutError(false);
     try {
-      // Revoke the session on the server, then /logout clears the shared
-      // Clerk session in the browser and goes home.
+      // Revoke the session on the server (and clear its cookie),
+      // drop the "this browser is an admin" hint, then land on the homepage.
       const response = await fetch("/api/admin/signout", { method: "POST" });
       if (!response.ok) throw new Error("Sign out failed");
       try {
@@ -95,7 +98,7 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
       }
       // Full navigation so no signed-in state survives in memory.
       // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- a hard reload is the point here
-      window.location.assign("/logout");
+      window.location.assign("/");
     } catch {
       setSignOutError(true);
       setSigningOut(false);
@@ -161,11 +164,25 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
             <div className="flex flex-col gap-1 border-t border-[var(--tq-surface-2)] py-3">
               <MainNavigation pathname={pathname} onNavigate={() => setMenuOpen(false)} />
             </div>
-            <p className="m-0 border-t border-[var(--tq-surface-2)] pt-4 text-[13px] text-[var(--tq-ink-mute)]">Website pages</p>
-            <div className="mt-2 grid grid-cols-2 gap-1">
-              {websiteLinks.map((link) => (
-                <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)} aria-current={isActive(pathname, link.href) ? "page" : undefined} className="st-nav st-nav--quiet gap-2.5"><WebsiteIcon name={link.icon} />{link.label}</Link>
-              ))}
+            {/* Website pages: a carbon block, so they read as their own room, grouped. */}
+            <div className="st-webblock">
+              {[0, 1, 2, 3].map((g) => {
+                const links = websiteLinks.filter((l) => l.group === g);
+                if (!links.length) return null;
+                return (
+                  <div key={g} className="st-webblock__group">
+                    {WEBSITE_GROUPS[g] ? <p className="st-webblock__label">{WEBSITE_GROUPS[g]}</p> : null}
+                    <div className="grid grid-cols-2 gap-1">
+                      {links.map((link) => (
+                        <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)} aria-current={isActive(pathname, link.href) ? "page" : undefined} className={`st-webblock__link ${link.label.length > 14 ? "col-span-2" : ""}`}>
+                          <WebsiteIcon name={link.icon} />
+                          <span className="min-w-0">{link.label}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
             <div className="mt-6 flex items-center justify-between gap-4 border-t border-[var(--tq-surface-2)] pt-4">
               <Link href="/" target="_blank" rel="noopener noreferrer" onClick={() => setMenuOpen(false)} className="st-nav">View site <span aria-hidden="true">↗</span><span className="sr-only">(opens in a new tab)</span></Link>

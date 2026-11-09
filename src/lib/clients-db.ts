@@ -1,13 +1,13 @@
 import "server-only";
 import { cache } from "react";
-import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { ACTIVE_BOOKING_STATUSES, fullDates } from "@/lib/booking-capacity";
 
 /**
  * clients-db.ts — read-only admin views of the two pipelines that matter:
  * paid/pending BOOKINGS and inbound INQUIRIES (leads). Service-role, server
  * only, never imported into a client component. Mirrors content-db.ts: every
- * query is guarded by isSupabaseConfigured() and try/catch so the admin UI
+ * query is guarded by isDbConfigured() and try/catch so the admin UI
  * degrades to an empty state instead of crashing when env isn't wired yet.
  */
 
@@ -68,8 +68,8 @@ export type InquiryActivityRow = {
 };
 
 export const getInquiryActivity = cache(async (): Promise<InquiryActivityRow[]> => {
-  if (!isSupabaseConfigured()) throw new Error("The client database is not configured.");
-  const { data, error } = await getServiceSupabase()
+  if (!isDbConfigured()) throw new Error("The client database is not configured.");
+  const { data, error } = await getDb()
     .from("inquiry_activity")
     .select("id, inquiry_id, kind, note, actor_email, due_at, completed_at, created_at")
     .order("created_at", { ascending: false });
@@ -82,10 +82,10 @@ export const getInquiryActivity = cache(async (): Promise<InquiryActivityRow[]> 
  * everything, so the photographer sees the full picture and can reconcile.
  */
 export const getBookings = cache(async (): Promise<BookingRow[]> => {
-  if (!isSupabaseConfigured()) return [];
+  if (!isDbConfigured()) return [];
   try {
-    const supabase = getServiceSupabase();
-    const { data, error } = await supabase
+    const dbc = getDb();
+    const { data, error } = await dbc
       .from("bookings")
       .select(
         "id, created_at, name, email, phone, event_date, package, collection, notes, status, deposit_amount_cents, currency, paid_at, expires_at, attribution, metadata",
@@ -100,20 +100,20 @@ export const getBookings = cache(async (): Promise<BookingRow[]> => {
 
 /** All inquiries (leads), newest first. */
 export const getInquiries = cache(async (): Promise<InquiryRow[]> => {
-  if (!isSupabaseConfigured()) return [];
+  if (!isDbConfigured()) return [];
   const base =
     "id, created_at, name, email, phone, event_date, venue, services, budget_range, referral, message, status, last_touch_at, unsubscribed_at, attribution";
   try {
-    const supabase = getServiceSupabase();
+    const dbc = getDb();
     // Try the enriched select; fall back to base if migration 0018 hasn't run
     // yet, so the admin never blanks out on a missing-column error.
-    const enriched = await supabase
+    const enriched = await dbc
       .from("inquiries")
       .select(`${base}, lost_reason, competitor_name`)
       .order("created_at", { ascending: false });
     if (!enriched.error && enriched.data) return enriched.data as InquiryRow[];
 
-    const basic = await supabase
+    const basic = await dbc
       .from("inquiries")
       .select(base)
       .order("created_at", { ascending: false });
@@ -131,11 +131,11 @@ export const getInquiries = cache(async (): Promise<InquiryRow[]> => {
  * UTC-safe (event_date is a DATE).
  */
 export const getTakenEventDates = cache(async (): Promise<string[]> => {
-  if (!isSupabaseConfigured()) return [];
+  if (!isDbConfigured()) return [];
   try {
-    const supabase = getServiceSupabase();
+    const dbc = getDb();
     const today = new Date().toISOString().slice(0, 10);
-    const { data, error } = await supabase
+    const { data, error } = await dbc
       .from("bookings")
       .select("event_date")
       .in("status", [...ACTIVE_BOOKING_STATUSES])

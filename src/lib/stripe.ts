@@ -60,6 +60,8 @@ interface CreateCheckoutSessionInput {
   locale?: string;
   /** Statement/receipt line for the PaymentIntent. */
   paymentDescription?: string;
+  /** Stripe Idempotency-Key: a retry with the same key can't open a second session. */
+  idempotencyKey?: string;
 }
 
 export function isStripeConfigured(): boolean {
@@ -90,7 +92,7 @@ function appendMetadata(
 
 async function stripeRequest<T>(
   path: string,
-  init: { method: "GET" | "POST"; params?: URLSearchParams },
+  init: { method: "GET" | "POST"; params?: URLSearchParams; idempotencyKey?: string },
 ): Promise<T> {
   const response = await fetch(`${stripeApiBase()}${path}`, {
     method: init.method,
@@ -99,6 +101,8 @@ async function stripeRequest<T>(
       ...(init.method === "POST"
         ? { "Content-Type": "application/x-www-form-urlencoded" }
         : {}),
+      // A retried POST with the same key returns the first result, never a second object.
+      ...(init.idempotencyKey ? { "Idempotency-Key": init.idempotencyKey } : {}),
     },
     body: init.params?.toString(),
     cache: "no-store",
@@ -157,7 +161,32 @@ export async function createStripeCheckoutSession(
   return stripeRequest<StripeCheckoutSession>("/checkout/sessions", {
     method: "POST",
     params,
+    idempotencyKey: input.idempotencyKey,
   });
+}
+
+/**
+ * Closes an open Checkout Session so it can never be paid. Returns the
+ * session's state afterwards: "expired" when closed, or "complete" when the
+ * family already finished paying (Stripe refuses to expire those).
+ */
+export async function expireStripeCheckoutSession(
+  sessionId: string,
+): Promise<"expired" | "complete" | "open"> {
+  try {
+    const s = await stripeRequest<{ status?: string }>(
+      `/checkout/sessions/${encodeURIComponent(sessionId)}/expire`,
+      { method: "POST" },
+    );
+    if (s.status === "expired" || s.status === "complete") return s.status;
+  } catch {
+    // Already expired or completed: read the real state below.
+  }
+  const s = await stripeRequest<{ status?: string }>(
+    `/checkout/sessions/${encodeURIComponent(sessionId)}`,
+    { method: "GET" },
+  );
+  return s.status === "expired" || s.status === "complete" ? s.status : "open";
 }
 
 export async function retrieveStripeCheckoutSession(

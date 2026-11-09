@@ -8,7 +8,7 @@
  */
 import "server-only";
 import { cache } from "react";
-import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { ACTIVE_BOOKING_STATUSES, BOOKINGS_PER_DATE } from "@/lib/booking-capacity";
 import { generatePlanSlug } from "@/lib/plan-slug";
 import { isColorId } from "@/lib/quince-colors";
@@ -43,9 +43,9 @@ export async function createPlan(
   contact: PlanContact,
   extra: { source: string | null; attribution: Record<string, string> | null },
 ): Promise<PlanRecord> {
-  const supabase = getServiceSupabase();
+  const dbc = getDb();
   for (let attempt = 0; attempt < 4; attempt++) {
-    const { data, error } = await supabase
+    const { data, error } = await dbc
       .from("quince_plans")
       .insert({
         slug: generatePlanSlug(),
@@ -69,9 +69,9 @@ export async function createPlan(
 }
 
 export const getPlanBySlug = cache(async (slug: string): Promise<PlanRecord | null> => {
-  if (!isSupabaseConfigured()) return null;
+  if (!isDbConfigured()) return null;
   try {
-    const { data, error } = await getServiceSupabase()
+    const { data, error } = await getDb()
       .from("quince_plans")
       .select(PLAN_COLUMNS)
       .eq("slug", slug)
@@ -85,8 +85,8 @@ export const getPlanBySlug = cache(async (slug: string): Promise<PlanRecord | nu
 
 /** Every plan, newest first (admin). */
 export async function listPlans(): Promise<PlanRecord[]> {
-  if (!isSupabaseConfigured()) throw new Error("The client database is not configured.");
-  const { data, error } = await getServiceSupabase()
+  if (!isDbConfigured()) throw new Error("The client database is not configured.");
+  const { data, error } = await getDb()
     .from("quince_plans")
     .select(PLAN_COLUMNS)
     .order("created_at", { ascending: false })
@@ -96,7 +96,7 @@ export async function listPlans(): Promise<PlanRecord[]> {
 }
 
 export async function updatePlan(id: string, fields: { status?: PlanStatus; notes?: string | null }): Promise<void> {
-  const { error } = await getServiceSupabase().from("quince_plans").update(fields).eq("id", id);
+  const { error } = await getDb().from("quince_plans").update(fields).eq("id", id);
   if (error) throw new Error(error.message);
 }
 
@@ -110,7 +110,7 @@ const ACTIVE_BOOKING = [...ACTIVE_BOOKING_STATUSES];
 
 /** True when the date's live holds and paid bookings have reached BOOKINGS_PER_DATE. */
 async function isDateTaken(date: string): Promise<boolean> {
-  const { count, error } = await getServiceSupabase()
+  const { count, error } = await getDb()
     .from("bookings")
     .select("id", { count: "exact", head: true })
     .eq("event_date", date)
@@ -122,10 +122,10 @@ async function isDateTaken(date: string): Promise<boolean> {
 /** The status a family sees for one date (see resolveDateStatus). Never throws. */
 export const getDateStatus = cache(async (date: string): Promise<DateStatus> => {
   const today = todayInDallas();
-  if (!isSupabaseConfigured()) return resolveDateStatus({ date, today });
+  if (!isDbConfigured()) return resolveDateStatus({ date, today });
   try {
     const [override, taken] = await Promise.all([
-      getServiceSupabase()
+      getDb()
         .from("date_availability")
         .select("status")
         .eq("event_date", date)
@@ -141,8 +141,8 @@ export const getDateStatus = cache(async (date: string): Promise<DateStatus> => 
 
 /** Owner-set statuses from today on (admin). */
 export async function listAvailability(): Promise<AvailabilityRow[]> {
-  if (!isSupabaseConfigured()) throw new Error("The client database is not configured.");
-  const { data, error } = await getServiceSupabase()
+  if (!isDbConfigured()) throw new Error("The client database is not configured.");
+  const { data, error } = await getDb()
     .from("date_availability")
     .select("event_date, status, note, updated_at")
     .gte("event_date", todayInDallas())
@@ -153,8 +153,8 @@ export async function listAvailability(): Promise<AvailabilityRow[]> {
 
 /** Future dates held or booked in the bookings table (admin context, no PII). */
 export async function listBookedDates(): Promise<{ event_date: string; status: string }[]> {
-  if (!isSupabaseConfigured()) return [];
-  const { data } = await getServiceSupabase()
+  if (!isDbConfigured()) return [];
+  const { data } = await getDb()
     .from("bookings")
     .select("event_date, status")
     .in("status", ACTIVE_BOOKING)
@@ -164,14 +164,14 @@ export async function listBookedDates(): Promise<{ event_date: string; status: s
 }
 
 export async function setAvailability(date: string, status: DateStatus, note: string | null): Promise<void> {
-  const supabase = getServiceSupabase();
+  const dbc = getDb();
   // "Available" with no note is the default: store nothing.
   if (status === "available" && !note) {
-    const { error } = await supabase.from("date_availability").delete().eq("event_date", date);
+    const { error } = await dbc.from("date_availability").delete().eq("event_date", date);
     if (error) throw new Error(error.message);
     return;
   }
-  const { error } = await supabase
+  const { error } = await dbc
     .from("date_availability")
     .upsert({ event_date: date, status, note, updated_at: new Date().toISOString() }, { onConflict: "event_date" });
   if (error) throw new Error(error.message);
@@ -198,9 +198,9 @@ const GUIDE_COLUMNS = "id, category, category_es, low_usd, typical_usd, high_usd
 
 /** Published rows in display order. Empty when not configured / not migrated. */
 export const getPriceGuide = cache(async (): Promise<PriceGuideRow[]> => {
-  if (!isSupabaseConfigured()) return [];
+  if (!isDbConfigured()) return [];
   try {
-    const { data, error } = await getServiceSupabase()
+    const { data, error } = await getDb()
       .from("price_guide")
       .select(GUIDE_COLUMNS)
       .eq("published", true)
@@ -214,8 +214,8 @@ export const getPriceGuide = cache(async (): Promise<PriceGuideRow[]> => {
 });
 
 export async function listPriceGuide(): Promise<PriceGuideRow[]> {
-  if (!isSupabaseConfigured()) throw new Error("The client database is not configured.");
-  const { data, error } = await getServiceSupabase()
+  if (!isDbConfigured()) throw new Error("The client database is not configured.");
+  const { data, error } = await getDb()
     .from("price_guide")
     .select(GUIDE_COLUMNS)
     .order("sort_order", { ascending: true })
@@ -226,18 +226,18 @@ export async function listPriceGuide(): Promise<PriceGuideRow[]> {
 
 /** Replace the whole guide with freshly pasted rows (the lead sheet is the source of truth). */
 export async function replacePriceGuide(rows: Omit<PriceGuideRow, "id" | "published">[]): Promise<void> {
-  const supabase = getServiceSupabase();
+  const dbc = getDb();
   // Insert first, then delete the old rows by id, so a failed insert never
   // leaves the public page empty.
-  const { data: old, error: readErr } = await supabase.from("price_guide").select("id");
+  const { data: old, error: readErr } = await dbc.from("price_guide").select("id");
   if (readErr) throw new Error(readErr.message);
   if (rows.length) {
-    const { error } = await supabase.from("price_guide").insert(rows.map((r) => ({ ...r, published: true })));
+    const { error } = await dbc.from("price_guide").insert(rows.map((r) => ({ ...r, published: true })));
     if (error) throw new Error(error.message);
   }
   const oldIds = (old ?? []).map((r) => r.id as string);
   if (oldIds.length) {
-    const { error } = await supabase.from("price_guide").delete().in("id", oldIds);
+    const { error } = await dbc.from("price_guide").delete().in("id", oldIds);
     if (error) throw new Error(error.message);
   }
 }

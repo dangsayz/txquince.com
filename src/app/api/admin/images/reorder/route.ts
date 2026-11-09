@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/require-admin";
 import { unauthorizedAdminResponse } from "@/lib/admin-auth";
-import { getServiceSupabase } from "@/lib/supabase-server";
+import { getDb } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -18,10 +18,10 @@ export async function POST(request: Request) {
   if (!parsed.success) {
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
   }
-  const supabase = getServiceSupabase();
+  const db = getDb();
   const results = await Promise.all(
     parsed.data.map(({ id, sort_order }) =>
-      supabase.from("portfolio_images").update({ sort_order }).eq("id", id),
+      db.from("portfolio_images").update({ sort_order }).eq("id", id),
     ),
   );
   const failed = results.filter((r) => r.error);

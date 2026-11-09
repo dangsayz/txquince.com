@@ -12,7 +12,7 @@
  * operator deliberately sets the secret and applies 0003_inquiry_followups.sql.
  */
 import { NextResponse, type NextRequest } from "next/server";
-import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { sendFollowupEmail } from "@/lib/resend";
 
 export const runtime = "nodejs";
@@ -43,12 +43,12 @@ export async function GET(req: NextRequest) {
   if (!authorized(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  if (!isSupabaseConfigured()) {
-    return NextResponse.json({ ok: false, error: "supabase-not-configured" }, { status: 503 });
+  if (!isDbConfigured()) {
+    return NextResponse.json({ ok: false, error: "db-not-configured" }, { status: 503 });
   }
 
-  const supabase = getServiceSupabase();
-  const { data, error } = await supabase
+  const db = getDb();
+  const { data, error } = await db
     .from("inquiries")
     .select("id, name, email, created_at, last_touch_at, followup_step, event_date")
     .eq("status", "new")
@@ -94,7 +94,7 @@ export async function GET(req: NextRequest) {
       continue;
     }
 
-    const { error: updateError } = await supabase
+    const { error: updateError } = await db
       .from("inquiries")
       .update({ followup_step: nextStep, last_touch_at: new Date().toISOString() })
       .eq("id", row.id);

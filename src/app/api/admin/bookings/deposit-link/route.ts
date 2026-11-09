@@ -15,7 +15,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/require-admin";
 import { unauthorizedAdminResponse } from "@/lib/admin-auth";
-import { getServiceSupabase } from "@/lib/supabase-server";
+import { getDb } from "@/lib/db";
 import { createStripeCheckoutSession, isStripeConfigured } from "@/lib/stripe";
 import { sendDepositLinkEmail } from "@/lib/resend";
 import { collectionLabel } from "@/content/packages";
@@ -39,8 +39,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Stripe is not configured." }, { status: 503 });
   }
 
-  const supabase = getServiceSupabase();
-  const { data: booking, error } = await supabase
+  const db = getDb();
+  const { data: booking, error } = await db
     .from("bookings")
     .select(
       "id, name, email, phone, event_date, package, collection, notes, status, deposit_amount_cents, currency, metadata",
@@ -79,7 +79,7 @@ export async function POST(request: Request) {
     // price book: a price change after signing must not touch this booking.
     const holdDays = typeof meta.agreement.holdDays === "number" ? meta.agreement.holdDays : 7;
     const expiresAt = new Date(Date.now() + holdDays * 24 * 3600 * 1000);
-    const { error: upErr } = await supabase
+    const { error: upErr } = await db
       .from("bookings")
       .update({
         status: "pending_payment",
@@ -142,7 +142,7 @@ export async function POST(request: Request) {
   }
   if (!url) return NextResponse.json({ error: "Stripe returned no link." }, { status: 502 });
 
-  const { error: updateError } = await supabase
+  const { error: updateError } = await db
     .from("bookings")
     .update({
       status: "pending_payment",

@@ -12,7 +12,7 @@
  */
 import "server-only";
 import { cache } from "react";
-import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { getPortfolioBucket } from "@/lib/r2-portfolio";
 import { getSlot } from "@/lib/image-slots";
 import { parseSlotValue, EMPTY_VALUE, type SlotValue, type Version } from "@/lib/image-slot-state";
@@ -29,8 +29,8 @@ export const getAllSlotValues = cache(async (): Promise<Map<string, SlotValue>> 
   const map = new Map<string, SlotValue>();
   try {
     let rows: { key: string; value: unknown }[] = [];
-    if (isSupabaseConfigured()) {
-      const { data, error } = await getServiceSupabase()
+    if (isDbConfigured()) {
+      const { data, error } = await getDb()
         .from("site_settings")
         .select("key, value")
         .like("key", `${PREFIX}%`);
@@ -78,8 +78,8 @@ type Row = { value: SlotValue; updatedAt: string | null };
 
 async function readRow(slotId: string): Promise<Row> {
   const key = settingsKey(slotId);
-  if (isSupabaseConfigured()) {
-    const { data, error } = await getServiceSupabase()
+  if (isDbConfigured()) {
+    const { data, error } = await getDb()
       .from("site_settings")
       .select("value, updated_at")
       .eq("key", key)
@@ -105,12 +105,12 @@ function nextStamp(prev: string | null): string {
 async function writeRow(slotId: string, value: SlotValue, expected: string | null): Promise<boolean> {
   const key = settingsKey(slotId);
   const updated_at = nextStamp(expected);
-  if (isSupabaseConfigured()) {
-    const supabase = getServiceSupabase();
+  if (isDbConfigured()) {
+    const db = getDb();
     const res =
       expected === null
-        ? await supabase.from("site_settings").insert({ key, value, updated_at }).select("key").maybeSingle()
-        : await supabase
+        ? await db.from("site_settings").insert({ key, value, updated_at }).select("key").maybeSingle()
+        : await db
             .from("site_settings")
             .update({ value, updated_at })
             .eq("key", key)

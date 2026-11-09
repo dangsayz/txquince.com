@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getAdminEmail } from "@/lib/require-admin";
 import { unauthorizedAdminResponse } from "@/lib/admin-auth";
-import { getServiceSupabase } from "@/lib/supabase-server";
+import { getDb } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
@@ -35,8 +35,8 @@ export async function POST(request: Request) {
     }
   }
 
-  const supabase = getServiceSupabase();
-  const { data: inquiry, error: inquiryError } = await supabase
+  const db = getDb();
+  const { data: inquiry, error: inquiryError } = await db
     .from("inquiries")
     .select("id, status, unsubscribed_at")
     .eq("id", item.inquiry_id)
@@ -47,7 +47,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Follow-ups can only be scheduled for open inquiries." }, { status: 409 });
   }
 
-  const { data, error } = await supabase
+  const { data, error } = await db
     .from("inquiry_activity")
     .insert({
       inquiry_id: item.inquiry_id,
@@ -68,7 +68,7 @@ export async function PATCH(request: Request) {
   const parsed = CompleteSchema.safeParse(await request.json().catch(() => ({})));
   if (!parsed.success) return NextResponse.json({ error: "Invalid reminder." }, { status: 400 });
   const { id, inquiry_id } = parsed.data;
-  const { data, error } = await getServiceSupabase()
+  const { data, error } = await getDb()
     .from("inquiry_activity")
     .update({ completed_at: new Date().toISOString() })
     .eq("id", id)

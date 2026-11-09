@@ -1,9 +1,8 @@
 import "server-only";
 import { redirect } from "next/navigation";
-import { getSignedInUser } from "@/lib/clerk-user";
-import { getAdminEmails } from "@/lib/admin-auth";
+import { getSessionEmail } from "@/lib/admin-session";
 
-/** True only if the current request is from a signed-in, allowlisted admin. */
+/** True only if the current request is from an authenticated, allowlisted admin. */
 export async function requireAdmin(): Promise<boolean> {
   return (await getAdminEmail()) !== null;
 }
@@ -19,14 +18,10 @@ export async function requireAdminPage(next = "/admin"): Promise<string> {
   return email;
 }
 
-/**
- * The admin's email, or null. Anyone can make an account, so the gate is: a VERIFIED email on the Clerk account
- * that is on the ADMIN_EMAILS allowlist. An account with the right address
- * typed in but never verified gets nothing.
- */
 export async function getAdminEmail(): Promise<string | null> {
-  const user = await getSignedInUser();
-  if (!user) return null;
-  const allow = getAdminEmails();
-  return user.verifiedEmails.find((e) => allow.includes(e)) ?? null;
+  try {
+    return await getSessionEmail();
+  } catch {
+    return null;
+  }
 }

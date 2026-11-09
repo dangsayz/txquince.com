@@ -12,12 +12,12 @@ vi.mock("server-only", () => ({}));
 const revalidatePath = vi.fn();
 vi.mock("next/cache", () => ({ revalidatePath: (...a: unknown[]) => revalidatePath(...a) }));
 
-/* ---- auth: the real requireAdmin → allowlist path, with the Clerk session mocked ---- */
+/* ---- auth: the real requireAdmin → admin-auth path, with the session mocked ---- */
 let sessionUser: { email: string } | null = null;
-vi.mock("@/lib/clerk-user", () => ({
-  getSignedInUser: async () =>
-    sessionUser ? { id: "user_1", verifiedEmails: [sessionUser.email], displayName: "Owner", imageUrl: null } : null,
-}));
+vi.mock("@/lib/admin-session", async () => {
+  const { isAuthorizedAdminEmail } = await import("@/lib/admin-auth");
+  return { getSessionEmail: async () => (sessionUser && isAuthorizedAdminEmail(sessionUser.email) ? sessionUser.email : null) };
+});
 
 /* ---- site_settings: an in-memory table with the PostgREST calls the store uses ---- */
 type Row = { key: string; value: unknown; updated_at: string };
@@ -75,9 +75,9 @@ class Query {
     return Promise.resolve(this.run()).then(resolve);
   }
 }
-vi.mock("@/lib/supabase-server", () => ({
-  isSupabaseConfigured: () => true,
-  getServiceSupabase: () => ({ from: () => new Query() }),
+vi.mock("@/lib/db", () => ({
+  isDbConfigured: () => true,
+  getDb: () => ({ from: () => new Query() }),
 }));
 
 /* ---- R2 ---- */

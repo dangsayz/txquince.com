@@ -10,8 +10,8 @@ vi.mock("next/cache", () => ({ revalidatePath: () => {} }));
 
 const state = vi.hoisted(() => ({ admin: true, deleted: [] as string[], updated: [] as unknown[] }));
 vi.mock("@/lib/require-admin", () => ({ requireAdmin: async () => state.admin }));
-vi.mock("@/lib/supabase-server", () => ({
-  getServiceSupabase: () => ({
+vi.mock("@/lib/db", () => ({
+  getDb: () => ({
     from: () => ({
       delete: () => ({
         eq: (_: string, id: string) => ({
