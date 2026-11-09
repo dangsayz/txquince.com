@@ -29,6 +29,11 @@ import luxuryRedWhiteReception from "./albums/luxury-red-white-reception.json";
 import mandalayBlackFloral from "./albums/mandalay-black-floral.json";
 import pinkCandlelitReception from "./albums/pink-candlelit-reception.json";
 import slatePinkGown from "./albums/slate-pink-gown.json";
+import arboretumRedGarden from "./albums/arboretum-red-garden.json";
+import dreamhausPinkTiara from "./albums/dreamhaus-pink-tiara.json";
+import hamptonsTwinsDressSession from "./albums/hamptons-twins-dress-session.json";
+import laPradaPink from "./albums/la-prada-pink.json";
+import vmBallroomPink from "./albums/vm-ballroom-pink.json";
 
 export type Album = {
   id: string;
@@ -57,6 +62,11 @@ export const ALBUMS: readonly Album[] = [
   mandalayBlackFloral,
   pinkCandlelitReception,
   slatePinkGown,
+  arboretumRedGarden,
+  dreamhausPinkTiara,
+  hamptonsTwinsDressSession,
+  laPradaPink,
+  vmBallroomPink,
 ] as Album[];
 
 const pad3 = (n: number) => String(n).padStart(3, "0");
