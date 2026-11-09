@@ -21,6 +21,14 @@ import { eventKey, type VenueEventPhoto } from "@/lib/venue-events";
 import plazaPinkGold from "./albums/plaza-pink-gold.json";
 import fgsRanchRed from "./albums/fgs-ranch-red.json";
 import horseRed from "./albums/horse-red.json";
+// Grokbot handoff, 2026-11-08 (Drive "Claude Code master asset handoff").
+import arboretumPinkGarden from "./albums/arboretum-pink-garden.json";
+import hamptonsPinkStorybook from "./albums/hamptons-pink-storybook.json";
+import latinoBallroomButterfly from "./albums/latino-ballroom-butterfly.json";
+import luxuryRedWhiteReception from "./albums/luxury-red-white-reception.json";
+import mandalayBlackFloral from "./albums/mandalay-black-floral.json";
+import pinkCandlelitReception from "./albums/pink-candlelit-reception.json";
+import slatePinkGown from "./albums/slate-pink-gown.json";
 
 export type Album = {
   id: string;
@@ -38,7 +46,18 @@ export type Album = {
   photos: ([number, number, number, string] | [number, number, number, string, string])[];
 };
 
-export const ALBUMS: readonly Album[] = [plazaPinkGold, fgsRanchRed, horseRed] as Album[];
+export const ALBUMS: readonly Album[] = [
+  plazaPinkGold,
+  fgsRanchRed,
+  horseRed,
+  arboretumPinkGarden,
+  hamptonsPinkStorybook,
+  latinoBallroomButterfly,
+  luxuryRedWhiteReception,
+  mandalayBlackFloral,
+  pinkCandlelitReception,
+  slatePinkGown,
+] as Album[];
 
 const pad3 = (n: number) => String(n).padStart(3, "0");
 
