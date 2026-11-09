@@ -108,9 +108,11 @@ Two revenue-saving jobs, both built and inert until activated:
    npx wrangler deploy
    npx wrangler secret put CRON_SECRET     # same value as the app's
    ```
-   It runs **hourly** and pings both endpoints. Follow-ups are day-paced
-   internally, so hourly only matters for recovery (fires within ~an hour of a
-   hold expiring). Both 401 until the secret is set — nothing sends before that.
+   It runs **hourly**. As of 2026-11-09 it calls only the **review email**
+   (`/api/cron/review-requests`: paid bookings 30–60 days after the event get
+   their own review link, once). Follow-ups and recovery run only when
+   `LEAD_EMAILS` is `"on"` in `cron-worker/wrangler.jsonc` (off for now).
+   Everything 401s until the secret is set on BOTH workers.
 
 ## 6. Content unlocks (convert "built" → "booking")
 

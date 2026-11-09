@@ -7,7 +7,9 @@
   // delay elapses), so hourly is harmless for them — but it lets abandoned-
   // booking recovery go out within ~an hour of a hold expiring, when it matters.
   "triggers": { "crons": ["0 * * * *"] },
-  "vars": { "TARGET_URL": "https://txquince.com" },
+  // LEAD_EMAILS "on" adds lead follow-ups + abandoned-booking recovery.
+  // Off on purpose (2026-11-09): only the review email is turned on.
+  "vars": { "TARGET_URL": "https://txquince.com", "LEAD_EMAILS": "off" },
   "observability": { "enabled": true }
   // CRON_SECRET is set as a secret, not committed:
   //   npx wrangler secret put CRON_SECRET
