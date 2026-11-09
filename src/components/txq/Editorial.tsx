@@ -96,9 +96,10 @@ export function Editorial({ journal }: { journal: Journal }) {
 }
 
 /**
- * Discreet owner entry in the footer base row. Visitors see "Admin login"; once
- * /api/admin/me confirms a signed-in admin (useIsAdmin — free for visitors), it
- * becomes "Admin" (→ /admin) + "Log out" (signs out, returns to the homepage).
+ * Owner entry in the footer base row. Visitors see nothing (Studio lives at
+ * /admin, bookmarked by the owner); once /api/admin/me confirms a signed-in
+ * admin (useIsAdmin — free for visitors), it shows "Admin" (→ /admin) +
+ * "Log out" (signs out, returns to the homepage).
  */
 /** Sign the owner out everywhere (server cookies + browser client) and go home. */
 export function useAdminLogout() {
@@ -130,13 +131,7 @@ export function FooterAdmin() {
   const { busy, logOut } = useAdminLogout();
   const es = lang === "es";
 
-  if (!isAdmin) {
-    return (
-      <a href="/admin/login" className="tq-footer-admin__link" rel="nofollow">
-        {es ? "Acceso admin" : "Admin login"}
-      </a>
-    );
-  }
+  if (!isAdmin) return null;
   return (
     <span className="tq-footer-admin">
       <a href="/admin" className="tq-footer-admin__link" rel="nofollow">
