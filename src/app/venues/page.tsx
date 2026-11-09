@@ -11,6 +11,7 @@ import { site } from "@/content/site";
 import { venues } from "@/content/venues";
 import { portfolioFallback } from "@/content/portfolio-fallback";
 import { getImagesByVenue } from "@/lib/content-db";
+import { withAlbums } from "@/content/albums";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import "@/components/txq/pages/places.css";
@@ -36,17 +37,23 @@ export const metadata: Metadata = {
 };
 
 const pad = (n: number) => String(n).padStart(2, "0");
+type FocusPhoto = { url: string; alt: string; section: string; width: number | null; height: number | null; focus_x?: number | null; focus_y?: number | null };
 
 export default async function VenuesPage() {
-  const counts = await Promise.all(venues.map((v) => getImagesByVenue(v.slug)));
-  const withCounts = venues.map((v, i) => ({ ...v, count: counts[i].length, image: counts[i][0] ?? null }));
+  // Database photos plus published albums (FGS Ranch's album lives in
+  // src/content/albums), the same set each venue page shows.
+  const counts = await Promise.all(venues.map(async (v) => withAlbums(await getImagesByVenue(v.slug), v.slug)));
+  const withCounts = venues.map((v, i) => ({ ...v, count: counts[i].length, image: (counts[i][0] ?? null) as FocusPhoto | null }));
+  // Venues with no photos yet get a compact list, not empty photo cards.
+  const shown = withCounts.filter((v) => v.count > 0);
+  const more = withCounts.filter((v) => v.count === 0).sort((a, b) => a.venue.localeCompare(b.venue));
   const heroPhoto = withCounts.find((venue) => venue.image?.url)?.image ?? null;
   const fallbackHero = portfolioFallback.find((p) => p.url === "/portfolio/hero.webp") ?? portfolioFallback[0];
   const totalPhotos = withCounts.reduce((n, v) => n + v.count, 0);
 
   // Group by city, cities ordered by total photos (busiest first).
   const byCity = new Map<string, typeof withCounts>();
-  for (const v of withCounts) {
+  for (const v of shown) {
     const list = byCity.get(v.city) ?? [];
     list.push(v);
     byCity.set(v.city, list);
@@ -207,6 +214,26 @@ export default async function VenuesPage() {
               </ul>
             </section>
           ))}
+
+          {more.length ? (
+            <section className="tq-section" aria-labelledby="venues-more-title">
+              <div className="tq-place-group">
+                <h3 id="venues-more-title" className="tq-display">More venues we&rsquo;ve photographed at</h3>
+                <span className="tq-mono">{pad(more.length)} venues</span>
+              </div>
+              <ul className="tq-place-more">
+                {more.map((venue) => (
+                  <li key={venue.slug}>
+                    <Link href={`/venues/${venue.slug}`} className="tq-place-more__link">
+                      <span className="tq-place-more__name">{venue.venue}</span>
+                      <span className="tq-mono tq-place-more__city">{venue.city}, TX</span>
+                      <span className="tq-arrow" aria-hidden>↗</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
         </div>
       </section>
 

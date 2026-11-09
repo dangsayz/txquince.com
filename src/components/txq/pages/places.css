@@ -322,6 +322,33 @@
   color: var(--text-muted);
 }
 
+/* Venues without photos yet: one compact list, not empty photo cards. */
+.txq .tq-place-more {
+  margin: 0;
+  padding: 0 var(--pad) 80px;
+  list-style: none;
+}
+.txq .tq-place-more li { border-top: 1px solid var(--border-hairline); }
+.txq .tq-place-more li:last-child { border-bottom: 1px solid var(--border-hairline); }
+.txq .tq-place-more__link {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 16px;
+  min-height: 64px;
+  padding: 12px 0;
+  color: inherit;
+  text-decoration: none;
+}
+.txq .tq-place-more__name {
+  font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.txq .tq-place-more__city { color: var(--text-muted); white-space: nowrap; }
+.txq .tq-place-more__link:hover .tq-place-more__name { text-decoration: underline; text-underline-offset: 4px; }
+.txq .tq-place-more__link:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+
 /* ---------- Commissions (compact, four tiers) ---------- */
 .txq .tq-place-tiers {
   display: grid;

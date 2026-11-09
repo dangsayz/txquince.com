@@ -5,6 +5,7 @@ import Link from "next/link";
 import { venues } from "@/content/venues";
 import { portfolioFallback } from "@/content/portfolio-fallback";
 import { getImagesByVenue } from "@/lib/content-db";
+import { withAlbums } from "@/content/albums";
 import "@/components/txq/pages/places.css";
 import { languageAlternates, OG_LOCALE } from "@/lib/hreflang";
 
@@ -28,12 +29,19 @@ type Salon = {
 };
 
 export default async function SalonesPage() {
-  const photos = await Promise.all(venues.map((venue) => getImagesByVenue(venue.slug)));
+  // Database photos plus published albums, the same set each venue page shows.
+  const photos = await Promise.all(venues.map(async (venue) => withAlbums(await getImagesByVenue(venue.slug), venue.slug)));
   const heroPhoto = photos.flat().find((photo) => Boolean(photo.url)) ?? null;
   const fallbackHero = portfolioFallback.find((p) => p.url === "/portfolio/canal.webp") ?? portfolioFallback[0];
   const groups = new Map<string, Salon[]>();
+  const more: { venue: string; slug: string; city: string }[] = [];
   venues.forEach((venue, index) => {
-    const first = photos[index][0];
+    const first = photos[index][0] as { url: string; alt: string; focus_x?: number | null; focus_y?: number | null } | undefined;
+    // No photos yet: a compact list below, not an empty photo card.
+    if (!first) {
+      more.push({ venue: venue.venue, slug: venue.slug, city: venue.city });
+      return;
+    }
     groups.set(venue.city, [
       ...(groups.get(venue.city) ?? []),
       {
@@ -181,6 +189,26 @@ export default async function SalonesPage() {
               </ul>
             </section>
           ))}
+
+          {more.length ? (
+            <section className="tq-section" aria-labelledby="salones-mas-title">
+              <div className="tq-place-group">
+                <h3 id="salones-mas-title" className="tq-display">Otros lugares donde hemos fotografiado</h3>
+                <span className="tq-mono">{pad(more.length)} lugares</span>
+              </div>
+              <ul className="tq-place-more">
+                {more.sort((a, b) => a.venue.localeCompare(b.venue)).map((venue) => (
+                  <li key={venue.slug}>
+                    <Link href={`/venues/${venue.slug}`} hrefLang="en" className="tq-place-more__link">
+                      <span className="tq-place-more__name">{venue.venue}</span>
+                      <span className="tq-mono tq-place-more__city">{venue.city}, TX</span>
+                      <span className="tq-arrow" aria-hidden>↗</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
         </div>
       </section>
 
