@@ -1,5 +1,6 @@
 "use client";
 
+import { signedInHint } from "@/lib/signed-in-hint";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import type { ClerkSettings } from "@/lib/clerk-config";
@@ -7,16 +8,6 @@ import { COPY, type CommentLang } from "./copy";
 
 // Clerk's script (and the editor) load only for a visitor who is signed in.
 const Composer = dynamic(() => import("./Composer").then((m) => m.Composer), { ssr: false });
-
-/**
- * Clerk keeps a small, readable `__client_uat` cookie on this domain: "0" (or
- * missing) when signed out, a timestamp when signed in. Reading it is a hint
- * only — the API checks the real session.
- */
-function signedInHint(): boolean {
-  const m = document.cookie.match(/(?:^|;\s*)__client_uat(?:_[^=]+)?=(\d+)/);
-  return Boolean(m && m[1] !== "0");
-}
 
 export function CommentBox({ lang, slug, clerk }: { lang: CommentLang; slug: string; clerk: ClerkSettings | null }) {
   const c = COPY[lang];

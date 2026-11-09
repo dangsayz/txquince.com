@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SignIn, SignUp, useClerk, useUser } from "@clerk/nextjs";
+import { announceAuthChanged } from "@/lib/signed-in-hint";
 import "./auth.css";
 
 export type AuthLang = "en" | "es";
@@ -100,6 +101,19 @@ function Panel({
   const clerk = useClerk();
   const { isLoaded, isSignedIn, user } = useUser();
   const [busy, setBusy] = useState(false);
+
+  // Tell the header the moment a log in / log out lands (no page load happens
+  // after Google returns), and drop Clerk's leftover "#/sso-callback…" from the URL.
+  useEffect(() => {
+    if (!isLoaded) return;
+    announceAuthChanged();
+    // Clerk may write its cookie a beat after the session turns active.
+    const timers = [400, 1500].map((ms) => window.setTimeout(announceAuthChanged, ms));
+    if (isSignedIn && window.location.hash.startsWith("#/")) {
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+    }
+    return () => timers.forEach((t) => window.clearTimeout(t));
+  }, [isLoaded, isSignedIn]);
 
   if (clerk.status === "error") return <p className="tq-auth__note" role="alert">{c.failed}</p>;
   if (!isLoaded) return <p className="tq-auth__note" role="status">{c.loading}</p>;
