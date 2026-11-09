@@ -52,3 +52,7 @@ Admin ("TX Quince Studio") pages use the same kit through `src/app/admin/studio.
 ## Merge your own PRs (standing rule from Dang)
 
 Never ask Dang whether to merge. When a PR you opened is ready (no conflicts, checks not failing, tests pass locally), merge it yourself (squash, title ending in `(#NN)`), then say what you merged. If something blocks the merge, fix it or report the blocker, never "should I merge?".
+
+## Always end with links (standing rule from Dang, 2026-11-09)
+
+When work is done, give Dang the direct links to see it, so he can click instead of searching: the live page(s) that changed (full `https://txquince.com/...` URLs, the exact post or screen, not the homepage), the Studio page if there is one (`https://txquince.com/admin/...`), and the pull request. If he has to do a step in a dashboard, link the exact settings page.
