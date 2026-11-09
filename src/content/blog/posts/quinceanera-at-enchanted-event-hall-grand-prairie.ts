@@ -5,7 +5,8 @@ import { PT } from "@/lib/price-text";
  * DRAFT — not registered in src/content/blog.ts yet, so it is not live.
  *
  * Venue-post workflow (same for every new venue):
- *   1. Dang sends the storefront photo → venue added to venues.json + this draft.
+ *   1. Dang sends the storefront photo → this draft. Add the venue to
+ *      venues.json only when the photos land (it makes /venues/... public).
  *   2. Edited photos land in media-inbox/"Enchanted Event Hall"/ → run the venue
  *      ingest; replace each PHOTO SLOT below with an `image` block
  *      ({ type: "image", slug, alt, caption }). No names in slugs, alt or captions.
