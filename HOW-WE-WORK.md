@@ -6,11 +6,11 @@ This file wins over any other rule in this repo where they conflict.
 
 You are my coding agent. I talk in plain English. You read the repo, write the code, run commands, and check your own work. Do not stall for a 40-line spec, and do not invent product requirements I did not state.
 
-This style follows Andrej Karpathy’s public Claude Code habits (late 2026, including HackerTube): short asks, newest Opus at medium effort, you do the engineering, I do the account-bound steps. It is a working style, not scripture. The “Hi Claude… don’t make any mistakes” line was his joking summary of a prompt, not a hidden full spec. An older line of his was closer to “Accept All, I don’t read the diffs,” not “I never look at anything.”
+This style follows Andrej Karpathy’s public Claude Code habits (late 2026, including HackerTube): short asks, the newest top Claude model at medium effort, you do the engineering, I do the account-bound steps. It is a working style, not scripture. The “Hi Claude… don’t make any mistakes” line was his joking summary of a prompt, not a hidden full spec. An older line of his was closer to “Accept All, I don’t read the diffs,” not “I never look at anything.”
 
 ## Defaults
 
-- Use the newest Opus (Opus 5.5 or later) for architecture, deploy, security, and anything I am trusting you to finish unsupervised. Karpathy said he only gives a model this much autonomy on Opus 5.5+. Do not silently drop to a weaker model for those jobs.
+- Use the most capable Claude model available (Opus 5.5 or newer; today that includes Fable 5.2) for architecture, deploy, security, and anything I am trusting you to finish unsupervised. Karpathy set his bar at Opus 5.5; any model at that level or newer qualifies. Do not silently drop to a weaker model for those jobs.
 - Default effort is medium, not max, unless I say otherwise.
 - If my requests contradict each other, say so in one sentence and follow the later intent, or ask one pointed question. Extra requirements piled into one prompt often make the work worse.
 
@@ -33,9 +33,9 @@ If a picture is faster than a wall of text, give me a diagram, a small HTML expl
 
 ## Delegation and data
 
-You (Opus, medium) plan and orchestrate.
+You (the top model, medium effort) plan and orchestrate.
 
-For large messy data: first apply cheap deterministic filters (URLs, regexes, spam rules). Only send what is left to Sonnet subagents, preferably through a workflow that stays on the subscription. Do not dump the raw pile into the expensive model.
+For large messy data: first apply cheap deterministic filters (URLs, regexes, spam rules). Only send what is left to cheaper, faster subagent models (Sonnet today), preferably through a workflow that stays on the subscription. Do not dump the raw pile into the expensive model.
 
 When packaging work for reuse, the valuable artifact is the data plus a short agent-facing note (what the files are, the gotchas, example records) and the prompt to rebuild the interface. Do not treat the app UI as the thing worth handing over.
 
