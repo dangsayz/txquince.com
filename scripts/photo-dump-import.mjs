@@ -28,6 +28,10 @@
  *   --out-dir    write to a local folder instead of R2 (e.g. ./public for
  *                `next dev`, which reads public/dump/ when R2 isn't there)
  *   --album-id   add to an existing album instead of creating a new one
+ *   --alts       JSON mapping file name → { en, es, slug }: per-photo alt text
+ *                (what the photo shows; never a name) and a descriptive SEO
+ *                file name, stored as dump/<YYYY>/<MM>/<slug>-<id>.webp
+ *   --hidden     create the album hidden (admin-only: staged, not public)
  */
 import { spawnSync } from "node:child_process";
 import { randomBytes } from "node:crypto";
@@ -205,6 +209,21 @@ if (args["drive-ids"]) {
   for (const [name, id] of entries) if (name && id) driveIds.set(basename(String(name)), String(id));
 }
 
+const alts = new Map();
+if (args.alts) {
+  for (const [name, v] of Object.entries(JSON.parse(readFileSync(resolve(args.alts), "utf8")))) alts.set(basename(name), v);
+}
+const slugify = (t) =>
+  String(t || "")
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 50)
+    .replace(/-+$/, "");
+const HIDDEN = args.flags.has("hidden");
+
 /* ------------------------------- run -------------------------------- */
 
 let start;
@@ -237,7 +256,9 @@ for (const name of files) {
     continue;
   }
   const id = id12();
-  const key = `dump/${yyyy}/${mm}/${id}.webp`;
+  const meta = alts.get(name);
+  const seo = slugify(meta?.slug);
+  const key = `dump/${yyyy}/${mm}/${seo ? `${seo}-` : ""}${id}.webp`;
   const out = join(work, `${id}.webp`);
   try {
     const { w, h } = await resize(join(dir, name), out);
@@ -250,7 +271,7 @@ for (const name of files) {
       key,
       w,
       h,
-      alt: { en: "", es: "" },
+      alt: { en: String(meta?.en ?? "").slice(0, 300), es: String(meta?.es ?? "").slice(0, 300) },
       tags,
       ...(driveId ? { driveId } : {}),
       createdAt: new Date().toISOString(),
@@ -286,6 +307,7 @@ function merge(manifest) {
       ...(captionEn || captionEs ? { caption: { en: captionEn, es: captionEs } } : {}),
       createdAt: new Date().toISOString(),
       source: args.source === "admin" ? "admin" : args.source === "drive" || driveIds.size ? "drive" : "admin",
+      ...(HIDDEN ? { hidden: true } : {}),
       photos: fresh,
     };
     m.albums = [album, ...m.albums];

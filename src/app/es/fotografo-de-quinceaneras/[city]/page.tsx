@@ -21,6 +21,7 @@ import { getEsPost } from "@/content/blog";
 import { portfolioFallback } from "@/content/portfolio-fallback";
 import { getFeaturedImages, getImagesByCity } from "@/lib/content-db";
 import { venuesByCity } from "@/content/venues";
+import { albumPhotos, albumsForVenue } from "@/content/albums";
 import { getInspoPlace } from "@/content/inspo-places";
 import "@/components/txq/pages/places.css";
 import { ContactButtons, ContactLine } from "@/components/ContactButtons";
@@ -139,11 +140,31 @@ export default async function CityPageEs({
   // tampoco hay, el portafolio incluido (primero las de esta ciudad). Así nunca
   // se muestra un cuadro vacío — Frisco, Plano y McKinney aún no tienen fotos.
   const cityShots = await getImagesByCity(loc.slug, 6);
-  const featured = cityShots.length ? cityShots : await getFeaturedImages(6);
-  const isCityWork = cityShots.length > 0;
   const cityAlt = `Fotografía de quinceañera en ${loc.city}, TX`;
   const dfwAlt = "Fotografía de quinceañera en Dallas–Fort Worth";
-  const shots: Shot[] = featured.length
+  // Los álbumes de los salones de esta ciudad (src/content/albums) llenan el
+  // resto, una foto de cada álbum por turno para mezclar lugares y momentos.
+  const albumLists = cityVenues.flatMap((v) => albumsForVenue(v.slug)).map((a) => albumPhotos(a));
+  const albumShots: Shot[] = [];
+  for (let i = 0; albumShots.length < 6 && albumLists.some((l) => i < l.length); i++) {
+    for (const list of albumLists) {
+      const p = list[i];
+      if (p && albumShots.length < 6) albumShots.push({ key: p.id, url: p.url, alt: cityAlt, focus: "50% 35%", local: false });
+    }
+  }
+  const ownShots: Shot[] = cityShots.map((img) => ({
+    key: img.slug ?? img.id,
+    url: img.url,
+    alt: cityAlt,
+    focus: focal(img.focus_x, img.focus_y),
+    local: false,
+  }));
+  const cityWork = [...ownShots, ...albumShots].slice(0, 6);
+  const featured = cityWork.length ? [] : await getFeaturedImages(6);
+  const isCityWork = cityWork.length > 0;
+  const shots: Shot[] = cityWork.length
+    ? cityWork
+    : featured.length
     ? featured.map((img) => ({
         key: img.slug ?? img.id,
         url: img.url,
