@@ -168,3 +168,11 @@
 @media (prefers-reduced-motion: reduce) {
   .ed-story__num { animation: none; }
 }
+
+/* ---------- Promises: the terms in plain words ---------- */
+.ed-promises { margin-top: clamp(48px, 6vw, 80px); display: grid; gap: clamp(20px, 2.4vw, 32px); }
+.ed-promises__list { display: grid; border-top: 1px solid var(--ed-ink); }
+.ed-promises__list li { padding: 16px 0; border-bottom: 1px solid var(--ed-line); color: var(--ed-ink); max-width: none; }
+@media (min-width: 900px) {
+  .ed-promises__list { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(32px, 5vw, 96px); }
+}

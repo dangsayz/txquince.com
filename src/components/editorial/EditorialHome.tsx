@@ -14,7 +14,6 @@ import { SlotPicture } from "@/components/slots/SlotPicture";
 import { SlotAdminControl } from "@/components/slots/SlotAdminControl";
 import { useSlot } from "@/components/slots/SlotProvider";
 import { MomsAsk } from "./MomsAsk";
-import { priceFloor } from "@/lib/commission";
 import { HERO_SLOTS, type HomeOverrides } from "@/lib/photo-dump-shared";
 import type { HomeGallery } from "@/lib/home-galleries";
 import type { HomeCity } from "@/content/home-places";
@@ -23,7 +22,7 @@ import { ED } from "./copy";
 import { BAND_VIDEO, DETAILS, FEATURE_STILL, HERO, JOURNAL_PHOTO, JOURNAL_PHOTO_FALLBACK } from "./media";
 import { LazyVideo } from "./LazyVideo";
 import { Favorites } from "./Favorites";
-import { Steps, Story } from "./Story";
+import { Promises, Steps, Story } from "./Story";
 import { SocialIcon } from "@/components/SocialIcon";
 import { VenueStrip } from "@/components/venue-strip/VenueStrip";
 import type { Favorite } from "@/lib/favorites";
@@ -155,6 +154,9 @@ function Hero({ overrides }: { overrides: HomeOverrides }) {
   const { book } = usePriceBook();
   const e = ED[lang];
   const image = useSlot(HERO_SLOTS[0], heroFallback(overrides[HERO_SLOTS[0]]));
+  // The first price she reads is for what the headline promises (photo and
+  // video), not the one-hour portrait session.
+  const bothFloor = Math.min(...TIERS.filter((x) => x.scope === "both").map((x) => book.packages[x.id].price));
   return (
     <section className="ed-hero" id="top" data-ed="hero" aria-labelledby="ed-hero-title">
       <div className="ed-hero__frame" data-ed="hero-frame" data-header-tone="dark" data-allow-upscale>
@@ -191,7 +193,7 @@ function Hero({ overrides }: { overrides: HomeOverrides }) {
             </a>
           </div>
           <ul className="ed-hero__facts">
-            {[...e.heroNote(money(priceFloor(book))).split(" · "), t.editorial.principles[1].title].map((fact) => (
+            {[...e.heroNote(money(bothFloor)).split(" · "), t.editorial.principles[1].title].map((fact) => (
               <li key={fact}>{fact}</li>
             ))}
           </ul>
@@ -546,6 +548,7 @@ function Packages({ children }: { children: ReactNode }) {
         </ul>
         <p className="ed-crew">{p.crew}</p>
         <Steps />
+        <Promises />
         <div className="ed-panel">
           <h3 className="ed-display ed-display--sm">{p.panelTitle}</h3>
           <p className="ed-dek">{p.panelDek}</p>

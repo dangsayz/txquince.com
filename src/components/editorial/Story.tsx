@@ -191,3 +191,21 @@ export function Steps() {
     </div>
   );
 }
+
+/** The cancellation, cover and insurance terms, where she decides (not only in the agreement). */
+export function Promises() {
+  const { lang } = useSite();
+  const p = ED[lang].promises;
+  return (
+    <div className="ed-promises" role="group" aria-labelledby="ed-promises-title">
+      <h3 id="ed-promises-title" className="ed-display ed-display--sm">
+        {p.title}
+      </h3>
+      <ul className="ed-promises__list">
+        {p.items.map((line) => (
+          <li key={line}>{line}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}

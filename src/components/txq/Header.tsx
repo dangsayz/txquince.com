@@ -4,6 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { useAvailability, useSite } from "./state";
 import { ContactButtons } from "@/components/ContactButtons";
+import { CONTACT_COPY } from "@/lib/contact";
+import { trackEvent } from "@/components/Tracker";
+import { site } from "@/content/site";
 import type { Lang } from "./data";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -168,27 +171,65 @@ export function Header() {
   );
 }
 
+/**
+ * The phone dock: one round "contact" button and Reserve. The button opens a
+ * small sheet with every way to reach the studio (text, WhatsApp, call, email,
+ * Instagram), so nothing else has to float over the page.
+ */
 export function MobileDock({ hidden }: { hidden: boolean }) {
-  const { t, homeHref } = useSite();
+  const { t, lang, homeHref } = useSite();
+  const [wantOpen, setOpen] = useState(false);
+  const open = wantOpen && !hidden;
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    const onDown = (e: PointerEvent) => {
+      if (!ref.current?.contains(e.target as Node)) setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("pointerdown", onDown);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("pointerdown", onDown);
+    };
+  }, [open]);
+  const c = CONTACT_COPY[lang];
   return (
-    <div className="tq-dock" data-hidden={hidden} aria-hidden={hidden || undefined}>
-      <span className="tq-dock__status tq-mono">
-        <StatusDot />
-      </span>
+    <div ref={ref} className="tq-dock" data-hidden={hidden} aria-hidden={hidden || undefined}>
+      {open && (
+        <div id="tq-dock-contact" className="tq-dock__sheet" role="group" aria-label={c.groupLabel}>
+          <ContactButtons lang={lang} placement="dock" primary={false} />
+          <ul className="tq-dock__more">
+            <li>
+              <a href={`mailto:${site.contact.email}`} onClick={() => trackEvent("contact_email", "dock")}>
+                {lang === "es" ? "Correo" : "Email"}
+              </a>
+            </li>
+            <li>
+              <a href={site.social.instagram} target="_blank" rel="noopener noreferrer">
+                Instagram
+              </a>
+            </li>
+          </ul>
+        </div>
+      )}
+      <button
+        type="button"
+        className="tq-dock__contact"
+        aria-label={c.groupLabel}
+        aria-expanded={open}
+        aria-controls="tq-dock-contact"
+        tabIndex={hidden ? -1 : undefined}
+        onClick={() => setOpen((v) => !v)}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          {open ? <path d="M6 6l12 12M18 6L6 18" /> : <><path d="M4 5.5h16v10.5H10l-4.5 3.5V16H4z" /><path d="M8 10.75h.01M12 10.75h.01M16 10.75h.01" strokeWidth="2.4" /></>}
+        </svg>
+      </button>
       <a href={homeHref("#intake")} className="tq-btn tq-btn--lg" tabIndex={hidden ? -1 : undefined}>
         {t.nav.cta} <span className="tq-arrow" aria-hidden>↗</span>
       </a>
     </div>
-  );
-}
-
-function StatusDot() {
-  const { t } = useSite();
-  const a = useAvailability();
-  return (
-    <>
-      <span className="tq-dot" data-pending={!a.ready} data-limited={a.limited} aria-hidden />
-      <span>{a.limited ? t.status.limited : t.status.available}</span>
-    </>
   );
 }
