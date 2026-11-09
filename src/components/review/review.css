@@ -8,6 +8,10 @@
 
 .rv-private { margin: 0; }
 
+/* Thank-you screen: tall enough that it, not the footer, fills her phone. */
+.rv-done { min-height: 70svh; align-content: start; }
+.rv-done h1:focus { outline: none; }
+
 /* ---------- Stars ---------- */
 .rv-stars {
   display: flex;

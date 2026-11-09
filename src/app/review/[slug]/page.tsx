@@ -16,6 +16,15 @@ export const dynamic = "force-dynamic";
 /** A private, one-time link: never indexed, never followed, never cached. */
 export const metadata: Metadata = {
   title: { absolute: `Leave a review · ${site.brand}` },
+  // What the text-message preview shows (image: opengraph-image.jpg here).
+  // No names: the same card goes to every family.
+  description: "How was her quinceañera? Tell other moms in two minutes. · ¿Cómo fue su quinceañera? Cuéntele a otras mamás.",
+  openGraph: {
+    title: "How was her quinceañera? Leave a review",
+    description: "Two minutes, private link. · Dos minutos, enlace privado.",
+    siteName: site.brand,
+    type: "website",
+  },
   robots: { index: false, follow: false, nocache: true },
   referrer: "no-referrer",
 };

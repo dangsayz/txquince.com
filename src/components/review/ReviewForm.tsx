@@ -44,6 +44,16 @@ export function ReviewForm({
   const uid = useId();
   const fid = (n: string) => `${uid}-${n}`;
   const { setDockHidden } = useShell();
+  const doneHeading = useRef<HTMLHeadingElement>(null);
+
+  // After sending, the long form is swapped for a short thank-you. Jump to the
+  // top only once that has rendered (jumping first left her at the footer when
+  // the page shrank), and move focus to the thank-you for screen readers.
+  useEffect(() => {
+    if (!done) return;
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    doneHeading.current?.focus({ preventScroll: true });
+  }, [done]);
 
   // The booking dock ("Reserve your date") has no place on a client's review form.
   useEffect(() => {
@@ -132,7 +142,6 @@ export function ReviewForm({
         return;
       }
       setDone(true);
-      window.scrollTo({ top: 0 });
     } catch {
       setFormError("network");
       setBusy(false);
@@ -141,10 +150,10 @@ export function ReviewForm({
 
   if (done) {
     return (
-      <div className="tq-wrap qp-intake rv" lang={lang}>
+      <div className="tq-wrap qp-intake rv rv-done" lang={lang}>
         <header className="qp-intake__head" role="status">
           <p className="tq-mono qp-eyebrow">[{t.eyebrow}]</p>
-          <h1 className="tq-display qp-intake__title">{t.doneTitle}</h1>
+          <h1 ref={doneHeading} tabIndex={-1} className="tq-display qp-intake__title">{t.doneTitle}</h1>
           <p className="qp-intake__intro">{t.doneBody}</p>
           <p>
             <Link href={lang === "es" ? "/es" : "/portfolio"} className="tq-btn tq-btn--lg tq-btn--ghost">

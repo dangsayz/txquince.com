@@ -107,11 +107,15 @@ export function shortName(full: string): string {
   return `${parts[0]} ${parts[parts.length - 1][0].toUpperCase()}.`;
 }
 
+/** "yvonne" → "Yvonne" (names are often typed fast on a phone). */
+const cap = (w: string) => (w ? w[0].toLocaleUpperCase("es") + w.slice(1) : w);
+
 /** The message the owner copies and texts to the mom. Bilingual, short, no pressure. */
 export function inviteMessage(r: Pick<ReviewRecord, "invite_name" | "daughter_name">, url: string): string {
-  const first = r.invite_name.trim().split(/\s+/)[0] || "";
-  const her = r.daughter_name ? `${r.daughter_name}’s` : "her";
-  const suya = r.daughter_name ? `de ${r.daughter_name}` : "de su hija";
+  const first = cap(r.invite_name.trim().split(/\s+/)[0] || "");
+  const daughter = r.daughter_name ? cap(r.daughter_name.trim()) : "";
+  const her = daughter ? `${daughter}’s` : "her";
+  const suya = daughter ? `de ${daughter}` : "de su hija";
   return [
     `Hi ${first}! It was an honor to photograph ${her} quinceañera. If you have two minutes, could you leave me a short review? You can add a photo or two from your gallery too. This link is just for you:`,
     url,
