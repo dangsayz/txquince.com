@@ -190,6 +190,10 @@ async function serve(
     });
   } catch (err) {
     console.error("[img] transform failed:", err);
+    // Album originals can be 20+ MB: never hand those to a visitor.
+    if (slug.startsWith("album-")) {
+      return NextResponse.json({ error: "Image unavailable" }, { status: 502, headers: { "x-img": `failed:${hdr(err instanceof Error ? err.message : "?")}` } });
+    }
     // Last resort: re-fetch and pass through (transform consumed the stream).
     const retry = await fetchOriginal(sourceUrl);
     return new NextResponse(retry.body, {
