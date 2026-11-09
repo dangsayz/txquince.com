@@ -109,7 +109,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Las fotos de la decoración toman solo unos minutos, pero tienen que tomarse a la hora correcta. Cuéntanos tu fecha y tus planes, y te decimos qué alcanza con tu presupuesto. Manda mensaje o llama al (945) 200-1939.",
+      text: "Las fotos de la decoración toman solo unos minutos, pero tienen que tomarse a la hora correcta. Cuéntanos tu fecha y tus planes, y te decimos qué alcanza con tu presupuesto. Manda mensaje o llama al (972) 914-8617.",
     },
     {
       type: "cta",

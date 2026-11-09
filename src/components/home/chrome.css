@@ -160,7 +160,7 @@
 }
 .txq .sm-links a:hover { opacity: 0.5; }
 .txq .sm-side { display: flex; flex-direction: column; gap: 2px; font-size: 16px; }
-.txq .sm-side a { display: inline-flex; align-items: center; min-height: 44px; color: #101010; }
+.txq .sm-side a { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; color: #101010; }
 .txq .sm-status { display: flex; align-items: center; gap: 10px; min-height: 44px; margin: 0; font-size: 14px; color: #6b6b6b; }
 @media (min-width: 1024px) {
   .txq .sm-body { padding: 12vh 40px 48px; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); align-content: end; align-items: end; }

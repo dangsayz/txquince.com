@@ -4,13 +4,13 @@ import { CONTACT_COPY, CONTACT_EVENT, CONTACT_KINDS, contactHref, smsHref, telHr
 
 describe("contact links", () => {
   it("publishes the studio phone", () => {
-    expect(site.contact.phone).toBe("(945) 200-1939");
-    expect(site.contact.phoneE164).toBe("+19452001939");
+    expect(site.contact.phone).toBe("(972) 914-8617");
+    expect(site.contact.phoneE164).toBe("+19729148617");
   });
 
   it("builds sms / tel links from the E.164 number", () => {
-    expect(smsHref()).toBe("sms:+19452001939");
-    expect(telHref()).toBe("tel:+19452001939");
+    expect(smsHref()).toBe("sms:+19729148617");
+    expect(telHref()).toBe("tel:+19729148617");
   });
 
   it("prefills the WhatsApp message in the page's language", () => {
@@ -24,8 +24,8 @@ describe("contact links", () => {
   it("offers text first, then WhatsApp, then call — each with an event", () => {
     expect(CONTACT_KINDS).toEqual(["text", "whatsapp", "call"]);
     expect(CONTACT_EVENT).toEqual({ text: "contact_text", whatsapp: "contact_whatsapp", call: "contact_call" });
-    expect(contactHref("text", "es")).toBe("sms:+19452001939");
-    expect(contactHref("call", "en")).toBe("tel:+19452001939");
+    expect(contactHref("text", "es")).toBe("sms:+19729148617");
+    expect(contactHref("call", "en")).toBe("tel:+19729148617");
     expect(contactHref("whatsapp", "es")).toBe(whatsappHref("es"));
   });
 

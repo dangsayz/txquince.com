@@ -105,7 +105,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "¿Quieres una sesión de vestido con piedra, hiedra y vista a la ciudad? Cuéntanos tu fecha y el look que tienes en mente, y te ayudamos a planearla. Mándanos mensaje o llámanos al (945) 200-1939.",
+      text: "¿Quieres una sesión de vestido con piedra, hiedra y vista a la ciudad? Cuéntanos tu fecha y el look que tienes en mente, y te ayudamos a planearla. Mándanos mensaje o llámanos al (972) 914-8617.",
     },
     {
       type: "cta",

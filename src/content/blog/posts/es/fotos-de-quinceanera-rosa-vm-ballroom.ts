@@ -86,7 +86,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "¿Estás planeando unos quince en rosa y negro? Cuéntanos tu fecha y tu salón, y te ayudamos a planear cuándo van las fotos de la decoración y los retratos. Mándanos mensaje o llámanos al (945) 200-1939.",
+      text: "¿Estás planeando unos quince en rosa y negro? Cuéntanos tu fecha y tu salón, y te ayudamos a planear cuándo van las fotos de la decoración y los retratos. Mándanos mensaje o llámanos al (972) 914-8617.",
     },
     {
       type: "cta",

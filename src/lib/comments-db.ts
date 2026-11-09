@@ -29,6 +29,7 @@ export function toCommentRecord(row: Row): CommentRecord {
     author_name: String(row.author_name ?? ""),
     author_image: str("author_image"),
     body: String(row.body ?? ""),
+    quote: str("quote"),
     status: COMMENT_STATUSES.includes(row.status as CommentStatus) ? (row.status as CommentStatus) : "pending",
     approved_at: str("approved_at"),
     reply: str("reply"),
@@ -73,13 +74,14 @@ export async function createComment(input: {
   author_name: string;
   author_image: string | null;
   body: string;
+  quote?: string | null;
 }): Promise<CommentRecord> {
   const db = await requireD1();
   const row = await db
     .prepare(
-      "INSERT INTO blog_comments (id, post_slug, lang, user_id, author_name, author_image, body) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING *",
+      "INSERT INTO blog_comments (id, post_slug, lang, user_id, author_name, author_image, body, quote) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING *",
     )
-    .bind(crypto.randomUUID(), input.post_slug, input.lang, input.user_id, input.author_name, input.author_image, input.body)
+    .bind(crypto.randomUUID(), input.post_slug, input.lang, input.user_id, input.author_name, input.author_image, input.body, input.quote ?? null)
     .first<Row>();
   if (!row) throw new Error("could not save the comment");
   return toCommentRecord(row);

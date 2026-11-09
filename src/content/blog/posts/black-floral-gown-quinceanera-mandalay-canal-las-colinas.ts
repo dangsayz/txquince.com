@@ -104,7 +104,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "Want a dress session with stone, ivy and city views? Tell us your date and the look you have in mind, and we will help you plan it. Text or call (945) 200-1939.",
+      text: "Want a dress session with stone, ivy and city views? Tell us your date and the look you have in mind, and we will help you plan it. Text or call (972) 914-8617.",
     },
     {
       type: "cta",

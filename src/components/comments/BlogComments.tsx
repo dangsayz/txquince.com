@@ -2,6 +2,7 @@ import { listApprovedComments } from "@/lib/comments-db";
 import { clerkSettings } from "@/lib/clerk-config";
 import { SectionHead } from "@/components/BlogContent";
 import { CommentBox } from "./CommentBox";
+import { QuoteTools } from "./QuoteTools";
 import type { PublicComment } from "@/lib/comments";
 import "./comments.css";
 
@@ -13,6 +14,8 @@ const COPY = {
     empty: "No comments yet. Be the first.",
     owner: "TX Quince",
     replied: "replied",
+    about: "About",
+    jump: "Show this passage in the post",
     locale: "en-US",
   },
   es: {
@@ -22,6 +25,8 @@ const COPY = {
     empty: "Todavía no hay comentarios. Sé la primera.",
     owner: "TX Quince",
     replied: "respondió",
+    about: "Sobre",
+    jump: "Ver este texto en la publicación",
     locale: "es-MX",
   },
 } as const;
@@ -41,21 +46,31 @@ export async function BlogComments({ lang, slug }: { lang: "en" | "es"; slug: st
   const s = clerkSettings();
   return (
     <section className="tq-section tq-cmt" id="comments" aria-labelledby="tq-cmt-title">
-      <div className="tq-wrap tq-cmt__wrap">
+      <div className="tq-wrap">
         <SectionHead index={c.index} id="tq-cmt-title" title={c.title(comments.length)} dek={c.dek} />
-        {comments.length ? (
-          <ol className="tq-cmt__list">
-            {comments.map((cm) => (
-              <Comment key={cm.id} cm={cm} lang={lang} />
-            ))}
-          </ol>
-        ) : (
-          <p className="tq-cmt__empty">{c.empty}</p>
-        )}
-        <CommentBox lang={lang} slug={slug} clerk={s} />
+        <div className="tq-cmt__body">
+          <div className="tq-cmt__col">
+            {comments.length ? (
+              <ol className="tq-cmt__list">
+                {comments.map((cm) => (
+                  <Comment key={cm.id} cm={cm} lang={lang} />
+                ))}
+              </ol>
+            ) : (
+              <p className="tq-cmt__empty">{c.empty}</p>
+            )}
+            <CommentBox lang={lang} slug={slug} clerk={s} place="bottom" />
+          </div>
+        </div>
       </div>
+      <QuoteTools lang={lang} slug={slug} quotes={comments.map((cm) => cm.quote).filter((q): q is string => Boolean(q))} />
     </section>
   );
+}
+
+/** The comment box for the article's left rail (wide screens; it follows the scroll). */
+export function BlogCommentRail({ lang, slug }: { lang: "en" | "es"; slug: string }) {
+  return <CommentBox lang={lang} slug={slug} clerk={clerkSettings()} place="rail" />;
 }
 
 function Comment({ cm, lang }: { cm: PublicComment; lang: "en" | "es" }) {
@@ -72,6 +87,11 @@ function Comment({ cm, lang }: { cm: PublicComment; lang: "en" | "es" }) {
             {day(cm.created_at, c.locale)}
           </time>
         </header>
+        {cm.quote ? (
+          <button type="button" className="tq-cmt__about" data-tq-quote={cm.quote} title={c.jump}>
+            <span className="tq-mono tq-muted">{c.about}</span> “{cm.quote}”
+          </button>
+        ) : null}
         <p className="tq-cmt__body">{cm.body}</p>
         {cm.reply ? (
           <div className="tq-cmt__reply">

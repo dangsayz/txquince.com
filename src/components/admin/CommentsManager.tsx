@@ -48,6 +48,11 @@ function Row({ c, onChange, onDelete }: { c: AdminComment; onChange: (next: Comm
           {c.lang === "es" ? " · Spanish" : ""}
         </span>
       </p>
+      {c.quote ? (
+        <blockquote className="m-0 border-l-2 border-[var(--tq-stone)] pl-3 text-[15px] leading-6 text-[var(--tq-ink-mute)]">
+          About: “{c.quote}”
+        </blockquote>
+      ) : null}
       <p className="m-0 whitespace-pre-line break-words text-base leading-7">{c.body}</p>
 
       {c.reply && !editing ? (

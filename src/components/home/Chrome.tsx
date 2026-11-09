@@ -1,5 +1,6 @@
 "use client";
 
+import { ContactIcon } from "@/components/ContactButtons";
 import { AUTH_CHANGED_EVENT, signedInHint } from "@/lib/signed-in-hint";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -311,10 +312,12 @@ export function SiteHeader() {
                 <StatusLabel />
               </p>
               <a href={smsHref()} onClick={() => trackEvent(CONTACT_EVENT.text, "menu")}>
+                <ContactIcon kind="text" />
                 {ED[lang].text} {site.contact.phone}
               </a>
               <a href={whatsappHref(lang)} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent(CONTACT_EVENT.whatsapp, "menu")}>
-                WhatsApp
+                <ContactIcon kind="whatsapp" />
+                WhatsApp {site.contact.whatsappPhone}
               </a>
               <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
               {isAdmin ? <MenuAdmin onNavigate={() => setOpen(false)} /> : null}
