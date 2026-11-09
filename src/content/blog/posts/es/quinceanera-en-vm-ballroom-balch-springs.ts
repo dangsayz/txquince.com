@@ -15,6 +15,7 @@ const post: BlogPost = {
   "publishedAt": "2026-07-02",
   "updatedAt": "2026-10-14",
   "readMinutes": 7,
+  "venues": ["vm-ballroom"],
   "lead": "VM Ballroom es un salón de eventos para quinceañeras y bodas en el 11221 de Lake June Rd, en Balch Springs, al sureste de Dallas, con capacidad para hasta 250 invitados sentados. Hemos fotografiado quinceañeras ahí más de una vez, así que esta guía responde lo que las familias de verdad quieren saber antes de reservar: qué es el salón, cómo funcionan sus precios, qué preguntar en el recorrido y cómo planear el día para que el salón se vea lo mejor posible en fotos.",
   "lang": "es",
   "content": [

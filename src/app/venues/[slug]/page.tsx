@@ -10,6 +10,8 @@
  * read as events are added. Every "ask" keeps the venue (?venue=<slug>).
  */
 import type { Metadata } from "next";
+import { VenueExperience } from "@/components/VenueExperience";
+import { getVenueExperience } from "@/lib/venue-experience-db";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -76,7 +78,12 @@ export default async function VenuePage({
   const venue = getVenue(slug);
   if (!venue) notFound();
 
-  const [copy, dbPhotos, book] = await Promise.all([getVenueCopy(slug), getImagesByVenue(slug), getPriceBook()]);
+  const [copy, dbPhotos, book, experience] = await Promise.all([
+    getVenueCopy(slug),
+    getImagesByVenue(slug),
+    getPriceBook(),
+    getVenueExperience(slug),
+  ]);
   // Database photos plus any curated 12img album for this venue (src/content/albums.ts).
   const photos = withAlbums(dbPhotos, venue.slug);
   const commissionsFromLabel = usd(priceFloor(book));
@@ -331,6 +338,13 @@ export default async function VenuePage({
           ) : null}
         </div>
       </section>
+
+      {/* The owner's own account of working here (hidden until written). */}
+      <div className="tq-wrap">
+        <div style={{ paddingInline: "var(--pad)" }}>
+          <VenueExperience venue={{ slug: venue.slug, name: venue.venue }} initial={experience} />
+        </div>
+      </div>
 
       {/* FAQ — the homepage Q&A pattern; mirrors the FAQPage schema. */}
       {faq.length ? (

@@ -21,6 +21,7 @@ const post: BlogPost = {
       type: "callout",
       text: "The simplest rule: book the things you can't get back first. You can change your dress, your colors, even your court. You cannot get a popular venue's or photographer's Saturday back once another family has signed.",
     },
+    { type: "date-plan" },
     { type: "h3", text: "Is 6 months — or even 3 months — too late?" },
     {
       type: "p",

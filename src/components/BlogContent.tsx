@@ -11,6 +11,8 @@ import type { Series } from "@/content/blog-clusters";
 import "@/components/txq/pages/blog.css";
 import { BudgetChart } from "@/components/blog/BudgetChart";
 import { QuickPoll } from "@/components/blog/QuickPoll";
+import { DatePlan } from "@/components/blog/DatePlan";
+import { planStages } from "@/content/plan-stages";
 
 /**
  * The journal (blog) in the homepage's editorial system: Inter display type,
@@ -224,6 +226,7 @@ export function BlogContent({
   skipSlug,
   lang = "en",
   midSlot,
+  leadSlot,
 }: {
   blocks: BlogBlock[];
   images?: Record<string, BlogImage>;
@@ -232,6 +235,8 @@ export function BlogContent({
   lang?: BlogLang;
   /** Rendered once, after roughly the middle section (just before that h2). */
   midSlot?: ReactNode;
+  /** Rendered first, before the post's own blocks. */
+  leadSlot?: ReactNode;
 }) {
   // "After the middle section": before h2 number ceil(n/2)+1 (needs ≥2 sections).
   const h2Count = blocks.filter((b) => b.type === "h2").length;
@@ -251,6 +256,7 @@ export function BlogContent({
   );
   return (
     <div className="tq-blog-flow">
+      {leadSlot}
       {blocks.map((b, i) => {
         switch (b.type) {
           case "h2":
@@ -296,6 +302,8 @@ export function BlogContent({
             );
           case "budget-chart":
             return <BudgetChart key={i} lang={lang} packages={b.packages} />;
+          case "date-plan":
+            return <DatePlan key={i} lang={lang} stages={planStages(blocks)} />;
           case "poll":
             return <QuickPoll key={i} pollId={b.id} lang={lang} />;
           case "quote":
@@ -617,10 +625,13 @@ export function BlogArticleView({
   series = null,
   comments = null,
   commentRail = null,
+  experience = null,
 }: {
   /** The comment box for the left rail (wide screens; sticks while reading). */
   commentRail?: ReactNode;
   lang: BlogLang;
+  /** "Our experience at this venue" (venue posts), shown first in the body. */
+  experience?: ReactNode;
   /** Comments section (server-rendered list + comment box), shown after the article. */
   comments?: ReactNode;
   /** The topic cluster this post belongs to (src/content/blog-clusters.ts). */
@@ -783,6 +794,7 @@ export function BlogArticleView({
                 skipSlug={cover.blockSlug}
                 lang={lang}
                 midSlot={<BlogPlanCta lang={lang} placement="mid" />}
+                leadSlot={experience}
               />
               <BlogPlanCta lang={lang} placement="end" />
             </div>
