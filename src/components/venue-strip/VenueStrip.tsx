@@ -41,9 +41,9 @@ const pad = (n: number) => String(n).padStart(2, "0");
 
 export function VenueStrip({ lang, galleries: all }: { lang: "en" | "es"; galleries: HomeGallery[] }) {
   const c = COPY[lang];
-  // Only real venues (the venue registry, each with its own page). Bare
-  // places the portfolio carries ("irving", "country") are not venues.
-  const galleries = all.filter((g) => g.key.startsWith("venue:"));
+  // Registry venues and named places only (see lib/home-locations.ts). Bare
+  // places the portfolio carries ("irving", "country") are never shown.
+  const galleries = all.filter((g) => /^(venue|place):/.test(g.key));
   const trackRef = useRef<HTMLUListElement>(null);
   const [pos, setPos] = useState({ first: 1, last: 1, start: true, end: false });
 

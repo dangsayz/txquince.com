@@ -3,7 +3,8 @@ import Link from "next/link";
 import { about } from "@/content/about";
 import { site } from "@/content/site";
 import { getImageBySlug, getImagesBySection, getFeaturedImages, getPageHero, getPortfolioImages } from "@/lib/content-db";
-import { galleriesFromImages } from "@/lib/home-galleries";
+import { homeLocations } from "@/lib/home-locations";
+import { getAllPosts } from "@/content/blog";
 import { mediaUrl } from "@/content/media";
 import { SlotImage } from "@/components/SlotImage";
 import { FinalCTA } from "@/components/FinalCTA";
@@ -118,7 +119,7 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      <VenueStrip lang="en" galleries={galleriesFromImages(await getPortfolioImages(), 50)} />
+      <VenueStrip lang="en" galleries={homeLocations(await getPortfolioImages(), getAllPosts(), "/blog")} />
 
       <section className="tq-section" aria-labelledby="approach-title">
         <div className="tq-wrap">
