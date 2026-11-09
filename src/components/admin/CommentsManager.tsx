@@ -20,7 +20,11 @@ async function send(method: "PATCH" | "DELETE", body: unknown): Promise<{ ok: bo
   return { ok: !!res?.ok, data };
 }
 
-function Row({ c, onChange, onDelete }: { c: AdminComment; onChange: (next: CommentRecord) => void; onDelete: (id: string) => void }) {
+/** What just happened, shown at the top with a link to check it on the site. */
+type Notice = { text: string; href?: string; linkLabel?: string };
+const onSite = (c: AdminComment) => `${c.postPath}#comments`;
+
+function Row({ c, onChange, onDelete, onNotice }: { c: AdminComment; onChange: (next: CommentRecord) => void; onDelete: (id: string) => void; onNotice: (n: Notice) => void }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [reply, setReply] = useState(c.reply ?? "");
@@ -34,6 +38,12 @@ function Row({ c, onChange, onDelete }: { c: AdminComment; onChange: (next: Comm
     if (!ok) return setError(String(data.error ?? "Could not save."));
     onChange(data.comment as CommentRecord);
     setEditing(false);
+    const live = (body.status ?? c.status) === "approved";
+    const see = live ? { href: onSite(c), linkLabel: "See it on the post" } : {};
+    if (body.status === "approved") onNotice({ text: `Approved. ${c.author_name}'s comment is now on the site.`, ...see });
+    else if (body.status === "hidden") onNotice({ text: `Hidden. ${c.author_name}'s comment is off the site. Find it under Hidden.` });
+    else if (body.reply) onNotice({ text: live ? "Your answer is saved and shows under the comment." : "Your answer is saved. It shows once you approve the comment.", ...see });
+    else onNotice({ text: "Your answer was removed.", ...see });
   }
 
   return (
@@ -94,9 +104,13 @@ function Row({ c, onChange, onDelete }: { c: AdminComment; onChange: (next: Comm
         <div className="flex flex-wrap gap-2">
           {c.status !== "approved" ? (
             <button type="button" className="st-btn" disabled={busy} onClick={() => void patch({ status: "approved" })}>
-              Approve
+              {busy ? "Saving…" : "Approve"}
             </button>
-          ) : null}
+          ) : (
+            <a className="st-btn" href={onSite(c)} target="_blank" rel="noopener noreferrer">
+              See it on the site <span aria-hidden="true">↗</span>
+            </a>
+          )}
           <button type="button" className="st-btn-ghost" disabled={busy} onClick={() => setEditing(true)}>
             {c.reply ? "Edit answer" : "Answer"}
           </button>
@@ -114,8 +128,10 @@ function Row({ c, onChange, onDelete }: { c: AdminComment; onChange: (next: Comm
               setBusy(true);
               const { ok, data } = await send("DELETE", { id: c.id });
               setBusy(false);
-              if (ok) onDelete(c.id);
-              else setError(String(data.error ?? "Could not delete."));
+              if (ok) {
+                onDelete(c.id);
+                onNotice({ text: `Deleted ${c.author_name}'s comment for good.` });
+              } else setError(String(data.error ?? "Could not delete."));
             }}
           >
             Delete
@@ -136,8 +152,22 @@ export function CommentsManager({ initial }: { initial: AdminComment[] }) {
   const counts = Object.fromEntries(VIEWS.map((v) => [v.id, rows.filter((r) => r.status === v.id).length])) as Record<CommentStatus, number>;
   const [view, setView] = useState<CommentStatus>(counts.pending || !counts.approved ? "pending" : "approved");
   const shown = rows.filter((r) => r.status === view);
+  const [notice, setNotice] = useState<Notice | null>(null);
 
   return (
+    <>
+    <div role="status" aria-live="polite">
+      {notice ? (
+        <p className="st-card m-0 mb-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-l-4 border-l-[var(--tq-status-open)] px-5 py-4 text-base">
+          <span className="font-medium">{notice.text}</span>
+          {notice.href ? (
+            <a className="st-btn-ghost" href={notice.href} target="_blank" rel="noopener noreferrer">
+              {notice.linkLabel} <span aria-hidden="true">↗</span>
+            </a>
+          ) : null}
+        </p>
+      ) : null}
+    </div>
     <section aria-label="Comments" className="st-card overflow-hidden">
       <nav className="st-tabs flex gap-4 overflow-x-auto px-5 sm:px-6" aria-label="Comment status">
         {VIEWS.map((v) => (
@@ -154,6 +184,7 @@ export function CommentsManager({ initial }: { initial: AdminComment[] }) {
               c={c}
               onChange={(next) => setRows((cur) => cur.map((r) => (r.id === next.id ? { ...r, ...next } : r)))}
               onDelete={(id) => setRows((cur) => cur.filter((r) => r.id !== id))}
+              onNotice={setNotice}
             />
           ))}
         </ol>
@@ -163,5 +194,6 @@ export function CommentsManager({ initial }: { initial: AdminComment[] }) {
         </p>
       )}
     </section>
+    </>
   );
 }
