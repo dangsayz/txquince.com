@@ -37,7 +37,8 @@ describe("city pages: unsupported slugs are a real 404", () => {
   const run = async (path: string) => {
     const { middleware } = await import("@/middleware");
     const { NextRequest } = await import("next/server");
-    return middleware(new NextRequest(`https://txquince.com${path}`));
+    // Clerk is off in tests (no keys), so the plain router answers.
+    return (await middleware(new NextRequest(`https://txquince.com${path}`), {} as import("next/server").NextFetchEvent)) as Response;
   };
   const rewrite = (res: Response) => res.headers.get("x-middleware-rewrite");
 

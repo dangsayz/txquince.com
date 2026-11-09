@@ -1,0 +1,36 @@
+/* Login / account panel (public /login, /es/entrar, /admin/login). Brand kit tokens only. */
+.tq-auth {
+  display: grid;
+  gap: var(--tq-space-6);
+  max-width: 34rem;
+}
+.tq-auth__lead {
+  font-size: var(--tq-text-lg);
+  line-height: var(--tq-leading-body);
+  color: var(--tq-ink);
+}
+.tq-auth__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tq-space-3);
+}
+.tq-auth__actions > .tq-btn {
+  min-height: var(--tq-tap-primary);
+  white-space: nowrap;
+}
+.tq-auth__actions > a[aria-disabled="true"] {
+  pointer-events: none;
+  opacity: 0.55;
+}
+.tq-auth__note {
+  max-width: 34rem;
+  font-size: var(--tq-text-body);
+  line-height: var(--tq-leading-body);
+  color: var(--tq-ink-mute);
+}
+@media (max-width: 479px) {
+  .tq-auth__actions > .tq-btn {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+}

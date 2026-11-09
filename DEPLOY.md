@@ -28,7 +28,8 @@ so they must be in `.env.local` / CI env at build, AND in `wrangler.jsonc` vars
 for runtime where noted):
 
 - `NEXT_PUBLIC_SITE_URL` — already in `wrangler.jsonc` (`https://txquince.com`)
-- `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `NEXT_PUBLIC_CLERK_*` (publishable key + satellite settings) — already in
+  `.env.production` and `wrangler.jsonc` vars; see "Accounts (Clerk)" below
 - `NEXT_PUBLIC_TURNSTILE_SITE_KEY`
 - `NEXT_PUBLIC_R2_BASE_URL`
 
@@ -38,6 +39,7 @@ for runtime where noted):
 npx wrangler secret put SUPABASE_URL
 npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
 npx wrangler secret put ADMIN_EMAILS            # dangzr1@gmail.com,dangxaoj@gmail.com
+npx wrangler secret put CLERK_SECRET_KEY        # Quince Network app, PRODUCTION secret (sk_live_…)
 npx wrangler secret put RESEND_API_KEY
 npx wrangler secret put OPERATOR_NOTIFY_EMAIL
 npx wrangler secret put RESEND_FROM
@@ -58,13 +60,23 @@ npx wrangler secret put CRON_SECRET              # see §5
 
 ### Cloudflare D1 (`txquince`, binding `DB`)
 
-Reviews live in D1, not Postgres. Schema files are in `migrations/`. The
-database and `0001_reviews.sql` are already created and applied (2026-11-09).
+Reviews and blog comments live in D1, not Postgres. Schema files are in
+`migrations/`. The database and `0001_reviews.sql` are already created and
+applied (2026-11-09). `0002_blog_comments.sql` is applied too (2026-11-09).
 For a later migration:
 
 ```
 npx wrangler d1 migrations apply txquince --remote
 ```
+
+### Public accounts (Clerk)
+
+TX Quince's own Clerk app "TX Quince" (`app_3LsbmZ7P1ci9zz1YTrNcZQVwpSb`),
+production on txquince.com, for the public log in / sign up and Journal
+comments. Set up 2026-11-09: the 5 DNS records (clerk, accounts, clkmail,
+clk._domainkey, clk2._domainkey; DNS only) are verified and the Worker
+secret `CLERK_SECRET_KEY` is set. The Studio (/admin) keeps its own
+email-code login and does not use Clerk. See `docs/clerk.md`.
 
 ## 4. Stripe (commission retainers)
 

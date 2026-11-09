@@ -797,3 +797,39 @@ export async function sendReviewRequestEmail(
     return { ok: false, error: String(error) };
   }
 }
+
+/** New blog comment waiting for approval → the owner (OPERATOR_NOTIFY_EMAIL). */
+export async function sendCommentNoticeEmail(c: {
+  postTitle: string;
+  postUrl: string;
+  adminUrl: string;
+  author: string;
+  body: string;
+}): Promise<{ ok: boolean; error?: string }> {
+  const resend = getResend();
+  const to = process.env.OPERATOR_NOTIFY_EMAIL;
+  if (!resend) return { ok: false, error: "resend-not-configured" };
+  if (!to) return { ok: false, error: "operator-email-not-set" };
+  const text = [
+    `New comment on "${c.postTitle}" from ${c.author}. It is hidden until you approve it.`,
+    "",
+    c.body,
+    "",
+    `Approve or answer: ${c.adminUrl}`,
+    `Post: ${c.postUrl}`,
+  ].join("\n");
+  const html = `
+  <div style="font-family:ui-sans-serif,system-ui,Arial,sans-serif;color:${INK};max-width:560px">
+    <p style="font-weight:600;color:${WINE};margin:0 0 4px">New comment, waiting for you</p>
+    <p style="font-size:14px;margin:0 0 12px">${esc(c.author)} on <a href="${esc(c.postUrl)}">${esc(c.postTitle)}</a></p>
+    <p style="font-size:14px;white-space:pre-wrap;margin:0 0 16px;padding:12px;background:#f2efe9;border-radius:8px">${esc(c.body)}</p>
+    <p style="margin:0"><a href="${esc(c.adminUrl)}" style="color:${INK}">Approve or answer it</a></p>
+  </div>`;
+  try {
+    const { error } = await resend.emails.send({ from: FROM, to, subject: `New comment — ${c.postTitle}`, text, html });
+    if (error) return { ok: false, error: String(error.message ?? error) };
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: String(err) };
+  }
+}

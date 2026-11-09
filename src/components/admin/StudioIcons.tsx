@@ -21,7 +21,7 @@ export function MenuIcon({ open }: { open: boolean }) {
  * Website sub-nav icons: soft, rounded, 18px on a 20 grid, same 1.5 stroke.
  * Each one is drawn for TX Quince's own pages, not a generic icon set.
  */
-export type WebsiteIconName = "overview" | "photos" | "portfolio" | "films" | "imagery" | "images" | "prices" | "packages" | "guide" | "venues" | "reviews";
+export type WebsiteIconName = "overview" | "photos" | "portfolio" | "films" | "imagery" | "images" | "prices" | "packages" | "guide" | "venues" | "reviews" | "comments";
 
 const WEBSITE_ICON_PATHS: Record<WebsiteIconName, ReactNode> = {
   // a small house: the hub of the site
@@ -46,6 +46,8 @@ const WEBSITE_ICON_PATHS: Record<WebsiteIconName, ReactNode> = {
   venues: <><path d="M10 17s-5-4.6-5-8.6a5 5 0 0 1 10 0c0 4-5 8.6-5 8.6z" /><circle cx="10" cy="8.4" r="1.8" /></>,
   // a speech bubble: what families said
   reviews: <path d="M4 4.5h12a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H9l-3.5 3v-3H4a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1z" />,
+  // two overlapping bubbles: a question and the answer under it
+  comments: <><path d="M3.5 4.5h8a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H7l-2.5 2v-2h-1a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1z" /><path d="M14.5 8h1.5a1 1 0 0 1 1 1v4.5a1 1 0 0 1-1 1h-.5V16l-2-1.5H10a1 1 0 0 1-1-1V12.5" /></>,
 };
 
 export function WebsiteIcon({ name, size = 18 }: { name: WebsiteIconName; size?: number }) {

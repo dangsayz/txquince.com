@@ -34,6 +34,8 @@ export type TodayData = {
   review: BookingRow[];
   upcoming: BookingRow[];
   behavior?: BehaviorSummary & { configured: boolean; days: number };
+  /** Journal comments waiting for approval. */
+  comments?: number;
 };
 
 /**
@@ -45,7 +47,7 @@ export type TodayData = {
  * Refs (Mobbin): Square "Today vs Yesterday" traffic, Mintlify 7-day visitor
  * bars, HoneyBook greeting + short lists. Data comes from app/admin/page.tsx.
  */
-export function TodayView({ pulse, work, review, upcoming, behavior }: TodayData) {
+export function TodayView({ pulse, work, review, upcoming, behavior, comments = 0 }: TodayData) {
   const now = new Date();
   const hour = Number(now.toLocaleString("en-US", { hour: "numeric", hour12: false, timeZone: TZ })) % 24;
   const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
@@ -54,7 +56,7 @@ export function TodayView({ pulse, work, review, upcoming, behavior }: TodayData
 
   const needs = work.filter((w): w is LeadWorkItem & { priority: keyof typeof reason } => w.priority in reason);
   const shown = needs.slice(0, 5);
-  const todo = review.length + needs.length;
+  const todo = review.length + needs.length + (comments > 0 ? 1 : 0);
 
   const summary = [
     !pulse.configured ? "" : pulse.visitorsToday ? `${plural(pulse.visitorsToday, "person", "people")} visited the site today` : "no one has visited the site yet today",
@@ -141,6 +143,9 @@ export function TodayView({ pulse, work, review, upcoming, behavior }: TodayData
               {review.map((b) => (
                 <Row key={b.id} href="/admin/bookings" name={b.name} why="Paid, but the date needs your check" urgent detail={dayLabel(b.event_date, { month: "short", day: "numeric", year: "numeric" })} />
               ))}
+              {comments > 0 ? (
+                <Row href="/admin/comments" name={plural(comments, "new comment")} why="On the Journal, waiting for your approval" detail="Comments" />
+              ) : null}
               {shown.map(({ inquiry, priority }) => (
                 <Row
                   key={inquiry.id}

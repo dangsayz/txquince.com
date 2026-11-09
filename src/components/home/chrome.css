@@ -83,7 +83,34 @@
 .txq .sh-lang--always { display: flex; }
 .txq .sh-reserve { display: inline-flex; align-items: center; min-height: 44px; color: inherit; text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 1px; }
 .txq .sh-reserve__long { display: none; }
+/* Account: icon-only on phones (44px target), icon + label from tablet up. */
+.txq .sh-acct {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 44px;
+  min-height: 44px;
+  color: inherit;
+  font-family: var(--font-ed-display), Futura, "Century Gothic", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.txq .sh-acct__icon { flex: none; }
+.txq .sh-acct__text { display: none; }
+.txq .sh-acct:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; border-radius: 4px; }
+/* Phones: the icon sits by the menu button (the right side holds Reserve, and
+   the centered wordmark leaves no room for both). Tablet up: icon + label on the right. */
+.txq .sh-left { justify-self: start; display: flex; align-items: center; gap: 8px; }
+.txq .sh-left .sh-menu { justify-self: auto; }
+.txq .sh-acct--wide { display: none; }
 @media (min-width: 768px) {
+  .txq .sh-acct--phone { display: none; }
+  .txq .sh-acct--wide { display: inline-flex; }
+  .txq .sh-acct__text { display: inline; }
   .txq .sh-menu__label { display: inline; }
   .txq .sh-lang { display: flex; }
   .txq .sh-reserve__long { display: inline; }

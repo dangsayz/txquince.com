@@ -26,6 +26,7 @@ const websiteLinks: { href: string; label: string; icon: WebsiteIconName; group:
   { href: "/admin/price-guide", label: "Price guide", icon: "guide", group: 2 },
   { href: "/admin/venues", label: "Venues", icon: "venues", group: 3 },
   { href: "/admin/reviews", label: "Reviews", icon: "reviews", group: 3 },
+  { href: "/admin/comments", label: "Comments", icon: "comments", group: 3 },
 ];
 
 /** Group names for the phone menu (desktop separates groups with a hairline). */

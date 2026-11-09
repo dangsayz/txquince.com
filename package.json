@@ -16,6 +16,8 @@
     "check:prices": "node scripts/check-budget-parity.mjs"
   },
   "dependencies": {
+    "@clerk/localizations": "^4.24.6",
+    "@clerk/nextjs": "^7.9.25",
     "@marsidev/react-turnstile": "^1.5.2",
     "@vercel/analytics": "^2.0.1",
     "ai": "^6.0.199",

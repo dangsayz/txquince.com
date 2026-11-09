@@ -1,4 +1,6 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse, type NextFetchEvent, type NextRequest } from "next/server";
+import { clerkMiddleware } from "@clerk/nextjs/server";
+import { authorizedParties, clerkServerEnabled, clerkSettings } from "@/lib/clerk-config";
 import { getLocation } from "@/content/locations";
 import { detectPlanLang } from "@/lib/plan-lang";
 
@@ -20,8 +22,34 @@ const NOT_FOUND_PATH = "/_txq-not-found";
  * OpenNext on Workers it 404s the prerendered cities too, so the check lives
  * here, before rendering, as Next's loading.js docs recommend.
  */
-export async function middleware(request: NextRequest) {
+/**
+ * PUBLIC accounts (Clerk, TX Quince's own app): log in / sign up / log out
+ * pages and the comments API. Clerk wraps only these, so server code there can
+ * call auth()/currentUser(); any new route that reads a public session must be
+ * added to CLERK_ROUTES and the matcher. The Studio (/admin) does NOT use
+ * Clerk: it has its own email-code session (src/lib/admin-session.ts).
+ */
+const CLERK_ROUTES = /^\/(?:login|signup|logout|es\/entrar|es\/registro|api\/comments)(?:\/|$)/;
+
+const withClerk = clerkMiddleware(
+  () => NextResponse.next(),
+  (request) => {
+    const s = clerkSettings()!;
+    return {
+      publishableKey: s.publishableKey,
+      secretKey: process.env.CLERK_SECRET_KEY,
+      signInUrl: s.signInUrl,
+      signUpUrl: s.signUpUrl,
+      authorizedParties: authorizedParties(request.nextUrl.origin),
+    };
+  },
+);
+
+export async function middleware(request: NextRequest, event?: NextFetchEvent) {
   const { pathname } = request.nextUrl;
+  if (CLERK_ROUTES.test(pathname)) {
+    return clerkServerEnabled() && event ? withClerk(request, event) : NextResponse.next();
+  }
   if (pathname === "/admin" || pathname.startsWith("/admin/")) return adminGate(request);
   if (pathname === "/plan" || pathname === "/es/plan") return planLanguage(request);
 
@@ -87,5 +115,17 @@ function isKnownCity(slug: string): boolean {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/quinceanera-photographer/:city", "/es/fotografo-de-quinceaneras/:city", "/plan", "/es/plan"],
+  matcher: [
+    "/login",
+    "/signup",
+    "/logout",
+    "/es/entrar",
+    "/es/registro",
+    "/api/comments/:path*",
+    "/admin/:path*",
+    "/quinceanera-photographer/:city",
+    "/es/fotografo-de-quinceaneras/:city",
+    "/plan",
+    "/es/plan",
+  ],
 };
