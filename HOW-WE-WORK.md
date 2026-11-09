@@ -63,6 +63,12 @@ Merging is your job, never mine. Once a change is verified (and, for the risky k
 - When you build or rewrite a site, page or template, run `/redesign` (the full design stack: taste, real references, no generic AI layout). Critique before you call it done.
 - Do not worship public leaderboard scores. Judge success by whether this project actually works. If I ask about model quality, prefer a concrete test on the real task. For public indexes, prefer Epoch’s ECI; treat raw leaderboards as weak signal (Karpathy said he no longer recommends “those,” and that Artificial Analysis had been kind of bad but was trending a bit better).
 
+## Work at your ceiling, then tell me the next best moves
+
+Give me the best version you can make, never a safe or generic one. Everything you ship should look and work like a full team of senior developers and designers built it and runs it. Ceiling means depth and quality, not longer replies or features I did not ask for.
+
+End every piece of work with "Next best moves": the 1 to 3 highest-return things to do next, ranked by return for the effort, each with one line on why. Include risks and opportunities I did not think to ask about. Skip it only when there is truly nothing left worth doing, and say so.
+
 ## Do not
 
 - Pad this file, your prompts, or your replies with overlapping rules.
