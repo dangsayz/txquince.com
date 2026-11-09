@@ -22,6 +22,7 @@ import { portfolioFallback } from "@/content/portfolio-fallback";
 import { releasedTestimonials } from "@/content/testimonials";
 import { getFeaturedImages, getImagesByCity, type PortfolioImage } from "@/lib/content-db";
 import { venuesByCity } from "@/content/venues";
+import { albumPhotos, albumsForVenue } from "@/content/albums";
 import { getInspoPlace } from "@/content/inspo-places";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
@@ -177,9 +178,29 @@ export default async function CityPage({
   // then to the bundled portfolio (that city's photos first) so the page never
   // renders an empty frame — Frisco, Plano and McKinney have no tagged work yet.
   const cityShots = await getImagesByCity(loc.slug, 6);
-  const featured = cityShots.length ? cityShots : await getFeaturedImages(6);
-  const isCityWork = cityShots.length > 0;
-  const shots: Shot[] = featured.length
+  // Curated albums from this city's venues (src/content/albums) fill the rest,
+  // one photo per album in turn so the grid mixes venues and moments.
+  const albumLists = cityVenues.flatMap((v) => albumsForVenue(v.slug)).map((a) => albumPhotos(a));
+  const albumShots: Shot[] = [];
+  for (let i = 0; albumShots.length < 6 && albumLists.some((l) => i < l.length); i++) {
+    for (const list of albumLists) {
+      const p = list[i];
+      if (p && albumShots.length < 6) albumShots.push({ key: p.id, url: p.url, alt: p.alt, focus: "50% 35%", local: false });
+    }
+  }
+  const ownShots: Shot[] = cityShots.map((img: PortfolioImage) => ({
+    key: img.slug ?? img.id,
+    url: img.url,
+    alt: publicPhotoCopy(img, altPhraseFor(img.section)).alt,
+    focus: focal(img.focus_x, img.focus_y),
+    local: false,
+  }));
+  const cityWork = [...ownShots, ...albumShots].slice(0, 6);
+  const featured = cityWork.length ? [] : await getFeaturedImages(6);
+  const isCityWork = cityWork.length > 0;
+  const shots: Shot[] = cityWork.length
+    ? cityWork
+    : featured.length
     ? featured.map((img: PortfolioImage) => ({
         key: img.slug ?? img.id,
         url: img.url,
