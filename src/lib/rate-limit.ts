@@ -16,7 +16,7 @@
  *   if (await rateLimited(clientIp(req))) return 429;
  */
 
-export type RateLimitName = "commission" | "inquiry" | "plan" | "pay" | "login" | "support" | "review" | "review-photo" | "track" | "csp-report";
+export type RateLimitName = "commission" | "inquiry" | "plan" | "pay" | "login" | "support" | "review" | "review-photo" | "track" | "csp-report" | "poll";
 
 export type RateLimitPolicy = {
   /** Requests allowed per window. */
@@ -48,6 +48,8 @@ export const RATE_LIMITS: Record<RateLimitName, RateLimitPolicy> = {
   login: { limit: 5, windowMs: 60_000, binding: "RATE_LIMIT_FORMS" },
   // /api/account/support: per IP and per signed-in account.
   support: { limit: 5, windowMs: 60_000, binding: "RATE_LIMIT_FORMS" },
+  // /api/polls/<id> (one tap on a blog poll): per IP.
+  poll: { limit: 5, windowMs: 60_000, binding: "RATE_LIMIT_FORMS" },
   track: { limit: 60, windowMs: 60_000, binding: "RATE_LIMIT_TRACK" },
   "csp-report": { limit: 60, windowMs: 60_000, binding: "RATE_LIMIT_TRACK" },
 };
