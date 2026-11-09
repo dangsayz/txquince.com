@@ -178,7 +178,7 @@ const en = {
       },
       {
         q: "How far in advance should we book?",
-        a: "Most families reserve 9 to 12 months ahead. Saturdays in spring and fall go first, and we take only one celebration per date. The calendar in our booking steps is read live from our studio diary.",
+        a: "Most families reserve 9 to 12 months ahead. Saturdays in spring and fall go first. The calendar in our booking steps is read live from our studio diary.",
       },
       {
         q: "Do you photograph the misa, the vals and the surprise dance?",
@@ -529,7 +529,7 @@ const es: Copy = {
       },
       {
         q: "¿Con cuánta anticipación debemos reservar?",
-        a: "La mayoría de las familias reservan con 9 a 12 meses de anticipación. Los sábados de primavera y otoño se van primero, y solo tomamos una celebración por fecha. El calendario de nuestros pasos de reservación se lee en vivo de nuestra agenda.",
+        a: "La mayoría de las familias reservan con 9 a 12 meses de anticipación. Los sábados de primavera y otoño se van primero. El calendario de nuestros pasos de reservación se lee en vivo de nuestra agenda.",
       },
       {
         q: "¿Fotografían la misa, el vals y el baile sorpresa?",
