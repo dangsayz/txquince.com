@@ -490,14 +490,20 @@
   /* Contents + comment box follow the reader down the article. No inner
      scroll area (it clipped focus rings and showed its own scrollbar). On a
      short window the contents list gives way so the comment box always fits. */
+  /* A white panel on the warm canvas, so the contents and the comment box
+     stand apart from the article. Padding keeps everything off its edge. */
   .txq .tq-blog-rail__stick {
     position: sticky;
     top: calc(var(--header-h) + 24px);
     display: grid;
-    gap: 28px;
+    gap: 20px;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid var(--border-hairline);
   }
+  .txq .tq-blog-rail__stick:empty { display: none; }
   .txq .tq-blog-toc--d .tq-blog-toc__list {
-    max-height: max(132px, calc(100svh - var(--header-h) - 420px));
+    max-height: max(132px, calc(100svh - var(--header-h) - 510px));
     overflow-y: auto;
     scrollbar-width: none;
   }
