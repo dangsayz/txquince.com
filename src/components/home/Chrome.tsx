@@ -1,5 +1,6 @@
 "use client";
 
+import { AUTH_CHANGED_EVENT, signedInHint } from "@/lib/signed-in-hint";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { StatusLabel } from "@/components/txq/Header";
@@ -64,16 +65,18 @@ function PersonIcon() {
 }
 
 /**
- * Signed in to a TX Quince account? Clerk keeps a
- * small readable `__client_uat` cookie on this domain ("0" when signed out).
- * A display hint only; nothing is trusted from it. Visitors never load Clerk.
+ * Signed-in hint for the header (see lib/signed-in-hint). Re-checked when a
+ * log in finishes on this page (Google returns without a page load), when the
+ * tab regains focus, and when a page comes back from the back/forward cache.
  */
 function useSignedInHint(): boolean {
   const [inside, setInside] = useState(false);
   useEffect(() => {
-    const m = document.cookie.match(/(?:^|;\s*)__client_uat(?:_[^=]+)?=(\d+)/);
-    const yes = Boolean(m && m[1] !== "0");
-    if (yes) queueMicrotask(() => setInside(true));
+    const check = () => setInside(signedInHint());
+    queueMicrotask(check);
+    const events = [AUTH_CHANGED_EVENT, "focus", "pageshow"] as const;
+    events.forEach((e) => window.addEventListener(e, check));
+    return () => events.forEach((e) => window.removeEventListener(e, check));
   }, []);
   return inside;
 }
