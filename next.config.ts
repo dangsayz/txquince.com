@@ -45,6 +45,8 @@ const nextConfig: NextConfig = {
       { source: "/packages", destination: "/#commissions", permanent: true },
       { source: "/pricing", destination: "/#commissions", permanent: true },
       { source: "/contact", destination: "/check-your-date", permanent: true },
+      // Slate's official name is "Slate Venues at II Creeks" (Richardson, not Allen).
+      { source: "/venues/slate-at-eleven-creeks", destination: "/venues/slate-venues-at-ii-creeks", permanent: true },
       { source: "/es/contacto", destination: "/es/consulta", permanent: true },
       { source: "/es/paquetes", destination: "/es#commissions", permanent: true },
       { source: "/es/planes-de-pago", destination: "/es#commissions", permanent: true },

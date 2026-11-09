@@ -42,9 +42,9 @@
   {
     "folder": "Slate at ll Creeks Venue Center",
     "citySlug": null,
-    "city": "Allen",
-    "venue": "Slate at Eleven Creeks",
-    "venueFull": "Slate at Eleven Creeks in Allen",
+    "city": "Richardson",
+    "venue": "Slate Venues at II Creeks",
+    "venueFull": "Slate Venues at II Creeks in Richardson",
     "section": "celebration"
   },
   {
@@ -62,5 +62,13 @@
     "venue": "FGS Ranch",
     "venueFull": "FGS Ranch in Burleson",
     "section": "portraits"
+  },
+  {
+    "folder": "Luxury Wedding & Event Venue Dallas",
+    "citySlug": "dallas",
+    "city": "Dallas",
+    "venue": "Luxury Wedding & Event Venue",
+    "venueFull": "Luxury Wedding & Event Venue in Dallas",
+    "section": "celebration"
   }
 ]
