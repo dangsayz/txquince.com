@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
-import { AccountPanel, AUTH_PATHS, type AuthLang, type AuthMode } from "./AccountPanel";
+import { AccountPanel, type AuthLang, type AuthMode } from "./AccountPanel";
 
 const COPY = {
   en: { hi: (n: string) => `Welcome back, ${n}.`, journal: "Go to the Journal", sending: "Taking you back…" },
@@ -11,10 +11,9 @@ const COPY = {
 
 /** The public log in / create account page body. */
 export function LoginView({ lang, mode, enabled, next }: { lang: AuthLang; mode: AuthMode; enabled: boolean; next: string | null }) {
-  const self = AUTH_PATHS[lang][mode];
-  // After the form: back to the page that sent them (a comment box), else here
-  // (which then shows "Welcome back").
-  const returnPath = next ?? self;
+  // After the form: back to the page that sent them (a comment box, the
+  // Studio), else their account dashboard.
+  const returnPath = next ?? (lang === "es" ? "/es/cuenta" : "/account");
   return (
     <AccountPanel
       lang={lang}
@@ -22,7 +21,7 @@ export function LoginView({ lang, mode, enabled, next }: { lang: AuthLang; mode:
       enabled={enabled}
       returnPath={returnPath}
       next={next}
-      signedIn={({ name, signOut }) => <SignedIn lang={lang} name={name} next={next} signOut={signOut} />}
+      signedIn={({ name, signOut }) => <SignedIn lang={lang} name={name} next={returnPath} signOut={signOut} />}
     />
   );
 }

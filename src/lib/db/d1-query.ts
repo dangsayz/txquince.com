@@ -45,6 +45,7 @@ export const TABLES: Record<string, TableMeta> = {
   conversion_changes: { pk: ["id"], json: ["baseline"], uuidId: true },
   page_views: { pk: ["id"], uuidId: true },
   lead_events: { pk: ["id"], uuidId: true },
+  support_tickets: { pk: ["id"], uuidId: true },
   admin_login_codes: { pk: ["id"], uuidId: true },
   admin_sessions: { pk: ["id"], uuidId: true },
 };

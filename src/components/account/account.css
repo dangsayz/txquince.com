@@ -1,0 +1,257 @@
+/* /account, /es/cuenta — the family's dashboard. Brand kit tokens only (src/app/brand.css). */
+.txq .acct {
+  display: grid;
+  gap: var(--tq-space-12);
+  padding: 0 var(--pad) var(--tq-space-section);
+}
+.txq .acct__section {
+  display: grid;
+  gap: var(--tq-space-6);
+  min-width: 0;
+}
+.txq .acct__h2 {
+  margin: 0;
+  font-size: var(--tq-text-h2);
+  line-height: var(--tq-leading-tight);
+  letter-spacing: var(--tq-tracking-display);
+  font-weight: var(--tq-weight-medium);
+  text-wrap: balance;
+}
+.txq .acct__lead {
+  margin: 0;
+  max-width: 52ch;
+  color: var(--tq-ink-mute);
+  font-size: var(--tq-text-lg);
+  line-height: var(--tq-leading-body);
+}
+
+/* The one card. */
+.txq .acct-card {
+  display: grid;
+  gap: var(--tq-space-6);
+  padding: var(--tq-space-6);
+  border: 1px solid var(--tq-surface-2);
+  border-radius: var(--tq-radius-lg);
+  background: #fff;
+  min-width: 0;
+}
+.txq .acct-card[data-state="closed"] {
+  background: transparent;
+}
+.txq .acct-card__head {
+  display: grid;
+  gap: var(--tq-space-2);
+}
+.txq .acct-card__date {
+  margin: 0;
+  font-size: var(--tq-text-h3);
+  line-height: 1.2;
+  font-weight: var(--tq-weight-medium);
+  letter-spacing: var(--tq-tracking-display);
+}
+.txq .acct-card__meta {
+  margin: 0;
+  color: var(--tq-ink-mute);
+}
+.txq .acct-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tq-space-2);
+  margin: 0;
+  font-weight: var(--tq-weight-medium);
+}
+.txq .acct-status::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--tq-stone);
+  flex: none;
+}
+.txq .acct-status[data-state="booked"]::before {
+  background: var(--tq-status-open);
+}
+.txq .acct-status[data-state="approved"]::before {
+  background: var(--tq-status-limited);
+}
+.txq .acct-card__next {
+  margin: 0;
+  max-width: 56ch;
+  line-height: var(--tq-leading-body);
+}
+.txq .acct-lines {
+  display: grid;
+  margin: 0;
+}
+.txq .acct-lines > div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--tq-space-4);
+  padding: var(--tq-space-3) 0;
+  border-top: 1px solid var(--tq-surface-2);
+}
+.txq .acct-lines dt {
+  color: var(--tq-ink-mute);
+}
+.txq .acct-lines dd {
+  margin: 0;
+  font-weight: var(--tq-weight-medium);
+  font-variant-numeric: tabular-nums;
+}
+.txq .acct-lines > div[data-strong] dt,
+.txq .acct-lines > div[data-strong] dd {
+  color: var(--tq-ink);
+  font-weight: var(--tq-weight-semibold);
+}
+.txq .acct-card__pay {
+  display: grid;
+  gap: var(--tq-space-3);
+  max-width: 28rem;
+}
+.txq .acct-note {
+  margin: 0;
+  color: var(--tq-ink-mute);
+  font-size: var(--tq-text-sm);
+  line-height: 1.5;
+}
+.txq .acct-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tq-tap);
+  color: var(--tq-ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  width: fit-content;
+}
+
+/* Start a booking: numbered steps + the package list. */
+.txq .acct-steps {
+  display: grid;
+  gap: var(--tq-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+  max-width: 56ch;
+}
+.txq .acct-steps li {
+  counter-increment: step;
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: var(--tq-space-3);
+  line-height: var(--tq-leading-body);
+}
+.txq .acct-steps li::before {
+  content: counter(step);
+  font-family: var(--tq-font-mono);
+  color: var(--tq-ink-mute);
+}
+.txq .acct-pkgs {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid var(--tq-surface-2);
+}
+.txq .acct-pkgs a {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--tq-space-4);
+  min-height: 64px;
+  padding: var(--tq-space-3) 0;
+  border-top: 1px solid var(--tq-surface-2);
+  color: var(--tq-ink);
+  text-decoration: none;
+  transition: background-color var(--tq-dur-fast) var(--tq-ease);
+}
+.txq .acct-pkgs a:hover {
+  background: var(--tq-surface);
+}
+.txq .acct-pkgs a:focus-visible {
+  outline: 2px solid var(--tq-ink);
+  outline-offset: 2px;
+}
+.txq .acct-pkgs__name {
+  font-size: var(--tq-text-lg);
+  font-weight: var(--tq-weight-medium);
+}
+.txq .acct-pkgs__hours {
+  display: block;
+  color: var(--tq-ink-mute);
+  font-size: var(--tq-text-body);
+  font-weight: var(--tq-weight-regular);
+}
+.txq .acct-pkgs__price {
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--tq-weight-medium);
+  white-space: nowrap;
+}
+
+/* Help: contact buttons + ticket form, side by side on wide screens. */
+.txq .acct-help {
+  display: grid;
+  gap: var(--tq-space-8);
+}
+.txq .acct-help__col {
+  display: grid;
+  gap: var(--tq-space-4);
+  align-content: start;
+  min-width: 0;
+}
+.txq .acct-help__h3 {
+  margin: 0;
+  font-size: var(--tq-text-h3);
+  font-weight: var(--tq-weight-medium);
+}
+.txq .acct-form {
+  display: grid;
+  gap: var(--tq-space-6);
+  max-width: 34rem;
+}
+.txq .acct-form select.tq-input {
+  appearance: auto;
+}
+.txq .acct-form .tq-btn {
+  min-height: var(--tq-tap-primary);
+  white-space: nowrap;
+  width: fit-content;
+}
+.txq .acct-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--tq-space-2) var(--tq-space-6);
+  padding-top: var(--tq-space-6);
+  border-top: 1px solid var(--tq-surface-2);
+  color: var(--tq-ink-mute);
+}
+@media (max-width: 479px) {
+  .txq .acct-form .tq-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .txq .acct-pkgs a {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .txq .acct-pkgs .tq-arrow {
+    display: none;
+  }
+}
+@media (min-width: 900px) {
+  .txq .acct {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: 24px;
+  }
+  .txq .acct > * {
+    grid-column: 4 / span 9;
+  }
+  .txq .acct-help {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .txq .acct-pkgs a {
+    transition: none;
+  }
+}
