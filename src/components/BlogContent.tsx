@@ -378,6 +378,20 @@ function PostRow({ post, n, lang, thumb, featured, headingLevel = "h3" }: RowPro
       data-cat={CATEGORY_KEY[post.category]}
       data-featured={featured ? "true" : undefined}
     >
+      {thumb !== undefined ? (
+        <span className="tq-blog-row__thumb" aria-hidden>
+          {thumb?.url ? (
+            <Image
+              src={thumb.url}
+              alt=""
+              fill
+              sizes="(max-width: 639px) 88px, (max-width: 959px) 120px, 168px"
+              unoptimized={isStatic(thumb.url)}
+              style={{ objectPosition: focal(thumb.focus_x, thumb.focus_y) }}
+            />
+          ) : null}
+        </span>
+      ) : null}
       <span className="tq-blog-row__n tq-mono tq-muted tq-nums" aria-hidden>
         {pad(n)}
       </span>
@@ -401,20 +415,6 @@ function PostRow({ post, n, lang, thumb, featured, headingLevel = "h3" }: RowPro
         <time dateTime={post.publishedAt}>{formatDate(post.publishedAt, lang)}</time>
         <span>{c.read(post.readMinutes)}</span>
       </span>
-      {thumb !== undefined ? (
-        <span className="tq-blog-row__thumb" aria-hidden>
-          {thumb?.url ? (
-            <Image
-              src={thumb.url}
-              alt=""
-              fill
-              sizes="(max-width: 959px) 96px, 120px"
-              unoptimized={isStatic(thumb.url)}
-              style={{ objectPosition: focal(thumb.focus_x, thumb.focus_y) }}
-            />
-          ) : null}
-        </span>
-      ) : null}
     </li>
   );
 }
@@ -605,6 +605,7 @@ export function BlogArticleView({
   images,
   cover,
   related,
+  relatedThumbs,
   shareUrl,
   shareImage,
   series = null,
@@ -620,6 +621,8 @@ export function BlogArticleView({
   /** Resolved hero (see BlogCoverImage). */
   cover: BlogCoverImage;
   related: BlogPost[];
+  /** Each related post's own cover, by slug; rows lead with it. */
+  relatedThumbs?: Map<string, BlogThumb | null>;
   /** Absolute canonical URL — what the share buttons send. */
   shareUrl: string;
   /** Absolute cover image URL (Pinterest). */
@@ -828,7 +831,13 @@ export function BlogArticleView({
             <SectionHead index={c.relatedIndex} id="tq-blog-related" title={c.relatedTitle} />
             <ol className="tq-blog-list tq-blog-list--related">
               {related.map((r, i) => (
-                <PostRow key={r.slug} post={r} n={i + 1} lang={lang} />
+                <PostRow
+                  key={r.slug}
+                  post={r}
+                  n={i + 1}
+                  lang={lang}
+                  thumb={relatedThumbs ? (relatedThumbs.get(r.slug) ?? null) : undefined}
+                />
               ))}
             </ol>
           </div>

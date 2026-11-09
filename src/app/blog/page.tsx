@@ -8,6 +8,7 @@ import { getFeaturedImages, getPageHero } from "@/lib/content-db";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import { BlogIndexView, type BlogThumb } from "@/components/BlogContent";
+import { coverThumbs } from "@/lib/blog-cover";
 import { blogIndexJsonLd } from "@/lib/blog-structured-data";
 import { jsonLdString } from "@/lib/json-ld";
 import { languageAlternates, OG_LOCALE } from "@/lib/hreflang";
@@ -49,7 +50,7 @@ export default async function BlogIndexPage() {
 
   // Real photography carries the contrast a text-only index can't. The featured
   // frame is operator-choosable in /admin/hero (page "blog"), falling back to
-  // the top featured photo; each list row gets a different frame.
+  // the top featured photo.
   const imgs = await getFeaturedImages(24);
   const toThumb = (image: (typeof imgs)[number]): BlogThumb => ({
     url: image.url,
@@ -60,9 +61,8 @@ export default async function BlogIndexPage() {
   const fallbacks: BlogThumb[] = portfolioFallback.map((image) => ({ url: image.url, alt: image.alt }));
   const heroImg = (await getPageHero("blog")) ?? imgs[0] ?? null;
   const featuredImage = heroImg ? toThumb(heroImg) : (fallbacks[0] ?? null);
-  const pool: BlogThumb[] = imgs.filter((i) => i.url !== heroImg?.url).map(toThumb);
-  const tiles = pool.length ? pool : fallbacks.slice(1);
-  const thumbs = new Map(posts.map((p, idx) => [p.slug, tiles.length ? tiles[idx % tiles.length] : null]));
+  // Each row leads with its own post's cover (the photo the post opens with).
+  const thumbs = await coverThumbs(posts, "en");
 
   const jsonLd = blogIndexJsonLd({
     url: `${site.url}/blog`,

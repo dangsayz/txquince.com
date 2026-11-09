@@ -170,7 +170,8 @@
 .txq .tq-blog-row {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 72px;
+  /* The post's own photo leads the row. */
+  grid-template-columns: 88px minmax(0, 1fr);
   gap: 16px;
   align-items: start;
   padding-block: 20px;
@@ -226,7 +227,7 @@
   object-fit: cover;
 }
 @media (min-width: 640px) {
-  .txq .tq-blog-row { grid-template-columns: minmax(0, 1fr) 96px; gap: 24px; }
+  .txq .tq-blog-row { grid-template-columns: 120px minmax(0, 1fr); gap: 24px; }
   .txq .tq-blog-row--plain { grid-template-columns: minmax(0, 1fr); }
 }
 @media (min-width: 960px) {
@@ -242,11 +243,13 @@
   .txq .tq-blog-row__date { display: block; }
   .txq .tq-blog-row__meta { display: none; }
   .txq .tq-blog-row__n { grid-column: span 1; }
+  /* With a photo in front, the photo takes the numeral's place (wider). */
+  .txq .tq-blog-row:not(.tq-blog-row--plain) .tq-blog-row__n { display: none; }
   .txq .tq-blog-row__main { grid-column: span 6; }
   .txq .tq-blog-row__cat { grid-column: span 2; }
   .txq .tq-blog-row__date { grid-column: span 2; }
   .txq .tq-blog-row__date > * { display: block; }
-  .txq .tq-blog-row__thumb { grid-column: span 1; align-self: start; }
+  .txq .tq-blog-row__thumb { grid-column: span 2; align-self: start; max-width: 168px; }
   .txq .tq-blog-row--plain .tq-blog-row__main { grid-column: span 7; }
 }
 @media (hover: hover) and (pointer: fine) {
