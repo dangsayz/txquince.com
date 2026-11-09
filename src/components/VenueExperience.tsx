@@ -8,9 +8,11 @@
  * sees an empty spot with a button, and writes or edits it right here; the
  * server checks the Studio session again on every save.
  */
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useIsAdmin } from "@/components/EditMode";
+import { SHARE_ICONS } from "@/components/ShareModal";
+import { trackEvent } from "@/components/Tracker";
 import { EXPERIENCE_MAX, VERDICTS, experienceText, paragraphs, type VenueExperience as Experience, type Verdict } from "@/lib/venue-experience";
 import "./venue-experience.css";
 
@@ -24,6 +26,9 @@ const COPY = {
     by: "TX Quince",
     updated: "Updated",
     fair: "This is our own experience as the photo and video team. Yours may differ.",
+    share: "Share this",
+    copy: "Copy link",
+    copied: "Link copied",
   },
   es: {
     kicker: "Desde detrás de la cámara",
@@ -32,6 +37,9 @@ const COPY = {
     by: "TX Quince",
     updated: "Actualizado",
     fair: "Es nuestra propia experiencia como equipo de foto y video. La suya puede ser distinta.",
+    share: "Compartir",
+    copy: "Copiar enlace",
+    copied: "Enlace copiado",
   },
 } as const;
 
@@ -45,10 +53,15 @@ export function VenueExperience({
   venue,
   lang = "en",
   initial,
+  shareUrl,
+  headingLevel = "h2",
 }: {
   venue: { slug: string; name: string };
   lang?: Lang;
   initial: Experience | null;
+  /** Absolute address of this venue's share page (/venues/<slug>/experience). */
+  shareUrl?: string;
+  headingLevel?: "h1" | "h2";
 }) {
   const c = COPY[lang];
   const admin = useIsAdmin();
@@ -61,8 +74,26 @@ export function VenueExperience({
   const [es, setEs] = useState(initial?.body_es ?? "");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+  const copyTimer = useRef<number | undefined>(undefined);
+  const Heading = headingLevel;
 
   if (!saved && !admin) return null;
+
+  // Each channel gets its own ?src= tag, so a visit from the post is counted.
+  const tagged = (src: "facebook" | "whatsapp") => (shareUrl ? `${shareUrl}?src=${src}` : "");
+  async function copyLink() {
+    if (!shareUrl) return;
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      trackEvent("share", "venue-experience:copy");
+      window.clearTimeout(copyTimer.current);
+      copyTimer.current = window.setTimeout(() => setCopied(false), 2500);
+    } catch {
+      window.prompt(c.copy, shareUrl);
+    }
+  }
 
   function startEdit() {
     setVerdict(saved?.verdict ?? null);
@@ -111,9 +142,9 @@ export function VenueExperience({
     <section className="tq-vx" aria-labelledby={`${id}-t`} data-verdict={saved?.verdict ?? undefined}>
       <header className="tq-vx__head">
         <p className="tq-mono tq-vx__kicker">{c.kicker}</p>
-        <h2 id={`${id}-t`} className="tq-display tq-vx__title">
+        <Heading id={`${id}-t`} className="tq-display tq-vx__title">
           {c.title(venue.name)}
-        </h2>
+        </Heading>
         {saved?.verdict && !editing ? (
           <p className="tq-vx__verdict">
             <span className="tq-vx__dot" aria-hidden />
@@ -184,6 +215,38 @@ export function VenueExperience({
             </span>
             <span>{c.fair}</span>
           </p>
+          {shareUrl ? (
+            <div className="tq-vx__share" role="group" aria-label={c.share}>
+              <span className="tq-mono tq-vx__kicker">{c.share}</span>
+              <a
+                className="tq-vx__btn tq-vx__btn--primary tq-vx__sharebtn"
+                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(tagged("facebook"))}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackEvent("share", "venue-experience:facebook")}
+              >
+                <span className="tq-vx__icon" aria-hidden>
+                  {SHARE_ICONS.facebook}
+                </span>
+                Facebook
+              </a>
+              <a
+                className="tq-vx__btn tq-vx__sharebtn"
+                href={`https://wa.me/?text=${encodeURIComponent(`${c.title(venue.name)} ${tagged("whatsapp")}`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackEvent("share", "venue-experience:whatsapp")}
+              >
+                <span className="tq-vx__icon" aria-hidden>
+                  {SHARE_ICONS.whatsapp}
+                </span>
+                WhatsApp
+              </a>
+              <button type="button" className="tq-vx__btn tq-vx__sharebtn" onClick={copyLink}>
+                <span role="status">{copied ? c.copied : c.copy}</span>
+              </button>
+            </div>
+          ) : null}
           {admin ? (
             <button type="button" className="tq-vx__btn" onClick={startEdit}>
               Edit our experience

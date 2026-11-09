@@ -19,6 +19,7 @@ export const dynamic = "force-dynamic";
 
 function refresh(slug: string) {
   revalidatePath(`/venues/${slug}`);
+  revalidatePath(`/venues/${slug}/experience`);
   for (const p of postsForVenue(slug)) revalidatePath(`/blog/${p.slug}`);
   for (const p of getAllEsPosts()) if (p.venues?.includes(slug)) revalidatePath(`/es/blog/${p.slug}`);
 }

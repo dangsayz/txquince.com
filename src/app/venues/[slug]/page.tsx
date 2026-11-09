@@ -342,7 +342,11 @@ export default async function VenuePage({
       {/* The owner's own account of working here (hidden until written). */}
       <div className="tq-wrap">
         <div style={{ paddingInline: "var(--pad)" }}>
-          <VenueExperience venue={{ slug: venue.slug, name: venue.venue }} initial={experience} />
+          <VenueExperience
+            venue={{ slug: venue.slug, name: venue.venue }}
+            initial={experience}
+            shareUrl={`${site.url}/venues/${venue.slug}/experience`}
+          />
         </div>
       </div>
 

@@ -227,6 +227,24 @@ async function flows(browser) {
     expect(await p.locator("#comments .tq-cmt__box[data-place='bottom']").count(), "no comment box in the comments section");
   });
 
+  // "Our experience at this venue": the Facebook button must share the venue's
+  // share page, and that page must carry its own preview picture.
+  await step("a venue's experience shares with its own preview card", desktop, async (p) => {
+    await open(p, BASE + "/venues/vm-ballroom");
+    const fb = p.locator(".tq-vx a[href*='facebook.com/sharer']");
+    if (!(await fb.count())) return; // nothing is written for this venue yet
+    const shared = new URL(decodeURIComponent((await fb.first().getAttribute("href")).split("u=")[1]));
+    expect(shared.pathname === "/venues/vm-ballroom/experience", `Facebook button shares ${shared.pathname}`);
+    expect(shared.searchParams.get("src") === "facebook", "Facebook link has no ?src=facebook tag");
+    const res = await open(p, BASE + shared.pathname);
+    expect(res && res.status() === 200, `share page answered ${res && res.status()}`);
+    expect(await p.locator(".tq-vx h1").count(), "share page has no review heading");
+    const og = await p.locator("meta[property='og:image']").first().getAttribute("content");
+    expect(og && og.includes("/experience/card?v="), `og:image is ${og}`);
+    const img = await fetch(og.replace(/^https?:\/\/[^/]+/, BASE));
+    expect(img.ok && String(img.headers.get("content-type")).includes("image/png"), `preview card answered ${img.status}`);
+  });
+
   await step("private pages send a stranger to log in", desktop, async (p) => {
     for (const [path, want] of [["/account", "/login"], ["/admin", "/admin/login"], ["/admin/comments", "/admin/login"]]) {
       await p.goto(BASE + path, { waitUntil: "domcontentloaded" });
@@ -292,7 +310,7 @@ async function checkLinks(links) {
   const lines = [
     `# Secret shopper · ${BASE} · ${new Date().toISOString().slice(0, 16).replace("T", " ")} UTC`,
     "",
-    `${urls.length} pages on phone and desktop, ${linkCount} links, 7 flows. ${Math.round((Date.now() - started) / 1000)}s.`,
+    `${urls.length} pages on phone and desktop, ${linkCount} links, 8 flows. ${Math.round((Date.now() - started) / 1000)}s.`,
     `**${fails.length} problem(s), ${warns.length} warning(s).**`,
     "",
     "## Problems",
