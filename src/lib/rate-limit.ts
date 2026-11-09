@@ -16,7 +16,7 @@
  *   if (await rateLimited(clientIp(req))) return 429;
  */
 
-export type RateLimitName = "commission" | "inquiry" | "plan" | "review" | "review-photo" | "track" | "csp-report";
+export type RateLimitName = "commission" | "inquiry" | "plan" | "pay" | "review" | "review-photo" | "track" | "csp-report";
 
 export type RateLimitPolicy = {
   /** Requests allowed per window. */
@@ -42,6 +42,8 @@ export const RATE_LIMITS: Record<RateLimitName, RateLimitPolicy> = {
   // /api/reviews/<slug>/photo: one request per photo, so a mom adding many
   // gallery photos at once needs more room than a form post.
   "review-photo": { limit: 60, windowMs: 60_000, binding: "RATE_LIMIT_TRACK" },
+  // /api/booking/pay and /api/booking/balance (open checkout): per IP AND per booking.
+  pay: { limit: 5, windowMs: 60_000, binding: "RATE_LIMIT_FORMS" },
   track: { limit: 60, windowMs: 60_000, binding: "RATE_LIMIT_TRACK" },
   "csp-report": { limit: 60, windowMs: 60_000, binding: "RATE_LIMIT_TRACK" },
 };

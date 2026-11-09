@@ -4,6 +4,8 @@ import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server"
 import { isSignedAgreement, signedBalanceDue, signedDepositPercent, tokenMatches } from "@/lib/agreement";
 import { usd } from "@/lib/commission";
 import { PayButton } from "@/components/txq/PayButton";
+import { BalancePay } from "@/components/txq/BalancePay";
+import { balanceCentsFrom, MIN_PART_CENTS, paidCents, type BalancePaymentRow } from "@/lib/balance";
 import { site } from "@/content/site";
 import "@/components/txq/pages/pages.css";
 import { TrustLine } from "@/components/TrustLine";
@@ -46,6 +48,27 @@ const COPY = {
     agreement: "Your signed agreement",
     signed: (name: string, when: string) => `Signed by ${name} on ${when}`,
     help: "Questions? Write to us at",
+    balTitle: "Pay the rest",
+    balBody: "Pay it all now, or a part at a time. It just has to be paid off before the due date in your agreement.",
+    balBnpl: "At checkout you can pay by card, or split it into smaller payments with Klarna, Afterpay or Affirm if you qualify.",
+    balPaid: "Paid so far",
+    balLeft: "Left to pay",
+    balDone: "Paid in full. Thank you!",
+    balConfirming: "Payment received — confirming. Refresh in a moment.",
+    balProcessing: "Your last payment is still processing. It will show here once it clears.",
+    pay_: {
+      payAll: (amt: string) => `Pay ${amt} now`,
+      payPart: "Pay part now",
+      amountLabel: "Amount to pay",
+      amountHint: (min: string, max: string) => `Between ${min} and ${max}.`,
+      payThis: "Continue to checkout",
+      cancel: "Back",
+      opening: "Opening secure checkout…",
+      error: "We couldn't open checkout. Please try again.",
+      tooSmall: (min: string) => `The smallest payment is ${min}.`,
+      tooBig: "That's more than what's left.",
+      invalid: "Please enter an amount, like 250.",
+    },
   },
   es: {
     index: "Tu reservación",
@@ -71,6 +94,27 @@ const COPY = {
     agreement: "Tu contrato firmado",
     signed: (name: string, when: string) => `Firmado por ${name} el ${when}`,
     help: "¿Preguntas? Escríbenos a",
+    balTitle: "Paga el resto",
+    balBody: "Págalo todo ahora, o en partes. Solo tiene que quedar pagado antes de la fecha límite de tu contrato.",
+    balBnpl: "Al pagar puedes usar tarjeta, o dividirlo en pagos más pequeños con Klarna, Afterpay o Affirm si calificas.",
+    balPaid: "Pagado hasta ahora",
+    balLeft: "Te queda por pagar",
+    balDone: "Pagado por completo. ¡Gracias!",
+    balConfirming: "Pago recibido — confirmando. Actualiza la página en un momento.",
+    balProcessing: "Tu último pago todavía se está procesando. Aparecerá aquí cuando se confirme.",
+    pay_: {
+      payAll: (amt: string) => `Pagar ${amt} ahora`,
+      payPart: "Pagar una parte",
+      amountLabel: "Cantidad a pagar",
+      amountHint: (min: string, max: string) => `Entre ${min} y ${max}.`,
+      payThis: "Continuar al pago",
+      cancel: "Regresar",
+      opening: "Abriendo el pago seguro…",
+      error: "No pudimos abrir el pago. Inténtalo de nuevo.",
+      tooSmall: (min: string) => `El pago mínimo es de ${min}.`,
+      tooBig: "Es más de lo que te queda.",
+      invalid: "Escribe una cantidad, por ejemplo 250.",
+    },
   },
 } as const;
 
@@ -84,9 +128,9 @@ export default async function BookingPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ t?: string; paid?: string }>;
+  searchParams: Promise<{ t?: string; paid?: string; balance?: string }>;
 }) {
-  const [{ id }, { t: token, paid: paidParam }] = await Promise.all([params, searchParams]);
+  const [{ id }, { t: token, paid: paidParam, balance: balanceParam }] = await Promise.all([params, searchParams]);
   if (!isSupabaseConfigured() || !/^[0-9a-f-]{36}$/i.test(id)) notFound();
 
   const { data: b } = await getServiceSupabase()
@@ -124,6 +168,24 @@ export default async function BookingPage({
           : b.status === "requested"
             ? "review"
             : "closed";
+
+  // Balance (after the deposit): signed amount minus what's been paid online.
+  // If the ledger can't be read (table not created yet), the section stays hidden.
+  const balanceCents = balanceCentsFrom(agreement.balanceUsd);
+  let balanceRows: Pick<BalancePaymentRow, "status" | "amount_cents">[] | null = null;
+  if (state === "paid" && balanceCents !== null) {
+    const { data, error } = await getServiceSupabase()
+      .from("booking_payments")
+      .select("status, amount_cents")
+      .eq("booking_id", b.id)
+      .eq("kind", "balance");
+    if (!error) balanceRows = data ?? [];
+  }
+  const balPaid = balanceRows ? paidCents(balanceRows) : 0;
+  const balLeft = balanceCents !== null ? Math.max(0, balanceCents - balPaid) : 0;
+  const balProcessing = !!balanceRows?.some((r) => r.status === "processing");
+  const minStr = usd(Math.min(MIN_PART_CENTS, balLeft) / 100);
+  const leftStr = usd(balLeft / 100);
 
   const title = { paid: c.paid, confirming: c.confirming, approved: c.approved, review: c.review, closed: c.closed }[state];
   const body = {
@@ -168,6 +230,60 @@ export default async function BookingPage({
           )}
         </div>
       </header>
+
+      {balanceRows && balanceCents !== null && (
+        <section className="tq-pg-row" style={{ borderTop: "1px solid var(--border-hairline)" }} aria-labelledby="tq-balance-title">
+          <p className="tq-pg-row__index tq-mono">[{c.balTitle}]</p>
+          <div className="tq-pg-row__body">
+            <h2 id="tq-balance-title" className="tq-display" style={{ margin: 0, fontSize: "clamp(1.5rem, 4vw, 2rem)" }}>
+              {balLeft > 0 ? c.balTitle : c.balDone}
+            </h2>
+            {balLeft > 0 && <p style={{ margin: "12px 0 0", maxWidth: "60ch" }}>{c.balBody}</p>}
+            <dl className="tq-pay__lines tq-nums">
+              <div>
+                <dt>{c.balPaid}</dt>
+                <dd>{usd((b.deposit_amount_cents + balPaid) / 100)}</dd>
+              </div>
+              <div>
+                <dt>{c.balLeft}</dt>
+                <dd>{leftStr}</dd>
+              </div>
+            </dl>
+            {balLeft > 0 && (
+              <div className="tq-pay__cta">
+                {balanceParam === "1" && !balProcessing && (
+                  <p role="status" style={{ margin: 0 }}>{c.balConfirming}</p>
+                )}
+                {balProcessing ? (
+                  <p role="status" style={{ margin: 0 }}>{c.balProcessing}</p>
+                ) : (
+                  <BalancePay
+                    id={b.id}
+                    token={token!}
+                    remainingCents={balLeft}
+                    copy={{
+                      payAll: c.pay_.payAll(leftStr),
+                      payPart: c.pay_.payPart,
+                      amountLabel: c.pay_.amountLabel,
+                      amountHint: c.pay_.amountHint(minStr, leftStr),
+                      payThis: c.pay_.payThis,
+                      cancel: c.pay_.cancel,
+                      opening: c.pay_.opening,
+                      error: c.pay_.error,
+                      tooSmall: c.pay_.tooSmall(minStr),
+                      tooBig: c.pay_.tooBig,
+                      invalid: c.pay_.invalid,
+                    }}
+                  />
+                )}
+                <p className="tq-hint" style={{ margin: 0 }}>
+                  {c.balBnpl} {c.secure}
+                </p>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
       <section className="tq-pg-row" style={{ borderTop: "1px solid var(--border-hairline)" }}>
         <p className="tq-pg-row__index tq-mono">[{c.agreement}]</p>
