@@ -7,6 +7,10 @@ import type { BookingRow } from "@/lib/clients-db";
 import type { DayPulse } from "@/lib/day-pulse";
 import type { BehaviorSummary } from "@/lib/page-behavior";
 import { VisitorBehavior } from "@/components/admin/VisitorBehavior";
+import { BlogPanel, ReviewsPanel, SupportPanel } from "@/components/admin/TodayPanels";
+import type { BlogPulseData } from "@/lib/blog-pulse-db";
+import { needsOwner, type ReviewRecord } from "@/lib/review";
+import type { OpenTicket } from "@/lib/support-db";
 
 const TZ = "America/Chicago";
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
@@ -36,6 +40,11 @@ export type TodayData = {
   behavior?: BehaviorSummary & { configured: boolean; days: number };
   /** Journal comments waiting for approval. */
   comments?: number;
+  /** Open support tickets, the longest wait first. */
+  tickets?: OpenTicket[];
+  /** Every review row; the panel shows the ones that wait for a decision. */
+  reviews?: ReviewRecord[];
+  blog?: BlogPulseData;
 };
 
 /**
@@ -43,11 +52,13 @@ export type TodayData = {
  *   1. How is the site doing today? (visitors, new families, the last 7 days)
  *   2. What needs me? (payments to check, families waiting, follow-ups due)
  *   3. What is coming up? (the next booked celebrations)
+ *   4. Who is waiting? (support messages, reviews to approve) and how the
+ *      blog is doing (components/admin/TodayPanels.tsx)
  * Everything deeper (sources, funnel, page by page) lives on /admin/insights.
  * Refs (Mobbin): Square "Today vs Yesterday" traffic, Mintlify 7-day visitor
  * bars, HoneyBook greeting + short lists. Data comes from app/admin/page.tsx.
  */
-export function TodayView({ pulse, work, review, upcoming, behavior, comments = 0 }: TodayData) {
+export function TodayView({ pulse, work, review, upcoming, behavior, comments = 0, tickets = [], reviews = [], blog }: TodayData) {
   const now = new Date();
   const hour = Number(now.toLocaleString("en-US", { hour: "numeric", hour12: false, timeZone: TZ })) % 24;
   const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
@@ -57,11 +68,15 @@ export function TodayView({ pulse, work, review, upcoming, behavior, comments = 
   const needs = work.filter((w): w is LeadWorkItem & { priority: keyof typeof reason } => w.priority in reason);
   const shown = needs.slice(0, 5);
   const todo = review.length + needs.length + (comments > 0 ? 1 : 0);
+  const waitingReviews = reviews
+    .filter(needsOwner)
+    .sort((a, b) => (a.edit?.submitted_at ?? a.submitted_at ?? a.created_at).localeCompare(b.edit?.submitted_at ?? b.submitted_at ?? b.created_at));
+  const allTodo = todo + tickets.length + waitingReviews.length;
 
   const summary = [
     !pulse.configured ? "" : pulse.visitorsToday ? `${plural(pulse.visitorsToday, "person", "people")} visited the site today` : "no one has visited the site yet today",
     pulse.configured && pulse.newFamiliesToday ? `${plural(pulse.newFamiliesToday, "new family", "new families")} reached out` : "",
-    todo ? `${plural(todo, "thing")} ${todo === 1 ? "needs" : "need"} you` : "nothing needs you right now",
+    allTodo ? `${plural(allTodo, "thing")} ${allTodo === 1 ? "needs" : "need"} you` : "nothing needs you right now",
   ].filter(Boolean);
   const joined = summary.length > 1 ? `${summary.slice(0, -1).join(", ")} and ${summary.at(-1)}` : summary[0];
   const sentence = `${joined}.`;
@@ -194,6 +209,18 @@ export function TodayView({ pulse, work, review, upcoming, behavior, comments = 
           </div>
         </section>
       </div>
+
+      {/* 4. Who is waiting, and how the blog is doing */}
+      <div className="mt-6 grid items-start gap-6 lg:grid-cols-2">
+        <SupportPanel tickets={tickets} now={now} />
+        <ReviewsPanel
+          waiting={waitingReviews}
+          live={reviews.filter((r) => r.status === "approved").length}
+          unused={reviews.filter((r) => r.status === "invited").length}
+          now={now}
+        />
+      </div>
+      {blog ? <BlogPanel data={blog} /> : null}
 
       <nav aria-label="Shortcuts" className="mt-8 flex flex-wrap gap-3">
         <Link href="/admin/packages" className="st-btn-ghost">Change packages and prices</Link>

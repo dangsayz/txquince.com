@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { getDb, isDbConfigured } from "@/lib/db";
 import { platformOf, PLATFORMS, type Platform } from "@/lib/social";
 import { getBookings, getInquiries } from "@/lib/clients-db";
@@ -669,6 +670,31 @@ export async function getConversionChanges(): Promise<ConversionChange[]> {
 
 /* ---------------- What visitors do (admin home) ---------------- */
 
+/** The tracker rows behind the admin home, read once per request. */
+export const loadBehaviorRows = cache(async (days: number): Promise<{ views: ViewRow[]; events: EventRow[] }> => {
+  const db = getDb();
+  const since = new Date(Date.now() - days * 86_400_000).toISOString();
+  const PAGE = 1000;
+  const MAX = 30_000;
+  async function all<T>(build: (from: number, to: number) => PromiseLike<{ data: T[] | null; error: unknown }>): Promise<T[]> {
+    const out: T[] = [];
+    for (let from = 0; from < MAX; from += PAGE) {
+      const { data, error } = await build(from, from + PAGE - 1);
+      if (error || !data) break;
+      out.push(...data);
+      if (data.length < PAGE) break;
+    }
+    return out;
+  }
+  const [views, events] = await Promise.all([
+    all<ViewRow>((a, b) => db.from("page_views").select("path, session_id, created_at").gte("created_at", since).order("created_at", { ascending: true }).range(a, b)),
+    all<EventRow>((a, b) =>
+      db.from("lead_events").select("event_type, path, target").in("event_type", ["engaged", "click"]).gte("created_at", since).order("created_at", { ascending: true }).range(a, b),
+    ),
+  ]);
+  return { views, events };
+});
+
 /**
  * Page-by-page behavior for the last `days` days: visits, time on page,
  * scroll depth, where visits end and the most-tapped things
@@ -678,26 +704,7 @@ export async function getPageBehavior(days = 14): Promise<BehaviorSummary & { co
   const none = { pages: [], leak: null, measuredTotal: 0, days };
   if (!isDbConfigured()) return { ...none, configured: false };
   try {
-    const db = getDb();
-    const since = new Date(Date.now() - days * 86_400_000).toISOString();
-    const PAGE = 1000;
-    const MAX = 30_000;
-    async function all<T>(build: (from: number, to: number) => PromiseLike<{ data: T[] | null; error: unknown }>): Promise<T[]> {
-      const out: T[] = [];
-      for (let from = 0; from < MAX; from += PAGE) {
-        const { data, error } = await build(from, from + PAGE - 1);
-        if (error || !data) break;
-        out.push(...data);
-        if (data.length < PAGE) break;
-      }
-      return out;
-    }
-    const [views, events] = await Promise.all([
-      all<ViewRow>((a, b) => db.from("page_views").select("path, session_id, created_at").gte("created_at", since).order("created_at", { ascending: true }).range(a, b)),
-      all<EventRow>((a, b) =>
-        db.from("lead_events").select("event_type, path, target").in("event_type", ["engaged", "click"]).gte("created_at", since).order("created_at", { ascending: true }).range(a, b),
-      ),
-    ]);
+    const { views, events } = await loadBehaviorRows(days);
     return { ...summarizeBehavior(views, events), configured: true, days };
   } catch {
     return { ...none, configured: true };
