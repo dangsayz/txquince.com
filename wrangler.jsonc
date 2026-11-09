@@ -29,6 +29,17 @@
       "bucket_name": "txquince-portfolio"
     }
   ],
+  // Cloudflare D1 (SQLite). Holds first-party reviews (migrations/). Only the
+  // Worker can read or write it. Apply schema changes with:
+  //   npx wrangler d1 migrations apply txquince --remote
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "txquince",
+      "database_id": "d4ed7841-4b4b-4c93-831c-c850a7f2d951",
+      "migrations_dir": "migrations"
+    }
+  ],
   // Durable per-IP rate limits (src/lib/rate-limit.ts). Counters live in
   // Cloudflare, per location, and survive isolate recycling. namespace_id is
   // any integer unique in the Cloudflare account; nothing to create in the

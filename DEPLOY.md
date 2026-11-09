@@ -56,6 +56,16 @@ npx wrangler secret put CRON_SECRET              # see §5
 | `0003_inquiry_followups.sql` | follow-up columns | ✅ applied |
 | `0004_booking_holds_cron.sql` | pg_cron hold cleanup | ⬜ optional — apply if you want the safety net |
 
+### Cloudflare D1 (`txquince`, binding `DB`)
+
+Reviews live in D1, not Postgres. Schema files are in `migrations/`. The
+database and `0001_reviews.sql` are already created and applied (2026-11-09).
+For a later migration:
+
+```
+npx wrangler d1 migrations apply txquince --remote
+```
+
 ## 4. Stripe (commission retainers)
 
 Checkout prices every retainer inline from `src/lib/commission.ts`, so there are no Stripe products or prices to create.
