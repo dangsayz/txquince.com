@@ -83,11 +83,11 @@ function useSignedInHint(): boolean {
 
 const ACCOUNT_COPY = {
   en: {
-    in: "Log in", account: "Account", menu: "Log in / Create account", menuIn: "Your account", href: "/login",
+    in: "Log in", account: "Account", menu: "Log in / Create account", menuIn: "Your account", href: "/login", accountHref: "/account",
     signup: "Create account", signupHref: "/signup", label: "Your TX Quince account", note: "Free. Comment and ask questions on the Journal.",
   },
   es: {
-    in: "Entrar", account: "Mi cuenta", menu: "Entrar / Crear cuenta", menuIn: "Mi cuenta", href: "/es/entrar",
+    in: "Entrar", account: "Mi cuenta", menu: "Entrar / Crear cuenta", menuIn: "Mi cuenta", href: "/es/entrar", accountHref: "/es/cuenta",
     signup: "Crear cuenta", signupHref: "/es/registro", label: "Tu cuenta de TX Quince", note: "Gratis. Comenta y haz preguntas en el Diario.",
   },
 } as const;
@@ -112,7 +112,7 @@ function MenuAccount({ signedIn, onNavigate }: { signedIn: boolean; onNavigate: 
       <p className="sm-acct__label">{a.label}</p>
       <div className="sm-acct__row">
         {signedIn ? (
-          <a href={a.href} className="sm-acct__btn sm-acct__btn--solid" rel="nofollow" onClick={onNavigate}>
+          <a href={a.accountHref} className="sm-acct__btn sm-acct__btn--solid" rel="nofollow" onClick={onNavigate}>
             <PersonIcon />
             {a.menuIn}
           </a>
@@ -242,7 +242,7 @@ export function SiteHeader() {
               </span>
               <span className="sh-menu__label">{e.menu}</span>
             </button>
-            <a href={acct.href} className="sh-acct sh-acct--phone" rel="nofollow" aria-label={signedIn ? acct.account : acct.menu}>
+            <a href={signedIn ? acct.accountHref : acct.href} className="sh-acct sh-acct--phone" rel="nofollow" aria-label={signedIn ? acct.account : acct.menu}>
               <PersonIcon />
             </a>
           </div>
@@ -259,7 +259,7 @@ export function SiteHeader() {
               </a>
             ) : null}
             <Lang2 className="sh-lang" />
-            <a href={acct.href} className="sh-acct sh-acct--wide" rel="nofollow" aria-label={signedIn ? acct.account : acct.menu}>
+            <a href={signedIn ? acct.accountHref : acct.href} className="sh-acct sh-acct--wide" rel="nofollow" aria-label={signedIn ? acct.account : acct.menu}>
               <PersonIcon />
               <span className="sh-acct__text">{signedIn ? acct.account : acct.in}</span>
             </a>

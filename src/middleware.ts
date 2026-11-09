@@ -29,7 +29,7 @@ const NOT_FOUND_PATH = "/_txq-not-found";
  * added to CLERK_ROUTES and the matcher. The Studio (/admin) does NOT use
  * Clerk: it has its own email-code session (src/lib/admin-session.ts).
  */
-const CLERK_ROUTES = /^\/(?:login|signup|logout|es\/entrar|es\/registro|api\/comments|api\/login\/clerk)(?:\/|$)/;
+const CLERK_ROUTES = /^\/(?:login|signup|logout|es\/entrar|es\/registro|api\/comments|api\/login\/clerk|account|es\/cuenta|api\/account)(?:\/|$)/;
 
 const withClerk = clerkMiddleware(
   () => NextResponse.next(),
@@ -119,6 +119,9 @@ function isKnownCity(slug: string): boolean {
 export const config = {
   matcher: [
     "/api/login/clerk",
+    "/account",
+    "/es/cuenta",
+    "/api/account/:path*",
     "/login",
     "/signup",
     "/logout",
