@@ -29,7 +29,7 @@ describe("Studio sign-in with Google (Clerk)", () => {
   it("a Google account that isn't on the admin list gets no session", async () => {
     state.user = { verifiedEmails: ["mom@example.com"] };
     const r = await get();
-    expect(r.headers.get("location")).toContain("error=not-admin");
+    expect(r.headers.get("location")).toBe("https://txquince.com/admin/login?error=not-admin&as=mom%40example.com");
     expect(state.created).toEqual([]);
     expect(r.headers.get("set-cookie")).toBeNull();
   });
