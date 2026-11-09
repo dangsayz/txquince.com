@@ -44,6 +44,13 @@ export type Album = {
   theme: { en: string; es: string };
   replacesDbEvent?: string;
   /**
+   * Sequences whose original is too large for the image resizer (over ~20 MB).
+   * The untouched original stays at <nnn>.jpg; the resizer reads a
+   * high-quality 3000px copy at <nnn>.src.jpg instead, so a visitor is never
+   * sent the full original.
+   */
+  resizeSource?: number[];
+  /**
    * [sequence, width, height, portfolio category id, alt?], in display order.
    * The optional alt describes what that photo actually shows (no names);
    * without it the alt is the category phrase + place.
@@ -80,8 +87,10 @@ export function albumObjectKey(slug: string): string | null {
   const m = /^album-([a-z0-9-]+)-(\d{3})$/.exec(slug);
   if (!m) return null;
   const album = ALBUMS.find((a) => a.id === m[1]);
-  if (!album || !album.photos.some(([seq]) => pad3(seq) === m[2])) return null;
-  return `albums/${album.id}/${m[2]}.jpg`;
+  const seq = album?.photos.find(([n]) => pad3(n) === m[2])?.[0];
+  if (!album || seq === undefined) return null;
+  const ext = album.resizeSource?.includes(seq) ? "src.jpg" : "jpg";
+  return `albums/${album.id}/${m[2]}.${ext}`;
 }
 
 /** FNV-1a, 32-bit, hex — matches the hash stored in `replacesDbEvent`. */

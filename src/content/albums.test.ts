@@ -35,3 +35,13 @@ describe("albums", () => {
     expect(out.length).toBe(1 + plaza.photos.length);
   });
 });
+
+describe("album resize sources", () => {
+  it("points oversized originals at their .src.jpg resize copy, others at the original", () => {
+    const big = ALBUMS.find((a) => a.resizeSource?.length)!;
+    const seq = big.resizeSource![0];
+    expect(albumObjectKey(albumSlug(big, seq))).toBe(`albums/${big.id}/${String(seq).padStart(3, "0")}.src.jpg`);
+    const plain = big.photos.find(([n]) => !big.resizeSource!.includes(n))!;
+    expect(albumObjectKey(albumSlug(big, plain[0]))).toBe(`albums/${big.id}/${String(plain[0]).padStart(3, "0")}.jpg`);
+  });
+});
