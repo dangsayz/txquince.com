@@ -53,6 +53,8 @@ Take “please don’t make any mistakes” as: verify your work and your subage
 
 I may Accept All on a small personal hack. Stop and show me the plan or the diff before you touch payments, customer data, secrets, a live production site, or anything that will be posted in public under my name.
 
+Merging is your job, never mine. Once a change is verified (and, for the risky kinds above, once I said go to the plan), merge it yourself and tell me what you merged. Do not ask me whether to merge.
+
 ## Hard gates
 
 - Do not invent business facts (prices, hours, legal claims, who we may contact). Look them up in the repo or the project’s source-of-truth doc, or ask me. For TX Quince, live prices and hours come from the current live-facts doc or the live /budget page, never from memory.
