@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/require-admin";
 import { unauthorizedAdminResponse } from "@/lib/admin-auth";
-import { getServiceSupabase } from "@/lib/supabase-server";
+import { getDb } from "@/lib/db";
 import { sendAgreementDeclinedClient } from "@/lib/agreement-email";
 
 export const dynamic = "force-dynamic";
@@ -26,13 +26,13 @@ export async function PATCH(request: Request) {
   const fields: Record<string, unknown> = { status };
   if (status === "paid") fields.paid_at = new Date().toISOString();
 
-  const supabase = getServiceSupabase();
-  const { data: before } = await supabase
+  const db = getDb();
+  const { data: before } = await db
     .from("bookings")
     .select("status, metadata")
     .eq("id", id)
     .maybeSingle();
-  const { data, error } = await supabase
+  const { data, error } = await db
     .from("bookings")
     .update(fields)
     .eq("id", id)

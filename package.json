@@ -17,8 +17,6 @@
   },
   "dependencies": {
     "@marsidev/react-turnstile": "^1.5.2",
-    "@supabase/ssr": "^0.10.3",
-    "@supabase/supabase-js": "^2.107.0",
     "@vercel/analytics": "^2.0.1",
     "ai": "^6.0.199",
     "gsap": "3.13.0",

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-vi.mock("@/lib/supabase-server", () => ({ getServiceSupabase: vi.fn(), isSupabaseConfigured: () => false }));
+vi.mock("@/lib/db", () => ({ getDb: vi.fn(), isDbConfigured: () => false }));
 
 import { buildJourney, type JourneyView } from "./inquiry-journey";
 

@@ -3,7 +3,7 @@
  *
  * TX Quince is a team: the studio assigns photographers and videographers by
  * date and can cover more than one quinceañera on the same day. The database
- * enforces the same number (supabase/migrations/0024_bookings_per_date.sql,
+ * enforces the same number (migrations/0003_core.sql triggers,
  * bookings_per_date()); booking-capacity.test.ts fails if the two disagree.
  * The database is the real gate; this copy only decides what the site SHOWS
  * as full, so a family isn't sent to pay for a date that will be refused.

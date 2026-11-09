@@ -10,16 +10,17 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
 
-// The session the Supabase server client reports. null = signed out.
+// The session cookie's email (admin-session.ts). null = signed out. The real
+// allowlist check in admin-session runs on it, as in production.
 const session = vi.hoisted(() => ({ user: null as null | { email: string } }));
-vi.mock("@/lib/supabase/server", () => ({
-  createServerSupabaseClient: async () => ({
-    auth: {
-      getUser: async () => ({ data: { user: session.user }, error: null }),
-      signOut: async () => ({ error: null }),
-    },
-  }),
-}));
+vi.mock("@/lib/admin-session", async () => {
+  const { isAuthorizedAdminEmail } = await import("@/lib/admin-auth");
+  return {
+    getSessionEmail: async () => (session.user && isAuthorizedAdminEmail(session.user.email) ? session.user.email : null),
+    revokeSession: async () => {},
+    SESSION_COOKIE: "txq_admin",
+  };
+});
 
 // Storage for the upload tests; any other admin route never gets this far.
 const bucket = vi.hoisted(() => ({ puts: [] as { key: string; type?: string; size: number }[] }));
@@ -156,7 +157,7 @@ describe("/api/admin/upload — guards beyond the session", () => {
 });
 
 describe("every protected /admin page gates itself on the server", () => {
-  const PUBLIC_PAGES = new Set(["app/admin/login/page.tsx", "app/admin/reset-password/page.tsx"]);
+  const PUBLIC_PAGES = new Set(["app/admin/login/page.tsx"]);
   const pages = walk(join(SRC, "app/admin"), "page.tsx").map((f) => relative(SRC, f));
 
   it("finds the admin pages", () => {

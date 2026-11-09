@@ -9,7 +9,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/require-admin";
 import { unauthorizedAdminResponse } from "@/lib/admin-auth";
-import { getServiceSupabase } from "@/lib/supabase-server";
+import { getDb } from "@/lib/db";
 import { HERO_PAGES } from "@/lib/content-db";
 
 export const dynamic = "force-dynamic";
@@ -33,8 +33,8 @@ export async function POST(request: Request) {
   }
   const { page, slug } = parsed.data;
 
-  const supabase = getServiceSupabase();
-  const { error } = await supabase.from("site_settings").upsert({
+  const db = getDb();
+  const { error } = await db.from("site_settings").upsert({
     key: `page_hero:${page}`,
     value: { slug },
     updated_at: new Date().toISOString(),
@@ -53,8 +53,8 @@ export async function DELETE(request: Request) {
   }
   const { page } = parsed.data;
 
-  const supabase = getServiceSupabase();
-  const { error } = await supabase
+  const db = getDb();
+  const { error } = await db
     .from("site_settings")
     .delete()
     .eq("key", `page_hero:${page}`);

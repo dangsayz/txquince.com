@@ -1,5 +1,5 @@
 import "server-only";
-import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { platformOf, PLATFORMS, type Platform } from "@/lib/social";
 import { getBookings, getInquiries } from "@/lib/clients-db";
 import { releasedTestimonials } from "@/content/testimonials";
@@ -164,10 +164,10 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
     flywheel: [],
   });
 
-  if (!isSupabaseConfigured()) return empty(false);
+  if (!isDbConfigured()) return empty(false);
 
   try {
-    const supabase = getServiceSupabase();
+    const db = getDb();
     const now = Date.now();
     const startToday = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
     const start7 = new Date(now - 7 * 86400_000).toISOString();
@@ -181,7 +181,7 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
         // they run, fall back to the columns that exist.
         (async () => {
           const q = (cols: string) =>
-            supabase.from("page_views").select(cols).gte("created_at", startPrev).order("created_at", { ascending: true });
+            db.from("page_views").select(cols).gte("created_at", startPrev).order("created_at", { ascending: true });
           const base = "path, referrer, session_id, utm_source, utm_medium, created_at";
           for (const cols of [`${base}, visitor_id, device`, `${base}, visitor_id`, base]) {
             const res = await q(cols);
@@ -189,23 +189,23 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
           }
           return { data: [] as unknown[], error: null };
         })(),
-        supabase.from("lead_events").select("event_type, session_id, target").gte("created_at", startRange),
+        db.from("lead_events").select("event_type, session_id, target").gte("created_at", startRange),
         getBookings(),
         getInquiries(),
         // Flywheel inputs: fresh proof + iteration cadence.
-        supabase
+        db
           .from("portfolio_images")
           .select("id", { count: "exact", head: true })
           .gte("created_at", week),
-        supabase.from("videos").select("id", { count: "exact", head: true }),
-        supabase
+        db.from("videos").select("id", { count: "exact", head: true }),
+        db
           .from("conversion_changes")
           .select("created_at")
           .order("created_at", { ascending: false })
           .limit(1)
           .maybeSingle(),
         // Quince plans count as leads (table from migration 0023; absent → none).
-        supabase.from("quince_plans").select("created_at, attribution").gte("created_at", startPrev),
+        db.from("quince_plans").select("created_at, attribution").gte("created_at", startPrev),
       ]);
 
     const allRows = (pvRes.data ?? []) as PV[];
@@ -652,10 +652,10 @@ export async function getDashboardStats(range = 14): Promise<RangedStats> {
 
 /** Recent change-log entries (non-archived first), for the dashboard panel. */
 export async function getConversionChanges(): Promise<ConversionChange[]> {
-  if (!isSupabaseConfigured()) return [];
+  if (!isDbConfigured()) return [];
   try {
-    const supabase = getServiceSupabase();
-    const { data, error } = await supabase
+    const db = getDb();
+    const { data, error } = await db
       .from("conversion_changes")
       .select("id, created_at, title, area, reason, target_metric, baseline, status, notes")
       .order("created_at", { ascending: false })
@@ -676,9 +676,9 @@ export async function getConversionChanges(): Promise<ConversionChange[]> {
  */
 export async function getPageBehavior(days = 14): Promise<BehaviorSummary & { configured: boolean; days: number }> {
   const none = { pages: [], leak: null, measuredTotal: 0, days };
-  if (!isSupabaseConfigured()) return { ...none, configured: false };
+  if (!isDbConfigured()) return { ...none, configured: false };
   try {
-    const supabase = getServiceSupabase();
+    const db = getDb();
     const since = new Date(Date.now() - days * 86_400_000).toISOString();
     const PAGE = 1000;
     const MAX = 30_000;
@@ -693,9 +693,9 @@ export async function getPageBehavior(days = 14): Promise<BehaviorSummary & { co
       return out;
     }
     const [views, events] = await Promise.all([
-      all<ViewRow>((a, b) => supabase.from("page_views").select("path, session_id, created_at").gte("created_at", since).order("created_at", { ascending: true }).range(a, b)),
+      all<ViewRow>((a, b) => db.from("page_views").select("path, session_id, created_at").gte("created_at", since).order("created_at", { ascending: true }).range(a, b)),
       all<EventRow>((a, b) =>
-        supabase.from("lead_events").select("event_type, path, target").in("event_type", ["engaged", "click"]).gte("created_at", since).order("created_at", { ascending: true }).range(a, b),
+        db.from("lead_events").select("event_type, path, target").in("event_type", ["engaged", "click"]).gte("created_at", since).order("created_at", { ascending: true }).range(a, b),
       ),
     ]);
     return { ...summarizeBehavior(views, events), configured: true, days };

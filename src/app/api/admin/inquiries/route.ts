@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/require-admin";
 import { unauthorizedAdminResponse } from "@/lib/admin-auth";
-import { getServiceSupabase } from "@/lib/supabase-server";
+import { getDb } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
@@ -56,8 +56,8 @@ export async function PATCH(request: Request) {
     fields.competitor_name = null;
   }
 
-  const supabase = getServiceSupabase();
-  let res = await supabase
+  const db = getDb();
+  let res = await db
     .from("inquiries")
     .update(fields)
     .eq("id", id)
@@ -66,7 +66,7 @@ export async function PATCH(request: Request) {
   // If migration 0018 hasn't run yet, the reason columns don't exist — fall back
   // to a status-only update so the core action still works.
   if (res.error) {
-    res = await supabase
+    res = await db
       .from("inquiries")
       .update({ status })
       .eq("id", id)
@@ -94,7 +94,7 @@ export async function DELETE(request: Request) {
   const parsed = DeleteSchema.safeParse(await request.json().catch(() => ({})));
   if (!parsed.success) return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
   const { id } = parsed.data;
-  const { data, error } = await getServiceSupabase().from("inquiries").delete().eq("id", id).select("id");
+  const { data, error } = await getDb().from("inquiries").delete().eq("id", id).select("id");
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   if (!data?.length) return NextResponse.json({ error: "Not found" }, { status: 404 });
   refresh(id);

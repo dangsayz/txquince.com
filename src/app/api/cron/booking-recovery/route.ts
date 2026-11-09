@@ -13,7 +13,7 @@
  * it can never email anyone.
  */
 import { NextResponse, type NextRequest } from "next/server";
-import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { getTakenEventDates } from "@/lib/clients-db";
 import { sendBookingRecoveryEmail } from "@/lib/resend";
 import type { BookingRecord } from "@/lib/booking";
@@ -35,19 +35,19 @@ export async function GET(req: NextRequest) {
   if (!authorized(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  if (!isSupabaseConfigured()) {
+  if (!isDbConfigured()) {
     return NextResponse.json(
-      { ok: false, error: "supabase-not-configured" },
+      { ok: false, error: "db-not-configured" },
       { status: 503 },
     );
   }
 
-  const supabase = getServiceSupabase();
+  const db = getDb();
   const today = new Date().toISOString().slice(0, 10);
   const since = new Date(Date.now() - LOOKBACK_DAYS * DAY_MS).toISOString();
 
   // Recently-expired holds we haven't recovered yet, for still-future dates.
-  const { data, error } = await supabase
+  const { data, error } = await db
     .from("bookings")
     .select(
       "id, name, email, phone, event_date, package, collection, notes, status, deposit_amount_cents, currency, metadata",
@@ -86,7 +86,7 @@ export async function GET(req: NextRequest) {
       continue;
     }
 
-    const { error: updateError } = await supabase
+    const { error: updateError } = await db
       .from("bookings")
       .update({ recovery_sent_at: new Date().toISOString() })
       .eq("id", row.id);

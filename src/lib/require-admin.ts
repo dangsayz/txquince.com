@@ -1,7 +1,6 @@
 import "server-only";
 import { redirect } from "next/navigation";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { isAuthorizedAdminUser } from "@/lib/admin-auth";
+import { getSessionEmail } from "@/lib/admin-session";
 
 /** True only if the current request is from an authenticated, allowlisted admin. */
 export async function requireAdmin(): Promise<boolean> {
@@ -21,11 +20,7 @@ export async function requireAdminPage(next = "/admin"): Promise<string> {
 
 export async function getAdminEmail(): Promise<string | null> {
   try {
-    const supabase = await createServerSupabaseClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    return isAuthorizedAdminUser(user) ? user?.email ?? null : null;
+    return await getSessionEmail();
   } catch {
     return null;
   }

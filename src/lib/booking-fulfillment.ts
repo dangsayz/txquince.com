@@ -10,7 +10,7 @@
  * their date is reserved — the operator resolves/refunds.
  */
 import "server-only";
-import { getServiceSupabase } from "@/lib/supabase-server";
+import { getDb } from "@/lib/db";
 import type { StripeCheckoutSession } from "@/lib/stripe";
 import type { BookingRecord } from "@/lib/booking";
 import { sendBookingOperatorEmail, sendBookingClientEmail } from "@/lib/resend";
@@ -21,9 +21,9 @@ export async function fulfillCheckoutSession(
   // Only act on actually-paid sessions.
   if (session.payment_status !== "paid") return;
 
-  const supabase = getServiceSupabase();
+  const db = getDb();
 
-  const { data: bookingId, error: rpcError } = await supabase.rpc(
+  const { data: bookingId, error: rpcError } = await db.rpc(
     "confirm_booking_payment",
     {
       p_checkout_session_id: session.id,
@@ -37,7 +37,7 @@ export async function fulfillCheckoutSession(
     return;
   }
 
-  const { data: booking, error: readError } = await supabase
+  const { data: booking, error: readError } = await db
     .from("bookings")
     .select(
       "id, name, email, phone, event_date, package, collection, notes, status, deposit_amount_cents, currency, metadata, confirmation_sent_at",
@@ -57,7 +57,7 @@ export async function fulfillCheckoutSession(
   const stripeEmail = session.customer_details?.email?.trim().toLowerCase() ?? "";
   if (!record.email && stripeEmail) {
     record.email = stripeEmail;
-    await supabase.from("bookings").update({ email: stripeEmail }).eq("id", record.id);
+    await db.from("bookings").update({ email: stripeEmail }).eq("id", record.id);
   }
 
   // Amount integrity (defense-in-depth): the deposit is priced server-side at
@@ -75,7 +75,7 @@ export async function fulfillCheckoutSession(
       `[booking] AMOUNT MISMATCH on ${record.id}: Stripe collected ${session.amount_total} ${session.currency ?? "?"}, expected ${record.deposit_amount_cents} ${record.currency}. Routing to payment_review.`,
     );
     if (record.status === "paid") {
-      await supabase
+      await db
         .from("bookings")
         .update({ status: "payment_review" })
         .eq("id", record.id);
@@ -87,7 +87,7 @@ export async function fulfillCheckoutSession(
   // payment actually confirmed the date, not when it went to review).
   const planId = session.metadata?.plan_id;
   if (planId && record.status === "paid") {
-    const { error: planErr } = await supabase
+    const { error: planErr } = await db
       .from("quince_plans")
       .update({ status: "booked", booking_id: record.id })
       .eq("id", planId);
@@ -110,7 +110,7 @@ export async function fulfillCheckoutSession(
   if (!op.ok) console.error("[booking] operator email failed:", op.error);
   if (!cl.ok) console.error("[booking] client email failed:", cl.error);
 
-  await supabase
+  await db
     .from("bookings")
     .update({
       confirmation_owner_status: op.ok ? "sent" : "failed",

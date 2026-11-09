@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/require-admin";
 import { unauthorizedAdminResponse } from "@/lib/admin-auth";
-import { getServiceSupabase } from "@/lib/supabase-server";
+import { getDb } from "@/lib/db";
 import { VENDOR_CATEGORY_IDS } from "@/content/portfolio-taxonomy";
 
 export const dynamic = "force-dynamic";
@@ -36,8 +36,8 @@ function kebab(s: string): string {
 /** GET — full vendor directory (admin). */
 export async function GET() {
   if (!(await requireAdmin())) return unauthorizedAdminResponse();
-  const supabase = getServiceSupabase();
-  const { data, error } = await supabase
+  const db = getDb();
+  const { data, error } = await db
     .from("vendors")
     .select("id, name, business, category, ig_handle, email, phone, website, notes, slug")
     .order("name", { ascending: true });
@@ -64,19 +64,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
   }
   const v = parsed.data;
-  const supabase = getServiceSupabase();
+  const db = getDb();
 
   // Permanent slug from the display name (business as fallback). Suffix on
   // collision so /vendors/{slug} links never clash.
   const base = kebab(v.name || v.business || "vendor") || "vendor";
-  const { data: clash } = await supabase
+  const { data: clash } = await db
     .from("vendors")
     .select("id")
     .eq("slug", base)
     .maybeSingle();
   const slug = clash ? `${base}-${crypto.randomUUID().slice(0, 4)}` : base;
 
-  const { data, error } = await supabase
+  const { data, error } = await db
     .from("vendors")
     .insert({
       name: v.name,
@@ -117,8 +117,8 @@ export async function PATCH(request: Request) {
   }
   const { id, ...fields } = parsed.data;
   if ("ig_handle" in fields) fields.ig_handle = cleanHandle(fields.ig_handle);
-  const supabase = getServiceSupabase();
-  const { data, error } = await supabase
+  const db = getDb();
+  const { data, error } = await db
     .from("vendors")
     .update(fields)
     .eq("id", id)
@@ -134,8 +134,8 @@ export async function DELETE(request: Request) {
   if (!(await requireAdmin())) return unauthorizedAdminResponse();
   const { id } = (await request.json().catch(() => ({}))) as { id?: string };
   if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
-  const supabase = getServiceSupabase();
-  const { error } = await supabase.from("vendors").delete().eq("id", id);
+  const db = getDb();
+  const { error } = await db.from("vendors").delete().eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   bust();
   return NextResponse.json({ ok: true });

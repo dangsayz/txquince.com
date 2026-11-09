@@ -46,7 +46,7 @@
   // dashboard. Keep limit/period equal to RATE_LIMITS (a test checks it).
   "ratelimits": [
     {
-      // /api/commission and /api/inquiry: 5 per minute per IP (separate keys).
+      // /api/commission, /api/inquiry, /api/plan, /api/booking/pay|balance: 5 per minute per key (separate keys).
       "name": "RATE_LIMIT_FORMS",
       "namespace_id": "47101",
       "simple": { "limit": 5, "period": 60 }

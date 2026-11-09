@@ -2,6 +2,10 @@
 
 @AGENTS.md
 
+## Never use Supabase (standing rule from Dang, 2026-11-09)
+
+Do not add, extend or depend on Supabase in any new work: no new tables, migrations, RPCs, auth or Storage there, and never ask Dang for a Supabase token or to run SQL in its editor. The stack is **Cloudflare** (Workers hosting, **D1** database, R2 files, Access login) + **Stripe** (payments) + Resend (email). Existing Supabase code is legacy and is being moved to D1 + Cloudflare Access; until that move ships, only touch it to keep the live site working or to migrate off it.
+
 ## SEO standard (shared across all Dang's sites)
 
 Canonical Google Search rubric for any page built/audited/shipped here — the three gates (can Google process it · is it trying to trick Google · is it useful to a human) plus the **Gate-1 pre-deploy technical checklist** — lives at `Cowork-OS/SEO/google-search-playbook.md` (fact-checked against Google's live docs). The `/seo-page`, `/seo-audit`, `/seo-optimize`, `/aeo-audit` skills operationalize it.

@@ -11,7 +11,7 @@
  * calls it once the owner turns it on (cron-worker/src/index.ts).
  */
 import { NextResponse, type NextRequest } from "next/server";
-import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
+import { getDb, isDbConfigured } from "@/lib/db";
 import { sendReviewRequestEmail } from "@/lib/resend";
 import { createInvite, deleteInvite } from "@/lib/reviews-db";
 import { getD1 } from "@/lib/d1";
@@ -27,17 +27,17 @@ export async function GET(request: NextRequest) {
   if (!secret || request.headers.get("authorization") !== `Bearer ${secret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  if (!isSupabaseConfigured()) {
-    return NextResponse.json({ ok: false, error: "supabase-not-configured" }, { status: 503 });
+  if (!isDbConfigured()) {
+    return NextResponse.json({ ok: false, error: "db-not-configured" }, { status: 503 });
   }
   if (!(await getD1())) {
     return NextResponse.json({ ok: false, error: "reviews-db-not-available" }, { status: 503 });
   }
 
-  const supabase = getServiceSupabase();
+  const db = getDb();
   const thirtyDaysAgo = new Date(Date.now() - 30 * 86_400_000).toISOString().slice(0, 10);
   const sixtyDaysAgo = new Date(Date.now() - 60 * 86_400_000).toISOString().slice(0, 10);
-  const { data, error } = await supabase
+  const { data, error } = await db
     .from("bookings")
     .select("id, name, email, phone, event_date, package, collection, notes, status, deposit_amount_cents, currency, metadata")
     .eq("status", "paid")
@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
       await deleteInvite(invite.id).catch(() => undefined);
       continue;
     }
-    const { error: updateError } = await supabase
+    const { error: updateError } = await db
       .from("bookings")
       .update({ review_request_sent_at: new Date().toISOString() })
       .eq("id", booking.id);

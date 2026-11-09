@@ -1,6 +1,6 @@
 import "server-only";
 import { cache } from "react";
-import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server";
+import { getDb, isDbConfigured } from "@/lib/db";
 import type { VideoProvider } from "@/lib/video";
 import type { BlogBlock } from "@/content/blog";
 import { getVenue, venueSlugify } from "@/content/venues";
@@ -122,12 +122,12 @@ export type VideoRow = {
 const loadVendorCredits = cache(
   async (): Promise<Map<string, ImageVendorCredit[]>> => {
     const map = new Map<string, ImageVendorCredit[]>();
-    if (!isSupabaseConfigured()) return map;
+    if (!isDbConfigured()) return map;
     try {
-      const supabase = getServiceSupabase();
+      const db = getDb();
       const [linksRes, vendorsRes] = await Promise.all([
-        supabase.from("portfolio_image_vendors").select("image_id, vendor_id, role"),
-        supabase
+        db.from("portfolio_image_vendors").select("image_id, vendor_id, role"),
+        db
           .from("vendors")
           .select("id, name, business, slug, category, ig_handle, website"),
       ]);
@@ -161,14 +161,14 @@ const loadVendorCredits = cache(
 /** All portfolio images, ordered, with vendor credits attached. Empty array if
  *  storage/DB not configured. */
 export const getPortfolioImages = cache(async (): Promise<PortfolioImage[]> => {
-  if (!isSupabaseConfigured()) return [];
+  if (!isDbConfigured()) return [];
   try {
-    const supabase = getServiceSupabase();
+    const db = getDb();
     // select("*") so newly-added columns (e.g. focal anchors) flow through
     // without a brittle hand-kept list — and a lagging migration can never
     // blank the gallery.
     const [{ data, error }, credits] = await Promise.all([
-      supabase
+      db
         .from("portfolio_images")
         .select("*")
         .order("section", { ascending: true })
@@ -191,11 +191,11 @@ export const getPortfolioImages = cache(async (): Promise<PortfolioImage[]> => {
 /** One image by its permanent slug (image pages + the serve route). */
 export const getImageBySlug = cache(
   async (slug: string): Promise<PortfolioImage | null> => {
-    if (!isSupabaseConfigured()) return null;
+    if (!isDbConfigured()) return null;
     try {
-      const supabase = getServiceSupabase();
+      const db = getDb();
       const [{ data, error }, credits] = await Promise.all([
-        supabase.from("portfolio_images").select("*").eq("slug", slug).maybeSingle(),
+        db.from("portfolio_images").select("*").eq("slug", slug).maybeSingle(),
         loadVendorCredits(),
       ]);
       if (error || !data) return null;
@@ -258,10 +258,10 @@ export async function getBlogImages(
  *  tables absent. FULL records (admin use); strip email/phone before rendering
  *  publicly. */
 export const getVendors = cache(async (): Promise<Vendor[]> => {
-  if (!isSupabaseConfigured()) return [];
+  if (!isDbConfigured()) return [];
   try {
-    const supabase = getServiceSupabase();
-    const { data, error } = await supabase
+    const db = getDb();
+    const { data, error } = await db
       .from("vendors")
       .select("id, name, business, category, ig_handle, email, phone, website, notes, slug")
       .order("name", { ascending: true });
@@ -305,10 +305,10 @@ export type VenueCopy = {
 /** All venue copy rows, keyed by slug. Guarded (empty if table absent). */
 export const getAllVenueCopy = cache(async (): Promise<Record<string, VenueCopy>> => {
   const out: Record<string, VenueCopy> = {};
-  if (!isSupabaseConfigured()) return out;
+  if (!isDbConfigured()) return out;
   try {
-    const supabase = getServiceSupabase();
-    const { data, error } = await supabase
+    const db = getDb();
+    const { data, error } = await db
       .from("venues")
       .select("slug, about, faq, address, area, ig_handle, website");
     if (error || !data) return out;
@@ -379,10 +379,10 @@ export async function getImagesByCity(citySlug: string, limit = 6): Promise<Port
 
 /** Raw hero image source — server-only, consumed by /api/img/hero. */
 export async function getHeroRawImageUrl(): Promise<string | null> {
-  if (!isSupabaseConfigured()) return null;
+  if (!isDbConfigured()) return null;
   try {
-    const supabase = getServiceSupabase();
-    const { data } = await supabase
+    const db = getDb();
+    const { data } = await db
       .from("site_settings")
       .select("value")
       .eq("key", "hero_media")
@@ -435,10 +435,10 @@ export function heroMediaFromSetting(value: unknown, updatedAt: string): HeroMed
  * (YouTube/Vimeo/MP4). Null means "fall back to the top featured photo."
  */
 export const getHeroMedia = cache(async (): Promise<HeroMedia | null> => {
-  if (!isSupabaseConfigured()) return null;
+  if (!isDbConfigured()) return null;
   try {
-    const supabase = getServiceSupabase();
-    const { data, error } = await supabase
+    const db = getDb();
+    const { data, error } = await db
       .from("site_settings")
       .select("value, updated_at")
       .eq("key", "hero_media")
@@ -470,10 +470,10 @@ export const HERO_PAGES: Record<string, { label: string; path: string }> = {
  * top-featured pick. Cached per page key for the request.
  */
 export const getPageHero = cache(async (page: string): Promise<PortfolioImage | null> => {
-  if (!isSupabaseConfigured()) return null;
+  if (!isDbConfigured()) return null;
   try {
-    const supabase = getServiceSupabase();
-    const { data } = await supabase
+    const db = getDb();
+    const { data } = await db
       .from("site_settings")
       .select("value")
       .eq("key", `page_hero:${page}`)
@@ -504,10 +504,10 @@ type CoverValue = { storage_path: string; width: number; height: number };
 
 /** Raw storage URL for a cover slot — server-only, used by /api/img/cover-<slot>. */
 export async function getCoverRawImageUrl(slot: string): Promise<string | null> {
-  if (!isSupabaseConfigured()) return null;
+  if (!isDbConfigured()) return null;
   try {
-    const supabase = getServiceSupabase();
-    const { data } = await supabase
+    const db = getDb();
+    const { data } = await db
       .from("site_settings")
       .select("value")
       .eq("key", `cover:${slot}`)
@@ -527,10 +527,10 @@ export async function getCoverImage(
   slot: string,
   fallback: { src: string; width: number; height: number },
 ): Promise<{ src: string; width: number; height: number }> {
-  if (!isSupabaseConfigured()) return fallback;
+  if (!isDbConfigured()) return fallback;
   try {
-    const supabase = getServiceSupabase();
-    const { data } = await supabase
+    const db = getDb();
+    const { data } = await db
       .from("site_settings")
       .select("value")
       .eq("key", `cover:${slot}`)
@@ -547,10 +547,10 @@ export async function getCoverImage(
 
 /** All videos, ordered. */
 export const getVideos = cache(async (): Promise<VideoRow[]> => {
-  if (!isSupabaseConfigured()) return [];
+  if (!isDbConfigured()) return [];
   try {
-    const supabase = getServiceSupabase();
-    const { data, error } = await supabase
+    const db = getDb();
+    const { data, error } = await db
       .from("videos")
       .select("id, url, provider, video_id, title, poster_url, is_feature, sort_order, orientation")
       .order("sort_order", { ascending: true });

@@ -13,7 +13,7 @@
  */
 import { NextResponse, type NextRequest } from "next/server";
 import { planInputSchema, parseContact, planPath, PLAN_HONEYPOT_FIELD, type PlanField } from "@/lib/plan";
-import { isSupabaseConfigured } from "@/lib/supabase-server";
+import { isDbConfigured } from "@/lib/db";
 import { createPlan, getDateStatus } from "@/lib/plan-db";
 import { sendPlanFamilyEmail, sendPlanOperatorEmail } from "@/lib/plan-email";
 import { verifyTurnstile } from "@/lib/turnstile";
@@ -90,7 +90,7 @@ export async function POST(req: NextRequest) {
     return fail(422, "form", [...fields]);
   }
 
-  if (!isSupabaseConfigured()) {
+  if (!isDbConfigured()) {
     console.error("[plan] database not configured — cannot save plan.");
     return fail(503, "unavailable");
   }

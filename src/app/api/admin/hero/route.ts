@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/require-admin";
 import { unauthorizedAdminResponse } from "@/lib/admin-auth";
-import { getServiceSupabase } from "@/lib/supabase-server";
+import { getDb } from "@/lib/db";
 import { parseVideoUrl } from "@/lib/video";
 import { heroMediaFromSetting } from "@/lib/content-db";
 import { getPortfolioBucket } from "@/lib/r2-portfolio";
@@ -29,7 +29,7 @@ interface ImageInspector {
 export async function GET() {
   if (!(await requireAdmin())) return unauthorizedAdminResponse();
   try {
-    const { data, error } = await getServiceSupabase().from("site_settings").select("value, updated_at").eq("key", KEY).maybeSingle();
+    const { data, error } = await getDb().from("site_settings").select("value, updated_at").eq("key", KEY).maybeSingle();
     if (error) return NextResponse.json({ error: "Could not load the cover. Try again." }, { status: 500 });
     return NextResponse.json({ value: data ? heroMediaFromSetting(data.value, data.updated_at) : null });
   } catch {
@@ -45,12 +45,12 @@ export async function POST(request: Request) {
   }
 
   try {
-    const supabase = getServiceSupabase();
+    const db = getDb();
     let value: Record<string, unknown>;
     if (parsed.data.kind === "image") {
       let storagePath: string;
       if (parsed.data.source.kind === "portfolio") {
-        const { data, error } = await supabase.from("portfolio_images").select("storage_path").eq("slug", parsed.data.source.slug).maybeSingle();
+        const { data, error } = await db.from("portfolio_images").select("storage_path").eq("slug", parsed.data.source.slug).maybeSingle();
         if (error) return NextResponse.json({ error: "Could not load this photograph. Try again." }, { status: 500 });
         if (!data?.storage_path || typeof data.storage_path !== "string") {
           return NextResponse.json({ error: "That photograph is no longer in your portfolio. Choose another photograph." }, { status: 400 });
@@ -100,8 +100,8 @@ export async function POST(request: Request) {
     const expected = parsed.data.expectedUpdatedAt;
     const row = { key: KEY, value, updated_at: nextRevision(expected) };
     const result = expected === null
-      ? await supabase.from("site_settings").insert(row).select("value, updated_at").maybeSingle()
-      : await supabase.from("site_settings").update({ value, updated_at: row.updated_at }).eq("key", KEY).eq("updated_at", expected).select("value, updated_at").maybeSingle();
+      ? await db.from("site_settings").insert(row).select("value, updated_at").maybeSingle()
+      : await db.from("site_settings").update({ value, updated_at: row.updated_at }).eq("key", KEY).eq("updated_at", expected).select("value, updated_at").maybeSingle();
     if (result.error?.code === "23505") return conflict();
     if (result.error) return NextResponse.json({ error: "Could not publish the cover. Your draft is still available to retry." }, { status: 500 });
     if (!result.data) return conflict();
@@ -119,12 +119,12 @@ export async function PATCH(request: Request) {
   const parsed = HeroFocusSchema.safeParse(await request.json().catch(() => ({})));
   if (!parsed.success) return NextResponse.json({ error: "Choose a focal point and check the photo description." }, { status: 400 });
   try {
-    const supabase = getServiceSupabase();
-    const { data: current, error: readError } = await supabase.from("site_settings").select("value, updated_at").eq("key", KEY).maybeSingle();
+    const db = getDb();
+    const { data: current, error: readError } = await db.from("site_settings").select("value, updated_at").eq("key", KEY).maybeSingle();
     if (readError) return NextResponse.json({ error: "Could not load the cover. Try again." }, { status: 500 });
     if (!current || current.value?.kind !== "image" || !heroMediaFromSetting(current.value, current.updated_at) || current.updated_at !== parsed.data.expectedUpdatedAt) return conflict();
     const value = { ...current.value, focusX: parsed.data.focusX, focusY: parsed.data.focusY, ...(parsed.data.imageAlt ? { imageAlt: parsed.data.imageAlt } : {}) };
-    const { data, error } = await supabase.from("site_settings").update({ value, updated_at: nextRevision(parsed.data.expectedUpdatedAt) }).eq("key", KEY).eq("updated_at", parsed.data.expectedUpdatedAt).select("value, updated_at").maybeSingle();
+    const { data, error } = await db.from("site_settings").update({ value, updated_at: nextRevision(parsed.data.expectedUpdatedAt) }).eq("key", KEY).eq("updated_at", parsed.data.expectedUpdatedAt).select("value, updated_at").maybeSingle();
     if (error) return NextResponse.json({ error: "Could not save the focal point. Try again." }, { status: 500 });
     if (!data) return conflict();
     const media = heroMediaFromSetting(data.value, data.updated_at);
@@ -141,7 +141,7 @@ export async function DELETE(request: Request) {
   const parsed = HeroResetSchema.safeParse(await request.json().catch(() => ({})));
   if (!parsed.success) return NextResponse.json({ error: "Load the latest cover before resetting it." }, { status: 400 });
   try {
-    const { data, error } = await getServiceSupabase().from("site_settings").delete().eq("key", KEY).eq("updated_at", parsed.data.expectedUpdatedAt).select("key").maybeSingle();
+    const { data, error } = await getDb().from("site_settings").delete().eq("key", KEY).eq("updated_at", parsed.data.expectedUpdatedAt).select("key").maybeSingle();
     if (error) return NextResponse.json({ error: "Could not reset the cover. Try again." }, { status: 500 });
     if (!data) return conflict();
     bust();
