@@ -583,3 +583,106 @@ a:hover > .st-arrow {
   .vb-head.bp-cols,
   .vb-row.bp-cols { grid-template-columns: minmax(0, 2.2fr) 4.5rem 7rem minmax(9rem, 1fr) 6rem; }
 }
+
+/* ---- Notifications (components/admin/NotificationBell.tsx) ----
+   Motion: transitions.dev "notification badge" (the dot slides in and pops;
+   the bell never moves) and "menu dropdown" (the panel), on --tq-ease. */
+.st-bell-wrap { position: relative; }
+.st-bell {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--tq-tap);
+  min-height: var(--tq-tap);
+  border-radius: var(--tq-radius-pill);
+  color: var(--tq-ink);
+  transition: background-color var(--tq-dur-fast) var(--tq-ease);
+}
+.st-bell:hover, .st-bell[aria-expanded="true"] { background: var(--tq-surface); }
+@keyframes st-badge-in {
+  from { transform: translate(-8px, 12px); }
+  to { transform: translate(0, 0); }
+}
+.st-bell__badge { position: absolute; top: 2px; right: 0; pointer-events: none; }
+.st-bell__badge[data-open="true"] { animation: st-badge-in 260ms var(--tq-ease); }
+.st-bell__dot {
+  display: block;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: var(--tq-radius-pill);
+  background: var(--tq-notify);
+  box-shadow: 0 0 0 2px var(--tq-canvas);
+  color: #fff;
+  font-size: 12px;
+  font-weight: var(--tq-weight-semibold);
+  line-height: 20px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  transition: transform 500ms cubic-bezier(0.34, 1.36, 0.64, 1), opacity var(--tq-dur-slow) var(--tq-ease);
+}
+.st-bell__badge[data-open="false"] .st-bell__dot {
+  transform: scale(0);
+  opacity: 0;
+  transition: transform 180ms var(--tq-ease), opacity 180ms var(--tq-ease);
+}
+@keyframes st-notes-in {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+.st-notes {
+  position: fixed;
+  z-index: 40;
+  top: 4.25rem;
+  left: 1rem;
+  right: 1rem;
+  max-height: calc(100dvh - 5.5rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--tq-surface-2);
+  border-radius: var(--tq-radius-md, 16px);
+  background: #fff;
+  box-shadow: var(--tq-shadow-overlay);
+  transform-origin: top right;
+  animation: st-notes-in var(--tq-dur-base) var(--tq-ease);
+}
+@media (min-width: 640px) {
+  .st-notes { position: absolute; top: calc(100% + 0.5rem); left: auto; right: 0; width: 25rem; max-height: min(34rem, calc(100dvh - 6rem)); }
+}
+.st-notes__title { margin: 0; padding: 1rem 1.25rem 0.75rem; font-size: 17px; font-weight: var(--tq-weight-semibold); }
+.st-notes__list { margin: 0; padding: 0; list-style: none; }
+.st-notes__list > li { border-top: 1px solid var(--tq-surface-2); }
+.st-notes__list > li[data-new] { background: var(--tq-canvas); }
+.st-notes__row { display: grid; gap: 0.25rem; min-height: 4rem; padding: 0.875rem 1.25rem; transition: background-color var(--tq-dur-fast) var(--tq-ease); }
+a.st-notes__row:hover { background: var(--tq-surface); }
+a.st-notes__row:focus-visible { outline-offset: -2px; }
+.st-notes__meta { display: flex; align-items: center; gap: 0.5rem; font-size: 14px; color: var(--tq-ink-mute); }
+.st-notes__meta time { margin-left: auto; white-space: nowrap; }
+.st-notes__new { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--tq-notify); }
+.st-notes__head { display: block; font-size: 16px; font-weight: var(--tq-weight-semibold); line-height: 1.35; overflow-wrap: anywhere; }
+.st-notes__detail { display: block; font-size: 15px; line-height: 1.45; color: var(--tq-ink-mute); overflow-wrap: anywhere; }
+.st-notes__empty { margin: 0; padding: 1rem 1.25rem 1.5rem; border-top: 1px solid var(--tq-surface-2); font-size: 15px; color: var(--tq-ink-mute); }
+@keyframes st-toast-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.st-toast-slot { position: fixed; z-index: 50; left: 1rem; right: 1rem; bottom: max(1rem, env(safe-area-inset-bottom)); display: flex; justify-content: flex-end; pointer-events: none; }
+.st-toast {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  width: 100%;
+  max-width: 26rem;
+  padding: 0.875rem 1rem 0.875rem 1.125rem;
+  border: 1px solid var(--tq-surface-2);
+  border-radius: var(--tq-radius-md, 16px);
+  background: #fff;
+  box-shadow: var(--tq-shadow-overlay);
+  pointer-events: auto;
+  animation: st-toast-in var(--tq-dur-base) var(--tq-ease);
+}
+.st-toast > span:nth-child(2) { flex: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .st-bell__badge, .st-bell__dot, .st-notes, .st-toast { animation: none !important; transition: none !important; }
+}

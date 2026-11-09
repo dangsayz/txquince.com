@@ -9,6 +9,16 @@ export function ArrowIcon({ size = 16, className = "" }: { size?: number; classN
   );
 }
 
+/** The bell in the Studio header (components/admin/NotificationBell.tsx). */
+export function BellIcon({ size = 20 }: { size?: number }) {
+  return (
+    <svg aria-hidden="true" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 9a6 6 0 0 1 12 0c0 5 2 6.5 2 6.5H4S6 14 6 9Z" />
+      <path d="M10 19a2 2 0 0 0 4 0" />
+    </svg>
+  );
+}
+
 export function MenuIcon({ open }: { open: boolean }) {
   return (
     <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
