@@ -11,7 +11,7 @@
     "test:node": "node --conditions=react-server --import ./tests/helpers/register-ts-resolve.mjs --test 'tests/**/!(home-hero-quality).test.mjs' 'src/**/*.test.mjs'",
     "build:cloudflare": "opennextjs-cloudflare build",
     "preview:cloudflare": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy:cloudflare": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "deploy:cloudflare": "node scripts/check-up-to-date.mjs && opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "check:prices": "node scripts/check-budget-parity.mjs"
   },
