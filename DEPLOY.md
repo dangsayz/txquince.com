@@ -62,8 +62,8 @@ npx wrangler secret put CRON_SECRET              # see §5
 
 Reviews and blog comments live in D1, not Postgres. Schema files are in
 `migrations/`. The database and `0001_reviews.sql` are already created and
-applied (2026-11-09). `0002_blog_comments.sql` is NEW — apply it before the
-deploy that ships comments:
+applied (2026-11-09). `0002_blog_comments.sql` is applied too (2026-11-09).
+For a later migration:
 
 ```
 npx wrangler d1 migrations apply txquince --remote
@@ -90,7 +90,7 @@ Before the first deploy with Clerk (in this order):
    `<ClerkProvider>`, and deploy it. See `docs/clerk-satellite.md`.
 4. `npx wrangler secret put CLERK_SECRET_KEY` (Quince Network **production**
    secret key, Clerk Dashboard → API keys).
-5. `npx wrangler d1 migrations apply txquince --remote` (comments table).
+5. ~~Comments table migration~~ — done 2026-11-09.
 6. `npm run deploy:cloudflare`, then log in at txquince.com/admin/login.
 
 Until steps 1–4 are done, /login and /admin/login say "Checking your account…"
