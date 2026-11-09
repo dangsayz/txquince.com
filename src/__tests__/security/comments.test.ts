@@ -71,9 +71,16 @@ describe("POST /api/comments", () => {
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({ ok: true, status: "pending" });
     expect(state.saved).toEqual([
-      { post_slug: SLUG, lang: "en", user_id: "user_9", author_name: "Maria G.", author_image: null, body: good.body },
+      { post_slug: SLUG, lang: "en", user_id: "user_9", author_name: "Maria G.", author_image: null, body: good.body, quote: null },
     ]);
     expect(state.mails).toBe(1);
+  });
+
+  it("keeps a highlighted passage, cleaned to one line; drops one that is too short or too long", async () => {
+    await post({ ...good, quote: "  the last doll\n stands for   childhood " });
+    await post({ ...good, quote: "hi" });
+    await post({ ...good, quote: "x".repeat(400) });
+    expect(state.saved.map((s) => s.quote)).toEqual(["the last doll stands for childhood", null, null]);
   });
 
   it("drops a honeypot hit silently", async () => {
@@ -107,7 +114,7 @@ describe("comment rules", () => {
   it("never exposes the commenter's account id publicly", () => {
     const rec: CommentRecord = {
       id: "c1", created_at: "x", post_slug: SLUG, lang: "en", user_id: "user_9", author_name: "Maria G.",
-      author_image: null, body: "b", status: "approved", approved_at: "x", reply: null, replied_at: null,
+      author_image: null, body: "b", quote: null, status: "approved", approved_at: "x", reply: null, replied_at: null,
     };
     expect(toPublicComment(rec)).not.toHaveProperty("user_id");
     expect(toPublicComment(rec)).not.toHaveProperty("status");

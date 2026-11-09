@@ -1,10 +1,24 @@
 /* Journal comments. Brand kit tokens only (src/app/brand.css). */
-.tq-cmt__wrap {
-  max-width: 46rem;
+/* The section uses the site's full-width frame (.tq-wrap, with its side
+   hairlines). The content sits INSIDE it with the page padding, in the same
+   6 of 12 columns as the section title, so nothing touches the frame. */
+.tq-cmt__body {
+  padding: 0 var(--pad) 72px;
+}
+@media (min-width: 960px) {
+  .tq-cmt__body {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 0 24px;
+    padding-bottom: 96px;
+  }
+  .tq-cmt__col {
+    grid-column: 4 / span 6;
+  }
 }
 .tq-cmt__list {
   list-style: none;
-  margin: var(--tq-space-8) 0 0;
+  margin: 0;
   padding: 0;
   display: grid;
   gap: var(--tq-space-6);
@@ -61,20 +75,25 @@
   background: var(--tq-surface);
   border-radius: 0 var(--tq-radius-xs) var(--tq-radius-xs) 0;
 }
-.tq-cmt__empty,
+.tq-cmt__empty {
+  margin: 0;
+  font-size: var(--tq-text-body);
+  line-height: var(--tq-leading-body);
+  color: var(--tq-ink-mute);
+}
 .tq-cmt__note {
   margin: var(--tq-space-4) 0 0;
   font-size: var(--tq-text-body);
   line-height: var(--tq-leading-body);
   color: var(--tq-ink-mute);
 }
+/* No outer card: a boxed card inside the framed column put a border against
+   a border. One hairline above separates it from the list. */
 .tq-cmt__gate,
 .tq-cmt__form {
   margin-top: var(--tq-space-8);
-  padding: var(--tq-space-6);
-  border: 1px solid var(--tq-surface-2);
-  border-radius: var(--tq-radius-md);
-  background: var(--tq-canvas);
+  padding-top: var(--tq-space-8);
+  border-top: 1px solid var(--tq-surface-2);
 }
 .tq-cmt__gate-lead {
   margin: 0;
@@ -131,12 +150,104 @@
   text-decoration: underline;
 }
 @media (max-width: 479px) {
-  .tq-cmt__gate,
-  .tq-cmt__form {
-    padding: var(--tq-space-4);
-  }
   .tq-cmt__actions > .tq-btn {
     flex: 1 1 100%;
     justify-content: center;
   }
+}
+
+/* ---------- The box (rail on wide screens, under the list on phones) ---------- */
+.tq-cmt__box-title {
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--tq-surface-2);
+}
+.tq-cmt__box[data-place="rail"] .tq-cmt__gate,
+.tq-cmt__box[data-place="rail"] .tq-cmt__form {
+  margin-top: var(--tq-space-4);
+  padding-top: 0;
+  border-top: 0;
+}
+.tq-cmt__box[data-place="rail"] .tq-cmt__gate-lead { font-size: var(--tq-text-body); }
+.tq-cmt__box[data-place="rail"] .tq-cmt__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.tq-cmt__box[data-place="rail"] .tq-cmt__input { min-height: 5.5rem; margin-top: 0; }
+.tq-cmt__box[data-place="rail"] .tq-cmt__actions > .tq-btn { flex: 1 1 100%; justify-content: center; }
+.tq-cmt__box[data-place="rail"] .tq-cmt__note { font-size: var(--tq-text-sm); margin-top: var(--tq-space-3); }
+
+/* The passage a comment is about. */
+.tq-cmt__quote {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--tq-space-2);
+  margin: 0 0 var(--tq-space-3);
+  padding: var(--tq-space-2) var(--tq-space-2) var(--tq-space-2) var(--tq-space-3);
+  border-left: 2px solid var(--tq-ink);
+  background: var(--tq-surface);
+  font-size: var(--tq-text-sm);
+  line-height: 1.5;
+  color: var(--tq-ink);
+}
+.tq-cmt__quote-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.txq .tq-cmt__quote-x {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  margin: -8px -8px -8px 0;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--tq-ink-mute);
+}
+.txq .tq-cmt__about {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  margin-top: var(--tq-space-3);
+  padding: var(--tq-space-2) var(--tq-space-3);
+  border-left: 2px solid var(--tq-stone);
+  text-align: left;
+  font-size: var(--tq-text-sm);
+  line-height: 1.5;
+  color: var(--tq-ink-mute);
+  overflow-wrap: anywhere;
+  transition: border-color var(--tq-dur-fast, 0.2s) var(--tq-ease, ease);
+}
+.txq .tq-cmt__about:hover { border-left-color: var(--tq-ink); color: var(--tq-ink); }
+
+/* "Comment on this", by the selection. */
+.txq .tq-cmt-pick {
+  position: fixed;
+  z-index: 60;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: var(--tq-radius-pill);
+  background: var(--tq-ink);
+  color: var(--tq-ink-on);
+  font-size: var(--tq-text-body);
+  white-space: nowrap;
+  box-shadow: var(--tq-shadow-overlay);
+}
+.txq .tq-cmt-pick:focus-visible { outline: 2px solid var(--tq-ink); outline-offset: 3px; }
+
+/* Marks in the article (CSS Custom Highlight API; no DOM changes). */
+::highlight(tq-quoted) {
+  text-decoration: underline;
+  text-decoration-color: #8c877f;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+::highlight(tq-quoted-active) {
+  background-color: #e2ddd5;
+  color: #111110;
 }

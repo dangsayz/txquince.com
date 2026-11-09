@@ -39,7 +39,7 @@ export async function POST(request: Request) {
     const msg = parsed.error.issues.find((i) => i.path[0] === "body")?.message ?? "Invalid comment.";
     return json({ error: msg }, 400);
   }
-  const { post_slug, lang, body, website } = parsed.data;
+  const { post_slug, lang, body, website, quote } = parsed.data;
   // Honeypot filled: pretend it worked, save nothing.
   if (website) return json({ ok: true, status: "pending" });
 
@@ -57,6 +57,7 @@ export async function POST(request: Request) {
       author_name: user.displayName,
       author_image: user.imageUrl,
       body,
+      quote: quote ?? null,
     });
     // Best effort: a mail hiccup never loses the comment (it is in /admin/comments).
     await sendCommentNoticeEmail({
@@ -64,7 +65,7 @@ export async function POST(request: Request) {
       postUrl: `${getSiteUrl()}${lang === "es" ? "/es" : ""}/blog/${post_slug}`,
       adminUrl: `${getSiteUrl()}/admin/comments`,
       author: comment.author_name,
-      body: comment.body,
+      body: comment.quote ? `About: "${comment.quote}"\n\n${comment.body}` : comment.body,
     }).catch(() => undefined);
     return json({ ok: true, status: "pending" });
   } catch {

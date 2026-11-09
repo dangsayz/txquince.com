@@ -5,18 +5,34 @@ import { ClerkProvider, useAuth, useClerk, useUser } from "@clerk/nextjs";
 import type { ClerkSettings } from "@/lib/clerk-config";
 import { COMMENT_MAX } from "@/lib/comments";
 import { COPY, type CommentLang } from "./copy";
+import { setQuote, useQuote } from "./quote-store";
+import type { CommentPlace } from "./CommentBox";
 
 /** Loaded on demand (signed-in visitors only): Clerk + the comment form. */
-export function Composer({ lang, slug, clerk }: { lang: CommentLang; slug: string; clerk: ClerkSettings }) {
+export function Composer({
+  lang,
+  slug,
+  clerk,
+  place,
+  chip,
+}: {
+  lang: CommentLang;
+  slug: string;
+  clerk: ClerkSettings;
+  place: CommentPlace;
+  /** The highlighted passage, with its remove button (rendered by CommentBox). */
+  chip: React.ReactNode;
+}) {
   return (
     <ClerkProvider publishableKey={clerk.publishableKey} signInUrl={clerk.signInUrl} signUpUrl={clerk.signUpUrl}>
-      <Form lang={lang} slug={slug} />
+      <Form lang={lang} slug={slug} place={place} chip={chip} />
     </ClerkProvider>
   );
 }
 
-function Form({ lang, slug }: { lang: CommentLang; slug: string }) {
+function Form({ lang, slug, place, chip }: { lang: CommentLang; slug: string; place: CommentPlace; chip: React.ReactNode }) {
   const c = COPY[lang];
+  const quote = useQuote(slug);
   const id = useId();
   const { getToken, isLoaded: authLoaded } = useAuth();
   const { user, isLoaded, isSignedIn } = useUser();
@@ -69,7 +85,7 @@ function Form({ lang, slug }: { lang: CommentLang; slug: string }) {
       const res = await fetch("/api/comments", {
         method: "POST",
         headers: { "content-type": "application/json", ...(token ? { authorization: `Bearer ${token}` } : {}) },
-        body: JSON.stringify({ post_slug: slug, lang, body, website }),
+        body: JSON.stringify({ post_slug: slug, lang, body, website, quote: quote || undefined }),
       });
       const data = (await res.json().catch(() => ({}))) as { error?: string };
       if (res.status === 401) {
@@ -83,6 +99,7 @@ function Form({ lang, slug }: { lang: CommentLang; slug: string }) {
         return;
       }
       setBody("");
+      setQuote(slug, "");
       setStatus("done");
     } catch {
       setError(c.error);
@@ -95,13 +112,14 @@ function Form({ lang, slug }: { lang: CommentLang; slug: string }) {
       <label htmlFor={`${id}-body`} className="tq-cmt__label">
         {c.label}
       </label>
+      {chip}
       <textarea
         id={`${id}-body`}
         className="tq-cmt__input"
         value={body}
         onChange={(e) => setBody(e.target.value)}
         placeholder={c.placeholder}
-        rows={5}
+        rows={place === "rail" ? 3 : 5}
         maxLength={COMMENT_MAX}
         required
         aria-describedby={`${id}-help`}
