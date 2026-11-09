@@ -12,6 +12,8 @@ import { ContactButtons } from "@/components/ContactButtons";
 import { TrustLine } from "@/components/TrustLine";
 import { SupportForm } from "./SupportForm";
 import { HideDock } from "@/components/plan/HideDock";
+import { COPY as SITE_COPY } from "@/components/txq/copy";
+import { fillDeep } from "@/lib/price-text";
 import "@/components/txq/pages/pages.css";
 import "./account.css";
 
@@ -43,19 +45,34 @@ const COPY = {
     payError: "We couldn't open checkout. Please try again.",
     overTime: "At checkout, pay by card, or split it into smaller payments with Klarna, Afterpay or Affirm if you qualify. Secure payment by Stripe.",
     agreement: "See your signed agreement",
-    start: "Start your booking",
-    startLead: "You have no booking under this email yet. Here is how it works.",
+    start: "Book in 4 steps",
+    startLead: "You have no booking under this email yet. Follow the steps. We tell you what to do at each one.",
+    stepOf: (n: number, total: number) => `Step ${n} of ${total}`,
+    here: "You are here",
+    done: "Done",
+    later: "Later",
+    startHere: "Start here. Tap the package you want.",
+    yourTurn: { approved: "Your turn. Tap the button to pay your deposit.", booked: "Your turn. Pay the rest when you are ready." },
+    allDone: "All 4 steps are done.",
     steps: [
-      "Pick your package and your date.",
-      "Read and sign your agreement online.",
-      "We approve it within one day.",
-      "Pay your deposit here, by card or over time with Klarna, Afterpay or Affirm.",
+      { t: "Pick your package and your date", d: "Tap a package in the list. On the next screen you pick your date. Nothing is charged to send your request." },
+      { t: "Read and sign your agreement", d: "Your agreement shows your date, your package and your total. You read it and sign it on the screen." },
+      { t: "We approve it within one day", d: "We check that your date is open and we email you. You do nothing in this step." },
+      { t: "Pay your deposit to lock in your date", d: (pct: string, days: string) => `The deposit is ${pct} of your total. All of it goes toward your total. The rest is due ${days} days before the event. Pay by card, or in smaller payments with Klarna, Afterpay or Affirm if you qualify.` },
+    ],
+    rest: { t: "Pay the rest", d: "Pay it all at once or a part at a time, before the due date in your agreement." },
+    answers: "Answers to common questions",
+    answersLead: "Tap a question to read the answer.",
+    extraFaq: [
+      { q: "Does it cost anything to send my request?", a: "No. You pick your package and your date and send it to us. Nothing is charged. You pay only after we approve your agreement." },
+      { q: "Can I pay in smaller payments?", a: "Yes. At checkout, pay by card, or split it into smaller payments with Klarna, Afterpay or Affirm if you qualify. After your deposit, you can also pay the rest a part at a time here, before the due date in your agreement." },
+      { q: "I booked with a different email. Where is my booking?", a: "Your booking shows under the email you used to book. Send us a message below and we will connect it to this account." },
     ],
     packages: "Packages",
     hours: (h: string) => `${h} ${h === "1" ? "hour" : "hours"}`,
     compare: "See what each package includes",
     otherEmail: "Booked with a different email? Send us a message below and we will connect it.",
-    help: "Need help?",
+    help: "Still need help?",
     helpLead: "A real person answers, in English or Spanish.",
     reach: "Text, WhatsApp or call",
     ticket: "Send us a message",
@@ -111,19 +128,34 @@ const COPY = {
     payError: "No pudimos abrir el pago. Inténtalo de nuevo.",
     overTime: "Al pagar puedes usar tarjeta, o dividirlo en pagos más pequeños con Klarna, Afterpay o Affirm si calificas. Pago seguro con Stripe.",
     agreement: "Ver tu contrato firmado",
-    start: "Empieza tu reservación",
-    startLead: "Todavía no tienes una reservación con este correo. Así funciona.",
+    start: "Reserva en 4 pasos",
+    startLead: "Todavía no tienes una reservación con este correo. Sigue los pasos. En cada uno te decimos qué hacer.",
+    stepOf: (n: number, total: number) => `Paso ${n} de ${total}`,
+    here: "Estás aquí",
+    done: "Listo",
+    later: "Después",
+    startHere: "Empieza aquí. Toca el paquete que quieres.",
+    yourTurn: { approved: "Te toca. Toca el botón para pagar tu depósito.", booked: "Te toca. Paga el resto cuando estés lista." },
+    allDone: "Los 4 pasos están listos.",
     steps: [
-      "Elige tu paquete y tu fecha.",
-      "Lee y firma tu contrato en línea.",
-      "Lo aprobamos en un día.",
-      "Paga tu depósito aquí, con tarjeta o en pagos con Klarna, Afterpay o Affirm.",
+      { t: "Elige tu paquete y tu fecha", d: "Toca un paquete de la lista. En la siguiente pantalla eliges tu fecha. No se cobra nada por enviar tu solicitud." },
+      { t: "Lee y firma tu contrato", d: "Tu contrato muestra tu fecha, tu paquete y tu total. Lo lees y lo firmas en la pantalla." },
+      { t: "Lo aprobamos en un día", d: "Revisamos que tu fecha esté libre y te escribimos por correo. En este paso no haces nada." },
+      { t: "Paga tu depósito para asegurar tu fecha", d: (pct: string, days: string) => `El depósito es el ${pct} de tu total. Todo se abona a tu total. El resto se paga ${days} días antes del evento. Paga con tarjeta, o en pagos más pequeños con Klarna, Afterpay o Affirm si calificas.` },
+    ],
+    rest: { t: "Paga el resto", d: "Págalo de una vez o en partes, antes de la fecha límite de tu contrato." },
+    answers: "Respuestas a las preguntas más comunes",
+    answersLead: "Toca una pregunta para leer la respuesta.",
+    extraFaq: [
+      { q: "¿Cuesta algo enviar mi solicitud?", a: "No. Eliges tu paquete y tu fecha y nos lo envías. No se cobra nada. Pagas solo después de que aprobemos tu contrato." },
+      { q: "¿Puedo pagar en pagos más pequeños?", a: "Sí. Al pagar puedes usar tarjeta, o dividirlo en pagos más pequeños con Klarna, Afterpay o Affirm si calificas. Después de tu depósito, también puedes pagar el resto en partes aquí, antes de la fecha límite de tu contrato." },
+      { q: "Reservé con otro correo. ¿Dónde está mi reservación?", a: "Tu reservación aparece con el correo que usaste para reservar. Mándanos un mensaje abajo y la conectamos a esta cuenta." },
     ],
     packages: "Paquetes",
     hours: (h: string) => `${h} ${h === "1" ? "hora" : "horas"}`,
     compare: "Ver qué incluye cada paquete",
     otherEmail: "¿Reservaste con otro correo? Mándanos un mensaje abajo y la conectamos.",
-    help: "¿Necesitas ayuda?",
+    help: "¿Todavía necesitas ayuda?",
     helpLead: "Te contesta una persona, en español o inglés.",
     reach: "Texto, WhatsApp o llamada",
     ticket: "Mándanos un mensaje",
@@ -164,7 +196,69 @@ function longDate(iso: string, lang: Lang) {
   }).format(new Date(`${iso}T12:00:00Z`));
 }
 
-function BookingCard({ b, lang }: { b: AccountBooking; lang: Lang }) {
+/**
+ * Which homepage FAQ items (src/components/txq/copy.ts, same order in EN and
+ * ES) answer what families ask while booking. Facts stay in one place: the
+ * answers are the site's own, filled from the live price book.
+ * (deposit, hours, photo + film, how many on the team,
+ * delivery time, sick-day cover, posting photos, Spanish, travel)
+ */
+export const ACCOUNT_FAQ_PICKS = [9, 3, 1, 2, 13, 14, 15, 7, 12] as const;
+
+function DownArrow() {
+  return (
+    <svg className="acct-arrow" viewBox="0 0 24 24" width="22" height="22" aria-hidden focusable="false">
+      <path d="M12 3v17M5 13.5l7 6.5 7-6.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" />
+    </svg>
+  );
+}
+function Check() {
+  return (
+    <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden focusable="false">
+      <path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="square" />
+    </svg>
+  );
+}
+
+type StepItem = { t: string; d: string };
+
+/**
+ * The walkthrough: every step with a plain explanation, the current one
+ * opened with its action inside. `now` is 1-based; a number past the last
+ * step means everything is done.
+ */
+function Steps({ lang, items, now, children }: { lang: Lang; items: StepItem[]; now: number; children?: React.ReactNode }) {
+  const c = COPY[lang];
+  const total = items.length;
+  return (
+    <div className="acct-steps">
+      <p className="acct-steps__count tq-mono" role="status">
+        {now <= total ? c.stepOf(now, total) : c.allDone}
+      </p>
+      <ol className="acct-steps__list">
+        {items.map((it, i) => {
+          const n = i + 1;
+          const state = n < now ? "done" : n === now ? "now" : "next";
+          return (
+            <li key={it.t} className="acct-step" data-state={state} aria-current={state === "now" ? "step" : undefined}>
+              <span className="acct-step__n" aria-hidden>{state === "done" ? <Check /> : n}</span>
+              <div className="acct-step__body">
+                <p className="acct-step__head">
+                  <span className="acct-step__t">{it.t}</span>
+                  <span className="acct-step__tag tq-mono">{state === "done" ? c.done : state === "now" ? c.here : c.later}</span>
+                </p>
+                <p className="acct-step__d">{it.d}</p>
+                {state === "now" && children ? <div className="acct-step__do">{children}</div> : null}
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  );
+}
+
+function BookingCard({ b, lang, bare = false }: { b: AccountBooking; lang: Lang; bare?: boolean }) {
   const c = COPY[lang];
   const dep = usd(b.depositCents / 100);
   const left = usd(b.leftCents / 100);
@@ -176,7 +270,7 @@ function BookingCard({ b, lang }: { b: AccountBooking; lang: Lang }) {
     : b.state === "closed" ? c.next.closed
     : b.leftCents > 0 ? c.next.bookedLeft : c.next.bookedDone;
   return (
-    <article className="acct-card" data-state={b.state}>
+    <article className="acct-card" data-state={b.state} data-bare={bare || undefined}>
       <div className="acct-card__head">
         <h3 className="acct-card__date">{longDate(b.eventDate, lang)}</h3>
         {tier ? <p className="acct-card__meta">{tier}</p> : null}
@@ -258,6 +352,14 @@ export function AccountView({ lang, displayName, email, bookings, book }: {
   const first = displayName.split(" ")[0];
   const named = first && first !== "TX";
   const home = lang === "es" ? "/es" : "/";
+  const closed = bookings.filter((b) => b.state === "closed");
+  const last = c.steps[3];
+  const baseSteps: StepItem[] = [
+    ...c.steps.slice(0, 3).map((x) => ({ t: x.t, d: x.d as string })),
+    { t: last.t, d: (last.d as (pct: string, days: string) => string)(`${book.depositPercent}%`, String(book.balanceDueDays)) },
+  ];
+  const siteFaq = fillDeep(SITE_COPY[lang].faq.items, book);
+  const faqs = [...c.extraFaq, ...ACCOUNT_FAQ_PICKS.map((i) => siteFaq[i]).filter(Boolean)];
 
   return (
     <div className="tq-wrap" lang={lang}>
@@ -272,11 +374,32 @@ export function AccountView({ lang, displayName, email, bookings, book }: {
       </header>
 
       <div className="acct">
-        {bookings.length > 0 && (
-          <section className="acct__section" aria-labelledby="acct-bookings">
-            <h2 id="acct-bookings" className="acct__h2">{c.bookings}</h2>
-            {bookings.map((b) => <BookingCard key={b.id} b={b} lang={lang} />)}
-            <TrustLine lang={lang} />
+        {open.map((bk) => {
+          const steps: StepItem[] = [...baseSteps, ...(bk.state === "booked" ? [c.rest] : [])];
+          const now = bk.state === "review" ? 3 : bk.state === "approved" ? 4 : bk.leftCents > 0 ? 5 : 6;
+          return (
+            <section key={bk.id} className="acct__section" aria-labelledby={`acct-b-${bk.id}`}>
+              <h2 id={`acct-b-${bk.id}`} className="acct__h2">{c.bookings}</h2>
+              <div className="acct-panel">
+                <Steps lang={lang} items={steps} now={now}>
+                  {bk.state !== "review" && bk.payToken ? (
+                    <p className="acct-point">
+                      <DownArrow />
+                      <span>{bk.state === "approved" ? c.yourTurn.approved : c.yourTurn.booked}</span>
+                    </p>
+                  ) : null}
+                  <BookingCard b={bk} lang={lang} bare />
+                </Steps>
+                {now > steps.length ? <BookingCard b={bk} lang={lang} bare /> : null}
+              </div>
+              <TrustLine lang={lang} />
+            </section>
+          );
+        })}
+
+        {closed.length > 0 && (
+          <section className="acct__section" aria-label={c.status.closed}>
+            {closed.map((bk) => <BookingCard key={bk.id} b={bk} lang={lang} />)}
           </section>
         )}
 
@@ -284,27 +407,47 @@ export function AccountView({ lang, displayName, email, bookings, book }: {
           <section className="acct__section" aria-labelledby="acct-start">
             <h2 id="acct-start" className="acct__h2">{c.start}</h2>
             {bookings.length === 0 && <p className="acct__lead">{c.startLead}</p>}
-            <ol className="acct-steps">
-              {c.steps.map((s) => <li key={s}><span>{s}</span></li>)}
-            </ol>
-            <ul className="acct-pkgs" aria-label={c.packages}>
-              {PUBLIC_TIER_IDS.map((id) => (
-                <li key={id}>
-                  <a href={`${home}?collection=${id}#intake`}>
-                    <span className="acct-pkgs__name">
-                      {tierById(id).name[lang]}
-                      <span className="acct-pkgs__hours">{c.hours(fmtHours(book.packages[id].hours))}</span>
-                    </span>
-                    <span className="acct-pkgs__price">{usd(book.packages[id].price)}</span>
-                    <span className="tq-arrow" aria-hidden>→</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-            <a className="acct-link" href={lang === "es" ? "/es/presupuesto" : "/budget"}>{c.compare}</a>
-            <p className="acct-note">{c.otherEmail}</p>
+            <div className="acct-panel">
+              <Steps lang={lang} items={baseSteps} now={1}>
+                <p className="acct-point">
+                  <DownArrow />
+                  <span>{c.startHere}</span>
+                </p>
+                <ul className="acct-pkgs" aria-label={c.packages}>
+                  {PUBLIC_TIER_IDS.map((id) => (
+                    <li key={id}>
+                      <a href={`${home}?collection=${id}#intake`}>
+                        <span className="acct-pkgs__name">
+                          {tierById(id).name[lang]}
+                          <span className="acct-pkgs__hours">{c.hours(fmtHours(book.packages[id].hours))}</span>
+                        </span>
+                        <span className="acct-pkgs__price">{usd(book.packages[id].price)}</span>
+                        <span className="tq-arrow" aria-hidden>→</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+                <a className="acct-link" href={lang === "es" ? "/es/presupuesto" : "/budget"}>{c.compare}</a>
+              </Steps>
+            </div>
           </section>
         )}
+
+        <section className="acct__section" aria-labelledby="acct-answers">
+          <h2 id="acct-answers" className="acct__h2">{c.answers}</h2>
+          <p className="acct__lead">{c.answersLead}</p>
+          <div className="acct-panel acct-faq">
+            {faqs.map((f) => (
+              <details key={f.q} className="acct-faq__item">
+                <summary>
+                  <span>{f.q}</span>
+                  <span className="acct-faq__icon" aria-hidden />
+                </summary>
+                <p>{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </section>
 
         <section className="acct__section" aria-labelledby="acct-help">
           <h2 id="acct-help" className="acct__h2">{c.help}</h2>
