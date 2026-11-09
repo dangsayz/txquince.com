@@ -197,3 +197,21 @@ export async function retrieveStripeCheckoutSession(
     { method: "GET" },
   );
 }
+
+/**
+ * Stripe's hosted receipt page for a payment (card, Klarna, Afterpay, Affirm),
+ * or null when there is none yet. Read-only; used on the family's dashboard.
+ */
+export async function retrieveReceiptUrl(paymentIntentId: string): Promise<string | null> {
+  try {
+    const pi = await stripeRequest<{ latest_charge?: { receipt_url?: string | null } | string | null }>(
+      `/payment_intents/${encodeURIComponent(paymentIntentId)}?expand[]=latest_charge`,
+      { method: "GET" },
+    );
+    const charge = pi.latest_charge;
+    const url = charge && typeof charge === "object" ? charge.receipt_url : null;
+    return typeof url === "string" && url.startsWith("https://") ? url : null;
+  } catch {
+    return null;
+  }
+}

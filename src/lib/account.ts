@@ -28,10 +28,22 @@ export type AccountBooking = {
   processing: boolean;
   /** Key for the pay buttons and the private booking page; null until approved. */
   payToken: string | null;
+  /** Money received, oldest first (deposit, then balance payments). */
+  payments: AccountPayment[];
+};
+
+export type AccountPayment = {
+  kind: "deposit" | "balance";
+  amountCents: number;
+  paidAt: string | null;
+  /** Stripe payment id, kept server-side to look up the receipt. Never rendered. */
+  paymentIntent: string | null;
+  /** Stripe's receipt page, filled in by account-db when available. */
+  receiptUrl?: string | null;
 };
 
 type Row = Record<string, unknown>;
-type PaymentRow = { booking_id: string; status: string; amount_cents: number };
+type PaymentRow = { booking_id: string; status: string; amount_cents: number; paid_at?: string | null; stripe_payment_intent_id?: string | null };
 
 export function toAccountBooking(row: Row, payments: PaymentRow[], now = Date.now()): AccountBooking | null {
   const meta = (row.metadata ?? {}) as Row;
@@ -58,6 +70,16 @@ export function toAccountBooking(row: Row, payments: PaymentRow[], now = Date.no
     leftCents: state === "booked" ? Math.max(0, balance - balancePaid) : 0,
     processing: mine.some((p) => p.status === "processing"),
     payToken: state === "approved" || state === "booked" ? agreement.payToken ?? null : null,
+    payments:
+      state === "booked"
+        ? [
+            { kind: "deposit" as const, amountCents: deposit, paidAt: row.paid_at ? String(row.paid_at) : null, paymentIntent: row.stripe_payment_intent_id ? String(row.stripe_payment_intent_id) : null },
+            ...mine
+              .filter((p) => p.status === "paid")
+              .map((p) => ({ kind: "balance" as const, amountCents: p.amount_cents, paidAt: p.paid_at ?? null, paymentIntent: p.stripe_payment_intent_id ?? null }))
+              .sort((a, b) => String(a.paidAt).localeCompare(String(b.paidAt))),
+          ]
+        : [],
   };
 }
 

@@ -425,9 +425,17 @@
     grid-template-columns: repeat(12, minmax(0, 1fr));
     column-gap: 24px;
   }
-  .txq .acct > * {
+  .txq .acct > .acct__main {
     grid-column: 4 / span 9;
   }
+  .txq .acct > .acct-rail {
+    grid-column: 1 / span 3;
+    position: sticky;
+    top: calc(var(--tq-header-h) + var(--tq-space-6));
+    align-self: start;
+    padding-right: var(--tq-space-6);
+  }
+
   /* The form leads on the page's left edge (same edge as every heading and
      the footer); the quick-contact buttons sit beside it as a short column. */
   .txq .acct-help {
@@ -440,5 +448,192 @@
 @media (prefers-reduced-motion: reduce) {
   .txq .acct-pkgs a {
     transition: none;
+  }
+}
+
+/* Main column and the account rail (left on wide screens, a row of links on phones). */
+.txq .acct__main {
+  display: grid;
+  gap: var(--tq-space-12);
+  min-width: 0;
+}
+.txq .acct__main [id] {
+  scroll-margin-top: calc(var(--tq-header-h) + var(--tq-space-6));
+}
+.txq .acct-rail {
+  display: grid;
+  gap: var(--tq-space-8);
+  min-width: 0;
+}
+.txq .acct-rail__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tq-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.txq .acct-rail__nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tq-tap);
+  padding: 0 var(--tq-space-4);
+  border: 1px solid var(--tq-stone);
+  border-radius: var(--tq-radius-pill);
+  color: var(--tq-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color var(--tq-dur-fast) var(--tq-ease);
+}
+.txq .acct-rail__nav a:hover {
+  background: var(--tq-surface);
+}
+.txq .acct-rail__nav a:focus-visible {
+  outline: 2px solid var(--tq-ink);
+  outline-offset: 2px;
+}
+.txq .acct-rail__need,
+.txq .acct-rail__pay {
+  display: none;
+  gap: var(--tq-space-1);
+}
+.txq .acct-rail__h {
+  margin: 0 0 var(--tq-space-2);
+  font-family: var(--tq-font-mono);
+  font-size: var(--tq-text-sm);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tq-ink-mute);
+}
+.txq .acct-rail__need a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tq-tap);
+  color: var(--tq-ink);
+  overflow-wrap: anywhere;
+}
+
+/* Ways to pay: name badges in each company's colors (labels, not logo artwork). */
+.txq .acct-marks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tq-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.txq .acct-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: var(--tq-radius-xs);
+  border: 1px solid var(--tq-surface-2);
+  background: #fff;
+  color: var(--tq-ink);
+  font-weight: var(--tq-weight-semibold);
+  font-size: var(--tq-text-sm);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.txq .acct-mark[data-brand="klarna"] { background: #ffb3c7; border-color: #ffb3c7; color: #17120f; }
+.txq .acct-mark[data-brand="afterpay"] { background: #b2fce4; border-color: #b2fce4; color: #000; }
+.txq .acct-mark[data-brand="affirm"] { background: #fff; border-color: #4a4af4; color: #101820; }
+
+/* "We got it" after signing. */
+.txq .acct-flash {
+  margin: 0;
+  padding: var(--tq-space-4) var(--tq-space-6);
+  border: 1px solid var(--tq-surface-2);
+  border-left: 4px solid var(--tq-status-open);
+  background: #fff;
+  font-size: var(--tq-text-lg);
+  line-height: var(--tq-leading-body);
+}
+
+/* Payments and receipts. */
+.txq .acct-pays {
+  display: grid;
+  margin: 0;
+  padding: 0 var(--tq-space-6);
+  list-style: none;
+}
+.txq .acct-pays li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--tq-space-4);
+  min-height: 64px;
+  padding: var(--tq-space-3) 0;
+}
+.txq .acct-pays li + li {
+  border-top: 1px solid var(--tq-surface-2);
+}
+.txq .acct-pays__what {
+  font-weight: var(--tq-weight-medium);
+}
+.txq .acct-pays__when {
+  display: block;
+  color: var(--tq-ink-mute);
+  font-weight: var(--tq-weight-regular);
+}
+.txq .acct-pays__amt {
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--tq-weight-medium);
+}
+
+/* Booking inside the dashboard, and the sign step. */
+.txq .acct-book {
+  display: grid;
+  gap: var(--tq-space-8);
+  padding: 0 var(--pad) var(--tq-space-section);
+}
+.txq .acct-book__pay {
+  display: grid;
+  gap: var(--tq-space-3);
+}
+.txq .acct-sign {
+  display: grid;
+  gap: var(--tq-space-6);
+  min-width: 0;
+}
+.txq .acct-sign__lead,
+.txq .acct-sign__after {
+  margin: 0;
+  line-height: var(--tq-leading-body);
+}
+.txq .acct-sign__after {
+  color: var(--tq-ink-mute);
+}
+@media (prefers-reduced-motion: reduce) {
+  .txq .acct-rail__nav a {
+    transition: none;
+  }
+}
+@media (min-width: 900px) {
+  .txq .acct-rail__nav {
+    flex-direction: column;
+    gap: 0;
+  }
+  .txq .acct-rail__nav a {
+    border: 0;
+    border-top: 1px solid var(--tq-surface-2);
+    border-radius: 0;
+    padding-inline: 0;
+    width: 100%;
+  }
+  .txq .acct-rail__need,
+  .txq .acct-rail__pay {
+    display: grid;
+  }
+  .txq .acct-rail__nav {
+    flex-wrap: nowrap;
+  }
+  .txq .acct-rail__nav li:last-child a {
+    border-bottom: 1px solid var(--tq-surface-2);
+  }
+  .txq .acct-book > * {
+    max-width: none;
   }
 }
