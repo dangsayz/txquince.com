@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
-import { useEffect, useRef, useState, type ReactNode } from "react";
-import { MenuIcon } from "@/components/admin/StudioIcons";
+import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
+import { MenuIcon, WebsiteIcon, type WebsiteIconName } from "@/components/admin/StudioIcons";
 
 const mainLinks = [
   { href: "/admin", label: "Today" },
@@ -15,18 +15,19 @@ const mainLinks = [
   { href: "/admin/website", label: "Website" },
 ] as const;
 
-const websiteLinks = [
-  { href: "/admin/website", label: "Overview" },
-  { href: "/admin/photos", label: "Photo dump" },
-  { href: "/admin/portfolio", label: "Portfolio" },
-  { href: "/admin/videos", label: "Films" },
-  { href: "/admin/hero", label: "Page imagery" },
-  { href: "/admin/images", label: "Every image" },
-  { href: "/admin/prices", label: "Prices" },
-  { href: "/admin/packages", label: "Packages" },
-  { href: "/admin/price-guide", label: "Price guide" },
-  { href: "/admin/venues", label: "Venues" },
-] as const;
+// group: a hairline sits between groups in the desktop sub-nav, so ten links read as three sets.
+const websiteLinks: { href: string; label: string; icon: WebsiteIconName; group: number }[] = [
+  { href: "/admin/website", label: "Overview", icon: "overview", group: 0 },
+  { href: "/admin/photos", label: "Photo dump", icon: "photos", group: 1 },
+  { href: "/admin/portfolio", label: "Portfolio", icon: "portfolio", group: 1 },
+  { href: "/admin/videos", label: "Films", icon: "films", group: 1 },
+  { href: "/admin/hero", label: "Page imagery", icon: "imagery", group: 1 },
+  { href: "/admin/images", label: "Every image", icon: "images", group: 1 },
+  { href: "/admin/prices", label: "Prices", icon: "prices", group: 2 },
+  { href: "/admin/packages", label: "Packages", icon: "packages", group: 2 },
+  { href: "/admin/price-guide", label: "Price guide", icon: "guide", group: 2 },
+  { href: "/admin/venues", label: "Venues", icon: "venues", group: 3 },
+];
 
 function isActive(pathname: string, href: string) {
   return (
@@ -143,11 +144,15 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
 
         {websiteActive && (
           <nav aria-label="Website management" className="st-subbar hidden lg:block">
-            <div className="mx-auto flex max-w-[96rem] items-center gap-1 overflow-x-auto px-4 py-2 [scrollbar-width:none] sm:px-8 xl:max-w-[72rem]">
-              {websiteLinks.map((link) => (
-                <Link key={link.href} href={link.href} aria-current={isActive(pathname, link.href) ? "page" : undefined} className="st-subnav">
-                  {link.label}
-                </Link>
+            <div className="mx-auto flex max-w-[96rem] items-center gap-1 overflow-x-auto px-4 py-2.5 [scrollbar-width:none] sm:px-8 xl:max-w-[88rem]">
+              {websiteLinks.map((link, i) => (
+                <Fragment key={link.href}>
+                  {i > 0 && link.group !== websiteLinks[i - 1].group && <span aria-hidden="true" className="st-subnav-sep" />}
+                  <Link href={link.href} aria-current={isActive(pathname, link.href) ? "page" : undefined} className="st-subnav">
+                    <WebsiteIcon name={link.icon} />
+                    {link.label}
+                  </Link>
+                </Fragment>
               ))}
             </div>
           </nav>
@@ -161,7 +166,7 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
             <p className="m-0 border-t border-[var(--tq-surface-2)] pt-4 text-[13px] text-[var(--tq-ink-mute)]">Website pages</p>
             <div className="mt-2 grid grid-cols-2 gap-1">
               {websiteLinks.map((link) => (
-                <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)} aria-current={isActive(pathname, link.href) ? "page" : undefined} className="st-nav st-nav--quiet">{link.label}</Link>
+                <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)} aria-current={isActive(pathname, link.href) ? "page" : undefined} className="st-nav st-nav--quiet gap-2.5"><WebsiteIcon name={link.icon} />{link.label}</Link>
               ))}
             </div>
             <div className="mt-6 flex items-center justify-between gap-4 border-t border-[var(--tq-surface-2)] pt-4">
