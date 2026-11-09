@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode, type SyntheticEvent } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Intake, bookHref } from "@/components/txq/Intake";
 import { BudgetCta } from "@/components/budget/BudgetCta";
 import { useShell } from "@/components/txq/SiteShell";
@@ -612,14 +613,27 @@ function JournalRow({ journal }: { journal: Journal }) {
         </div>
         <ul className="ed-news">
           {posts.map((post) => {
-            const photo = JOURNAL_PHOTO[post.category] ?? JOURNAL_PHOTO_FALLBACK;
+            const fallback = JOURNAL_PHOTO[post.category] ?? JOURNAL_PHOTO_FALLBACK;
+            const cover = post.image;
             const cat = lang === "es" ? (CATEGORY_ES[post.category] ?? post.category) : post.category;
             return (
               <li key={post.href}>
                 <Link href={post.href} className="ed-newscard">
                   <span className="ed-newscard__media">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={photo.src} width={photo.width} height={photo.height} alt="" loading="lazy" decoding="async" />
+                    {cover ? (
+                      <Image
+                        src={cover.src}
+                        alt=""
+                        fill
+                        sizes="(max-width: 760px) 100vw, 33vw"
+                        style={{
+                          objectPosition: `${Math.round((cover.focusX ?? 0.5) * 100)}% ${Math.round((cover.focusY ?? 0.5) * 100)}%`,
+                        }}
+                      />
+                    ) : (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img src={fallback.src} width={fallback.width} height={fallback.height} alt="" loading="lazy" decoding="async" />
+                    )}
                   </span>
                   <span className="ed-newscard__meta">
                     {shortDate(post.date)}

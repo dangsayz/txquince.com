@@ -18,6 +18,8 @@ export type JournalItem = {
   /** ISO publish date (YYYY-MM-DD). */
   date?: string;
   excerpt?: string;
+  /** The post's own cover photo; absent → the card uses its category photo. */
+  image?: { src: string; alt: string; focusX: number | null; focusY: number | null };
 };
 export type Journal = { en: JournalItem[]; es: JournalItem[] };
 
