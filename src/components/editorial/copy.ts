@@ -55,11 +55,23 @@ export const ED = {
       askBody: "Text it to us. We reply within a day, in English or Spanish.",
       where: "Where we work",
     },
-    steps: { title: "How booking works" },
+    // Short lines cut from the booking steps (content/commissions.ts); the
+    // deposit and balance numbers come from the live price book.
+    steps: {
+      title: "How booking works",
+      items: [
+        { title: "Pick your package", line: () => "Choose your date and the package you like." },
+        { title: "Sign the agreement", line: () => "Sign online. No payment yet." },
+        { title: "Lock in your date", line: (pct: number, days: number) => `Pay the ${pct}% deposit. The rest is due ${days} days before.` },
+        { title: "Your day, captured", line: () => "From la misa to the last dance." },
+      ],
+    },
     // Not new promises: each line is the wording of the signed agreement
     // (lib/agreement.ts) or of the questions block (txq/copy.ts faq).
     promises: {
       title: "The fine print, in plain words",
+      short: ["Full refund if we ever cancel", "An owner covers your day if needed", "Insured, with a certificate for your venue"],
+      more: "Read all six terms",
       items: [
         "If we can't take your date, we'll let you know and you won't be charged anything.",
         "If we ever have to cancel, we refund everything you've paid.",
@@ -123,9 +135,19 @@ export const ED = {
       askBody: "Mándanosla por texto. Respondemos en un día, en español o inglés.",
       where: "Dónde trabajamos",
     },
-    steps: { title: "Cómo reservar" },
+    steps: {
+      title: "Cómo reservar",
+      items: [
+        { title: "Elige tu paquete", line: () => "Escoge tu fecha y el paquete que te guste." },
+        { title: "Firma el contrato", line: () => "Firma en línea. Todavía no pagas nada." },
+        { title: "Asegura tu fecha", line: (pct: number, days: number) => `Paga el depósito del ${pct}%. El resto, ${days} días antes.` },
+        { title: "Tu día, para siempre", line: () => "De la misa al último baile." },
+      ],
+    },
     promises: {
       title: "La letra chica, en palabras claras",
+      short: ["Te devolvemos todo si nosotros cancelamos", "Un dueño cubre tu día si hace falta", "Con seguro y certificado para tu salón"],
+      more: "Leer los seis puntos",
       items: [
         "Si no podemos tomar tu fecha, te avisamos y no se te cobra nada.",
         "Si nosotros tuviéramos que cancelar, te devolvemos todo lo que hayas pagado.",
