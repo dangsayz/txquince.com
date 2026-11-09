@@ -206,6 +206,78 @@ export function Tracker() {
     };
   }, [pathname]);
 
+  // How each page is used: active seconds (tab visible, someone moved, scrolled,
+  // tapped or typed in the last 30 s) and the deepest scroll (% of the page).
+  // Sent once per page view, when she leaves the page or hides the tab, as an
+  // "engaged" event: "t=<seconds>;d=<percent>". Plus up to 25 taps per page
+  // view ("click", the link or button's own words). Feeds /admin "What visitors do".
+  useEffect(() => {
+    if (pathname.startsWith("/admin")) return;
+    const page = pathname;
+    // A family's own pages (plan, booking, review, saved) can show names in
+    // link text: count time and scroll there, never what was tapped.
+    const personal = /^\/(es\/)?(plan\/|booking\/|review\/|saved)/.test(page);
+    const IDLE_MS = 30_000;
+    let active = 0;
+    let lastInput = Date.now();
+    let depth = 0;
+    let clicks = 0;
+    let sent = false;
+    const measure = () => {
+      const doc = document.documentElement;
+      const total = Math.max(doc.scrollHeight, 1);
+      depth = Math.max(depth, Math.min(100, ((window.scrollY + window.innerHeight) / total) * 100));
+    };
+    const touch = () => {
+      lastInput = Date.now();
+    };
+    const onScroll = () => {
+      touch();
+      measure();
+    };
+    const onClick = (e: MouseEvent) => {
+      touch();
+      if (personal || clicks >= 25) return;
+      const el = (e.target as HTMLElement | null)?.closest?.<HTMLElement>("a, button, summary, [role='button']");
+      if (!el || el.closest("input, textarea, select")) return;
+      const label = clickLabel(el);
+      if (!label) return;
+      clicks += 1;
+      trackEvent("click", label, page);
+    };
+    const flush = () => {
+      if (sent || active < 1) return;
+      sent = true;
+      trackEvent("engaged", `t=${Math.min(active, 1800)};d=${Math.round(depth)}`, page);
+    };
+    const onHide = () => {
+      if (document.visibilityState === "hidden") flush();
+    };
+    const timer = window.setInterval(() => {
+      if (document.visibilityState === "visible" && Date.now() - lastInput < IDLE_MS) active += 1;
+    }, 1000);
+    const first = window.setTimeout(measure, 800); // short pages count as read once they render
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("pointerdown", touch, { passive: true });
+    window.addEventListener("mousemove", touch, { passive: true });
+    window.addEventListener("keydown", touch);
+    document.addEventListener("click", onClick, { capture: true });
+    document.addEventListener("visibilitychange", onHide);
+    window.addEventListener("pagehide", flush);
+    return () => {
+      flush();
+      window.clearInterval(timer);
+      window.clearTimeout(first);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("pointerdown", touch);
+      window.removeEventListener("mousemove", touch);
+      window.removeEventListener("keydown", touch);
+      document.removeEventListener("click", onClick, { capture: true });
+      document.removeEventListener("visibilitychange", onHide);
+      window.removeEventListener("pagehide", flush);
+    };
+  }, [pathname]);
+
   // Delegated CTA tracking: any click on a link to the intake is booking intent.
   useEffect(() => {
     function onClick(e: MouseEvent) {
@@ -219,8 +291,17 @@ export function Tracker() {
   return null;
 }
 
-/** Fire-and-forget intent event (form starts, CTA clicks, shares). */
-export function trackEvent(eventType: string, target?: string) {
+/** Fire-and-forget intent event (form starts, CTA clicks, shares). `path` defaults to the current page. */
+export function trackEvent(eventType: string, target?: string, path?: string) {
   if (typeof window === "undefined") return;
-  post({ t: "ev", et: eventType, path: window.location.pathname, tg: target ?? null, sid: sessionId(), vid: visitorId() });
+  post({ t: "ev", et: eventType, path: path ?? window.location.pathname, tg: target ?? null, sid: sessionId(), vid: visitorId() });
+}
+
+/** What a tap was on, in the page's own words (never a form value). */
+function clickLabel(el: HTMLElement): string | null {
+  const own = el.dataset.trackLabel || el.getAttribute("aria-label");
+  const text = (own || el.innerText || "").replace(/\s+/g, " ").trim();
+  if (text) return text.slice(0, 60);
+  const href = el.getAttribute("href");
+  return href ? href.slice(0, 60) : null;
 }
