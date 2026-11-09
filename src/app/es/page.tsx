@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getPublicReviews } from "@/lib/reviews-db";
 import { EditorialHome } from "@/components/editorial/EditorialHome";
 import { editorialFonts } from "@/components/editorial/fonts";
 import { latestJournal } from "@/components/txq/journal";
@@ -41,11 +42,12 @@ export default async function InicioEs() {
   // are empty (section hidden, original images) when storage is unreachable.
   // The gallery section is the real portfolio, grouped by shoot (empty when
   // the database is unreachable; the section then shows real photos instead).
-  const [films, overrides, book, portfolio] = await Promise.all([
+  const [films, overrides, book, portfolio, reviews] = await Promise.all([
     getCinemaFilms(),
     getHomeOverrides(),
     getPriceBook(),
     getPortfolioImages(),
+    getPublicReviews(),
   ]);
   const favorites = favoritesFromImages(portfolio);
   return (
@@ -54,7 +56,7 @@ export default async function InicioEs() {
       <FavoritesJsonLd favorites={favorites} lang="es" />
       <SlotProvider slots={await resolveHomeSlots(overrides)}>
         <div className={editorialFonts}>
-          <EditorialHome journal={fillDeep(latestJournal(), book)} films={films} overrides={overrides} galleries={galleriesFromImages(portfolio)} work={homeLocations(portfolio, getAllEsPosts(), "/es/blog")} cities={homeCities()} favorites={favorites} />
+          <EditorialHome journal={fillDeep(latestJournal(), book)} films={films} overrides={overrides} galleries={galleriesFromImages(portfolio)} work={homeLocations(portfolio, getAllEsPosts(), "/es/blog")} cities={homeCities()} favorites={favorites} reviews={reviews} />
         </div>
       </SlotProvider>
     </>
