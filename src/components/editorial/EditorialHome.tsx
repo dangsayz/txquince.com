@@ -14,7 +14,6 @@ import { SlotPicture } from "@/components/slots/SlotPicture";
 import { SlotAdminControl } from "@/components/slots/SlotAdminControl";
 import { useSlot } from "@/components/slots/SlotProvider";
 import { MomsAsk } from "./MomsAsk";
-import { priceFloor } from "@/lib/commission";
 import { HERO_SLOTS, type HomeOverrides } from "@/lib/photo-dump-shared";
 import type { HomeGallery } from "@/lib/home-galleries";
 import type { HomeCity } from "@/content/home-places";
@@ -23,6 +22,7 @@ import { ED } from "./copy";
 import { BAND_VIDEO, DETAILS, FEATURE_STILL, HERO, JOURNAL_PHOTO, JOURNAL_PHOTO_FALLBACK } from "./media";
 import { LazyVideo } from "./LazyVideo";
 import { Favorites } from "./Favorites";
+import { Promises, Steps } from "./Story";
 import { SocialIcon } from "@/components/SocialIcon";
 import { VenueStrip } from "@/components/venue-strip/VenueStrip";
 import type { Favorite } from "@/lib/favorites";
@@ -111,12 +111,12 @@ export function EditorialHome({
   return (
     <div ref={rootRef} className="ed">
       <Hero overrides={overrides} />
-      <Statement />
+      {/* Proof, then the price, then how to book: the browsing sections
+          (venues, galleries, blog) come after the questions. */}
       <VenueStrip lang={lang} galleries={work.length ? work : galleries} />
-      <FavoritesSection favorites={favorites} />
-      <Band films={films} />
-      <Collage galleries={galleries} />
       <Feature />
+      <Band films={films} />
+      <FavoritesSection favorites={favorites} />
       <ReviewStrip reviews={reviews} lang={lang} />
       <Packages>
         <Intake ref={intakeRef} pickFromList="commissions" />
@@ -124,6 +124,8 @@ export function EditorialHome({
       <MomsAsk />
       {/* After the questions: "still unsure? tell us your budget". */}
       <BudgetCta placement="home" />
+      <Collage galleries={galleries} />
+      <Statement />
       <JournalRow journal={journal} />
       <WhereWeWork cities={cities} />
       <WhatsAppFloat lang={lang} hidden={intakeOnScreen} />
@@ -152,6 +154,9 @@ function Hero({ overrides }: { overrides: HomeOverrides }) {
   const { book } = usePriceBook();
   const e = ED[lang];
   const image = useSlot(HERO_SLOTS[0], heroFallback(overrides[HERO_SLOTS[0]]));
+  // The first price she reads is for what the headline promises (photo and
+  // video), not the one-hour portrait session.
+  const bothFloor = Math.min(...TIERS.filter((x) => x.scope === "both").map((x) => book.packages[x.id].price));
   return (
     <section className="ed-hero" id="top" data-ed="hero" aria-labelledby="ed-hero-title">
       <div className="ed-hero__frame" data-ed="hero-frame" data-header-tone="dark" data-allow-upscale>
@@ -177,7 +182,15 @@ function Hero({ overrides }: { overrides: HomeOverrides }) {
             <a href={homeHref("#commissions")} className="ed-btn ed-btn--light">
               {e.reserve}
             </a>
-            <p className="ed-hero__note">{e.heroNote(money(priceFloor(book)))}</p>
+            <a
+              href={whatsappHref(lang)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ed-btn ed-btn--glass"
+              onClick={() => trackEvent(CONTACT_EVENT.whatsapp, "hero")}
+            >
+              <SocialIcon name="whatsapp" /> {e.heroWhatsapp}
+            </a>
           </div>
           <ul className="ed-hero__social">
             <li>
@@ -190,11 +203,11 @@ function Hero({ overrides }: { overrides: HomeOverrides }) {
                 <SocialIcon name="instagram" /> @txquince
               </a>
             </li>
-            <li>
-              <a href={whatsappHref(lang)} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent(CONTACT_EVENT.whatsapp, "hero")}>
-                <SocialIcon name="whatsapp" /> {e.heroWhatsapp}
-              </a>
-            </li>
+          </ul>
+          <ul className="ed-hero__facts">
+            {[...e.heroNote(money(bothFloor)).split(" · "), t.editorial.principles[1].title].map((fact) => (
+              <li key={fact}>{fact}</li>
+            ))}
           </ul>
         </div>
       </div>
@@ -203,7 +216,7 @@ function Hero({ overrides }: { overrides: HomeOverrides }) {
 }
 
 /* ------------------------------------------------------------------ */
-/* Statement                                                           */
+/* Statement: who we are (the menu's "About" lands here)               */
 /* ------------------------------------------------------------------ */
 
 function Statement() {
@@ -565,6 +578,8 @@ function Packages({ children }: { children: ReactNode }) {
           })}
         </ul>
         <p className="ed-crew">{p.crew}</p>
+        <Steps />
+        <Promises />
         <div className="ed-panel">
           <h3 className="ed-display ed-display--sm">{p.panelTitle}</h3>
           <p className="ed-dek">{p.panelDek}</p>

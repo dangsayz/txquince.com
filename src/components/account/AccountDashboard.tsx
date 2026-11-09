@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getSignedInUser } from "@/lib/clerk-user";
-import { getAccountBookings } from "@/lib/account-db";
+import { getAccountBookings, withReceipts } from "@/lib/account-db";
 import type { AccountBooking } from "@/lib/account";
 import { getPriceBook } from "@/lib/pricing";
 import { PUBLIC_TIER_IDS, fmtHours, usd, type PriceBook } from "@/lib/commission";
@@ -11,6 +11,8 @@ import { BalancePay } from "@/components/txq/BalancePay";
 import { ContactButtons } from "@/components/ContactButtons";
 import { TrustLine } from "@/components/TrustLine";
 import { SupportForm } from "./SupportForm";
+import { PayMarks } from "./PayMarks";
+import { site } from "@/content/site";
 import { HideDock } from "@/components/plan/HideDock";
 import { COPY as SITE_COPY } from "@/components/txq/copy";
 import { fillDeep } from "@/lib/price-text";
@@ -22,6 +24,17 @@ type Lang = "en" | "es";
 const COPY = {
   en: {
     index: "[Your account]",
+    rail: {
+      label: "Your account",
+      nav: { booking: "Your booking", start: "Book your date", payments: "Payments and receipts", answers: "Answers", help: "Help" },
+      need: "Need us?",
+    },
+    booked: "We got your signed agreement. Your date is held while we check it. We email you within one day, and this page updates.",
+    payments: "Payments and receipts",
+    paymentsLead: "Every payment we received from you. Stripe also emails you a receipt each time.",
+    payKind: { deposit: "Deposit", balance: "Payment toward the rest" },
+    receipt: "Receipt",
+    waysToPay: "Ways to pay",
     hi: (n: string) => `Hi, ${n}.`,
     hiPlain: "Your account.",
     dekBooked: "Your booking, your payments and your agreement, in one place.",
@@ -105,6 +118,17 @@ const COPY = {
   },
   es: {
     index: "[Tu cuenta]",
+    rail: {
+      label: "Tu cuenta",
+      nav: { booking: "Tu reservación", start: "Aparta tu fecha", payments: "Pagos y recibos", answers: "Respuestas", help: "Ayuda" },
+      need: "¿Nos necesitas?",
+    },
+    booked: "Recibimos tu contrato firmado. Tu fecha queda apartada mientras lo revisamos. Te escribimos en un día, y esta página se actualiza.",
+    payments: "Pagos y recibos",
+    paymentsLead: "Cada pago que recibimos de ti. Stripe también te manda un recibo por correo cada vez.",
+    payKind: { deposit: "Depósito", balance: "Pago del resto" },
+    receipt: "Recibo",
+    waysToPay: "Formas de pago",
     hi: (n: string) => `Hola, ${n}.`,
     hiPlain: "Tu cuenta.",
     dekBooked: "Tu reservación, tus pagos y tu contrato, en un solo lugar.",
@@ -293,6 +317,7 @@ function BookingCard({ b, lang, bare = false }: { b: AccountBooking; lang: Lang;
       {b.state === "approved" && b.payToken && (
         <div className="acct-card__pay">
           <PayButton id={b.id} token={b.payToken} label={c.payDeposit(dep)} busyLabel={c.opening} errorLabel={c.payError} />
+          <PayMarks lang={lang} />
           <p className="acct-note">{c.overTime}</p>
         </div>
       )}
@@ -320,6 +345,7 @@ function BookingCard({ b, lang, bare = false }: { b: AccountBooking; lang: Lang;
               }}
             />
           )}
+          <PayMarks lang={lang} />
           <p className="acct-note">{c.overTime}</p>
         </div>
       )}
@@ -331,27 +357,29 @@ function BookingCard({ b, lang, bare = false }: { b: AccountBooking; lang: Lang;
 }
 
 /** /account and /es/cuenta. Signed out → the log in page, then back here. */
-export async function AccountDashboard({ lang }: { lang: Lang }) {
+export async function AccountDashboard({ lang, justBooked = false }: { lang: Lang; justBooked?: boolean }) {
   const self = ACCOUNT_PATH[lang];
   const user = await getSignedInUser();
   if (!user) redirect(`${lang === "es" ? "/es/entrar" : "/login"}?next=${encodeURIComponent(self)}`);
-  const [bookings, book] = await Promise.all([getAccountBookings(user.verifiedEmails), getPriceBook()]);
-  return <AccountView lang={lang} displayName={user.displayName} email={user.verifiedEmails[0] ?? ""} bookings={bookings} book={book} />;
+  const [bookings, book] = await Promise.all([getAccountBookings(user.verifiedEmails).then(withReceipts), getPriceBook()]);
+  return <AccountView lang={lang} displayName={user.displayName} email={user.verifiedEmails[0] ?? ""} bookings={bookings} book={book} justBooked={justBooked} />;
 }
 
 /** The page itself, from plain data (so it can be rendered and checked without a session). */
-export function AccountView({ lang, displayName, email, bookings, book }: {
+export function AccountView({ lang, displayName, email, bookings, book, justBooked = false }: {
   lang: Lang;
   displayName: string;
   email: string;
   bookings: AccountBooking[];
   book: PriceBook;
+  justBooked?: boolean;
 }) {
   const c = COPY[lang];
   const open = bookings.filter((b) => b.state !== "closed");
   const first = displayName.split(" ")[0];
   const named = first && first !== "TX";
-  const home = lang === "es" ? "/es" : "/";
+  const bookPath = lang === "es" ? "/es/cuenta/reservar" : "/account/book";
+  const paid = open.flatMap((b) => b.payments);
   const closed = bookings.filter((b) => b.state === "closed");
   const last = c.steps[3];
   const baseSteps: StepItem[] = [
@@ -364,7 +392,7 @@ export function AccountView({ lang, displayName, email, bookings, book }: {
   return (
     <div className="tq-wrap" lang={lang}>
       {/* A family with a booking has its own money action here; the "Reserve your date" dock would cover it. */}
-      {open.length > 0 && <HideDock />}
+      <HideDock />
       <header className="tq-pg-mast" aria-labelledby="acct-title">
         <p className="tq-pg-mast__index tq-mono">{c.index}</p>
         <div className="tq-pg-mast__body">
@@ -374,6 +402,30 @@ export function AccountView({ lang, displayName, email, bookings, book }: {
       </header>
 
       <div className="acct">
+        <aside className="acct-rail" aria-label={c.rail.label}>
+          <nav aria-label={c.rail.label}>
+            <ul className="acct-rail__nav">
+              <li><a href="#acct-top">{open.length ? c.rail.nav.booking : c.rail.nav.start}</a></li>
+              {paid.length > 0 && <li><a href="#acct-payments">{c.rail.nav.payments}</a></li>}
+              <li><a href="#acct-answers">{c.rail.nav.answers}</a></li>
+              <li><a href="#acct-help">{c.rail.nav.help}</a></li>
+            </ul>
+          </nav>
+          <div className="acct-rail__need">
+            <p className="acct-rail__h">{c.rail.need}</p>
+            <a href={`sms:${site.contact.phoneE164}`}>{site.contact.phone}</a>
+            <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+          </div>
+          <div className="acct-rail__pay">
+            <p className="acct-rail__h">{c.waysToPay}</p>
+            <PayMarks lang={lang} />
+          </div>
+        </aside>
+
+        <div className="acct__main" id="acct-top">
+        {justBooked && open.length > 0 && (
+          <p className="acct-flash" role="status">{c.booked}</p>
+        )}
         {open.map((bk) => {
           const steps: StepItem[] = [...baseSteps, ...(bk.state === "booked" ? [c.rest] : [])];
           const now = bk.state === "review" ? 3 : bk.state === "approved" ? 4 : bk.leftCents > 0 ? 5 : 6;
@@ -416,7 +468,7 @@ export function AccountView({ lang, displayName, email, bookings, book }: {
                 <ul className="acct-pkgs" aria-label={c.packages}>
                   {PUBLIC_TIER_IDS.map((id) => (
                     <li key={id}>
-                      <a href={`${home}?collection=${id}#intake`}>
+                      <a href={`${bookPath}?collection=${id}#intake`}>
                         <span className="acct-pkgs__name">
                           {tierById(id).name[lang]}
                           <span className="acct-pkgs__hours">{c.hours(fmtHours(book.packages[id].hours))}</span>
@@ -430,6 +482,29 @@ export function AccountView({ lang, displayName, email, bookings, book }: {
                 <a className="acct-link" href={lang === "es" ? "/es/presupuesto" : "/budget"}>{c.compare}</a>
               </Steps>
             </div>
+          </section>
+        )}
+
+        {paid.length > 0 && (
+          <section className="acct__section" aria-labelledby="acct-payments">
+            <h2 id="acct-payments" className="acct__h2">{c.payments}</h2>
+            <p className="acct__lead">{c.paymentsLead}</p>
+            <ul className="acct-panel acct-pays">
+              {paid.map((p, i) => (
+                <li key={`${p.kind}-${i}`}>
+                  <span className="acct-pays__what">
+                    {c.payKind[p.kind]}
+                    {p.paidAt ? <span className="acct-pays__when">{longDate(p.paidAt.slice(0, 10), lang)}</span> : null}
+                  </span>
+                  <span className="acct-pays__amt">{usd(p.amountCents / 100)}</span>
+                  {p.receiptUrl ? (
+                    <a className="acct-link" href={p.receiptUrl} target="_blank" rel="noopener noreferrer">
+                      {c.receipt}&nbsp;<span aria-hidden>↗</span>
+                    </a>
+                  ) : <span />}
+                </li>
+              ))}
+            </ul>
           </section>
         )}
 
@@ -468,6 +543,7 @@ export function AccountView({ lang, displayName, email, bookings, book }: {
           <span>{c.signedAs(email)}</span>
           <a className="acct-link" href={`/logout${lang === "es" ? "?to=es" : ""}`}>{c.logout}</a>
         </p>
+        </div>
       </div>
     </div>
   );

@@ -9,6 +9,6 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function Page() {
-  return <AccountDashboard lang="en" />;
+export default async function Page({ searchParams }: { searchParams: Promise<{ booked?: string }> }) {
+  return <AccountDashboard lang="en" justBooked={(await searchParams).booked === "1"} />;
 }

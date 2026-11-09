@@ -8,6 +8,40 @@
 
 .rv-private { margin: 0; }
 
+/* ---------- Fields: easy to find on a phone ----------
+ * White fill on the linen page + a 2px carbon line (≈18:1, was 3.4:1) so a
+ * mom sees at once where to type. The review box is a full box. Fields in a
+ * row line up at the top (a hint under one no longer pushes the other down). */
+.rv .tq-field { align-content: start; }
+.rv .tq-input {
+  background: #ffffff;
+  border: 0;
+  border-bottom: 2px solid var(--tq-ink);
+  border-radius: var(--tq-radius-xs) var(--tq-radius-xs) 0 0;
+  padding: 12px 14px;
+  min-height: 52px;
+  color: var(--tq-ink);
+}
+.rv textarea.tq-input {
+  border: 2px solid var(--tq-ink);
+  border-radius: var(--tq-radius-xs);
+  min-height: 168px;
+  line-height: 1.55;
+}
+.rv .tq-input:focus-visible {
+  outline: none;
+  border-color: var(--tq-ink);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--tq-ink) 18%, transparent);
+}
+.rv .tq-input[aria-invalid="true"] {
+  border-color: #9a4a12;
+  box-shadow: 0 0 0 3px color-mix(in srgb, #9a4a12 18%, transparent);
+}
+.rv .tq-hint { margin: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .rv .tq-input { transition: box-shadow var(--tq-dur-fast) var(--tq-ease); }
+}
+
 /* Thank-you screen: tall enough that it, not the footer, fills her phone. */
 .rv-done { min-height: 70svh; align-content: start; }
 .rv-done h1:focus { outline: none; }

@@ -173,10 +173,10 @@
 .ed-hero__foot { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; }
 /* Sits beside Reserve (it was ~900px away on wide screens); full white,
    since 0.86 alpha fell to ~2.3:1 over the bright parts of the photo. */
-.ed-hero__note { font-size: 1rem; color: #ffffff; text-shadow: 0 1px 12px rgba(0, 0, 0, 0.45); }
+
 
 /* ---------- Statement ---------- */
-.ed-statement { padding: clamp(112px, 16vw, 220px) var(--ed-gutter) clamp(96px, 12vw, 180px); }
+.ed-statement { padding: clamp(80px, 10vw, 140px) var(--ed-gutter); border-top: 1px solid var(--ed-line); }
 .ed-statement__in { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 28px; text-align: center; }
 .ed-statement__body { max-width: 56ch; color: var(--ed-ink); }
 
@@ -385,9 +385,13 @@
 
   /* Price drops under the details on phones: beside them it squeezed each
      description into a 4-line strip at 390px. */
-  .ed-pkg { grid-template-columns: 32px minmax(0, 1fr); gap: 12px 14px; padding: 20px; border-radius: 22px; }
-  .ed-pkg__price { grid-column: 2; text-align: left; }
-  .ed-pkg__btn { grid-column: 2; width: 100%; }
+  /* Phones: words on top, then price and Reserve side by side (the roman
+     numeral column is dropped; it cost 46px of reading width). */
+  .ed-pkg { grid-template-columns: minmax(0, 1fr) auto; gap: 14px 12px; padding: 20px; border-radius: 22px; }
+  .ed-pkg__n { display: none; }
+  .ed-pkg__main { grid-column: 1 / -1; }
+  .ed-pkg__price { text-align: left; }
+  .ed-pkg__btn { width: 132px; }
 
   .ed-news { grid-template-columns: minmax(0, 1fr); }
   .ed-q__text { font-size: 17px; }
@@ -403,8 +407,13 @@
   .ed-feature__track { padding-block: 16svh; }
 }
 
-/* Hero: links to the films (YouTube) and Instagram, under the Reserve button. */
-.ed-hero__social { position: relative; display: flex; flex-wrap: wrap; gap: 8px 10px; margin: 18px 0 0; padding: 0; list-style: none; }
+/* Hero: WhatsApp as the second action (same square button, outlined), then
+   the films and Instagram pills, then three short facts. */
+.ed-btn--glass { gap: 10px; background: rgba(0, 0, 0, 0.28); color: #ffffff; border-color: rgba(255, 255, 255, 0.8); }
+.ed-btn--glass:hover { background: #ffffff; color: #000000; }
+.ed-hero__foot { animation: ed-settle-up 0.9s var(--tq-ease) 0.35s both; }
+/* The films (YouTube) and Instagram, one tap from the first screen. */
+.ed-hero__social { display: flex; flex-wrap: wrap; gap: 8px 10px; margin: -8px 0 0 !important; animation: ed-settle-up 0.9s var(--tq-ease) 0.4s both; }
 .ed-hero__social a {
   display: inline-flex;
   align-items: center;
@@ -413,16 +422,35 @@
   padding: 0 16px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.55);
-  background: rgba(0, 0, 0, 0.18);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  color: #fff;
+  background: rgba(0, 0, 0, 0.28);
+  color: #ffffff;
   font-size: 14px;
   font-weight: 500;
   white-space: nowrap;
   text-decoration: none;
+  transition: background-color var(--tq-dur-fast) var(--tq-ease), border-color var(--tq-dur-fast) var(--tq-ease);
 }
-.ed-hero__social a:hover { background: rgba(0, 0, 0, 0.32); border-color: #fff; }
+.ed-hero__social a:hover { background: rgba(0, 0, 0, 0.45); border-color: #ffffff; }
+/* Each fact carries a hairline on its left; the list is pulled left and
+   clipped, so the first fact on every row shows none. */
+.ed-hero__facts { display: flex; flex-wrap: wrap; gap: 6px 0; overflow: hidden; margin: -8px 0 0 -13px !important; font-size: 1rem; line-height: 1.4; color: #ffffff; text-shadow: 0 1px 12px rgba(0, 0, 0, 0.5); animation: ed-settle-up 0.9s var(--tq-ease) 0.45s both; }
+.ed-hero__facts li { white-space: nowrap; padding: 0 12px; margin-left: -1px; border-left: 1px solid rgba(255, 255, 255, 0.6); }
+@keyframes ed-settle-up {
+  from { transform: translateY(18px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+/* The still settles from a slight push-in, once, like the first frame of a film. */
+.ed-hero__media img { animation: ed-settle 2.6s var(--tq-ease) both; }
+@keyframes ed-settle {
+  from { transform: scale(1.09); }
+  to { transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ed-hero__foot,
+  .ed-hero__social,
+  .ed-hero__facts,
+  .ed-hero__media img { animation: none; }
+}
 
 /* The booking panel's action buttons take the page's square button (the
    panel keeps its own pill look on /reserve). */

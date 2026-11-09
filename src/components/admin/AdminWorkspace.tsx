@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import { MenuIcon, WebsiteIcon, type WebsiteIconName } from "@/components/admin/StudioIcons";
+import { NotificationBell } from "@/components/admin/NotificationBell";
 
 const mainLinks = [
   { href: "/admin", label: "Today" },
@@ -109,7 +110,7 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-dvh bg-[var(--tq-canvas)] text-[var(--tq-ink)]">
       <header className="relative z-30 border-b border-[var(--tq-surface-2)] bg-[var(--tq-canvas)]">
-        <div className="mx-auto flex min-h-16 max-w-[96rem] items-center gap-5 px-4 sm:px-8 xl:max-w-[72rem]">
+        <div className="mx-auto flex min-h-16 max-w-[96rem] items-center gap-3 px-4 sm:px-8 lg:gap-5 xl:max-w-[72rem]">
           <Link href="/admin" className="mr-6 inline-flex min-h-11 shrink-0 items-center whitespace-nowrap" aria-label="TX Quince Studio, Today">
             <span className="inline-flex items-baseline gap-2.5">
             <span aria-hidden="true" className="font-[family-name:var(--tq-font-label)] text-base font-medium uppercase tracking-[0.22em]">TX Quince</span>
@@ -121,7 +122,11 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
             <MainNavigation pathname={pathname} />
           </nav>
 
-          <div className="ml-auto hidden shrink-0 items-center gap-1 lg:flex">
+          <div className="ml-auto shrink-0">
+            <NotificationBell />
+          </div>
+
+          <div className="hidden shrink-0 items-center gap-1 lg:flex">
             <Link href="/" target="_blank" rel="noopener noreferrer" className="st-nav">
               View site <span aria-hidden="true">↗</span><span className="sr-only">(opens in a new tab)</span>
             </Link>
@@ -138,7 +143,7 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
             aria-expanded={menuOpen}
             aria-controls={menuOpen ? "studio-mobile-navigation" : undefined}
             onClick={() => setMenuOpen((open) => !open)}
-            className="ml-auto inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-full shadow-[inset_0_0_0_1px_var(--tq-stone)] transition-colors duration-[var(--tq-dur-fast)] hover:bg-[var(--tq-surface)] lg:hidden"
+            className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-full shadow-[inset_0_0_0_1px_var(--tq-stone)] transition-colors duration-[var(--tq-dur-fast)] hover:bg-[var(--tq-surface)] lg:hidden"
           >
             <MenuIcon open={menuOpen} />
           </button>

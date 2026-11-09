@@ -50,8 +50,9 @@ const appearance = {
     rootBox: { width: "100%" },
     cardBox: { width: "100%", maxWidth: "28rem", boxShadow: "none", border: "1px solid #e2ddd5" },
     formButtonPrimary: { minHeight: "48px", fontSize: "16px", textTransform: "none" },
+    socialButtonsBlockButton: { minHeight: "48px", fontSize: "16px" },
     formFieldInput: { minHeight: "48px", fontSize: "16px" },
-    footerActionLink: { color: "#111110", textDecoration: "underline" },
+    footerActionLink: { color: "#111110", textDecoration: "underline", display: "inline-flex", alignItems: "center", minHeight: "44px" },
   },
 } as const;
 
