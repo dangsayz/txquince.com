@@ -4,7 +4,7 @@ import { site } from "@/content/site";
 import { seriesFor } from "@/content/blog-clusters";
 import { getAllPosts, getPost, relatedPosts, esSlugForEn } from "@/content/blog";
 import { getBlogImages } from "@/lib/content-db";
-import { absoluteImageUrl, ogImageFor, resolveBlogCover } from "@/lib/blog-cover";
+import { absoluteImageUrl, coverThumbs, ogImageFor, resolveBlogCover } from "@/lib/blog-cover";
 import { blogPostingJsonLd, postMetaTitle } from "@/lib/blog-structured-data";
 import { BlogArticleView } from "@/components/BlogContent";
 import { BlogComments } from "@/components/comments/BlogComments";
@@ -85,6 +85,7 @@ export default async function BlogPostPage({
   const images = await getBlogImages(post.content);
   const cover = await resolveBlogCover(post, images, "en");
   const coverAbs = absoluteImageUrl(cover.url);
+  const relatedThumbs = await coverThumbs(related, "en");
 
   const jsonLd = blogPostingJsonLd({
     post,
@@ -107,6 +108,7 @@ export default async function BlogPostPage({
         images={images}
         cover={cover}
         related={related}
+        relatedThumbs={relatedThumbs}
         series={series}
         shareUrl={url}
         shareImage={coverAbs}

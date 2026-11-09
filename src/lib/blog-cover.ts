@@ -4,7 +4,7 @@ import { portfolioFallback } from "@/content/portfolio-fallback";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import type { BlogBlock, BlogPost } from "@/content/blog";
 import { getAllPosts, enSlugForEs } from "@/content/blog";
-import { getFeaturedImages, getPageHero, type ResolvedBlogImage } from "@/lib/content-db";
+import { getBlogImages, getFeaturedImages, getPageHero, type ResolvedBlogImage } from "@/lib/content-db";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import { blogCoverSlotId } from "@/lib/image-slots";
 import { getSlotVersion } from "@/lib/image-slot-store";
@@ -87,6 +87,55 @@ export async function resolveBlogCover(
   // 3. Largest static fallback (1440px wide).
   const fb = [...portfolioFallback].sort((a, b) => b.width - a.width)[0];
   return { url: fb.url, width: fb.width, height: fb.height, alt: fb.alt, caption: null };
+}
+
+/** A small cover for a list row: the same photo the post page opens with. */
+export type CoverThumb = { url: string; alt: string; focus_x?: number | null; focus_y?: number | null };
+
+/**
+ * No two rows of one list show the same photo while a spare exists: a row whose
+ * photo an earlier row already used takes the next unused spare. Pure, so it
+ * can be tested without the database.
+ */
+export function dedupeThumbs(
+  rows: [string, CoverThumb | null][],
+  spares: CoverThumb[],
+): Map<string, CoverThumb | null> {
+  const seen = new Set<string>();
+  const out = new Map<string, CoverThumb | null>();
+  for (const [slug, thumb] of rows) {
+    let t = thumb;
+    if (t && seen.has(t.url)) t = spares.find((s) => !seen.has(s.url)) ?? t;
+    if (t) seen.add(t.url);
+    out.set(slug, t);
+  }
+  return out;
+}
+
+/**
+ * Each post's own cover, keyed by slug, for list rows (journal index and the
+ * "keep reading" list). A post whose cover cannot be resolved maps to null and
+ * its row shows the empty frame.
+ */
+export async function coverThumbs(posts: BlogPost[], lang: "en" | "es"): Promise<Map<string, CoverThumb | null>> {
+  const rows = await Promise.all(
+    posts.map(async (p): Promise<[string, CoverThumb | null]> => {
+      try {
+        const c = await resolveBlogCover(p, await getBlogImages(p.content), lang);
+        return [p.slug, c.url ? { url: c.url, alt: c.alt, focus_x: c.focus_x, focus_y: c.focus_y } : null];
+      } catch {
+        return [p.slug, null];
+      }
+    }),
+  );
+  let spares: CoverThumb[] = [];
+  try {
+    spares = (await getFeaturedImages(24)).map((i) => toCover(i, lang));
+  } catch {
+    /* no pool: duplicates stay */
+  }
+  if (!spares.length) spares = portfolioFallback.map((i) => ({ url: i.url, alt: i.alt }));
+  return dedupeThumbs(rows, spares);
 }
 
 function toCover(image: PoolImage, lang: "en" | "es"): BlogCover {
