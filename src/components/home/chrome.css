@@ -275,6 +275,35 @@
 }
 
 /* Menu block: set apart from the contact links by a rule and air. */
+/* Account block in the open menu: its own band, two clear 48px buttons. */
+.txq .sm-acct { margin: 0 0 20px; padding: 20px 0 22px; border-top: 1px solid #e6e6e4; border-bottom: 1px solid #e6e6e4; }
+.txq .sm-acct__label { margin: 0 0 14px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #6b6b6b; }
+.txq .sm-acct__row { display: flex; flex-wrap: wrap; gap: 12px; }
+.txq .sm-side .sm-acct__btn,
+.txq .sm-acct__btn {
+  display: inline-flex;
+  flex: 1 1 10rem;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 20px;
+  border: 1px solid #101010;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #101010;
+  font-size: 16px;
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
+}
+.txq .sm-side .sm-acct__btn--solid,
+.txq .sm-acct__btn--solid { background: #101010; color: #ffffff; }
+.txq .sm-acct__btn:hover { opacity: 0.85; }
+.txq .sm-acct__btn:focus-visible { outline: 2px solid #101010; outline-offset: 3px; }
+.txq .sm-acct__btn .sh-acct__icon,
+.txq .sm-acct__icon { flex: none; width: 20px; height: 20px; }
+.txq .sm-acct__note { margin: 12px 0 0; font-size: 16px; line-height: 1.5; color: #6b6b6b; }
+@media (prefers-reduced-motion: reduce) { .txq .sm-acct__btn { transition: none; } }
 .txq .sm-admin { margin-top: 28px; padding-top: 24px; border-top: 1px solid #e6e6e4; }
 .txq .sm-admin__label {
   margin: 0 0 14px;

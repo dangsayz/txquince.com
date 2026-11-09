@@ -79,9 +79,57 @@ function useSignedInHint(): boolean {
 }
 
 const ACCOUNT_COPY = {
-  en: { in: "Log in", account: "Account", menu: "Log in / Create account", menuIn: "Your account", href: "/login" },
-  es: { in: "Entrar", account: "Mi cuenta", menu: "Entrar / Crear cuenta", menuIn: "Mi cuenta", href: "/es/entrar" },
+  en: {
+    in: "Log in", account: "Account", menu: "Log in / Create account", menuIn: "Your account", href: "/login",
+    signup: "Create account", signupHref: "/signup", label: "Your TX Quince account", note: "Free. Comment and ask questions on the Journal.",
+  },
+  es: {
+    in: "Entrar", account: "Mi cuenta", menu: "Entrar / Crear cuenta", menuIn: "Mi cuenta", href: "/es/entrar",
+    signup: "Crear cuenta", signupHref: "/es/registro", label: "Tu cuenta de TX Quince", note: "Gratis. Comenta y haz preguntas en el Diario.",
+  },
 } as const;
+
+/** Head-and-shoulders with a small plus: "make an account" (decorative). */
+function PersonPlusIcon() {
+  return (
+    <svg className="sm-acct__icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden focusable="false">
+      <circle cx="10" cy="8.5" r="3.6" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M3 20c1-3.6 3.6-5.6 7-5.6 1.6 0 3 .4 4.2 1.2" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <path d="M18.5 13.5v6M15.5 16.5h6" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/** Log in / create account, as its own block in the open menu (two clear buttons, not a text line). */
+function MenuAccount({ signedIn, onNavigate }: { signedIn: boolean; onNavigate: () => void }) {
+  const { lang } = useSite();
+  const a = ACCOUNT_COPY[lang];
+  return (
+    <div className="sm-acct">
+      <p className="sm-acct__label">{a.label}</p>
+      <div className="sm-acct__row">
+        {signedIn ? (
+          <a href={a.href} className="sm-acct__btn sm-acct__btn--solid" rel="nofollow" onClick={onNavigate}>
+            <PersonIcon />
+            {a.menuIn}
+          </a>
+        ) : (
+          <>
+            <a href={a.href} className="sm-acct__btn sm-acct__btn--solid" rel="nofollow" onClick={onNavigate}>
+              <PersonIcon />
+              {a.in}
+            </a>
+            <a href={a.signupHref} className="sm-acct__btn" rel="nofollow" onClick={onNavigate}>
+              <PersonPlusIcon />
+              {a.signup}
+            </a>
+          </>
+        )}
+      </div>
+      {signedIn ? null : <p className="sm-acct__note">{a.note}</p>}
+    </div>
+  );
+}
 
 /** Owner controls in the open menu: shown only to a signed-in admin. */
 function MenuAdmin({ onNavigate }: { onNavigate: () => void }) {
@@ -255,6 +303,7 @@ export function SiteHeader() {
               </ul>
             </nav>
             <div className="sm-side">
+              <MenuAccount signedIn={signedIn} onNavigate={() => setOpen(false)} />
               <p className="sm-status">
                 <StatusLabel />
               </p>
@@ -265,9 +314,6 @@ export function SiteHeader() {
                 WhatsApp
               </a>
               <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
-              <a href={acct.href} rel="nofollow" onClick={() => setOpen(false)}>
-                {signedIn ? acct.menuIn : acct.menu}
-              </a>
               {isAdmin ? <MenuAdmin onNavigate={() => setOpen(false)} /> : null}
             </div>
           </div>
