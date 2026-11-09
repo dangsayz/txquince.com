@@ -37,7 +37,9 @@ const withClerk = clerkMiddleware(
     const s = clerkSettings()!;
     return {
       publishableKey: s.publishableKey,
-      secretKey: process.env.CLERK_SECRET_KEY,
+      // No `secretKey` here: passing it as an option makes Clerk require a
+      // CLERK_ENCRYPTION_KEY (every request 500s without one). Clerk reads
+      // CLERK_SECRET_KEY from the Worker's env on its own.
       signInUrl: s.signInUrl,
       signUpUrl: s.signUpUrl,
       authorizedParties: authorizedParties(request.nextUrl.origin),
