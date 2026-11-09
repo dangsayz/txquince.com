@@ -53,7 +53,7 @@ Take “please don’t make any mistakes” as: verify your work and your subage
 
 I may Accept All on a small personal hack. Stop and show me the plan or the diff before you touch payments, customer data, secrets, a live production site, or anything that will be posted in public under my name.
 
-Merging is your job, never mine. Once a change is verified (and, for the risky kinds above, once I said go to the plan), merge it yourself and tell me what you merged. Do not ask me whether to merge.
+Merging is your job, never mine. Once a change is verified (and, for the risky kinds above, once I said go to the plan), merge it yourself and tell me what you merged. Do not ask me whether to merge. Deploying and running database migrations are your job too: after a merge, deploy from a fresh copy of main with the repo's documented command, run any migration it needs, then check the live site and tell me what shipped.
 
 ## Hard gates
 
