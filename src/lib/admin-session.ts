@@ -147,8 +147,10 @@ export function sessionCookie(token: string) {
 
 /** The signed-in admin's email for this request, or null. */
 export async function getSessionEmail(): Promise<string | null> {
-  if (!isDbConfigured()) return null;
+  // Read the cookie FIRST: it marks every admin page as per-request (dynamic).
+  // Returning before it would let Next pre-render a page as "signed out" at build.
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
+  if (!isDbConfigured()) return null;
   if (!token || token.length < 40 || token.length > 64) return null;
   const { data } = await getDb()
     .from("admin_sessions")
