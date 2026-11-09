@@ -33,6 +33,7 @@ const post: BlogPost = {
       type: "callout",
       text: "Una regla le ahorrará más dolores de cabeza que cualquier otra: defina primero el número de invitados y arme el presupuesto alrededor de eso. Casi todos los rubros de abajo crecen con la cantidad de personas en el salón.",
     },
+    { type: "poll", id: "guest-count" },
     { type: "h2", text: "A dónde se va el dinero en realidad" },
     {
       type: "p",
@@ -50,6 +51,15 @@ const post: BlogPost = {
         "Decoración y flores — 8 a 12 %. Centros de mesa, la mesa principal, la ceremonia, globos y manteles.",
         "Invitaciones y papelería — 2 a 4 %. Invitaciones, confirmaciones, libro de firmas y programas.",
         "Fondo para imprevistos — 10 %. El rubro que todos saltan y todos necesitan: propinas, rentas de último minuto, una mesa extra de invitados.",
+      ],
+    },
+    {
+      type: "budget-chart",
+      packages: [
+        { name: PT.nameEs.study, price: PT.price.study },
+        { name: PT.nameEs.solo, price: PT.price.solo },
+        { name: PT.nameEs.cinema, price: PT.price.cinema },
+        { name: PT.nameEs.trio, price: PT.price.trio },
       ],
     },
     {

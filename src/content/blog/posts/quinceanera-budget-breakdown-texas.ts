@@ -29,6 +29,7 @@ const post: BlogPost = {
       type: "callout",
       text: "One rule will save you more stress than any other: set your guest count first, then build the budget around it. Almost every line below scales with the number of people in the room.",
     },
+    { type: "poll", id: "guest-count" },
     { type: "h2", text: "Where the money actually goes" },
     {
       type: "p",
@@ -46,6 +47,15 @@ const post: BlogPost = {
         "Decor & flowers — 8–12%. Centerpieces, the head table, the ceremony, balloons, linens.",
         "Invitations & stationery — 2–4%. Invites, RSVPs, the guest book, programs.",
         "Contingency — 10%. The line everyone skips and everyone needs. Tips, last-minute rentals, an extra table of guests.",
+      ],
+    },
+    {
+      type: "budget-chart",
+      packages: [
+        { name: PT.name.study, price: PT.price.study },
+        { name: PT.name.solo, price: PT.price.solo },
+        { name: PT.name.cinema, price: PT.price.cinema },
+        { name: PT.name.trio, price: PT.price.trio },
       ],
     },
     {

@@ -25,7 +25,13 @@ export type BlogBlock =
   // post page resolves the slug → dimensions (zero layout shift) + a fallback
   // alt; `alt`/`caption` here override. A missing slug renders nothing — never a
   // placeholder.
-  | { type: "image"; slug: string; alt?: string; caption?: string };
+  | { type: "image"; slug: string; alt?: string; caption?: string }
+  // Interactive: the budget post's percentages as a live chart
+  // (src/content/budget-lines.ts). `packages` carry PT name/price tokens, so
+  // the chart always reads the live price book.
+  | { type: "budget-chart"; packages: { name: string; price: string }[] }
+  // Interactive: a one-question poll by id (src/content/polls.ts).
+  | { type: "poll"; id: string };
 
 export type BlogFaq = { q: string; a: string };
 
