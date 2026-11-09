@@ -119,8 +119,19 @@ export async function verifyLoginCode(rawEmail: string, code: string, userAgent:
   const { data: used } = await db.from("admin_login_codes").update({ used_at: now }).eq("id", row.id).is("used_at", null).select("id");
   if (!used?.length) return null;
 
+  return createAdminSession(email, userAgent);
+}
+
+/**
+ * A new Studio session for an email that already proved itself (a valid code,
+ * or a Google sign-in through Clerk with a VERIFIED address). Returns the
+ * cookie token, or null if the email isn't on ADMIN_EMAILS.
+ */
+export async function createAdminSession(rawEmail: string, userAgent: string): Promise<string | null> {
+  const email = normEmail(rawEmail);
+  if (!isAuthorizedAdminEmail(email) || !isDbConfigured()) return null;
   const token = randomToken();
-  const { error } = await db.from("admin_sessions").insert({
+  const { error } = await getDb().from("admin_sessions").insert({
     token_hash: await hashToken(token),
     email,
     expires_at: isoIn(SESSION_DAYS * 86_400_000),
