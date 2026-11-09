@@ -12,10 +12,11 @@ vi.mock("server-only", () => ({}));
 const revalidatePath = vi.fn();
 vi.mock("next/cache", () => ({ revalidatePath: (...a: unknown[]) => revalidatePath(...a) }));
 
-/* ---- auth: the real requireAdmin → admin-auth path, with the session mocked ---- */
+/* ---- auth: the real requireAdmin → allowlist path, with the Clerk session mocked ---- */
 let sessionUser: { email: string } | null = null;
-vi.mock("@/lib/supabase/server", () => ({
-  createServerSupabaseClient: async () => ({ auth: { getUser: async () => ({ data: { user: sessionUser } }) } }),
+vi.mock("@/lib/clerk-user", () => ({
+  getSignedInUser: async () =>
+    sessionUser ? { id: "user_1", verifiedEmails: [sessionUser.email], displayName: "Owner", imageUrl: null } : null,
 }));
 
 /* ---- site_settings: an in-memory table with the PostgREST calls the store uses ---- */

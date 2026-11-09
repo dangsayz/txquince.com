@@ -26,7 +26,10 @@ const GROUPS: { title: string; links: { href: string; label: string; what: strin
   },
   {
     title: "Reviews",
-    links: [{ href: "/admin/reviews", label: "Reviews", what: "Make a private review link for each mom, then approve what shows on the site." }],
+    links: [
+      { href: "/admin/reviews", label: "Reviews", what: "Make a private review link for each mom, then approve what shows on the site." },
+      { href: "/admin/comments", label: "Comments", what: "Approve, hide or answer comments people leave on the Journal." },
+    ],
   },
   {
     title: "Places",

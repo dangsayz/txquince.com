@@ -10,15 +10,20 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
 
-// The session the Supabase server client reports. null = signed out.
-const session = vi.hoisted(() => ({ user: null as null | { email: string } }));
-vi.mock("@/lib/supabase/server", () => ({
-  createServerSupabaseClient: async () => ({
-    auth: {
-      getUser: async () => ({ data: { user: session.user }, error: null }),
-      signOut: async () => ({ error: null }),
-    },
-  }),
+// The signed-in Clerk account. null = signed out. `verified: false` = the
+// address is on the account but Clerk never verified it.
+const session = vi.hoisted(() => ({ user: null as null | { email: string; verified?: boolean } }));
+vi.mock("@/lib/clerk-user", () => ({
+  getSignedInUser: async () =>
+    session.user
+      ? {
+          id: "user_1",
+          verifiedEmails: session.user.verified === false ? [] : [session.user.email.toLowerCase()],
+          displayName: "Someone",
+          imageUrl: null,
+        }
+      : null,
+  getSignedInUserId: async () => (session.user ? "user_1" : null),
 }));
 
 // Storage for the upload tests; any other admin route never gets this far.
@@ -195,6 +200,15 @@ describe("every protected /admin page gates itself on the server", () => {
   it("requireAdminPage() lets an allowlisted admin through", async () => {
     session.user = { email: "Owner@Example.com" };
     const { requireAdminPage } = await import("@/lib/require-admin");
-    await expect(requireAdminPage()).resolves.toBe("Owner@Example.com");
+    await expect(requireAdminPage()).resolves.toBe("owner@example.com");
+  });
+
+  it("an account with the owner's email that Clerk never verified is NOT the admin", async () => {
+    // Accounts are open (shared with Quince Network): anyone can type the
+    // owner's address into a new account. Only a verified address counts.
+    session.user = { email: "owner@example.com", verified: false };
+    const { getAdminEmail, requireAdminPage } = await import("@/lib/require-admin");
+    expect(await getAdminEmail()).toBeNull();
+    await expect(requireAdminPage()).rejects.toMatchObject({ digest: expect.stringMatching(/^NEXT_REDIRECT;/) });
   });
 });

@@ -28,7 +28,8 @@ so they must be in `.env.local` / CI env at build, AND in `wrangler.jsonc` vars
 for runtime where noted):
 
 - `NEXT_PUBLIC_SITE_URL` — already in `wrangler.jsonc` (`https://txquince.com`)
-- `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `NEXT_PUBLIC_CLERK_*` (publishable key + satellite settings) — already in
+  `.env.production` and `wrangler.jsonc` vars; see "Accounts (Clerk)" below
 - `NEXT_PUBLIC_TURNSTILE_SITE_KEY`
 - `NEXT_PUBLIC_R2_BASE_URL`
 
@@ -38,6 +39,7 @@ for runtime where noted):
 npx wrangler secret put SUPABASE_URL
 npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
 npx wrangler secret put ADMIN_EMAILS            # dangzr1@gmail.com,dangxaoj@gmail.com
+npx wrangler secret put CLERK_SECRET_KEY        # Quince Network app, PRODUCTION secret (sk_live_…)
 npx wrangler secret put RESEND_API_KEY
 npx wrangler secret put OPERATOR_NOTIFY_EMAIL
 npx wrangler secret put RESEND_FROM
@@ -58,13 +60,42 @@ npx wrangler secret put CRON_SECRET              # see §5
 
 ### Cloudflare D1 (`txquince`, binding `DB`)
 
-Reviews live in D1, not Postgres. Schema files are in `migrations/`. The
-database and `0001_reviews.sql` are already created and applied (2026-11-09).
-For a later migration:
+Reviews and blog comments live in D1, not Postgres. Schema files are in
+`migrations/`. The database and `0001_reviews.sql` are already created and
+applied (2026-11-09). `0002_blog_comments.sql` is NEW — apply it before the
+deploy that ships comments:
 
 ```
 npx wrangler d1 migrations apply txquince --remote
 ```
+
+### Accounts (Clerk) — shared with Quince Network
+
+There is no TX Quince Clerk app. txquince.com is a **satellite** of the
+Quince Network Clerk app (`app_3C96LQClQIJwBnJgOKEeKUq4zk7`, primary domain
+quincenetwork.com): one account works on both sites. Sign-in and sign-up
+happen on www.quincenetwork.com. The owner gets into `/admin` only with a
+**verified** email on `ADMIN_EMAILS`.
+
+Before the first deploy with Clerk (in this order):
+
+1. Clerk Dashboard → Quince Network → **Domains → Satellites → Add satellite
+   domain** → `txquince.com`. (Clerk may charge for satellite domains on some
+   plans; check that screen.)
+2. Add the DNS record Clerk shows: CNAME `clerk.txquince.com` →
+   `frontend-api.clerk.services` (Cloudflare DNS, **DNS only / grey cloud**).
+   Wait for "Verified".
+3. Quince Network codebase: add `https://txquince.com` (and
+   `https://www.txquince.com`) to `allowedRedirectOrigins` on its
+   `<ClerkProvider>`, and deploy it. See `docs/clerk-satellite.md`.
+4. `npx wrangler secret put CLERK_SECRET_KEY` (Quince Network **production**
+   secret key, Clerk Dashboard → API keys).
+5. `npx wrangler d1 migrations apply txquince --remote` (comments table).
+6. `npm run deploy:cloudflare`, then log in at txquince.com/admin/login.
+
+Until steps 1–4 are done, /login and /admin/login say "Checking your account…"
+or "Log in is not reachable": **do not deploy this before step 4**, or the
+studio is locked.
 
 ## 4. Stripe (commission retainers)
 

@@ -1,9 +1,9 @@
 import "server-only";
 import { redirect } from "next/navigation";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { isAuthorizedAdminUser } from "@/lib/admin-auth";
+import { getSignedInUser } from "@/lib/clerk-user";
+import { getAdminEmails } from "@/lib/admin-auth";
 
-/** True only if the current request is from an authenticated, allowlisted admin. */
+/** True only if the current request is from a signed-in, allowlisted admin. */
 export async function requireAdmin(): Promise<boolean> {
   return (await getAdminEmail()) !== null;
 }
@@ -19,14 +19,15 @@ export async function requireAdminPage(next = "/admin"): Promise<string> {
   return email;
 }
 
+/**
+ * The admin's email, or null. Accounts are shared with Quince Network and
+ * anyone can make one, so the gate is: a VERIFIED email on the Clerk account
+ * that is on the ADMIN_EMAILS allowlist. An account with the right address
+ * typed in but never verified gets nothing.
+ */
 export async function getAdminEmail(): Promise<string | null> {
-  try {
-    const supabase = await createServerSupabaseClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    return isAuthorizedAdminUser(user) ? user?.email ?? null : null;
-  } catch {
-    return null;
-  }
+  const user = await getSignedInUser();
+  if (!user) return null;
+  const allow = getAdminEmails();
+  return user.verifiedEmails.find((e) => allow.includes(e)) ?? null;
 }

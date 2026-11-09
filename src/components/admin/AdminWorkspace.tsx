@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import { MenuIcon, WebsiteIcon, type WebsiteIconName } from "@/components/admin/StudioIcons";
 
@@ -27,6 +26,7 @@ const websiteLinks: { href: string; label: string; icon: WebsiteIconName; group:
   { href: "/admin/price-guide", label: "Price guide", icon: "guide", group: 2 },
   { href: "/admin/venues", label: "Venues", icon: "venues", group: 3 },
   { href: "/admin/reviews", label: "Reviews", icon: "reviews", group: 3 },
+  { href: "/admin/comments", label: "Comments", icon: "comments", group: 3 },
 ];
 
 function isActive(pathname: string, href: string) {
@@ -84,12 +84,10 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
     setSigningOut(true);
     setSignOutError(false);
     try {
-      // Clear the session on the server (cookies) AND in the browser client,
-      // drop the "this browser is an admin" hint, then land on the homepage.
+      // Revoke the session on the server, then /logout clears the shared
+      // Clerk session in the browser (TX Quince + Quince Network) and goes home.
       const response = await fetch("/api/admin/signout", { method: "POST" });
       if (!response.ok) throw new Error("Sign out failed");
-      const supabase = await createBrowserSupabaseClient();
-      await supabase.auth.signOut().catch(() => undefined);
       try {
         window.localStorage.removeItem("txq_admin");
       } catch {
@@ -97,7 +95,7 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
       }
       // Full navigation so no signed-in state survives in memory.
       // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- a hard reload is the point here
-      window.location.assign("/");
+      window.location.assign("/logout");
     } catch {
       setSignOutError(true);
       setSigningOut(false);

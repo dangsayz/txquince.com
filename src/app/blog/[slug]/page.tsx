@@ -7,6 +7,7 @@ import { getBlogImages } from "@/lib/content-db";
 import { absoluteImageUrl, ogImageFor, resolveBlogCover } from "@/lib/blog-cover";
 import { blogPostingJsonLd, postMetaTitle } from "@/lib/blog-structured-data";
 import { BlogArticleView } from "@/components/BlogContent";
+import { BlogComments } from "@/components/comments/BlogComments";
 import { getPriceBook } from "@/lib/pricing";
 import { fillDeep } from "@/lib/price-text";
 import { jsonLdString } from "@/lib/json-ld";
@@ -109,6 +110,7 @@ export default async function BlogPostPage({
         series={series}
         shareUrl={url}
         shareImage={coverAbs}
+        comments={<BlogComments lang="en" slug={post.slug} />}
       />
     </>
   );

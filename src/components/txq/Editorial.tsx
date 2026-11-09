@@ -106,22 +106,15 @@ export function useAdminLogout() {
   async function logOut() {
     if (busy) return;
     setBusy(true);
-    try {
-      // Server route clears the auth cookies; the browser client clears its own
-      // copy (loaded on demand so visitors never download the auth library).
-      await fetch("/api/admin/signout", { method: "POST" }).catch(() => undefined);
-      const { createBrowserSupabaseClient } = await import("@/lib/supabase/client");
-      const supabase = await createBrowserSupabaseClient();
-      await supabase.auth.signOut();
-    } catch {
-      /* cookies are already cleared server-side */
-    }
+    // Server route revokes the session; /logout then clears the shared Clerk
+    // session in the browser (loaded only there, so visitors never download it).
+    await fetch("/api/admin/signout", { method: "POST" }).catch(() => undefined);
     try {
       window.localStorage.removeItem("txq_admin");
     } catch {
       /* ignore */
     }
-    window.location.assign(es ? "/es" : "/");
+    window.location.assign(es ? "/logout?to=es" : "/logout");
   }
   return { busy, logOut };
 }

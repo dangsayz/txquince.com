@@ -53,6 +53,36 @@ function AdminIcon() {
   );
 }
 
+/** A head-and-shoulders mark for the account link (decorative). */
+function PersonIcon() {
+  return (
+    <svg className="sh-acct__icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden focusable="false">
+      <circle cx="12" cy="8.5" r="3.6" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M4.8 20c1-3.6 3.8-5.6 7.2-5.6s6.2 2 7.2 5.6" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/**
+ * Signed in to the shared TX Quince × Quince Network account? Clerk keeps a
+ * small readable `__client_uat` cookie on this domain ("0" when signed out).
+ * A display hint only; nothing is trusted from it. Visitors never load Clerk.
+ */
+function useSignedInHint(): boolean {
+  const [inside, setInside] = useState(false);
+  useEffect(() => {
+    const m = document.cookie.match(/(?:^|;\s*)__client_uat(?:_[^=]+)?=(\d+)/);
+    const yes = Boolean(m && m[1] !== "0");
+    if (yes) queueMicrotask(() => setInside(true));
+  }, []);
+  return inside;
+}
+
+const ACCOUNT_COPY = {
+  en: { in: "Log in", account: "Account", menu: "Log in / Create account", menuIn: "Your account", href: "/login" },
+  es: { in: "Entrar", account: "Mi cuenta", menu: "Entrar / Crear cuenta", menuIn: "Mi cuenta", href: "/es/entrar" },
+} as const;
+
 /** Owner controls in the open menu: shown only to a signed-in admin. */
 function MenuAdmin({ onNavigate }: { onNavigate: () => void }) {
   const { lang } = useSite();
@@ -89,6 +119,8 @@ export function SiteHeader() {
   const menuBtn = useRef<HTMLButtonElement>(null);
   const closeBtn = useRef<HTMLButtonElement>(null);
   const isAdmin = useIsAdmin();
+  const signedIn = useSignedInHint();
+  const acct = ACCOUNT_COPY[lang];
 
   // Tone: is a dark section (data-header-tone="dark") under the header bar?
   useEffect(() => {
@@ -143,21 +175,26 @@ export function SiteHeader() {
     <>
       <header className="sh" data-tone={tone} data-scrolled={scrolled || undefined}>
         <div className="sh-in">
-          <button
-            ref={menuBtn}
-            type="button"
-            className="sh-menu"
-            aria-label={e.menu}
-            aria-expanded={open}
-            aria-controls="sh-menu"
-            onClick={() => setOpen(true)}
-          >
-            <span className="sh-burger" aria-hidden>
-              <i />
-              <i />
-            </span>
-            <span className="sh-menu__label">{e.menu}</span>
-          </button>
+          <div className="sh-left">
+            <button
+              ref={menuBtn}
+              type="button"
+              className="sh-menu"
+              aria-label={e.menu}
+              aria-expanded={open}
+              aria-controls="sh-menu"
+              onClick={() => setOpen(true)}
+            >
+              <span className="sh-burger" aria-hidden>
+                <i />
+                <i />
+              </span>
+              <span className="sh-menu__label">{e.menu}</span>
+            </button>
+            <a href={acct.href} className="sh-acct sh-acct--phone" rel="nofollow" aria-label={signedIn ? acct.account : acct.menu}>
+              <PersonIcon />
+            </a>
+          </div>
           <a href={homeHref("#top")} className="sh-mark" aria-label="TX Quince">
             TX QUINCE
           </a>
@@ -171,6 +208,10 @@ export function SiteHeader() {
               </a>
             ) : null}
             <Lang2 className="sh-lang" />
+            <a href={acct.href} className="sh-acct sh-acct--wide" rel="nofollow" aria-label={signedIn ? acct.account : acct.menu}>
+              <PersonIcon />
+              <span className="sh-acct__text">{signedIn ? acct.account : acct.in}</span>
+            </a>
             <a href={homeHref("#intake")} className="sh-reserve" aria-label={e.reserve}>
               <span className="sh-reserve__long">{e.reserve}</span>
               <span className="sh-reserve__short">{e.packages.book}</span>
@@ -224,6 +265,9 @@ export function SiteHeader() {
                 WhatsApp
               </a>
               <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+              <a href={acct.href} rel="nofollow" onClick={() => setOpen(false)}>
+                {signedIn ? acct.menuIn : acct.menu}
+              </a>
               {isAdmin ? <MenuAdmin onNavigate={() => setOpen(false)} /> : null}
             </div>
           </div>

@@ -419,7 +419,7 @@ function PostRow({ post, n, lang, thumb, featured, headingLevel = "h3" }: RowPro
   );
 }
 
-function SectionHead({
+export function SectionHead({
   index,
   title,
   id,
@@ -608,8 +608,11 @@ export function BlogArticleView({
   shareUrl,
   shareImage,
   series = null,
+  comments = null,
 }: {
   lang: BlogLang;
+  /** Comments section (server-rendered list + comment box), shown after the article. */
+  comments?: ReactNode;
   /** The topic cluster this post belongs to (src/content/blog-clusters.ts). */
   series?: Series | null;
   post: BlogPost;
@@ -816,6 +819,8 @@ export function BlogArticleView({
           </div>
         </div>
       </article>
+
+      {comments}
 
       {related.length ? (
         <section className="tq-section" aria-labelledby="tq-blog-related">

@@ -1,5 +1,6 @@
-import { NextResponse, type NextRequest } from "next/server";
-import { updateSession } from "@/lib/supabase/middleware";
+import { NextResponse, type NextFetchEvent, type NextRequest } from "next/server";
+import { clerkMiddleware } from "@clerk/nextjs/server";
+import { clerkServerEnabled, clerkSettings } from "@/lib/clerk-config";
 import { getLocation } from "@/content/locations";
 import { detectPlanLang } from "@/lib/plan-lang";
 
@@ -10,8 +11,18 @@ const CITY_PAGE = /^\/(?:quinceanera-photographer|es\/fotografo-de-quinceaneras)
 const NOT_FOUND_PATH = "/_txq-not-found";
 
 /**
- * Runs on /admin/* (Supabase session refresh) and on the two city-page routes
- * only; the rest of the public site stays untouched (and fast).
+ * Runs on the routes in `config.matcher` only; the rest of the public site
+ * stays untouched (and fast, and static).
+ *
+ * Clerk (shared Quince Network accounts, txquince.com as a satellite) wraps
+ * every matched request so server code can call auth()/currentUser(). Any
+ * route that checks a session (admin pages and APIs, comments, the login and
+ * logout pages, private photo routes) MUST be in the matcher, or auth() there
+ * answers "signed out". Clerk also finishes the satellite sync here when a
+ * visitor comes back from signing in on quincenetwork.com.
+ *
+ * /admin: a signed-out visitor goes to /admin/login. Being signed in is not
+ * being the admin; every admin page and API re-checks the allowlist itself.
  *
  * City pages: a slug that is not in src/content/locations.ts must be a real
  * 404. The page's own notFound() is too late for that: the root loading.tsx
@@ -21,9 +32,29 @@ const NOT_FOUND_PATH = "/_txq-not-found";
  * OpenNext on Workers it 404s the prerendered cities too, so the check lives
  * here, before rendering, as Next's loading.js docs recommend.
  */
-export async function middleware(request: NextRequest) {
+const withClerk = clerkMiddleware(
+  async (auth, request) => route(request, (await auth()).userId ?? null),
+  () => {
+    const s = clerkSettings()!;
+    return {
+      publishableKey: s.publishableKey,
+      secretKey: process.env.CLERK_SECRET_KEY,
+      isSatellite: s.isSatellite,
+      domain: s.domain,
+      signInUrl: s.signInUrl,
+      signUpUrl: s.signUpUrl,
+    };
+  },
+);
+
+export async function middleware(request: NextRequest, event: NextFetchEvent) {
+  if (clerkServerEnabled()) return withClerk(request, event);
+  return route(request, null);
+}
+
+function route(request: NextRequest, userId: string | null) {
   const { pathname } = request.nextUrl;
-  if (pathname === "/admin" || pathname.startsWith("/admin/")) return updateSession(request);
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) return guardAdmin(request, userId);
   if (pathname === "/plan" || pathname === "/es/plan") return planLanguage(request);
 
   const slug = CITY_PAGE.exec(pathname)?.[1];
@@ -31,6 +62,18 @@ export async function middleware(request: NextRequest) {
     return NextResponse.rewrite(new URL(NOT_FOUND_PATH, request.url));
   }
   return NextResponse.next();
+}
+
+/** Signed-out visitors on /admin/* go to the login page (which itself stays open). */
+function guardAdmin(request: NextRequest, userId: string | null) {
+  const path = request.nextUrl.pathname;
+  const isPublic = path === "/admin/login" || path === "/admin/reset-password";
+  if (isPublic || userId) return NextResponse.next();
+  const url = request.nextUrl.clone();
+  url.pathname = "/admin/login";
+  url.search = "";
+  url.searchParams.set("next", path);
+  return NextResponse.redirect(url);
 }
 
 /**
@@ -71,5 +114,18 @@ function isKnownCity(slug: string): boolean {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/quinceanera-photographer/:city", "/es/fotografo-de-quinceaneras/:city", "/plan", "/es/plan"],
+  matcher: [
+    "/admin/:path*",
+    "/api/admin/:path*",
+    "/api/comments/:path*",
+    "/api/photos/media/:path*",
+    "/api/reviews/photo/:path*",
+    "/login",
+    "/logout",
+    "/es/entrar",
+    "/quinceanera-photographer/:city",
+    "/es/fotografo-de-quinceaneras/:city",
+    "/plan",
+    "/es/plan",
+  ],
 };
