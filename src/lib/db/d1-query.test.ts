@@ -74,6 +74,12 @@ describe("CRUD in supabase-js shape", () => {
     expect(data).toEqual({ is_feature: true, colors: ["rosa", "oro"] });
   });
 
+  it("range(a, b) pages inclusively", async () => {
+    for (let i = 0; i < 5; i++) await c.from("lead_events").insert({ event_type: "click", created_at: `2026-01-0${i + 1}T00:00:00.000Z` });
+    const page = await c.from("lead_events").select("created_at").order("created_at", { ascending: true }).range(1, 3);
+    expect(page.data.map((r: { created_at: string }) => r.created_at.slice(8, 10))).toEqual(["02", "03", "04"]);
+  });
+
   it("delete with filter", async () => {
     await c.from("videos").insert([{ url: "a" }, { url: "b" }]);
     await c.from("videos").delete().eq("url", "a");

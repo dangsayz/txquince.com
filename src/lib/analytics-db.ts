@@ -676,9 +676,9 @@ export async function getConversionChanges(): Promise<ConversionChange[]> {
  */
 export async function getPageBehavior(days = 14): Promise<BehaviorSummary & { configured: boolean; days: number }> {
   const none = { pages: [], leak: null, measuredTotal: 0, days };
-  if (!isSupabaseConfigured()) return { ...none, configured: false };
+  if (!isDbConfigured()) return { ...none, configured: false };
   try {
-    const supabase = getServiceSupabase();
+    const db = getDb();
     const since = new Date(Date.now() - days * 86_400_000).toISOString();
     const PAGE = 1000;
     const MAX = 30_000;
@@ -693,9 +693,9 @@ export async function getPageBehavior(days = 14): Promise<BehaviorSummary & { co
       return out;
     }
     const [views, events] = await Promise.all([
-      all<ViewRow>((a, b) => supabase.from("page_views").select("path, session_id, created_at").gte("created_at", since).order("created_at", { ascending: true }).range(a, b)),
+      all<ViewRow>((a, b) => db.from("page_views").select("path, session_id, created_at").gte("created_at", since).order("created_at", { ascending: true }).range(a, b)),
       all<EventRow>((a, b) =>
-        supabase.from("lead_events").select("event_type, path, target").in("event_type", ["engaged", "click"]).gte("created_at", since).order("created_at", { ascending: true }).range(a, b),
+        db.from("lead_events").select("event_type, path, target").in("event_type", ["engaged", "click"]).gte("created_at", since).order("created_at", { ascending: true }).range(a, b),
       ),
     ]);
     return { ...summarizeBehavior(views, events), configured: true, days };

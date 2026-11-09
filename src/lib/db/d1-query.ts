@@ -127,6 +127,7 @@ export class Query<T = any> implements PromiseLike<DbResult<T>> {
   private filters: Filter[] = [];
   private orders: string[] = [];
   private lim: number | null = null;
+  private off = 0;
   private countMode = false;
   private head = false;
   private one: "single" | "maybe" | null = null;
@@ -218,6 +219,12 @@ export class Query<T = any> implements PromiseLike<DbResult<T>> {
   }
   limit(n: number) {
     this.lim = Math.max(0, Math.floor(n));
+    return this;
+  }
+  /** Inclusive row range, as in supabase-js: range(0, 999) = the first 1000 rows. */
+  range(from: number, to: number) {
+    this.off = Math.max(0, Math.floor(from));
+    this.lim = Math.max(0, Math.floor(to) - this.off + 1);
     return this;
   }
   single(): PromiseLike<DbResult> {
@@ -325,7 +332,12 @@ export class Query<T = any> implements PromiseLike<DbResult<T>> {
 
   private async selectRows(db: D1Database, w: { sql: string; args: unknown[] }): Promise<Row[]> {
     const order = this.orders.length ? ` ORDER BY ${this.orders.join(", ")}` : "";
-    const lim = this.lim !== null ? ` LIMIT ${this.lim}` : this.one === "single" || this.one === "maybe" ? " LIMIT 2" : "";
+    const lim =
+      this.lim !== null
+        ? ` LIMIT ${this.lim}${this.off ? ` OFFSET ${this.off}` : ""}`
+        : this.one === "single" || this.one === "maybe"
+          ? " LIMIT 2"
+          : "";
     const r = await db.prepare(`SELECT ${this.cols} FROM ${this.table}${w.sql}${order}${lim}`).bind(...w.args).all<Row>();
     return r.results;
   }
