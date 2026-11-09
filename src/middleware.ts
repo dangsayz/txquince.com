@@ -119,8 +119,8 @@ function isKnownCity(slug: string): boolean {
 export const config = {
   matcher: [
     "/api/login/clerk",
-    "/account",
-    "/es/cuenta",
+    "/account/:path*",
+    "/es/cuenta/:path*",
     "/api/account/:path*",
     "/login",
     "/signup",

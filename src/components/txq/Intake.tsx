@@ -27,6 +27,9 @@ import { usePriceBook } from "@/components/PriceBookProvider";
 import { ADD_ONS, CITIES, TIERS, money, pick, tierById, tierNameL, tierTeam, type Lang, type TierId } from "./data";
 import { BOOKING_STEPS, isoDate, useAvailability, useQuote, useSite } from "./state";
 import { CompareDialog, ExtrasStep, PackageStep, useTween } from "./Commissions";
+import { CITY_NAME, normalizeCrew } from "@/lib/commission";
+import { buildAgreement } from "@/lib/agreement";
+import { SignStep, type SignValue } from "@/components/account/SignStep";
 import "./booking-glass.css";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -78,7 +81,19 @@ const isTextField = (el: EventTarget | null) =>
  * chosen package in one line (or asks her to pick one) instead of a second
  * set of cards, and nothing is preselected until she picks.
  */
-export const Intake = forwardRef<HTMLDivElement | null, { pickFromList?: string }>(function Intake({ pickFromList }, ref) {
+/**
+ * `account`: the panel is inside a signed-in family's dashboard. The email is
+ * the account's (so the booking shows on their dashboard), the last step adds
+ * the agreement to read and sign, and it files a real booking
+ * (/api/account/book) instead of an inquiry, then goes to `account.done`.
+ */
+export type IntakeAccount = { email: string; done: string };
+const SIGN_COPY = {
+  en: { send: "Sign and send", sending: "Sending…", name: "Type your full name to sign.", signature: "Please sign in the box.", agree: "Please check the box to agree.", emailNote: "This is your account email. Your booking shows under it." },
+  es: { send: "Firmar y enviar", sending: "Enviando…", name: "Escribe tu nombre completo para firmar.", signature: "Firma en el cuadro.", agree: "Marca la casilla para aceptar.", emailNote: "Este es el correo de tu cuenta. Tu reservación aparece con él." },
+} as const;
+
+export const Intake = forwardRef<HTMLDivElement | null, { pickFromList?: string; account?: IntakeAccount }>(function Intake({ pickFromList, account }, ref) {
   const { t, lang, tier, setTier, addOns, crew, hours, booking: b, updateBooking, resetBooking, draftRestored, pickPackage, pickTick } =
     useSite();
   const { book } = usePriceBook();
@@ -91,6 +106,7 @@ export const Intake = forwardRef<HTMLDivElement | null, { pickFromList?: string 
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState<Done | null>(null);
   const [token, setToken] = useState("");
+  const [sign, setSign] = useState<SignValue>({ name: "", signature: null, agree: false });
   /** Month the calendar opens on when no date is picked. */
   const anchor: string | null = null;
   /** Bumps whenever the step changes on purpose: focus the heading, bring the panel into view. */
@@ -106,6 +122,10 @@ export const Intake = forwardRef<HTMLDivElement | null, { pickFromList?: string 
   useImperativeHandle(ref, () => panelRef.current as HTMLDivElement);
 
   const language = b.prefLang ?? lang;
+  const accountEmail = account?.email ?? null;
+  useEffect(() => {
+    if (accountEmail && b.email !== accountEmail) updateBooking({ email: accountEmail });
+  }, [accountEmail, b.email, updateBooking]);
   // The package decides what's covered: the Portrait Session is photos only.
   const scope = tier === "study" ? "stills" : "both";
   const moved = moveTick > 0 || pickTick > 0;
@@ -285,11 +305,72 @@ export const Intake = forwardRef<HTMLDivElement | null, { pickFromList?: string 
       setErrors({ form: t.booking.errors.verify });
       return;
     }
+    if (account) {
+      const sc = SIGN_COPY[lang];
+      const e: Errors = {};
+      if (sign.name.trim().length < 2) e.signName = sc.name;
+      if (!sign.signature) e.signature = sc.signature;
+      if (!sign.agree) e.agree = sc.agree;
+      if (Object.keys(e).length) return setErrors(e);
+    }
     setSending(true);
     setErrors({});
     setNotice("");
     let ok = false;
     try {
+      if (account) {
+        const res = await fetch("/api/account/book", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            event_date: b.date,
+            city: b.city,
+            venue: b.venue.trim(),
+            start_time: timeLabel(b.startTime, "en"),
+            scope,
+            tier,
+            add_ons: addOns,
+            crew_mix: crew ?? undefined,
+            hours,
+            quoted_total_usd: quote.totalUsd,
+            quoted_deposit_usd: quote.retainerUsd,
+            name: b.name.trim(),
+            honoree: b.honoree.trim(),
+            email: account.email,
+            phone: b.phone.trim(),
+            language,
+            note: b.note.trim(),
+            share_permission: b.share,
+            signed_name: sign.name.trim(),
+            signature: sign.signature,
+            agree: true,
+            [HONEYPOT_FIELD]: honeypotRef.current?.value ?? "",
+            "cf-turnstile-response": token,
+            attribution: getFirstTouch(),
+          }),
+        });
+        const j = (await res.json().catch(() => ({}))) as { ok?: boolean; code?: string; error?: string };
+        if (!res.ok || !j.ok) {
+          if (j.code === "prices_changed") {
+            // The page still has the old prices: reload so she sees and signs the new total.
+            window.location.reload();
+            return;
+          }
+          if (j.code === "date_taken") {
+            setErrors({ date: j.error || t.booking.errors.failed });
+            updateBooking({ step: 2 });
+            setMoveTick((n) => n + 1);
+            avail.refresh();
+            return;
+          }
+          setErrors({ form: j.error || t.booking.errors.failed });
+          return;
+        }
+        ok = true;
+        resetBooking();
+        window.location.assign(account.done);
+        return;
+      }
       const res = await fetch("/api/inquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -343,7 +424,31 @@ export const Intake = forwardRef<HTMLDivElement | null, { pickFromList?: string 
     }
   };
 
-  const nextLabel = step < LAST ? t.booking.next : sending ? t.booking.sending : t.booking.send;
+  const nextLabel =
+    step < LAST ? t.booking.next : account ? (sending ? SIGN_COPY[lang].sending : SIGN_COPY[lang].send) : sending ? t.booking.sending : t.booking.send;
+  /** What she is about to sign, built from her picks and the page's price book (the server rebuilds it). */
+  const agreementPreview =
+    account && step === LAST && b.date && b.city
+      ? buildAgreement(
+          {
+            lang: language,
+            tier,
+            hours: quote.hours,
+            crew: normalizeCrew(tier, crew ?? undefined),
+            addOns,
+            eventDate: b.date,
+            cityLabel: CITY_NAME[b.city as keyof typeof CITY_NAME],
+            venue: b.venue.trim(),
+            startTime: timeLabel(b.startTime, "en"),
+            honoree: b.honoree.trim(),
+            name: b.name.trim(),
+            email: account.email,
+            phone: b.phone.trim(),
+            sharePermission: b.share,
+          },
+          book,
+        )
+      : null;
 
   return (
     <div
@@ -538,6 +643,7 @@ export const Intake = forwardRef<HTMLDivElement | null, { pickFromList?: string 
                         label={t.booking.email}
                         value={b.email}
                         onChange={(v) => {
+                          if (account) return;
                           updateBooking({ email: v });
                           clearError("email");
                         }}
@@ -631,6 +737,7 @@ export const Intake = forwardRef<HTMLDivElement | null, { pickFromList?: string 
                       </p>
                     ) : null}
                     <Summary onEdit={go} language={language} />
+                    {account ? null : (
                     <div className="tq-bk-next">
                       <h4 className="tq-bk-label">{t.booking.nextTitle}</h4>
                       <ol>
@@ -648,6 +755,19 @@ export const Intake = forwardRef<HTMLDivElement | null, { pickFromList?: string 
                         <a href={`sms:${site.contact.phoneE164}`}>{t.booking.proofRef}</a>
                       </p>
                     </div>
+                    )}
+                    {agreementPreview ? (
+                      <SignStep
+                        lang={language}
+                        agreement={agreementPreview}
+                        value={sign}
+                        onChange={(patch) => {
+                          setSign((v) => ({ ...v, ...patch }));
+                          setErrors({});
+                        }}
+                        errors={errors}
+                      />
+                    ) : null}
                     <ContactLine lang={lang} placement="booking-send" />
 
                     {SHOW_TURNSTILE && SITE_KEY ? (
