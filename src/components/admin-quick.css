@@ -1,0 +1,42 @@
+/* Owner-only quick controls on public reviews and comments (AdminQuick.tsx). */
+.tq-adminq {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.tq-adminq__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--tq-ink);
+  border-radius: var(--tq-radius-pill);
+  background: #fff;
+  color: var(--tq-ink);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--tq-dur-fast) var(--tq-ease), color var(--tq-dur-fast) var(--tq-ease);
+}
+.tq-adminq__btn:hover { background: var(--tq-ink); color: #fff; }
+.tq-adminq__btn[data-tone="danger"] { border-color: var(--tq-status-down); color: var(--tq-status-down); }
+.tq-adminq__btn[data-tone="danger"]:hover { background: var(--tq-status-down); color: #fff; }
+.tq-adminq__btn:disabled { opacity: 0.55; cursor: default; }
+.tq-adminq__error { flex-basis: 100%; font-size: 15px; color: var(--tq-status-down); }
+/* Mouse: shown when the owner points at the row or tabs into the controls. */
+@media (hover: hover) {
+  .tq-adminq { opacity: 0; transition: opacity var(--tq-dur-fast) var(--tq-ease); }
+  li:hover > .tq-adminq,
+  li:hover > * > .tq-adminq,
+  li:hover > * > * > .tq-adminq,
+  .tq-adminq:focus-within { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tq-adminq, .tq-adminq__btn { transition: none; }
+}

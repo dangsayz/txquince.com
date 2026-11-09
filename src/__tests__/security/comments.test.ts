@@ -11,11 +11,13 @@ const state = vi.hoisted(() => ({
   user: null as null | { id: string; verifiedEmails: string[]; displayName: string; imageUrl: string | null },
   saved: [] as Record<string, unknown>[],
   allowed: true,
+  blocked: false,
   mails: 0,
 }));
 vi.mock("@/lib/clerk-user", () => ({ getSignedInUser: async () => state.user }));
 vi.mock("@/lib/comments-db", () => ({
   canPost: async () => state.allowed,
+  isBlocked: async () => state.blocked,
   createComment: async (input: Record<string, unknown>) => {
     state.saved.push(input);
     return { ...input, id: "c1", status: "pending", created_at: "2026-11-09T00:00:00Z" };
@@ -46,6 +48,7 @@ beforeEach(() => {
   state.user = { id: "user_9", verifiedEmails: ["mom@example.com"], displayName: "Maria G.", imageUrl: null };
   state.saved = [];
   state.allowed = true;
+  state.blocked = false;
   state.mails = 0;
 });
 
@@ -87,6 +90,13 @@ describe("POST /api/comments", () => {
     const res = await post({ ...good, website: "http://spam.example" });
     expect(res.status).toBe(200);
     expect(state.saved).toHaveLength(0);
+  });
+
+  it("refuses an account the owner blocked", async () => {
+    state.blocked = true;
+    expect((await post(good)).status).toBe(403);
+    expect(state.saved).toHaveLength(0);
+    expect(state.mails).toBe(0);
   });
 
   it("slows down an account that posts too much", async () => {
