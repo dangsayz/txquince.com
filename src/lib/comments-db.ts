@@ -173,3 +173,56 @@ export async function deleteComment(id: string): Promise<CommentRecord | null> {
   const row = await db.prepare("DELETE FROM blog_comments WHERE id = ? RETURNING *").bind(id).first<Row>();
   return row ? toCommentRecord(row) : null;
 }
+
+/* ---------------- Blocked commenters (migrations/0007) ---------------- */
+
+export type BlockedCommenter = { user_id: string; author_name: string; created_at: string };
+
+/** True when the owner blocked this account. False if the table is not there yet. */
+export async function isBlocked(userId: string): Promise<boolean> {
+  const db = await getD1();
+  if (!db) return false;
+  try {
+    return (await db.prepare("SELECT 1 AS x FROM blocked_commenters WHERE user_id = ?").bind(userId).first()) !== null;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Block the person who wrote this comment: no new comments from the account,
+ * and every comment it wrote goes to 'hidden'. Returns the comments it hid so
+ * the caller can refresh their posts; null when the comment does not exist.
+ */
+export async function blockCommentAuthor(commentId: string): Promise<{ who: BlockedCommenter; hidden: CommentRecord[] } | null> {
+  const db = await requireD1();
+  const c = await getComment(commentId);
+  if (!c) return null;
+  await db
+    .prepare("INSERT INTO blocked_commenters (user_id, author_name) VALUES (?, ?) ON CONFLICT (user_id) DO UPDATE SET author_name = excluded.author_name")
+    .bind(c.user_id, c.author_name)
+    .run();
+  const { results } = await db
+    .prepare("UPDATE blog_comments SET status = 'hidden', updated_at = ? WHERE user_id = ? AND status != 'hidden' RETURNING *")
+    .bind(now(), c.user_id)
+    .all<Row>();
+  return { who: { user_id: c.user_id, author_name: c.author_name, created_at: now() }, hidden: results.map(toCommentRecord) };
+}
+
+/** Let the account comment again. Its hidden comments stay hidden. */
+export async function unblockCommenter(userId: string): Promise<boolean> {
+  const db = await requireD1();
+  const res = await db.prepare("DELETE FROM blocked_commenters WHERE user_id = ?").bind(userId).run();
+  return res.meta.changes > 0;
+}
+
+export async function listBlockedCommenters(): Promise<BlockedCommenter[]> {
+  const db = await getD1();
+  if (!db) return [];
+  try {
+    const { results } = await db.prepare("SELECT user_id, author_name, created_at FROM blocked_commenters ORDER BY created_at DESC LIMIT 200").all<Row>();
+    return results.map((r) => ({ user_id: String(r.user_id), author_name: String(r.author_name), created_at: String(r.created_at) }));
+  } catch {
+    return [];
+  }
+}

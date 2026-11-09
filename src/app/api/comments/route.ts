@@ -8,7 +8,7 @@
 import { NextResponse } from "next/server";
 import { getSignedInUser } from "@/lib/clerk-user";
 import { NewCommentSchema } from "@/lib/comments";
-import { canPost, createComment } from "@/lib/comments-db";
+import { canPost, createComment, isBlocked } from "@/lib/comments-db";
 import { getEsPost, getPost } from "@/content/blog";
 import { sendCommentNoticeEmail } from "@/lib/resend";
 import { getSiteUrl } from "@/lib/site-url";
@@ -47,6 +47,9 @@ export async function POST(request: Request) {
   if (!post) return json({ error: "That post does not exist." }, 404);
 
   try {
+    if (await isBlocked(user.id)) {
+      return json({ error: lang === "es" ? "Esta cuenta no puede comentar aquí." : "This account can't comment here." }, 403);
+    }
     if (!(await canPost(user.id))) {
       return json({ error: lang === "es" ? "Demasiados comentarios. Intenta en una hora." : "Too many comments. Try again in an hour." }, 429);
     }

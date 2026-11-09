@@ -3,6 +3,7 @@ import { clerkSettings } from "@/lib/clerk-config";
 import { SectionHead } from "@/components/BlogContent";
 import { CommentBox } from "./CommentBox";
 import { QuoteTools } from "./QuoteTools";
+import { AdminQuick } from "@/components/AdminQuick";
 import type { PublicComment } from "@/lib/comments";
 import "./comments.css";
 
@@ -87,6 +88,7 @@ function Comment({ cm, lang }: { cm: PublicComment; lang: "en" | "es" }) {
             {day(cm.created_at, c.locale)}
           </time>
         </header>
+        <AdminQuick kind="comment" id={cm.id} name={cm.author_name} />
         {cm.quote ? (
           <button type="button" className="tq-cmt__about" data-tq-quote={cm.quote} title={c.jump}>
             <span className="tq-mono tq-muted">{c.about}</span> “{cm.quote}”
