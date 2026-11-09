@@ -186,8 +186,7 @@ export function TodayView({ pulse, work, review, upcoming }: TodayData) {
       </div>
 
       <nav aria-label="Shortcuts" className="mt-8 flex flex-wrap gap-3">
-        <Link href="/admin/prices" className="st-btn-ghost">Change prices</Link>
-        <Link href="/admin/packages" className="st-btn-ghost">Change packages</Link>
+        <Link href="/admin/packages" className="st-btn-ghost">Change packages and prices</Link>
         <Link href="/admin/portfolio" className="st-btn-ghost">Add photos</Link>
       </nav>
     </main>

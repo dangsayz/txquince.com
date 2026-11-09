@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { animate, useReducedMotion } from "motion/react";
-import { tierById, ADD_ONS, TIERS, matrixFor, money, pick, tierBullets, tierTeam, type Lang, type Tier, type TierId } from "./data";
+import { tierById, ADD_ONS, TIERS, matrixFor, money, pick, tierBullets, tierNameL, tierTeam, type Lang, type Tier, type TierId } from "./data";
 import { addOnNote } from "@/lib/package-text";
 import { useSite } from "./state";
 import { usePriceBook } from "@/components/PriceBookProvider";
@@ -86,7 +86,7 @@ function PackageCard({ tier: x }: { tier: Tier }) {
         {x.recommended ? <span className="tq-pkg__badge">{t.booking.recommended}</span> : null}
       </div>
       <label htmlFor={id} className="tq-display tq-pkg__name">
-        {pick(lang, x.name)}
+        {pick(lang, tierNameL(book, x.id))}
       </label>
       <p id={`${id}-p`} className="tq-display tq-pkg__price tq-nums">
         {money(p.price)}
@@ -164,7 +164,7 @@ export function CompareDialog() {
                 <td aria-hidden />
                 {TIERS.map((x) => (
                   <th key={x.id} scope="col">
-                    <span className="tq-compare__name">{pick(lang, x.name)}</span>
+                    <span className="tq-compare__name">{pick(lang, tierNameL(book, x.id))}</span>
                   </th>
                 ))}
               </tr>
@@ -205,7 +205,7 @@ export function CompareDialog() {
                   <td key={x.id}>
                     <button type="button" className="tq-btn tq-btn--block" onClick={() => choose(x.id)}>
                       {t.booking.compareChoose}
-                      <span className="tq-sr">: {pick(lang, x.name)}</span>
+                      <span className="tq-sr">: {pick(lang, tierNameL(book, x.id))}</span>
                     </button>
                   </td>
                 ))}
@@ -217,7 +217,7 @@ export function CompareDialog() {
           <div className="tq-compare__cards">
             {TIERS.map((x) => (
               <article key={x.id} className="tq-tiercard">
-                <h4 className="tq-display tq-compare__cardname">{pick(lang, x.name)}</h4>
+                <h4 className="tq-display tq-compare__cardname">{pick(lang, tierNameL(book, x.id))}</h4>
                 <p className="tq-display tq-compare__cardprice tq-nums">{money(book.packages[x.id].price)}</p>
                 {matrix.map((g) => (
                   <div key={g.id}>
@@ -236,7 +236,7 @@ export function CompareDialog() {
                 ))}
                 <button type="button" className="tq-btn tq-btn--lg tq-btn--block" onClick={() => choose(x.id)}>
                   {t.booking.compareChoose}
-                  <span className="tq-sr">: {pick(lang, x.name)}</span>
+                  <span className="tq-sr">: {pick(lang, tierNameL(book, x.id))}</span>
                 </button>
               </article>
             ))}
@@ -275,7 +275,7 @@ export function ExtrasStep({ onChangePackage }: { onChangePackage: () => void })
     <>
       <div className="tq-bk-chosen">
         <span>
-          <span className="tq-bk-chosen__name">{pick(lang, x.name)}</span>
+          <span className="tq-bk-chosen__name">{pick(lang, tierNameL(book, x.id))}</span>
           <span className="tq-nums"> · {money(p.price)}</span>
         </span>
         <button type="button" className="tq-bk-link" onClick={onChangePackage}>

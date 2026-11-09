@@ -23,8 +23,8 @@ export const BUDGET_COPY = {
     stretch: (more: string) => `For ${more} more`,
     nothingFits: (smallest: string) =>
       `Our shortest coverage is ${smallest}. If your budget is lower, make us an offer below and we'll see what we can do.`,
-    satNote: (days: number) =>
-      `Just the Moments: Fridays, Sundays and weekdays are open any time. Saturdays open up ${days} days before the date.`,
+    satNote: (days: number, name: string) =>
+      `${name}: Fridays, Sundays and weekdays are open any time. Saturdays open up ${days} days before the date.`,
     offerTitle: "Don't see your number? Make us an offer.",
     offerDek: "Tell us what you'd like and what you can spend. We'll answer within a day with a yes, a counteroffer, or other options. No pressure, and nothing is charged.",
     offerAmount: "Your offer",
@@ -47,8 +47,8 @@ export const BUDGET_COPY = {
       email: "Please enter a valid email.",
       verify: "Please complete the quick check below.",
       failed: "Something went wrong. Please try again, or text us.",
-      saturday: (days: number) =>
-        `Just the Moments can take a Saturday only within ${days} days of the date. Pick a Friday or Sunday, or another package.`,
+      saturday: (days: number, name: string) =>
+        `${name} can take a Saturday only within ${days} days of the date. Pick a Friday or Sunday, or another package.`,
     },
     shareTop: "Share with family",
     youGet: "What you get",
@@ -77,8 +77,8 @@ export const BUDGET_COPY = {
     stretch: (more: string) => `Por ${more} más`,
     nothingFits: (smallest: string) =>
       `Nuestra cobertura más corta es ${smallest}. Si tu presupuesto es menor, mándanos una oferta abajo y vemos qué se puede hacer.`,
-    satNote: (days: number) =>
-      `Los Momentos: viernes, domingos y entre semana se pueden reservar cuando sea. Los sábados se abren ${days} días antes de la fecha.`,
+    satNote: (days: number, name: string) =>
+      `${name}: viernes, domingos y entre semana se pueden reservar cuando sea. Los sábados se abren ${days} días antes de la fecha.`,
     offerTitle: "¿No ves tu número? Haznos una oferta.",
     offerDek: "Cuéntanos qué te gustaría y cuánto puedes gastar. Te respondemos en un día con un sí, una contraoferta u otras opciones. Sin compromiso, y no se cobra nada.",
     offerAmount: "Tu oferta",
@@ -101,8 +101,8 @@ export const BUDGET_COPY = {
       email: "Por favor escribe un correo válido.",
       verify: "Por favor completa la verificación de abajo.",
       failed: "Algo salió mal. Inténtalo de nuevo, o mándanos un mensaje.",
-      saturday: (days: number) =>
-        `Los Momentos solo se puede reservar en sábado dentro de los ${days} días antes de la fecha. Elige un viernes o domingo, u otro paquete.`,
+      saturday: (days: number, name: string) =>
+        `${name} solo se puede reservar en sábado dentro de los ${days} días antes de la fecha. Elige un viernes o domingo, u otro paquete.`,
     },
     shareTop: "Compartir con la familia",
     youGet: "Lo que recibes",

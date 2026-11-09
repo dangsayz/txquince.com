@@ -121,7 +121,7 @@ const post: BlogPost = {
     { type: "h2", text: "Booking a dress session with TX Quince" },
     {
       type: "p",
-      text: `You can book a dress session on its own as our Portrait Session: ${PT.price.study} for a ${PT.hours.study}-hour session with one photographer and ${PT.photos.study} edited photos. The Duo and the Trio already include a dress or save-the-date session (${PT.sessionPhotos} photos), booked after the deposit is paid. There is no travel fee anywhere in Dallas–Fort Worth. Prices are published, so you can see every package and its price on one page before you send anything.`,
+      text: `You can book a dress session on its own as our ${PT.name.study}: ${PT.price.study} for a ${PT.hours.study}-hour session with ${PT.team.study} and ${PT.photos.study} edited photos. ${PT.sessionIn} already include a dress or save-the-date session (${PT.sessionPhotos} photos), booked after the deposit is paid. There is no travel fee anywhere in Dallas–Fort Worth. Prices are published, so you can see every package and its price on one page before you send anything.`,
     },
     {
       type: "cta",
@@ -150,7 +150,7 @@ const post: BlogPost = {
     },
     {
       q: "How much is a quince dress session at TX Quince?",
-      a: `The Portrait Session is ${PT.price.study} for a ${PT.hours.study}-hour session with one photographer and ${PT.photos.study} edited photos. The Duo and the Trio include a dress or save-the-date session (${PT.sessionPhotos} photos), booked after the deposit. Current prices are always on txquince.com/budget.`,
+      a: `${PT.name.study} is ${PT.price.study} for a ${PT.hours.study}-hour session with ${PT.team.study} and ${PT.photos.study} edited photos. ${PT.sessionIn} include a dress or save-the-date session (${PT.sessionPhotos} photos), booked after the deposit. Current prices are always on txquince.com/budget.`,
     },
   ],
   related: [

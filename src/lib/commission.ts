@@ -588,13 +588,22 @@ export function describeChanges(before: PriceBook, after: PriceBook): string[] {
   const money = (label: string, a: number, b: number) => a !== b && out.push(`${label}: ${usd(a)} → ${usd(b)}`);
   const num = (label: string, a: number, b: number, unit: string) =>
     a !== b && out.push(`${label}: ${a} → ${b} ${unit}`);
+  // The live name (editable); retired packages keep their launch name.
+  const nameIn = (book: PriceBook, id: TierId) =>
+    (book.content as Partial<Record<TierId, PackageContent>>)[id]?.name?.en || TIER_NAME_EN[id];
+  const nameOf = (id: TierId) => nameIn(after, id);
+  for (const id of PUBLIC_TIER_IDS) {
+    const a = nameIn(before, id);
+    const b = nameIn(after, id);
+    if (a !== b) out.push(`Renamed: ${a} → ${b}`);
+  }
   for (const id of TIER_IDS) {
     const a = before.packages[id];
     const b = after.packages[id];
-    money(`${TIER_NAME_EN[id]} price`, a.price, b.price);
-    num(`${TIER_NAME_EN[id]} hours included`, a.hours, b.hours, "hours");
-    money(`${TIER_NAME_EN[id]} extra hour`, a.extraHour, b.extraHour);
-    num(`${TIER_NAME_EN[id]} most hours`, a.maxHours, b.maxHours, "hours");
+    money(`${nameOf(id)} price`, a.price, b.price);
+    num(`${nameOf(id)} hours included`, a.hours, b.hours, "hours");
+    money(`${nameOf(id)} extra hour`, a.extraHour, b.extraHour);
+    num(`${nameOf(id)} most hours`, a.maxHours, b.maxHours, "hours");
   }
   for (const id of ADD_ON_IDS) money(ADD_ON_NAME_EN[id], before.addOns[id], after.addOns[id]);
   num("Longest day", before.maxHours, after.maxHours, "hours");
@@ -610,7 +619,7 @@ export function describeChanges(before: PriceBook, after: PriceBook): string[] {
     const a = before.content[id];
     const b = after.content[id];
     const changed = (Object.keys(b) as (keyof PackageContent)[]).filter((k) => JSON.stringify(a?.[k]) !== JSON.stringify(b[k]));
-    if (changed.length) out.push(`${TIER_NAME_EN[id]} wording: ${changed.map((k) => CONTENT_FIELD_NAME[k]).join(", ")}`);
+    if (changed.length) out.push(`${nameOf(id)} wording: ${changed.map((k) => CONTENT_FIELD_NAME[k]).join(", ")}`);
   }
   for (const id of ADD_ON_IDS) {
     if (JSON.stringify(before.addOnNotes[id]) !== JSON.stringify(after.addOnNotes[id])) out.push(`${ADD_ON_NAME_EN[id]} description`);
@@ -620,6 +629,7 @@ export function describeChanges(before: PriceBook, after: PriceBook): string[] {
 
 /** Plain names for the wording fields (history + admin). */
 export const CONTENT_FIELD_NAME: Record<keyof PackageContent, string> = {
+  name: "name",
   photos: "photo count",
   photosNote: "photo note",
   cameras: "cameras",

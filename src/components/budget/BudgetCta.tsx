@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { usePriceBook } from "@/components/PriceBookProvider";
 import { useSite } from "@/components/txq/state";
-import { tierById } from "@/components/txq/data";
+import { tierNameL } from "@/components/txq/data";
 import { coverageForBudget } from "@/lib/budget-options";
 import { usd } from "@/lib/commission";
 import { trackEvent } from "@/components/Tracker";
@@ -50,7 +50,7 @@ export function BudgetCta({ placement = "home" }: { placement?: string }) {
     () =>
       DEMO_BUDGETS.map((b) => {
         const best = coverageForBudget(book, b, false).fits[0];
-        return best ? { budget: b, name: tierById(best.tier).name[lang], hours: best.hours, film: best.addOns.length > 0, total: best.totalUsd } : null;
+        return best ? { budget: b, name: tierNameL(book, best.tier)[lang], hours: best.hours, film: best.addOns.length > 0, total: best.totalUsd } : null;
       }).filter((d): d is NonNullable<typeof d> => Boolean(d)),
     [book, lang],
   );

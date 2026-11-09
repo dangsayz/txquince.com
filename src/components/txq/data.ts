@@ -125,6 +125,8 @@ export const tierBullets = (book: PriceBook, id: TierId): L[] => pkgBullets(book
 export const tierDetail = (book: PriceBook, id: TierId): L => pkgL(book, id, contentOf(book, id).detail);
 /** Who comes, from the live wording ("1 photographer + 1 videographer"). */
 export const tierTeam = (book: PriceBook, id: TierId): L => pkgL(book, id, contentOf(book, id).team);
+/** A package's live name (edited at /admin/packages); the static TIERS names are only the launch defaults. */
+export const tierNameL = (book: PriceBook, id: TierId): L => contentOf(book, id).name;
 
 export type MatrixRow = { label: L; values: Record<TierId, L | null> };
 export type MatrixGroup = { id: string; title: L; rows: MatrixRow[] };

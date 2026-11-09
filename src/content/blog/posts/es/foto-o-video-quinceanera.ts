@@ -1,5 +1,4 @@
 import type { BlogPost } from "@/content/blog";
-import { BASE_CREW } from "@/lib/commission";
 import { PT } from "@/lib/price-text";
 
 const study = PT.price.study;
@@ -26,7 +25,7 @@ const post: BlogPost = {
     { type: "h2", text: "La respuesta corta" },
     {
       type: "p",
-      text: "Técnicamente no necesita los dos. Muchísimas familias reservan solo foto y quedan felices. Pero la foto y el video guardan cosas distintas, y los momentos que se viven en movimiento — el vals, los discursos, el baile sorpresa, la cara de su hija cuando arranca la música — solo quedan completos en video. Si el presupuesto alcanza para ambos, un mismo equipo que haga foto y video es la forma más sencilla de lograrlo. En [TX Quince](/es#commissions), la Sesión de retratos es nuestro paquete de solo foto; El Solo, El Dúo y El Trío incluyen los dos.",
+      text: `Técnicamente no necesita los dos. Muchísimas familias reservan solo foto y quedan felices. Pero la foto y el video guardan cosas distintas, y los momentos que se viven en movimiento — el vals, los discursos, el baile sorpresa, la cara de su hija cuando arranca la música — solo quedan completos en video. Si el presupuesto alcanza para ambos, un mismo equipo que haga foto y video es la forma más sencilla de lograrlo. En [TX Quince](/es#commissions), ${PT.nameEs.study} es nuestro paquete de solo foto; ${PT.nameEs.solo}, ${PT.nameEs.cinema} y ${PT.nameEs.trio} incluyen los dos.`,
     },
     { type: "h2", text: "Qué guarda la foto que el video no puede" },
     {
@@ -78,12 +77,12 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: "En nuestros paquetes con video, la película completa es su día entero tal como pasó — la misa, los detalles del salón y los invitados, cada presentación completa (la entrada, el vals, el baile sorpresa), cada brindis completo y de 15 a 20 minutos de la pista de baile. Dura lo que dura su día, así que nunca la recortamos a un número fijo de minutos. En El Dúo y El Trío viene con un resumen — de 1 minuto en El Dúo, y un video resumen de 3 a 5 minutos en El Trío —, la versión corta que va a compartir con todos; con El Solo, el video resumen se puede agregar.",
+      text: `En nuestros paquetes con video, la película completa es su día entero tal como pasó — la misa, los detalles del salón y los invitados, cada presentación completa (la entrada, el vals, el baile sorpresa), cada brindis completo y de 15 a 20 minutos de la pista de baile. Dura lo que dura su día, así que nunca la recortamos a un número fijo de minutos. En ${PT.nameEs.cinema} y ${PT.nameEs.trio} viene con un resumen — de ${PT.highlightEs.cinema} en ${PT.nameEs.cinema}, y un video resumen de ${PT.highlightEs.trio} en ${PT.nameEs.trio} —, la versión corta que va a compartir con todos; con ${PT.nameEs.solo}, el video resumen se puede agregar.`,
     },
     {
       type: "cta",
       heading: "Vea exactamente cuáles paquetes incluyen video",
-      body: `La Sesión de retratos es solo foto. El Solo es una sola persona que toma fotos y graba a la vez con {{cameras.solo}} cámaras. El Dúo y El Trío combinan fotógrafos y videógrafos: uno de cada uno con El Dúo (${BASE_CREW.cinema} en total), o dos fotógrafos y un videógrafo con El Trío (${BASE_CREW.trio}). Compárelos lado a lado.`,
+      body: `${PT.nameEs.study} es solo foto. ${PT.nameEs.solo} es una sola persona que toma fotos y graba a la vez con {{cameras.solo}} cámaras. ${PT.nameEs.cinema} y ${PT.nameEs.trio} combinan fotógrafos y videógrafos: ${PT.teamEs.cinema} con ${PT.nameEs.cinema}, o ${PT.teamEs.trio} con ${PT.nameEs.trio}. Compárelos lado a lado.`,
       href: "/es#commissions",
       label: "Comparar paquetes",
     },
@@ -108,7 +107,7 @@ const post: BlogPost = {
     },
     {
       type: "p",
-      text: `Anclado a nuestros paquetes: la Sesión de retratos cuesta ${study} — solo fotos, una sesión de ${PT.hours.study} hora con un fotógrafo y {{photos.study}} fotos editadas. El Solo cuesta ${solo} — ${PT.hours.solo} horas con un fotógrafo y videógrafo en uno, que toma fotos y graba al mismo tiempo con {{cameras.solo}} cámaras, la película completa de su día editada con esos ángulos, y {{photos.solo}} fotos editadas. El Dúo cuesta ${cinema} — ${PT.hours.cinema} horas con un fotógrafo y un videógrafo, una sesión con el vestido o de save-the-date (se agenda después de pagar el depósito), la película completa más un resumen de 1 minuto, y {{photos.cinema}} fotos editadas. El Trío, por ${trio}, es nuestra recomendación para la mayoría de las familias — ${PT.hours.trio} horas con dos fotógrafos y un videógrafo, una sesión con el vestido o de save-the-date (se agenda después de pagar el depósito), la película completa más un video resumen de 3 a 5 minutos, {{photos.trio}} fotos editadas y un álbum impreso. ¿Necesita una coordinadora que dirija el día? Se puede agregar por ${PT.addon.coordinator} al día. ¿Quiere más fotos con el vestido en otro día? Agregue un Segundo día de retratos (${PT.addon.secondday}) — foto y video en hasta dos lugares. ¿Necesita más tiempo el día de la fiesta? Puede agregar horas, desde ${PT.extra.from} la hora, hasta ${PT.hours.max} en total. Para ver qué incluye cada paquete y [cuáles incluyen ambos](/es#commissions), revise los paquetes; y para una mirada más amplia al costo, lea [cuánto cuesta un fotógrafo de quinceañera en DFW](/es/blog/cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth).`,
+      text: `Anclado a nuestros paquetes: ${PT.nameEs.study} cuesta ${study} — solo fotos, una sesión de ${PT.hours.study} hora con ${PT.teamEs.study} y {{photos.study}} fotos editadas. ${PT.nameEs.solo} cuesta ${solo} — ${PT.hours.solo} horas con ${PT.teamEs.solo}, que toma fotos y graba al mismo tiempo, la película completa de su día editada con esos ángulos, y {{photos.solo}} fotos editadas. ${PT.nameEs.cinema} cuesta ${cinema} — ${PT.hours.cinema} horas con ${PT.teamEs.cinema}, una sesión con el vestido o de save-the-date (se agenda después de pagar el depósito), la película completa más un resumen de ${PT.highlightEs.cinema}, y {{photos.cinema}} fotos editadas. ${PT.nameEs.trio}, por ${trio}, es nuestra recomendación para la mayoría de las familias — ${PT.hours.trio} horas con ${PT.teamEs.trio}, una sesión con el vestido o de save-the-date (se agenda después de pagar el depósito), la película completa más un video resumen de ${PT.highlightEs.trio}, {{photos.trio}} fotos editadas y un álbum impreso. ¿Necesita una coordinadora que dirija el día? Se puede agregar por ${PT.addon.coordinator} al día. ¿Quiere más fotos con el vestido en otro día? Agregue un Segundo día de retratos (${PT.addon.secondday}) — foto y video en hasta dos lugares. ¿Necesita más tiempo el día de la fiesta? Puede agregar horas, desde ${PT.extra.from} la hora, hasta ${PT.hours.max} en total. Para ver qué incluye cada paquete y [cuáles incluyen ambos](/es#commissions), revise los paquetes; y para una mirada más amplia al costo, lea [cuánto cuesta un fotógrafo de quinceañera en DFW](/es/blog/cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth).`,
     },
     { type: "h2", text: "Si el presupuesto solo alcanza para uno" },
     {
@@ -120,7 +119,7 @@ const post: BlogPost = {
       items: [
         "Si quiere algo para sostener, imprimir y exhibir — elija foto. Es el recuerdo que dura, y es la base con la que empezaríamos a cualquiera.",
         "Si los momentos que más le importan tienen movimiento y sonido — el vals, el baile sorpresa, los brindis — inclínese por el video, porque esos no sobreviven como fotos fijas.",
-        "Si puede estirar un poco el presupuesto, elija la colección que incluye ambos en vez de sumar un segundo proveedor (El Solo es la forma más económica de tener los dos) — es mejor valor y un día más tranquilo.",
+        `Si puede estirar un poco el presupuesto, elija la colección que incluye ambos en vez de sumar un segundo proveedor (${PT.nameEs.solo} es la forma más económica de tener los dos) — es mejor valor y un día más tranquilo.`,
       ],
     },
     {
@@ -139,7 +138,7 @@ const post: BlogPost = {
     },
     {
       q: "¿Qué incluye el video de quinceañera?",
-      a: "Un buen video es una historia editada, no una grabación cruda, casi siempre entregada en dos piezas: una edición documental que recorre el día completo en orden, y un video resumen de 3 a 5 minutos editado con música. En los paquetes con video de TX Quince, la película completa es su día entero tal como pasó — la misa, cada presentación y cada brindis completos, y de 15 a 20 minutos de la pista de baile —, así que dura lo que dura su día, y en El Dúo y El Trío viene con un resumen (de 1 minuto en El Dúo, y un video resumen de 3 a 5 minutos en El Trío); con El Solo, el video resumen se puede agregar.",
+      a: `Un buen video es una historia editada, no una grabación cruda, casi siempre entregada en dos piezas: una edición documental que recorre el día completo en orden, y un video resumen de 3 a 5 minutos editado con música. En los paquetes con video de TX Quince, la película completa es su día entero tal como pasó — la misa, cada presentación y cada brindis completos, y de 15 a 20 minutos de la pista de baile —, así que dura lo que dura su día, y en ${PT.nameEs.cinema} y ${PT.nameEs.trio} viene con un resumen (de ${PT.highlightEs.cinema} en ${PT.nameEs.cinema}, y un video resumen de ${PT.highlightEs.trio} en ${PT.nameEs.trio}); con ${PT.nameEs.solo}, el video resumen se puede agregar.`,
     },
     {
       q: "¿Sale más barato contratar foto y video juntos?",
@@ -147,7 +146,7 @@ const post: BlogPost = {
     },
     {
       q: "¿Cuáles paquetes de TX Quince incluyen foto y video?",
-      a: `La Sesión de retratos (${study}) es solo foto. El Solo (${solo}), El Dúo (${cinema}) y El Trío (${trio}) incluyen foto y video: una sola persona con {{cameras.solo}} cámaras en El Solo, un fotógrafo y un videógrafo en El Dúo, y dos fotógrafos y un videógrafo en El Trío. El Trío es nuestra recomendación para la mayoría de las familias. Puede comparar todo lo que incluye cada uno en los paquetes de nuestra página principal.`,
+      a: `${PT.nameEs.study} (${study}) es solo foto. ${PT.nameEs.solo} (${solo}), ${PT.nameEs.cinema} (${cinema}) y ${PT.nameEs.trio} (${trio}) incluyen foto y video: una sola persona con {{cameras.solo}} cámaras en ${PT.nameEs.solo}, ${PT.teamEs.cinema} en ${PT.nameEs.cinema}, y ${PT.teamEs.trio} en ${PT.nameEs.trio}. ${PT.nameEs.trio} es nuestra recomendación para la mayoría de las familias. Puede comparar todo lo que incluye cada uno en los paquetes de nuestra página principal.`,
     },
     {
       q: "¿Un mismo equipo puede hacer la foto y el video?",

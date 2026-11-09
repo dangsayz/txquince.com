@@ -1,5 +1,6 @@
 import { COPY } from "./copy";
-import { PUBLIC_TIER_IDS, TIER_NAME_EN, type PriceBook } from "@/lib/commission";
+import { tierName } from "@/lib/price-text";
+import { PUBLIC_TIER_IDS, type PriceBook } from "@/lib/commission";
 import { fillDeep } from "@/lib/price-text";
 import { site } from "@/content/site";
 import { jsonLdString } from "@/lib/json-ld";
@@ -39,7 +40,7 @@ export function HomeJsonLd({ lang, book }: { lang: "en" | "es"; book: PriceBook 
       name: "Commissions",
       itemListElement: PUBLIC_TIER_IDS.map((id) => ({
         "@type": "Offer",
-        name: TIER_NAME_EN[id],
+        name: tierName(book, id, lang === "es" ? "es" : "en"),
         price: String(book.packages[id].price),
         priceCurrency: "USD",
         url: `${site.url}${lang === "es" ? "/es" : "/"}#commissions`,

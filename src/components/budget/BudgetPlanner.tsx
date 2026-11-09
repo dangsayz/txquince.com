@@ -4,7 +4,7 @@ import { useId, useMemo, useState } from "react";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { usePriceBook } from "@/components/PriceBookProvider";
 import { useSite, handoffToBooking } from "@/components/txq/state";
-import { tierById } from "@/components/txq/data";
+import { tierNameL } from "@/components/txq/data";
 import { getFirstTouch, trackEvent } from "@/components/Tracker";
 import { HONEYPOT_FIELD } from "@/lib/inquiry";
 import { BUDGET_FOR_TIER, servicesForTier } from "@/lib/inquiry-package";
@@ -46,7 +46,7 @@ export function BudgetPlanner() {
   const result = useMemo(() => (budget ? coverageForBudget(book, budget, wantVideo) : null), [book, budget, wantVideo]);
   const smallest = useMemo(() => smallestCoverage(book, wantVideo), [book, wantVideo]);
 
-  const nameOf = (tier: EventTier) => tierById(tier).name[lang];
+  const nameOf = (tier: EventTier) => tierNameL(book, tier)[lang];
   const label = (o: CoverageOption) => `${c.hours(o.hours)}${o.addOns.includes("momentsfilm") ? `, ${c.withFilm}` : ""}`;
 
   const choose = (o: CoverageOption) => {
@@ -100,7 +100,7 @@ export function BudgetPlanner() {
     const e: typeof errors = {};
     if (!amount || amount < 50) e.amount = c.errors.amount;
     if (!date || date <= today) e.date = c.errors.date;
-    else if (satBlocked) e.date = c.errors.saturday(book.momentsSaturdayDays);
+    else if (satBlocked) e.date = c.errors.saturday(book.momentsSaturdayDays, nameOf("moments"));
     if (name.trim().length < 2) e.name = c.errors.name;
     if (!EMAIL.test(email.trim())) e.email = c.errors.email;
     if (!Object.keys(e).length && SHOW_TURNSTILE && !token) e.form = c.errors.verify;
@@ -217,19 +217,19 @@ export function BudgetPlanner() {
         {result ? (
           <ul className="bp-cards">
             {result.fits.map((o) => {
-              const t = tierById(o.tier);
+              const tName = nameOf(o.tier);
               return (
                 <li key={`${o.tier}-${o.hours}-${o.addOns.join()}`} className="bp-card">
                   <div className="bp-card__top">
-                    <h3 className="bp-card__name">{t.name[lang]}</h3>
+                    <h3 className="bp-card__name">{tName}</h3>
                     <p className="bp-card__price">{usd(o.totalUsd)}</p>
                   </div>
                   <p className="bp-card__meta">
                     {label(o)} · {o.video ? c.includesVideo : c.photosOnly}
                   </p>
                   <WhatYouGet option={o} />
-                  {o.tier === "moments" ? <p className="bp-hint bp-hint--note">{c.satNote(book.momentsSaturdayDays)}</p> : null}
-                  <button type="button" className="bp-btn" onClick={() => choose(o)} aria-label={c.chooseAria(t.name[lang])}>
+                  {o.tier === "moments" ? <p className="bp-hint bp-hint--note">{c.satNote(book.momentsSaturdayDays, nameOf("moments"))}</p> : null}
+                  <button type="button" className="bp-btn" onClick={() => choose(o)} aria-label={c.chooseAria(tName)}>
                     {c.choose} <span aria-hidden>→</span>
                   </button>
                 </li>
@@ -323,7 +323,7 @@ export function BudgetPlanner() {
 
             <label className="bp-label" htmlFor={`${uid}-date`}>{c.date}</label>
             <input id={`${uid}-date`} type="date" className="bp-input" min={today} value={date} onChange={(e) => setDate(e.target.value)} aria-invalid={Boolean(errors.date)} />
-            {errors.date ? <p className="bp-err">{errors.date}</p> : satBlocked ? <p className="bp-err">{c.errors.saturday(book.momentsSaturdayDays)}</p> : null}
+            {errors.date ? <p className="bp-err">{errors.date}</p> : satBlocked ? <p className="bp-err">{c.errors.saturday(book.momentsSaturdayDays, nameOf("moments"))}</p> : null}
 
             <label className="bp-label" htmlFor={`${uid}-name`}>{c.name}</label>
             <input id={`${uid}-name`} className="bp-input" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} aria-invalid={Boolean(errors.name)} />

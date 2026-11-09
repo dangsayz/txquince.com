@@ -123,11 +123,11 @@ function sharedFaqs(city: string) {
   return [
     {
       q: `How much does a quinceañera photographer cost in ${city}?`,
-      a: `Every package is published: the Portrait Session is ${PT.price.study}, photos and video together start at ${PT.price.solo} with the Solo, the Duo is ${PT.price.cinema}, the Trio, the package we recommend for most ${city} celebrations and the one with a printed album, is ${PT.price.trio}.`,
+      a: `Every package is published: the ${PT.name.study} is ${PT.price.study}, photos and video together start at ${PT.price.solo} with ${PT.name.solo}, ${PT.name.cinema} is ${PT.price.cinema}, ${PT.name.trio}, the package we recommend for most ${city} celebrations and the one with a printed album, is ${PT.price.trio}.`,
     },
     {
       q: "Do you offer video too, or only photography?",
-      a: "Both. The Solo is one shooter with a {{cameras.solo}} camera setup who takes the photos and films at the same time. From the Duo up, a photographer and a videographer cover the day as one team, so the misa, el vals and the reception are captured in photos and a full-length 4K film of her whole day without two vendors getting in each other's way.",
+      a: `Both. ${PT.name.solo} is ${PT.team.solo}, taking the photos and filming at the same time. From ${PT.name.cinema} up, ${PT.team.cinema} cover the day as one team, so the misa, el vals and the reception are captured in photos and a full-length 4K film of her whole day without two vendors getting in each other's way.`,
     },
     {
       q: "Do you charge a travel fee?",
@@ -455,9 +455,11 @@ export default async function CityPage({
             </h2>
             <p className="tq-head__dek">
               Every price for your {loc.city} celebration is published. A {retainerPercentLabel} deposit holds the
-              date and goes toward your total. The Trio, our pick for most families, puts a team of {BASE_CREW.trio} on her day — two
-              photographers and a videographer — and adds a printed photo album. The Duo and the Trio both include a dress or
-              save-the-date session, booked after the deposit.
+              date and goes toward your total.{" "}
+              {fillPrices(
+                `${PT.name.trio}, our pick for most families, puts a team of ${BASE_CREW.trio} on her day (${PT.team.trio}) and adds a printed photo album. ${PT.sessionIn} include a dress or save-the-date session, booked after the deposit.`,
+                book,
+              )}
             </p>
           </header>
           <ol className="tq-place-tiers">

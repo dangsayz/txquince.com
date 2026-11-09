@@ -13,6 +13,8 @@ import { getServiceSupabase, isSupabaseConfigured } from "@/lib/supabase-server"
 import { createStripeCheckoutSession, isStripeConfigured } from "@/lib/stripe";
 import { isSignedAgreement, signedDepositPercent, tokenMatches } from "@/lib/agreement";
 import { TIER_NAME_EN, type TierId } from "@/lib/commission";
+import { getPriceBook } from "@/lib/pricing";
+import { tierName } from "@/lib/price-text";
 import { formatEventDate } from "@/lib/booking";
 import { getSiteUrl } from "@/lib/site-url";
 import { site } from "@/content/site";
@@ -57,7 +59,7 @@ export async function POST(request: Request) {
   const back = `${siteUrl}/booking/${b.id}?t=${encodeURIComponent(parsed.data.t)}`;
   const holdLeft = new Date(b.expires_at).getTime() - Date.now();
   const expiresAt = new Date(Date.now() + Math.max(MIN_SESSION_MS, Math.min(MAX_SESSION_MS, holdLeft)));
-  const tier = typeof meta.tier === "string" && meta.tier in TIER_NAME_EN ? TIER_NAME_EN[meta.tier as TierId] : "Package";
+  const tier = typeof meta.tier === "string" && meta.tier in TIER_NAME_EN ? tierName(await getPriceBook(), meta.tier as TierId) : "Package";
   const date = formatEventDate(b.event_date);
 
   try {

@@ -6,7 +6,7 @@ import { portfolioFallback } from "@/content/portfolio-fallback";
 import { commissionLinks, commissionsFor } from "@/content/commissions";
 import { ADD_ON_NAME_EN, usd } from "@/lib/commission";
 import { getPriceBook } from "@/lib/pricing";
-import { PT, fillDeep } from "@/lib/price-text";
+import { PT, fillDeep, fillPrices } from "@/lib/price-text";
 import "@/components/txq/pages/places.css";
 import { jsonLdString } from "@/lib/json-ld";
 import { HREFLANG, OG_LOCALE, languageAlternates } from "@/lib/hreflang";
@@ -28,19 +28,19 @@ const COPY = {
     path: "/quinceanera-photoshoot",
     eyebrow: "Pre-quince photoshoot / Dallas–Fort Worth",
     h1: "The quinceañera photoshoot, made like an editorial",
-    lead: "A pre-quince portrait session for the invitations, the welcome board and the family wall. Book it on its own, no event coverage required. The Duo and the Trio include a dress or save-the-date session, booked after the deposit.",
+    lead: `A pre-quince portrait session for the invitations, the welcome board and the family wall. Book it on its own, no event coverage required. ${PT.sessionIn} include a dress or save-the-date session, booked after the deposit.`,
     check: "Check your date",
     other: "Ver en español",
     otherHref: "/es/sesion-de-fotos-quinceanera",
-    sessionEyebrow: "01 / The Portrait Session",
+    sessionEyebrow: `01 / The ${PT.name.study}`,
     sessionTitle: `A ${PT.hours.study}-hour session, unhurried, one plan.`,
     sessionBody: [
       "We plan the session like a magazine sitting: the location, the light, the hour, the two looks. Her own quince gown, a second dress, or both. Your photographer guides posture and light, then steps back so she still looks like herself.",
       "It is also the easiest way to know us before the celebration. By the time the misa begins, the camera already feels familiar.",
     ],
-    includedTitle: "What the Portrait Session includes",
+    includedTitle: `What the ${PT.name.study} includes`,
     included: [
-      `A ${PT.hours.study}-hour portrait session with one photographer`,
+      `A ${PT.hours.study}-hour portrait session with ${PT.team.study}`,
       "Location and timing planned with you",
       "{{photos.study}} edited photos",
       "Photos only, no video",
@@ -59,16 +59,16 @@ const COPY = {
     waysEyebrow: "03 / Ways to book",
     waysTitle: "On its own, or already included",
     ways: [
-      { label: "Portrait Session, on its own", note: "The session alone, no event coverage", price: PT.price.study },
-      { label: "Included in the Duo and the Trio", note: "A dress or save-the-date session ({{session.photos}} edited photos), booked after the deposit, plus her full day", price: `From ${PT.price.cinema}` },
+      { label: `${PT.name.study}, on its own`, note: "The session alone, no event coverage", price: PT.price.study },
+      { label: `Included in ${PT.sessionIn}`, note: "A dress or save-the-date session ({{session.photos}} edited photos), booked after the deposit, plus her full day", price: `From ${PT.price.cinema}` },
       { label: ADD_ON_NAME_EN.secondday, note: "A separate day for portraits in her dress, photos and video, at up to 2 locations", price: `+${PT.addon.secondday}` },
     ],
     compare: "Compare every package",
     faqEyebrow: "04 / Questions",
     faqTitle: "Photoshoot questions, answered.",
     faqs: [
-      { q: "How much is a quinceañera photoshoot?", a: `The Portrait Session is ${PT.price.study} on its own: a ${PT.hours.study}-hour session with one photographer and {{photos.study}} edited photos (photos only, no video). The Duo (${PT.price.cinema}) and the Trio (${PT.price.trio}) include a dress or save-the-date session with {{session.photos}} edited photos, booked after the deposit, and the Second Portrait Day extra (${PT.addon.secondday}, Duo and Trio) adds a separate day for portraits in her dress, photos and video, at up to 2 locations.` },
-      { q: "Can we book only the photoshoot, without the event?", a: "Yes. The Portrait Session is designed to stand alone, for the invitations and welcome board, and it works just as well when the celebration itself is covered by family or another team." },
+      { q: "How much is a quinceañera photoshoot?", a: `The ${PT.name.study} is ${PT.price.study} on its own: a ${PT.hours.study}-hour session with ${PT.team.study} and {{photos.study}} edited photos (photos only, no video). ${PT.name.cinema} (${PT.price.cinema}) and ${PT.name.trio} (${PT.price.trio}) include a dress or save-the-date session with {{session.photos}} edited photos, booked after the deposit, and the Second Portrait Day extra (${PT.addon.secondday}, ${PT.sessionIn}) adds a separate day for portraits in her dress, photos and video, at up to 2 locations.` },
+      { q: "Can we book only the photoshoot, without the event?", a: `Yes. The ${PT.name.study} is designed to stand alone, for the invitations and welcome board, and it works just as well when the celebration itself is covered by family or another team.` },
       { q: "Can she wear her own quince dress?", a: "Yes, her own gown and as many as two looks in the session. There is no rental and no restriction on the dress." },
       { q: "When should we schedule it?", a: "Usually two to four months before the celebration, so the portraits are ready for invitations. Spring and fall light in Dallas–Fort Worth is the most forgiving; we plan the hour around it." },
       { q: "Do you handle location permits?", a: "Yes. Some gardens, including the Dallas Arboretum, charge their own photography fee, which is paid to the location. We confirm the rules and book the permit with you before the session." },
@@ -88,19 +88,19 @@ const COPY = {
     path: "/es/sesion-de-fotos-quinceanera",
     eyebrow: "Sesión de fotos pre-quince / Dallas–Fort Worth",
     h1: "La sesión de fotos de quinceañera, hecha como una editorial",
-    lead: "Una sesión de retratos pre-quince para las invitaciones, el tablero de bienvenida y la pared de la familia. Resérvala sola, sin cobertura del evento. El Dúo y el Trío incluyen una sesión con el vestido o de save the date, que se agenda después del depósito.",
+    lead: `Una sesión de retratos pre-quince para las invitaciones, el tablero de bienvenida y la pared de la familia. Resérvala sola, sin cobertura del evento. ${PT.sessionInEs} incluyen una sesión con el vestido o de save the date, que se agenda después del depósito.`,
     check: "Consultar tu fecha",
     other: "View in English",
     otherHref: "/quinceanera-photoshoot",
-    sessionEyebrow: "01 / Sesión de retratos",
+    sessionEyebrow: `01 / ${PT.nameEs.study}`,
     sessionTitle: `Una sesión de ${PT.hours.study} h, sin prisa, un solo plan.`,
     sessionBody: [
       "Planeamos la sesión como una producción de revista: el lugar, la luz, la hora y los dos cambios. Su propio vestido de quince, un segundo vestido, o los dos. Tu fotógrafo guía la postura y la luz, y luego se aparta para que ella siga siendo ella.",
       "También es la forma más fácil de conocernos antes de la celebración. Para cuando empieza la misa, la cámara ya le resulta familiar.",
     ],
-    includedTitle: "Qué incluye la Sesión de retratos",
+    includedTitle: `Qué incluye la ${PT.nameEs.study}`,
     included: [
-      `Una sesión de retratos de ${PT.hours.study} h con un fotógrafo`,
+      `Una sesión de retratos de ${PT.hours.study} h con ${PT.teamEs.study}`,
       "Lugar y horario planeados contigo",
       "{{photos.study}} fotos editadas",
       "Solo fotos, sin video",
@@ -119,16 +119,16 @@ const COPY = {
     waysEyebrow: "03 / Cómo reservar",
     waysTitle: "Sola, o ya incluida",
     ways: [
-      { label: "Sesión de retratos, por sí sola", note: "Solo la sesión, sin cobertura del evento", price: PT.price.study },
-      { label: "Incluida en el Dúo y el Trío", note: "Una sesión con el vestido o de save the date ({{session.photos}} fotos editadas), que se agenda después del depósito, más todo su día", price: `Desde ${PT.price.cinema}` },
+      { label: `${PT.nameEs.study}, por sí sola`, note: "Solo la sesión, sin cobertura del evento", price: PT.price.study },
+      { label: `Incluida en ${PT.sessionInEs}`, note: "Una sesión con el vestido o de save the date ({{session.photos}} fotos editadas), que se agenda después del depósito, más todo su día", price: `Desde ${PT.price.cinema}` },
       { label: "Segundo día de retratos", note: "Un día aparte para retratos con su vestido, fotos y video, en hasta 2 lugares", price: `+${PT.addon.secondday}` },
     ],
     compare: "Comparar todos los paquetes",
     faqEyebrow: "04 / Preguntas",
     faqTitle: "Preguntas sobre la sesión de fotos.",
     faqs: [
-      { q: "¿Cuánto cuesta una sesión de fotos de quinceañera?", a: `La Sesión de retratos cuesta ${PT.price.study} por sí sola: una sesión de ${PT.hours.study} h con un fotógrafo y {{photos.study}} fotos editadas (solo fotos, sin video). El Dúo (${PT.price.cinema}) y el Trío (${PT.price.trio}) incluyen una sesión con el vestido o de save the date con {{session.photos}} fotos editadas, que se agenda después del depósito, y el extra Segundo día de retratos (${PT.addon.secondday}, en el Dúo y el Trío) añade un día aparte para retratos con su vestido, fotos y video, en hasta 2 lugares.` },
-      { q: "¿Podemos reservar solo la sesión de fotos, sin el evento?", a: "Sí. La Sesión de retratos está pensada para reservarse sola, para las invitaciones y el tablero de bienvenida, y funciona igual de bien si la celebración la cubre la familia u otro equipo." },
+      { q: "¿Cuánto cuesta una sesión de fotos de quinceañera?", a: `La ${PT.nameEs.study} cuesta ${PT.price.study} por sí sola: una sesión de ${PT.hours.study} h con ${PT.teamEs.study} y {{photos.study}} fotos editadas (solo fotos, sin video). ${PT.nameEs.cinema} (${PT.price.cinema}) y ${PT.nameEs.trio} (${PT.price.trio}) incluyen una sesión con el vestido o de save the date con {{session.photos}} fotos editadas, que se agenda después del depósito, y el extra Segundo día de retratos (${PT.addon.secondday}, en ${PT.sessionInEs}) añade un día aparte para retratos con su vestido, fotos y video, en hasta 2 lugares.` },
+      { q: "¿Podemos reservar solo la sesión de fotos, sin el evento?", a: `Sí. La ${PT.nameEs.study} está pensada para reservarse sola, para las invitaciones y el tablero de bienvenida, y funciona igual de bien si la celebración la cubre la familia u otro equipo.` },
       { q: "¿Puede usar su propio vestido de quince?", a: "Sí, su propio vestido y hasta dos cambios en la sesión. No hay renta ni restricciones sobre el vestido." },
       { q: "¿Cuándo conviene hacerla?", a: "Normalmente de dos a cuatro meses antes de la celebración, para que los retratos estén listos para las invitaciones. La luz de primavera y otoño en Dallas–Fort Worth es la más amable; planeamos la hora alrededor de ella." },
       { q: "¿Ustedes se encargan de los permisos?", a: "Sí. Algunos jardines, como el Dallas Arboretum, cobran su propia cuota de fotografía, que se paga al lugar. Confirmamos las reglas y reservamos el permiso contigo antes de la sesión." },
@@ -159,8 +159,8 @@ export async function photoshootMetadata(locale: Locale) {
       : "Sesión de Fotos de Quinceañera y Pre-Quince — Dallas–Fort Worth";
   const description =
     locale === "en"
-      ? `Pre-quince photoshoot in Dallas–Fort Worth: a ${book.packages.study.hours}-hour Portrait Session for ${study.priceLabel}, bookable on its own. Her own dress, Arboretum to Highland Park Village.`
-      : `Sesión de fotos pre-quince en Dallas–Fort Worth: una Sesión de retratos de ${book.packages.study.hours} ${book.packages.study.hours === 1 ? "hora" : "horas"} por ${study.priceLabel}, se reserva sola. Su propio vestido, del Arboretum a Highland Park Village.`;
+      ? fillPrices(`Pre-quince photoshoot in Dallas–Fort Worth: a ${book.packages.study.hours}-hour ${PT.name.study} for ${study.priceLabel}, bookable on its own. Her own dress, Arboretum to Highland Park Village.`, book)
+      : fillPrices(`Sesión de fotos pre-quince en Dallas–Fort Worth: ${PT.nameEs.study} de ${book.packages.study.hours} ${book.packages.study.hours === 1 ? "hora" : "horas"} por ${study.priceLabel}, se reserva sola. Su propio vestido, del Arboretum a Highland Park Village.`, book);
   return {
     title,
     description,

@@ -1,5 +1,6 @@
 import { site } from "@/content/site";
-import { PUBLIC_TIER_IDS, TIER_NAME_EN, priceCeiling, priceFloor, usd, type PriceBook } from "@/lib/commission";
+import { tierName } from "@/lib/price-text";
+import { PUBLIC_TIER_IDS, priceCeiling, priceFloor, usd, type PriceBook } from "@/lib/commission";
 import { locations } from "@/content/locations";
 import { jsonLdString } from "@/lib/json-ld";
 import { businessContactJsonLd } from "@/lib/contact";
@@ -47,7 +48,7 @@ export function JsonLd({ book }: { book: PriceBook }) {
     // show "inquire for pricing"; this feeds price queries and AI overviews.
     makesOffer: PUBLIC_TIER_IDS.map((id) => ({
       "@type": "Offer",
-      name: `${TIER_NAME_EN[id]} — Quinceañera Photos & Video`,
+      name: `${tierName(book, id)} — Quinceañera Photos & Video`,
       price: String(book.packages[id].price),
       priceCurrency: "USD",
       url: `${site.url}/#commissions`,
