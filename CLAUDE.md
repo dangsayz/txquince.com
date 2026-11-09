@@ -56,3 +56,7 @@ Never ask Dang whether to merge. When a PR you opened is ready (no conflicts, ch
 ## Always end with links (standing rule from Dang, 2026-11-09)
 
 When work is done, give Dang the direct links to see it, so he can click instead of searching: the live page(s) that changed (full `https://txquince.com/...` URLs, the exact post or screen, not the homepage), the Studio page if there is one (`https://txquince.com/admin/...`), and the pull request. If he has to do a step in a dashboard, link the exact settings page.
+
+## Secret shopper: test it yourself, do not ask Dang to (standing rule from Dang, 2026-11-09)
+
+Dang does not want to click through the site to test it. After any change a family can see, and after every deploy, run `node scripts/secret-shopper.cjs` (live site; `--base http://localhost:3000` for a local build, `--all` for every page). It walks the key pages on a phone and a desktop, checks the three design gates, script errors, failed requests, broken images and links, and runs the flows a mom uses. It only looks and clicks; it never submits a form. Fix what it reports before you say done, and put its result line in your report. When you add a flow a family uses, add a step for it in the script. What it cannot do: anything that needs a real inbox or a real payment (log in by emailed code, checkout); say so instead of guessing.
