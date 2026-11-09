@@ -30,8 +30,12 @@ export type Album = {
   city: string | null;
   theme: { en: string; es: string };
   replacesDbEvent?: string;
-  /** [sequence, width, height, portfolio category id], in display order. */
-  photos: [number, number, number, string][];
+  /**
+   * [sequence, width, height, portfolio category id, alt?], in display order.
+   * The optional alt describes what that photo actually shows (no names);
+   * without it the alt is the category phrase + place.
+   */
+  photos: ([number, number, number, string] | [number, number, number, string, string])[];
 };
 
 export const ALBUMS: readonly Album[] = [plazaPinkGold, fgsRanchRed, horseRed] as Album[];
@@ -65,10 +69,10 @@ function altFor(album: Album, section: string): string {
 
 /** An album's photos in the shape the venue page and blog use. */
 export function albumPhotos(album: Album): VenueEventPhoto[] {
-  return album.photos.map(([seq, width, height, section], i) => ({
+  return album.photos.map(([seq, width, height, section, alt], i) => ({
     id: albumSlug(album, seq),
     url: `/api/img/${albumSlug(album, seq)}`,
-    alt: altFor(album, section),
+    alt: alt || altFor(album, section),
     section,
     is_feature: i === 0,
     sort_order: 100_000 + i,
