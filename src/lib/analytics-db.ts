@@ -5,6 +5,7 @@ import { getBookings, getInquiries } from "@/lib/clients-db";
 import { releasedTestimonials } from "@/content/testimonials";
 import { collectionById } from "@/content/packages";
 import { sourceKey, visitSourceKey, WHATSAPP_SOURCE } from "@/lib/src-tag";
+import { summarizeBehavior, type BehaviorSummary, type EventRow, type ViewRow } from "@/lib/page-behavior";
 
 export type ConversionChange = {
   id: string;
@@ -663,5 +664,42 @@ export async function getConversionChanges(): Promise<ConversionChange[]> {
     return data as ConversionChange[];
   } catch {
     return [];
+  }
+}
+
+/* ---------------- What visitors do (admin home) ---------------- */
+
+/**
+ * Page-by-page behavior for the last `days` days: visits, time on page,
+ * scroll depth, where visits end and the most-tapped things
+ * (see src/lib/page-behavior.ts). Reads in pages of 1,000 rows (the API's cap).
+ */
+export async function getPageBehavior(days = 14): Promise<BehaviorSummary & { configured: boolean; days: number }> {
+  const none = { pages: [], leak: null, measuredTotal: 0, days };
+  if (!isSupabaseConfigured()) return { ...none, configured: false };
+  try {
+    const supabase = getServiceSupabase();
+    const since = new Date(Date.now() - days * 86_400_000).toISOString();
+    const PAGE = 1000;
+    const MAX = 30_000;
+    async function all<T>(build: (from: number, to: number) => PromiseLike<{ data: T[] | null; error: unknown }>): Promise<T[]> {
+      const out: T[] = [];
+      for (let from = 0; from < MAX; from += PAGE) {
+        const { data, error } = await build(from, from + PAGE - 1);
+        if (error || !data) break;
+        out.push(...data);
+        if (data.length < PAGE) break;
+      }
+      return out;
+    }
+    const [views, events] = await Promise.all([
+      all<ViewRow>((a, b) => supabase.from("page_views").select("path, session_id, created_at").gte("created_at", since).order("created_at", { ascending: true }).range(a, b)),
+      all<EventRow>((a, b) =>
+        supabase.from("lead_events").select("event_type, path, target").in("event_type", ["engaged", "click"]).gte("created_at", since).order("created_at", { ascending: true }).range(a, b),
+      ),
+    ]);
+    return { ...summarizeBehavior(views, events), configured: true, days };
+  } catch {
+    return { ...none, configured: true };
   }
 }
