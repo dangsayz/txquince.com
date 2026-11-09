@@ -12,7 +12,7 @@ import { getBlogImages } from "@/lib/content-db";
 import { absoluteImageUrl, coverThumbs, ogImageFor, resolveBlogCover } from "@/lib/blog-cover";
 import { blogPostingJsonLd, postMetaTitle } from "@/lib/blog-structured-data";
 import { BlogArticleView } from "@/components/BlogContent";
-import { BlogComments } from "@/components/comments/BlogComments";
+import { BlogCommentRail, BlogComments } from "@/components/comments/BlogComments";
 import { getPriceBook } from "@/lib/pricing";
 import { fillDeep } from "@/lib/price-text";
 import { jsonLdString } from "@/lib/json-ld";
@@ -118,6 +118,7 @@ export default async function EsBlogPostPage({
         shareUrl={url}
         shareImage={coverAbs}
         comments={<BlogComments lang="es" slug={post.slug} />}
+        commentRail={<BlogCommentRail lang="es" slug={post.slug} />}
       />
     </>
   );

@@ -9,6 +9,14 @@ export type CommentStatus = (typeof COMMENT_STATUSES)[number];
 export type CommentLang = "en" | "es";
 
 export const COMMENT_MAX = 2000;
+/** A highlighted passage: long enough to mean something, short enough to quote. */
+export const QUOTE_MIN = 8;
+export const QUOTE_MAX = 300;
+
+/** One line, single spaces: how a passage is stored and matched in the post. */
+export function cleanQuote(raw: string): string {
+  return raw.replace(/[\u0000-\u001F\u007F]/g, " ").replace(/\s+/g, " ").trim();
+}
 /** A signed-in account may post this many comments per hour (pending ones count). */
 export const COMMENTS_PER_HOUR = 5;
 
@@ -21,6 +29,8 @@ export type CommentRecord = {
   author_name: string;
   author_image: string | null;
   body: string;
+  /** The passage of the post this comment is about (reader's highlight), if any. */
+  quote: string | null;
   status: CommentStatus;
   approved_at: string | null;
   reply: string | null;
@@ -34,6 +44,7 @@ export type PublicComment = {
   author_name: string;
   author_image: string | null;
   body: string;
+  quote: string | null;
   reply: string | null;
   replied_at: string | null;
 };
@@ -45,6 +56,7 @@ export function toPublicComment(c: CommentRecord): PublicComment {
     author_name: c.author_name,
     author_image: c.author_image,
     body: c.body,
+    quote: c.quote,
     reply: c.reply,
     replied_at: c.replied_at,
   };
@@ -68,6 +80,13 @@ export const NewCommentSchema = z.object({
     .string()
     .transform(cleanBody)
     .pipe(z.string().min(2, "Write a little more.").max(COMMENT_MAX, "Keep it under 2,000 characters.")),
+  /** Optional highlighted passage. Too short or too long is dropped, not an error. */
+  quote: z
+    .string()
+    .max(2000)
+    .transform(cleanQuote)
+    .transform((q) => (q.length >= QUOTE_MIN && q.length <= QUOTE_MAX ? q : null))
+    .nullish(),
   /** Honeypot: people never see it. Filled = a bot; the route drops it quietly. */
   website: z.string().max(500).optional(),
 });

@@ -610,7 +610,10 @@ export function BlogArticleView({
   shareImage,
   series = null,
   comments = null,
+  commentRail = null,
 }: {
+  /** The comment box for the left rail (wide screens; sticks while reading). */
+  commentRail?: ReactNode;
   lang: BlogLang;
   /** Comments section (server-rendered list + comment box), shown after the article. */
   comments?: ReactNode;
@@ -736,8 +739,8 @@ export function BlogArticleView({
           </figure>
 
           <div className="tq-blog-body">
-            {toc.length >= 3 ? (
-              <aside className="tq-blog-rail">
+            <aside className="tq-blog-rail" data-bare={toc.length >= 3 ? undefined : "true"}>
+              {toc.length >= 3 ? (
                 <details className="tq-blog-toc tq-blog-toc--m">
                   <summary>
                     <span className="tq-mono">{c.tocLabel}</span>
@@ -746,12 +749,18 @@ export function BlogArticleView({
                   </summary>
                   <nav aria-label={c.tocLabel}>{tocList}</nav>
                 </details>
-                <nav aria-label={c.tocLabel} className="tq-blog-toc tq-blog-toc--d">
-                  <p className="tq-mono tq-muted">{c.tocLabel}</p>
-                  {tocList}
-                </nav>
-              </aside>
-            ) : null}
+              ) : null}
+              {/* Sticks under the header while the article scrolls: contents, then the comment box. */}
+              <div className="tq-blog-rail__stick">
+                {toc.length >= 3 ? (
+                  <nav aria-label={c.tocLabel} className="tq-blog-toc tq-blog-toc--d">
+                    <p className="tq-mono tq-muted">{c.tocLabel}</p>
+                    {tocList}
+                  </nav>
+                ) : null}
+                {commentRail}
+              </div>
+            </aside>
             <div className="tq-blog-prose">
               <BlogContent
                 blocks={post.content}

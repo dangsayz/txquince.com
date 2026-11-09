@@ -18,6 +18,11 @@ export const COPY = {
     expired: "Your login timed out. Please log in again.",
     error: "Could not send. Please try again.",
     loading: "Loading…",
+    pick: "Comment on this",
+    railTitle: "Ask about this post",
+    about: "About",
+    removeQuote: "Remove the highlighted passage",
+    tip: "Tip: highlight any sentence in the post to ask about it.",
   },
   es: {
     soon: "Los comentarios abren pronto.",
@@ -36,5 +41,10 @@ export const COPY = {
     expired: "Tu sesión expiró. Vuelve a entrar.",
     error: "No se pudo enviar. Intenta de nuevo.",
     loading: "Cargando…",
+    pick: "Comentar esto",
+    railTitle: "Pregunta sobre esta publicación",
+    about: "Sobre",
+    removeQuote: "Quitar el texto resaltado",
+    tip: "Consejo: resalta cualquier frase de la publicación para preguntar sobre ella.",
   },
 } as const;
