@@ -147,7 +147,51 @@ function Row({ c, onChange, onDelete, onNotice }: { c: AdminComment; onChange: (
   );
 }
 
-export function CommentsManager({ initial }: { initial: AdminComment[] }) {
+type Blocked = { user_id: string; author_name: string; created_at: string };
+
+/** People who can't comment. Unblock lets them write again; old comments stay hidden. */
+function BlockedList({ initial }: { initial: Blocked[] }) {
+  const [rows, setRows] = useState(initial);
+  const [busy, setBusy] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  if (!rows.length) return null;
+  return (
+    <section aria-labelledby="cm-blocked" className="st-card mt-6 overflow-hidden">
+      <div className="px-5 pb-3 pt-5 sm:px-6">
+        <h2 id="cm-blocked" className="st-h2">Blocked people</h2>
+        <p className="st-note mt-1">They can&apos;t comment. Unblock lets them write again; their old comments stay hidden.</p>
+        {error ? <p role="alert" className="m-0 mt-2 text-[15px] text-[var(--tq-status-down)]">{error}</p> : null}
+      </div>
+      <ul className="m-0 list-none p-0">
+        {rows.map((b) => (
+          <li key={b.user_id} className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--tq-surface-2)] px-5 py-3 sm:px-6">
+            <span className="min-w-0">
+              <span className="block truncate text-base font-medium">{b.author_name}</span>
+              <span className="text-sm text-[var(--tq-ink-mute)]">Blocked {day(b.created_at)}</span>
+            </span>
+            <button
+              type="button"
+              className="st-btn-ghost"
+              disabled={busy === b.user_id}
+              onClick={async () => {
+                setBusy(b.user_id);
+                setError(null);
+                const res = await fetch("/api/admin/comments/block", { method: "DELETE", headers: { "content-type": "application/json" }, body: JSON.stringify({ user_id: b.user_id }) }).catch(() => null);
+                setBusy(null);
+                if (!res?.ok) return setError("Could not unblock. Try again.");
+                setRows((cur) => cur.filter((r) => r.user_id !== b.user_id));
+              }}
+            >
+              {busy === b.user_id ? "Saving…" : "Unblock"}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+export function CommentsManager({ initial, blocked = [] }: { initial: AdminComment[]; blocked?: Blocked[] }) {
   const [rows, setRows] = useState(initial);
   const counts = Object.fromEntries(VIEWS.map((v) => [v.id, rows.filter((r) => r.status === v.id).length])) as Record<CommentStatus, number>;
   const [view, setView] = useState<CommentStatus>(counts.pending || !counts.approved ? "pending" : "approved");
@@ -194,6 +238,7 @@ export function CommentsManager({ initial }: { initial: AdminComment[] }) {
         </p>
       )}
     </section>
+    <BlockedList initial={blocked} />
     </>
   );
 }

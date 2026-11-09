@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getPublicReviews } from "@/lib/reviews-db";
 import { reviewPhotoUrl } from "@/lib/review-public";
 import { Stars } from "@/components/Stars";
+import { AdminQuick } from "@/components/AdminQuick";
 import { site } from "@/content/site";
 import "@/components/txq/pages/pages.css";
 import "@/components/review/review.css";
@@ -55,6 +56,7 @@ export default async function ReviewsPage() {
                     {[r.daughterName ? `${r.daughterName}’s quinceañera` : null, r.city, r.when].filter(Boolean).join(" · ")}
                   </p>
                   <p className="tq-mono tq-muted" style={{ margin: 0 }}>Verified client</p>
+                  <AdminQuick kind="review" id={r.id} name={r.name} />
                 </div>
                 <blockquote className="rv-item__quote">{r.body}</blockquote>
                 {photos.length ? (

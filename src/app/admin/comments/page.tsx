@@ -1,5 +1,5 @@
 import { requireAdminPage } from "@/lib/require-admin";
-import { listCommentsForAdmin } from "@/lib/comments-db";
+import { listBlockedCommenters, listCommentsForAdmin, type BlockedCommenter } from "@/lib/comments-db";
 import { commentPostPath } from "@/lib/comments";
 import { getEsPost, getPost } from "@/content/blog";
 import { StudioPage } from "@/components/admin/StudioPage";
@@ -12,12 +12,14 @@ export default async function AdminComments() {
   await requireAdminPage("/admin/comments");
   let loadError: string | null = null;
   let comments: AdminComment[] = [];
+  let blocked: BlockedCommenter[] = [];
   try {
     comments = (await listCommentsForAdmin()).map((c) => ({
       ...c,
       postTitle: (c.lang === "es" ? getEsPost(c.post_slug) : getPost(c.post_slug))?.title ?? c.post_slug,
       postPath: commentPostPath(c),
     }));
+    blocked = await listBlockedCommenters();
   } catch (err) {
     loadError = err instanceof Error ? err.message : "Could not load comments.";
   }
@@ -32,7 +34,7 @@ export default async function AdminComments() {
           Comments could not load: {loadError}. If this is the first time, apply the D1 migration: <code>npx wrangler d1 migrations apply txquince --remote</code>.
         </p>
       ) : null}
-      <CommentsManager initial={comments} />
+      <CommentsManager initial={comments} blocked={blocked} />
     </StudioPage>
   );
 }

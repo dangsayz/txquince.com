@@ -9,7 +9,7 @@ export const ED = {
     menu: "Menu",
     close: "Close",
     heroLines: ["Every", "moment of", "her XV"],
-    heroNote: (from: string) => `Packages from ${from} · We reply within a day`,
+    heroNote: (both: string) => `Photo + video from ${both} · We reply within a day`,
     heroFilms: "Watch our films on YouTube",
     heroWhatsapp: "Chat on WhatsApp",
     statement: { label: "The studio", title: "Fifteen, forever." },
@@ -55,6 +55,20 @@ export const ED = {
       askBody: "Text it to us. We reply within a day, in English or Spanish.",
       where: "Where we work",
     },
+    steps: { title: "How booking works" },
+    // Not new promises: each line is the wording of the signed agreement
+    // (lib/agreement.ts) or of the questions block (txq/copy.ts faq).
+    promises: {
+      title: "The fine print, in plain words",
+      items: [
+        "If we can't take your date, we'll let you know and you won't be charged anything.",
+        "If we ever have to cancel, we refund everything you've paid.",
+        "If you cancel, your deposit is not refundable, because we save your date and turn other families away.",
+        "If anyone on the team can't make it, one of the two owners covers your day, no exceptions.",
+        "We're insured and can send your church or venue a certificate of insurance.",
+        "If you'd like to hear it from a mom, ask us: we'll put you in touch with a past family who's happy to take your call.",
+      ],
+    },
     text: "Text",
   },
   es: {
@@ -62,7 +76,7 @@ export const ED = {
     menu: "Menú",
     close: "Cerrar",
     heroLines: ["Cada", "momento de", "sus XV"],
-    heroNote: (from: string) => `Paquetes desde ${from} · Respondemos en un día`,
+    heroNote: (both: string) => `Foto y video desde ${both} · Respondemos en un día`,
     heroFilms: "Mira nuestros videos en YouTube",
     heroWhatsapp: "Escríbenos por WhatsApp",
     statement: { label: "El estudio", title: "Quince, para siempre." },
@@ -108,6 +122,18 @@ export const ED = {
       askTitle: "¿No viste la tuya?",
       askBody: "Mándanosla por texto. Respondemos en un día, en español o inglés.",
       where: "Dónde trabajamos",
+    },
+    steps: { title: "Cómo reservar" },
+    promises: {
+      title: "La letra chica, en palabras claras",
+      items: [
+        "Si no podemos tomar tu fecha, te avisamos y no se te cobra nada.",
+        "Si nosotros tuviéramos que cancelar, te devolvemos todo lo que hayas pagado.",
+        "Si cancelas, el depósito no es reembolsable, porque apartamos tu fecha y rechazamos a otras familias.",
+        "Si alguien del equipo no puede ir, uno de los dos dueños cubre tu día, sin excepción.",
+        "Tenemos seguro y podemos mandarle a tu iglesia o salón un certificado de seguro.",
+        "Si quieres oírlo de otra mamá, pídenoslo: te ponemos en contacto con una familia que con gusto toma tu llamada.",
+      ],
     },
     text: "Texto",
   },
