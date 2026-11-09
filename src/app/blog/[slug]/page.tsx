@@ -119,7 +119,13 @@ export default async function BlogPostPage({
           postVenues.length ? (
             <>
               {postVenues.map((v, i) => (
-                <VenueExperience key={v.slug} lang="en" venue={{ slug: v.slug, name: v.venue }} initial={experiences[i]} />
+                <VenueExperience
+                  key={v.slug}
+                  lang="en"
+                  venue={{ slug: v.slug, name: v.venue }}
+                  initial={experiences[i]}
+                  shareUrl={`${site.url}/venues/${v.slug}/experience`}
+                />
               ))}
             </>
           ) : null
