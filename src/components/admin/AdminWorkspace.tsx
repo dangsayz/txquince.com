@@ -10,6 +10,7 @@ const mainLinks = [
   { href: "/admin/inquiries", label: "Inquiries" },
   { href: "/admin/plans", label: "Plans" },
   { href: "/admin/bookings", label: "Bookings" },
+  { href: "/admin/support", label: "Support" },
   { href: "/admin/insights", label: "Insights" },
   { href: "/admin/website", label: "Website" },
 ] as const;
