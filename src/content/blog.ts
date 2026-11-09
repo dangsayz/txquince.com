@@ -31,7 +31,10 @@ export type BlogBlock =
   // the chart always reads the live price book.
   | { type: "budget-chart"; packages: { name: string; price: string }[] }
   // Interactive: a one-question poll by id (src/content/polls.ts).
-  | { type: "poll"; id: string };
+  | { type: "poll"; id: string }
+  // Interactive: this post's own dated checklist as a personal plan. Stages
+  // and tasks are read from the post's headings and lists (plan-stages.ts).
+  | { type: "date-plan" };
 
 export type BlogFaq = { q: string; a: string };
 

@@ -23,6 +23,7 @@ const post: BlogPost = {
       type: "callout",
       text: "La regla más sencilla: reserve primero lo que no se puede recuperar. Usted puede cambiar el vestido, los colores, hasta la corte. Lo que no puede recuperar es el sábado de un salón o un fotógrafo solicitado una vez que otra familia ya firmó.",
     },
+    { type: "date-plan" },
     { type: "h3", text: "¿6 meses —o hasta 3 meses— es muy tarde?" },
     {
       type: "p",

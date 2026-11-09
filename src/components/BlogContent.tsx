@@ -11,6 +11,8 @@ import type { Series } from "@/content/blog-clusters";
 import "@/components/txq/pages/blog.css";
 import { BudgetChart } from "@/components/blog/BudgetChart";
 import { QuickPoll } from "@/components/blog/QuickPoll";
+import { DatePlan } from "@/components/blog/DatePlan";
+import { planStages } from "@/content/plan-stages";
 
 /**
  * The journal (blog) in the homepage's editorial system: Inter display type,
@@ -296,6 +298,8 @@ export function BlogContent({
             );
           case "budget-chart":
             return <BudgetChart key={i} lang={lang} packages={b.packages} />;
+          case "date-plan":
+            return <DatePlan key={i} lang={lang} stages={planStages(blocks)} />;
           case "poll":
             return <QuickPoll key={i} pollId={b.id} lang={lang} />;
           case "quote":
