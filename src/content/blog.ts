@@ -101,8 +101,33 @@ import receptionDetails from "./blog/posts/quinceanera-reception-details-to-phot
 import lastDoll from "./blog/posts/what-is-the-last-doll-quinceanera";
 import fgsRanchHorse from "./blog/posts/quinceanera-photoshoot-with-horse-fgs-ranch-burleson";
 import horseIdeas from "./blog/posts/quinceanera-horse-photoshoot-ideas-dfw";
+// Grokbot handoff (Nov 8, 2026): one story per photo set.
+import hQuinceaneraStorybookDecorTheHamptonsRedO from "./blog/posts/quinceanera-storybook-decor-the-hamptons-red-oak";
+import hTwinQuinceaneraDressSessionTheHamptonsRe from "./blog/posts/twin-quinceanera-dress-session-the-hamptons-red-oak";
+import hRedAndWhiteQuinceaneraLuxuryWeddingEvent from "./blog/posts/red-and-white-quinceanera-luxury-wedding-event-venue-dallas";
+import hPinkQuinceaneraSlateVenuesIiCreeksRichar from "./blog/posts/pink-quinceanera-slate-venues-ii-creeks-richardson";
+import hButterflyQuinceaneraDecorLatinoBallroom from "./blog/posts/butterfly-quinceanera-decor-latino-ballroom";
+import hPinkGownQuinceaneraPhotosDallasArboretum from "./blog/posts/pink-gown-quinceanera-photos-dallas-arboretum";
+import hPinkCandlelitQuinceaneraReceptionDecor from "./blog/posts/pink-candlelit-quinceanera-reception-decor";
+import hQuinceaneraPortraitsDreamhaus from "./blog/posts/quinceanera-portraits-dreamhaus";
+import hBlackFloralGownQuinceaneraMandalayCanalL from "./blog/posts/black-floral-gown-quinceanera-mandalay-canal-las-colinas";
+import hRedGownQuinceaneraPhotosDallasArboretum from "./blog/posts/red-gown-quinceanera-photos-dallas-arboretum";
+import hPinkQuinceaneraLaPradaEventCenter from "./blog/posts/pink-quinceanera-la-prada-event-center";
+import hPinkQuinceaneraVmBallroomPhotos from "./blog/posts/pink-quinceanera-vm-ballroom-photos";
 
 export const posts: BlogPost[] = [
+  hQuinceaneraStorybookDecorTheHamptonsRedO,
+  hTwinQuinceaneraDressSessionTheHamptonsRe,
+  hRedAndWhiteQuinceaneraLuxuryWeddingEvent,
+  hPinkQuinceaneraSlateVenuesIiCreeksRichar,
+  hButterflyQuinceaneraDecorLatinoBallroom,
+  hPinkGownQuinceaneraPhotosDallasArboretum,
+  hPinkCandlelitQuinceaneraReceptionDecor,
+  hQuinceaneraPortraitsDreamhaus,
+  hBlackFloralGownQuinceaneraMandalayCanalL,
+  hRedGownQuinceaneraPhotosDallasArboretum,
+  hPinkQuinceaneraLaPradaEventCenter,
+  hPinkQuinceaneraVmBallroomPhotos,
   fgsRanchHorse,
   horseIdeas,
   dressSessionIdeas,
@@ -179,6 +204,18 @@ function relatedFrom(
 import esCosto from "./blog/posts/es/cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth";
 import esFgsRanch from "./blog/posts/es/fotos-de-quinceanera-con-caballo-fgs-ranch-burleson";
 import esCaballoIdeas from "./blog/posts/es/ideas-sesion-de-fotos-quinceanera-con-caballo";
+import hEsQuinceaneraDecoracionDeCuentoTheHamptons from "./blog/posts/es/quinceanera-decoracion-de-cuento-the-hamptons-red-oak";
+import hEsSesionDeVestidoQuinceaneraGemelasTheHamp from "./blog/posts/es/sesion-de-vestido-quinceanera-gemelas-the-hamptons-red-oak";
+import hEsQuinceaneraRojoYBlancoLuxuryWeddingEvent from "./blog/posts/es/quinceanera-rojo-y-blanco-luxury-wedding-event-venue-dallas";
+import hEsQuinceaneraRosaSlateVenuesIiCreeksRichar from "./blog/posts/es/quinceanera-rosa-slate-venues-ii-creeks-richardson";
+import hEsDecoracionDeMariposasQuinceaneraLatinoBa from "./blog/posts/es/decoracion-de-mariposas-quinceanera-latino-ballroom";
+import hEsFotosDeQuinceaneraVestidoRosaDallasArbor from "./blog/posts/es/fotos-de-quinceanera-vestido-rosa-dallas-arboretum";
+import hEsDecoracionRosaConVelasRecepcionQuinceane from "./blog/posts/es/decoracion-rosa-con-velas-recepcion-quinceanera";
+import hEsRetratosDeQuinceaneraDreamhaus from "./blog/posts/es/retratos-de-quinceanera-dreamhaus";
+import hEsQuinceaneraVestidoNegroFloralCanalMandal from "./blog/posts/es/quinceanera-vestido-negro-floral-canal-mandalay-las-colinas";
+import hEsFotosDeQuinceaneraVestidoRojoDallasArbor from "./blog/posts/es/fotos-de-quinceanera-vestido-rojo-dallas-arboretum";
+import hEsQuinceaneraRosaLaPradaEventCenter from "./blog/posts/es/quinceanera-rosa-la-prada-event-center";
+import hEsFotosDeQuinceaneraRosaVmBallroom from "./blog/posts/es/fotos-de-quinceanera-rosa-vm-ballroom";
 import esPlanesPago from "./blog/posts/es/planes-de-pago-fotografia-quinceanera-dfw";
 import esCuandoReservar from "./blog/posts/es/cuando-reservar-fotografo-quinceanera-dfw";
 import esPreguntas from "./blog/posts/es/preguntas-para-tu-fotografo-de-quinceanera";
@@ -202,6 +239,18 @@ import esEntrega from "./blog/posts/es/cuanto-tardan-las-fotos-y-video-de-quince
 import esProveedores from "./blog/posts/es/como-contratar-proveedores-de-quinceanera-sin-que-le-estafen";
 
 export const esPosts: BlogPost[] = [
+  hEsQuinceaneraDecoracionDeCuentoTheHamptons,
+  hEsSesionDeVestidoQuinceaneraGemelasTheHamp,
+  hEsQuinceaneraRojoYBlancoLuxuryWeddingEvent,
+  hEsQuinceaneraRosaSlateVenuesIiCreeksRichar,
+  hEsDecoracionDeMariposasQuinceaneraLatinoBa,
+  hEsFotosDeQuinceaneraVestidoRosaDallasArbor,
+  hEsDecoracionRosaConVelasRecepcionQuinceane,
+  hEsRetratosDeQuinceaneraDreamhaus,
+  hEsQuinceaneraVestidoNegroFloralCanalMandal,
+  hEsFotosDeQuinceaneraVestidoRojoDallasArbor,
+  hEsQuinceaneraRosaLaPradaEventCenter,
+  hEsFotosDeQuinceaneraRosaVmBallroom,
   esFgsRanch,
   esCaballoIdeas,
   esProveedores,
@@ -242,6 +291,18 @@ export function relatedEsPosts(post: BlogPost, n = 3): BlogPost[] {
 
 /** EN ↔ ES slug pairs, for hreflang alternates linking each translation. */
 const EN_ES_PAIRS: { en: string; es: string }[] = [
+  { en: "quinceanera-storybook-decor-the-hamptons-red-oak", es: "quinceanera-decoracion-de-cuento-the-hamptons-red-oak" },
+  { en: "twin-quinceanera-dress-session-the-hamptons-red-oak", es: "sesion-de-vestido-quinceanera-gemelas-the-hamptons-red-oak" },
+  { en: "red-and-white-quinceanera-luxury-wedding-event-venue-dallas", es: "quinceanera-rojo-y-blanco-luxury-wedding-event-venue-dallas" },
+  { en: "pink-quinceanera-slate-venues-ii-creeks-richardson", es: "quinceanera-rosa-slate-venues-ii-creeks-richardson" },
+  { en: "butterfly-quinceanera-decor-latino-ballroom", es: "decoracion-de-mariposas-quinceanera-latino-ballroom" },
+  { en: "pink-gown-quinceanera-photos-dallas-arboretum", es: "fotos-de-quinceanera-vestido-rosa-dallas-arboretum" },
+  { en: "pink-candlelit-quinceanera-reception-decor", es: "decoracion-rosa-con-velas-recepcion-quinceanera" },
+  { en: "quinceanera-portraits-dreamhaus", es: "retratos-de-quinceanera-dreamhaus" },
+  { en: "black-floral-gown-quinceanera-mandalay-canal-las-colinas", es: "quinceanera-vestido-negro-floral-canal-mandalay-las-colinas" },
+  { en: "red-gown-quinceanera-photos-dallas-arboretum", es: "fotos-de-quinceanera-vestido-rojo-dallas-arboretum" },
+  { en: "pink-quinceanera-la-prada-event-center", es: "quinceanera-rosa-la-prada-event-center" },
+  { en: "pink-quinceanera-vm-ballroom-photos", es: "fotos-de-quinceanera-rosa-vm-ballroom" },
   { en: "quinceanera-photoshoot-with-horse-fgs-ranch-burleson", es: "fotos-de-quinceanera-con-caballo-fgs-ranch-burleson" },
   { en: "quinceanera-horse-photoshoot-ideas-dfw", es: "ideas-sesion-de-fotos-quinceanera-con-caballo" },
   { en: "how-long-to-get-quinceanera-photos-video-back", es: "cuanto-tardan-las-fotos-y-video-de-quinceanera" },
