@@ -45,26 +45,29 @@ export type PriceForm = {
   momentsSaturdayDays: string;
 };
 
+/** Money reads like money in the form: "5,123". `num` strips the comma back out. */
+const money = (n: number) => n.toLocaleString("en-US");
+
 export const toForm = (b: PriceBook): PriceForm => ({
   packages: Object.fromEntries(
     TIER_IDS.map((id) => [
       id,
       {
-        price: String(b.packages[id].price),
+        price: money(b.packages[id].price),
         hours: String(b.packages[id].hours),
-        extraHour: String(b.packages[id].extraHour),
+        extraHour: money(b.packages[id].extraHour),
         maxHours: String(b.packages[id].maxHours),
       },
     ]),
   ) as PriceForm["packages"],
-  addOns: Object.fromEntries(ADD_ON_IDS.map((id) => [id, String(b.addOns[id])])) as PriceForm["addOns"],
+  addOns: Object.fromEntries(ADD_ON_IDS.map((id) => [id, money(b.addOns[id])])) as PriceForm["addOns"],
   maxHours: String(b.maxHours),
   depositPercent: String(b.depositPercent),
   balanceDueDays: String(b.balanceDueDays),
   holdDays: String(b.holdDays),
   trioSpotsTotal: String(b.trioSpotsTotal),
   trioSpotsLeft: String(b.trioSpotsLeft),
-  planHoldUsd: String(b.planHoldUsd),
+  planHoldUsd: money(b.planHoldUsd),
   momentsSaturdayDays: String(b.momentsSaturdayDays),
 });
 
@@ -136,30 +139,35 @@ export function Field({
   suffix?: string;
 }) {
   const describedBy = [hint ? `${id}-hint` : "", error ? `${id}-err` : ""].filter(Boolean).join(" ") || undefined;
+  // A price-sheet figure, not a form box: label, big tabular number on one hairline.
   return (
-    <div className="min-w-0">
-      <label htmlFor={id} className="block text-sm font-medium text-ink">
-        {label}
-      </label>
-      <div
-        className={`mt-1.5 flex items-center rounded-lg border bg-white px-3 transition-[border-color,box-shadow] focus-within:border-ink focus-within:shadow-[0_0_0_3px_rgba(16,16,16,0.12)] ${error ? "border-red-700" : "border-[#c9cac7]"}`}
-      >
-        {prefix ? <span aria-hidden="true" className="mr-1 text-base text-ink-soft">{prefix}</span> : null}
+    <div className="st-figure min-w-0" data-bad={error ? true : undefined}>
+      {/* The whole figure (label + number line) is one tap target. */}
+      <label htmlFor={id} className="st-figure__hit">
+      <span className="st-figure__label">{label}</span>
+      <span className="st-figure__line">
+        {prefix ? <span aria-hidden="true" className="st-figure__unit">{prefix}</span> : null}
         <input
           id={id}
           type="text"
-          inputMode="numeric"
+          inputMode="decimal"
           autoComplete="off"
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          onBlur={() => {
+            // Money fields tidy up to "5,123" when you leave them.
+            const n = num(value);
+            if (prefix === "$" && Number.isFinite(n)) onChange(money(n));
+          }}
           aria-invalid={error ? true : undefined}
           aria-describedby={describedBy}
-          className="h-12 min-w-0 flex-1 bg-transparent text-base tabular-nums text-ink outline-none focus:outline-none focus-visible:outline-none!"
+          className="st-figure__input"
         />
-        {suffix ? <span aria-hidden="true" className="ml-2 whitespace-nowrap text-sm text-ink-soft">{suffix}</span> : null}
-      </div>
+        {suffix ? <span aria-hidden="true" className="st-figure__unit st-figure__unit--after">{suffix}</span> : null}
+      </span>
+      </label>
       {hint ? (
-        <p id={`${id}-hint`} className="mt-1 text-sm text-ink-soft">
+        <p id={`${id}-hint`} className="mt-1.5 text-sm text-ink-soft">
           {hint}
         </p>
       ) : null}
@@ -206,11 +214,9 @@ export function PricePreview({ book }: { book: PriceBook | null }) {
     <div className="rounded-xl border border-line bg-ivory p-4 sm:p-6">
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label htmlFor="pv-tier" className="block text-sm font-medium text-ink">
-            Package
-          </label>
+          <label className="block">
+          <span className="block text-sm font-medium text-ink">Package</span>
           <select
-            id="pv-tier"
             value={tier}
             onChange={(e) => setTier(e.target.value as TierId)}
             className="mt-1.5 min-h-12 w-full rounded-lg border border-[#c9cac7] bg-white px-3 text-base text-ink"
@@ -221,6 +227,7 @@ export function PricePreview({ book }: { book: PriceBook | null }) {
               </option>
             ))}
           </select>
+          </label>
         </div>
         <div>
           <span id="pv-hours-label" className="block text-sm font-medium text-ink">

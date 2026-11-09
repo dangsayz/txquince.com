@@ -113,22 +113,24 @@ function Short({
   error?: string;
 }) {
   return (
-    <div className="min-w-0">
-      <label htmlFor={id} className="block text-sm font-medium text-ink">
-        {label}
+    <div className="st-figure min-w-0" data-bad={error ? true : undefined}>
+      <label htmlFor={id} className="st-figure__hit">
+      <span className="st-figure__label">{label}</span>
+      <span className="st-figure__line">
+        <input
+          id={id}
+          type="text"
+          autoComplete="off"
+          maxLength={CONTENT_LIMITS.short}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={`${id}-hint`}
+          className="st-figure__input"
+        />
+      </span>
       </label>
-      <input
-        id={id}
-        type="text"
-        autoComplete="off"
-        maxLength={CONTENT_LIMITS.short}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        aria-invalid={error ? true : undefined}
-        aria-describedby={`${id}-hint`}
-        className={`${inputCls(Boolean(error))} h-12`}
-      />
-      <p id={`${id}-hint`} className="mt-1 text-sm text-ink-soft">
+      <p id={`${id}-hint`} className="mt-1.5 text-sm text-ink-soft">
         {hint}
       </p>
       {error ? <p className="mt-1 text-sm font-medium text-red-800">{error}</p> : null}
@@ -205,6 +207,26 @@ function ListEditor({
       </button>
       {errors[id] ? <p className="mt-1 text-sm font-medium text-red-800">{errors[id]}</p> : null}
     </div>
+  );
+}
+
+/** The package name, edited where it reads: as a heading, Spanish under it. */
+function NameField({ value, hint, error, onChange }: { value: L; hint: string; error?: string; onChange: (v: L) => void }) {
+  return (
+    <fieldset className="min-w-0" data-bad={error ? true : undefined}>
+      <legend className="st-figure__label">Name</legend>
+      <label className="st-title-field">
+        <span className="sr-only">English name</span>
+        <input type="text" maxLength={40} autoComplete="off" value={value.en} onChange={(e) => onChange({ ...value, en: e.target.value })} aria-invalid={error ? true : undefined} className="st-title-field__input" />
+      </label>
+      <label className="st-title-field st-title-field--es">
+        <span aria-hidden="true" className="st-title-field__lang">ES</span>
+        <span className="sr-only">Spanish name</span>
+        <input type="text" maxLength={40} autoComplete="off" value={value.es} onChange={(e) => onChange({ ...value, es: e.target.value })} aria-invalid={error ? true : undefined} className="st-title-field__input" />
+      </label>
+      <p className="mt-1.5 text-sm text-ink-soft">{hint}</p>
+      {error ? <p className="mt-1 text-sm font-medium text-red-800">{error}</p> : null}
+    </fieldset>
   );
 }
 
@@ -421,7 +443,7 @@ export function PackageManager({ initial, startTab }: { initial: PricesSnapshot;
   }
 
   return (
-    <div className="pb-6">
+    <div className="min-w-0 pb-6">
       <details className="group rounded-xl border border-line bg-ivory px-4 text-[15px] leading-relaxed text-ink sm:px-5">
         <summary className="flex min-h-12 cursor-pointer list-none items-center gap-3 py-2 [&::-webkit-details-marker]:hidden">
           <span className="font-medium">Change it once here and it changes everywhere: every page in English and Spanish, the booking form, emails and the agreement.</span>
@@ -565,9 +587,9 @@ export function PackageManager({ initial, startTab }: { initial: PricesSnapshot;
               Name, price and hours
             </h2>
             <div className="mt-3">
-              <Pair id="name" label="Name" hint={NAME_HINT} rows={1} value={c.name} max={40} errors={fieldErrors} onChange={(v) => setField("name", v)} />
+              <NameField value={c.name} hint={NAME_HINT} error={fieldErrors["name.en"] || fieldErrors["name.es"]} onChange={(v) => setField("name", v)} />
             </div>
-            <div className="mt-4 grid grid-cols-2 gap-4 lg:grid-cols-4">
+            <div className="mt-6 grid grid-cols-2 gap-x-6 gap-y-5 lg:grid-cols-4">
               <Field
                 id={`p-${tier}-price`}
                 label="Price"
@@ -694,14 +716,12 @@ export function PackageManager({ initial, startTab }: { initial: PricesSnapshot;
 
         {tab !== "extras" ? (
           <aside className="min-w-0 lg:sticky lg:top-20 lg:max-h-[calc(100dvh-10rem)] lg:self-start lg:overflow-y-auto">
-            <button
-              type="button"
-              aria-expanded={showPreview}
-              onClick={() => setShowPreview((v) => !v)}
-              className="st-btn-ghost w-full lg:hidden"
-            >
-              {showPreview ? "Hide preview" : "Show preview"}
-            </button>
+            {/* Phones only: studio.css's .st-btn-ghost display would beat lg:hidden on the button itself. */}
+            <div className="lg:hidden">
+              <button type="button" aria-expanded={showPreview} onClick={() => setShowPreview((v) => !v)} className="st-btn-ghost w-full">
+                {showPreview ? "Hide preview" : "Show preview"}
+              </button>
+            </div>
             <div className={`${showPreview ? "mt-3 block" : "hidden"} lg:mt-0 lg:block`}>
               {book ? (
                 <Preview book={book} tier={tier} />
