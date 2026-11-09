@@ -209,9 +209,27 @@
   gap: var(--tq-space-6);
   max-width: 34rem;
 }
+/* Fields here are boxes, not the booking form's bare underline: on this
+   page an underline-only field read as empty space (owner could not find
+   where to type). Square, white, one hairline; focus ring inside the border. */
+.txq .acct-form .tq-input {
+  padding: 12px 14px;
+  background: #fff;
+  border: 1px solid var(--tq-stone);
+  border-radius: 0;
+  transition: border-color var(--tq-dur-fast) var(--tq-ease);
+}
+.txq .acct-form .tq-input:hover { border-color: var(--tq-ink-mute); }
+.txq .acct-form .tq-input:focus-visible {
+  outline: none;
+  border-color: var(--tq-ink);
+  box-shadow: inset 0 0 0 1px var(--tq-ink);
+}
+.txq .acct-form textarea.tq-input { min-height: 9rem; resize: none; line-height: 1.5; }
 .txq .acct-form select.tq-input {
   appearance: auto;
 }
+@media (prefers-reduced-motion: reduce) { .txq .acct-form .tq-input { transition: none; } }
 .txq .acct-form .tq-btn {
   min-height: var(--tq-tap-primary);
   white-space: nowrap;
@@ -246,9 +264,14 @@
   .txq .acct > * {
     grid-column: 4 / span 9;
   }
+  /* The form leads on the page's left edge (same edge as every heading and
+     the footer); the quick-contact buttons sit beside it as a short column. */
   .txq .acct-help {
-    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    grid-template-columns: minmax(0, 6fr) minmax(0, 4fr);
+    column-gap: var(--tq-space-12);
   }
+  .txq .acct-help__col:first-child { order: 2; }
+  .txq .acct-form { max-width: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .txq .acct-pkgs a {

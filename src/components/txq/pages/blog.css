@@ -487,18 +487,21 @@
   .txq .tq-blog-prose { grid-column: 4 / span 8; }
   .txq .tq-blog-toc--m { display: none; }
   .txq .tq-blog-toc--d { display: block; }
-  /* Contents + comment box follow the reader down the article. */
+  /* Contents + comment box follow the reader down the article. No inner
+     scroll area (it clipped focus rings and showed its own scrollbar). On a
+     short window the contents list gives way so the comment box always fits. */
   .txq .tq-blog-rail__stick {
     position: sticky;
     top: calc(var(--header-h) + 24px);
     display: grid;
     gap: 28px;
-    max-height: calc(100svh - var(--header-h) - 48px);
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    padding-right: 4px;
-    scrollbar-width: thin;
   }
+  .txq .tq-blog-toc--d .tq-blog-toc__list {
+    max-height: max(132px, calc(100svh - var(--header-h) - 420px));
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .txq .tq-blog-toc--d .tq-blog-toc__list::-webkit-scrollbar { display: none; }
   .txq .tq-blog-toc--d > p {
     padding-bottom: 8px;
     border-bottom: 1px solid var(--border-hairline);
