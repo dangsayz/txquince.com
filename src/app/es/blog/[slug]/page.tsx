@@ -12,6 +12,9 @@ import { getBlogImages } from "@/lib/content-db";
 import { absoluteImageUrl, coverThumbs, ogImageFor, resolveBlogCover } from "@/lib/blog-cover";
 import { blogPostingJsonLd, postMetaTitle } from "@/lib/blog-structured-data";
 import { BlogArticleView } from "@/components/BlogContent";
+import { VenueExperience } from "@/components/VenueExperience";
+import { getVenue } from "@/content/venues";
+import { getVenueExperience } from "@/lib/venue-experience-db";
 import { BlogCommentRail, BlogComments } from "@/components/comments/BlogComments";
 import { getPriceBook } from "@/lib/pricing";
 import { fillDeep } from "@/lib/price-text";
@@ -90,6 +93,9 @@ export default async function EsBlogPostPage({
   const images = await getBlogImages(post.content);
   const cover = await resolveBlogCover(post, images, "es");
   const coverAbs = absoluteImageUrl(cover.url);
+  // Venue posts open with the owner's own account of working there.
+  const postVenues = (raw.venues ?? []).map((v) => getVenue(v)).filter((v) => v !== undefined);
+  const experiences = await Promise.all(postVenues.map((v) => getVenueExperience(v.slug)));
   const relatedThumbs = await coverThumbs(related, "es");
 
   const jsonLd = blogPostingJsonLd({
@@ -114,6 +120,15 @@ export default async function EsBlogPostPage({
         cover={cover}
         related={related}
         relatedThumbs={relatedThumbs}
+        experience={
+          postVenues.length ? (
+            <>
+              {postVenues.map((v, i) => (
+                <VenueExperience key={v.slug} lang="es" venue={{ slug: v.slug, name: v.venue }} initial={experiences[i]} />
+              ))}
+            </>
+          ) : null
+        }
         series={series}
         shareUrl={url}
         shareImage={coverAbs}

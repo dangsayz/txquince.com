@@ -15,6 +15,7 @@ const post: BlogPost = {
   "publishedAt": "2026-07-02",
   "updatedAt": "2026-10-14",
   "readMinutes": 7,
+  "venues": ["vm-ballroom"],
   "lead": "VM Ballroom is a quinceañera and wedding venue at 11221 Lake June Rd in Balch Springs, on the southeast side of Dallas, with seating for up to 250 guests. We've photographed quinceañeras there more than once, so this guide covers what families actually want to know before booking — what the venue is, how its pricing works, what to ask on a tour, and how to plan the day so the room photographs at its best.",
   "content": [
     {

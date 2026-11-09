@@ -1,0 +1,180 @@
+/* "Our experience at this venue and its staff". Brand kit tokens only
+   (src/app/brand.css). A dark, full-ink panel so it stands apart from the
+   guide text around it: this is the owner speaking. */
+.tq-vx {
+  margin-block: 2.25em;
+  padding: 28px 20px;
+  background: var(--tq-cinema);
+  color: var(--tq-ink-on);
+  line-height: 1.6;
+}
+.tq-vx > * + * {
+  margin-top: 20px;
+}
+.tq-vx__kicker {
+  color: color-mix(in srgb, var(--tq-ink-on) 72%, transparent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.tq-vx .tq-vx__title {
+  margin-top: 8px;
+  color: var(--tq-ink-on);
+  font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.125rem);
+  line-height: 1.12;
+  letter-spacing: var(--tq-tracking-display);
+  text-wrap: balance;
+}
+.tq-vx__verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 8px 14px;
+  border: 1px solid color-mix(in srgb, var(--tq-ink-on) 45%, transparent);
+  border-radius: var(--tq-radius-pill);
+  font-weight: var(--tq-weight-medium);
+}
+.tq-vx__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--tq-radius-pill);
+  background: var(--tq-ink-on);
+}
+.tq-vx[data-verdict="great"] .tq-vx__dot {
+  background: #6fbf85; /* lightened --tq-status-open for 3:1 on the dark panel */
+}
+.tq-vx[data-verdict="mixed"] .tq-vx__dot,
+.tq-vx[data-verdict="poor"] .tq-vx__dot {
+  background: #e89a5c; /* lightened --tq-status-limited for 3:1 on the dark panel */
+}
+.tq-vx__body {
+  font-size: 1.0625rem;
+}
+.tq-vx__body > p + p {
+  margin-top: 1em;
+}
+.tq-vx__body > p:first-child::first-line {
+  font-weight: var(--tq-weight-medium);
+}
+.tq-vx__foot {
+  display: grid;
+  gap: 6px;
+  padding-top: 16px;
+  border-top: 1px solid var(--tq-cinema-line);
+  color: color-mix(in srgb, var(--tq-ink-on) 72%, transparent);
+  font-size: 1rem;
+}
+.tq-vx__empty {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+  border: 1px dashed color-mix(in srgb, var(--tq-ink-on) 45%, transparent);
+}
+.tq-vx__owner {
+  color: color-mix(in srgb, var(--tq-ink-on) 80%, transparent);
+}
+.tq-vx__form {
+  display: grid;
+  gap: 18px;
+}
+.tq-vx__verdicts {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.tq-vx__verdicts legend,
+.tq-vx__field > span {
+  margin-bottom: 6px;
+  font-weight: var(--tq-weight-medium);
+}
+.tq-vx__verdicts label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--tq-tap);
+  cursor: pointer;
+}
+.tq-vx__verdicts input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--tq-ink-on);
+}
+.tq-vx__field {
+  display: grid;
+}
+.tq-vx__field textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--tq-ink-on) 45%, transparent);
+  border-radius: 0;
+  background: var(--tq-cinema-surface);
+  color: var(--tq-ink-on);
+  font: inherit;
+  font-size: 1rem;
+  line-height: 1.5;
+  resize: vertical;
+}
+.tq-vx__field textarea::placeholder {
+  color: color-mix(in srgb, var(--tq-ink-on) 60%, transparent);
+}
+.tq-vx__field textarea:focus-visible,
+.tq-vx__btn:focus-visible,
+.tq-vx__link:focus-visible {
+  outline: 2px solid var(--tq-ink-on);
+  outline-offset: 2px;
+}
+.tq-vx__error {
+  color: #f0a987;
+}
+.tq-vx__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 12px;
+}
+.tq-vx__btn {
+  min-height: var(--tq-tap-primary);
+  padding: 10px 20px;
+  border: 1px solid var(--tq-ink-on);
+  border-radius: var(--tq-radius-pill);
+  background: transparent;
+  color: var(--tq-ink-on);
+  font: inherit;
+  font-weight: var(--tq-weight-medium);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--tq-dur-fast) var(--tq-ease),
+    color var(--tq-dur-fast) var(--tq-ease);
+}
+.tq-vx__btn--primary {
+  background: var(--tq-ink-on);
+  color: var(--tq-cinema);
+}
+.tq-vx__btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.tq-vx__link {
+  min-height: var(--tq-tap);
+  padding: 8px 4px;
+  border: 0;
+  background: none;
+  color: color-mix(in srgb, var(--tq-ink-on) 80%, transparent);
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+@media (min-width: 640px) {
+  .tq-vx {
+    padding: 40px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tq-vx__btn {
+    transition: none;
+  }
+}
