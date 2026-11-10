@@ -351,7 +351,12 @@ const mandalay: InspoPlace = {
   },
 };
 
-export const INSPO_PLACES: InspoPlace[] = [mandalay];
+// Newer spots live one per file in ./inspo and use photos from the published albums.
+// (Type-only import in those files, so there is no runtime cycle.)
+import { place as dallasArboretum } from "./inspo/dallas-arboretum";
+import { place as fgsRanch } from "./inspo/fgs-ranch";
+
+export const INSPO_PLACES: InspoPlace[] = [mandalay, dallasArboretum, fgsRanch];
 
 export function getInspoPlace(slug: string): InspoPlace | undefined {
   return INSPO_PLACES.find((p) => p.slug === slug);
