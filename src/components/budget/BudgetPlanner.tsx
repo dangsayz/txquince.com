@@ -1,9 +1,10 @@
 "use client";
 
-import { useId, useMemo, useState } from "react";
+import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { usePriceBook } from "@/components/PriceBookProvider";
 import { useSite, handoffToBooking } from "@/components/txq/state";
+import { useShell } from "@/components/txq/SiteShell";
 import { tierNameL } from "@/components/txq/data";
 import { getFirstTouch, trackEvent } from "@/components/Tracker";
 import { HONEYPOT_FIELD } from "@/lib/inquiry";
@@ -12,7 +13,8 @@ import { coverageForBudget, smallestCoverage, EVENT_TIERS, type CoverageOption, 
 import { hourSteps, momentsDateAllowed, usd, type AddOnId } from "@/lib/commission";
 import { todayInDallas } from "@/lib/plan";
 import { BUDGET_COPY } from "./budget-copy";
-import { detailsFor, goodToKnow } from "./budget-details";
+import { detailsFor, goodToKnow, type Details } from "./budget-details";
+import { BUDGET_PHOTOS, budgetPhotoSrc } from "./budget-photos";
 import { DetailIcon } from "./DetailIcon";
 import { ShareBar } from "./ShareBar";
 import "./budget.css";
@@ -34,20 +36,84 @@ function parseUsd(v: string): number | null {
   return Math.round(k ? n * 1000 : n);
 }
 
+const noSubscribe = () => () => {};
+
+/** Digits get thousands separators as she types ("1500" → "1,500"); "1.5k" is left as typed. */
+function fmtTyping(raw: string): string {
+  const t = raw.replace(/[$\s]/g, "");
+  if (!/^[\d,]*$/.test(t)) return raw.slice(0, 10);
+  const digits = t.replace(/,/g, "").replace(/^0+/, "").slice(0, 6);
+  return digits ? Number(digits).toLocaleString("en-US") : "";
+}
+
 export function BudgetPlanner() {
   const { lang, homeHref } = useSite();
   const { book, quote, maxHours } = usePriceBook();
   const c = BUDGET_COPY[lang];
   const uid = useId();
 
-  const [budgetText, setBudgetText] = useState("");
-  const [wantVideo, setWantVideo] = useState(false);
+  // A shared link carries her number: /budget?b=1500&v=1 opens on the same answer.
+  // The link is the starting value; whatever she types or taps after that wins.
+  const urlQuery = useSyncExternalStore(noSubscribe, () => window.location.search, () => "");
+  const fromUrl = useMemo(() => {
+    const q = new URLSearchParams(urlQuery);
+    const b = parseUsd(q.get("b") ?? "");
+    return { text: b ? fmtTyping(String(Math.min(b, 999999))) : "", video: q.get("v") === "1" };
+  }, [urlQuery]);
+  const [typedBudget, setBudgetText] = useState<string | null>(null);
+  const [pickedVideo, setWantVideo] = useState<boolean | null>(null);
+  const budgetText = typedBudget ?? fromUrl.text;
+  const wantVideo = pickedVideo ?? fromUrl.video;
   const budget = parseUsd(budgetText);
   const result = useMemo(() => (budget ? coverageForBudget(book, budget, wantVideo) : null), [book, budget, wantVideo]);
   const smallest = useMemo(() => smallestCoverage(book, wantVideo), [book, wantVideo]);
 
   const nameOf = (tier: EventTier) => tierNameL(book, tier)[lang];
-  const label = (o: CoverageOption) => `${c.hours(o.hours)}${o.addOns.includes("momentsfilm") ? `, ${c.withFilm}` : ""}`;
+  /** Each package at its included hours: the real starting prices (chips and the empty state). */
+  const starts = useMemo(
+    () => EVENT_TIERS.map((tier) => ({ tier, hours: book.packages[tier].hours, usd: quote(tier, [], book.packages[tier].hours).totalUsd, video: tier !== "moments" })),
+    [book, quote],
+  );
+
+  const shareQuery = budget ? `?b=${budget}${wantVideo ? "&v=1" : ""}` : "";
+  const touched = typedBudget !== null || pickedVideo !== null;
+  useEffect(() => {
+    if (!touched) return;
+    const id = window.setTimeout(() => window.history.replaceState(window.history.state, "", `${window.location.pathname}${shareQuery}${window.location.hash}`), 400);
+    return () => window.clearTimeout(id);
+  }, [touched, shareQuery]);
+
+  // The page has its own money action, so the site-wide "Reserve your date" dock
+  // steps aside; ours names the closest package once the budget field and its button scroll away.
+  const { setDockHidden } = useShell();
+  useEffect(() => {
+    setDockHidden(true);
+    return () => setDockHidden(false);
+  }, [setDockHidden]);
+  const bestBtn = useRef<HTMLButtonElement>(null);
+  const offerRef = useRef<HTMLElement>(null);
+  const toolRef = useRef<HTMLElement>(null);
+  const [dockOn, setDockOn] = useState(false);
+  const bestKey = result?.fits[0] ? `${result.fits[0].tier}-${result.fits[0].hours}` : "";
+  useEffect(() => {
+    const btn = bestBtn.current;
+    const offer = offerRef.current;
+    const tool = toolRef.current;
+    if (!btn || !offer || !tool) return;
+    const seen = new Map<Element, boolean>();
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) seen.set(e.target, e.isIntersecting);
+      // Never over the budget field and its controls, the card's own button, or the offer form.
+      setDockOn(!seen.get(btn) && !seen.get(offer) && !seen.get(tool));
+    });
+    io.observe(tool);
+    io.observe(btn);
+    io.observe(offer);
+    return () => {
+      io.disconnect();
+      setDockOn(false);
+    };
+  }, [bestKey]);
 
   const choose = (o: CoverageOption) => {
     trackEvent("budget_choose", o.tier);
@@ -70,6 +136,7 @@ export function BudgetPlanner() {
   const [errors, setErrors] = useState<Partial<Record<"amount" | "date" | "name" | "email" | "form", string>>>({});
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+  const [offerOpen, setOfferOpen] = useState(false);
 
   const offerAddOns: AddOnId[] = offerTier === "moments" && offerFilm ? ["momentsfilm"] : [];
   const hoursForOffer = Math.min(Math.max(offerHours, book.packages[offerTier].hours), maxHours(offerTier));
@@ -83,15 +150,16 @@ export function BudgetPlanner() {
     if (t !== "moments") setOfferFilm(false);
   };
 
-  const startOffer = () => {
+  const startOffer = (scroll = false) => {
     const best = result?.fits[0] ?? smallest;
     if (best) {
       setOfferTier(best.tier);
       setOfferHours(best.hours);
       setOfferFilm(best.addOns.includes("momentsfilm"));
     }
-    if (budget && !offerText) setOfferText(String(budget));
-    document.getElementById(`${uid}-offer`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (budget && !offerText) setOfferText(fmtTyping(String(budget)));
+    setOfferOpen(true);
+    if (scroll) requestAnimationFrame(() => offerRef.current?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" }));
   };
 
   const submit = async (ev: React.FormEvent<HTMLFormElement>) => {
@@ -156,113 +224,144 @@ export function BudgetPlanner() {
     }
   };
 
+  const best = result?.fits[0] ?? null;
+  const others = result?.fits.slice(1) ?? [];
+  const pick = (usdAmount: number) => {
+    trackEvent("budget_chip", String(usdAmount));
+    setBudgetText(fmtTyping(String(usdAmount)));
+  };
+
   return (
     <div className="bp">
       <header className="bp-head">
-        <p className="bp-eyebrow">{c.eyebrow}</p>
         <h1 className="bp-title">{c.title}</h1>
         <p className="bp-dek">{c.dek}</p>
-        <TrustLine lang={lang} />
-        <div className="bp-wa">
-          <WhatsAppChatButton lang={lang} placement="budget-top" />
-        </div>
-        <a className="bp-sharelink" href="#share-bottom">
-          {c.shareTop} <span aria-hidden>↓</span>
-        </a>
       </header>
 
-      <section className="bp-panel" aria-labelledby={`${uid}-in`}>
-        <h2 id={`${uid}-in`} className="bp-sr">{c.budgetLabel}</h2>
-        <label className="bp-label bp-label--first" htmlFor={`${uid}-budget`}>
-          {c.budgetLabel}
-        </label>
-        <div className="bp-money">
-          <span aria-hidden>$</span>
-          <input
-            id={`${uid}-budget`}
-            inputMode="numeric"
-            autoComplete="off"
-            placeholder="1,000"
-            value={budgetText}
-            onChange={(e) => setBudgetText(e.target.value)}
-            aria-describedby={`${uid}-budget-hint`}
-          />
-        </div>
-        <p id={`${uid}-budget-hint`} className="bp-hint">
-          {c.budgetHint}
-        </p>
+      <div className="bp-grid">
+        <section ref={toolRef} className="bp-tool" aria-labelledby={`${uid}-in`}>
+          <h2 id={`${uid}-in`} className="bp-sr">{c.budgetLabel}</h2>
+          <label className="bp-label bp-label--first" htmlFor={`${uid}-budget`}>
+            {c.budgetLabel}
+          </label>
+          <MoneyInput id={`${uid}-budget`} value={budgetText} onChange={setBudgetText} placeholder={usd(starts[1]?.usd ?? starts[0].usd).replace("$", "")} describedBy={`${uid}-budget-hint`} />
+          <p id={`${uid}-budget-hint`} className="bp-hint">
+            {c.budgetHint}
+          </p>
 
-        <p className="bp-label" id={`${uid}-want`}>
-          {c.wantLabel}
-        </p>
-        <div className="bp-seg" role="radiogroup" aria-labelledby={`${uid}-want`}>
-          {[
-            [false, c.photos],
-            [true, c.photosVideo],
-          ].map(([v, l]) => (
-            <button key={String(v)} type="button" role="radio" aria-checked={wantVideo === v} onClick={() => setWantVideo(v as boolean)}>
-              {l as string}
-            </button>
-          ))}
-        </div>
-      </section>
+          <p className="bp-label" id={`${uid}-starts`}>
+            {c.startsAt}
+          </p>
+          <ul className="bp-chips" aria-labelledby={`${uid}-starts`}>
+            {starts.map((s) => (
+              <li key={s.tier}>
+                <button type="button" aria-pressed={budget === s.usd} aria-label={`${usd(s.usd)}, ${nameOf(s.tier)}`} onClick={() => pick(s.usd)}>
+                  {usd(s.usd)}
+                </button>
+              </li>
+            ))}
+          </ul>
 
-      <section className="bp-results" aria-live="polite" aria-labelledby={`${uid}-res`}>
-        <h2 id={`${uid}-res`} className="bp-h2">
-          {budget ? c.resultsTitle(usd(budget)) : c.resultsEmpty}
-        </h2>
-        {result && result.fits.length === 0 && smallest ? (
-          <p className="bp-note">{c.nothingFits(`${c.hours(smallest.hours)}, ${usd(smallest.totalUsd)}`)}</p>
-        ) : null}
-        {result ? (
-          <ul className="bp-cards">
-            {result.fits.map((o) => {
-              const tName = nameOf(o.tier);
-              return (
-                <li key={`${o.tier}-${o.hours}-${o.addOns.join()}`} className="bp-card">
-                  <div className="bp-card__top">
-                    <h3 className="bp-card__name">{tName}</h3>
-                    <p className="bp-card__price">{usd(o.totalUsd)}</p>
+          <p className="bp-label" id={`${uid}-want`}>
+            {c.wantLabel}
+          </p>
+          <div className="bp-seg" role="radiogroup" aria-labelledby={`${uid}-want`}>
+            {(
+              [
+                [false, c.photos],
+                [true, c.photosVideo],
+              ] as const
+            ).map(([v, l]) => (
+              <button key={String(v)} type="button" role="radio" aria-checked={wantVideo === v} onClick={() => setWantVideo(v)}>
+                {l}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <section className="bp-results" aria-live="polite" aria-labelledby={`${uid}-res`}>
+          <h2 id={`${uid}-res`} className="bp-h2">
+            {budget ? c.resultsTitle(usd(budget)) : c.resultsEmpty}
+          </h2>
+
+          {!budget ? (
+            <ul className="bp-ladder">
+              {starts.map((s) => (
+                <li key={s.tier}>
+                  <button type="button" className="bp-rung" onClick={() => pick(s.usd)}>
+                    <Photo tier={s.tier} size="thumb" />
+                    <span className="bp-rung__text">
+                      <span className="bp-card__name">{nameOf(s.tier)}</span>
+                      <span className="bp-card__meta">
+                        {c.hours(s.hours)} · {s.video ? c.includesVideo : c.photosOnly}
+                      </span>
+                    </span>
+                    <span className="bp-rung__price">{c.from(usd(s.usd))}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+
+          {result && !best && smallest ? (
+            <p className="bp-note">{c.nothingFits(`${c.hours(smallest.hours)}, ${usd(smallest.totalUsd)}`)}</p>
+          ) : null}
+
+          {result && budget ? (
+            <ul className="bp-cards">
+              {best ? (
+                <li key={keyOf(best)} className="bp-card bp-card--best">
+                  <div className="bp-card__photo">
+                    <Photo tier={best.tier} size="wide" />
+                    <p className="bp-tag">{c.closest}</p>
                   </div>
-                  <p className="bp-card__meta">
-                    {label(o)} · {o.video ? c.includesVideo : c.photosOnly}
-                  </p>
-                  <WhatYouGet option={o} />
-                  {o.tier === "moments" ? <p className="bp-hint bp-hint--note">{c.satNote(book.momentsSaturdayDays, nameOf("moments"))}</p> : null}
-                  <button type="button" className="bp-btn" onClick={() => choose(o)} aria-label={c.chooseAria(tName)}>
+                  <div className="bp-card__body">
+                    <CardText option={best} budget={budget} />
+                    <button ref={bestBtn} type="button" className="bp-btn" onClick={() => choose(best)} aria-label={c.chooseAria(nameOf(best.tier))}>
+                      {c.choose} <span aria-hidden>→</span>
+                    </button>
+                  </div>
+                </li>
+              ) : null}
+              {others.map((o) => (
+                <li key={keyOf(o)} className="bp-card">
+                  <div className="bp-card__row">
+                    <Photo tier={o.tier} size="thumb" />
+                    <div className="bp-card__body">
+                      <CardText option={o} budget={budget} />
+                    </div>
+                  </div>
+                  <button type="button" className="bp-btn bp-btn--line" onClick={() => choose(o)} aria-label={c.chooseAria(nameOf(o.tier))}>
                     {c.choose} <span aria-hidden>→</span>
                   </button>
                 </li>
-              );
-            })}
-            {result.stretch ? (
-              <li className="bp-card bp-card--stretch">
-                <p className="bp-card__kicker">{c.stretch(usd(result.stretch.totalUsd - (budget ?? 0)))}</p>
-                <div className="bp-card__top">
-                  <h3 className="bp-card__name">{nameOf(result.stretch.tier)}</h3>
-                  <p className="bp-card__price">{usd(result.stretch.totalUsd)}</p>
-                </div>
-                <p className="bp-card__meta">
-                  {label(result.stretch)} · {result.stretch.video ? c.includesVideo : c.photosOnly}
-                </p>
-                <WhatYouGet option={result.stretch} />
-                <button type="button" className="bp-btn bp-btn--line" onClick={() => choose(result.stretch!)}>
-                  {c.choose} <span aria-hidden>→</span>
-                </button>
-              </li>
-            ) : null}
-          </ul>
-        ) : null}
-        {budget ? (
-          <button type="button" className="bp-link" onClick={startOffer}>
-            {c.offerTitle}
-          </button>
-        ) : null}
-      </section>
+              ))}
+              {result.stretch ? (
+                <li key={`over-${keyOf(result.stretch)}`} className="bp-card bp-card--over">
+                  <div className="bp-card__row">
+                    <Photo tier={result.stretch.tier} size="thumb" />
+                    <div className="bp-card__body">
+                      <CardText option={result.stretch} budget={budget} />
+                    </div>
+                  </div>
+                  <button type="button" className="bp-btn bp-btn--line" onClick={() => choose(result.stretch!)} aria-label={c.chooseAria(nameOf(result.stretch.tier))}>
+                    {c.choose} <span aria-hidden>→</span>
+                  </button>
+                </li>
+              ) : null}
+            </ul>
+          ) : null}
+          {budget ? (
+            <button type="button" className="bp-link" onClick={() => startOffer(true)}>
+              {c.offerTitle}
+            </button>
+          ) : null}
+        </section>
+      </div>
 
       <section className="bp-know" aria-labelledby={`${uid}-know`}>
         <h2 id={`${uid}-know`} className="bp-h2">{c.knowTitle}</h2>
-        <ul className="bp-lines">
+        <ul className="bp-lines bp-lines--know">
           {goodToKnow(lang, book).map((l) => (
             <li key={l.label} className="bp-line">
               <DetailIcon name={l.icon} />
@@ -275,97 +374,238 @@ export function BudgetPlanner() {
         </ul>
       </section>
 
-      <section id={`${uid}-offer`} className="bp-panel bp-offer" aria-labelledby={`${uid}-offer-t`}>
-        <h2 id={`${uid}-offer-t`} className="bp-h2">
-          {c.offerTitle}
+      <section ref={offerRef} id={`${uid}-offer`} className="bp-offer" data-open={offerOpen || undefined} aria-labelledby={`${uid}-offer-t`}>
+        <h2 id={`${uid}-offer-t`} className="bp-offer__h">
+          <button type="button" className="bp-offer__toggle" aria-expanded={offerOpen} aria-controls={`${uid}-offer-body`} onClick={() => (offerOpen ? setOfferOpen(false) : startOffer())}>
+            <span>{c.offerTitle}</span>
+            <svg className="bp-offer__chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden focusable="false">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </button>
         </h2>
-        <p className="bp-dek bp-dek--sm">{c.offerDek}</p>
-        {sent ? (
-          <div className="bp-sent" role="status">
-            <p className="bp-card__name">{c.sentTitle}</p>
-            <p>{c.sentBody}</p>
-          </div>
-        ) : (
-          <form onSubmit={submit} noValidate>
-            <input type="text" name={HONEYPOT_FIELD} tabIndex={-1} autoComplete="off" className="bp-hp" aria-hidden />
-
-            <label className="bp-label bp-label--first" htmlFor={`${uid}-amt`}>{c.offerAmount}</label>
-            <div className="bp-money" data-invalid={errors.amount ? true : undefined}>
-              <span aria-hidden>$</span>
-              <input id={`${uid}-amt`} inputMode="numeric" value={offerText} onChange={(e) => setOfferText(e.target.value)} aria-invalid={Boolean(errors.amount)} />
+        <div id={`${uid}-offer-body`} className="bp-offer__body" hidden={!offerOpen}>
+          <p className="bp-dek bp-dek--sm">{c.offerDek}</p>
+          {sent ? (
+            <div className="bp-sent" role="status">
+              <p className="bp-card__name">{c.sentTitle}</p>
+              <p>{c.sentBody}</p>
             </div>
-            {errors.amount ? <p className="bp-err">{errors.amount}</p> : null}
+          ) : offerOpen ? (
+            <form onSubmit={submit} noValidate>
+              <input type="text" name={HONEYPOT_FIELD} tabIndex={-1} autoComplete="off" className="bp-hp" aria-hidden />
 
-            <p className="bp-label" id={`${uid}-cov`}>{c.offerCoverage}</p>
-            <div className="bp-seg bp-seg--wrap" role="radiogroup" aria-labelledby={`${uid}-cov`}>
-              {EVENT_TIERS.map((t) => (
-                <button key={t} type="button" role="radio" aria-checked={offerTier === t} onClick={() => pickOfferTier(t)}>
-                  {nameOf(t)}
-                </button>
-              ))}
-            </div>
+              <div className="bp-fields">
+                <div>
+                  <label className="bp-label bp-label--first" htmlFor={`${uid}-amt`}>{c.offerAmount}</label>
+                  <MoneyInput id={`${uid}-amt`} value={offerText} onChange={setOfferText} invalid={Boolean(errors.amount)} describedBy={errors.amount ? `${uid}-amt-err` : undefined} />
+                  {errors.amount ? <p id={`${uid}-amt-err`} className="bp-err">{errors.amount}</p> : null}
+                </div>
 
-            <div className="bp-row">
-              <label className="bp-label" htmlFor={`${uid}-hrs`}>{c.offerHours}</label>
-              <select id={`${uid}-hrs`} className="bp-input" value={hoursForOffer} onChange={(e) => setOfferHours(Number(e.target.value))}>
-                {hourSteps(book, offerTier).map((h) => (
-                  <option key={h} value={h}>{c.hours(h)}</option>
-                ))}
-              </select>
-            </div>
-            {offerTier === "moments" ? (
-              <label className="bp-check">
-                <input type="checkbox" checked={offerFilm} onChange={(e) => setOfferFilm(e.target.checked)} />
-                <span>{c.offerFilm} (+{usd(book.addOns.momentsfilm)})</span>
-              </label>
-            ) : null}
-            <p className="bp-hint">{c.offerOurPrice(usd(ourPrice))}</p>
+                <div>
+                  <p className="bp-label bp-label--first" id={`${uid}-cov`}>{c.offerCoverage}</p>
+                  <div className="bp-seg bp-seg--wrap" role="radiogroup" aria-labelledby={`${uid}-cov`}>
+                    {EVENT_TIERS.map((t) => (
+                      <button key={t} type="button" role="radio" aria-checked={offerTier === t} onClick={() => pickOfferTier(t)}>
+                        {nameOf(t)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
-            <label className="bp-label" htmlFor={`${uid}-date`}>{c.date}</label>
-            <input id={`${uid}-date`} type="date" className="bp-input" min={today} value={date} onChange={(e) => setDate(e.target.value)} aria-invalid={Boolean(errors.date)} />
-            {errors.date ? <p className="bp-err">{errors.date}</p> : satBlocked ? <p className="bp-err">{c.errors.saturday(book.momentsSaturdayDays, nameOf("moments"))}</p> : null}
+                <div>
+                  <label className="bp-label bp-label--first" htmlFor={`${uid}-hrs`}>{c.offerHours}</label>
+                  <select id={`${uid}-hrs`} className="bp-input" value={hoursForOffer} onChange={(e) => setOfferHours(Number(e.target.value))}>
+                    {hourSteps(book, offerTier).map((h) => (
+                      <option key={h} value={h}>{c.hours(h)}</option>
+                    ))}
+                  </select>
+                  {offerTier === "moments" ? (
+                    <label className="bp-check">
+                      <input type="checkbox" checked={offerFilm} onChange={(e) => setOfferFilm(e.target.checked)} />
+                      <span>{c.offerFilm} (+{usd(book.addOns.momentsfilm)})</span>
+                    </label>
+                  ) : null}
+                  <p className="bp-hint">{c.offerOurPrice(usd(ourPrice))}</p>
+                </div>
 
-            <label className="bp-label" htmlFor={`${uid}-name`}>{c.name}</label>
-            <input id={`${uid}-name`} className="bp-input" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} aria-invalid={Boolean(errors.name)} />
-            {errors.name ? <p className="bp-err">{errors.name}</p> : null}
+                <div>
+                  <label className="bp-label bp-label--first" htmlFor={`${uid}-date`}>{c.date}</label>
+                  <input id={`${uid}-date`} type="date" className="bp-input" min={today} value={date} onChange={(e) => setDate(e.target.value)} aria-invalid={Boolean(errors.date)} aria-describedby={errors.date || satBlocked ? `${uid}-date-err` : undefined} />
+                  {errors.date ? <p id={`${uid}-date-err`} className="bp-err">{errors.date}</p> : satBlocked ? <p id={`${uid}-date-err`} className="bp-err">{c.errors.saturday(book.momentsSaturdayDays, nameOf("moments"))}</p> : null}
+                </div>
 
-            <label className="bp-label" htmlFor={`${uid}-email`}>{c.email}</label>
-            <input id={`${uid}-email`} type="email" className="bp-input" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} aria-invalid={Boolean(errors.email)} />
-            {errors.email ? <p className="bp-err">{errors.email}</p> : null}
+                <div>
+                  <label className="bp-label bp-label--first" htmlFor={`${uid}-name`}>{c.name}</label>
+                  <input id={`${uid}-name`} className="bp-input" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} aria-invalid={Boolean(errors.name)} aria-describedby={errors.name ? `${uid}-name-err` : undefined} />
+                  {errors.name ? <p id={`${uid}-name-err`} className="bp-err">{errors.name}</p> : null}
+                </div>
 
-            <label className="bp-label" htmlFor={`${uid}-phone`}>{c.phone}</label>
-            <input id={`${uid}-phone`} type="tel" className="bp-input" autoComplete="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
+                <div>
+                  <label className="bp-label bp-label--first" htmlFor={`${uid}-email`}>{c.email}</label>
+                  <input id={`${uid}-email`} type="email" className="bp-input" autoComplete="email" spellCheck={false} value={email} onChange={(e) => setEmail(e.target.value)} aria-invalid={Boolean(errors.email)} aria-describedby={errors.email ? `${uid}-email-err` : undefined} />
+                  {errors.email ? <p id={`${uid}-email-err`} className="bp-err">{errors.email}</p> : null}
+                </div>
 
-            {SHOW_TURNSTILE && SITE_KEY ? (
-              <div className="bp-ts">
-                <Turnstile siteKey={SITE_KEY} onSuccess={setToken} onExpire={() => setToken("")} onError={() => setToken("")} options={{ theme: "light", language: lang }} />
+                <div>
+                  <label className="bp-label bp-label--first" htmlFor={`${uid}-phone`}>{c.phone}</label>
+                  <input id={`${uid}-phone`} type="tel" className="bp-input" autoComplete="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
+                </div>
               </div>
-            ) : null}
-            {errors.form ? <p className="bp-err" role="alert">{errors.form}</p> : null}
 
-            <button type="submit" className="bp-btn bp-btn--lg" disabled={sending} aria-busy={sending}>
-              {sending ? c.sending : c.send} <span aria-hidden>→</span>
-            </button>
-            <TrustLine lang={lang} />
-          </form>
-        )}
+              {SHOW_TURNSTILE && SITE_KEY ? (
+                <div className="bp-ts">
+                  <Turnstile siteKey={SITE_KEY} onSuccess={setToken} onExpire={() => setToken("")} onError={() => setToken("")} options={{ theme: "light", language: lang }} />
+                </div>
+              ) : null}
+              {errors.form ? <p className="bp-err" role="alert">{errors.form}</p> : null}
+
+              <button type="submit" className="bp-btn bp-btn--lg" disabled={sending} aria-busy={sending}>
+                {sending ? c.sending : c.send} <span aria-hidden>→</span>
+              </button>
+            </form>
+          ) : null}
+        </div>
       </section>
 
-      <ShareBar placement="bottom" />
+      <div className="bp-help">
+        <TrustLine lang={lang} />
+        <WhatsAppChatButton lang={lang} placement="budget-top" />
+      </div>
+
+      <ShareBar placement="bottom" query={shareQuery} />
 
       <p className="bp-fine">
         {c.fine} <a href={homeHref("#commissions")}>{c.seePackages}</a>
       </p>
+
+      {best ? (
+        <div className="bp-dock" data-hidden={!dockOn} aria-hidden={!dockOn || undefined}>
+          <p className="bp-dock__text">
+            <span className="bp-dock__name">{nameOf(best.tier)}</span>
+            <span className="bp-dock__meta">
+              {usd(best.totalUsd)} · {c.hours(best.hours)}
+            </span>
+          </p>
+          <button type="button" className="bp-btn" tabIndex={dockOn ? undefined : -1} onClick={() => choose(best)} aria-label={c.chooseAria(nameOf(best.tier))}>
+            {c.choose} <span aria-hidden>→</span>
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }
 
-/** Exactly what an option includes, one icon line each, then what isn't included. */
-function WhatYouGet({ option }: { option: CoverageOption }) {
+const keyOf = (o: CoverageOption) => `${o.tier}-${o.hours}-${o.addOns.join()}`;
+
+/** A budget field that shows thousands separators as she types and keeps the caret where it was. */
+function MoneyInput({ id, value, onChange, placeholder, invalid, describedBy }: { id: string; value: string; onChange: (v: string) => void; placeholder?: string; invalid?: boolean; describedBy?: string }) {
+  const ref = useRef<HTMLInputElement>(null);
+  const caretDigits = useRef<number | null>(null);
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el || caretDigits.current === null || document.activeElement !== el) return;
+    let pos = 0;
+    for (let seen = 0; pos < value.length && seen < caretDigits.current; pos += 1) if (/\d/.test(value[pos])) seen += 1;
+    el.setSelectionRange(pos, pos);
+    caretDigits.current = null;
+  }, [value]);
+  return (
+    <div className="bp-money" data-invalid={invalid || undefined}>
+      <span aria-hidden>$</span>
+      <input
+        ref={ref}
+        id={id}
+        inputMode="numeric"
+        autoComplete="off"
+        placeholder={placeholder}
+        value={value}
+        aria-invalid={invalid || undefined}
+        aria-describedby={describedBy}
+        onChange={(e) => {
+          const raw = e.target.value;
+          caretDigits.current = raw.slice(0, e.target.selectionStart ?? raw.length).replace(/\D/g, "").length;
+          onChange(fmtTyping(raw));
+        }}
+      />
+    </div>
+  );
+}
+
+/** The package's photo, from the published albums, with its space reserved. */
+function Photo({ tier, size }: { tier: EventTier; size: "wide" | "thumb" }) {
+  const { lang } = useSite();
+  const p = BUDGET_PHOTOS[tier];
+  const wide = size === "wide";
+  return (
+    // eslint-disable-next-line @next/next/no-img-element -- /api/img serves its own capped renditions
+    <img
+      className={wide ? "bp-photo" : "bp-photo bp-photo--thumb"}
+      src={budgetPhotoSrc(p.slug, wide ? 800 : 240)}
+      srcSet={wide ? `${budgetPhotoSrc(p.slug, 480)} 480w, ${budgetPhotoSrc(p.slug, 800)} 800w, ${budgetPhotoSrc(p.slug, 1200)} 1200w` : undefined}
+      sizes={wide ? "(min-width: 1024px) 640px, 100vw" : undefined}
+      width={p.w}
+      height={p.h}
+      alt={wide ? p.alt[lang] : ""}
+      loading="lazy"
+      decoding="async"
+      draggable={false}
+      onContextMenu={(e) => e.preventDefault()}
+    />
+  );
+}
+
+/** Name, price, how much of the budget it uses, the short list, and the full list on request. */
+function CardText({ option, budget }: { option: CoverageOption; budget: number }) {
   const { lang } = useSite();
   const { book } = usePriceBook();
   const c = BUDGET_COPY[lang];
   const d = detailsFor(option.tier, option.hours, option.addOns, lang, book);
+  const over = option.totalUsd - budget;
+  const short = d.included.filter((l) => l.icon !== "clock").slice(0, 3);
+  return (
+    <>
+      <div className="bp-card__top">
+        <h3 className="bp-card__name">{tierNameL(book, option.tier)[lang]}</h3>
+        <p className="bp-card__price">{usd(option.totalUsd)}</p>
+      </div>
+      <p className="bp-card__meta">
+        {c.hours(option.hours)}
+        {option.addOns.includes("momentsfilm") ? `, ${c.withFilm}` : ""} · {option.video ? c.includesVideo : c.photosOnly}
+      </p>
+      {over > 0 ? (
+        <p className="bp-over">{c.over(usd(over))}</p>
+      ) : (
+        <div className="bp-meter">
+          <div className="bp-meter__track" aria-hidden>
+            <i style={{ transform: `scaleX(${Math.min(option.totalUsd / budget, 1)})` }} />
+          </div>
+          <p className="bp-meter__text">
+            {over === 0 ? c.usesAll(usd(budget)) : c.uses(usd(option.totalUsd), usd(budget))}
+            {over < 0 ? <b>{c.left(usd(-over))}</b> : null}
+          </p>
+        </div>
+      )}
+      <ul className="bp-short">
+        {short.map((l) => (
+          <li key={l.label}>
+            <DetailIcon name={l.icon} />
+            <span>{l.text}</span>
+          </li>
+        ))}
+      </ul>
+      <details className="bp-more">
+        <summary>{c.seeAll}</summary>
+        <WhatYouGet details={d} />
+        {option.tier === "moments" ? <p className="bp-hint bp-hint--note">{c.satNote(book.momentsSaturdayDays, tierNameL(book, "moments")[lang])}</p> : null}
+      </details>
+    </>
+  );
+}
+
+/** Exactly what an option includes, one icon line each, then what isn't included. */
+function WhatYouGet({ details: d }: { details: Details }) {
+  const { lang } = useSite();
+  const c = BUDGET_COPY[lang];
   return (
     <div className="bp-get">
       <p className="bp-get__h">{c.youGet}</p>
