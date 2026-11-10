@@ -1,3 +1,4 @@
+import { ogBase } from "@/lib/share-meta";
 import type { Metadata } from "next";
 import { InquiryPage } from "@/components/InquiryPage";
 import { getVenue } from "@/content/venues";
@@ -7,7 +8,7 @@ export const metadata: Metadata = {
   title: "Consulta tu Fecha para Foto y Video de Quinceañera",
   description: "Cuéntanos sobre su quinceañera. Confirmamos personalmente si tu fecha está disponible y respondemos tus preguntas.",
   alternates: { canonical: "/es/consulta", languages: languageAlternates("/check-your-date", "/es/consulta") },
-  openGraph: { locale: OG_LOCALE.es },
+  openGraph: { ...ogBase("es"), locale: OG_LOCALE.es },
 };
 
 export default async function ConsultaPage({

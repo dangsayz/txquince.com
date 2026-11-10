@@ -1,3 +1,4 @@
+import { ogBase } from "@/lib/share-meta";
 import type { Metadata } from "next";
 import { BudgetPlanner } from "@/components/budget/BudgetPlanner";
 import { site } from "@/content/site";
@@ -12,7 +13,7 @@ const META: Metadata = {
   title,
   description,
   alternates: { canonical: "/budget", languages: languageAlternates("/budget", "/es/presupuesto") },
-  openGraph: { title: `${title} · ${site.brand}`, description, url: `${site.url}/budget`, type: "website" },
+  openGraph: { ...ogBase("en", { image: false }), title: `${title} · ${site.brand}`, description, url: `${site.url}/budget`, type: "website" },
   twitter: { card: "summary_large_image", title: `${title} · ${site.brand}`, description },
 };
 

@@ -1,3 +1,4 @@
+import { ogBase } from "@/lib/share-meta";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { about } from "@/content/about";
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
   title: "About",
   description: "Quinceañera photos and video in Dallas–Fort Worth, shaped around the portraits, traditions, and celebrations that matter to your family.",
   alternates: { canonical: "/about" },
-  openGraph: {
+  openGraph: { ...ogBase("en", { image: false }),
     title: "About · TX Quince",
     description: "Quinceañera photos and video in Dallas–Fort Worth.",
     url: site.url + "/about",

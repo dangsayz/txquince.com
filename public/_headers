@@ -7,3 +7,10 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: DENY
+
+# Build files under /_next/static/ carry a content hash in the name, so a file
+# never changes once published. Without this rule Workers serves them with
+# "max-age=0, must-revalidate" and every visit re-checks every script, style
+# and font with the network before it can use the copy it already has.
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable

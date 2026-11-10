@@ -9,6 +9,7 @@
  * short themed block that opens to its full set, so the page stays easy to
  * read as events are added. Every "ask" keeps the venue (?venue=<slug>).
  */
+import { ogBase } from "@/lib/share-meta";
 import type { Metadata } from "next";
 import { VenueExperience } from "@/components/VenueExperience";
 import { getVenueExperience } from "@/lib/venue-experience-db";
@@ -61,7 +62,7 @@ export async function generateMetadata({
     // A venue page with no photos yet is a dead end for a family: keep it out
     // of search until the first shoot is published (links still count).
     ...(photos.length ? {} : { robots: { index: false, follow: true } }),
-    openGraph: {
+    openGraph: { ...ogBase("en"),
       title: `${venue.venue} · Quinceañera Photography`,
       description,
       url: `${site.url}/venues/${slug}`,
