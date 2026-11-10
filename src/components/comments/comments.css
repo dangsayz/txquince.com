@@ -236,6 +236,8 @@
 }
 
 /* ---------- The comment box: one raised card, the same in both places ----------
+   (Selectors carry .tq-cmt__box so their margins beat the blog's paragraph
+   reset, which loads later in the production stylesheet order.)
    Paper on the warm canvas with the kit's card shadow, so it reads as a thing
    you can use, not as a line of text. Three layers: who you are, the field,
    and a linen foot that carries the approval rule. */
@@ -256,7 +258,7 @@
   margin: 0;
   padding-bottom: var(--cmt-pad);
 }
-.tq-cmt__box-title {
+.tq-cmt__box .tq-cmt__box-title {
   margin: 0 0 var(--tq-space-4);
   font-size: var(--tq-text-body);
   font-weight: var(--tq-weight-medium);
@@ -266,7 +268,7 @@
 .tq-cmt__gate-lead + .tq-cmt__actions { margin-top: var(--tq-space-4); }
 
 /* Who is writing. */
-.tq-cmt__as {
+.tq-cmt__box .tq-cmt__as {
   display: flex;
   align-items: center;
   gap: var(--tq-space-3);
@@ -275,7 +277,7 @@
   line-height: 1.3;
   color: var(--tq-ink-mute);
 }
-.tq-cmt__avatar--me {
+.tq-cmt__box .tq-cmt__avatar--me {
   width: 28px;
   height: 28px;
   background: var(--tq-ink);
@@ -285,7 +287,7 @@
 
 /* Post button and the running count, on one line. */
 .tq-cmt__actions { align-items: center; }
-.tq-cmt__count {
+.tq-cmt__box .tq-cmt__count {
   margin-left: auto;
   font-size: var(--tq-text-sm);
   color: var(--tq-ink-mute);
@@ -304,7 +306,7 @@
 }
 
 /* The linen foot: the approval rule, edge to edge at the bottom of the card. */
-.tq-cmt__review {
+.tq-cmt__box .tq-cmt__review {
   display: grid;
   grid-template-columns: 18px minmax(0, 1fr);
   gap: var(--tq-space-3);
@@ -317,7 +319,7 @@
   line-height: 1.45;
   color: var(--tq-ink);
 }
-.tq-cmt__review svg { margin-top: 1px; color: var(--tq-ink-mute); }
+.tq-cmt__box .tq-cmt__review svg { margin-top: 1px; color: var(--tq-ink-mute); }
 .tq-cmt__box > .tq-cmt__tip {
   margin: 0;
   padding: var(--tq-space-3) 0;
