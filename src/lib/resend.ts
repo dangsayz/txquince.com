@@ -27,6 +27,17 @@ import { TIER_NAME_EN, usd, type TierId } from "@/lib/commission";
 import { getPriceBook } from "@/lib/pricing";
 import { tierName } from "@/lib/price-text";
 import { isSignedAgreement, signedBalanceDue } from "@/lib/agreement";
+import {
+  type EmailCopy,
+  type LeadLang,
+  type LeadLangChoice,
+  bothSubject,
+  copyToText,
+  followupCopy,
+  isFollowupStep,
+  leadLangFrom,
+  recoveryCopy,
+} from "@/lib/lead-email-copy";
 
 /**
  * When the rest is due ("14 days"). A signed booking keeps the terms in its
@@ -402,101 +413,97 @@ function followupHtml(opts: {
 }
 
 /**
- * Send follow-up touch `step` (1, 2, or 3) to a lead. Returns {ok:false} for any
- * out-of-range step so the cron never advances past the sequence.
+ * Branded shell for the lead emails, in one or both languages. Same look as
+ * followupHtml, but the greeting, body and footer follow the copy's language.
+ */
+function leadHtml(parts: { lang: LeadLang; copy: EmailCopy }[], unsubscribeUrl?: string): string {
+  const p = (inner: string) => `<p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">${inner}</p>`;
+  const section = ({ copy }: { lang: LeadLang; copy: EmailCopy }) => `
+        <p style="margin:0 0 16px;font-size:16px;color:${INK}">${esc(copy.greeting)}</p>
+        ${copy.lines
+          .map((l) => p(l.link ? `${esc(l.text)} <a href="${esc(l.link.url)}" style="color:${WINE}">${esc(l.link.label)}</a>` : esc(l.text)))
+          .join("\n        ")}
+        <p style="margin:28px 0 0">
+          <a href="${esc(copy.cta.url)}" style="display:inline-block;background:${WINE};color:${CREAM};text-decoration:none;padding:13px 28px;border-radius:999px;font-size:12px;letter-spacing:0.18em;text-transform:uppercase">${esc(copy.cta.label)}</a>
+        </p>`;
+  const divider = `<hr style="border:none;border-top:1px solid #e6ddd1;margin:32px 0" />`;
+  const unsub = unsubscribeUrl
+    ? parts
+        .map(({ lang }) =>
+          lang === "es"
+            ? `¿Ya no están planeando una quinceañera? <a href="${unsubscribeUrl}" style="color:#8a837b">Cancelar suscripción</a> y no les vuelvo a escribir.`
+            : `Not planning a quinceañera anymore? <a href="${unsubscribeUrl}" style="color:#8a837b">Unsubscribe</a> and I won't reach out again.`,
+        )
+        .map((line) => `<br/>${line}`)
+        .join("")
+    : "";
+  return `
+  <div style="background:${CREAM};padding:32px 0;font-family:ui-sans-serif,system-ui,Arial,sans-serif">
+    <div style="max-width:520px;margin:0 auto;background:#fffdf9;border:1px solid #e6ddd1;border-radius:6px;overflow:hidden">
+      <div style="padding:24px 32px;border-bottom:1px solid #e6ddd1">
+        <span style="font-family:Georgia,'Times New Roman',serif;font-size:20px;color:${INK}">${site.brand}</span>
+      </div>
+      <div style="padding:32px">${parts.map(section).join(divider)}
+      </div>
+    </div>
+    <p style="max-width:520px;margin:16px auto 0;text-align:center;font-size:12px;color:#8a837b">
+      ${site.brand} · ${site.serviceArea}${unsub}
+    </p>
+  </div>`;
+}
+
+/** The languages one lead email carries: theirs, or English then Spanish. */
+function langsFor(choice: LeadLangChoice): LeadLang[] {
+  return choice === "both" ? ["en", "es"] : [choice];
+}
+
+function subjectFor(parts: { copy: EmailCopy }[]): string {
+  return parts.length === 2 ? bothSubject(parts[0].copy.subject, parts[1].copy.subject) : parts[0].copy.subject;
+}
+
+/** "YYYY-MM-DD" → "sábado, 9 de mayo de 2026" (UTC-safe). */
+function formatEventDateEs(dateStr: string): string {
+  const d = new Date(`${dateStr}T00:00:00Z`);
+  if (Number.isNaN(d.getTime())) return dateStr;
+  return d.toLocaleDateString("es-MX", { weekday: "long", year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
+}
+
+/**
+ * Send follow-up touch `step` (1, 2, or 3) to a lead, in their language
+ * (`lang`), or English and Spanish when we don't know it. Returns {ok:false}
+ * for any out-of-range step so the cron never advances past the sequence.
  */
 export async function sendFollowupEmail(
   recipient: FollowupRecipient,
   step: number,
+  lang: LeadLangChoice = "both",
 ): Promise<{ ok: boolean; error?: string }> {
+  if (!isFollowupStep(step)) return { ok: false, error: "step-out-of-range" };
   const resend = getResend();
   if (!resend) return { ok: false, error: "resend-not-configured" };
 
-  const firstName = recipient.name.split(" ")[0] || "there";
+  const firstName = recipient.name.trim().split(/\s+/)[0] || "";
   const siteUrl = getSiteUrl();
-  const reserveUrl = `${siteUrl}${site.cta.href}`;
-  const galleryUrl = `${siteUrl}/portfolio`;
-  const investmentUrl = `${siteUrl}/#commissions`;
   const unsubscribeUrl = `${siteUrl}/api/unsubscribe?id=${encodeURIComponent(recipient.id)}`;
   const book = await getPriceBook();
-  const dueEn = await balanceDue(null, "en");
-
-  let subject: string;
-  let text: string;
-  let bodyHtml: string;
-  let ctaUrl = reserveUrl;
-  let ctaLabel = "Reserve your date";
-
-  if (step === 1) {
-    subject = `Did you get a chance to look, ${firstName}?`;
-    ctaUrl = galleryUrl;
-    ctaLabel = "See the galleries";
-    text = [
-      `Hi ${firstName},`,
-      "",
-      "Just circling back on your daughter's quinceañera. No pressure at all — I know there's a lot to plan.",
-      "",
-      `If it helps, here are full galleries and videos from real DFW celebrations (not just highlights): ${galleryUrl}`,
-      "",
-      `Every package is published on the site — from ${usd(book.packages.study.price)} for a portrait session, with photo and video from ${usd(book.packages.solo.price)}: ${investmentUrl}`,
-      "",
-      "Whenever you're ready, just reply here and I'll confirm whether your date is open.",
-      "",
-      site.brand,
-    ].join("\n");
-    bodyHtml = `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">Just circling back on your daughter&apos;s quinceañera — no pressure at all, I know there&apos;s a lot to plan.</p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">If it helps, here are <a href="${galleryUrl}" style="color:${WINE}">full galleries and videos</a> from real DFW celebrations — not just highlights, so you see exactly what you&apos;d be getting. Pricing is <a href="${investmentUrl}" style="color:${WINE}">published right on the site</a>: from ${usd(book.packages.study.price)} for a portrait session, with photo and video from ${usd(book.packages.solo.price)}.</p>
-      <p style="margin:0;font-size:15px;line-height:1.7;color:#56504a">Whenever you&apos;re ready, just reply and I&apos;ll confirm whether your date is open.</p>`;
-  } else if (step === 2) {
-    subject = "How reserving your date works";
-    text = [
-      `Hi ${firstName},`,
-      "",
-      "One thing I want to make easy: you don't pay it all at once.",
-      "",
-      `Pick a package, fill in your details, then review and sign the agreement online. I review and approve it within one day, and I hold your date for ${book.holdDays} days while I do. Once it's approved, a ${book.depositPercent}% deposit locks in your date, and the rest is due ${dueEn} before the event. Prefer to talk first? Ask for a quick call.`,
-      "",
-      `Getting started takes just a few minutes, and dates go to whoever reserves first: ${reserveUrl}`,
-      "",
-      "If you have any questions about the packages or the timeline, just reply — I read every message.",
-      "",
-      site.brand,
-    ].join("\n");
-    bodyHtml = `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">One thing I want to make easy: <strong style="color:${INK}">you don&apos;t pay it all at once.</strong></p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">Pick a package, fill in your details, then review and sign the agreement online. I review and approve it within one day, and I hold your date for ${book.holdDays} days while I do. Once it&apos;s approved, a ${book.depositPercent}% deposit locks in your date, and the rest is due ${dueEn} before the event. Prefer to talk first? Ask for a quick call.</p>
-      <p style="margin:0;font-size:15px;line-height:1.7;color:#56504a">Getting started takes just a few minutes — dates go to whoever reserves first, and spring and fall Saturdays fill early. Questions about the packages or timeline? Just reply; I read every message.</p>`;
-  } else if (step === 3) {
-    subject = "Last check on your date";
-    text = [
-      `Hi ${firstName},`,
-      "",
-      "I don't want to keep filling your inbox, so this is my last note unless I hear from you.",
-      "",
-      "I book a limited number of quinceañeras each season, and I'm still holding a window near your date — but those go to whoever reserves first.",
-      "",
-      `If you'd like me to hold your day, you can reserve it here: ${reserveUrl}`,
-      "",
-      "And if the timing changed or you've booked elsewhere, no hard feelings at all — just let me know and I'll close out your file.",
-      "",
-      site.brand,
-    ].join("\n");
-    bodyHtml = `
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">I don&apos;t want to keep filling your inbox, so this is my last note unless I hear from you.</p>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">I book a limited number of quinceañeras each season, and I&apos;m still holding a window near your date — but those go to whoever reserves first.</p>
-      <p style="margin:0;font-size:15px;line-height:1.7;color:#56504a">If the timing changed or you&apos;ve booked elsewhere, no hard feelings at all — just reply and I&apos;ll close out your file.</p>`;
-  } else {
-    return { ok: false, error: "step-out-of-range" };
-  }
+  const ctx = {
+    firstName,
+    siteUrl,
+    portraitPrice: usd(book.packages.study.price),
+    photoVideoFrom: usd(book.packages.solo.price),
+    depositPercent: book.depositPercent,
+    balanceDue: { en: await balanceDue(null, "en"), es: await balanceDue(null, "es") },
+  };
+  const parts = langsFor(lang).map((l) => ({ lang: l, copy: followupCopy(step, l, ctx) }));
+  const text = parts.map((x) => copyToText(x.copy)).join("\n\n— — —\n\n");
 
   try {
     const { error } = await resend.emails.send({
       from: FROM,
       to: recipient.email,
-      subject,
-      text: `${text}\n\n— — —\nUnsubscribe: ${unsubscribeUrl}`,
-      html: followupHtml({ firstName, bodyHtml, ctaUrl, ctaLabel, unsubscribeUrl }),
+      subject: subjectFor(parts),
+      text: `${text}\n\n— — —\n${lang === "es" ? "Cancelar suscripción" : "Unsubscribe"}: ${unsubscribeUrl}`,
+      html: leadHtml(parts, unsubscribeUrl),
       headers: {
         "List-Unsubscribe": `<${unsubscribeUrl}>`,
         "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
@@ -510,10 +517,18 @@ export async function sendFollowupEmail(
 }
 
 // ============================================================================
-// BOOKING RECOVERY — one transactional nudge when a hold expires unpaid and the
-// date is still open. They were one click from paying; this brings them back.
+// BOOKING RECOVERY — one transactional note when a hold expires unpaid and the
+// date is not full when the cron runs. It asks them to reply for a fresh deposit
+// link (self-checkout is paused, so there is no checkout to "pick up").
 // Single send (guarded by recovery_sent_at), so no unsubscribe sequence needed.
 // ============================================================================
+
+/** The language a booking was made in: the signed agreement's, else metadata.language. */
+export function bookingLang(booking: Pick<BookingRecord, "metadata">): LeadLangChoice {
+  const m = booking.metadata ?? {};
+  const agreement = (m as { agreement?: { lang?: unknown } }).agreement;
+  return leadLangFrom(agreement?.lang ?? (m as { language?: unknown }).language);
+}
 
 /** "Your date is still open" — sent once by /api/cron/booking-recovery. */
 export async function sendBookingRecoveryEmail(
@@ -522,48 +537,23 @@ export async function sendBookingRecoveryEmail(
   const resend = getResend();
   if (!resend) return { ok: false, error: "resend-not-configured" };
 
-  const firstName = booking.name.split(" ")[0] || "there";
-  const siteUrl = getSiteUrl();
-  const dateStr = formatEventDate(booking.event_date);
   const tier = await tierLabel(booking);
-  const tierSuffix = tier && tier !== "—" ? ` (${tier})` : "";
-  // Resume with their collection preselected so it's truly two clicks back in.
-  const ctaUrl = `${siteUrl}${site.cta.href}`;
-
-  const subject = `${firstName}, your date is still open — ${dateStr}`;
-
-  const text = [
-    `Hi ${firstName},`,
-    "",
-    `You started reserving ${dateStr}${tierSuffix} but the checkout didn't finish — and nothing was charged.`,
-    "",
-    "Good news: that date is still open. Dates go to whoever reserves first, though, and spring and fall Saturdays fill early.",
-    "",
-    `Pick up right where you left off — it takes about two minutes: ${ctaUrl}`,
-    "",
-    "If the timing changed or you've decided to go another way, no worries at all — just reply and I'll close out your file.",
-    "",
-    site.brand,
-  ].join("\n");
-
-  const bodyHtml = `
-    <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">You started reserving <strong style="color:${INK}">${esc(dateStr)}</strong>${esc(tierSuffix)} but the checkout didn&apos;t finish — and <strong style="color:${INK}">nothing was charged.</strong></p>
-    <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#56504a">Good news: that date is still open. Dates go to whoever reserves first, though, and spring and fall Saturdays fill early.</p>
-    <p style="margin:0;font-size:15px;line-height:1.7;color:#56504a">Pick up right where you left off — it takes about two minutes. If the timing changed, just reply and I&apos;ll close out your file.</p>`;
+  const ctx = {
+    firstName: booking.name.trim().split(/\s+/)[0] || "",
+    eventDate: { en: formatEventDate(booking.event_date), es: formatEventDateEs(booking.event_date) },
+    packageName: tier && tier !== "—" ? tier : "",
+    replyEmail: process.env.OPERATOR_NOTIFY_EMAIL || site.contact.email,
+  };
+  const parts = langsFor(bookingLang(booking)).map((l) => ({ lang: l, copy: recoveryCopy(l, ctx) }));
 
   try {
     const { error } = await resend.emails.send({
       from: FROM,
       to: booking.email,
-      replyTo: process.env.OPERATOR_NOTIFY_EMAIL || undefined,
-      subject,
-      text,
-      html: followupHtml({
-        firstName,
-        bodyHtml,
-        ctaUrl,
-        ctaLabel: "Finish reserving my date",
-      }),
+      replyTo: ctx.replyEmail,
+      subject: subjectFor(parts),
+      text: parts.map((x) => copyToText(x.copy)).join("\n\n— — —\n\n"),
+      html: leadHtml(parts),
     });
     if (error) return { ok: false, error: String(error.message ?? error) };
     return { ok: true };
