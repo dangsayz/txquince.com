@@ -114,6 +114,14 @@
 }
 
 /* ---------- 2. Type ---------- */
+/* Photos: no long-press "Save to Photos" sheet, no drag-to-desktop ghost
+   (PhotoGuard.tsx removes the right-click menu). Deterrent layer only. */
+.txq img {
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
 .tq-display {
   font-family: var(--font-display);
   font-weight: var(--weight-medium);

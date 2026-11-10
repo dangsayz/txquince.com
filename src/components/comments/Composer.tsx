@@ -51,6 +51,9 @@ function Form({ lang, slug, place, chip }: { lang: CommentLang; slug: string; pl
     return (
       <div className="tq-cmt__gate">
         <p className="tq-cmt__gate-lead">{c.gate}</p>
+        <p className="tq-cmt__note">
+          <span className="tq-cmt__review">{c.review}</span>
+        </p>
         <div className="tq-cmt__actions">
           <a className="tq-btn tq-btn--lg" href={login} rel="nofollow">
             {c.logIn} <span className="tq-arrow" aria-hidden>↗</span>
@@ -136,8 +139,8 @@ function Form({ lang, slug, place, chip }: { lang: CommentLang; slug: string; pl
         onChange={(e) => setWebsite(e.target.value)}
       />
       <p id={`${id}-help`} className="tq-cmt__note">
-        {name ? `${c.postingAs(name)} · ` : ""}
-        {c.review}
+        {name ? <span className="tq-cmt__who">{c.postingAs(name)}</span> : null}
+        <span className="tq-cmt__review">{c.review}</span>
       </p>
       {error ? (
         <p className="tq-cmt__error" role="alert">

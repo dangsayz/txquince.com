@@ -87,6 +87,15 @@
   line-height: var(--tq-leading-body);
   color: var(--tq-ink-mute);
 }
+/* Who is posting, then the approval rule on its own line in full ink: a
+   family should know before they write that we approve comments first. */
+.tq-cmt__who,
+.tq-cmt__review {
+  display: block;
+}
+.tq-cmt__review {
+  color: var(--tq-ink);
+}
 /* No outer card: a boxed card inside the framed column put a border against
    a border. One hairline above separates it from the list. */
 .tq-cmt__gate,

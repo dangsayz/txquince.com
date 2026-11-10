@@ -39,3 +39,10 @@ test("the full-size viewer requests a wide derivative without losing its cache v
     "/api/img/portrait?v=3&w=2400",
   );
 });
+
+test("a capped image never asks for a file wider than its cap", () => {
+  assert.equal(brandedImageLoader({ src: "/api/img/portrait?cap=1080", width: 2400 }), "/api/img/portrait?w=1080");
+  assert.equal(brandedImageLoader({ src: "/api/img/portrait?cap=1080", width: 640 }), "/api/img/portrait?w=640");
+  assert.equal(brandedImageLoader({ src: "/api/img/portrait?v=3&cap=1080", width: 1920 }), "/api/img/portrait?v=3&w=1080");
+  assert.equal(brandedImageLoader({ src: "/api/img/portrait?cap=1080&v=3", width: 1920 }), "/api/img/portrait?v=3&w=1080");
+});
