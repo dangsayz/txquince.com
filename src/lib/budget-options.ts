@@ -80,7 +80,9 @@ export function coverageForBudget(book: PriceBook, budgetUsd: number, wantVideo:
   const over = all.filter((o) => o.totalUsd > budgetUsd).sort((a, b) => a.totalUsd - b.totalUsd);
   const topFit = fits[0] ? EVENT_TIERS.indexOf(fits[0].tier) : -1;
   const nextTier = EVENT_TIERS.slice(topFit + 1).find((t) => over.some((o) => o.tier === t));
-  const stretch = (nextTier && over.find((o) => o.tier === nextTier && o.hours === book.packages[nextTier].hours)) || over[0] || null;
+  const found = (nextTier && over.find((o) => o.tier === nextTier && o.hours === book.packages[nextTier].hours)) || over[0] || null;
+  // A package that already fits isn't a step up: more hours of it would only repeat its card.
+  const stretch = found && fits.some((o) => o.tier === found.tier) ? null : found;
   return { fits: fits.slice(0, 3), stretch };
 }
 

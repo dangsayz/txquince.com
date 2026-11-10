@@ -233,7 +233,7 @@
 .txq .bp-lines--know .bp-ico { background: var(--tq-surface); }
 
 /* ---------- Make us an offer: one row until she opens it ---------- */
-.txq .bp-offer { margin: 40px 0 0; border-radius: var(--tq-radius-lg); background: var(--tq-surface); scroll-margin-top: calc(var(--header-h, 64px) + 16px); }
+.txq .bp-offer { margin: 40px 0 0; border-radius: var(--tq-radius-lg); background: var(--tq-paper); border: 1px solid var(--tq-surface-2); scroll-margin-top: calc(var(--header-h, 64px) + 16px); }
 .txq .bp-offer__h { margin: 0; font: inherit; }
 .txq .bp-offer__toggle {
   display: flex;
@@ -276,7 +276,7 @@
 .txq .bp-err { margin: 8px 0 0; color: var(--tq-notify); font-size: 0.9375rem; }
 .txq .bp-ts { margin-top: 20px; min-height: 65px; }
 .txq .bp-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
-.txq .bp-sent { padding: 20px; border-radius: var(--tq-radius-md); background: var(--tq-paper); }
+.txq .bp-sent { padding: 20px; border-radius: var(--tq-radius-md); background: var(--tq-surface); }
 .txq .bp-sent p { margin: 6px 0 0; }
 
 /* ---------- Help, share, fine print ---------- */
