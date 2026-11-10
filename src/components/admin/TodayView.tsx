@@ -109,13 +109,13 @@ export function TodayView({ pulse, work, review, upcoming, behavior, comments = 
           <>
             <dl className="m-0 mt-3 grid grid-cols-2 gap-px border-y border-[var(--tq-surface-2)] bg-[var(--tq-surface-2)] lg:grid-cols-4">
               {[
-                { label: "Visitors", value: pulse.visitorsToday, note: `Yesterday by now: ${num(pulse.visitorsYesterdaySoFar)}` },
-                { label: "New families", value: pulse.newFamiliesToday, note: "Inquiries and free plans" },
-                { label: "On the site now", value: pulse.liveNow, note: "In the last 5 minutes" },
-                { label: "Pages viewed", value: pulse.viewsToday, note: pulse.visitorsToday ? `${(pulse.viewsToday / pulse.visitorsToday).toFixed(1)} per visitor` : "Since midnight" },
+                { hue: "blue", label: "Visitors", value: pulse.visitorsToday, note: `Yesterday by now: ${num(pulse.visitorsYesterdaySoFar)}` },
+                { hue: "rose", label: "New families", value: pulse.newFamiliesToday, note: "Inquiries and free plans" },
+                { hue: "green", label: "On the site now", value: pulse.liveNow, note: "In the last 5 minutes" },
+                { hue: "slate", label: "Pages viewed", value: pulse.viewsToday, note: pulse.visitorsToday ? `${(pulse.viewsToday / pulse.visitorsToday).toFixed(1)} per visitor` : "Since midnight" },
               ].map((m) => (
                 <div key={m.label} className="flex min-w-0 flex-col bg-white px-5 py-4 sm:px-6">
-                  <dt className="text-[15px] text-[var(--tq-ink-mute)]">{m.label}</dt>
+                  <dt className="st-key text-[15px] text-[var(--tq-ink-mute)]" data-hue={m.hue}>{m.label}</dt>
                   <dd className="st-num m-0 mt-2 text-[2.25rem] leading-none">{num(m.value)}</dd>
                   <dd className="m-0 mt-2 text-sm text-[var(--tq-ink-mute)]">{m.note}</dd>
                 </div>
@@ -128,7 +128,7 @@ export function TodayView({ pulse, work, review, upcoming, behavior, comments = 
                 <StudioBars days={pulse.week.map((d) => ({ date: d.date, value: d.visitors, extra: d.families }))} unit={["visitor", "visitors"]} extraUnit={["new family", "new families"]} />
               </div>
               <p className="m-0 mt-1 text-sm text-[var(--tq-ink-mute)]">
-                <span className="text-[var(--tq-status-open)]">+n</span> under a day = new families who reached out that day.
+                <span className="font-medium text-[var(--st-rose)]">+n</span> under a day = new families who reached out that day.
               </p>
             </div>
           </>
@@ -142,7 +142,7 @@ export function TodayView({ pulse, work, review, upcoming, behavior, comments = 
         <section aria-labelledby="needs-title" className="st-card">
           <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-5 pb-3 pt-5 sm:px-6">
             <h2 id="needs-title" className="st-h2">
-              Needs you {todo > 0 && <span className="st-num text-[var(--tq-ink-mute)]">{todo}</span>}
+              Needs you {todo > 0 && <span className="st-pill" data-hue="amber">{todo}</span>}
             </h2>
             <Link href="/admin/inquiries" className="st-link">
               All inquiries <ArrowIcon />

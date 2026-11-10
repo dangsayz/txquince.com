@@ -22,11 +22,11 @@ const pct = (x: number) => `${Math.round(x * 100)}%`;
 const TOPIC: Record<string, string> = { booking: "Booking or date", payment: "Payment", contract: "Agreement", other: "Other" };
 const SHOWN = 4;
 
-function PanelHead({ id, title, count, href, link }: { id: string; title: string; count: number; href: string; link: string }) {
+function PanelHead({ id, title, count, href, link, hue }: { id: string; title: string; count: number; href: string; link: string; hue: string }) {
   return (
     <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-5 pb-3 pt-5 sm:px-6">
       <h2 id={id} className="st-h2">
-        {title} {count > 0 && <span className="st-num text-[var(--tq-ink-mute)]">{count}</span>}
+        {title} {count > 0 && <span className="st-pill" data-hue={hue}>{count}</span>}
       </h2>
       <Link href={href} className="st-link">
         {link} <ArrowIcon />
@@ -45,7 +45,7 @@ function Empty({ title, note }: { title: string; note: string }) {
 }
 
 /** One row: who, a chip, when, and the first line of what they wrote. */
-function GlanceRow({ href, name, chip, tone, when, late, children }: { href: string; name: string; chip: string; tone?: "urgent" | "good"; when: string; late?: boolean; children: React.ReactNode }) {
+function GlanceRow({ href, name, chip, hue, when, late, children }: { href: string; name: string; chip: string; hue?: string; when: string; late?: boolean; children: React.ReactNode }) {
   return (
     <li className="border-t border-[var(--tq-surface-2)]">
       <Link
@@ -54,7 +54,7 @@ function GlanceRow({ href, name, chip, tone, when, late, children }: { href: str
       >
         <span className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
           <span className="min-w-0 truncate text-[15px] font-semibold group-hover:underline group-hover:underline-offset-4">{name}</span>
-          <span className="st-chip" data-tone={tone}>{chip}</span>
+          <span className="st-chip" data-hue={hue}>{chip}</span>
           <span className={`ml-auto whitespace-nowrap text-sm ${late ? "font-medium text-[var(--tq-status-down)]" : "text-[var(--tq-ink-mute)]"}`}>{when}</span>
         </span>
         <span className="mt-1 block truncate text-[15px] text-[var(--tq-ink-mute)]">{children}</span>
@@ -77,7 +77,7 @@ function More({ href, n, word }: { href: string; n: number; word: [string, strin
 export function SupportPanel({ tickets, now }: { tickets: OpenTicket[]; now: Date }) {
   return (
     <section aria-labelledby="support-title" className="st-card">
-      <PanelHead id="support-title" title="Support" count={tickets.length} href="/admin/support" link="All messages" />
+      <PanelHead id="support-title" title="Support" count={tickets.length} href="/admin/support" link="All messages" hue="amber" />
       {tickets.length === 0 ? (
         <Empty title="No one is waiting." note="Messages families send from their account page show up here." />
       ) : (
@@ -85,7 +85,7 @@ export function SupportPanel({ tickets, now }: { tickets: OpenTicket[]; now: Dat
           {tickets.slice(0, SHOWN).map((t) => {
             const waited = daysAgo(t.created_at, now);
             return (
-              <GlanceRow key={t.id} href="/admin/support" name={t.name} chip={TOPIC[t.topic] ?? t.topic} when={agoLabel(waited)} late={waited >= 2}>
+              <GlanceRow key={t.id} href="/admin/support" name={t.name} chip={TOPIC[t.topic] ?? t.topic} hue="amber" when={agoLabel(waited)} late={waited >= 2}>
                 {t.message}
               </GlanceRow>
             );
@@ -99,7 +99,7 @@ export function SupportPanel({ tickets, now }: { tickets: OpenTicket[]; now: Dat
 
 function Stars({ rating }: { rating: number }) {
   return (
-    <span role="img" aria-label={`${rating} of 5 stars`} className="shrink-0 whitespace-nowrap text-[15px] tracking-[0.08em] text-[var(--tq-ink)]">
+    <span role="img" aria-label={`${rating} of 5 stars`} className="shrink-0 whitespace-nowrap text-[15px] tracking-[0.08em] text-[var(--st-gold)]">
       {"★".repeat(rating)}
       <span aria-hidden="true" className="text-[var(--tq-ink-mute)]">{"☆".repeat(5 - rating)}</span>
     </span>
@@ -110,7 +110,7 @@ export function ReviewsPanel({ waiting, live, unused, now }: { waiting: ReviewRe
   const facts = [live ? `${num(live)} on the site` : "", unused ? `${plural(unused, "link")} not used yet` : ""].filter(Boolean).join(" · ");
   return (
     <section aria-labelledby="reviews-title" className="st-card">
-      <PanelHead id="reviews-title" title="Reviews" count={waiting.length} href="/admin/reviews" link="All reviews" />
+      <PanelHead id="reviews-title" title="Reviews" count={waiting.length} href="/admin/reviews" link="All reviews" hue="gold" />
       {waiting.length === 0 ? (
         <Empty title="Nothing to approve." note="When a mom sends her review, you approve, hide or edit it here first." />
       ) : (
@@ -124,7 +124,7 @@ export function ReviewsPanel({ waiting, live, unused, now }: { waiting: ReviewRe
                 href="/admin/reviews"
                 name={v.display_name || r.invite_name}
                 chip={r.edit ? "Update to approve" : "New review"}
-                tone={r.edit ? undefined : "good"}
+                hue={r.edit ? "gold" : "green"}
                 when={agoLabel(daysAgo(sent, now))}
               >
                 {v.rating ? <Stars rating={v.rating} /> : null} {v.body}
@@ -173,10 +173,10 @@ export function BlogPanel({ data }: { data: BlogPulseData }) {
   const { posts, days } = data;
   const best = posts[0]?.reads ? posts[0] : null;
   const tiles = [
-    { label: "Reads", value: num(data.reads), note: data.readers ? `By ${plural(data.readers, "visit")}` : "Opens of a blog post" },
-    { label: "Time on a post", value: data.medianSeconds === null ? "—" : fmtSeconds(data.medianSeconds), note: "Typical, while active" },
-    { label: "Read to the end", value: data.readToEnd === null ? "—" : pct(data.readToEnd), note: "Reached the bottom" },
-    { label: "New comments", value: num(data.newComments), note: data.pendingComments ? `${num(data.pendingComments)} waiting for you` : "None waiting" },
+    { hue: "blue", label: "Reads", value: num(data.reads), note: data.readers ? `By ${plural(data.readers, "visit")}` : "Opens of a blog post" },
+    { hue: "slate", label: "Time on a post", value: data.medianSeconds === null ? "—" : fmtSeconds(data.medianSeconds), note: "Typical, while active" },
+    { hue: "green", label: "Read to the end", value: data.readToEnd === null ? "—" : pct(data.readToEnd), note: "Reached the bottom" },
+    { hue: "teal", label: "New comments", value: num(data.newComments), note: data.pendingComments ? `${num(data.pendingComments)} waiting for you` : "None waiting" },
   ];
   return (
     <section aria-labelledby="blog-title" className="st-card mt-6 overflow-hidden">
@@ -191,7 +191,7 @@ export function BlogPanel({ data }: { data: BlogPulseData }) {
       <dl className="m-0 mt-4 grid grid-cols-2 gap-px border-y border-[var(--tq-surface-2)] bg-[var(--tq-surface-2)] lg:grid-cols-4">
         {tiles.map((m) => (
           <div key={m.label} className="flex min-w-0 flex-col bg-white px-5 py-4 sm:px-6">
-            <dt className="text-[15px] text-[var(--tq-ink-mute)]">{m.label}</dt>
+            <dt className="st-key text-[15px] text-[var(--tq-ink-mute)]" data-hue={m.hue}>{m.label}</dt>
             <dd className="st-num m-0 mt-2 text-[2.25rem] leading-none">{m.value}</dd>
             <dd className="m-0 mt-2 text-sm text-[var(--tq-ink-mute)]">{m.note}</dd>
           </div>
@@ -217,7 +217,7 @@ export function BlogPanel({ data }: { data: BlogPulseData }) {
                   <a href={p.path} target="_blank" rel="noopener noreferrer" className="vb-page">
                     {p.title}
                   </a>
-                  {p.spanish ? <span className="st-chip">Spanish</span> : null}
+                  {p.spanish ? <span className="st-chip" data-hue="slate">Spanish</span> : null}
                 </span>
                 <dl className="vb-stats">
                   <div>

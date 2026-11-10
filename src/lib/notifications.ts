@@ -30,6 +30,17 @@ export const KIND_LABEL: Record<NoticeKind, string> = {
   account: "Account",
 };
 
+/** The Studio color of each kind (studio.css, .st-chip[data-hue]). */
+export const KIND_HUE: Record<NoticeKind, string> = {
+  inquiry: "rose",
+  plan: "rose",
+  booking: "green",
+  comment: "teal",
+  support: "amber",
+  review: "gold",
+  account: "slate",
+};
+
 /** One line, no line breaks, cut at a word. */
 export function excerpt(text: string | null | undefined, max = 90): string {
   const t = (text ?? "").replace(/\s+/g, " ").trim();

@@ -108,8 +108,8 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="min-h-dvh bg-[var(--tq-canvas)] text-[var(--tq-ink)]">
-      <header className="relative z-30 border-b border-[var(--tq-surface-2)] bg-[var(--tq-canvas)]">
+    <div className="min-h-dvh bg-white text-[var(--tq-ink)]">
+      <header className="relative z-30 border-b border-[var(--tq-surface-2)] bg-white">
         <div className="mx-auto flex min-h-16 max-w-[96rem] items-center gap-3 px-4 sm:px-8 lg:gap-5 xl:max-w-[72rem]">
           <Link href="/admin" className="mr-6 inline-flex min-h-11 shrink-0 items-center whitespace-nowrap" aria-label="TX Quince Studio, Today">
             <span className="inline-flex items-baseline gap-2.5">
@@ -166,7 +166,7 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
         )}
 
         {menuOpen && (
-          <nav id="studio-mobile-navigation" aria-label="Studio navigation" className="st-menu absolute left-0 right-0 top-full max-h-[calc(100dvh-4rem)] overflow-y-auto border-b border-[var(--tq-surface-2)] bg-[var(--tq-canvas)] px-4 pb-[max(1.75rem,env(safe-area-inset-bottom))] shadow-[var(--tq-shadow-overlay)] sm:px-8 lg:hidden">
+          <nav id="studio-mobile-navigation" aria-label="Studio navigation" className="st-menu absolute left-0 right-0 top-full max-h-[calc(100dvh-4rem)] overflow-y-auto border-b border-[var(--tq-surface-2)] bg-white px-4 pb-[max(1.75rem,env(safe-area-inset-bottom))] shadow-[var(--tq-shadow-overlay)] sm:px-8 lg:hidden">
             <div className="flex flex-col gap-1 border-t border-[var(--tq-surface-2)] py-3">
               <MainNavigation pathname={pathname} onNavigate={() => setMenuOpen(false)} />
             </div>

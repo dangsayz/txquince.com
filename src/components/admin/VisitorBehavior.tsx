@@ -1,4 +1,6 @@
-import { fmtSeconds, type BehaviorSummary, type PageBehavior } from "@/lib/page-behavior";
+import { fmtSeconds, type BehaviorSummary } from "@/lib/page-behavior";
+import { LeakStory } from "@/components/admin/LeakStory";
+import { StudioCollapse } from "@/components/admin/StudioCollapse";
 
 /**
  * "What visitors do" — admin home. One row per busy page: visits, typical time
@@ -21,40 +23,26 @@ function Depth({ value }: { value: number | null }) {
   );
 }
 
-function Leak({ p }: { p: PageBehavior }) {
-  const where = p.avgDepth !== null ? ` Most get ${p.avgDepth}% of the way down${p.medianSeconds !== null ? ` in about ${fmtSeconds(p.medianSeconds)}` : ""}.` : "";
-  const tap = p.topClicks[0] ? ` The most-tapped thing there is “${p.topClicks[0].label}”.` : "";
-  return (
-    <div className="vb-leak">
-      <p className="m-0 text-[15px] text-[var(--tq-ink-mute)]">Where families leave most</p>
-      <p className="m-0 mt-1 text-[length:var(--tq-text-lg)] leading-snug">
-        <a href={p.path} target="_blank" rel="noopener noreferrer" className="font-semibold underline decoration-[var(--tq-surface-2)] underline-offset-4 hover:decoration-[var(--tq-ink)]">
-          {p.label}
-        </a>
-        : {pct(p.exitRate)} of its {p.visits.toLocaleString("en-US")} visits end there.{where}
-        {tap}
-      </p>
-    </div>
-  );
-}
-
 export function VisitorBehavior({ data }: { data: BehaviorSummary & { configured: boolean; days: number } }) {
   if (!data.configured) return null;
   const { pages, leak, measuredTotal, days } = data;
   return (
-    <section aria-labelledby="vb-title" className="st-card mt-6 overflow-hidden">
-      <div className="px-5 pt-5 sm:px-6">
-        <h2 id="vb-title" className="st-h2">What visitors do</h2>
-        <p className="st-note mt-1">
+    <StudioCollapse
+      id="vb"
+      title="What visitors do"
+      className="mt-6"
+      note={
+        <>
           Last {days} days, busiest pages first. Time counts only while someone is on the page and active.
           {measuredTotal < 30 ? " Time and scroll started counting on Nov 9, so they fill in over the next days." : ""}
-        </p>
-      </div>
+        </>
+      }
+    >
       {!pages.length ? (
         <p className="m-0 px-5 pb-6 pt-3 text-[15px] text-[var(--tq-ink-mute)] sm:px-6">Visits show up here as families browse the site.</p>
       ) : (
         <>
-          {leak ? <Leak p={leak} /> : null}
+          {leak ? <LeakStory page={leak} /> : null}
           <div className="vb-head" aria-hidden="true">
             <span>Page</span>
             <span className="text-right">Visits</span>
@@ -98,6 +86,6 @@ export function VisitorBehavior({ data }: { data: BehaviorSummary & { configured
           </ol>
         </>
       )}
-    </section>
+    </StudioCollapse>
   );
 }
