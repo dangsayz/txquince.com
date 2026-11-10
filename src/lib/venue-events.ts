@@ -114,6 +114,28 @@ export function publicTags(tags: string | null | undefined): string | null {
   return kept.length ? kept.join(", ") : null;
 }
 
+/**
+ * The events as the browser may have them. A database row also carries the
+ * storage path, upload metadata, internal tags and any earlier slug; none of
+ * that belongs in the page source, so only the fields the gallery draws go out.
+ */
+export function eventsForClient(events: VenueEvent[]): VenueEvent[] {
+  const slim = (p: VenueEventPhoto): VenueEventPhoto => ({
+    id: p.id,
+    url: p.url,
+    alt: p.alt,
+    section: p.section,
+    is_feature: p.is_feature,
+    sort_order: p.sort_order,
+    width: p.width,
+    height: p.height,
+    slug: p.slug ?? null,
+    focus_x: p.focus_x ?? null,
+    focus_y: p.focus_y ?? null,
+  });
+  return events.map((e) => ({ ...e, photos: e.photos.map(slim), preview: e.preview.map(slim) }));
+}
+
 /** The grouping key for one photo (internal only — see file header). */
 export function eventKey(photo: Pick<VenueEventPhoto, "slug" | "tags" | "id">, venueSlug: string): string {
   const tagged = tagValue(photo.tags, "xv");

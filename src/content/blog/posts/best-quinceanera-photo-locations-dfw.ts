@@ -99,7 +99,7 @@ const post: BlogPost = {
     },
     {
       type: "image",
-      slug: "mandalay-canal-walk-zapata-27",
+      slug: "mandalay-canal-walk-quinceanera-portrait-f766",
       caption: "Quinceañera portraits along the Mandalay Canal Walk in Irving.",
     },
     { type: "h2", text: "McKinney" },
@@ -171,7 +171,7 @@ const post: BlogPost = {
     },
     {
       type: "image",
-      slug: "mandalay-canal-walk-zapata-39",
+      slug: "mandalay-canal-walk-quinceanera-portrait-41b7",
       caption: "Canal-side quinceañera portraits at Las Colinas in Irving.",
     },
     { type: "h2", text: "Pick the place — we'll handle the rest" },

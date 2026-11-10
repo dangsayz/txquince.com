@@ -65,7 +65,7 @@ const post: BlogPost = {
     },
     {
       type: "image",
-      slug: "las-lomas-banquet-hall-valarie-539",
+      slug: "las-lomas-banquet-hall-quinceanera-e1ba",
       caption: "Quinceañera reception on the dance floor at Las Lomas Banquet Hall in Irving.",
     },
     {
@@ -79,7 +79,7 @@ const post: BlogPost = {
     },
     {
       type: "image",
-      slug: "convention-plaza-ballroom-clarissa-433",
+      slug: "convention-plaza-ballroom-quinceanera-c03b",
       caption: "Reception celebration at Convention Plaza Ballroom in Irving.",
     },
     { type: "h2", text: "Arlington & the mid-cities" },
@@ -120,7 +120,7 @@ const post: BlogPost = {
     },
     {
       type: "image",
-      slug: "las-lomas-banquet-hall-valarie-263",
+      slug: "las-lomas-banquet-hall-quinceanera-8bde",
       caption: "The vals on the dance floor at Las Lomas Banquet Hall in Irving.",
     },
     {
@@ -137,7 +137,7 @@ const post: BlogPost = {
     },
     {
       type: "image",
-      slug: "convention-plaza-ballroom-clarissa-120",
+      slug: "convention-plaza-ballroom-quinceanera-b4d8",
       caption: "Quinceañera reception at Convention Plaza Ballroom in Irving.",
     },
     {
