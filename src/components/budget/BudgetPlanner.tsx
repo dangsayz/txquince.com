@@ -17,7 +17,6 @@ import { detailsFor, goodToKnow, type Details } from "./budget-details";
 import { BUDGET_PHOTOS, budgetPhotoSrc } from "./budget-photos";
 import { DetailIcon } from "./DetailIcon";
 import { ShareBar } from "./ShareBar";
-import { PayMarks } from "@/components/account/PayMarks";
 import "./budget.css";
 import { TrustLine } from "@/components/TrustLine";
 import { WhatsAppChatButton } from "@/components/WhatsAppChatButton";
@@ -38,6 +37,13 @@ function parseUsd(v: string): number | null {
 }
 
 const noSubscribe = () => () => {};
+
+/** Each company's official logo, unmodified (public/pay/README.md). Sizes keep their own proportions. */
+const PAY_LOGOS = [
+  { name: "Klarna", src: "/pay/klarna.svg", w: 62, h: 26 },
+  { name: "Afterpay", src: "/pay/afterpay.svg", w: 124, h: 24 },
+  { name: "Affirm", src: "/pay/affirm.svg", w: 70, h: 28 },
+] as const;
 
 /** Digits get thousands separators as she types ("1500" → "1,500"); "1.5k" is left as typed. */
 function fmtTyping(raw: string): string {
@@ -240,6 +246,7 @@ export function BudgetPlanner() {
       </header>
 
       <div className="bp-grid">
+        <div className="bp-side">
         <section ref={toolRef} className="bp-tool" aria-labelledby={`${uid}-in`}>
           <h2 id={`${uid}-in`} className="bp-sr">{c.budgetLabel}</h2>
           <label className="bp-label bp-label--first" htmlFor={`${uid}-budget`}>
@@ -279,6 +286,19 @@ export function BudgetPlanner() {
             ))}
           </div>
         </section>
+        <div className="bp-pay">
+          <h2 className="bp-pay__title">{c.payTitle}</h2>
+          <ul className="bp-pay__logos">
+            {PAY_LOGOS.map((l) => (
+              <li key={l.name}>
+                {/* eslint-disable-next-line @next/next/no-img-element -- official logo files, served as they are */}
+                <img src={l.src} alt={l.name} width={l.w} height={l.h} loading="lazy" decoding="async" />
+              </li>
+            ))}
+          </ul>
+          <p className="bp-hint">{c.payLine}</p>
+        </div>
+        </div>
 
         <section className="bp-results" aria-live="polite" aria-labelledby={`${uid}-res`}>
           <h2 id={`${uid}-res`} className="bp-h2">
@@ -352,11 +372,6 @@ export function BudgetPlanner() {
               ) : null}
             </ul>
           ) : null}
-          <div className="bp-pay">
-            <p className="bp-label bp-label--first">{c.payTitle}</p>
-            <PayMarks lang={lang} />
-            <p className="bp-hint">{c.payLine}</p>
-          </div>
           {budget ? (
             <button type="button" className="bp-link" onClick={() => startOffer(true)}>
               {c.offerTitle}
