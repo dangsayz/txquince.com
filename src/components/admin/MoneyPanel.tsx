@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowIcon } from "@/components/admin/StudioIcons";
 import type { MoneyRow, MoneySummary } from "@/lib/money-db";
+import { METHOD_LABEL } from "@/lib/offline-payment";
 
 const TZ = "America/Chicago";
 export const usd = (cents: number) => (cents / 100).toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: cents % 100 ? 2 : 0 });
@@ -26,6 +27,7 @@ export function MoneyRows({ rows, now }: { rows: MoneyRow[]; now: Date }) {
             <span className="block truncate text-[16px] font-semibold">{r.name}</span>
             <span className="mt-0.5 block text-[15px] text-[var(--tq-ink-mute)]">
               {KIND[r.kind]}
+              {r.method !== "stripe" ? ` · ${METHOD_LABEL[r.method] ?? r.method}` : ""}
               {r.eventDate ? ` · event ${eventDay(r.eventDate)}` : ""} · <time dateTime={r.paidAt}>{paidWhen(r.paidAt, now)}</time>
             </span>
           </span>
