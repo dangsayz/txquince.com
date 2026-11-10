@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { clipName, clipUrl, isHomeClipSlot, isMp4 } from "./home-clip-shared";
+import { CLIP_FOR_IMAGE_SLOT, CLIP_PLACE, clipName, clipUrl, HOME_CLIP_SLOTS, isHomeClipSlot, isMp4 } from "./home-clip-shared";
+import { isSlotId } from "./image-slots";
 
 const bytes = (s: string) => new Uint8Array([...s].map((c) => c.charCodeAt(0)));
 
@@ -23,5 +24,11 @@ describe("home clips", () => {
     expect(isHomeClipSlot("hero")).toBe(true);
     expect(isHomeClipSlot("band")).toBe(false);
     expect(isHomeClipSlot(null)).toBe(false);
+  });
+
+  it("offers video on real image slots, one per loop", () => {
+    for (const id of Object.keys(CLIP_FOR_IMAGE_SLOT)) expect(isSlotId(id), id).toBe(true);
+    expect(Object.values(CLIP_FOR_IMAGE_SLOT).sort()).toEqual([...HOME_CLIP_SLOTS].sort());
+    for (const s of HOME_CLIP_SLOTS) expect(CLIP_PLACE[s]).toBeTruthy();
   });
 });
