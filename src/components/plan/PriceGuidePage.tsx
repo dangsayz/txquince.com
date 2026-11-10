@@ -1,3 +1,4 @@
+import { ogBase } from "@/lib/share-meta";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { JsonLdScript } from "@/components/plan/JsonLdScript";
@@ -76,7 +77,7 @@ export async function priceGuideMetadata(lang: PlanLang): Promise<Metadata> {
     title: { absolute: `${title} · ${site.brand}` },
     description,
     alternates: { canonical: GUIDE_PATH[lang], languages: languageAlternates(GUIDE_PATH.en, GUIDE_PATH.es) },
-    openGraph: { title, description, url: `${site.url}${GUIDE_PATH[lang]}`, locale: OG_LOCALE[lang], type: "article" },
+    openGraph: { ...ogBase(lang), title, description, url: `${site.url}${GUIDE_PATH[lang]}`, locale: OG_LOCALE[lang], type: "article" },
     ...(rows.length ? {} : { robots: { index: false, follow: true } }),
   };
 }

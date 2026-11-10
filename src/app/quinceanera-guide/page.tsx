@@ -12,6 +12,7 @@
  * the portrait session, photos + video) — that specificity is what keeps it from
  * reading generic/AI.
  */
+import { ogBase } from "@/lib/share-meta";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SlotImage } from "@/components/SlotImage";
@@ -41,7 +42,7 @@ const META: Metadata = {
   keywords:
     "quinceañera guide, quinceañera questions, quinceañera planning, quinceañera photographer cost, how much does a quinceañera photographer cost, quinceañera timeline, quinceañera FAQ Dallas Fort Worth",
   alternates: { canonical: "/quinceanera-guide" },
-  openGraph: {
+  openGraph: { ...ogBase("en"),
     title: `The Quinceañera Guide · ${site.brand}`,
     description:
       "The most-asked quinceañera questions, answered straight — cost, timeline, photos vs. video, the traditions — by a DFW quinceañera photographer.",

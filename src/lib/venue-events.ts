@@ -102,6 +102,18 @@ export function tagValue(tags: string | null | undefined, key: "xv" | "theme"): 
   return null;
 }
 
+/**
+ * A photo's tags without the internal ones (`xv:`, `theme:`), for public
+ * output such as the keywords meta tag. Null when nothing is left.
+ */
+export function publicTags(tags: string | null | undefined): string | null {
+  const kept = (tags ?? "")
+    .split(",")
+    .map((t) => t.trim())
+    .filter((t) => t && !/^(?:xv|theme)\s*:/i.test(t));
+  return kept.length ? kept.join(", ") : null;
+}
+
 /** The grouping key for one photo (internal only — see file header). */
 export function eventKey(photo: Pick<VenueEventPhoto, "slug" | "tags" | "id">, venueSlug: string): string {
   const tagged = tagValue(photo.tags, "xv");

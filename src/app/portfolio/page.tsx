@@ -1,3 +1,4 @@
+import { ogBase } from "@/lib/share-meta";
 import type { Metadata } from "next";
 import { SlotImage } from "@/components/SlotImage";
 import { Suspense } from "react";
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
   title: "Portfolio",
   description: "Quinceañera galleries across Dallas–Fort Worth — save-the-date, la misa, portraits, the celebration, and videos.",
   alternates: { canonical: "/portfolio" },
-  openGraph: {
+  openGraph: { ...ogBase("en", { image: false }),
     title: "Portfolio · TX Quince",
     description: "Quinceañera galleries across Dallas–Fort Worth — church, portraits, the celebration, and videos.",
     url: `${site.url}/portfolio`,

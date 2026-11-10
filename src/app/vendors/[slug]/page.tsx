@@ -4,6 +4,7 @@
  * for cross-promotion (they share it, link back) and SEO. Email/phone are
  * admin-only and never appear here.
  */
+import { ogBase } from "@/lib/share-meta";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
@@ -41,7 +42,7 @@ export async function generateMetadata({
     title,
     description,
     alternates: { canonical: `/vendors/${slug}` },
-    openGraph: {
+    openGraph: { ...ogBase("en"),
       title: `${name} · ${site.brand}`,
       description,
       url: `${site.url}/vendors/${slug}`,

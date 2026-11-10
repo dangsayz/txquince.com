@@ -1,3 +1,4 @@
+import { ogBase } from "@/lib/share-meta";
 import Link from "next/link";
 import { SlotImage } from "@/components/SlotImage";
 import { site } from "@/content/site";
@@ -168,7 +169,7 @@ export async function photoshootMetadata(locale: Locale) {
       canonical: t.path,
       languages: languageAlternates(en, es),
     },
-    openGraph: { title: `${title} · ${site.brand}`, description, url: `${site.url}${t.path}`, ...(locale === "es" ? { locale: OG_LOCALE.es } : {}) },
+    openGraph: { ...ogBase(locale), title: `${title} · ${site.brand}`, description, url: `${site.url}${t.path}`, ...(locale === "es" ? { locale: OG_LOCALE.es } : {}) },
   };
 }
 

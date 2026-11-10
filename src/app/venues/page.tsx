@@ -3,6 +3,7 @@
  * grouped by city, each linking to its keyword-targeted landing page. Internal-
  * linking hub for the venue cluster + a real "quinceañera venues in DFW" asset.
  */
+import { ogBase } from "@/lib/share-meta";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
     canonical: "/venues",
     languages: languageAlternates(`${site.url}/venues`, `${site.url}/es/salones`),
   },
-  openGraph: {
+  openGraph: { ...ogBase("en"),
     title: `Quinceañera Venues · ${site.brand}`,
     description:
       "Quinceañera venues across Dallas–Fort Worth we've photographed — see real work at each.",

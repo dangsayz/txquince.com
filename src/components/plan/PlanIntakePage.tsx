@@ -1,3 +1,4 @@
+import { ogBase } from "@/lib/share-meta";
 import type { Metadata } from "next";
 import { PlanIntake } from "@/components/plan/PlanIntake";
 import { PLAN_COPY } from "@/content/plan-copy";
@@ -25,7 +26,7 @@ export function planIntakeMetadata(lang: PlanLang): Metadata {
     title: { absolute: `${t.metaTitle} · ${site.brand}` },
     description: t.metaDescription,
     alternates: { canonical: PATH[lang], languages: languageAlternates(PATH.en, PATH.es) },
-    openGraph: {
+    openGraph: { ...ogBase(lang),
       title: t.metaTitle,
       description: t.metaDescription,
       url: `${site.url}${PATH[lang]}`,
