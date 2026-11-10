@@ -1,17 +1,30 @@
-/* The thin banner under the header (SiteBannerBar.tsx). Brand kit tokens only:
-   paper, a hairline, ink. One line, 44px, the whole bar is the tap target. */
+/* The payment-plans capsule under the header (SiteBannerBar.tsx). Frosted glass,
+   after Apple's: a translucent white pill that blurs what is behind it, a bright
+   inner edge, a hairline and a soft shadow. Dang asked for this look; it is the
+   one glass surface on the public site. 44px tall, the whole pill is the tap target. */
 .txq .tq-banner {
   position: relative;
   z-index: 2;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  /* Sized to its content (max-content keeps the label when the pill floats), never wider than the screen. */
+  width: max-content;
+  max-width: calc(100% - 32px);
   min-height: var(--tq-tap);
-  padding: 0 16px;
-  border-bottom: 1px solid var(--tq-surface-2);
-  /* Solid white on every page, the homepage film included: the logos sit on the bar itself. */
-  background: var(--tq-paper);
+  margin: 8px auto 0;
+  padding: 0 18px 0 22px;
+  border-radius: var(--tq-radius-pill);
+  border: 1px solid rgb(17 17 16 / 0.08);
+  background: rgb(255 255 255 / 0.62);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.85),
+    inset 0 -1px 0 rgb(255 255 255 / 0.25),
+    0 1px 2px rgb(0 0 0 / 0.04),
+    0 8px 28px rgb(0 0 0 / 0.08);
   color: var(--tq-ink);
   /* The same small uppercase label as the menu, so it reads as part of the header, not an ad. */
   font-family: var(--tq-font-label);
@@ -21,17 +34,33 @@
   text-transform: uppercase;
   line-height: 1.2;
   text-decoration: none;
+  transition: background-color var(--tq-dur-base) var(--tq-ease), box-shadow var(--tq-dur-base) var(--tq-ease);
+}
+/* Where the blur is not supported, a near-solid pill keeps the text readable. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .txq .tq-banner { background: rgb(255 255 255 / 0.94); }
 }
 /* The logos are each company's own file in its own colors, on every page (public/pay/README.md). */
 @media (hover: hover) {
-  .txq .tq-banner:hover { color: var(--tq-ink); }
+  .txq .tq-banner:hover {
+    background: rgb(255 255 255 / 0.78);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.9), inset 0 -1px 0 rgb(255 255 255 / 0.3), 0 2px 4px rgb(0 0 0 / 0.05), 0 12px 32px rgb(0 0 0 / 0.1);
+  }
 }
-/* The homepage film runs up under the header, so there the bar lies on top of it. */
+/* The homepage film runs up under the header, so there the pill floats on top of it. */
 .txq .tq-banner[data-over-hero] {
   position: absolute;
-  inset: var(--header-h) 0 auto;
+  top: calc(var(--header-h) + 8px);
+  left: 50%;
+  margin: 0;
+  transform: translateX(-50%);
+  border-color: rgb(255 255 255 / 0.45);
+  /* Over a dark film plain white glass turns grey; a little more white and light keeps it bright. */
+  background: rgb(255 255 255 / 0.72);
+  -webkit-backdrop-filter: blur(24px) saturate(180%) brightness(1.1);
+  backdrop-filter: blur(24px) saturate(180%) brightness(1.1);
 }
-.txq .tq-banner:focus-visible { outline: 2px solid var(--tq-ink); outline-offset: -3px; }
+.txq .tq-banner:focus-visible { outline: 2px solid var(--tq-ink); outline-offset: 3px; }
 
 /* Both lines share one cell; the one that is on fades in. */
 .txq .tq-banner__line {
@@ -72,7 +101,6 @@
   .txq .tq-banner__logos { gap: 4px; }
 }
 @media (min-width: 1024px) {
-  .txq .tq-banner { padding: 0 40px; }
   .txq .tq-banner__line { gap: 14px; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -89,6 +117,6 @@
 
 /* Phones: smaller plates, still all the same. */
 @media (max-width: 519px) {
-  .txq .tq-banner__plate { width: 58px; height: 24px; }
-  .txq .tq-banner__logos img { height: 13px; max-width: 58px; }
+  .txq .tq-banner__plate { width: 52px; height: 24px; }
+  .txq .tq-banner__logos img { height: 12px; max-width: 52px; }
 }
