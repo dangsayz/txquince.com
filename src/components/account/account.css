@@ -758,3 +758,75 @@
     padding: var(--tq-space-12) var(--tq-space-12);
   }
 }
+
+/* Contrast between the agreement's parts: a black title band, a linen header
+   band with a black number chip per section, white bodies, and the money
+   section set apart on linen with an ink edge. Brand kit colors only. */
+.txq .acct-doc {
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+.txq .acct-doc__top {
+  display: grid;
+  gap: var(--tq-space-3);
+  padding: var(--tq-space-8) var(--tq-space-6);
+  background: var(--tq-ink);
+  color: var(--tq-ink-on);
+}
+.txq .acct-doc__top .acct-doc__title {
+  color: var(--tq-ink-on);
+}
+.txq .acct-doc__top .acct-doc__intro {
+  color: #d9d5cd; /* 11:1 on ink */
+}
+.txq .acct-doc__sec {
+  gap: 0;
+  padding: 0;
+  border-top: 0;
+}
+.txq .acct-doc__h {
+  align-items: center;
+  gap: var(--tq-space-4);
+  padding: var(--tq-space-4) var(--tq-space-6);
+  background: var(--tq-surface);
+  border-top: 1px solid var(--tq-surface-2);
+  border-bottom: 1px solid var(--tq-surface-2);
+}
+.txq .acct-doc__n {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  min-width: 2rem;
+  background: var(--tq-ink);
+  color: var(--tq-ink-on);
+  font-size: var(--tq-text-sm);
+}
+.txq .acct-doc__body {
+  display: grid;
+  gap: var(--tq-space-4);
+  padding: var(--tq-space-4) var(--tq-space-6) var(--tq-space-8);
+  background: #fff;
+}
+.txq .acct-doc__sec[data-money] .acct-doc__facts {
+  padding: var(--tq-space-2) var(--tq-space-4);
+  background: var(--tq-surface);
+  border-left: 4px solid var(--tq-ink);
+}
+.txq .acct-doc__sec[data-money] .acct-doc__facts > div + div {
+  border-top-color: var(--tq-stone);
+}
+@media (min-width: 700px) {
+  .txq .acct-doc {
+    padding: 0;
+  }
+  .txq .acct-doc__top,
+  .txq .acct-doc__h {
+    padding-inline: var(--tq-space-12);
+  }
+  .txq .acct-doc__body {
+    padding: var(--tq-space-6) var(--tq-space-12) var(--tq-space-12);
+  }
+}

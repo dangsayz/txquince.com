@@ -92,15 +92,19 @@ export function SignStep({ lang, agreement, value, onChange, errors }: {
       <h4 className="tq-bk-label">{c.title}</h4>
       <p className="acct-sign__lead">{c.lead}</p>
       <article className="acct-doc" aria-label={agreement.title}>
-        <h5 className="acct-doc__title">{agreement.title}</h5>
-        <p className="acct-doc__intro">{agreement.intro}</p>
+        <header className="acct-doc__top">
+          <h5 className="acct-doc__title">{agreement.title}</h5>
+          <p className="acct-doc__intro">{agreement.intro}</p>
+        </header>
         {agreement.sections.map((sec, i) => (
-          <section key={sec.title} className="acct-doc__sec">
+          <section key={sec.title} className="acct-doc__sec" data-money={sec.lines.some((l) => /^Total: /.test(l)) || undefined}>
             <h6 className="acct-doc__h">
               <span className="acct-doc__n" aria-hidden>{i + 1}</span>
               {sec.title}
             </h6>
-            <Lines lines={sec.lines} />
+            <div className="acct-doc__body">
+              <Lines lines={sec.lines} />
+            </div>
           </section>
         ))}
       </article>
