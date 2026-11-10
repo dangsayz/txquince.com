@@ -11,8 +11,15 @@ const post: BlogPost = {
     "Many Christian families hold a service or a blessing in place of a Catholic mass. Here is what it often includes, who to ask and how it fits with the party.",
   publishedAt: "2026-11-10",
   readMinutes: 5,
+  coverFull: true,
   lead: "Yes, you can have a quinceañera without a Catholic mass. Many evangelical and other Christian families hold a church service or a blessing for their daughter instead, and then celebrate at the reception. Every church does this in its own way, so your pastor is the first person to ask.",
   content: [
+    {
+      type: "image",
+      slug: "album-luxury-red-white-reception-141",
+      alt: "Quinceañera in a red ball gown seated in a church pew, with other families in the pews behind her",
+      caption: "In church, before the party: the part of the day each family shapes with its own congregation.",
+    },
     { type: "h2", text: "A quinceañera does not need a Catholic mass" },
     {
       type: "p",

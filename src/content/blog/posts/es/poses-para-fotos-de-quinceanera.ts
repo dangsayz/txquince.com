@@ -14,6 +14,12 @@ const post: BlogPost = {
   lang: "es",
   lead: "Las poses más fáciles son las que le dan algo que hacer a su hija: abrir la falda, mirar por encima del hombro, caminar, sostener el ramo. Se ven naturales porque ella se mueve y no se queda tiesa. Aquí van poses para ella, para la corte y para la familia, y qué probar si le da pena la cámara.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-018",
+      alt: "Quinceañera extendiendo la larga cola rosa de su vestido sobre la pista de baile mientras los invitados miran en Convention Plaza Ballroom",
+      caption: "La cola extendida sobre la pista: una de las poses más fáciles con vestido de gala.",
+    },
     { type: "h2", text: "Poses que funcionan con vestido de quinceañera" },
     {
       type: "p",

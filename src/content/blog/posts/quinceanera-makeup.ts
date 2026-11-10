@@ -13,6 +13,12 @@ const post: BlogPost = {
   readMinutes: 5,
   lead: "The best quinceañera makeup looks like her on her best day: fresh skin, soft color and eyes that stand out. It also has to hold up to flash, video lights, tears, dancing and a long day. Here is how to pick a look that suits fifteen, test it ahead of time and keep it in place.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-158",
+      alt: "Close portrait of the smiling quinceañera in her pink corset gown in front of the DJ booth at Convention Plaza Ballroom",
+      caption: "Soft, even makeup reads clean in a close portrait.",
+    },
     { type: "h2", text: "A look that suits fifteen" },
     {
       type: "p",

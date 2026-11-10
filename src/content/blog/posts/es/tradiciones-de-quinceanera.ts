@@ -14,6 +14,12 @@ const post: BlogPost = {
   lang: "es",
   lead: "La mayoría de las quinceañeras combinan varias de estas tradiciones: misa o bendición, corte, entrada, vals, coronación, cambio de zapatillas, última muñeca, bailes, brindis, padrinos y pastel. Aquí va cada una en palabras sencillas, con lo que pasa y lo que dicen las familias que significa. El significado y el orden cambian según la familia, la región y la parroquia, así que tómelo como una guía y no como un reglamento.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-091",
+      alt: "Quinceañera de vestido rosa en un trono dorado y blanco mientras una mujer de vestido brillante se inclina para acomodarle la corona en Convention Plaza Ballroom",
+      caption: "La coronación, una de las tradiciones de esta lista.",
+    },
     { type: "h2", text: "La bendición y la gente que la acompaña" },
     {
       type: "p",

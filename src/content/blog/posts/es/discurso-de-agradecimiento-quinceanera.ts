@@ -14,6 +14,12 @@ const post: BlogPost = {
   lang: "es",
   lead: "El discurso de agradecimiento de la quinceañera es corto: normalmente de uno a tres minutos para darles las gracias a quienes vinieron y a quienes ayudaron. Ella no tiene que ser oradora. Solo necesita unas cuantas frases sinceras. Aquí le contamos cuándo se da, un orden fácil de seguir, dos ejemplos que puede adaptar y consejos para los nervios y para hablar en dos idiomas.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-171",
+      alt: "La quinceañera de pie con su vestido rosa frente a familiares y amigos que levantan sus copas en un brindis en Convention Plaza Ballroom",
+      caption: "De pie frente a todos los que quiere: el momento de dar las gracias.",
+    },
     { type: "h2", text: "¿Cuándo da su discurso la quinceañera?" },
     {
       type: "p",

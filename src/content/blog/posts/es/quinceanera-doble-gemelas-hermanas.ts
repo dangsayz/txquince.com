@@ -12,8 +12,15 @@ const post: BlogPost = {
   publishedAt: "2026-11-10",
   readMinutes: 5,
   lang: "es",
+  coverFull: true,
   lead: "Sí, dos niñas pueden compartir una sola quinceañera, y muchas familias lo hacen. Gemelas, hermanas de edades cercanas y primas celebran así. La clave es sencilla: se comparte la fiesta, pero cada niña tiene sus propios momentos. Aquí le explicamos cómo planean las familias las entradas, los vestidos, la corte, los bailes, los gastos y las fotos.",
   content: [
+    {
+      type: "image",
+      slug: "album-hamptons-twins-dress-session-001",
+      alt: "Quinceañeras gemelas con vestidos rosa y vino frente a un edificio de piedra y una ventana de arco",
+      caption: "Dos vestidos que combinan sin ser iguales.",
+    },
     { type: "h2", text: "Quiénes comparten la celebración y por qué" },
     {
       type: "p",

@@ -11,8 +11,15 @@ const post: BlogPost = {
     "Size the cake from your guest count, match it to your theme, pick a moment to cut it and keep it cool. Here is how families in Texas plan the cake.",
   publishedAt: "2026-11-10",
   readMinutes: 5,
+  coverFull: true,
   lead: "Start with your guest count, then ask your baker how many people each size serves. Servings per tier vary by baker, so a number from the internet is only a guess. After that, choose the style, decide when the cake is cut and tell your photographer. Here is how families plan it, step by step.",
   content: [
+    {
+      type: "image",
+      slug: "quinceanera-pink-15-cake-crown-roses-dfw",
+      alt: "Four-tier pink quinceañera cake with a gold “15”, a rhinestone crown on top and a cascade of pink and white roses, on a gold sequin table at a DFW reception",
+      caption: "Four tiers, a gold 15 and a crown on top.",
+    },
     { type: "h2", text: "How to choose the size of the cake" },
     {
       type: "p",

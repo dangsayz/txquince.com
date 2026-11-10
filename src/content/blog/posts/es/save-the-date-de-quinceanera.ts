@@ -14,6 +14,12 @@ const post: BlogPost = {
   lang: "es",
   lead: "El save the date es un aviso corto y temprano que le dice a sus invitados la fecha de los quince para que la reserven. No es la invitación. Sale primero, con lo básico, y la invitación completa llega después. Aquí le explicamos cuándo lo envían las familias, qué poner y cómo planear la foto.",
   content: [
+    {
+      type: "image",
+      slug: "album-arboretum-red-garden-108",
+      alt: "Vista amplia de una quinceañera de vestido rojo con cola larga en un sendero del jardín en el Dallas Arboretum",
+      caption: "Una sesión en el jardín, con meses de anticipación, le da la foto del save the date.",
+    },
     { type: "h2", text: "Qué es un save the date" },
     {
       type: "p",

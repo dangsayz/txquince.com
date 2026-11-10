@@ -11,8 +11,15 @@ const post: BlogPost = {
     "Seven days out, the big decisions are done. This checklist walks you from one week before to the morning of: vendors, guest count, dress, shoes, emergency kit, envelopes and rest.",
   publishedAt: "2026-11-10",
   readMinutes: 5,
+  coverFull: true,
   lead: "In the last week, confirm every vendor and arrival time, give your final guest count, finish the dress fitting, break in the shoes, pack an emergency kit and print a schedule for the family. Then rest. Here is the week, one stage at a time, so nothing is left for the morning of.",
   content: [
+    {
+      type: "image",
+      slug: "quinceanera-pink-gown-beading-detail-dfw",
+      alt: "Close-up of a pink quinceañera gown covered in rose-gold sequins, rhinestones and embroidered vines, hands resting on the skirt, at a Dallas–Fort Worth reception",
+      caption: "The dress, steamed and ready: one line on the checklist.",
+    },
     {
       type: "p",
       text: "Every family plans a little differently, so use this as a base and change it to fit your celebration. If you are still earlier in the process, start with the [planning timeline and checklist](/blog/quinceanera-planning-timeline-checklist). This post picks up when the big decisions are made and the details are left.",

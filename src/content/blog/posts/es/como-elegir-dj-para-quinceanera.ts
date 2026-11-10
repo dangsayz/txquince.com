@@ -14,6 +14,12 @@ const post: BlogPost = {
   lang: "es",
   lead: "Elija un DJ que ya haya trabajado quinceañeras, que pueda dirigir la fiesta en los idiomas de sus invitados y que ponga todo por escrito en un contrato. El DJ de una quinceañera no solo pone música: también lleva el hilo de la noche. Aquí le explicamos qué hace y qué preguntar antes de firmar.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-156",
+      alt: "La quinceañera sentada con su vestido rosa extendido frente a una pantalla iluminada del DJ, con los DJ detrás, en Convention Plaza Ballroom",
+      caption: "La cabina del DJ es el cuarto de control de la noche.",
+    },
     { type: "h2", text: "Qué hace en realidad el DJ de una quinceañera" },
     {
       type: "p",

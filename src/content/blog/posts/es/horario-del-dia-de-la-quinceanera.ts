@@ -14,6 +14,12 @@ const post: BlogPost = {
   lang: "es",
   lead: "Un día de quinceañera con misa a media tarde y recepción por la noche suele empezar con el peinado en la mañana y terminar con baile abierto ya entrada la noche. Aquí tiene un horario de ejemplo con horas. Es un modelo para adaptar, no una regla, porque su iglesia, su salón y su familia son los que fijan las horas reales.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-030",
+      alt: "Quinceañera riendo, con tiara y vestido rosa, sentada frente a una pared de flores blancas en Convention Plaza Ballroom",
+      caption: "Los retratos se hacen antes de abrir las puertas, así que el horario tiene que dejarles espacio.",
+    },
     { type: "h2", text: "Un horario de ejemplo con misa y recepción por la noche" },
     {
       type: "p",

@@ -13,6 +13,12 @@ const post: BlogPost = {
   readMinutes: 5,
   lead: "A quinceañera thank-you speech is short: usually one to three minutes of thanks to the people who came and the people who helped. She does not need to be a speaker. She needs a few true sentences. Here is when she may give it, an easy order to follow, two samples you can change, and tips for nerves and for speaking in two languages.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-171",
+      alt: "Quinceañera stands in her pink gown in front of family and friends raising glasses for a toast at Convention Plaza Ballroom",
+      caption: "Standing in front of everyone she loves: the moment to say thank you.",
+    },
     { type: "h2", text: "When does the quinceañera give her speech?" },
     {
       type: "p",

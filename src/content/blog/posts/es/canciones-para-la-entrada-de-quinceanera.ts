@@ -14,6 +14,12 @@ const post: BlogPost = {
   lang: "es",
   lead: "Escoja una canción con un buen arranque y que dure lo mismo que la caminata. En la mayoría de las fiestas hay más de una entrada, así que quizá necesite más de una canción: una para la corte, una para la familia y una para la quinceañera. Aquí le contamos cómo elegir, cómo coordinar los tiempos con el DJ y 14 ideas para empezar su lista.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-050",
+      alt: "Quinceañera de vestido rosa con ramo caminando junto a una mujer de vestido rosa de lentejuelas y un hombre con sombrero en Convention Plaza Ballroom",
+      caption: "La entrada, con el ramo en la mano.",
+    },
     { type: "h2", text: "Las distintas entradas" },
     {
       type: "p",

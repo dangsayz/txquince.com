@@ -13,6 +13,12 @@ const post: BlogPost = {
   readMinutes: 5,
   lead: "A surprise dance mix is several short song clips edited into one track, usually a few minutes long. The court dances each clip in a new style, so the room never gets bored. Here is how to pick the genres, a list of well-known songs to start from, and how to plan the rehearsals.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-150",
+      alt: "Young men in white shirts, jeans and purple and pink wigs dance on the floor with money scattered around at Convention Plaza Ballroom",
+      caption: "Bright wigs and a full floor: the surprise dance.",
+    },
     { type: "h2", text: "What a surprise dance mix is" },
     {
       type: "p",

@@ -14,6 +14,12 @@ const post: BlogPost = {
   lang: "es",
   lead: "El baile de madre e hija no es obligatorio en una quinceañera, pero muchas familias lo añaden. Elijan una canción cuya letra las dos puedan cantar, de tres o cuatro minutos, y que la quinceañera tenga la última palabra. Aquí va cómo decidir, 11 canciones en español e inglés y algunas ideas más allá del baile lento.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-120",
+      alt: "La quinceañera y una mujer de vestido rosa de lentejuelas bailan juntas junto a una fuente de chispas y la cabina del DJ en Convention Plaza Ballroom",
+      caption: "Un baile de dos, con chispas frías a un lado.",
+    },
     { type: "h2", text: "¿Hace falta un baile con mamá?" },
     {
       type: "p",

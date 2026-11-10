@@ -13,6 +13,12 @@ const post: BlogPost = {
   readMinutes: 5,
   lead: "A save the date is a short, early message that tells guests the day of your quinceañera so they can keep it free. It is not the invitation. It goes out first, with only the basics, and the full invitation follows later. Here is when families send it, what to put on it and how to plan a photo for it.",
   content: [
+    {
+      type: "image",
+      slug: "album-arboretum-red-garden-108",
+      alt: "Wide view of girl in red gown with long train on garden path at Dallas Arboretum",
+      caption: "A garden session months ahead gives you the save-the-date photo.",
+    },
     { type: "h2", text: "What a save the date is" },
     {
       type: "p",

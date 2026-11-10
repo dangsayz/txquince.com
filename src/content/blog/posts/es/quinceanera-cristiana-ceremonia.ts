@@ -12,8 +12,15 @@ const post: BlogPost = {
   publishedAt: "2026-11-10",
   readMinutes: 5,
   lang: "es",
+  coverFull: true,
   lead: "Sí, se puede tener una quinceañera sin misa católica. Muchas familias evangélicas y de otras iglesias cristianas hacen un servicio o una bendición para su hija y luego celebran en la recepción. Cada iglesia lo hace a su manera, así que lo primero es preguntarle a su pastor.",
   content: [
+    {
+      type: "image",
+      slug: "album-luxury-red-white-reception-141",
+      alt: "Quinceañera de vestido rojo sentada en una banca de iglesia, con otras familias en las bancas de atrás",
+      caption: "En la iglesia, antes de la fiesta: la parte del día que cada familia arma con su propia congregación.",
+    },
     { type: "h2", text: "La quinceañera no necesita una misa católica" },
     {
       type: "p",

@@ -14,6 +14,12 @@ const post: BlogPost = {
   lang: "es",
   lead: "El baile sorpresa se baila con una mezcla: varios clips cortos de canciones unidos en una sola pista de unos cuantos minutos. La corte baila cada clip en un estilo distinto y el salón nunca se aburre. Aquí le explicamos cómo escoger los géneros, le damos una lista de canciones conocidas para empezar y le decimos cómo planear los ensayos.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-150",
+      alt: "Jóvenes de camisa blanca, jeans y pelucas moradas y rosas bailan en la pista en Convention Plaza Ballroom",
+      caption: "Pelucas de colores y la pista llena: el baile sorpresa.",
+    },
     { type: "h2", text: "Qué es una mezcla para el baile sorpresa" },
     {
       type: "p",

@@ -14,6 +14,12 @@ const post: BlogPost = {
   lang: "es",
   lead: "La invitación de una quinceañera dice quién festeja, quién invita, cuándo y dónde es, y cómo confirmar. Muchas tarjetas también nombran a los padrinos y agregan una línea sobre la vestimenta o los niños. Aquí tiene las partes en orden y cuatro textos de ejemplo para copiar y adaptar.",
   content: [
+    {
+      type: "image",
+      slug: "album-dreamhaus-pink-tiara-132",
+      alt: "Quinceañera de vestido rosa sentada en un sofá oscuro tallado en un salón de paneles color crema en Dreamhaus",
+      caption: "El texto va junto a una foto como esta, así que conviene que sea corto.",
+    },
     { type: "h2", text: "Las partes del texto, en orden" },
     {
       type: "p",

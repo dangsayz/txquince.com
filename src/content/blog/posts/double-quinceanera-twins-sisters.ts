@@ -11,8 +11,15 @@ const post: BlogPost = {
     "One party for twins, sisters or cousins works well when each girl still gets her own moments. Here is how to split the traditions, the costs and the photos fairly.",
   publishedAt: "2026-11-10",
   readMinutes: 5,
+  coverFull: true,
   lead: "Yes, two girls can share one quinceañera, and many families do it. Twins, sisters close in age and cousins all celebrate this way. The key is simple: share the party, but give each girl her own moments. Here is how families plan the entrances, dresses, court, dances, costs and photos.",
   content: [
+    {
+      type: "image",
+      slug: "album-hamptons-twins-dress-session-001",
+      alt: "Twin quinceañeras in pink and burgundy gowns against stone architecture and an arched window",
+      caption: "Two gowns that go together without matching.",
+    },
     { type: "h2", text: "Who shares a celebration, and why" },
     {
       type: "p",

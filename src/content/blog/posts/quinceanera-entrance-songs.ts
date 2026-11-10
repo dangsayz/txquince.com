@@ -13,6 +13,12 @@ const post: BlogPost = {
   readMinutes: 5,
   lead: "Pick a song with a clear start, and pick one that fits the length of the walk. Most celebrations have more than one entrance, so you may need more than one song: one for the court, one for the family, and one for the quinceañera. Here is how to choose, how to time it with the DJ, and 14 ideas to start your list.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-050",
+      alt: "Quinceañera in a pink gown with a bouquet walking beside a woman in a rose sequin dress and a man in a hat at Convention Plaza Ballroom",
+      caption: "The walk in, bouquet in hand.",
+    },
     { type: "h2", text: "The different entrances" },
     {
       type: "p",

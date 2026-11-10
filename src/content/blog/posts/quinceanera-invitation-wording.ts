@@ -13,6 +13,12 @@ const post: BlogPost = {
   readMinutes: 5,
   lead: "A quinceañera invitation says who is celebrating, who is inviting, when and where it happens, and how to answer. Most cards also name the padrinos and add a line about dress or kids. Below are the parts in order and four short sample wordings you can copy, two in English and two in Spanish.",
   content: [
+    {
+      type: "image",
+      slug: "album-dreamhaus-pink-tiara-132",
+      alt: "Wide shot of girl in pink gown seated on a dark carved sofa in a cream paneled room at Dreamhaus",
+      caption: "The words sit beside a photo like this one, so keep them short.",
+    },
     { type: "h2", text: "The parts of the wording, in order" },
     {
       type: "p",

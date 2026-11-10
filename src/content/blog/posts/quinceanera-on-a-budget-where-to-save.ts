@@ -11,8 +11,15 @@ const post: BlogPost = {
     "You can hold a beautiful quinceañera without spending like a wedding. Here is where families save the most, and the few things many wish they had not cut.",
   publishedAt: "2026-11-10",
   readMinutes: 5,
+  coverFull: true,
   lead: "Yes, you can have a lovely quinceañera on a small budget. The biggest savings usually come from the guest list, the date and the size of the court, not from cutting what guests feel most. Here is where families save, and what many wish they had protected.",
   content: [
+    {
+      type: "image",
+      slug: "album-latino-ballroom-butterfly-002",
+      alt: "Round banquet table with sparkling pink linen, a floral centerpiece and clear chairs",
+      caption: "One good centerpiece does more than five small ones.",
+    },
     { type: "h2", text: "Start with the guest list" },
     {
       type: "p",

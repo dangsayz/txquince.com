@@ -12,8 +12,15 @@ const post: BlogPost = {
   publishedAt: "2026-11-10",
   readMinutes: 5,
   lang: "es",
+  coverFull: true,
   lead: "Sí, se puede hacer una quinceañera muy bonita con poco presupuesto. Los mayores ahorros casi siempre vienen de la lista de invitados, la fecha y el tamaño de la corte, no de recortar lo que más sienten los invitados. Aquí le decimos dónde ahorran las familias y qué cosas muchas desearían haber protegido.",
   content: [
+    {
+      type: "image",
+      slug: "album-latino-ballroom-butterfly-002",
+      alt: "Mesa redonda de banquete con mantel rosa brillante, centro de mesa floral y sillas transparentes",
+      caption: "Un buen centro de mesa hace más que cinco chicos.",
+    },
     { type: "h2", text: "Empiece por la lista de invitados" },
     {
       type: "p",

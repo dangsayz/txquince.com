@@ -14,6 +14,12 @@ const post: BlogPost = {
   lang: "es",
   lead: "Muchas familias eligen un sábado cercano al cumpleaños, pero no hay una sola fecha correcta. Antes de decidir, revise el calendario de la iglesia, el salón y a la familia que tiene que viajar. Después vea la escuela, los feriados y el clima de Texas. Este es el orden que más problemas le ahorra.",
   content: [
+    {
+      type: "image",
+      slug: "album-dreamhaus-pink-tiara-185",
+      alt: "Quinceañera de vestido rosa sentada en un salón dorado con candelabro, en un encuadre amplio, en Dreamhaus",
+      caption: "Primero la fecha; la sesión, el salón y la iglesia vienen después.",
+    },
     { type: "h2", text: "El cumpleaños o una fecha cercana" },
     {
       type: "p",

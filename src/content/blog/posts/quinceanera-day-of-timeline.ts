@@ -13,6 +13,12 @@ const post: BlogPost = {
   readMinutes: 5,
   lead: "A quinceañera day with a mid-afternoon mass and an evening reception usually starts with hair in the early morning and ends with open dancing at night. Below is one sample schedule with clock times. It is an example to adapt, not a rule, because your church, venue and family will set the real times.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-030",
+      alt: "Laughing quinceañera in a tiara and pink gown sitting in front of a white flower wall at Convention Plaza Ballroom",
+      caption: "Portraits happen before the doors open, so the schedule has to leave room for them.",
+    },
     { type: "h2", text: "A sample schedule for a mass and an evening reception" },
     {
       type: "p",

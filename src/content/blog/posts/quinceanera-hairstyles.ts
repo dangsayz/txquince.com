@@ -12,8 +12,15 @@ const post: BlogPost = {
     "Down with curls, half-up, updo or braids: how the tiara and the neckline change the choice, what to test at the trial and what to pack for the night.",
   publishedAt: "2026-11-10",
   readMinutes: 5,
+  coverFull: true,
   lead: "Pick a style with some structure, because the tiara needs something to sit on and the hair has to last for hours of dancing. Many quinceañeras choose a half-up style or an updo for that reason, but curls worn down and braids can work too if they are set well. Here is how to choose, what to test at the trial and what to pack for the night.",
   content: [
+    {
+      type: "image",
+      slug: "quinceanera-gold-tiara-curls-back-view-dfw",
+      alt: "Gold quinceañera tiara on a half-up hairstyle with long dark curls, photographed from behind against garden greenery and stone buildings at the Mandalay Canal Walk in Las Colinas, Irving",
+      caption: "Half-up with long curls: the tiara sits on the pinned section and stays put.",
+    },
     { type: "h2", text: "The common styles, in plain words" },
     {
       type: "p",

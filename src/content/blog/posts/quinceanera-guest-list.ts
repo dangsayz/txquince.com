@@ -13,6 +13,12 @@ const post: BlogPost = {
   readMinutes: 5,
   lead: "Start with a number, not a list. Your venue capacity and your budget tell you how many guests you can host, and then you fill those seats in circles, from the closest people outward. Here is how to set the number, build the list, handle children and extras, and seat everyone so the people who matter most are near the dance floor.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-001",
+      alt: "Round tables with pink linens, white chair covers and gold sashes under gold candelabra at Convention Plaza Ballroom",
+      caption: "Every chair in the room is a name on the list.",
+    },
     { type: "h2", text: "Start with the number" },
     {
       type: "p",

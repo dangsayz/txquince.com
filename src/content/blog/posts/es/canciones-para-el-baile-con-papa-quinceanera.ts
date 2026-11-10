@@ -14,6 +14,12 @@ const post: BlogPost = {
   lang: "es",
   lead: "La mejor canción para el baile de padre e hija es la que les queda a los dos, tiene un ritmo que pueden bailar y se puede recortar a unos dos minutos. Aquí le explicamos cómo elegirla, le damos 14 canciones en español e inglés por estilo y unos consejos para el día.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-145",
+      alt: "Un hombre de traje negro baila con la quinceañera cerca de una columna de flores y un fondo de lentejuela dorada en Convention Plaza Ballroom",
+      caption: "Un baile lento, con todo el salón mirando.",
+    },
     { type: "h2", text: "Cómo elegir la canción" },
     {
       type: "p",

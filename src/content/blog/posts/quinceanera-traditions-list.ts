@@ -13,6 +13,12 @@ const post: BlogPost = {
   readMinutes: 6,
   lead: "Most quinceañeras include a mix of these traditions: a mass or blessing, a court, an entrance, a waltz, a crowning, the changing of the shoes, a last doll, dances, a toast, padrinos and a cake. Here is each one in plain words, with what happens and what families say it means. Meanings and order vary by family, region and parish, so treat this as a guide, not a rulebook.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-091",
+      alt: "Quinceañera in a pink gown on a gold and white throne while a woman in a sparkly dress leans in to adjust her crown at Convention Plaza Ballroom",
+      caption: "The crowning, one of the traditions on this list.",
+    },
     { type: "h2", text: "The blessing and the people who stand with her" },
     {
       type: "p",

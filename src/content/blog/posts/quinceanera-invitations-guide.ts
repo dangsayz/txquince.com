@@ -13,6 +13,12 @@ const post: BlogPost = {
   readMinutes: 5,
   lead: "Many families send a save-the-date several months ahead and the full invitation about six to eight weeks before the party. Timing varies by family, so use this as a guide, not a rule. Below: what every invitation needs, printed or digital, bilingual wording and how to keep track of replies.",
   content: [
+    {
+      type: "image",
+      slug: "album-arboretum-pink-garden-185",
+      alt: "Small figure in gown on lawn with flower beds, wide landscape at Dallas Arboretum",
+      caption: "A portrait from the dress session is the photo most families print on the invitation.",
+    },
     { type: "h2", text: "When to send quinceañera invitations" },
     {
       type: "p",

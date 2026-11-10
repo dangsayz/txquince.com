@@ -13,8 +13,15 @@ const post: BlogPost = {
   publishedAt: "2026-11-10",
   readMinutes: 5,
   lang: "es",
+  coverFull: true,
   lead: "Elija un peinado con algo de estructura, porque la tiara necesita dónde asentarse y el cabello tiene que durar horas de baile. Por eso muchas quinceañeras escogen un medio recogido o un recogido, aunque los rizos sueltos y las trenzas también funcionan si quedan bien fijados. Aquí le explicamos cómo elegir, qué probar en la prueba de peinado y qué llevar para la noche.",
   content: [
+    {
+      type: "image",
+      slug: "quinceanera-gold-tiara-curls-back-view-dfw",
+      alt: "Tiara dorada de quinceañera sobre un peinado medio recogido con rizos largos y oscuros, vista de espaldas, en el Mandalay Canal Walk de Las Colinas, Irving",
+      caption: "Medio recogido con rizos largos: la tiara se apoya en la parte sujeta y no se mueve.",
+    },
     { type: "h2", text: "Los estilos más comunes, en palabras sencillas" },
     {
       type: "p",

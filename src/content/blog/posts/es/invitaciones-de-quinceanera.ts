@@ -14,6 +14,12 @@ const post: BlogPost = {
   lang: "es",
   lead: "Muchas familias envían un aviso de la fecha con varios meses de anticipación y la invitación completa unas seis a ocho semanas antes de la fiesta. Cada familia lo hace a su manera, así que tómelo como guía y no como regla. Aquí le decimos qué debe llevar toda invitación, si conviene impresa o digital, cómo hacerla bilingüe y cómo llevar la cuenta de las confirmaciones.",
   content: [
+    {
+      type: "image",
+      slug: "album-arboretum-pink-garden-185",
+      alt: "Quinceañera pequeña en el encuadre, con su vestido, sobre el pasto junto a macizos de flores en el Dallas Arboretum",
+      caption: "Un retrato de la sesión con el vestido es la foto que más familias imprimen en la invitación.",
+    },
     { type: "h2", text: "Cuándo enviar las invitaciones de quinceañera" },
     {
       type: "p",

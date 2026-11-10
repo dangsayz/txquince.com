@@ -14,6 +14,12 @@ const post: BlogPost = {
   lang: "es",
   lead: "Sí, se puede hacer una quinceañera en el patio de su casa, y muchas familias de Texas lo hacen. Una fiesta en casa se siente cálida y muy personal, pero un salón le da en silencio muchas cosas que ahora le tocará conseguir a usted. Aquí le contamos qué planear, desde la carpa hasta las luces.",
   content: [
+    {
+      type: "image",
+      slug: "album-fgs-ranch-red-034",
+      alt: "Quinceañera con sombrero vaquero blanco sentada en el pasto junto a un caballo negro, con guirnaldas de rosas detrás, en FGS Ranch",
+      caption: "Cielo abierto, pasto y espacio: lo que da una celebración al aire libre.",
+    },
     { type: "h2", text: "Por qué las familias eligen su casa" },
     {
       type: "p",

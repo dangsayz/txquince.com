@@ -13,6 +13,12 @@ const post: BlogPost = {
   readMinutes: 5,
   lead: "Choose one color or a pair of colors that sits beside her gown without copying it, and make sure everyone can dance in what they wear. Then order early, because sizes and fittings take time. Here is how to dress the damas and chambelanes so the court looks like one picture.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-036",
+      alt: "Damas in white dresses and chambelanes in cowboy hats and tan vests lined up with the quinceañera at Convention Plaza Ballroom",
+      caption: "White dresses and boots, hats and vests: a court dressed as one group.",
+    },
     { type: "h2", text: "Pick a color that supports her gown" },
     {
       type: "p",

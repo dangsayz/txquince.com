@@ -15,6 +15,12 @@ const post: BlogPost = {
   lang: "es",
   lead: "El mejor maquillaje de quinceañera se ve como ella en su mejor día: piel fresca, color suave y ojos que se notan. También tiene que aguantar el flash, las luces del video, las lágrimas, el baile y un día largo. Le explicamos cómo escoger un look para sus quince, probarlo con tiempo y mantenerlo en su lugar.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-158",
+      alt: "Retrato de cerca de la quinceañera sonriendo con su vestido rosa de corsé frente a la cabina del DJ en Convention Plaza Ballroom",
+      caption: "Un maquillaje suave y parejo se ve limpio en un retrato de cerca.",
+    },
     { type: "h2", text: "Un look que va con sus quince años" },
     {
       type: "p",

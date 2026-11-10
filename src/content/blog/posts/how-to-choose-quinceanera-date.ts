@@ -13,6 +13,12 @@ const post: BlogPost = {
   readMinutes: 5,
   lead: "Many families choose a Saturday close to her birthday, but there is no single right date. Before you commit, check the church calendar, the hall and the family who must travel. Then look at school, holidays and Texas weather. Here is the order that saves the most trouble.",
   content: [
+    {
+      type: "image",
+      slug: "album-dreamhaus-pink-tiara-185",
+      alt: "Girl in rose gown seated in gilded room with chandelier, wide framing at Dreamhaus",
+      caption: "Pick the date first; the session, the hall and the church all follow it.",
+    },
     { type: "h2", text: "Her birthday or a date near it" },
     {
       type: "p",

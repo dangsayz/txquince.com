@@ -13,6 +13,12 @@ const post: BlogPost = {
   readMinutes: 5,
   lead: "The best father-daughter dance song is one that fits the two of you, has a tempo you can dance to, and can be cut to about two minutes. Below is how to choose, 14 songs in Spanish and English grouped by feel, and a few tips for the day.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-145",
+      alt: "A man in a black suit dances with the quinceañera near a floral column and a gold sequin backdrop at Convention Plaza Ballroom",
+      caption: "A slow dance, and the whole room watching.",
+    },
     { type: "h2", text: "How to choose the song" },
     {
       type: "p",

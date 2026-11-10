@@ -14,6 +14,12 @@ const post: BlogPost = {
   lang: "es",
   lead: "Escoja un color, o dos que combinen, que acompañe el vestido de su hija sin copiarlo, y cuide que todos puedan bailar con lo que traen puesto. Después pida con tiempo, porque las tallas y las pruebas toman semanas. Así puede vestir a damas y chambelanes para que la corte se vea como una sola foto.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-036",
+      alt: "Damas de vestido blanco y chambelanes con sombrero vaquero y chaleco claro formados junto a la quinceañera en Convention Plaza Ballroom",
+      caption: "Vestidos blancos y botas, sombreros y chalecos: una corte vestida como un solo grupo.",
+    },
     { type: "h2", text: "Elija un color que apoye su vestido" },
     {
       type: "p",

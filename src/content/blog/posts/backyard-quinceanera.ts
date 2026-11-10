@@ -13,6 +13,12 @@ const post: BlogPost = {
   readMinutes: 5,
   lead: "Yes, you can hold a quinceañera in your backyard, and many Texas families do. A home party can feel warm and personal, but a hall quietly provides a lot of things you will now have to arrange yourself. Here is what to plan for, from the tent to the lights.",
   content: [
+    {
+      type: "image",
+      slug: "album-fgs-ranch-red-034",
+      alt: "Wide shot of a quinceañera in a white cowboy hat seated on the lawn by a black horse, rose garlands behind at FGS Ranch",
+      caption: "Open sky, grass and room to breathe: what an outdoor celebration gives you.",
+    },
     { type: "h2", text: "Why families choose home" },
     {
       type: "p",

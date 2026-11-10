@@ -13,6 +13,12 @@ const post: BlogPost = {
   readMinutes: 5,
   lead: "The easiest way to share quinceañera photos is one gallery link that family can open on a phone, no account needed. Send it in a family group chat, then pick favorites together and decide what to print. Here is how to share the photos, keep them safe and post online without worrying about privacy.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-127",
+      alt: "Quinceañera and a young girl in a pink dress hold hands and dance on the dance floor at Convention Plaza Ballroom",
+      caption: "The photos the whole family asks for.",
+    },
     { type: "h2", text: "Start with one gallery link" },
     {
       type: "p",

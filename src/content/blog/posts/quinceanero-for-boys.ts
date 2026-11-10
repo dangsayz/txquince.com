@@ -13,6 +13,12 @@ const post: BlogPost = {
   readMinutes: 5,
   lead: "Yes, some families celebrate a son’s fifteenth birthday with a quinceañero. It is less common than a girl’s quinceañera, and it has fewer fixed customs, so each family shapes it. Here is what families often choose, how it differs from a girl’s celebration and what can stay the same.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-038",
+      alt: "Chambelanes in cowboy hats and tan vests standing arm in arm, some smiling, by glass doors at Convention Plaza Ballroom",
+      caption: "Hats, vests and boots: young men dressed for a fifteenth.",
+    },
     { type: "h2", text: "Is a quinceañero for boys a real tradition?" },
     {
       type: "p",

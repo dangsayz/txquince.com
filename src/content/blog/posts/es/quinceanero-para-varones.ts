@@ -14,6 +14,12 @@ const post: BlogPost = {
   lang: "es",
   lead: "Sí, algunas familias celebran los quince años de un hijo con un quinceañero. Es menos común que la fiesta de una quinceañera y tiene menos costumbres fijas, así que cada familia lo arma a su manera. Aquí le contamos qué suelen elegir las familias, en qué se diferencia y qué se puede conservar igual.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-038",
+      alt: "Jóvenes con sombrero vaquero y chaleco claro abrazados, algunos sonriendo, junto a puertas de cristal en Convention Plaza Ballroom",
+      caption: "Sombreros, chalecos y botas: muchachos vestidos para unos quince.",
+    },
     { type: "h2", text: "¿Existe el quinceañero para varones?" },
     {
       type: "p",

@@ -13,6 +13,12 @@ const post: BlogPost = {
   readMinutes: 5,
   lead: "A mother-daughter dance is not a required part of a quinceañera, but many families add one. Pick a song with words you can both sing, keep it to about three or four minutes, and let the quinceañera have the final say. Here is how to decide, 11 songs in Spanish and English, and a few ideas beyond a slow dance.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-120",
+      alt: "Quinceañera and a woman in a rose sequin dress dance together beside a spark fountain and DJ booth at Convention Plaza Ballroom",
+      caption: "A dance for two, cold sparks beside them.",
+    },
     { type: "h2", text: "Do you need a dance with mom?" },
     {
       type: "p",

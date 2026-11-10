@@ -12,8 +12,15 @@ const post: BlogPost = {
   publishedAt: "2026-11-10",
   readMinutes: 5,
   lang: "es",
+  coverFull: true,
   lead: "Empiece por el número de invitados y pregúntele a su pastelero cuántas porciones da cada tamaño. Las porciones por piso cambian de un pastelero a otro, así que una cifra de internet es solo un cálculo aproximado. Después elija el estilo, decida cuándo se parte el pastel y avísele a su fotógrafo. Así lo planean las familias, paso a paso.",
   content: [
+    {
+      type: "image",
+      slug: "quinceanera-pink-15-cake-crown-roses-dfw",
+      alt: "Pastel rosa de quinceañera de cuatro pisos con un 15 dorado, una corona de pedrería arriba y una cascada de rosas rosas y blancas, sobre una mesa de lentejuela dorada en un salón de DFW",
+      caption: "Cuatro pisos, un 15 dorado y una corona arriba.",
+    },
     { type: "h2", text: "Cómo elegir el tamaño del pastel" },
     {
       type: "p",

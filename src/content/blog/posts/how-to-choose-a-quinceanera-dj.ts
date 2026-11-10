@@ -13,6 +13,12 @@ const post: BlogPost = {
   readMinutes: 5,
   lead: "Choose a DJ who has run quinceañeras before, who can MC in the languages your guests speak, and who puts everything in a written contract. A quinceañera DJ is not only a music player. He or she runs the timeline of the night. Here is what the job covers and the questions to ask before you sign.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-156",
+      alt: "Quinceañera sits in her spread pink gown in front of a glowing DJ screen with the DJs behind at Convention Plaza Ballroom",
+      caption: "The DJ booth is the control room of the night.",
+    },
     { type: "h2", text: "What a quinceañera DJ really does" },
     {
       type: "p",

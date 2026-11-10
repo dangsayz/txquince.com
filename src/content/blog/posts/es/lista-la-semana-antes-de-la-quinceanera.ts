@@ -12,8 +12,15 @@ const post: BlogPost = {
   publishedAt: "2026-11-10",
   readMinutes: 5,
   lang: "es",
+  coverFull: true,
   lead: "En la última semana, confirme a cada proveedor y su hora de llegada, dé el número final de invitados, termine la prueba del vestido, ablande los zapatos, arme un kit de emergencia e imprima el programa para la familia. Y descanse. Aquí está la semana, etapa por etapa, para que nada se quede para la mañana del evento.",
   content: [
+    {
+      type: "image",
+      slug: "quinceanera-pink-gown-beading-detail-dfw",
+      alt: "Acercamiento a un vestido rosa de quinceañera cubierto de lentejuelas rosa dorado, pedrería y guías bordadas, con las manos sobre la falda, en un salón de Dallas–Fort Worth",
+      caption: "El vestido, planchado al vapor y listo: un renglón de la lista.",
+    },
     {
       type: "p",
       text: "Cada familia planea a su manera, así que use esta lista como base y adáptela a su celebración. Si todavía está al principio, empiece con el [cronograma para planear una quinceañera](/es/blog/como-planear-una-quinceanera-cronograma). Este artículo empieza cuando lo importante ya está decidido y solo faltan los detalles.",

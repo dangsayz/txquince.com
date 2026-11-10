@@ -13,6 +13,12 @@ const post: BlogPost = {
   readMinutes: 5,
   lead: "The easiest quinceañera poses are the ones that give her something to do: spread the skirt, look over her shoulder, walk, hold the bouquet. They look natural because she is moving, not freezing. Here are poses for her, the court and the family, and what to try if she feels shy in front of the camera.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-018",
+      alt: "Quinceañera spreading her long pink gown train across the dance floor while guests stand nearby at Convention Plaza Ballroom",
+      caption: "The train spread across the floor: one of the easiest poses in a ball gown.",
+    },
     { type: "h2", text: "Poses that work in a ball gown" },
     {
       type: "p",

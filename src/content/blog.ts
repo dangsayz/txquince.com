@@ -135,6 +135,32 @@ import ansPadrinos from "./blog/posts/quinceanera-padrinos-list";
 import ansWhatToWear from "./blog/posts/what-to-wear-to-a-quinceanera";
 import ansVsSweet16 from "./blog/posts/quinceanera-vs-sweet-16";
 import evPlazaPinkGold from "./blog/posts/pink-and-gold-quinceanera-convention-plaza-ballroom-irving";
+// Third batch (Nov 10, 2026): planning, songs, traditions and photo guides.
+import b3p00 from "./blog/posts/quinceanera-hairstyles";
+import b3p01 from "./blog/posts/quinceanera-makeup";
+import b3p02 from "./blog/posts/quinceanera-cake-guide";
+import b3p03 from "./blog/posts/quinceanera-invitations-guide";
+import b3p04 from "./blog/posts/quinceanera-invitation-wording";
+import b3p05 from "./blog/posts/quinceanera-guest-list";
+import b3p06 from "./blog/posts/quinceanera-thank-you-speech";
+import b3p07 from "./blog/posts/quinceanera-poses";
+import b3p08 from "./blog/posts/quinceanero-for-boys";
+import b3p09 from "./blog/posts/double-quinceanera-twins-sisters";
+import b3p10 from "./blog/posts/christian-quinceanera-ceremony";
+import b3p11 from "./blog/posts/quinceanera-father-daughter-dance-songs";
+import b3p12 from "./blog/posts/quinceanera-mother-daughter-dance-songs";
+import b3p13 from "./blog/posts/quinceanera-surprise-dance-songs";
+import b3p14 from "./blog/posts/quinceanera-entrance-songs";
+import b3p15 from "./blog/posts/quinceanera-day-of-timeline";
+import b3p16 from "./blog/posts/week-before-quinceanera-checklist";
+import b3p17 from "./blog/posts/backyard-quinceanera";
+import b3p18 from "./blog/posts/how-to-choose-a-quinceanera-dj";
+import b3p19 from "./blog/posts/quinceanera-save-the-date-guide";
+import b3p20 from "./blog/posts/how-to-choose-quinceanera-date";
+import b3p21 from "./blog/posts/damas-and-chambelanes-outfits";
+import b3p22 from "./blog/posts/quinceanera-on-a-budget-where-to-save";
+import b3p23 from "./blog/posts/quinceanera-traditions-list";
+import b3p24 from "./blog/posts/how-to-share-quinceanera-photos";
 // Answer posts, second batch (Nov 10, 2026).
 import ansHowMany from "./blog/posts/how-many-damas-and-chambelanes";
 import ansWhoPays from "./blog/posts/who-pays-for-a-quinceanera";
@@ -144,6 +170,31 @@ import ansCrowning from "./blog/posts/quinceanera-crowning-ceremony";
 import ansNoMass from "./blog/posts/quinceanera-without-mass-or-court";
 
 export const posts: BlogPost[] = [
+  b3p00,
+  b3p01,
+  b3p02,
+  b3p03,
+  b3p04,
+  b3p05,
+  b3p06,
+  b3p07,
+  b3p08,
+  b3p09,
+  b3p10,
+  b3p11,
+  b3p12,
+  b3p13,
+  b3p14,
+  b3p15,
+  b3p16,
+  b3p17,
+  b3p18,
+  b3p19,
+  b3p20,
+  b3p21,
+  b3p22,
+  b3p23,
+  b3p24,
   evPlazaPinkGold,
   ansHowMany,
   ansWhoPays,
@@ -284,6 +335,31 @@ import esAnsHoraLoca from "./blog/posts/es/la-hora-loca-en-una-quinceanera";
 import esAnsPadrinos from "./blog/posts/es/padrinos-de-quinceanera-lista";
 import esAnsWhatToWear from "./blog/posts/es/que-ponerse-para-una-quinceanera";
 import esAnsVsSweet16 from "./blog/posts/es/quinceanera-o-sweet-16";
+import esb3p00 from "./blog/posts/es/peinados-para-quinceanera";
+import esb3p01 from "./blog/posts/es/maquillaje-para-quinceanera";
+import esb3p02 from "./blog/posts/es/pastel-de-quinceanera";
+import esb3p03 from "./blog/posts/es/invitaciones-de-quinceanera";
+import esb3p04 from "./blog/posts/es/texto-para-invitaciones-de-quinceanera";
+import esb3p05 from "./blog/posts/es/lista-de-invitados-quinceanera";
+import esb3p06 from "./blog/posts/es/discurso-de-agradecimiento-quinceanera";
+import esb3p07 from "./blog/posts/es/poses-para-fotos-de-quinceanera";
+import esb3p08 from "./blog/posts/es/quinceanero-para-varones";
+import esb3p09 from "./blog/posts/es/quinceanera-doble-gemelas-hermanas";
+import esb3p10 from "./blog/posts/es/quinceanera-cristiana-ceremonia";
+import esb3p11 from "./blog/posts/es/canciones-para-el-baile-con-papa-quinceanera";
+import esb3p12 from "./blog/posts/es/canciones-para-bailar-con-mama-quinceanera";
+import esb3p13 from "./blog/posts/es/canciones-para-el-baile-sorpresa-quinceanera";
+import esb3p14 from "./blog/posts/es/canciones-para-la-entrada-de-quinceanera";
+import esb3p15 from "./blog/posts/es/horario-del-dia-de-la-quinceanera";
+import esb3p16 from "./blog/posts/es/lista-la-semana-antes-de-la-quinceanera";
+import esb3p17 from "./blog/posts/es/quinceanera-en-casa";
+import esb3p18 from "./blog/posts/es/como-elegir-dj-para-quinceanera";
+import esb3p19 from "./blog/posts/es/save-the-date-de-quinceanera";
+import esb3p20 from "./blog/posts/es/como-elegir-la-fecha-de-la-quinceanera";
+import esb3p21 from "./blog/posts/es/vestuario-de-damas-y-chambelanes";
+import esb3p22 from "./blog/posts/es/quinceanera-con-poco-presupuesto";
+import esb3p23 from "./blog/posts/es/tradiciones-de-quinceanera";
+import esb3p24 from "./blog/posts/es/como-compartir-las-fotos-de-la-quinceanera";
 import esEvPlazaPinkGold from "./blog/posts/es/quinceanera-rosa-y-dorado-convention-plaza-ballroom-irving";
 import esAnsHowMany from "./blog/posts/es/cuantas-damas-y-chambelanes";
 import esAnsWhoPays from "./blog/posts/es/quien-paga-la-quinceanera";
@@ -293,6 +369,31 @@ import esAnsCrowning from "./blog/posts/es/la-coronacion-de-la-quinceanera";
 import esAnsNoMass from "./blog/posts/es/quinceanera-sin-misa-o-sin-corte";
 
 export const esPosts: BlogPost[] = [
+  esb3p00,
+  esb3p01,
+  esb3p02,
+  esb3p03,
+  esb3p04,
+  esb3p05,
+  esb3p06,
+  esb3p07,
+  esb3p08,
+  esb3p09,
+  esb3p10,
+  esb3p11,
+  esb3p12,
+  esb3p13,
+  esb3p14,
+  esb3p15,
+  esb3p16,
+  esb3p17,
+  esb3p18,
+  esb3p19,
+  esb3p20,
+  esb3p21,
+  esb3p22,
+  esb3p23,
+  esb3p24,
   esEvPlazaPinkGold,
   esAnsHowMany,
   esAnsWhoPays,
@@ -383,6 +484,31 @@ const EN_ES_PAIRS: { en: string; es: string }[] = [
   { en: "quinceanera-padrinos-list", es: "padrinos-de-quinceanera-lista" },
   { en: "what-to-wear-to-a-quinceanera", es: "que-ponerse-para-una-quinceanera" },
   { en: "quinceanera-vs-sweet-16", es: "quinceanera-o-sweet-16" },
+  { en: "quinceanera-hairstyles", es: "peinados-para-quinceanera" },
+  { en: "quinceanera-makeup", es: "maquillaje-para-quinceanera" },
+  { en: "quinceanera-cake-guide", es: "pastel-de-quinceanera" },
+  { en: "quinceanera-invitations-guide", es: "invitaciones-de-quinceanera" },
+  { en: "quinceanera-invitation-wording", es: "texto-para-invitaciones-de-quinceanera" },
+  { en: "quinceanera-guest-list", es: "lista-de-invitados-quinceanera" },
+  { en: "quinceanera-thank-you-speech", es: "discurso-de-agradecimiento-quinceanera" },
+  { en: "quinceanera-poses", es: "poses-para-fotos-de-quinceanera" },
+  { en: "quinceanero-for-boys", es: "quinceanero-para-varones" },
+  { en: "double-quinceanera-twins-sisters", es: "quinceanera-doble-gemelas-hermanas" },
+  { en: "christian-quinceanera-ceremony", es: "quinceanera-cristiana-ceremonia" },
+  { en: "quinceanera-father-daughter-dance-songs", es: "canciones-para-el-baile-con-papa-quinceanera" },
+  { en: "quinceanera-mother-daughter-dance-songs", es: "canciones-para-bailar-con-mama-quinceanera" },
+  { en: "quinceanera-surprise-dance-songs", es: "canciones-para-el-baile-sorpresa-quinceanera" },
+  { en: "quinceanera-entrance-songs", es: "canciones-para-la-entrada-de-quinceanera" },
+  { en: "quinceanera-day-of-timeline", es: "horario-del-dia-de-la-quinceanera" },
+  { en: "week-before-quinceanera-checklist", es: "lista-la-semana-antes-de-la-quinceanera" },
+  { en: "backyard-quinceanera", es: "quinceanera-en-casa" },
+  { en: "how-to-choose-a-quinceanera-dj", es: "como-elegir-dj-para-quinceanera" },
+  { en: "quinceanera-save-the-date-guide", es: "save-the-date-de-quinceanera" },
+  { en: "how-to-choose-quinceanera-date", es: "como-elegir-la-fecha-de-la-quinceanera" },
+  { en: "damas-and-chambelanes-outfits", es: "vestuario-de-damas-y-chambelanes" },
+  { en: "quinceanera-on-a-budget-where-to-save", es: "quinceanera-con-poco-presupuesto" },
+  { en: "quinceanera-traditions-list", es: "tradiciones-de-quinceanera" },
+  { en: "how-to-share-quinceanera-photos", es: "como-compartir-las-fotos-de-la-quinceanera" },
   { en: "pink-and-gold-quinceanera-convention-plaza-ballroom-irving", es: "quinceanera-rosa-y-dorado-convention-plaza-ballroom-irving" },
   { en: "how-many-damas-and-chambelanes", es: "cuantas-damas-y-chambelanes" },
   { en: "who-pays-for-a-quinceanera", es: "quien-paga-la-quinceanera" },

@@ -14,6 +14,12 @@ const post: BlogPost = {
   lang: "es",
   lead: "La forma más fácil de compartir las fotos de la quinceañera es un solo enlace de galería que la familia pueda abrir en el celular, sin crear cuenta. Mándelo al chat familiar, escojan favoritas juntos y decidan qué imprimir. Aquí le explicamos cómo compartir las fotos, cómo guardarlas y cómo publicarlas sin preocuparse por la privacidad.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-127",
+      alt: "La quinceañera y una niña de vestido rosa se toman de las manos y bailan en la pista en Convention Plaza Ballroom",
+      caption: "Las fotos que toda la familia pide.",
+    },
     { type: "h2", text: "Empiece con un solo enlace" },
     {
       type: "p",

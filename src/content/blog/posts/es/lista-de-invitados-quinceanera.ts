@@ -14,6 +14,12 @@ const post: BlogPost = {
   lang: "es",
   lead: "Empiece por un número, no por una lista. La capacidad del salón y su presupuesto le dicen cuántos invitados puede recibir, y luego usted llena esos lugares en círculos, de los más cercanos a los más lejanos. Aquí le explicamos cómo fijar el número, armar la lista, manejar a los niños y a los invitados de más, y sentar a todos para que la gente más importante quede cerca de la pista.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-001",
+      alt: "Mesas redondas con manteles rosas, fundas blancas y moños dorados bajo candelabros dorados en Convention Plaza Ballroom",
+      caption: "Cada silla del salón es un nombre de la lista.",
+    },
     { type: "h2", text: "Empiece por el número" },
     {
       type: "p",
