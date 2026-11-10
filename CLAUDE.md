@@ -33,6 +33,10 @@ what's included, links, policies, wording rules), rewrite that doc's facts and a
 Prices and package wording are owner-editable at /admin/prices and /admin/packages, so tell
 Grokbot to confirm numbers on txquince.com/budget before posting.
 
+## Muse's blog feed (standing rule from Dang, 2026-11-10)
+
+Muse posts TX Quince's Journal on Facebook. It reads one address that always lists every post, newest first, with summary, cover photo and the Spanish version: `https://txquince.com/blog/feed.json` (`src/app/blog/feed.json/route.ts`). A new post appears there when it deploys, so never hand Dang a list of links for Muse again. Keep that route working when the blog model changes, and end a report that ships new posts with one line saying they are in the feed.
+
 ## Photo releases (standing rule from Dang, 2026-11-10)
 
 Dang, in his words: "moms put on contracts they agree all images can be release - this is how we get new clients." So faces, the court and family may be published, and a name that shows inside a photo (a DJ screen, a sign) does not block it. This narrows the "no client names or identifiable portraits in public assets" gate in HOW-WE-WORK.md: that gate now covers the words we write. Never put a girl's or family's name in a file name, slug, alt text or caption.
