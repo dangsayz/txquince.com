@@ -715,6 +715,9 @@
   border: 1px solid var(--border-hairline);
   color: var(--text-primary);
 }
+.txq .tq-blog-flow__callout > p {
+  margin: 0;
+}
 .txq .tq-blog-fig {
   margin-block: 2em;
 }
