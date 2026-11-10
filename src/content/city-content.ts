@@ -325,6 +325,7 @@ export const cityContent: Record<string, CityContent> = {
       },
       {
         "name": "Dallas Arboretum and Botanical Garden (White Rock Lake)",
+        "inspo": "dallas-arboretum",
         "why": "Manicured formal gardens, fountains, and seasonal blooms on the shore of White Rock Lake, the city's premier garden backdrop. It's ticketed and needs a photo pass, so we plan the time slot in advance.",
         "whyEs": "Jardines formales, fuentes y flores de temporada a la orilla de White Rock Lake, el mejor fondo de jardín de la ciudad. Cobra entrada y pide permiso de fotografía, así que apartamos el horario con tiempo."
       },
