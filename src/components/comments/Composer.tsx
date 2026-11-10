@@ -1,12 +1,12 @@
 "use client";
 
-import { useId, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { ClerkProvider, useAuth, useClerk, useUser } from "@clerk/nextjs";
 import type { ClerkSettings } from "@/lib/clerk-config";
 import { COMMENT_MAX } from "@/lib/comments";
 import { COPY, type CommentLang } from "./copy";
-import { getRailMount, setQuote, subscribeRailMount, useQuote } from "./quote-store";
+import { getRailMount, setQuote, subscribeRailMount, clearStarter, readStarter, useQuote } from "./quote-store";
 import type { CommentPlace } from "./CommentBox";
 import { ReviewNote } from "./ReviewNote";
 
@@ -55,7 +55,19 @@ function Form({ lang, slug, place, chip, starters }: { lang: CommentLang; slug: 
   const { getToken, isLoaded: authLoaded } = useAuth();
   const { user, isLoaded, isSignedIn } = useUser();
   const clerk = useClerk();
-  const [body, setBody] = useState("");
+  // A starter picked before logging in lands here once (bottom box only).
+  const [body, setBody] = useState(() => (place === "bottom" ? readStarter(slug) : ""));
+  const startedWith = useRef(body);
+  const ready = isLoaded && authLoaded && isSignedIn;
+  useEffect(() => {
+    const el = field.current;
+    const text = startedWith.current;
+    if (!ready || !el || !text) return;
+    startedWith.current = "";
+    clearStarter(slug);
+    el.focus({ preventScroll: true });
+    el.setSelectionRange(text.length, text.length);
+  }, [ready, slug]);
   const [website, setWebsite] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [error, setError] = useState<string | null>(null);

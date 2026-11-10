@@ -262,6 +262,22 @@ async function flows(browser) {
     expect(box, "no comment box in the comments section");
   });
 
+  // A logged-out mom picks how to begin a comment: the choice is kept for
+  // after login and the link goes to the log in page with the way back.
+  await step("a comment starter is kept through log in", phone, async (p) => {
+    const posts = (await sitemapUrls()).filter((u) => u.startsWith("/blog/"));
+    await open(p, BASE + posts[0]);
+    const pill = await p.waitForSelector("#comments .tq-cmt__gate .tq-cmt__starters a.tq-pill", { timeout: 15000 }).catch(() => null);
+    expect(pill, "no comment starters for a logged-out visitor");
+    if (!pill) return;
+    const href = await pill.getAttribute("href");
+    expect(href && href.includes("next=") && href.includes("comments"), `starter link is ${href}`);
+    await p.evaluate(() => document.querySelector("#comments .tq-cmt__gate .tq-cmt__starters a.tq-pill").addEventListener("click", (e) => e.preventDefault()));
+    await pill.click();
+    const saved = await p.evaluate(() => Object.keys(sessionStorage).filter((k) => k.startsWith("tq-cmt-start:")).map((k) => sessionStorage.getItem(k))[0] || "");
+    expect(saved.length > 5, "the starter was not kept for after log in");
+  });
+
   // "Our experience at this venue": the Facebook button must share the venue's
   // share page, and that page must carry its own preview picture.
   await step("a venue's experience shares with its own preview card", desktop, async (p) => {
