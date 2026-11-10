@@ -29,6 +29,8 @@ export type Location = {
   slug: string;
   city: string;
   county: string;
+  /** Spanish county label for the Spanish page; falls back to `county`. */
+  countyEs?: string;
   tier: CityTier;
   /** Real, well-known areas/landmarks — grounds the page locally (shared EN/ES). */
   areas: string[];
@@ -178,6 +180,7 @@ export const locations: Location[] = [
     slug: "dallas",
     city: "Dallas",
     county: "Dallas County",
+    countyEs: "Condado de Dallas",
     tier: "volume",
     areas: [
       "Oak Cliff",
@@ -185,9 +188,9 @@ export const locations: Location[] = [
       "West Dallas",
       "Pleasant Grove",
       "Jefferson Boulevard",
-      "the Kessler",
+      "Kessler Park",
     ],
-    lead: "The heart of Mexican-American Dallas — Oak Cliff, West Dallas, Pleasant Grove.",
+    lead: "Oak Cliff, West Dallas and Pleasant Grove: where Dallas does quince the full way.",
     intro: [
       "Dallas has the largest Mexican-American community in North Texas, and its quinceañera tradition runs deepest in Oak Cliff, West Dallas, and Pleasant Grove. From a misa near Jefferson Boulevard to portraits in Bishop Arts or the Kessler and a reception across the city, I photograph the full day the way Dallas families actually celebrate it — church first, nothing left out.",
       "A TX Quince team covers your daughter's celebration from the first church photo to the last dance, and every gallery and film is edited by us, the owners. Her day gets full attention behind the camera and again in the edit.",
@@ -202,7 +205,7 @@ export const locations: Location[] = [
         a: "Yes — Bishop Arts and the Kessler area make gorgeous portrait backdrops. We can shoot a portrait session there before the celebration or work portraits into the day's timeline.",
       },
     ],
-    leadEs: "El corazón del Dallas mexicano — Oak Cliff, West Dallas, Pleasant Grove.",
+    leadEs: "Oak Cliff, West Dallas y Pleasant Grove: donde Dallas celebra los quince completos.",
     introEs: [
       "Dallas tiene la comunidad mexicana más grande del norte de Texas, y la tradición de la quinceañera se vive más fuerte en Oak Cliff, West Dallas y Pleasant Grove. Desde una misa cerca de Jefferson Boulevard hasta fotos en Bishop Arts o el Kessler y una recepción en cualquier parte de la ciudad, fotografío todo el día como de verdad lo celebran las familias de Dallas: primero la iglesia, sin dejar nada fuera.",
       "Un equipo de TX Quince cubre la celebración de tu hija desde la primera foto en la iglesia hasta el último baile, y nosotros, los dueños, editamos cada galería y cada video. Su día recibe atención total detrás de la cámara y otra vez en la edición.",
@@ -222,15 +225,16 @@ export const locations: Location[] = [
     slug: "fort-worth",
     city: "Fort Worth",
     county: "Tarrant County",
+    countyEs: "Condado de Tarrant",
     tier: "volume",
     areas: [
       "North Side / North Main",
       "the Stockyards",
-      "Northside Mercado",
-      "Cultural District",
+      "Marine Park",
       "Diamond Hill",
+      "Cultural District",
     ],
-    lead: "Deep-rooted Northside tradition, from the parishes to the Stockyards.",
+    lead: "From the North Side parishes to La Gran Plaza and the Stockyards.",
     intro: [
       "Fort Worth's Mexican-American community runs deep on the North Side — North Main, the Mercado, parishes that have celebrated quinceañeras for generations. I photograph the whole tradition here, from a morning misa to portraits near the Stockyards or the Cultural District and a reception on the west side of the metroplex.",
       "Your quinceañera in Fort Worth gets a TX Quince team that's fully there for la misa, el vals, the baile sorpresa, and every moment of the night. Once the party is over, we, the owners, edit the gallery and the film.",
@@ -245,7 +249,7 @@ export const locations: Location[] = [
         a: "Yes — the Stockyards and the Cultural District are favorite Fort Worth portrait spots. We can plan a portrait session there before the celebration or fold portraits into the quinceañera timeline.",
       },
     ],
-    leadEs: "Tradición arraigada del Northside, de las parroquias a los Stockyards.",
+    leadEs: "De las parroquias del North Side a La Gran Plaza y los Stockyards.",
     introEs: [
       "La comunidad mexicana de Fort Worth se vive fuerte en el North Side — North Main, el Mercado, parroquias que han celebrado quinceañeras por generaciones. Aquí fotografío la tradición completa, desde una misa de mañana hasta fotos cerca de los Stockyards o el Cultural District y una recepción del lado oeste del metroplex.",
       "Tu quinceañera en Fort Worth tiene un equipo de TX Quince presente por completo para la misa, el vals, el baile sorpresa y cada momento de la noche. Cuando termina la fiesta, nosotros, los dueños, editamos la galería y el video.",

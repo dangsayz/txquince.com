@@ -192,6 +192,7 @@ export default async function CityPageEs({
     "intro",
     content?.photoSpots?.length ? "spots" : null,
     "commissions",
+    content?.dayEs ? "day" : null,
     "booking",
     "work",
     "faq",
@@ -214,7 +215,7 @@ export default async function CityPageEs({
         "@type": "ProfessionalService",
         "@id": `${esUrl}#business`,
         name: `${site.brand} — Fotografía de Quinceañeras en ${loc.city}`,
-        description: `Fotografía y video de quinceañera en ${loc.city}, ${loc.county}.`,
+        description: `Fotografía y video de quinceañera en ${loc.city}, ${loc.countyEs ?? loc.county}.`,
         url: esUrl,
         image: `${site.url}/opengraph-image`,
         email: site.contact.email,
@@ -331,7 +332,7 @@ export default async function CityPageEs({
             <dl className="tq-meta tq-mono">
               <div>
                 <dt>Condado</dt>
-                <dd>{loc.county}</dd>
+                <dd>{loc.countyEs ?? loc.county}</dd>
               </div>
               <div>
                 <dt>Cobertura</dt>
@@ -368,7 +369,7 @@ export default async function CityPageEs({
             </h2>
           </header>
           <div className="tq-place-prose">
-            {(content?.introEs.slice(0, 2) ?? loc.introEs.slice(0, 1)).map((para) => (
+            {(content?.introEs ?? loc.introEs.slice(0, 1)).map((para) => (
               <p key={para.slice(0, 24)}>{para}</p>
             ))}
             <p>Cubrimos {areasLine}.</p>
@@ -390,7 +391,7 @@ export default async function CityPageEs({
               {content.photoSpots.map((s, i) => (
                 <li key={s.name} className="tq-place-row">
                   <span className="tq-mono tq-place-row__k">[{pad(i + 1)}]</span>
-                  <h3 className="tq-display tq-place-row__t">{s.name}</h3>
+                  <h3 className="tq-display tq-place-row__t">{s.nameEs ?? s.name}</h3>
                   <p className="tq-place-row__b">{s.whyEs}</p>
                   {s.inspo && getInspoPlace(s.inspo) ? (
                     <p className="tq-place-row__b">
@@ -415,11 +416,15 @@ export default async function CityPageEs({
               Paquetes desde {commissionsFromLabel}.
             </h2>
             <p className="tq-head__dek">
-              Cinco paquetes con precios publicados. Un depósito del {retainerPercentLabel} aparta la fecha y se
-              abona a tu total.{" "}
-              {fillPrices(
-                `${PT.nameEs.trio}, nuestra recomendación para la mayoría de las familias, pone un equipo de ${BASE_CREW.trio} en su día (${PT.teamEs.trio}), más un álbum de fotos impreso. ${PT.sessionInEs} incluyen una sesión con el vestido o de save the date, que se agenda después del depósito.`,
-                book,
+              {content?.packagesLeadEs ?? (
+                <>
+                  Cinco paquetes con precios publicados. Un depósito del {retainerPercentLabel} aparta la fecha y se
+                  abona a tu total.{" "}
+                  {fillPrices(
+                    `${PT.nameEs.trio}, nuestra recomendación para la mayoría de las familias, pone un equipo de ${BASE_CREW.trio} en su día (${PT.teamEs.trio}), más un álbum de fotos impreso. ${PT.sessionInEs} incluyen una sesión con el vestido o de save the date, que se agenda después del depósito.`,
+                    book,
+                  )}
+                </>
               )}
             </p>
           </header>
@@ -459,6 +464,30 @@ export default async function CityPageEs({
           </div>
         </div>
       </section>
+
+      {/* El día, de la iglesia al último baile (solo ciudades con su propio itinerario) */}
+      {content?.dayEs ? (
+        <section className="tq-section" aria-labelledby="city-day-title">
+          <div className="tq-wrap">
+            <header className="tq-head">
+              <p className="tq-head__index tq-mono" style={{ margin: 0 }}>{idx("day", "Hora por hora")}</p>
+              <h2 id="city-day-title" className="tq-display tq-head__title">
+                {content.dayEs.title} <em>{content.dayEs.em}</em>
+              </h2>
+              <p className="tq-head__dek">{content.dayEs.dek}</p>
+            </header>
+            <ol className="tq-place-rows">
+              {content.dayEs.steps.map((t) => (
+                <li key={t.title} className="tq-place-row">
+                  <span className="tq-mono tq-place-row__k">{t.when}</span>
+                  <h3 className="tq-display tq-place-row__t">{t.title}</h3>
+                  <p className="tq-place-row__b">{t.body}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+      ) : null}
 
       {/* Cómo funciona reservar */}
       <section className="tq-section" aria-labelledby="city-booking-title">

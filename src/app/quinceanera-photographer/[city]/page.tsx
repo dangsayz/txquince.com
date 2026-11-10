@@ -455,11 +455,15 @@ export default async function CityPage({
               Published packages from {commissionsFromLabel}.
             </h2>
             <p className="tq-head__dek">
-              Every price for your {loc.city} celebration is published. A {retainerPercentLabel} deposit holds the
-              date and goes toward your total.{" "}
-              {fillPrices(
-                `${PT.name.trio}, our pick for most families, puts a team of ${BASE_CREW.trio} on her day (${PT.team.trio}) and adds a printed photo album. ${PT.sessionIn} include a dress or save-the-date session, booked after the deposit.`,
-                book,
+              {content?.packagesLead ?? (
+                <>
+                  Every price for your {loc.city} celebration is published. A {retainerPercentLabel} deposit holds the
+                  date and goes toward your total.{" "}
+                  {fillPrices(
+                    `${PT.name.trio}, our pick for most families, puts a team of ${BASE_CREW.trio} on her day (${PT.team.trio}) and adds a printed photo album. ${PT.sessionIn} include a dress or save-the-date session, booked after the deposit.`,
+                    book,
+                  )}
+                </>
               )}
             </p>
           </header>
@@ -504,17 +508,28 @@ export default async function CityPage({
         <div className="tq-wrap">
           <header className="tq-head">
             <p className="tq-head__index tq-mono" style={{ margin: 0 }}>{idx("day", "Hour by hour")}</p>
-            <h2 id="city-day-title" className="tq-display tq-head__title">
-              The whole day, <em>church to reception.</em>
-            </h2>
-            <p className="tq-head__dek">
-              Every package is built around the celebration — not a two-hour window. Whether you call it a
-              quinceañera or just her quince, here&apos;s how the day unfolds for most {loc.city} families, and how I
-              cover each part of it.
-            </p>
+            {content?.day ? (
+              <>
+                <h2 id="city-day-title" className="tq-display tq-head__title">
+                  {content.day.title} <em>{content.day.em}</em>
+                </h2>
+                <p className="tq-head__dek">{content.day.dek}</p>
+              </>
+            ) : (
+              <>
+                <h2 id="city-day-title" className="tq-display tq-head__title">
+                  The whole day, <em>church to reception.</em>
+                </h2>
+                <p className="tq-head__dek">
+                  Every package is built around the celebration — not a two-hour window. Whether you call it a
+                  quinceañera or just her quince, here&apos;s how the day unfolds for most {loc.city} families, and how I
+                  cover each part of it.
+                </p>
+              </>
+            )}
           </header>
           <ol className="tq-place-rows">
-            {DAY_TIMELINE.map((t) => (
+            {(content?.day?.steps ?? DAY_TIMELINE).map((t) => (
               <li key={t.title} className="tq-place-row">
                 <span className="tq-mono tq-place-row__k">{t.when}</span>
                 <h3 className="tq-display tq-place-row__t">{t.title}</h3>
