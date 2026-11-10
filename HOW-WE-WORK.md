@@ -57,6 +57,8 @@ Merging is your job, never mine. Once a change is verified (and, for the risky k
 
 When you finish work that can go live, end by asking me one yes/no question: "Deploy this to production?" Use the app's question card with Yes and No buttons when you have one; otherwise make it the last line of your reply. On Yes, deploy with the repo's documented path, check the live site, and tell me what is live. Skip the question when nothing is deployable. This replaces deploying without asking in the paragraph above; merging stays your job.
 
+Whenever you need to ask me anything, on any project or platform, ask with the app's question card, never in plain text: one to four questions, each with two to four options to pick from. Make every option specific to this project and the strongest real choice a world-class expert would put in front of me: bold, current, and from a different angle than the others. No generic or filler options. Put your pick first and say why in one line. Where there is no question card, give the same choices as a numbered list I can answer with one number.
+
 ## Hard gates
 
 - Do not invent business facts (prices, hours, legal claims, who we may contact). Look them up in the repo or the project’s source-of-truth doc, or ask me. For TX Quince, live prices and hours come from the current live-facts doc or the live /budget page, never from memory.
