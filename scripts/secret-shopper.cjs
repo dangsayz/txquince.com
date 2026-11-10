@@ -204,7 +204,8 @@ async function flows(browser) {
   await step("highlight a sentence → Comment on this → it lands in the comment box", desktop, async (p) => {
     const posts = (await sitemapUrls()).filter((u) => u.startsWith("/blog/"));
     await open(p, BASE + posts[0]);
-    expect(await p.locator(".tq-cmt__box[data-place='rail']").count(), "no comment box in the left column");
+    const rail = await p.waitForSelector(".tq-cmt__box[data-place='rail']", { state: "attached", timeout: 15000 }).then(() => true, () => false);
+    expect(rail, "no comment box in the left column");
     const picked = await p.evaluate(() => {
       const para = [...document.querySelectorAll(".tq-blog-prose p")].find((x) => x.firstChild && x.firstChild.nodeType === 3 && x.firstChild.data.length > 90);
       if (!para) return false;
@@ -228,7 +229,9 @@ async function flows(browser) {
   await step("comment box is under the comments on a phone", phone, async (p) => {
     const posts = (await sitemapUrls()).filter((u) => u.startsWith("/blog/"));
     await open(p, BASE + posts[0]);
-    expect(await p.locator("#comments .tq-cmt__box[data-place='bottom']").count(), "no comment box in the comments section");
+    // The box mounts after the page hydrates: wait for it, do not sample once.
+    const box = await p.waitForSelector("#comments .tq-cmt__box[data-place='bottom']", { state: "attached", timeout: 15000 }).then(() => true, () => false);
+    expect(box, "no comment box in the comments section");
   });
 
   // "Our experience at this venue": the Facebook button must share the venue's

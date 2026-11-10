@@ -19,7 +19,7 @@ import type { HomeGallery } from "@/lib/home-galleries";
 import type { HomeCity } from "@/content/home-places";
 import { site } from "@/content/site";
 import { ED } from "./copy";
-import { BAND_VIDEO, DETAILS, FEATURE_STILL, HERO, JOURNAL_PHOTO, JOURNAL_PHOTO_FALLBACK } from "./media";
+import { BAND_VIDEO, DETAILS, FEATURE_STILL, HERO, JOURNAL_PHOTO, JOURNAL_PHOTO_FALLBACK, type Clip } from "./media";
 import { LazyVideo } from "./LazyVideo";
 import { Favorites } from "./Favorites";
 import { Promises, Steps } from "./Story";
@@ -55,6 +55,7 @@ export function EditorialHome({
   favorites = [],
   work = [],
   reviews = [],
+  featureClip = null,
 }: {
   journal: Journal;
   films: CinemaFilm[];
@@ -70,6 +71,8 @@ export function EditorialHome({
   work?: HomeGallery[];
   /** Approved first-party reviews (Admin → Reviews); the strip hides when empty. */
   reviews?: PublicReview[];
+  /** Silent film loop behind the featured package (Studio → Page imagery); null = the photo only. */
+  featureClip?: Clip | null;
 }) {
   const { setDockHidden } = useShell();
   const { lang } = useSite();
@@ -114,7 +117,7 @@ export function EditorialHome({
       {/* Proof, then the price, then how to book: the browsing sections
           (venues, galleries, blog) come after the questions. */}
       <VenueStrip lang={lang} galleries={work.length ? work : galleries} />
-      <Feature />
+      <Feature clip={featureClip} />
       <Band films={films} />
       <FavoritesSection favorites={favorites} />
       <ReviewStrip reviews={reviews} lang={lang} />
@@ -467,7 +470,7 @@ function Collage({ galleries }: { galleries: HomeGallery[] }) {
 
 const FEATURE_SLOT = "home.feature";
 
-function Feature() {
+function Feature({ clip }: { clip: Clip | null }) {
   const { lang, pickPackage } = useSite();
   const { book } = usePriceBook();
   const e = ED[lang];
@@ -480,6 +483,7 @@ function Feature() {
       <div className="ed-feature__plate" data-allow-upscale>
         <div className="ed-feature__bg" data-ed="feature-bg">
           <SlotPicture image={image} lang={lang} fill sizes="100vw" />
+          <LazyVideo clip={clip} className="ed-video" />
         </div>
       </div>
       <div className="ed-feature__track">

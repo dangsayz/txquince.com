@@ -1,11 +1,12 @@
-import { StudioPage } from "@/components/admin/StudioPage";
+import { StudioPage, StudioSection } from "@/components/admin/StudioPage";
+import { HomeClipManager } from "@/components/admin/HomeClipManager";
+import { getHomeClips } from "@/lib/home-clips";
+import Link from "next/link";
 import {
-  getHeroMedia,
   getPageHero,
   getPortfolioImages,
   HERO_PAGES,
 } from "@/lib/content-db";
-import { HeroManager } from "@/components/admin/HeroManager";
 import {
   PageHeroManager,
   type HeroPageRow,
@@ -18,8 +19,8 @@ export const dynamic = "force-dynamic";
 export default async function AdminHero() {
   await requireAdminPage("/admin/hero"); // server-side gate; middleware is not enough
   const pageKeys = Object.keys(HERO_PAGES);
-  const [media, allImages, ...currents] = await Promise.all([
-    getHeroMedia(),
+  const [clips, allImages, ...currents] = await Promise.all([
+    getHomeClips(),
     getPortfolioImages(),
     ...pageKeys.map((k) => getPageHero(k)),
   ]);
@@ -46,26 +47,24 @@ export default async function AdminHero() {
   });
 
   return (
-    <StudioPage wide title="Page imagery" intro="The first image or film on each page.">
-      <div className="min-w-0">
-        <HeroManager initial={media} library={allImages.flatMap((image) => image.slug ? [{
-          slug: image.slug,
-          url: image.url,
-          alt: image.alt || "Quinceañera portrait",
-          width: image.width,
-          height: image.height,
-          focusX: image.focus_x ?? null,
-          focusY: image.focus_y ?? null,
-        }] : [])} />
-      </div>
-
-      <div className="mt-8 border-t border-[var(--tq-surface-2)] pt-8">
-        <h2 className="st-h2">Other pages</h2>
-        <p className="st-note mt-1">Pick a portfolio photograph, or leave it on the featured image.</p>
-        <div className="mt-6">
-          <PageHeroManager pages={pages} library={library} />
-        </div>
-      </div>
+    <StudioPage
+      wide
+      title="Page imagery"
+      intro="The film loop on the homepage and the first photo on each page."
+      actions={
+        <Link href="/admin/images" className="st-btn-ghost whitespace-nowrap">
+          Homepage photos
+        </Link>
+      }
+    >
+      <StudioSection title="Homepage film loop" intro="A short silent clip that plays behind the featured package.">
+        <HomeClipManager slot="feature" initial={clips.feature ?? null} />
+      </StudioSection>
+      {/* The homepage's photos (top photo, featured-package background, questions)
+          are image slots: Every image, or "Replace photo" on the live page. */}
+      <StudioSection title="Other pages" intro="Pick a portfolio photograph, or leave it on the featured image.">
+        <PageHeroManager pages={pages} library={library} />
+      </StudioSection>
     </StudioPage>
   );
 }
