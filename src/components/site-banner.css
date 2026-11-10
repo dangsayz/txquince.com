@@ -10,8 +10,9 @@
   min-height: var(--tq-tap);
   padding: 0 16px;
   border-bottom: 1px solid var(--tq-surface-2);
-  background: var(--tq-canvas);
-  color: var(--tq-ink-mute);
+  /* Solid white on every page, the homepage film included: the logos sit on the bar itself. */
+  background: var(--tq-paper);
+  color: var(--tq-ink);
   /* The same small uppercase label as the menu, so it reads as part of the header, not an ad. */
   font-family: var(--tq-font-label);
   font-size: 0.8125rem;
@@ -29,15 +30,6 @@
 .txq .tq-banner[data-over-hero] {
   position: absolute;
   inset: var(--header-h) 0 auto;
-  /* No band across the photo: white type on the film, one faint line under it. */
-  background: transparent;
-  border-bottom-color: rgb(255 255 255 / 0.22);
-  color: rgb(255 255 255 / 0.92);
-  text-shadow: 0 1px 12px rgb(0 0 0 / 0.45);
-}
-.txq .tq-banner[data-over-hero]:focus-visible { outline-color: #fff; }
-@media (hover: hover) {
-  .txq .tq-banner[data-over-hero]:hover { color: #fff; }
 }
 .txq .tq-banner:focus-visible { outline: 2px solid var(--tq-ink); outline-offset: -3px; }
 
@@ -65,9 +57,9 @@
 .txq .tq-banner__text[data-wrap] { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; text-align: center; text-wrap: balance; }
 .txq .tq-banner__logos { flex: none; display: flex; align-items: center; gap: 6px; }
 /* Three plates, one size and one shape, so the row reads as a set whatever each logo's own outline is. */
-.txq .tq-banner__plate { display: grid; place-items: center; width: 78px; height: 28px; border-radius: var(--tq-radius-xs); background: #fff; border: 1px solid var(--tq-surface-2); }
-.txq .tq-banner[data-over-hero] .tq-banner__plate { border-color: transparent; }
-.txq .tq-banner__logos img { display: block; max-width: 62px; height: auto; }
+/* Equal slots, no boxes: each logo is centered in the same width and set to the same height. */
+.txq .tq-banner__plate { display: grid; place-items: center; width: 72px; height: 28px; }
+.txq .tq-banner__logos img { display: block; width: auto; height: 16px; max-width: 72px; }
 .txq .tq-banner__arrow { transition: transform var(--tq-dur-fast) var(--tq-ease); }
 @media (hover: hover) {
   .txq .tq-banner:hover .tq-banner__arrow { transform: translateX(3px); }
@@ -97,6 +89,6 @@
 
 /* Phones: smaller plates, still all the same. */
 @media (max-width: 519px) {
-  .txq .tq-banner__plate { width: 64px; height: 24px; }
-  .txq .tq-banner__logos img { max-width: 52px; max-height: 13px; width: auto; }
+  .txq .tq-banner__plate { width: 58px; height: 24px; }
+  .txq .tq-banner__logos img { height: 13px; max-width: 58px; }
 }
