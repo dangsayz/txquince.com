@@ -17,10 +17,11 @@ const COPY = {
   es: { plans: "Aceptamos planes de pago", short: "Planes de pago", see: "Mira qué alcanza con tu presupuesto" },
 } as const;
 
+/** Each logo sits centered on its own plate; the three plates are one size and one shape. */
 const LOGOS = [
-  { name: "Klarna", src: "/pay/klarna.svg", w: 38, h: 16 },
-  { name: "Afterpay", src: "/pay/afterpay.svg", w: 83, h: 16 },
-  { name: "Affirm", src: "/pay/affirm.svg", w: 45, h: 18, plate: true },
+  { name: "Klarna", src: "/pay/klarna.svg", w: 36, h: 15 },
+  { name: "Afterpay", src: "/pay/afterpay.svg", w: 62, h: 12 },
+  { name: "Affirm", src: "/pay/affirm.svg", w: 40, h: 16 },
 ] as const;
 
 const TURN_MS = 6000;
@@ -57,8 +58,10 @@ export function SiteBannerBar({ banner, overHero }: { banner: SiteBanner; overHe
         <span className="tq-banner__text" data-size="short">{c.short}</span>
         <span className="tq-banner__logos">
           {LOGOS.map((l) => (
-            // eslint-disable-next-line @next/next/no-img-element -- official logo files, served as they are
-            <img key={l.name} src={l.src} alt="" width={l.w} height={l.h} decoding="async" data-plate={"plate" in l || undefined} />
+            <span key={l.name} className="tq-banner__plate">
+              {/* eslint-disable-next-line @next/next/no-img-element -- official logo files, served as they are */}
+              <img src={l.src} alt="" width={l.w} height={l.h} decoding="async" />
+            </span>
           ))}
         </span>
       </span>

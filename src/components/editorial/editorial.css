@@ -170,6 +170,15 @@
   from { transform: translateY(105%); }
   to { transform: translateY(0); }
 }
+/* The copy must clear the header and the banner under it (116px) on any window.
+   Wide screens: the title also shrinks with the window's height (a laptop is short).
+   Phones: the title is already at its floor, so the hero keeps enough height instead. */
+@media (min-width: 768px) {
+  .ed-hero__title { font-size: clamp(52px, min(8.6vw, calc((100svh - 430px) / 2.7)), 132px); }
+}
+@media (max-width: 767px) {
+  .ed-hero { min-height: 760px; }
+}
 .ed-hero__foot { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; }
 /* Sits beside Reserve (it was ~900px away on wide screens); full white,
    since 0.86 alpha fell to ~2.3:1 over the bright parts of the photo. */
