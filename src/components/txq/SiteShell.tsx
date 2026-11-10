@@ -6,6 +6,7 @@ import { MotionConfig } from "motion/react";
 import { MobileDock } from "./Header";
 import { SiteFooter, SiteHeader } from "@/components/home/Chrome";
 import { NoUpscale } from "./NoUpscale";
+import { PhotoGuard } from "./PhotoGuard";
 import { AvailabilityProvider, SiteProvider, useSite } from "./state";
 import { PriceBookProvider } from "@/components/PriceBookProvider";
 import type { PriceBook } from "@/lib/commission";
@@ -104,6 +105,8 @@ function Frame({ children, dockStartsHidden }: { children: ReactNode; dockStarts
         <MobileDock hidden={dockHidden} />
         {/* Global rule: no photo is ever displayed larger than its real pixels. */}
         <NoUpscale />
+        {/* Global rule: no easy "save image" on any photo (deterrent layer). */}
+        <PhotoGuard />
       </div>
     </ShellCtx.Provider>
   );

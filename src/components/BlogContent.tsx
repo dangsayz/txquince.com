@@ -178,6 +178,16 @@ function focal(fx?: number | null, fy?: number | null): string {
 }
 
 /** Static /portfolio fallbacks bypass the /api/img loader. */
+/**
+ * Photos inside a post are shown at a reading size (blog.css), and the file a
+ * visitor receives is capped to match: sharp on a retina screen at that size,
+ * too small to be worth lifting. The loader reads `cap` (src/lib/image-loader.ts).
+ */
+const BLOG_PHOTO_CAP = 1080;
+const BLOG_COVER_CAP = 1440;
+const capped = (url: string, cap: number) =>
+  url.startsWith("/api/img/") ? `${url}${url.includes("?") ? "&" : "?"}cap=${cap}` : url;
+
 const isStatic = (url: string) => !url.startsWith("/api/img/") && !url.startsWith("http");
 
 const LINK_RE = /\[([^\]]+)\]\(([^)]+)\)/g;
@@ -329,14 +339,14 @@ export function BlogContent({
             const frame: CSSProperties = { aspectRatio: `${w} / ${h}` };
             if (img.width) frame.maxWidth = `${img.width}px`;
             return (
-              <figure key={i} className="tq-blog-fig">
+              <figure key={i} className="tq-blog-fig" data-tall={h > w ? "true" : undefined}>
                 <div className="tq-blog-fig__media" style={frame}>
                   <Image
-                    src={img.url}
+                    src={capped(img.url, BLOG_PHOTO_CAP)}
                     alt={b.alt || img.alt || COPY[lang].fallbackAlt}
                     width={w}
                     height={h}
-                    sizes="(max-width: 959px) calc(100vw - 48px), 720px"
+                    sizes={h > w ? "(max-width: 447px) calc(100vw - 48px), 400px" : "(max-width: 607px) calc(100vw - 48px), 560px"}
                     unoptimized={isStatic(img.url)}
                   />
                 </div>
@@ -530,7 +540,7 @@ export function BlogIndexView({
       </div>
 
       {featured ? (
-        <section className="tq-section" aria-labelledby="tq-blog-featured">
+        <section className="tq-section tq-blog-band" aria-labelledby="tq-blog-featured">
           <div className="tq-wrap">
             <article className="tq-blog-feature">
               <div className="tq-blog-feature__media">
@@ -567,7 +577,7 @@ export function BlogIndexView({
         </section>
       ) : null}
 
-      <section className="tq-section" aria-labelledby="tq-blog-all">
+      <section className="tq-section tq-blog-band" aria-labelledby="tq-blog-all">
         <div className="tq-wrap">
           <SectionHead index={`03 / ${c.allTitle}`} id="tq-blog-all" title={c.allTitle} dek={c.allDek(posts.length)} />
           <div className="tq-blog-index">
@@ -661,6 +671,7 @@ export function BlogArticleView({
       : undefined;
   const faqs: BlogFaq[] = post.faqs ?? [];
   const split = Boolean(post.coverFull && cover.width && cover.height && cover.height > cover.width);
+  const coverCap = split ? BLOG_PHOTO_CAP : BLOG_COVER_CAP;
 
   const tocList = (
     <ol className="tq-blog-toc__list">
@@ -749,10 +760,11 @@ export function BlogArticleView({
                 priority
                 sizes={
                   split
-                    ? "(max-width: 639px) calc(100vw - 48px), (max-width: 959px) calc(100vw - 96px), 40vw"
-                    : "(max-width: 639px) calc(100vw - 48px), (max-width: 959px) calc(100vw - 96px), (max-width: 1279px) calc(100vw - 144px), calc(100vw - 160px)"
+                    ? "(max-width: 639px) calc(100vw - 48px), (max-width: 959px) calc(100vw - 96px), 440px"
+                    : "(max-width: 639px) calc(100vw - 48px), (max-width: 975px) calc(100vw - 96px), 880px"
                 }
-                fallback={{ src: coverUrl, alt: coverAlt, width: cover.width, height: cover.height, focus: focal(cover.focus_x, cover.focus_y) }}
+                // `width` caps the srcset (never a file wider than this).
+                fallback={{ src: coverUrl, alt: coverAlt, width: Math.min(cover.width ?? coverCap, coverCap), height: cover.height, focus: focal(cover.focus_x, cover.focus_y) }}
               />
             </div>
             {coverCaption ? (

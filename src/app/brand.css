@@ -14,6 +14,7 @@
 :root {
   /* ---- Color: warm neutrals + carbon ink. No brand hue, no gradients. ---- */
   --tq-canvas: #faf8f5; /* gallery alabaster — page background */
+  --tq-paper: #ffffff; /* clean white — bands and panels that should read crisp against the canvas */
   --tq-surface: #f2efe9; /* raw linen — cards, bands */
   --tq-surface-2: #e2ddd5; /* greige — hairlines, quiet fills */
   --tq-ink: #111110; /* deep carbon — all text, primary fill */

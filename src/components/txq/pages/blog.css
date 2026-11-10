@@ -83,6 +83,28 @@
 .txq .tq-blog-hero .tq-head__title {
   text-wrap: balance;
 }
+/* From 960px the headline sits on ONE line: the index label takes its own row
+   and the title gets eight columns (six made "Stories around her day." break
+   in two). The size tracks the viewport so the line always fits its columns;
+   a longer headline (Spanish) still wraps, balanced, instead of overflowing. */
+@media (min-width: 960px) {
+  .txq .tq-head.tq-blog-hero {
+    row-gap: 28px;
+    padding-block: 72px 56px;
+  }
+  .txq .tq-head.tq-blog-hero .tq-head__index { grid-column: 1 / -1; }
+  .txq .tq-head.tq-blog-hero .tq-head__title {
+    grid-column: 1 / span 8;
+    font-size: clamp(2.5rem, 4.3vw, 4rem);
+  }
+  .txq .tq-head.tq-blog-hero .tq-head__dek { grid-column: 9 / span 4; }
+}
+
+/* White bands: the featured story and the guide list sit on clean white, so
+   the page reads crisp; the warm canvas stays on the hero and the closing. */
+.txq .tq-blog-band {
+  background: var(--tq-paper);
+}
 
 /* ---------- Index: featured ---------- */
 .txq .tq-blog-feature {
@@ -395,8 +417,15 @@
   overflow: hidden;
   background: var(--bg-surface);
 }
+/* Photos in a post are shown at a reading size, never poster size: big enough
+   to see, small enough that the page is not a full-resolution download. The
+   files sent are capped to match (see BLOG_PHOTO_CAP in BlogContent.tsx). */
+.txq .tq-blog-cover > * {
+  max-width: 880px;
+  margin-inline: auto;
+}
 .txq .tq-blog-cover[data-capped] > * {
-  max-width: min(calc(var(--tq-nat-w) * 1px), calc(var(--tq-nat-h) * var(--tq-cover-ar) * 1px));
+  max-width: min(880px, calc(var(--tq-nat-w) * 1px), calc(var(--tq-nat-h) * var(--tq-cover-ar) * 1px));
   margin-inline: auto;
 }
 .txq .tq-blog-cover__media img {
@@ -413,11 +442,19 @@
 /* coverFull: the whole photo at its own shape (never cropped), no taller than
    most of the viewport. Comes after the breakpoints so it wins at every width. */
 .txq .tq-blog-cover[data-full] > * {
-  max-width: min(100%, calc(var(--tq-nat-w) * 1px), calc(82svh * var(--tq-nat-w) / var(--tq-nat-h)));
+  max-width: min(100%, 880px, calc(var(--tq-nat-w) * 1px), calc(68svh * var(--tq-nat-w) / var(--tq-nat-h)));
   margin-inline: auto;
 }
 .txq .tq-blog-cover[data-full] .tq-blog-cover__media {
   aspect-ratio: var(--tq-nat-w) / var(--tq-nat-h);
+}
+
+/* From 960px the smaller cover lines up with the title and the article text
+   (column 4 of the 12-column grid) instead of floating in the middle. */
+@media (min-width: 960px) {
+  .txq .tq-blog-hero:not([data-split]) .tq-blog-cover > * {
+    margin-inline: calc((100% + 24px) / 4) auto;
+  }
 }
 
 /* ---------- Post: split hero (portrait cover shown whole) ----------
@@ -464,7 +501,7 @@
     padding: 32px var(--pad) 0 0;
   }
   .txq .tq-blog-hero[data-split] .tq-blog-cover[data-full] > * {
-    max-width: min(100%, calc(var(--tq-nat-w) * 1px), calc(78svh * var(--tq-nat-w) / var(--tq-nat-h)));
+    max-width: min(100%, 440px, calc(var(--tq-nat-w) * 1px), calc(64svh * var(--tq-nat-w) / var(--tq-nat-h)));
     margin-inline: auto 0;
   }
 }
@@ -580,7 +617,7 @@
     display: grid;
     gap: 20px;
     padding: 20px;
-    background: #fff;
+    background: var(--tq-paper);
     border: 1px solid var(--border-hairline);
   }
   .txq .tq-blog-rail__stick:empty { display: none; }
@@ -680,6 +717,15 @@
 }
 .txq .tq-blog-fig {
   margin-block: 2em;
+}
+/* Reading size: a wide photo stops at 560px, a tall one at 400px (its inline
+   max-width, the photo's natural width, still wins when that is smaller). */
+.txq .tq-blog-fig {
+  max-width: 560px;
+  margin-inline: auto;
+}
+.txq .tq-blog-fig[data-tall] {
+  max-width: 400px;
 }
 .txq .tq-blog-fig__media {
   overflow: hidden;
