@@ -11,8 +11,15 @@ const post: BlogPost = {
     "The hora loca is a burst of high-energy party near the end of the night. Here is when it happens, what families bring, and how to keep it fun for every age.",
   publishedAt: "2026-11-10",
   readMinutes: 5,
+  coverFull: true,
   lead: "The hora loca, or “crazy hour,” is a short burst of high-energy party at a quinceañera, with fast music, props and a lot of dancing. It usually comes after the formal parts of the night are done. Here is when it happens, what families bring, how to plan it with your DJ or MC, and how to make it work for grandparents, little kids and the photo and video team.",
   content: [
+    {
+      type: "image",
+      slug: "album-luxury-red-white-reception-135",
+      alt: "Back of a red quinceañera gown with a large bow and long train, confetti scattered across the white dance floor under a chandelier at a DFW reception",
+      caption: "Confetti on the floor: the party part of the night has started.",
+    },
     { type: "h2", text: "What the hora loca is" },
     {
       type: "p",

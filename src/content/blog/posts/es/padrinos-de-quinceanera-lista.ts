@@ -12,8 +12,15 @@ const post: BlogPost = {
   publishedAt: "2026-11-10",
   readMinutes: 5,
   lang: "es",
+  coverFull: true,
   lead: "Los padrinos y madrinas de una quinceañera son las personas que la familia invita a acompañarla. Cada uno ayuda con una parte de la celebración y está con ustedes el día de la fiesta. Aquí le explicamos quiénes son, una lista de lo que las familias suelen pedirles que apadrinen y cómo pedírselo con respeto.",
   content: [
+    {
+      type: "image",
+      slug: "album-la-prada-pink-103",
+      alt: "Última muñeca de quinceañera: un osito blanco con tiara y vestido de tul rosa fuerte sobre una mesa de lentejuelas en un salón de DFW",
+      caption: "La última muñeca es uno de los regalos que suelen dar los padrinos.",
+    },
     { type: "h2", text: "Qué son los padrinos y las madrinas" },
     {
       type: "p",

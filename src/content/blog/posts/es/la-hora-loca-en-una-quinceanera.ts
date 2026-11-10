@@ -12,8 +12,15 @@ const post: BlogPost = {
   publishedAt: "2026-11-10",
   readMinutes: 5,
   lang: "es",
+  coverFull: true,
   lead: "La hora loca es un rato de fiesta con mucha energía en una quinceañera: música rápida, accesorios y mucho baile. Casi siempre llega cuando ya pasaron las partes formales de la noche. Aquí le explicamos cuándo se hace, qué llevan las familias, cómo planearla con su DJ o animador y cómo cuidar a los abuelos, a los niños y al equipo de foto y video.",
   content: [
+    {
+      type: "image",
+      slug: "album-luxury-red-white-reception-135",
+      alt: "Vestido rojo de quinceañera visto de espaldas, con un gran moño y cola larga, y confeti sobre la pista blanca bajo un candelabro en un salón de DFW",
+      caption: "Confeti en la pista: ya empezó la parte más alegre de la noche.",
+    },
     { type: "h2", text: "Qué es la hora loca" },
     {
       type: "p",

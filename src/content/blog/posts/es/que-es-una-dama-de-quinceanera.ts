@@ -14,6 +14,12 @@ const post: BlogPost = {
   lang: "es",
   lead: "La dama es una joven que acompaña a la quinceañera en su corte de honor. Casi siempre es una amiga cercana o una prima, y camina, baila y celebra a su lado durante todo el día. Le explicamos quiénes son las damas, cómo las eligen las familias, qué hacen y cómo invitar a alguien a serlo.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-153",
+      alt: "Corte de quinceañera vista de espaldas, damas y chambelanes juntos con las manos y los sombreros en alto en la pista de baile de un salón en Irving",
+      caption: "La corte reunida en la pista, justo después del baile sorpresa.",
+    },
     { type: "h2", text: "Quiénes son las damas" },
     {
       type: "p",

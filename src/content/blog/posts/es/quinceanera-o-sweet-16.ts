@@ -12,8 +12,15 @@ const post: BlogPost = {
   publishedAt: "2026-11-10",
   readMinutes: 5,
   lang: "es",
+  coverFull: true,
   lead: "La quinceañera celebra los 15 años y viene de una tradición latinoamericana. El Sweet 16 celebra los 16 años y es una tradición de cumpleaños común en Estados Unidos. Las dos son fiestas grandes y bonitas. Cambian en la edad, en las raíces y en algunas tradiciones, y muchas familias de Dallas–Fort Worth escogen un poco de cada una.",
   content: [
+    {
+      type: "image",
+      slug: "album-luxury-red-white-reception-109",
+      alt: "Pastel blanco de quinceañera de varios pisos con cascada de rosas rojas, hoja de oro y un 15 dorado en un salón de DFW",
+      caption: "Quince, no dieciséis: el número va en el pastel.",
+    },
     { type: "h2", text: "La respuesta corta" },
     {
       type: "p",

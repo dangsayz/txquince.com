@@ -11,8 +11,15 @@ const post: BlogPost = {
     "Semi-formal to formal, shoulders covered for church, and never the color of her gown. What guests wear to a quinceañera, plus shoes, weather and gift tips for Texas.",
   publishedAt: "2026-11-10",
   readMinutes: 5,
+  coverFull: true,
   lead: "Wear semi-formal to formal clothes, and check the invitation first. Skip the quinceañera's gown color, and cover your shoulders if there is a Mass. The rest is small choices that keep you comfortable from the church to the last dance. Here is what guests usually wear, and what to avoid.",
   content: [
+    {
+      type: "image",
+      slug: "album-luxury-red-white-reception-104",
+      alt: "Quinceañera guest table with a red and white rose centerpiece, red napkins on gold chargers and wine glasses at a DFW reception",
+      caption: "A guest table set in the colors of the celebration.",
+    },
     { type: "h2", text: "Start with the invitation" },
     {
       type: "p",
