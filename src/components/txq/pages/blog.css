@@ -931,3 +931,29 @@ a.tq-series__item:hover span:last-child { text-decoration: underline; text-under
   line-height: 1.3;
   padding-block: 12px;
 }
+
+/* ---------- Post page: labels in reading type ----------
+   On a post, the small labels (breadcrumb, "Share this guide", "In this
+   guide", section labels, figure numbers, comment dates) are plain reading
+   type in sentence case, not 11px mono capitals. A mom reads them as words,
+   not as a form code. The index page and the in-post tools (.tq-bx: budget
+   chart, date plan, poll) keep the mono face their layouts are built on. */
+.txq .tq-blog--post .tq-mono:not(.tq-bx .tq-mono) {
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.txq .tq-blog--post .tq-mono.tq-muted:not(.tq-bx .tq-mono),
+.txq .tq-blog--post .tq-head__index,
+.txq .tq-blog--post .tq-blog-share__label,
+.txq .tq-blog--post .tq-blog-crumbs a {
+  color: var(--tq-ink-mute);
+}
+.txq .tq-blog--post .tq-blog-crumbs a:hover {
+  color: var(--text-primary);
+}
+.txq .tq-blog--post .tq-brk {
+  display: none;
+}
