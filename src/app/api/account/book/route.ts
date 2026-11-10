@@ -41,7 +41,8 @@ import { getPriceBook } from "@/lib/pricing";
 import { clientIp } from "@/lib/client-ip";
 import { rateLimiter } from "@/lib/rate-limit";
 import { sameOriginRequest } from "@/lib/same-origin";
-import { isFullName } from "@/lib/person-name";
+import { isFullName, tidyName } from "@/lib/person-name";
+import { signedContractPdf } from "@/lib/contract-file";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -77,7 +78,8 @@ export async function POST(req: NextRequest) {
   if (!parsed.success) {
     return fail(422, "invalid", "Please check the highlighted fields.", { fieldErrors: parsed.error.flatten().fieldErrors });
   }
-  const r = parsed.data;
+  // Names as they should read on a contract ("vida" → "Vida").
+  const r = { ...parsed.data, name: tidyName(parsed.data.name), honoree: tidyName(parsed.data.honoree), signed_name: parsed.data.signed_name ? tidyName(parsed.data.signed_name) : parsed.data.signed_name };
   if (!isBookableTier(r.tier)) return fail(422, "invalid", "That package is no longer offered.");
   if (!r.signed_name || !r.signature || !r.agree) {
     return fail(422, "unsigned", "Please sign the agreement and check the box to agree.");
@@ -181,9 +183,11 @@ export async function POST(req: NextRequest) {
   }
 
   const adminUrl = `${getSiteUrl()}/admin/bookings#${inserted.id}`;
+  // The signed contract as a PDF, attached to both emails.
+  const pdf = await signedContractPdf({ id: inserted.id, metadata: meta });
   const [op, cl] = await Promise.all([
-    sendAgreementSignedOperator(inserted, signed, adminUrl, summary),
-    sendAgreementSignedClient(inserted, signed),
+    sendAgreementSignedOperator(inserted, signed, adminUrl, summary, pdf),
+    sendAgreementSignedClient(inserted, signed, pdf),
   ]);
   if (!op.ok) console.error("[account/book] operator email:", op.error);
   if (!cl.ok) console.error("[account/book] client email:", cl.error);

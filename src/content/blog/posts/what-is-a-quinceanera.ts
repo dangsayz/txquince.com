@@ -119,6 +119,7 @@ const post: BlogPost = {
       type: "p",
       text: "Whatever shape yours takes, the moments worth keeping are the ones that go by fastest — the father-daughter dance, the cambio de zapatos, the entrance. You can see how those look across real DFW celebrations in our [portfolio](/portfolio).",
     },
+    { type: "p", text: "More answers: [what a dama is](/blog/what-is-a-dama-quinceanera), [what a chambelán is](/blog/what-is-a-chambelan), [the padrinos list](/blog/quinceanera-padrinos-list), [quinceañera vs sweet 16](/blog/quinceanera-vs-sweet-16) and [a quinceañera without a mass or a court](/blog/quinceanera-without-mass-or-court)." },
     {
       type: "cta",
       heading: "Documenting the day, traditions and all",

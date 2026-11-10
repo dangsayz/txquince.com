@@ -364,16 +364,29 @@
   color: var(--text-muted);
   text-wrap: pretty;
 }
+/* Post facts (topic, date, reading time) in plain reading type: a quiet label
+   and a heavier value, one fact per ruled line. Not the mono index face: in
+   capitals at 11px it read like a form, not like part of the story. */
 .txq .tq-blog-post__meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px 32px;
-  padding-top: 16px;
+  display: grid;
   border-top: 1px solid var(--border-hairline);
+  font-size: 1rem;
+  line-height: 1.4;
 }
 .txq .tq-blog-post__meta div {
   display: grid;
-  gap: 4px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 16px;
+  padding-block: 12px;
+  border-bottom: 1px solid var(--border-hairline);
+}
+.txq .tq-blog-post__meta dt {
+  color: var(--tq-ink-mute);
+}
+.txq .tq-blog-post__meta dd {
+  font-weight: var(--weight-medium);
+  text-align: right;
 }
 @media (min-width: 960px) {
   .txq .tq-blog-post__head { padding-block: 32px 72px; }
@@ -382,20 +395,12 @@
     gap: 0 24px;
     margin-top: 56px;
   }
-  /* Condensed: three short label/value rows, not a tall spaced-out stack. */
   .txq .tq-blog-post__meta {
     grid-column: 1 / span 3;
     grid-row: 1;
-    flex-direction: column;
-    gap: 6px;
     align-self: start;
-    padding-top: 0;
-    border-top: 0;
     margin-top: 12px;
-  }
-  .txq .tq-blog-post__meta div {
-    grid-template-columns: 6.5rem minmax(0, 1fr);
-    gap: 12px;
+    max-width: 18rem;
   }
   .txq .tq-blog-post__titles { grid-column: 4 / span 9; grid-row: 1; }
 }
@@ -487,15 +492,8 @@
     font-size: clamp(2.25rem, 1rem + 2.6vw, 3.5rem);
   }
   .txq .tq-blog-hero[data-split] .tq-blog-post__meta {
-    flex-direction: row;
-    gap: 16px 40px;
     margin-top: 0;
-    padding-top: 20px;
-    border-top: 1px solid var(--border-hairline);
-  }
-  .txq .tq-blog-hero[data-split] .tq-blog-post__meta div {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 4px;
+    max-width: 22rem;
   }
   .txq .tq-blog-hero[data-split] .tq-blog-cover {
     padding: 32px var(--pad) 0 0;
@@ -714,6 +712,9 @@
   background: var(--bg-surface);
   border: 1px solid var(--border-hairline);
   color: var(--text-primary);
+}
+.txq .tq-blog-flow__callout > p {
+  margin: 0;
 }
 .txq .tq-blog-fig {
   margin-block: 2em;

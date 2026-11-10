@@ -1,20 +1,27 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import { ClerkProvider, useAuth, useClerk, useUser } from "@clerk/nextjs";
 import type { ClerkSettings } from "@/lib/clerk-config";
 import { COMMENT_MAX } from "@/lib/comments";
 import { COPY, type CommentLang } from "./copy";
-import { setQuote, useQuote } from "./quote-store";
+import { getRailMount, setQuote, subscribeRailMount, useQuote } from "./quote-store";
 import type { CommentPlace } from "./CommentBox";
 
-/** Loaded on demand (signed-in visitors only): Clerk + the comment form. */
+/**
+ * Loaded on demand (signed-in visitors only): Clerk + the comment form.
+ * Mounted once, by the bottom box. On wide screens the rail shows a second
+ * form: it is drawn into the rail's mount through a portal, so both forms
+ * share this one Clerk provider.
+ */
 export function Composer({
   lang,
   slug,
   clerk,
   place,
   chip,
+  railChip,
 }: {
   lang: CommentLang;
   slug: string;
@@ -22,10 +29,14 @@ export function Composer({
   place: CommentPlace;
   /** The highlighted passage, with its remove button (rendered by CommentBox). */
   chip: React.ReactNode;
+  /** The same passage chip for the rail form (wide screens show it there). */
+  railChip: React.ReactNode;
 }) {
+  const rail = useSyncExternalStore(subscribeRailMount, getRailMount, () => null);
   return (
     <ClerkProvider publishableKey={clerk.publishableKey} signInUrl={clerk.signInUrl} signUpUrl={clerk.signUpUrl}>
       <Form lang={lang} slug={slug} place={place} chip={chip} />
+      {rail ? createPortal(<Form lang={lang} slug={slug} place="rail" chip={railChip} />, rail) : null}
     </ClerkProvider>
   );
 }

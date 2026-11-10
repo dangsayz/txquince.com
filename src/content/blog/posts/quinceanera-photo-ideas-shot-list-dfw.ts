@@ -90,7 +90,7 @@ const post: BlogPost = {
     },
     {
       type: "image",
-      slug: "mandalay-canal-walk-zapata-27",
+      slug: "mandalay-canal-walk-quinceanera-portrait-f766",
       caption: "Quinceañera portrait session at the Mandalay Canal Walk in Irving.",
     },
     {
@@ -151,7 +151,7 @@ const post: BlogPost = {
     },
     {
       type: "image",
-      slug: "convention-plaza-ballroom-clarissa-120",
+      slug: "convention-plaza-ballroom-quinceanera-b4d8",
       caption: "The grand entrance into the reception at Convention Plaza Ballroom in Irving.",
     },
     { type: "h2", text: "The reception is mostly candids" },
@@ -161,7 +161,7 @@ const post: BlogPost = {
     },
     {
       type: "image",
-      slug: "convention-plaza-ballroom-clarissa-257",
+      slug: "convention-plaza-ballroom-quinceanera-a09d",
       caption: "Cake and toasts at the reception, Convention Plaza Ballroom in Irving.",
     },
     {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { eventKey, tagValue, venueEvents, type VenueEventPhoto } from "./venue-events";
+import { eventKey, eventsForClient, publicTags, tagValue, venueEvents, type VenueEventPhoto } from "./venue-events";
 
 const V = "convention-plaza-ballroom";
 let n = 0;
@@ -76,5 +76,20 @@ describe("highlights", () => {
       V,
     );
     expect(e.highlights.map((h) => h.id)).toEqual(["grand-entrance", "el-vals"]);
+  });
+});
+
+describe("what leaves the server", () => {
+  it("eventsForClient drops the storage path, tags and old slug from every photo", () => {
+    const row = { ...photo({ tags: "xv:a, Pink Gown" }), storage_path: "portfolio/venues/ana-433.webp", old_slug: `${V}-ana-433` };
+    const sent = JSON.stringify(eventsForClient(venueEvents([row, { ...row, id: "id-b" }], V)));
+    expect(sent).not.toMatch(/storage_path|old_slug|ana-433|xv:a|tags/);
+    expect(sent).toContain(row.url);
+  });
+
+  it("publicTags keeps only the tags written for visitors", () => {
+    expect(publicTags("Pink Gown, xv:a, theme: blush, DFW")).toBe("Pink Gown, DFW");
+    expect(publicTags("xv:a")).toBeNull();
+    expect(publicTags(null)).toBeNull();
   });
 });

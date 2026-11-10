@@ -34,6 +34,7 @@ export const ED = {
       label: "Our pick",
       deposit: (pct: number, days: number) => `${pct}% deposit after we confirm your date. The rest ${days} days before.`,
       compare: "Compare all packages",
+      films: "Watch our films",
     },
     packages: {
       label: "Packages",
@@ -114,6 +115,7 @@ export const ED = {
       deposit: (pct: number, days: number) =>
         `Depósito del ${pct}% cuando confirmamos tu fecha. El resto, ${days} días antes.`,
       compare: "Comparar todos los paquetes",
+      films: "Mira nuestros videos",
     },
     packages: {
       label: "Paquetes",

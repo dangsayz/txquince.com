@@ -84,6 +84,7 @@ const post: BlogPost = {
       type: "p",
       text: "That's the case for protecting that 8–15% even when the budget gets tight. It's also why, if you have to choose, families regret cutting coverage far more than they regret a smaller cake. You can see what full coverage looks like in our [portfolio](/portfolio), and if you're weighing one over the other, [photo vs. video](/blog/quinceanera-photo-vs-video) walks through the trade-offs honestly.",
     },
+    { type: "p", text: "More answers: [who pays for what](/blog/who-pays-for-a-quinceanera), [the padrinos list](/blog/quinceanera-padrinos-list) and [how many damas and chambelanes to have](/blog/how-many-damas-and-chambelanes)." },
     {
       type: "cta",
       heading: "See exactly what each package includes",

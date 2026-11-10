@@ -16,6 +16,8 @@ import {
   vendorCategoryLabel,
   vendorCreditLabel,
 } from "@/content/portfolio-taxonomy";
+import { venues } from "@/content/venues";
+import { photosNeedingDescription } from "@/lib/public-photo-copy";
 
 function publicUrl(path: string): string {
   const base = (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").replace(/\/$/, "");
@@ -528,18 +530,22 @@ export function PortfolioManager({
     return out;
   }, [grouped, section]);
 
-  // Distinct locations already tagged across the gallery, most-used first —
-  // the autocomplete source so a place typed once is reusable everywhere.
+  // Place suggestions: the venue list first (that exact wording puts a photo on
+  // its venue page), then places already typed in the gallery, most-used first.
   const locationSuggestions = useMemo(() => {
     const counts = new Map<string, number>();
     for (const img of images) {
       const loc = img.location?.trim();
       if (loc) counts.set(loc, (counts.get(loc) ?? 0) + 1);
     }
-    return [...counts.entries()]
+    const typed = [...counts.entries()]
       .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
       .map(([name]) => name);
+    return [...new Set([...venues.map((v) => v.locationTag), ...typed])];
   }, [images]);
+
+  // Photos whose alt text is empty, a file name, or the stock upload line.
+  const descriptionGaps = useMemo(() => photosNeedingDescription(images), [images]);
 
   async function handleFiles(files: FileList | null) {
     if (!files?.length) return;
@@ -710,23 +716,30 @@ export function PortfolioManager({
     }
   }
 
-  // Fill every blank alt field, one at a time (keeps cost predictable and avoids
+  // Describe every photo that has no real description yet (empty, a file name,
+  // or the stock upload line), one at a time (keeps cost predictable and avoids
   // hammering the model). Stops early if a request fails (e.g. key missing).
   async function describeBlankAlts() {
-    const blanks = images.filter((i) => !i.alt?.trim());
+    const blanks = images.filter((i) => descriptionGaps.has(i.id));
     if (blanks.length === 0) {
-      setStatus("Every image already has alt text.");
+      setStatus("Every photo already has a description.");
       return;
     }
+    if (
+      !confirm(
+        `Write a description for ${blanks.length} photo${blanks.length === 1 ? "" : "s"}? AI looks at each photo once. Descriptions you wrote yourself are not touched.`,
+      )
+    )
+      return;
     setBusy(true);
     let done = 0;
     for (const img of blanks) {
-      setStatus(`Writing alt text… ${done}/${blanks.length}`);
+      setStatus(`Describing photos… ${done}/${blanks.length}`);
       const ok = await aiWrite(img, "alt");
       if (!ok) break;
       done++;
     }
-    setStatus(`Done — wrote alt text for ${done} image${done === 1 ? "" : "s"}.`);
+    setStatus(`Done. Described ${done} photo${done === 1 ? "" : "s"}.`);
     setBusy(false);
   }
 
@@ -882,15 +895,15 @@ export function PortfolioManager({
             Fix image sizes
           </button>
         ) : null}
-        {images.some((i) => !i.alt?.trim()) ? (
+        {descriptionGaps.size > 0 ? (
           <button
             type="button"
             onClick={describeBlankAlts}
             disabled={busy}
             className="st-btn-ghost disabled:opacity-50"
-            title="Draft alt text with AI for every image still missing it (you can edit after)"
+            title="These photos have no description, a file name, or the same stock line as other photos. AI drafts one for each (you can edit after)."
           >
-            Write blank alt text
+            Describe {descriptionGaps.size} photo{descriptionGaps.size === 1 ? "" : "s"}
           </button>
         ) : null}
         {images.length > 0 ? (
@@ -992,6 +1005,7 @@ export function PortfolioManager({
                   <details className="group border-t border-line">
                     <summary className="flex min-h-16 cursor-pointer list-none items-center gap-3 px-4 py-3 text-left marker:hidden focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ink">
                       <span className="min-w-0 flex-1 truncate text-sm font-medium text-ink">{img.title?.trim() || "Untitled photograph"}</span>
+                      {descriptionGaps.has(img.id) && <span className="st-chip" data-tone="urgent">Needs a description</span>}
                       {img.is_feature && <span className="border border-line px-2 py-1 text-[11px] text-ink-soft">Featured</span>}
                       <span className="text-xs text-ink-soft group-open:hidden">Edit ↓</span>
                       <span className="hidden text-xs text-ink-soft group-open:inline">Close ↑</span>

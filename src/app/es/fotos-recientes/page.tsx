@@ -1,3 +1,4 @@
+import { ogBase } from "@/lib/share-meta";
 import type { Metadata } from "next";
 import { PhotoDumpPage } from "@/components/txq/PhotoDumpPage";
 import { site } from "@/content/site";
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
   description:
     "Las fotos de quinceañera más nuevas de TX Quince: retratos, la misa, la fiesta, la familia y los detalles de celebraciones recientes en Dallas–Fort Worth.",
   alternates: { canonical: "/es/fotos-recientes", languages: languageAlternates("/photos/latest", "/es/fotos-recientes") },
-  openGraph: {
+  openGraph: { ...ogBase("es"),
     locale: OG_LOCALE.es,
     title: "Fotos recientes de quinceañera · TX Quince",
     description: "Las fotos de quinceañera más nuevas de celebraciones recientes en Dallas–Fort Worth.",

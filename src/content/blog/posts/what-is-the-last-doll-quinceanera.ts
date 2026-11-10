@@ -75,6 +75,7 @@ const post: BlogPost = {
       type: "p",
       text: "To see where the last doll fits among the other moments of the day, read [what happens at a quinceañera, in order](/blog/what-happens-at-a-quinceanera-order-of-events).",
     },
+    { type: "p", text: "More answers: [the crowning ceremony](/blog/quinceanera-crowning-ceremony), [the padrinos list](/blog/quinceanera-padrinos-list) and [gift ideas for guests](/blog/quinceanera-gift-ideas)." },
     {
       type: "cta",
       heading: "See what fits your budget",

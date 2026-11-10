@@ -1,3 +1,4 @@
+import { ogBase } from "@/lib/share-meta";
 import type { Metadata } from "next";
 import { EditorialHome } from "@/components/editorial/EditorialHome";
 import { editorialFonts } from "@/components/editorial/fonts";
@@ -33,7 +34,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: { absolute: "Quinceañera Photographer & Videographer in Dallas–Fort Worth | TX Quince" },
     description: `Luxury quinceañera photography and film across Dallas–Fort Worth, from Highland Park to Southlake. Published commissions from ${from}, bilingual from first call to final film. Check your date live.`,
     alternates: { canonical: "/", languages: languageAlternates("/", "/es") },
-    openGraph: {
+    openGraph: { ...ogBase("en", { image: false }),
       title: "TX Quince — Quinceañera Photography & Film, Dallas–Fort Worth",
       description: `Quinceañera photos and videos in Dallas–Fort Worth. Packages from ${from}.`,
       url: site.url,
@@ -61,7 +62,7 @@ export default async function HomePage() {
       <FavoritesJsonLd favorites={favorites} lang="en" />
       <SlotProvider slots={await resolveHomeSlots(overrides)}>
         <div className={editorialFonts}>
-          <EditorialHome journal={fillDeep(await latestJournal(), book)} films={films} overrides={overrides} galleries={galleriesFromImages(portfolio)} work={homeLocations(portfolio, getAllPosts(), "/blog")} cities={homeCities()} favorites={favorites} reviews={reviews} featureClip={clips.feature ? { mp4: clipUrl(clips.feature.name) } : null} />
+          <EditorialHome journal={fillDeep(await latestJournal(), book)} films={films} overrides={overrides} galleries={galleriesFromImages(portfolio)} work={homeLocations(portfolio, getAllPosts(), "/blog")} cities={homeCities()} favorites={favorites} reviews={reviews} heroClip={clips.hero ? { mp4: clipUrl(clips.hero.name) } : null} featureClip={clips.feature ? { mp4: clipUrl(clips.feature.name) } : null} />
         </div>
       </SlotProvider>
     </>

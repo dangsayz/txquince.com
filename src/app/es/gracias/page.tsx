@@ -1,3 +1,4 @@
+import { ogBase } from "@/lib/share-meta";
 import type { Metadata } from "next";
 import { ConfirmationPage } from "@/components/ConfirmationPage";
 import { languageAlternates, OG_LOCALE } from "@/lib/hreflang";
@@ -8,7 +9,7 @@ export const metadata: Metadata = {
   title: "Gracias por tu Consulta",
   description: "Recibimos tu consulta sobre su quinceañera.",
   alternates: { canonical: "/es/gracias", languages: languageAlternates("/thank-you", "/es/gracias") },
-  openGraph: { locale: OG_LOCALE.es },
+  openGraph: { ...ogBase("es"), locale: OG_LOCALE.es },
   robots: { index: false, follow: false },
 };
 

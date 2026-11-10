@@ -1,3 +1,4 @@
+import { ogBase } from "@/lib/share-meta";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getPublicReviews } from "@/lib/reviews-db";
@@ -19,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
   title: "Reviews from Families",
   description: "Reviews from DFW moms whose daughters’ quinceañeras TX Quince photographed and filmed, each one from a family I worked with.",
   alternates: { canonical: "/reviews" },
-  openGraph: {
+  openGraph: { ...ogBase("en"),
     title: "Reviews from Families · TX Quince",
     description: "What DFW moms say about their quinceañera photos and film.",
     url: `${site.url}/reviews`,

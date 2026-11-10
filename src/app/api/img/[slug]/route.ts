@@ -19,7 +19,7 @@
  * development still renders — protection applies on Cloudflare.
  */
 import { NextResponse } from "next/server";
-import { getImageBySlug, getHeroRawImageUrl, getCoverRawImageUrl, storageUrl } from "@/lib/content-db";
+import { getImageBySlug, getSlugForOldSlug, getHeroRawImageUrl, getCoverRawImageUrl, storageUrl } from "@/lib/content-db";
 import { getPortfolioBucket, storageKeyFromUrl } from "@/lib/r2-portfolio";
 import { FULL_MAX_WIDTH, OPEN_MAX_WIDTH, imageTransformForWidth, maxWidthForReferer } from "@/lib/image-derivative";
 import { site } from "@/content/site";
@@ -168,6 +168,19 @@ async function serve(
     if (img) {
       sourceUrl = storageUrl(img.storage_path);
       natural = { width: img.width, height: img.height };
+    } else {
+      // An address this photo used to have: send it to the current one.
+      const moved = await getSlugForOldSlug(slug);
+      if (moved) {
+        return new NextResponse(null, {
+          status: 308,
+          headers: {
+            location: `/api/img/${moved.slug}${new URL(request.url).search}`,
+            "cache-control": "public, max-age=86400",
+            "x-img": "moved",
+          },
+        });
+      }
     }
   }
   if (!sourceUrl) return NextResponse.json({ error: "Not found" }, { status: 404 });

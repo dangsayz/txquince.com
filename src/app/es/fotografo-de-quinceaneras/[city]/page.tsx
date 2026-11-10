@@ -1,3 +1,4 @@
+import { ogBase } from "@/lib/share-meta";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
@@ -66,7 +67,7 @@ export async function generateMetadata({
       canonical: `/es/fotografo-de-quinceaneras/${loc.slug}`,
       languages: languageAlternates(enUrl, esUrl),
     },
-    openGraph: {
+    openGraph: { ...ogBase("es", { image: false }),
       title: `${title} · ${site.brand}`,
       description,
       url: esUrl,
