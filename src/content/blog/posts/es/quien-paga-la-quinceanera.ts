@@ -33,6 +33,10 @@ const post: BlogPost = {
       type: "p",
       text: "Tómelo como una costumbre común, no como una obligación. Hay familias que pagan todo ellas mismas. Otras reparten el día entre muchas personas. Las dos formas están bien.",
     },
+    {
+      type: "p",
+      text: "El mejor momento para hablar de dinero es temprano, antes de mandar las invitaciones y antes de reservar nada. Siéntese con las personas que podrían ayudar, explique lo que necesita el día y escuche lo que cada quien puede hacer. Una plática tranquila en las primeras semanas evita malos ratos después. Nuestro [cronograma para planear una quinceañera](/es/blog/como-planear-una-quinceanera-cronograma) le muestra qué decidir y cuándo.",
+    },
     { type: "h2", text: "Qué suelen patrocinar los padrinos" },
     {
       type: "p",
@@ -54,6 +58,10 @@ const post: BlogPost = {
     {
       type: "p",
       text: "Hable de la cosa, no solo del monto. Es más fácil decir que sí a “el pastel” que a “algo de dinero”. Dele tiempo para contestar. Una nota de agradecimiento después vale mucho.",
+    },
+    {
+      type: "p",
+      text: "Si alguien dice que no, agradézcaselo de todos modos. No todos los familiares pueden dar dinero, y eso no dice cuánto la quieren. Mantenga la invitación a ser padrino separada de lo que pueden pagar, para que el honor nunca se sienta como una cuenta.",
     },
     { type: "h2", text: "Lleve una lista sencilla de quién cubre qué" },
     {

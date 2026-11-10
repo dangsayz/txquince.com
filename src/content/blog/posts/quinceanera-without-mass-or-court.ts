@@ -57,6 +57,10 @@ const post: BlogPost = {
         "Siblings and cousins: a few relatives, with no formal pairs and little rehearsal.",
       ],
     },
+    {
+      type: "p",
+      text: "You can also mix the two choices. A family might hold a blessing and no court, or a full court and no mass. Pick the version that fits your family, your guest list and your budget, and say it plainly to the people who help you.",
+    },
     { type: "h2", text: "What changes in the day" },
     {
       type: "p",

@@ -32,6 +32,10 @@ const post: BlogPost = {
       type: "p",
       text: "Treat this as common practice, not a requirement. Some families pay for everything themselves. Others split the whole day among many people. Both are fine.",
     },
+    {
+      type: "p",
+      text: "The best time to talk about money is early, before invitations go out and before anyone books anything. Sit down with the people who may help, say what the day needs, and listen to what each person can do. A calm talk in the first weeks saves hard feelings later. Our [planning timeline and checklist](/blog/quinceanera-planning-timeline-checklist) shows what to decide and when.",
+    },
     { type: "h2", text: "What padrinos often sponsor" },
     {
       type: "p",
@@ -53,6 +57,10 @@ const post: BlogPost = {
     {
       type: "p",
       text: "Be clear about the item, not just the amount. “The cake” is easier to say yes to than “some money.” Give them time to answer. A thank-you note afterward goes a long way.",
+    },
+    {
+      type: "p",
+      text: "If someone says no, thank them anyway. Not every relative can give money, and that is not a judgment on how much they love her. Keep the invitation to be a padrino separate from what they can pay, so the honor never feels like a bill.",
     },
     { type: "h2", text: "Keep a simple list of who covers what" },
     {

@@ -58,6 +58,10 @@ const post: BlogPost = {
         "Hermanos y primos: unos cuantos familiares, sin parejas formales y con poco ensayo.",
       ],
     },
+    {
+      type: "p",
+      text: "También puede combinar las dos decisiones. Una familia puede hacer una bendición y no tener corte, o tener corte completa y no hacer misa. Escoja la versión que va con su familia, su lista de invitados y su presupuesto, y díganselo con claridad a quienes la ayudan.",
+    },
     { type: "h2", text: "Qué cambia en el día" },
     {
       type: "p",

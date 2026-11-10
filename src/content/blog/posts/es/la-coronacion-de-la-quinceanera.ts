@@ -5,7 +5,7 @@ const post: BlogPost = {
   title: "La coronación de la quinceañera: qué significa y cómo se hace",
   metaTitle: "La coronación de la quinceañera: significado y cómo se hace",
   description:
-    "La coronación es el momento en que se le pone la tiara a la quinceañera. Qué significa la corona, quién se la pone, cuándo se hace y cómo planearla para que todos vean.",
+    "La coronación es cuando se le pone la tiara a la quinceañera. Qué significa la corona, quién se la pone, cuándo se hace y cómo planearla para que todos la vean.",
   category: "Traditions",
   excerpt:
     "La coronación es cuando se le pone la tiara a la quinceañera. Qué representa, quién se la pone, cuándo cae en el día y cómo planearla.",
