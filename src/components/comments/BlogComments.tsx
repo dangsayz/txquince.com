@@ -2,6 +2,7 @@ import { listApprovedComments } from "@/lib/comments-db";
 import { clerkSettings } from "@/lib/clerk-config";
 import { SectionHead } from "@/components/BlogContent";
 import { CommentBox } from "./CommentBox";
+import type { CommentTopic } from "./copy";
 import { QuoteTools } from "./QuoteTools";
 import { AdminQuick } from "@/components/AdminQuick";
 import type { PublicComment } from "@/lib/comments";
@@ -13,6 +14,7 @@ const COPY = {
     title: (n: number) => (n === 0 ? "Questions & notes" : `${n} ${n === 1 ? "comment" : "comments"}`),
     dek: "Ask a question or share what worked for your quince. Every comment is read before it shows.",
     empty: "No comments yet. Be the first.",
+    tip: "You can also highlight any sentence in the post to ask about it.",
     owner: "TX Quince",
     replied: "replied",
     about: "About",
@@ -24,6 +26,7 @@ const COPY = {
     title: (n: number) => (n === 0 ? "Preguntas y notas" : `${n} ${n === 1 ? "comentario" : "comentarios"}`),
     dek: "Haz una pregunta o comparte lo que te funcionó en tu quince. Leemos cada comentario antes de publicarlo.",
     empty: "Todavía no hay comentarios. Sé la primera.",
+    tip: "También puedes resaltar cualquier frase de la publicación para preguntar sobre ella.",
     owner: "TX Quince",
     replied: "respondió",
     about: "Sobre",
@@ -41,7 +44,7 @@ function day(iso: string, locale: string) {
 }
 
 /** Approved comments + the box to write one. Server-rendered list (static/ISR, indexable). */
-export async function BlogComments({ lang, slug }: { lang: "en" | "es"; slug: string }) {
+export async function BlogComments({ lang, slug, topic }: { lang: "en" | "es"; slug: string; topic?: CommentTopic }) {
   const c = COPY[lang];
   const comments = await listApprovedComments(slug, lang);
   const s = clerkSettings();
@@ -58,9 +61,11 @@ export async function BlogComments({ lang, slug }: { lang: "en" | "es"; slug: st
                 ))}
               </ol>
             ) : (
-              <p className="tq-cmt__empty">{c.empty}</p>
+              <p className="tq-cmt__empty">
+                {c.empty} <span className="tq-cmt__hint">{c.tip}</span>
+              </p>
             )}
-            <CommentBox lang={lang} slug={slug} clerk={s} place="bottom" />
+            <CommentBox lang={lang} slug={slug} clerk={s} place="bottom" topic={topic} />
           </div>
         </div>
       </div>

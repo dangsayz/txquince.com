@@ -345,6 +345,20 @@
   height: 48px;
   transition: height var(--tq-dur-base) var(--tq-ease), border-color var(--tq-dur-fast) var(--tq-ease);
 }
+/* At rest the field is one line tall: the hint never wraps into a clipped
+   second line, whatever the column width or language. */
+.txq .tq-cmt__box[data-place="rail"] .tq-cmt__input::placeholder {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.txq .tq-cmt__box[data-place="rail"] .tq-cmt__input {
+  overflow: hidden;
+}
+.txq .tq-cmt__box[data-place="rail"] .tq-cmt__form:focus-within .tq-cmt__input,
+.txq .tq-cmt__box[data-place="rail"] .tq-cmt__form[data-open] .tq-cmt__input {
+  overflow: auto;
+}
 .txq .tq-cmt__box[data-place="rail"] .tq-cmt__form:focus-within .tq-cmt__input,
 .txq .tq-cmt__box[data-place="rail"] .tq-cmt__form[data-open] .tq-cmt__input {
   height: 7.5rem;
@@ -374,3 +388,40 @@
   .txq .tq-cmt__box[data-place="rail"] .tq-cmt__input,
   .tq-cmt__box[data-place="rail"] .tq-cmt__more { transition: none; }
 }
+
+/* ---------- Bottom box: a prompt, not a blank form ----------
+   The card opens with a question, offers three ways to begin (one about this
+   post's topic), then the field. A starter fills the field and puts the
+   cursor after it; they step aside once there is text. */
+.tq-cmt__box[data-place="bottom"] .tq-cmt__label {
+  font-size: var(--tq-text-h3);
+  letter-spacing: var(--tq-tracking-display);
+  line-height: 1.2;
+}
+.tq-cmt__box[data-place="bottom"] .tq-cmt__as { margin-bottom: var(--tq-space-4); }
+.tq-cmt__box[data-place="bottom"] .tq-cmt__gate-lead { margin-top: var(--tq-space-2); font-size: var(--tq-text-body); color: var(--tq-ink-mute); }
+.tq-cmt__starters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--tq-space-2);
+  margin-top: var(--tq-space-4);
+}
+.tq-cmt__starters-label {
+  flex: 0 0 100%;
+  font-size: var(--tq-text-sm);
+  color: var(--tq-ink-mute);
+}
+.txq .tq-cmt__starters .tq-pill {
+  background: var(--tq-paper);
+  color: var(--tq-ink);
+  font-family: inherit;
+  white-space: normal;
+  text-align: left;
+  line-height: 1.25;
+  padding-block: 8px;
+}
+.tq-cmt__box[data-place="bottom"] .tq-cmt__starters + .tq-cmt__input,
+.tq-cmt__box[data-place="bottom"] .tq-cmt__input { margin-top: var(--tq-space-4); }
+.tq-cmt__box[data-place="bottom"] .tq-cmt__actions { margin-top: var(--tq-space-4); }
+.tq-cmt__hint { color: var(--tq-ink-mute); }

@@ -11,7 +11,7 @@ import {
 import { getBlogImages } from "@/lib/content-db";
 import { absoluteImageUrl, coverThumbs, ogImageFor, resolveBlogCover } from "@/lib/blog-cover";
 import { blogPostingJsonLd, postMetaTitle } from "@/lib/blog-structured-data";
-import { BlogArticleView } from "@/components/BlogContent";
+import { BlogArticleView, CATEGORY_KEY } from "@/components/BlogContent";
 import { VenueExperience } from "@/components/VenueExperience";
 import { getVenue } from "@/content/venues";
 import { getVenueExperience } from "@/lib/venue-experience-db";
@@ -138,7 +138,7 @@ export default async function EsBlogPostPage({
         series={series}
         shareUrl={url}
         shareImage={coverAbs}
-        comments={<BlogComments lang="es" slug={post.slug} />}
+        comments={<BlogComments lang="es" slug={post.slug} topic={CATEGORY_KEY[post.category]} />}
         commentRail={<BlogCommentRail lang="es" slug={post.slug} />}
       />
     </>
