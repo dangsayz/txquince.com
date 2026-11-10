@@ -6,7 +6,7 @@ import { getAllPosts, getPost, relatedPosts, esSlugForEn } from "@/content/blog"
 import { getBlogImages } from "@/lib/content-db";
 import { absoluteImageUrl, coverThumbs, ogImageFor, resolveBlogCover } from "@/lib/blog-cover";
 import { blogPostingJsonLd, postMetaTitle } from "@/lib/blog-structured-data";
-import { BlogArticleView } from "@/components/BlogContent";
+import { BlogArticleView, CATEGORY_KEY } from "@/components/BlogContent";
 import { VenueExperience } from "@/components/VenueExperience";
 import { getVenue } from "@/content/venues";
 import { getVenueExperience } from "@/lib/venue-experience-db";
@@ -133,7 +133,7 @@ export default async function BlogPostPage({
         series={series}
         shareUrl={url}
         shareImage={coverAbs}
-        comments={<BlogComments lang="en" slug={post.slug} />}
+        comments={<BlogComments lang="en" slug={post.slug} topic={CATEGORY_KEY[post.category]} />}
         commentRail={<BlogCommentRail lang="en" slug={post.slug} />}
       />
     </>

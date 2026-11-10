@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState, useSyncExternalStore } from "react";
+import { useId, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { ClerkProvider, useAuth, useClerk, useUser } from "@clerk/nextjs";
 import type { ClerkSettings } from "@/lib/clerk-config";
@@ -23,6 +23,7 @@ export function Composer({
   place,
   chip,
   railChip,
+  starters,
 }: {
   lang: CommentLang;
   slug: string;
@@ -32,17 +33,22 @@ export function Composer({
   chip: React.ReactNode;
   /** The same passage chip for the rail form (wide screens show it there). */
   railChip: React.ReactNode;
+  /** Ways to begin, shown in the bottom box (the rail stays compact). */
+  starters?: Starter[];
 }) {
   const rail = useSyncExternalStore(subscribeRailMount, getRailMount, () => null);
   return (
     <ClerkProvider publishableKey={clerk.publishableKey} signInUrl={clerk.signInUrl} signUpUrl={clerk.signUpUrl}>
-      <Form lang={lang} slug={slug} place={place} chip={chip} />
+      <Form lang={lang} slug={slug} place={place} chip={chip} starters={starters} />
       {rail ? createPortal(<Form lang={lang} slug={slug} place="rail" chip={railChip} />, rail) : null}
     </ClerkProvider>
   );
 }
 
-function Form({ lang, slug, place, chip }: { lang: CommentLang; slug: string; place: CommentPlace; chip: React.ReactNode }) {
+type Starter = { label: string; text: string };
+
+function Form({ lang, slug, place, chip, starters }: { lang: CommentLang; slug: string; place: CommentPlace; chip: React.ReactNode; starters?: Starter[] }) {
+  const field = useRef<HTMLTextAreaElement>(null);
   const c = COPY[lang];
   const quote = useQuote(slug);
   const id = useId();
@@ -134,13 +140,35 @@ function Form({ lang, slug, place, chip }: { lang: CommentLang; slug: string; pl
         {c.label}
       </label>
       {chip}
+      {starters?.length && !body.trim() ? (
+        <div className="tq-cmt__starters">
+          <span className="tq-cmt__starters-label">{c.startWith}</span>
+          {starters.map((st) => (
+            <button
+              key={st.label}
+              type="button"
+              className="tq-pill"
+              onClick={() => {
+                setBody(st.text);
+                const el = field.current;
+                if (!el) return;
+                el.focus();
+                requestAnimationFrame(() => el.setSelectionRange(st.text.length, st.text.length));
+              }}
+            >
+              {st.label}
+            </button>
+          ))}
+        </div>
+      ) : null}
       <textarea
+        ref={field}
         id={`${id}-body`}
         className="tq-cmt__input"
         value={body}
         onChange={(e) => setBody(e.target.value)}
         placeholder={c.placeholder}
-        rows={place === "rail" ? 3 : 5}
+        rows={place === "rail" ? 3 : 4}
         maxLength={COMMENT_MAX}
         required
         aria-describedby={`${id}-help`}

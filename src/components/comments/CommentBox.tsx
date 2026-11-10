@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { Component, useEffect, useRef, useState, type ReactNode } from "react";
 import { signedInHint } from "@/lib/signed-in-hint";
 import type { ClerkSettings } from "@/lib/clerk-config";
-import { COPY, type CommentLang } from "./copy";
+import { COPY, startersFor, type CommentLang, type CommentTopic } from "./copy";
 import { ReviewNote } from "./ReviewNote";
 import { COMMENT_FOCUS_EVENT, setQuote, setRailMount, useQuote } from "./quote-store";
 
@@ -32,7 +32,7 @@ export type CommentPlace = "rail" | "bottom";
  * screen) and in the left rail (wide screens). Clerk still loads once: the
  * bottom box owns the Composer, and the rail only offers a mount for it.
  */
-export function CommentBox({ lang, slug, clerk, place }: { lang: CommentLang; slug: string; clerk: ClerkSettings | null; place: CommentPlace }) {
+export function CommentBox({ lang, slug, clerk, place, topic }: { lang: CommentLang; slug: string; clerk: ClerkSettings | null; place: CommentPlace; topic?: CommentTopic }) {
   const c = COPY[lang];
   const quote = useQuote(slug);
   const root = useRef<HTMLDivElement>(null);
@@ -98,12 +98,13 @@ export function CommentBox({ lang, slug, clerk, place }: { lang: CommentLang; sl
           <div ref={setRailMount} />
         ) : (
           <FormGuard fallback={<p className="tq-cmt__note" role="alert">{c.error}</p>}>
-            <Composer lang={lang} slug={slug} clerk={clerk} place={place} chip={active ? chip : null} railChip={chip} />
+            <Composer lang={lang} slug={slug} clerk={clerk} place={place} chip={active ? chip : null} railChip={chip} starters={startersFor(lang, topic)} />
           </FormGuard>
         )
       ) : (
         <div className="tq-cmt__gate" aria-busy={state === "unknown" || undefined}>
           {active ? chip : null}
+          {place === "bottom" ? <p className="tq-cmt__label">{c.label}</p> : null}
           <p className="tq-cmt__gate-lead">{c.gate}</p>
           <div className="tq-cmt__actions">
             <a className="tq-btn tq-btn--lg" href={login} rel="nofollow">
@@ -116,7 +117,6 @@ export function CommentBox({ lang, slug, clerk, place }: { lang: CommentLang; sl
           <ReviewNote text={c.review} />
         </div>
       )}
-      <p className="tq-cmt__note tq-cmt__tip">{c.tip}</p>
     </div>
   );
 }
