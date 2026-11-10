@@ -254,8 +254,11 @@
 
 /* ---------- Feature (sticky card over B&W plate) ---------- */
 .ed-feature { position: relative; min-height: 160svh; overflow: clip; background: #111111; }
-.ed-feature__plate { position: absolute; inset: 0; overflow: hidden; }
-.ed-feature__bg { position: absolute; inset: -8% 0; will-change: transform; }
+/* The backdrop is pinned and exactly one screen tall, so the frame is the
+   shape of the screen: a 16:9 photo or film loop shows whole on a laptop
+   instead of losing its sides to a 160svh-tall crop. The card scrolls over it. */
+.ed-feature__plate { position: sticky; top: 0; height: 100svh; height: 100lvh; overflow: hidden; }
+.ed-feature__bg { position: absolute; inset: 0; }
 .ed-feature__plate::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, 0.16); }
 /* "Watch our films": shown with a film loop, at the foot of the scene (clear of the card). */
 .ed-feature__films {
@@ -279,7 +282,7 @@
 }
 .ed-feature__films:hover { background: rgba(0, 0, 0, 0.6); border-color: #ffffff; }
 .ed-feature__films:focus-visible { outline: 2px solid #ffffff; outline-offset: 3px; }
-.ed-feature__track { position: relative; min-height: 160svh; padding: 14svh var(--ed-gutter); display: flex; justify-content: flex-end; }
+.ed-feature__track { position: relative; min-height: 160svh; margin-top: -100svh; margin-top: -100lvh; padding: 14svh var(--ed-gutter); display: flex; justify-content: flex-end; }
 .ed-card {
   position: sticky;
   top: calc(var(--header-h) + 6svh);

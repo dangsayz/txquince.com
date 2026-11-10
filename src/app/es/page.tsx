@@ -8,7 +8,7 @@ import { getCinemaFilms } from "@/components/txq/films";
 import { HomeJsonLd } from "@/components/txq/HomeJsonLd";
 import { getHomeOverrides } from "@/lib/photo-dump";
 import { getHomeClips } from "@/lib/home-clips";
-import { clipUrl } from "@/lib/home-clip-shared";
+import { clipFocus, clipUrl } from "@/lib/home-clip-shared";
 import { priceFloor, usd } from "@/lib/commission";
 import { getPriceBook } from "@/lib/pricing";
 import { fillDeep } from "@/lib/price-text";
@@ -60,7 +60,7 @@ export default async function InicioEs() {
       <FavoritesJsonLd favorites={favorites} lang="es" />
       <SlotProvider slots={await resolveHomeSlots(overrides)}>
         <div className={editorialFonts}>
-          <EditorialHome journal={fillDeep(await latestJournal(), book)} films={films} overrides={overrides} galleries={galleriesFromImages(portfolio)} work={homeLocations(portfolio, getAllEsPosts(), "/es/blog")} cities={homeCities()} favorites={favorites} reviews={reviews} heroClip={clips.hero ? { mp4: clipUrl(clips.hero.name) } : null} featureClip={clips.feature ? { mp4: clipUrl(clips.feature.name) } : null} />
+          <EditorialHome journal={fillDeep(await latestJournal(), book)} films={films} overrides={overrides} galleries={galleriesFromImages(portfolio)} work={homeLocations(portfolio, getAllEsPosts(), "/es/blog")} cities={homeCities()} favorites={favorites} reviews={reviews} heroClip={clips.hero ? { mp4: clipUrl(clips.hero.name), focus: clipFocus(clips.hero) } : null} featureClip={clips.feature ? { mp4: clipUrl(clips.feature.name), focus: clipFocus(clips.feature) } : null} />
         </div>
       </SlotProvider>
     </>

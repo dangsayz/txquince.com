@@ -81,6 +81,7 @@ export function LazyVideo({ clip, eager = false, className }: { clip: Clip | nul
       ref={ref}
       className={className}
       data-playing={playing || undefined}
+      style={clip.focus ? { objectPosition: clip.focus } : undefined}
       muted
       loop
       playsInline
