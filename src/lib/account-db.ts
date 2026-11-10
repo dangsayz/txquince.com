@@ -4,7 +4,8 @@ import { getD1 } from "@/lib/d1";
 import { releaseExpiredHolds } from "@/lib/db";
 import { fromDb } from "@/lib/db/d1-query";
 import { isStripeConfigured, retrieveReceiptUrl } from "@/lib/stripe";
-import { sortAccountBookings, toAccountBooking, type AccountBooking } from "@/lib/account";
+import { sortAccountBookings, toAccountBooking, type AccountBooking, type AccountPayment } from "@/lib/account";
+import { latestPaymentTests, TEST_AMOUNT_CENTS } from "@/lib/payment-test";
 
 export async function getAccountBookings(verifiedEmails: string[]): Promise<AccountBooking[]> {
   const emails = [...new Set(verifiedEmails.map((e) => e.trim().toLowerCase()).filter(Boolean))].slice(0, 10);
@@ -53,4 +54,26 @@ export async function withReceipts(bookings: AccountBooking[]): Promise<AccountB
 /** True when this booking id belongs to one of these verified emails. */
 export async function ownsBooking(verifiedEmails: string[], bookingId: string): Promise<boolean> {
   return (await getAccountBookings(verifiedEmails)).some((b) => b.id === bookingId);
+}
+
+/**
+ * The owner's $1 payment tests paid from one of these emails, newest first,
+ * with Stripe's receipt. Only the Studio can start a test, so only the owner
+ * ever has rows here; families never see this.
+ */
+export async function getAccountTestPayments(verifiedEmails: string[]): Promise<AccountPayment[]> {
+  const mine = new Set(verifiedEmails.map((e) => e.toLowerCase()));
+  if (!mine.size) return [];
+  const tests = (await latestPaymentTests(10).catch(() => [])).filter((t) => t.receivedAt && t.paymentIntent && mine.has((t.by ?? "").toLowerCase()));
+  return Promise.all(
+    tests.map(async (t) => ({
+      kind: "test" as const,
+      amountCents: TEST_AMOUNT_CENTS,
+      paidAt: t.receivedAt,
+      paymentIntent: t.paymentIntent,
+      method: "stripe",
+      receiptUrl: isStripeConfigured() && t.paymentIntent ? await retrieveReceiptUrl(t.paymentIntent) : null,
+      refunded: Boolean(t.refundedAt),
+    })),
+  );
 }

@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getSignedInUser } from "@/lib/clerk-user";
-import { getAccountBookings, withReceipts } from "@/lib/account-db";
-import type { AccountBooking } from "@/lib/account";
+import { getAccountBookings, getAccountTestPayments, withReceipts } from "@/lib/account-db";
+import type { AccountBooking, AccountPayment } from "@/lib/account";
 import { getPriceBook } from "@/lib/pricing";
 import { PUBLIC_TIER_IDS, fmtHours, usd, type PriceBook } from "@/lib/commission";
 import { tierById } from "@/components/txq/data";
@@ -32,7 +32,9 @@ const COPY = {
     booked: "We got your signed agreement. Your date is held while we check it. We email you within one day, and this page updates.",
     payments: "Payments and receipts",
     paymentsLead: "Every payment we received from you. Stripe also emails you a receipt each time.",
-    payKind: { deposit: "Deposit", balance: "Payment toward the rest" },
+    payKind: { deposit: "Deposit", balance: "Payment toward the rest", test: "$1 payment test" },
+    refunded: "Refunded",
+    testNote: "Only you see test payments. Families never do.",
     payMethod: { cash: "Paid in cash", zelle: "Paid by Zelle", check: "Paid by check", other: "Paid to the studio" },
     receipt: "Receipt",
     waysToPay: "Ways to pay",
@@ -128,7 +130,9 @@ const COPY = {
     booked: "Recibimos tu contrato firmado. Tu fecha queda apartada mientras lo revisamos. Te escribimos en un día, y esta página se actualiza.",
     payments: "Pagos y recibos",
     paymentsLead: "Cada pago que recibimos de ti. Stripe también te manda un recibo por correo cada vez.",
-    payKind: { deposit: "Depósito", balance: "Pago del resto" },
+    payKind: { deposit: "Depósito", balance: "Pago del resto", test: "Prueba de pago de $1" },
+    refunded: "Reembolsado",
+    testNote: "Solo tú ves los pagos de prueba. Las familias nunca.",
     payMethod: { cash: "Pagado en efectivo", zelle: "Pagado por Zelle", check: "Pagado con cheque", other: "Pagado al estudio" },
     receipt: "Recibo",
     waysToPay: "Formas de pago",
@@ -223,6 +227,9 @@ function longDate(iso: string, lang: Lang) {
     weekday: "long", month: "long", day: "numeric", year: "numeric", timeZone: "UTC",
   }).format(new Date(`${iso}T12:00:00Z`));
 }
+
+/** A payment timestamp as the Texas calendar day it happened (not the UTC day). */
+const texasDay = (ts: string) => (ts.length <= 10 ? ts : new Intl.DateTimeFormat("en-CA", { timeZone: "America/Chicago" }).format(new Date(ts)));
 
 /**
  * Which homepage FAQ items (src/components/txq/copy.ts, same order in EN and
@@ -368,17 +375,23 @@ export async function AccountDashboard({ lang, justBooked = false }: { lang: Lan
   const self = ACCOUNT_PATH[lang];
   const user = await getSignedInUser();
   if (!user) redirect(`${lang === "es" ? "/es/entrar" : "/login"}?next=${encodeURIComponent(self)}`);
-  const [bookings, book] = await Promise.all([getAccountBookings(user.verifiedEmails).then(withReceipts), getPriceBook()]);
-  return <AccountView lang={lang} displayName={user.displayName} email={user.verifiedEmails[0] ?? ""} bookings={bookings} book={book} justBooked={justBooked} />;
+  const [bookings, book, tests] = await Promise.all([
+    getAccountBookings(user.verifiedEmails).then(withReceipts),
+    getPriceBook(),
+    getAccountTestPayments(user.verifiedEmails),
+  ]);
+  return <AccountView lang={lang} displayName={user.displayName} email={user.verifiedEmails[0] ?? ""} bookings={bookings} book={book} tests={tests} justBooked={justBooked} />;
 }
 
 /** The page itself, from plain data (so it can be rendered and checked without a session). */
-export function AccountView({ lang, displayName, email, bookings, book, justBooked = false }: {
+export function AccountView({ lang, displayName, email, bookings, book, tests = [], justBooked = false }: {
   lang: Lang;
   displayName: string;
   email: string;
   bookings: AccountBooking[];
   book: PriceBook;
+  /** The owner's $1 Studio tests (empty for every family). */
+  tests?: AccountPayment[];
   justBooked?: boolean;
 }) {
   const c = COPY[lang];
@@ -386,7 +399,7 @@ export function AccountView({ lang, displayName, email, bookings, book, justBook
   const first = displayName.split(" ")[0];
   const named = first && first !== "TX";
   const bookPath = lang === "es" ? "/es/cuenta/reservar" : "/account/book";
-  const paid = open.flatMap((b) => b.payments);
+  const paid = [...open.flatMap((b) => b.payments), ...tests];
   const closed = bookings.filter((b) => b.state === "closed");
   const last = c.steps[3];
   const baseSteps: StepItem[] = [
@@ -495,15 +508,15 @@ export function AccountView({ lang, displayName, email, bookings, book, justBook
         {paid.length > 0 && (
           <section className="acct__section" aria-labelledby="acct-payments">
             <h2 id="acct-payments" className="acct__h2">{c.payments}</h2>
-            <p className="acct__lead">{c.paymentsLead}</p>
+            <p className="acct__lead">{c.paymentsLead}{tests.length > 0 ? ` ${c.testNote}` : ""}</p>
             <ul className="acct-panel acct-pays">
               {paid.map((p, i) => (
                 <li key={`${p.kind}-${i}`}>
                   <span className="acct-pays__what">
                     {c.payKind[p.kind]}
-                    {p.paidAt ? <span className="acct-pays__when">{longDate(p.paidAt.slice(0, 10), lang)}</span> : null}
+                    {p.paidAt ? <span className="acct-pays__when">{longDate(texasDay(p.paidAt), lang)}{p.refunded ? ` · ${c.refunded}` : ""}</span> : null}
                   </span>
-                  <span className="acct-pays__amt">{usd(p.amountCents / 100)}</span>
+                  <span className={`acct-pays__amt${p.refunded ? " acct-pays__amt--back" : ""}`}>{usd(p.amountCents / 100)}</span>
                   {p.receiptUrl ? (
                     <a className="acct-link" href={p.receiptUrl} target="_blank" rel="noopener noreferrer">
                       {c.receipt}&nbsp;<span aria-hidden>↗</span>
