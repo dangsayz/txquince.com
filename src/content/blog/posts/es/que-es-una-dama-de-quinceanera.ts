@@ -17,7 +17,7 @@ const post: BlogPost = {
     { type: "h2", text: "Quiénes son las damas" },
     {
       type: "p",
-      text: "En una quinceañera, las damas son las jóvenes que forman la corte de honor. Cada una suele hacer pareja con un chambelán, un joven que baila con ella en los números de grupo. La quinceañera encabeza la corte.",
+      text: "En una quinceañera, las damas son las jóvenes que forman la corte de honor. Cada una suele hacer pareja con [un chambelán](/es/blog/que-es-un-chambelan), un joven que baila con ella en los números de grupo. La quinceañera encabeza la corte.",
     },
     {
       type: "p",

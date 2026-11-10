@@ -17,7 +17,7 @@ const post: BlogPost = {
     { type: "h2", text: "Qué es un chambelán" },
     {
       type: "p",
-      text: "Chambelán (en plural, chambelanes) es como se llama a los jóvenes de la corte de una quinceañera. Entran junto a las damas y bailan con la quinceañera en los momentos importantes. Son sus acompañantes y sus parejas de baile durante el día.",
+      text: "Chambelán (en plural, chambelanes) es como se llama a los jóvenes de la corte de una quinceañera. Entran junto a [las damas](/es/blog/que-es-una-dama-de-quinceanera) y bailan con la quinceañera en los momentos importantes. Son sus acompañantes y sus parejas de baile durante el día.",
     },
     {
       type: "p",

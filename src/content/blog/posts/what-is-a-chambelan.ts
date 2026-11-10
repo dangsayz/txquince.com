@@ -16,7 +16,7 @@ const post: BlogPost = {
     { type: "h2", text: "What a chambelán is" },
     {
       type: "p",
-      text: "Chambelán (plural, chambelanes) is the word for the young men in a quinceañera's court. They walk in with the damas, the girls in the court, and they dance with the quinceañera at key moments. Think of them as her escorts and her dance partners for the day.",
+      text: "Chambelán (plural, chambelanes) is the word for the young men in a quinceañera's court. They walk in with [the damas](/blog/what-is-a-dama-quinceanera), the girls in the court, and they dance with the quinceañera at key moments. Think of them as her escorts and her dance partners for the day.",
     },
     {
       type: "p",

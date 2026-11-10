@@ -16,7 +16,7 @@ const post: BlogPost = {
     { type: "h2", text: "Who the damas are" },
     {
       type: "p",
-      text: "Dama means “lady” in Spanish. At a quinceañera, the damas are the girls and young women who make up the court of honor. Each one is usually paired with a chambelán, a young man who is her partner in the group dances. The quinceañera herself leads the court.",
+      text: "Dama means “lady” in Spanish. At a quinceañera, the damas are the girls and young women who make up the court of honor. Each one is usually paired with [a chambelán](/blog/what-is-a-chambelan), a young man who is her partner in the group dances. The quinceañera herself leads the court.",
     },
     {
       type: "p",
