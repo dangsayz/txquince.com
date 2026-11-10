@@ -215,3 +215,15 @@ export async function retrieveReceiptUrl(paymentIntentId: string): Promise<strin
     return null;
   }
 }
+
+/** Full refund of one payment (used by the owner's $1 test). Idempotent per payment. */
+export async function refundStripePayment(paymentIntentId: string): Promise<{ ok: boolean; error?: string }> {
+  try {
+    const params = new URLSearchParams();
+    params.set("payment_intent", paymentIntentId);
+    await stripeRequest("/refunds", { method: "POST", params, idempotencyKey: `txq-test-refund-${paymentIntentId}` });
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: String((err as Error).message ?? err) };
+  }
+}
