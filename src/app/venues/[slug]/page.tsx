@@ -26,7 +26,7 @@ import { getImagesByVenue, getVenueCopy } from "@/lib/content-db";
 import { withAlbums } from "@/content/albums";
 import { igUrl, websiteUrl, websiteLabel } from "@/lib/vendor-links";
 import { VenueEvents } from "@/components/venue/VenueEvents";
-import { venueEvents } from "@/lib/venue-events";
+import { eventsForClient, venueEvents } from "@/lib/venue-events";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import "@/components/txq/pages/places.css";
@@ -310,7 +310,7 @@ export default async function VenuePage({
             </h2>
           </header>
           {items.length ? (
-            <VenueEvents venue={venue.venue} askHref={askHref} pageHref={`/venues/${venue.slug}`} events={events} brand={site.brand} />
+            <VenueEvents venue={venue.venue} askHref={askHref} pageHref={`/venues/${venue.slug}`} events={eventsForClient(events)} brand={site.brand} />
           ) : (
             <p className="tq-place-empty">
               No photographs from this venue are published yet.{" "}

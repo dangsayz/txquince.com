@@ -39,7 +39,7 @@ const post: BlogPost = {
     },
     {
       type: "image",
-      slug: "mandalay-canal-walk-zapata-27",
+      slug: "mandalay-canal-walk-quinceanera-portrait-f766",
       caption: "Pre-quince portraits along the Mandalay Canal Walk in Irving.",
     },
     { type: "h2", text: "Best DFW locations for a pre-quince session" },
@@ -60,7 +60,7 @@ const post: BlogPost = {
     },
     {
       type: "image",
-      slug: "mandalay-canal-walk-zapata-50",
+      slug: "mandalay-canal-walk-quinceanera-portrait-06f8",
       caption: "Quinceañera portraits at the Mandalay Canal Walk in Irving.",
     },
     {

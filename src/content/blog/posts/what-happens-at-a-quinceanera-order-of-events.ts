@@ -100,7 +100,7 @@ const post: BlogPost = {
     },
     {
       type: "image",
-      slug: "convention-plaza-ballroom-clarissa-120",
+      slug: "convention-plaza-ballroom-quinceanera-b4d8",
       caption: "The grand entrance at Convention Plaza Ballroom in Irving.",
     },
     { type: "h2", text: "The vals and the father-daughter dance" },
@@ -110,7 +110,7 @@ const post: BlogPost = {
     },
     {
       type: "image",
-      slug: "convention-plaza-ballroom-clarissa-433",
+      slug: "convention-plaza-ballroom-quinceanera-c03b",
       caption: "The vals on the floor at Convention Plaza Ballroom in Irving.",
     },
     { type: "h2", text: "Changing of the shoes (cambio de zapatos)" },
@@ -138,7 +138,7 @@ const post: BlogPost = {
     },
     {
       type: "image",
-      slug: "convention-plaza-ballroom-clarissa-667",
+      slug: "convention-plaza-ballroom-quinceanera-0f96",
       caption: "The toast and cake at Convention Plaza Ballroom in Irving.",
     },
     { type: "h2", text: "The surprise dance (vals sorpresa) and Hora Loca" },
@@ -153,7 +153,7 @@ const post: BlogPost = {
     },
     {
       type: "image",
-      slug: "las-lomas-banquet-hall-valarie-539",
+      slug: "las-lomas-banquet-hall-quinceanera-e1ba",
       caption: "Open dancing at Las Lomas Banquet Hall in Irving.",
     },
     { type: "h2", text: "How long does the whole day run?" },
