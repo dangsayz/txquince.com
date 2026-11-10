@@ -15,6 +15,18 @@ export const MAX_CLIP_SECONDS = 20;
 export type HomeClip = { name: string; size: number; updatedAt: string };
 export type HomeClips = Partial<Record<HomeClipSlot, HomeClip>>;
 
+/** The image slots that can also play a loop: "Replace photo" on the live page offers video there. */
+export const CLIP_FOR_IMAGE_SLOT: Readonly<Record<string, HomeClipSlot>> = {
+  "home.hero.a": "hero",
+  "home.feature": "feature",
+};
+
+/** Where each loop plays, in the owner's words. */
+export const CLIP_PLACE: Record<HomeClipSlot, string> = {
+  hero: "at the top of the homepage",
+  feature: "behind the featured package",
+};
+
 export const isHomeClipSlot = (v: unknown): v is HomeClipSlot =>
   typeof v === "string" && (HOME_CLIP_SLOTS as readonly string[]).includes(v);
 
