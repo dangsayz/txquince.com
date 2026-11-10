@@ -3,9 +3,9 @@
  *
  * A family that started checkout and didn't finish was ONE click from paying.
  * When their hold expires unpaid (release_expired_booking_holds → status
- * 'expired') and the date is still open, this sends exactly one "your date is
- * still open — finish reserving" email, then stamps recovery_sent_at so it never
- * emails twice.
+ * 'expired') and the date is not full, this sends exactly one note in their
+ * language: nothing was charged, the date was open when sent, reply for a fresh
+ * deposit link. Then it stamps recovery_sent_at so it never emails twice.
  *
  * SAFETY: inert until activated. 401s unless CRON_SECRET is set AND the request
  * carries `Authorization: Bearer <CRON_SECRET>` — identical to /api/cron/followups.
@@ -16,6 +16,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { getDb, isDbConfigured } from "@/lib/db";
 import { getTakenEventDates } from "@/lib/clients-db";
 import { sendBookingRecoveryEmail } from "@/lib/resend";
+import { ACTIVE_BOOKING_STATUSES } from "@/lib/booking-capacity";
 import type { BookingRecord } from "@/lib/booking";
 
 export const runtime = "nodejs";
@@ -69,13 +70,24 @@ export async function GET(req: NextRequest) {
   // tell a family to come back for a date that's no longer available.
   const takenDates = new Set(await getTakenEventDates());
 
+  // A family that has since reserved again (any date) gets no recovery note.
+  const { data: live, error: liveError } = await db
+    .from("bookings")
+    .select("email")
+    .in("status", [...ACTIVE_BOOKING_STATUSES]);
+  if (liveError) {
+    console.error("[booking-recovery] live-booking query error:", liveError.message);
+    return NextResponse.json({ ok: false, error: liveError.message }, { status: 500 });
+  }
+  const bookedEmails = new Set(((live ?? []) as { email: string }[]).map((r) => r.email.trim().toLowerCase()));
+
   let sent = 0;
   let skipped = 0;
 
   for (const row of (data ?? []) as BookingRecord[]) {
     if (sent >= MAX_PER_RUN) break;
 
-    if (takenDates.has(row.event_date)) {
+    if (takenDates.has(row.event_date) || bookedEmails.has(row.email.trim().toLowerCase())) {
       skipped++;
       continue;
     }
