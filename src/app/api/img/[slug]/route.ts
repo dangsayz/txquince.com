@@ -4,6 +4,9 @@
  * Resolves a permanent slug → storage object, then serves a protected
  * derivative via the Cloudflare Images binding:
  *   · responsive widths via ?w= (snapped to fixed steps, capped at 2400px wide)
+ *   · the largest sizes (over 1440px) only to pages of this site that show
+ *     photos large; an image address opened on its own, or a blog post, is
+ *     sent to the 1440px copy instead (maxWidthForReferer)
  *   · WebP, quality-tuned; EXIF stripped by the transform pipeline
  *   · hotlink-checked (empty referer allowed — iMessage/OG fetchers send none;
  *     Pinterest allowed so its "Save" picker can preview the pin image)
@@ -16,7 +19,7 @@
 import { NextResponse } from "next/server";
 import { getImageBySlug, getHeroRawImageUrl, getCoverRawImageUrl, storageUrl } from "@/lib/content-db";
 import { getPortfolioBucket, storageKeyFromUrl } from "@/lib/r2-portfolio";
-import { imageTransformForWidth } from "@/lib/image-derivative";
+import { FULL_MAX_WIDTH, OPEN_MAX_WIDTH, imageTransformForWidth, maxWidthForReferer } from "@/lib/image-derivative";
 import { site } from "@/content/site";
 import { isPinterestHost } from "@/lib/pinterest";
 import { albumObjectKey } from "@/content/albums";
@@ -26,10 +29,10 @@ export const dynamic = "force-dynamic";
 /**
  * Derivative widths the route will produce (mirrors next.config deviceSizes +
  * imageSizes). ?w= snaps UP to the nearest step so the edge cache stays small
- * and srcset entries are pixel-true. No param → 1600 (OG fetchers, old links).
+ * and srcset entries are pixel-true. No param → 1440 (OG fetchers, old links).
  */
 const WIDTHS = [256, 384, 512, 640, 828, 1080, 1440, 1920, 2400];
-const MAX_WIDTH = 2400;
+const MAX_WIDTH = FULL_MAX_WIDTH;
 const QUALITY = 86;
 
 /** Minimal structural types for the Images binding (no generated env types). */
@@ -45,12 +48,14 @@ interface CfImages {
 const ALLOWED_HOSTS = [site.domain, `www.${site.domain}`, "localhost", "txquince.12img.workers.dev"];
 const PREVIEW_HOST = /^(?:[a-z0-9-]+-)?txquince\.12img\.workers\.dev$/;
 
+const isSiteHost = (host: string) => ALLOWED_HOSTS.includes(host) || PREVIEW_HOST.test(host);
+
 function hotlinked(req: Request): boolean {
   const ref = req.headers.get("referer");
   if (!ref) return false; // direct opens, iMessage/OG/Google fetchers
   try {
     const host = new URL(ref).hostname;
-    return !ALLOWED_HOSTS.includes(host) && !PREVIEW_HOST.test(host) && !isPinterestHost(host);
+    return !isSiteHost(host) && !isPinterestHost(host);
   } catch {
     return false;
   }
@@ -67,7 +72,7 @@ function pickWidth(request: Request): number {
   } catch {
     /* default */
   }
-  if (!Number.isFinite(w) || w <= 0) return 1600;
+  if (!Number.isFinite(w) || w <= 0) return OPEN_MAX_WIDTH;
   return WIDTHS.find((step) => step >= w) ?? MAX_WIDTH;
 }
 
@@ -124,6 +129,18 @@ async function serve(
     return new NextResponse("Hotlinking is not permitted.", { status: 403 });
   }
   const width = pickWidth(request);
+  // Over the limit for where this request comes from: send it to the copy it
+  // may have. A redirect (not smaller bytes at the same address) keeps every
+  // address meaning one file, so the year-long browser cache stays truthful.
+  const allowed = maxWidthForReferer(request.headers.get("referer"), isSiteHost);
+  if (width > allowed) {
+    const to = new URL(request.url);
+    to.searchParams.set("w", String(allowed));
+    return new NextResponse(null, {
+      status: 302,
+      headers: { location: `${to.pathname}${to.search}`, "cache-control": "no-store", vary: "Referer", "x-img": `capped:w${allowed}` },
+    });
+  }
   // `hero` and `cover-<slot>` are the mutable slugs (admin can swap them) — short
   // cache, never immutable. Permanent portfolio slugs stay year-long immutable.
   const isCover = slug.startsWith("cover-");

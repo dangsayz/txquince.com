@@ -46,3 +46,19 @@ test("a capped image never asks for a file wider than its cap", () => {
   assert.equal(brandedImageLoader({ src: "/api/img/portrait?v=3&cap=1080", width: 1920 }), "/api/img/portrait?v=3&w=1080");
   assert.equal(brandedImageLoader({ src: "/api/img/portrait?cap=1080&v=3", width: 1920 }), "/api/img/portrait?v=3&w=1080");
 });
+
+test("only pages of this site that show photos large get the largest files", async () => {
+  const { maxWidthForReferer, FULL_MAX_WIDTH, OPEN_MAX_WIDTH } = await import("../src/lib/image-derivative.ts");
+  const ours = (h) => h === "txquince.com";
+  assert.equal(maxWidthForReferer("https://txquince.com/", ours), FULL_MAX_WIDTH);
+  assert.equal(maxWidthForReferer("https://txquince.com/photos/dress/some-photo", ours), FULL_MAX_WIDTH);
+  // The address opened on its own, a blog post, another site, a broken header.
+  assert.equal(maxWidthForReferer(null, ours), OPEN_MAX_WIDTH);
+  assert.equal(maxWidthForReferer("https://txquince.com/blog/a-post", ours), OPEN_MAX_WIDTH);
+  assert.equal(maxWidthForReferer("https://txquince.com/es/blog/una-entrada", ours), OPEN_MAX_WIDTH);
+  assert.equal(maxWidthForReferer("https://txquince.com/blog", ours), OPEN_MAX_WIDTH);
+  assert.equal(maxWidthForReferer("https://www.pinterest.com/pin/1", ours), OPEN_MAX_WIDTH);
+  assert.equal(maxWidthForReferer("not a url", ours), OPEN_MAX_WIDTH);
+  // A page that only starts with "blog" in its name is not the blog.
+  assert.equal(maxWidthForReferer("https://txquince.com/blogger", ours), FULL_MAX_WIDTH);
+});
