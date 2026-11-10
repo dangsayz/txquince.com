@@ -14,6 +14,12 @@ const post: BlogPost = {
   lang: "es",
   lead: "Sí, se puede dar dinero. En muchas quinceañeras, el efectivo o un cheque dentro de una tarjeta es un regalo común y bien recibido. Los invitados también regalan joyería, un rosario o una Biblia, o un recuerdo. Aquí le explicamos qué regalar, cuánto pensar en gastar, dónde se deja el regalo en la fiesta y qué evitar.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-103",
+      alt: "Quinceañera de vestido rosa con cola larga abre un regalo grande envuelto en papel rosa junto a un trono dorado mientras su familia la mira en un salón en Irving",
+      caption: "Abriendo un regalo en la recepción, con la familia cerca.",
+    },
     { type: "h2", text: "¿Está bien regalar dinero en una quinceañera?" },
     {
       type: "p",

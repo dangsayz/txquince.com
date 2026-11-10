@@ -14,6 +14,12 @@ const post: BlogPost = {
   lang: "es",
   lead: "Sí. Se puede hacer una quinceañera sin misa, sin corte, o sin ninguna de las dos. Las familias lo deciden por muchas razones, y cada versión sigue siendo una quinceañera de verdad. Aquí le explicamos qué cambia en el día con cada decisión y qué tradiciones puede conservar.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-107",
+      alt: "Quinceañera sonriente de vestido rosa y tiara baila con un hombre de traje beige y sombrero vaquero junto a una fuente de chispas frías en un salón en Irving",
+      caption: "Un baile de dos llena la pista, con o sin corte.",
+    },
     { type: "h2", text: "Sí, las dos son decisión de su familia" },
     {
       type: "p",

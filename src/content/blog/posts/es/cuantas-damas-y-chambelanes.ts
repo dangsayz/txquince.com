@@ -14,6 +14,12 @@ const post: BlogPost = {
   lang: "es",
   lead: "No hay un número obligatorio de damas y chambelanes. Muchas familias eligen siete y siete, para que la corte más la quinceañera sumen quince, y otras eligen catorce y catorce. Hay quienes tienen una corte chica, un chambelán de honor, solo damas o ninguna corte. Aquí le explicamos qué cambia según el tamaño y cómo decidir.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-041",
+      alt: "Corte completa de quinceañera: damas de vestido blanco y botas y chambelanes con sombrero vaquero y chaleco color champaña junto a la quinceañera de vestido rosa en un salón en Irving",
+      caption: "Una corte completa: damas y chambelanes junto a la quinceañera.",
+    },
     { type: "h2", text: "No hay un número correcto" },
     {
       type: "p",

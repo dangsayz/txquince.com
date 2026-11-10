@@ -13,6 +13,12 @@ const post: BlogPost = {
   readMinutes: 5,
   lead: "A quinceañera toast, or brindis, is a short speech that ends with everyone raising a glass to the birthday girl. Keep it to a minute or two: thank the guests, share one memory, say a few words to her, and raise the glass. Here is who usually gives it, when it happens, a simple structure and two sample toasts you can make your own.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-175",
+      alt: "Family and guests raise their glasses in a toast around the quinceañera in her pink gown under pink and green lights at a reception in Irving",
+      caption: "The brindis: everyone raises a glass to her.",
+    },
     { type: "h2", text: "Who gives the toast, and when" },
     {
       type: "p",

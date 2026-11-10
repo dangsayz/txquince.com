@@ -13,6 +13,12 @@ const post: BlogPost = {
   readMinutes: 5,
   lead: "The crowning, or coronación, is the moment someone places a tiara on the quinceañera’s head, usually at the reception. Many families see it as a sign that she is now a young woman, honored by the people who love her. Here is what the crown means, who places it, when it happens and how to plan it so every guest can see.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-088",
+      alt: "Crowning ceremony: a man and a woman place a tiara on the quinceañera, seated on a gold throne in her pink gown, at a reception in Irving",
+      caption: "The crowning: she sits, and two people she loves place the tiara.",
+    },
     { type: "h2", text: "What the crown stands for" },
     {
       type: "p",

@@ -14,6 +14,12 @@ const post: BlogPost = {
   lang: "es",
   lead: "La coronación es el momento en que alguien le pone la tiara a la quinceañera, casi siempre en la recepción. Para muchas familias es la señal de que ya es una señorita, honrada por la gente que la quiere. Aquí le explicamos qué significa la corona, quién la coloca, cuándo se hace y cómo planearla para que todos los invitados puedan verla.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-088",
+      alt: "Coronación: un hombre y una mujer le colocan la tiara a la quinceañera, sentada en un trono dorado con su vestido rosa, en un salón en Irving",
+      caption: "La coronación: ella se sienta y dos personas queridas le colocan la tiara.",
+    },
     { type: "h2", text: "Qué representa la corona" },
     {
       type: "p",

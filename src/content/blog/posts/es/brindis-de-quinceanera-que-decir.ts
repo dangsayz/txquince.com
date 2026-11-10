@@ -14,6 +14,12 @@ const post: BlogPost = {
   lang: "es",
   lead: "El brindis de una quinceañera es un discurso corto que termina con todos levantando la copa por la festejada. Dura uno o dos minutos: agradezca a los invitados, cuente un recuerdo, dígale unas palabras a ella y levante la copa. Aquí le explicamos quién lo da, cuándo es, una estructura sencilla y dos ejemplos que puede adaptar.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-175",
+      alt: "Familia e invitados levantan sus copas en un brindis alrededor de la quinceañera de vestido rosa bajo luces rosas y verdes en un salón en Irving",
+      caption: "El brindis: todos levantan su copa por ella.",
+    },
     { type: "h2", text: "Quién da el brindis y cuándo" },
     {
       type: "p",
@@ -43,7 +49,7 @@ const post: BlogPost = {
         "Bienvenida y gracias: salude a los invitados y agradézcales que vinieron. Si quiere, dé las gracias a quienes ayudaron, como los [padrinos](/es/blog/padrinos-de-quinceanera-lista), la corte y la familia.",
         "Un recuerdo: escoja una historia pequeña y verdadera sobre ella. Algo gracioso, algo que dijo de niña, un momento en que mostró bondad. Un solo recuerdo vale más que cinco.",
         "Palabras para ella: dígale lo que ve en ella hoy y lo que le desea. Háblele a ella, no de ella.",
-        "Levantar la copa: pida a todos que levanten su copa, diga una frase corta de cierre y termine con “¡Salud!” o “¡Por [her name]!”",
+        "Levantar la copa: pida a todos que levanten su copa, diga una frase corta de cierre y termine con “¡Salud!” o “¡Por [su nombre]!”",
       ],
     },
     {
@@ -53,17 +59,17 @@ const post: BlogPost = {
     { type: "h2", text: "Dos ejemplos de brindis para adaptar" },
     {
       type: "p",
-      text: "Son solo ejemplos. Cambie las palabras, el recuerdo y el tono para que suene como usted. Sustituya “[her name]” por el nombre de ella.",
+      text: "Son solo ejemplos. Cambie las palabras, el recuerdo y el tono para que suene como usted. Sustituya “[su nombre]” por el nombre de ella.",
     },
     { type: "h3", text: "Ejemplo 1: de un papá" },
     {
       type: "quote",
-      text: "Buenas noches a todos. Gracias por estar aquí esta noche. Verlos reunidos en este salón significa mucho para nuestra familia. Cuando [her name] era chiquita, me esperaba todos los días en la puerta y me preguntaba qué le traía. Hoy quiero decirle qué le traje: un corazón que está muy orgulloso de ella. [her name], eres buena, eres fuerte y nos haces reír. Sé valiente, sé tú misma y nunca olvides que esta puerta siempre está abierta para ti. Los invito a levantar su copa. Por [her name]. ¡Salud!",
+      text: "Buenas noches a todos. Gracias por estar aquí esta noche. Verlos reunidos en este salón significa mucho para nuestra familia. Cuando [su nombre] era chiquita, me esperaba todos los días en la puerta y me preguntaba qué le traía. Hoy quiero decirle qué le traje: un corazón que está muy orgulloso de ella. [su nombre], eres buena, eres fuerte y nos haces reír. Sé valiente, sé tú misma y nunca olvides que esta puerta siempre está abierta para ti. Los invito a levantar su copa. Por [su nombre]. ¡Salud!",
     },
     { type: "h3", text: "Ejemplo 2: de una mamá, un padrino o una madrina" },
     {
       type: "quote",
-      text: "Bienvenidos todos, y gracias por celebrar con nosotros. Me acuerdo del día en que [her name] me dijo que quería aprender todo ella sola, aunque le costara trabajo. Todavía lo hace, y es de lo que más admiro de ella. [her name], hoy empiezas un capítulo nuevo. Te deseo buenas amistades, sueños grandes y el valor para seguirlos. Aquí estaremos contigo. Acompáñenme, por favor. Por [her name] y por este día tan bonito. ¡Salud!",
+      text: "Bienvenidos todos, y gracias por celebrar con nosotros. Me acuerdo del día en que [su nombre] me dijo que quería aprender todo ella sola, aunque le costara trabajo. Todavía lo hace, y es de lo que más admiro de ella. [su nombre], hoy empiezas un capítulo nuevo. Te deseo buenas amistades, sueños grandes y el valor para seguirlos. Aquí estaremos contigo. Acompáñenme, por favor. Por [su nombre] y por este día tan bonito. ¡Salud!",
     },
     {
       type: "callout",

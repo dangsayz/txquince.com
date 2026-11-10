@@ -14,6 +14,12 @@ const post: BlogPost = {
   lang: "es",
   lead: "En la mayoría de las familias, los papás pagan la mayor parte de la quinceañera. Los padrinos a menudo patrocinan cosas específicas, los de la corte suelen pagar su propia ropa y los invitados traen un regalo. Cambia mucho de familia en familia. Aquí le explicamos cómo repartir, cómo pedir con respeto y cómo llevar la cuenta.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-090",
+      alt: "Quinceañera sentada en un trono dorado y blanco con su vestido rosa mientras un hombre y una mujer le acomodan la tiara después de la coronación en un salón en Irving",
+      caption: "La corona es una de las cosas que suelen regalar los padrinos.",
+    },
     { type: "h2", text: "El reparto más común" },
     {
       type: "p",

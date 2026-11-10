@@ -13,6 +13,12 @@ const post: BlogPost = {
   readMinutes: 5,
   lead: "Yes. You can have a quinceañera without a mass, without a court, or without both. Families make this choice for many reasons, and every version can still be a real quinceañera. Here is what each choice changes in the day, and which traditions you can keep.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-107",
+      alt: "Laughing quinceañera in a pink gown and tiara dances with a man in a beige suit and cowboy hat beside a cold spark fountain at a reception in Irving",
+      caption: "A dance for two fills the floor, with or without a court.",
+    },
     { type: "h2", text: "Yes, both are your choice" },
     {
       type: "p",

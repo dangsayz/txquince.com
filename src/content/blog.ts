@@ -130,8 +130,21 @@ import ansHoraLoca from "./blog/posts/hora-loca-quinceanera";
 import ansPadrinos from "./blog/posts/quinceanera-padrinos-list";
 import ansWhatToWear from "./blog/posts/what-to-wear-to-a-quinceanera";
 import ansVsSweet16 from "./blog/posts/quinceanera-vs-sweet-16";
+// Answer posts, second batch (Nov 10, 2026).
+import ansHowMany from "./blog/posts/how-many-damas-and-chambelanes";
+import ansWhoPays from "./blog/posts/who-pays-for-a-quinceanera";
+import ansGifts from "./blog/posts/quinceanera-gift-ideas";
+import ansToast from "./blog/posts/quinceanera-toast-brindis";
+import ansCrowning from "./blog/posts/quinceanera-crowning-ceremony";
+import ansNoMass from "./blog/posts/quinceanera-without-mass-or-court";
 
 export const posts: BlogPost[] = [
+  ansHowMany,
+  ansWhoPays,
+  ansGifts,
+  ansToast,
+  ansCrowning,
+  ansNoMass,
   ansDama,
   ansChambelan,
   ansHoraLoca,
@@ -265,8 +278,20 @@ import esAnsHoraLoca from "./blog/posts/es/la-hora-loca-en-una-quinceanera";
 import esAnsPadrinos from "./blog/posts/es/padrinos-de-quinceanera-lista";
 import esAnsWhatToWear from "./blog/posts/es/que-ponerse-para-una-quinceanera";
 import esAnsVsSweet16 from "./blog/posts/es/quinceanera-o-sweet-16";
+import esAnsHowMany from "./blog/posts/es/cuantas-damas-y-chambelanes";
+import esAnsWhoPays from "./blog/posts/es/quien-paga-la-quinceanera";
+import esAnsGifts from "./blog/posts/es/que-regalar-en-una-quinceanera";
+import esAnsToast from "./blog/posts/es/brindis-de-quinceanera-que-decir";
+import esAnsCrowning from "./blog/posts/es/la-coronacion-de-la-quinceanera";
+import esAnsNoMass from "./blog/posts/es/quinceanera-sin-misa-o-sin-corte";
 
 export const esPosts: BlogPost[] = [
+  esAnsHowMany,
+  esAnsWhoPays,
+  esAnsGifts,
+  esAnsToast,
+  esAnsCrowning,
+  esAnsNoMass,
   esAnsDama,
   esAnsChambelan,
   esAnsHoraLoca,
@@ -350,6 +375,12 @@ const EN_ES_PAIRS: { en: string; es: string }[] = [
   { en: "quinceanera-padrinos-list", es: "padrinos-de-quinceanera-lista" },
   { en: "what-to-wear-to-a-quinceanera", es: "que-ponerse-para-una-quinceanera" },
   { en: "quinceanera-vs-sweet-16", es: "quinceanera-o-sweet-16" },
+  { en: "how-many-damas-and-chambelanes", es: "cuantas-damas-y-chambelanes" },
+  { en: "who-pays-for-a-quinceanera", es: "quien-paga-la-quinceanera" },
+  { en: "quinceanera-gift-ideas", es: "que-regalar-en-una-quinceanera" },
+  { en: "quinceanera-toast-brindis", es: "brindis-de-quinceanera-que-decir" },
+  { en: "quinceanera-crowning-ceremony", es: "la-coronacion-de-la-quinceanera" },
+  { en: "quinceanera-without-mass-or-court", es: "quinceanera-sin-misa-o-sin-corte" },
   { en: "quinceanera-payment-plans-deposits-dfw", es: "planes-de-pago-fotografia-quinceanera-dfw" },
   { en: "when-to-book-quinceanera-photographer-dfw", es: "cuando-reservar-fotografo-quinceanera-dfw" },
   { en: "questions-to-ask-quinceanera-photographer", es: "preguntas-para-tu-fotografo-de-quinceanera" },

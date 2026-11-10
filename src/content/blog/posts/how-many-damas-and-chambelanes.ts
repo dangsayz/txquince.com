@@ -13,6 +13,12 @@ const post: BlogPost = {
   readMinutes: 5,
   lead: "There is no required number of damas and chambelanes. Many families choose seven and seven, so the court plus the quinceañera makes fifteen, and some choose fourteen and fourteen. Others have a small court, one chambelán de honor, only damas, or no court at all. Here is what changes as the court gets bigger or smaller, and how to choose.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-041",
+      alt: "Full quinceañera court: damas in white dresses and boots and chambelanes in cowboy hats and champagne vests lined up beside the quinceañera in her pink gown at a reception in Irving",
+      caption: "A full court lined up beside the quinceañera before the entrance.",
+    },
     { type: "h2", text: "There is no right number" },
     {
       type: "p",

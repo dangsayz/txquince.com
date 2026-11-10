@@ -13,6 +13,12 @@ const post: BlogPost = {
   readMinutes: 5,
   lead: "In most families, the parents pay for most of the quinceañera. Padrinos often sponsor specific items, court members usually pay for their own outfits, and guests bring gifts. It varies by family, so here is how to sort it out, ask politely and keep it all written down.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-090",
+      alt: "Quinceañera seated on a gold and white throne in her pink gown while a man and a woman fix her tiara after the crowning at a reception in Irving",
+      caption: "The crown is one of the items padrinos often sponsor.",
+    },
     { type: "h2", text: "The usual split" },
     {
       type: "p",

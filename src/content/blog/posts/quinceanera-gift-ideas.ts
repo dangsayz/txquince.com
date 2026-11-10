@@ -13,6 +13,12 @@ const post: BlogPost = {
   readMinutes: 5,
   lead: "Yes, money is okay. At many quinceañeras, cash or a check in a card is a common and welcome gift. Guests also give jewelry, a rosary or Bible, or a keepsake. Here is what to give, how much to think about spending, where the gift goes at the party and what to skip.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-103",
+      alt: "Quinceañera in a pink gown with a long train opens a large gift wrapped in pink paper beside a gold throne while family watches at a reception in Irving",
+      caption: "Opening a gift at the reception, with the family close by.",
+    },
     { type: "h2", text: "Is money okay as a quinceañera gift?" },
     {
       type: "p",
