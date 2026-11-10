@@ -5,6 +5,7 @@ import { requireAdmin } from "@/lib/require-admin";
 import { unauthorizedAdminResponse } from "@/lib/admin-auth";
 import { getDb } from "@/lib/db";
 import { sendAgreementDeclinedClient } from "@/lib/agreement-email";
+import { canArchive, canRemove } from "@/lib/booking-tidy";
 
 export const dynamic = "force-dynamic";
 
@@ -14,10 +15,55 @@ const Schema = z.object({
   id: z.string().uuid(),
   status: z.enum(["cancelled", "paid", "requested"]),
 });
+const TidySchema = z.object({ id: z.string().uuid(), action: z.enum(["archive", "restore"]) }).strict();
+const RemoveSchema = z.object({ id: z.string().uuid() }).strict();
+const chicagoToday = () => new Intl.DateTimeFormat("en-CA", { timeZone: "America/Chicago" }).format(new Date());
+
+/** Archive / restore: hide a closed booking from the list. Nothing is deleted. */
+async function tidy(id: string, action: "archive" | "restore") {
+  const db = getDb();
+  const { data: b } = await db.from("bookings").select("id, status, event_date, paid_at, metadata").eq("id", id).maybeSingle();
+  if (!b) return NextResponse.json({ error: "That booking is gone." }, { status: 404 });
+  if (action === "archive" && !canArchive(b, chicagoToday())) {
+    return NextResponse.json({ error: "This booking is still active. Decline or release it first." }, { status: 409 });
+  }
+  const meta = { ...((b.metadata ?? {}) as Record<string, unknown>) };
+  if (action === "archive") meta.archived_at = new Date().toISOString();
+  else delete meta.archived_at;
+  // Only if the status did not change under us (e.g. a late payment landed).
+  const { data, error } = await db.from("bookings").update({ metadata: meta }).eq("id", id).eq("status", b.status).select("id");
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (!data?.length) return NextResponse.json({ error: "This booking just changed. Reload and try again." }, { status: 409 });
+  revalidatePath("/admin/bookings");
+  return NextResponse.json({ ok: true });
+}
+
+/** Remove for good. Only a closed booking that was never paid. */
+export async function DELETE(request: Request) {
+  if (!(await requireAdmin())) return unauthorizedAdminResponse();
+  const parsed = RemoveSchema.safeParse(await request.json().catch(() => ({})));
+  if (!parsed.success) return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
+  const { id } = parsed.data;
+  const db = getDb();
+  const { data: b } = await db.from("bookings").select("id, status, event_date, paid_at, stripe_payment_intent_id").eq("id", id).maybeSingle();
+  if (!b) return NextResponse.json({ ok: true });
+  const { count } = await db.from("booking_payments").select("id", { count: "exact", head: true }).eq("booking_id", id);
+  if (!canRemove(b) || b.stripe_payment_intent_id || (count ?? 0) > 0) {
+    return NextResponse.json({ error: "This booking has a payment on record, so it can only be archived." }, { status: 409 });
+  }
+  // The filters repeat the rule, so a payment that lands right now still wins.
+  const { error } = await db.from("bookings").delete().eq("id", id).in("status", ["expired", "cancelled"]).is("paid_at", null);
+  if (error) return NextResponse.json({ error: "Could not remove it. Archive it instead." }, { status: 500 });
+  revalidatePath("/admin/bookings");
+  return NextResponse.json({ ok: true });
+}
 
 export async function PATCH(request: Request) {
   if (!(await requireAdmin())) return unauthorizedAdminResponse();
-  const parsed = Schema.safeParse(await request.json().catch(() => ({})));
+  const body = await request.json().catch(() => ({}));
+  const tidyReq = TidySchema.safeParse(body);
+  if (tidyReq.success) return tidy(tidyReq.data.id, tidyReq.data.action);
+  const parsed = Schema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
   }
