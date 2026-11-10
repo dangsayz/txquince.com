@@ -11,8 +11,15 @@ const post: BlogPost = {
     "Age is the first difference: fifteen or sixteen. The roots, the ceremony and the traditions are the rest. Here is how the two compare and how families mix them.",
   publishedAt: "2026-11-10",
   readMinutes: 5,
+  coverFull: true,
   lead: "A quinceañera celebrates a girl's 15th birthday and comes from Latin American tradition. A Sweet 16 celebrates the 16th birthday and is a birthday party tradition common in the United States. Both are big, beautiful days. They differ in age, roots and a few traditions, and many families in Dallas–Fort Worth choose pieces of each.",
   content: [
+    {
+      type: "image",
+      slug: "album-luxury-red-white-reception-109",
+      alt: "White tiered quinceañera cake with a cascade of red roses, gold leaf and a gold 15 at a DFW reception",
+      caption: "Fifteen, not sixteen: the number is on the cake.",
+    },
     { type: "h2", text: "The short answer" },
     {
       type: "p",

@@ -13,6 +13,12 @@ const post: BlogPost = {
   readMinutes: 5,
   lead: "A chambelán is a young man who escorts the quinceañera and dances with her during her celebration. Most courts have several, and one is the chambelán de honor, her main escort. Here is what they do, how families choose them, and what to do if she does not have anyone in mind yet.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-064",
+      alt: "Chambelán in a cowboy hat and champagne vest seen from behind, dancing with a dama in white boots while the rest of the court dances behind them at a quinceañera in Irving",
+      caption: "A chambelán and a dama open the dance floor with the rest of the court.",
+    },
     { type: "h2", text: "What a chambelán is" },
     {
       type: "p",
