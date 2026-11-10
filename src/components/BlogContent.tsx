@@ -550,7 +550,8 @@ export function BlogIndexView({
                   fill
                   priority
                   sizes="(max-width: 959px) calc(100vw - 48px), 58vw"
-                  fallback={featuredImage?.url ? { src: featuredImage.url, alt: featuredImage.alt || c.fallbackAlt, focus: focal(featuredImage.focus_x, featuredImage.focus_y) } : null}
+                  // `width` caps the srcset at what a blog page may load (OPEN_MAX_WIDTH).
+                  fallback={featuredImage?.url ? { src: featuredImage.url, alt: featuredImage.alt || c.fallbackAlt, width: BLOG_COVER_CAP, focus: focal(featuredImage.focus_x, featuredImage.focus_y) } : null}
                 />
                 <span className="tq-tag tq-tag--tl tq-mono">[02 / {c.featured}]</span>
               </div>
