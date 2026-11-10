@@ -13,8 +13,8 @@ import "./site-banner.css";
  * bar holds the one on screen. The whole bar is one link to the budget page.
  */
 const COPY = {
-  en: { plans: "We accept payment plans", see: "See what your budget covers" },
-  es: { plans: "Aceptamos planes de pago", see: "Mira qué alcanza con tu presupuesto" },
+  en: { plans: "We accept payment plans", short: "Payment plans", see: "See what your budget covers" },
+  es: { plans: "Aceptamos planes de pago", short: "Planes de pago", see: "Mira qué alcanza con tu presupuesto" },
 } as const;
 
 const LOGOS = [
@@ -52,7 +52,11 @@ export function SiteBannerBar({ banner, overHero }: { banner: SiteBanner; overHe
       onBlur={() => setHeld(false)}
     >
       <span className="tq-banner__line" data-on={!saleOn || undefined} aria-hidden>
-        <span className="tq-banner__text">{c.plans}</span>
+        <span className="tq-banner__text" data-size="full">{c.plans}</span>
+        {/* A phone has no room for the full sentence beside three names. */}
+        <span className="tq-banner__text" data-size="short">{c.short}</span>
+        {/* Over the homepage film the names are set as type; a row of colored badges fights the photo. */}
+        <span className="tq-banner__names">Klarna · Afterpay · Affirm</span>
         <span className="tq-banner__logos">
           {LOGOS.map((l) => (
             // eslint-disable-next-line @next/next/no-img-element -- official logo files, served as they are
