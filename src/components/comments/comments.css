@@ -87,23 +87,6 @@
   line-height: var(--tq-leading-body);
   color: var(--tq-ink-mute);
 }
-/* Who is posting, then the approval rule on its own line in full ink: a
-   family should know before they write that we approve comments first. */
-.tq-cmt__who,
-.tq-cmt__review {
-  display: block;
-}
-.tq-cmt__review {
-  color: var(--tq-ink);
-}
-/* No outer card: a boxed card inside the framed column put a border against
-   a border. One hairline above separates it from the list. */
-.tq-cmt__gate,
-.tq-cmt__form {
-  margin-top: var(--tq-space-8);
-  padding-top: var(--tq-space-8);
-  border-top: 1px solid var(--tq-surface-2);
-}
 .tq-cmt__gate-lead {
   margin: 0;
   font-size: var(--tq-text-lg);
@@ -121,11 +104,10 @@
 }
 .tq-cmt__label {
   display: block;
-  font-family: var(--tq-font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--tq-ink-mute);
+  font-size: var(--tq-text-body);
+  font-weight: var(--tq-weight-medium);
+  line-height: 1.3;
+  color: var(--tq-ink);
 }
 /* The site's field: square, white, one hairline; the focus ring is drawn
    INSIDE the border so nothing sticks out or gets clipped. */
@@ -174,25 +156,6 @@
     justify-content: center;
   }
 }
-
-/* ---------- The box (rail on wide screens, under the list on phones) ---------- */
-.tq-cmt__box-title {
-  margin: 0;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--tq-surface-2);
-}
-.tq-cmt__box[data-place="rail"] .tq-cmt__gate,
-.tq-cmt__box[data-place="rail"] .tq-cmt__form {
-  margin-top: var(--tq-space-4);
-  padding-top: 0;
-  border-top: 0;
-}
-.tq-cmt__box[data-place="rail"] .tq-cmt__gate-lead { font-size: var(--tq-text-body); }
-.tq-cmt__box[data-place="rail"] .tq-cmt__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-.txq .tq-cmt__box[data-place="rail"] .tq-cmt__input { min-height: 5rem; margin-top: 0; }
-.tq-cmt__box[data-place="rail"] .tq-cmt__tip { display: none; }
-.tq-cmt__box[data-place="rail"] .tq-cmt__actions > .tq-btn { flex: 1 1 100%; justify-content: center; }
-.tq-cmt__box[data-place="rail"] .tq-cmt__note { font-size: var(--tq-text-sm); margin-top: var(--tq-space-3); }
 
 /* The passage a comment is about. */
 .tq-cmt__quote {
@@ -270,4 +233,144 @@
 ::highlight(tq-quoted-active) {
   background-color: #e2ddd5;
   color: #111110;
+}
+
+/* ---------- The comment box: one raised card, the same in both places ----------
+   (Selectors carry .tq-cmt__box so their margins beat the blog's paragraph
+   reset, which loads later in the production stylesheet order.)
+   Paper on the warm canvas with the kit's card shadow, so it reads as a thing
+   you can use, not as a line of text. Three layers: who you are, the field,
+   and a linen foot that carries the approval rule. */
+.tq-cmt__box {
+  --cmt-pad: var(--tq-space-6);
+  margin-top: var(--tq-space-8);
+  padding: var(--cmt-pad) var(--cmt-pad) 0;
+  background: var(--tq-paper);
+  border: 1px solid var(--tq-surface-2);
+  box-shadow: var(--tq-shadow-card);
+  transition: box-shadow var(--tq-dur-base) var(--tq-ease), border-color var(--tq-dur-base) var(--tq-ease);
+}
+.tq-cmt__box:focus-within {
+  border-color: var(--tq-stone);
+  box-shadow: var(--tq-shadow-lift);
+}
+.tq-cmt__box > .tq-cmt__note {
+  margin: 0;
+  padding-bottom: var(--cmt-pad);
+}
+.tq-cmt__box .tq-cmt__box-title {
+  margin: 0 0 var(--tq-space-4);
+  font-size: var(--tq-text-body);
+  font-weight: var(--tq-weight-medium);
+  line-height: 1.3;
+  color: var(--tq-ink);
+}
+.tq-cmt__gate-lead + .tq-cmt__actions { margin-top: var(--tq-space-4); }
+
+/* Who is writing. */
+.tq-cmt__box .tq-cmt__as {
+  display: flex;
+  align-items: center;
+  gap: var(--tq-space-3);
+  margin: 0 0 var(--tq-space-3);
+  font-size: var(--tq-text-sm);
+  line-height: 1.3;
+  color: var(--tq-ink-mute);
+}
+.tq-cmt__box .tq-cmt__avatar--me {
+  width: 28px;
+  height: 28px;
+  background: var(--tq-ink);
+  color: var(--tq-ink-on);
+  font-size: 0.75rem;
+}
+
+/* Post button and the running count, on one line. */
+.tq-cmt__actions { align-items: center; }
+.tq-cmt__box .tq-cmt__count {
+  margin-left: auto;
+  font-size: var(--tq-text-sm);
+  color: var(--tq-ink-mute);
+}
+/* Not ready to send: a quiet outline, not a grey slab. It turns to ink the
+   moment there is something to post. */
+.txq .tq-cmt__box .tq-btn {
+  transition: background-color var(--tq-dur-fast) var(--tq-ease), border-color var(--tq-dur-fast) var(--tq-ease), color var(--tq-dur-fast) var(--tq-ease);
+}
+.txq .tq-cmt__box .tq-btn[disabled] {
+  opacity: 1;
+  cursor: not-allowed;
+  background: var(--tq-surface);
+  border-color: var(--tq-surface-2);
+  color: var(--tq-ink-mute);
+}
+
+/* The linen foot: the approval rule, edge to edge at the bottom of the card. */
+.tq-cmt__box .tq-cmt__review {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: var(--tq-space-3);
+  align-items: start;
+  margin: var(--cmt-pad) calc(var(--cmt-pad) * -1) 0;
+  padding: var(--tq-space-3) var(--cmt-pad);
+  background: var(--tq-surface);
+  border-top: 1px solid var(--tq-surface-2);
+  font-size: var(--tq-text-sm);
+  line-height: 1.45;
+  color: var(--tq-ink);
+}
+.tq-cmt__box .tq-cmt__review svg { margin-top: 1px; color: var(--tq-ink-mute); }
+.tq-cmt__box > .tq-cmt__tip {
+  margin: 0;
+  padding: var(--tq-space-3) 0;
+  font-size: var(--tq-text-sm);
+}
+
+/* ---------- Rail: compact, and it opens when you use it ----------
+   At rest the rail box is a single line to type in, so the contents list
+   above keeps its room. Focus it (or start typing) and it grows to a full
+   field with the Post button. */
+.tq-cmt__box[data-place="rail"] {
+  --cmt-pad: var(--tq-space-4);
+  margin-top: 0;
+}
+.tq-cmt__box[data-place="rail"] .tq-cmt__gate-lead { font-size: var(--tq-text-body); }
+.tq-cmt__box[data-place="rail"] .tq-cmt__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.tq-cmt__box[data-place="rail"] .tq-cmt__tip { display: none; }
+.tq-cmt__box[data-place="rail"] .tq-cmt__actions > .tq-btn { flex: 1 1 auto; justify-content: center; }
+.tq-cmt__box[data-place="rail"] .tq-cmt__gate .tq-cmt__actions > .tq-btn { flex: 1 1 100%; }
+.txq .tq-cmt__box[data-place="rail"] .tq-cmt__input {
+  margin-top: 0;
+  min-height: 0;
+  height: 48px;
+  transition: height var(--tq-dur-base) var(--tq-ease), border-color var(--tq-dur-fast) var(--tq-ease);
+}
+.txq .tq-cmt__box[data-place="rail"] .tq-cmt__form:focus-within .tq-cmt__input,
+.txq .tq-cmt__box[data-place="rail"] .tq-cmt__form[data-open] .tq-cmt__input {
+  height: 7.5rem;
+}
+.tq-cmt__box[data-place="rail"] .tq-cmt__more {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--tq-dur-base) var(--tq-ease);
+}
+.tq-cmt__box[data-place="rail"] .tq-cmt__more-in {
+  overflow: hidden;
+  visibility: hidden;
+  transition: visibility 0s var(--tq-dur-base);
+}
+.tq-cmt__box[data-place="rail"] .tq-cmt__form:focus-within .tq-cmt__more,
+.tq-cmt__box[data-place="rail"] .tq-cmt__form[data-open] .tq-cmt__more {
+  grid-template-rows: 1fr;
+}
+.tq-cmt__box[data-place="rail"] .tq-cmt__form:focus-within .tq-cmt__more-in,
+.tq-cmt__box[data-place="rail"] .tq-cmt__form[data-open] .tq-cmt__more-in {
+  visibility: visible;
+  transition-delay: 0s;
+}
+.tq-cmt__box[data-place="rail"] .tq-cmt__actions { margin-top: var(--tq-space-3); }
+@media (prefers-reduced-motion: reduce) {
+  .tq-cmt__box,
+  .txq .tq-cmt__box[data-place="rail"] .tq-cmt__input,
+  .tq-cmt__box[data-place="rail"] .tq-cmt__more { transition: none; }
 }
