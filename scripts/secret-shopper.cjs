@@ -12,6 +12,7 @@
  *
  * Each page, on a phone (390px) and a desktop (1440px):
  *   loads (HTTP 200) · no script errors · no failed requests from our own site
+ *   no stale-while-revalidate cache header (it breaks open browsers after a deploy)
  *   Gate 1: no sideways scroll · Gate 2: tap targets ≥44px · Gate 3: inputs ≥16px
  *   one <h1>, a <title> · no broken images
  * Then the flows: menu → log in / create account, package → booking panel,
@@ -90,6 +91,8 @@ async function checkPage(ctx, path, view, links) {
     }
     const status = res ? res.status() : 0;
     if (status !== 200) add("FAIL", path, view.name, `page did not load (HTTP ${status || "timeout"})`);
+    // Chrome reuses a stale-while-revalidate page across deploys, then asks for files the deploy deleted (next.config.ts expireTime).
+    if (/stale-while-revalidate/i.test((res && res.headers()["cache-control"]) || "")) add("FAIL", path, view.name, "page tells browsers to reuse an old copy (stale-while-revalidate): shows \"We couldn't load this page\" after a deploy");
     const r = await page.evaluate(() => {
       const vis = (e) => {
         const b = e.getBoundingClientRect();

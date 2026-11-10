@@ -69,6 +69,17 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  // No `stale-while-revalidate` on pages. Next's default sends
+  // `s-maxage=3600, stale-while-revalidate=<1 year>`, meant for a CDN. Here the
+  // header goes straight to the browser, and Chrome obeys it: after a deploy it
+  // hands a page its year-stale stored copy of the in-app page data (the
+  // `?_rsc=` address is the same across deploys), that copy names script and
+  // style files the deploy deleted, they 404, and the family sees "We couldn't
+  // load this page" until she refreshes. Equal to the pages' `revalidate`
+  // (3600) the stale window is zero, so the header is just `s-maxage=3600`.
+  // Keep it at or below the smallest page `revalidate`; the secret shopper
+  // fails any page that sends the stale header again.
+  expireTime: 3600,
   // Premium perception dies on a slow site (PERFORMANCE BUDGET LAW).
   poweredByHeader: false,
   compress: true,
