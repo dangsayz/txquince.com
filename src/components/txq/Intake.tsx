@@ -24,7 +24,7 @@ import { HONEYPOT_FIELD } from "@/lib/inquiry";
 import { BUDGET_FOR_TIER, servicesForTier } from "@/lib/inquiry-package";
 import { site } from "@/content/site";
 import { usePriceBook } from "@/components/PriceBookProvider";
-import { ADD_ONS, CITIES, TIERS, money, pick, tierById, tierNameL, tierTeam, type Lang, type TierId } from "./data";
+import { ADD_ONS, CITIES, TIERS, money, pick, tierById, tierDetail, tierNameL, tierTeam, type Lang, type TierId } from "./data";
 import { BOOKING_STEPS, isoDate, useAvailability, useQuote, useSite } from "./state";
 import { CompareDialog, ExtrasStep, PackageStep, useTween } from "./Commissions";
 import { CITY_NAME, normalizeCrew } from "@/lib/commission";
@@ -874,6 +874,7 @@ function PackageRows({ chosen, error, onPick }: { chosen: boolean; error?: strin
                 {pick(lang, tierNameL(book, x.id))}
                 {x.recommended ? <span className="tq-bk-row__tag">{t.booking.recommended}</span> : null}
               </span>
+              <span className="tq-bk-row__desc">{pick(lang, tierDetail(book, x.id))}</span>
               <span className="tq-bk-row__meta">
                 {x.id === "archive" ? t.booking.hoursBothDays(p.hours) : t.booking.hoursIncluded(p.hours)} · {pick(lang, tierTeam(book, x.id))}
               </span>

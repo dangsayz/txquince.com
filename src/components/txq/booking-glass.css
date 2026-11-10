@@ -460,6 +460,8 @@
 .txq .tq-bk .tq-bk-row__main { display: grid; gap: 2px; min-width: 0; }
 .txq .tq-bk .tq-bk-row__name { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
 .txq .tq-bk .tq-bk-row__tag { border-radius: 999px; background: var(--g-fill); padding: 2px 10px; font-size: 13px; font-weight: 500; white-space: nowrap; }
+/* What is in the package (the homepage list is the only one, so the row says it). */
+.txq .tq-bk .tq-bk-row__desc { font-size: 16px; line-height: 1.45; }
 .txq .tq-bk .tq-bk-row__meta { color: var(--g-mute); font-size: 15px; }
 .txq .tq-bk .tq-bk-row__price { font-size: 17px; font-weight: 600; white-space: nowrap; }
 .txq .tq-bk .tq-bk-rows .tq-bk-compare { justify-self: start; margin-top: 6px; }
