@@ -3,6 +3,8 @@ import { formatMoney, packageLabel } from "@/lib/booking";
 import { BookingActions } from "@/components/admin/BookingActions";
 import { TIER_NAME_EN, type TierId } from "@/lib/commission";
 import { isSignedAgreement } from "@/lib/agreement";
+import { BookingTidy } from "@/components/admin/BookingTidy";
+import { canArchive, canRemove, isArchived } from "@/lib/booking-tidy";
 
 /**
  * The Bookings ledger. Each booking reads like a line in a date book:
@@ -199,12 +201,16 @@ function BookingRecord({ booking: b, today, closed }: { booking: BookingRow; tod
         )}
 
         <BookingActions id={b.id} status={b.status} signed={Boolean(agreement)} />
+        {isArchived(b) || canArchive(b, today) ? <BookingTidy id={b.id} name={firstName} archived={isArchived(b)} removable={canRemove(b)} /> : null}
       </div>
     </article>
   );
 }
 
-export function splitBookings(bookings: BookingRow[], today: string) {
+export function splitBookings(all: BookingRow[], today: string) {
+  // Archived rows leave every list and total; they sit in their own group.
+  const archived = all.filter(isArchived).sort((a, b) => b.event_date.localeCompare(a.event_date));
+  const bookings = all.filter((b) => !isArchived(b));
   const needs = bookings
     .filter((b) => ["payment_review", "requested", "pending_payment"].includes(b.status))
     .sort((a, b) => a.event_date.localeCompare(b.event_date));
@@ -214,7 +220,7 @@ export function splitBookings(bookings: BookingRow[], today: string) {
   const past = bookings
     .filter((b) => !needs.includes(b) && !upcoming.includes(b))
     .sort((a, b) => b.event_date.localeCompare(a.event_date));
-  return { needs, upcoming, past };
+  return { needs, upcoming, past, archived };
 }
 
 /** Three numbers the owner actually asks: what's in, what's still owed, what's next. */
@@ -264,19 +270,23 @@ export function BookingsBoard({ bookings, today }: { bookings: BookingRow[]; tod
       </div>
     );
   }
-  const { needs, upcoming, past } = splitBookings(bookings, today);
+  const { needs, upcoming, past, archived } = splitBookings(bookings, today);
+  const live = bookings.filter((b) => !isArchived(b));
   const groups = [
     { id: "needs", title: "Needs you", intro: "Check the date, approve, or wait for the deposit. Soonest first.", rows: needs },
     { id: "upcoming", title: "Coming up", intro: "Paid celebrations, soonest first.", rows: upcoming },
-    { id: "past", title: "Past and closed", intro: "Finished, refunded, cancelled or expired. Newest first.", rows: past },
+    { id: "past", title: "Past and closed", intro: "Finished, refunded, cancelled or expired. Archive to hide one; Remove deletes one that was never paid.", rows: past },
+    { id: "archived", title: "Archived", intro: "Hidden from the lists above. Restore one at any time.", rows: archived },
   ].filter((g) => g.rows.length);
   const onlyPast = needs.length === 0 && upcoming.length === 0;
+  const nothingLive = live.length === 0;
 
   return (
     <>
-      <Summary bookings={bookings} upcoming={upcoming} today={today} />
+      <Summary bookings={live} upcoming={upcoming} today={today} />
+      {nothingLive ? <p className="st-card m-0 px-5 py-5 text-base sm:px-6">No open bookings. Everything here is archived.</p> : null}
       {groups.map((g) => {
-        const closed = g.id === "past";
+        const closed = g.id === "past" || g.id === "archived";
         const rows = (
           <div className="border-t border-[var(--tq-surface-2)]">
             {g.rows.map((b) => <BookingRecord key={b.id} booking={b} today={today} closed={closed} />)}
@@ -288,7 +298,7 @@ export function BookingsBoard({ bookings, today }: { bookings: BookingRow[]; tod
             <p className="st-note mt-1">{g.intro}</p>
           </>
         );
-        if (closed && !onlyPast) {
+        if (g.id === "archived" || (closed && !onlyPast)) {
           return (
             <section key={g.id} aria-labelledby={`b-${g.id}`} className="st-card overflow-hidden">
               <details className="bk-group">
