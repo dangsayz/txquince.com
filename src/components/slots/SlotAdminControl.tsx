@@ -2,7 +2,8 @@
 
 /**
  * SlotAdminControl — the "Replace photo" button for one image slot, shown
- * only to a signed-in admin browsing the public site.
+ * only to a signed-in admin browsing the public site. On the two homepage
+ * spots that can play a film loop it reads "Replace photo or video".
  *
  * How admin-ness is decided without making public pages dynamic:
  *  1. The server renders nothing here (pages stay static/ISR; no cookies read).
@@ -16,6 +17,7 @@
  *     visitors never download it.
  */
 import { useEffect, useRef, useState, type ComponentType } from "react";
+import { CLIP_FOR_IMAGE_SLOT } from "@/lib/home-clip-shared";
 
 const HINT_KEY = "txq_admin";
 let probe: Promise<boolean> | null = null;
@@ -51,6 +53,8 @@ export function SlotAdminControl({ slot }: { slot: string }) {
   }, []);
 
   if (!admin) return null;
+  // Two homepage spots can also play a silent film loop over the photo.
+  const label = CLIP_FOR_IMAGE_SLOT[slot] ? "Replace photo or video" : "Replace photo";
 
   async function open(e: React.SyntheticEvent) {
     // Frames often sit inside links/buttons: never navigate or open a viewer.
@@ -75,7 +79,7 @@ export function SlotAdminControl({ slot }: { slot: string }) {
         ref={ref}
         role="button"
         tabIndex={0}
-        aria-label="Replace photo"
+        aria-label={label}
         onClick={open}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") open(e);
@@ -98,7 +102,7 @@ export function SlotAdminControl({ slot }: { slot: string }) {
           boxShadow: "0 1px 6px rgba(0,0,0,.18)",
         }}
       >
-        {loading ? "Opening…" : "Replace photo"}
+        {loading ? "Opening…" : label}
       </span>
       {Editor ? (
         <Editor slot={slot} pageSrc={pageSrc} onClose={() => setEditor(null)} onSaved={() => window.location.reload()} />
