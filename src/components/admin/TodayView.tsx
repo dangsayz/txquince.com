@@ -10,6 +10,8 @@ import { VisitorBehavior } from "@/components/admin/VisitorBehavior";
 import { BlogPanel, Empty, PanelHead, ReviewsPanel, SupportPanel } from "@/components/admin/TodayPanels";
 import type { BlogPulseData } from "@/lib/blog-pulse-db";
 import { needsOwner, type ReviewRecord } from "@/lib/review";
+import { MoneyPanel } from "@/components/admin/MoneyPanel";
+import type { MoneySummary } from "@/lib/money-db";
 import type { OpenTicket } from "@/lib/support-db";
 
 const TZ = "America/Chicago";
@@ -47,6 +49,8 @@ export type TodayData = {
   /** Every review row; the panel shows the ones that wait for a decision. */
   reviews?: ReviewRecord[];
   blog?: BlogPulseData;
+  /** Latest payments and this month's total. */
+  money?: MoneySummary;
 };
 
 /**
@@ -60,7 +64,7 @@ export type TodayData = {
  * Refs (Mobbin): Square "Today vs Yesterday" traffic, Mintlify 7-day visitor
  * bars, HoneyBook greeting + short lists. Data comes from app/admin/page.tsx.
  */
-export function TodayView({ pulse, networkExcluded = false, work, review, upcoming, behavior, comments = 0, tickets = [], reviews = [], blog }: TodayData) {
+export function TodayView({ pulse, networkExcluded = false, work, review, upcoming, behavior, comments = 0, tickets = [], reviews = [], blog, money }: TodayData) {
   const now = new Date();
   const hour = Number(now.toLocaleString("en-US", { hour: "numeric", hour12: false, timeZone: TZ })) % 24;
   const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
@@ -125,8 +129,11 @@ export function TodayView({ pulse, networkExcluded = false, work, review, upcomi
         <p className="m-0 mt-3 text-[length:var(--tq-text-lg)] leading-[1.45]">{sentence.charAt(0).toUpperCase() + sentence.slice(1)}</p>
       </header>
 
+      {/* 0. Money first: who paid, newest on top */}
+      {money ? <MoneyPanel money={money} now={now} /> : null}
+
       {/* 1. The site today */}
-      <section aria-labelledby="site-title" className="st-card mt-8">
+      <section aria-labelledby="site-title" className="st-card mt-6">
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-5 pt-5 sm:px-6">
           <h2 id="site-title" className="st-h2">Your site today</h2>
           <Link href="/admin/insights" className="st-link">
