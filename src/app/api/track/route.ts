@@ -2,12 +2,19 @@
  * /api/track — first-party, cookieless analytics ingest. The browser beacon
  * (components/Tracker.tsx) posts page views and intent events here; we write
  * them via the service role. No PII, no cookies. Admin paths are ignored.
+ *
+ * Only real families are stored (src/lib/own-traffic.ts): robots and test
+ * tools, a browser signed in to Studio, and the owner's own network are
+ * answered "ok" and dropped.
  */
 import { NextResponse, type NextRequest } from "next/server";
 import { getDb, isDbConfigured } from "@/lib/db";
 import { clientIp } from "@/lib/client-ip";
 import { rateLimiter } from "@/lib/rate-limit";
 import { deviceOf } from "@/lib/device";
+import { isAutomatedUA } from "@/lib/own-traffic";
+import { isOwnerNetwork } from "@/lib/own-traffic-db";
+import { SESSION_COOKIE } from "@/lib/admin-session";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -29,6 +36,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
 
+  // Not a real family: a robot or test tool, or the owner's signed-in browser.
+  if (isAutomatedUA(req.headers.get("user-agent")) || req.cookies.has(SESSION_COOKIE)) {
+    return NextResponse.json({ ok: true });
+  }
+
   if (await rateLimited(clientIp(req))) return NextResponse.json({ ok: true }); // silently drop
 
   if (!isDbConfigured()) return NextResponse.json({ ok: true });
@@ -37,6 +49,9 @@ export async function POST(req: NextRequest) {
   if (!path || path.startsWith("/admin") || path.startsWith("/api")) {
     return NextResponse.json({ ok: true });
   }
+
+  // The owner's network (home wifi): nobody in the house counts.
+  if (await isOwnerNetwork(req)) return NextResponse.json({ ok: true });
 
   const db = getDb();
   const session_id = clip(body.sid, 64);

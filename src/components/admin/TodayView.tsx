@@ -34,6 +34,8 @@ const reason: Record<"overdue" | "due_today" | "unreplied", string> = {
 
 export type TodayData = {
   pulse: DayPulse;
+  /** This network is one of the owner's (home wifi), so nobody on it is counted. */
+  networkExcluded?: boolean;
   work: LeadWorkItem[];
   review: BookingRow[];
   upcoming: BookingRow[];
@@ -58,7 +60,7 @@ export type TodayData = {
  * Refs (Mobbin): Square "Today vs Yesterday" traffic, Mintlify 7-day visitor
  * bars, HoneyBook greeting + short lists. Data comes from app/admin/page.tsx.
  */
-export function TodayView({ pulse, work, review, upcoming, behavior, comments = 0, tickets = [], reviews = [], blog }: TodayData) {
+export function TodayView({ pulse, networkExcluded = false, work, review, upcoming, behavior, comments = 0, tickets = [], reviews = [], blog }: TodayData) {
   const now = new Date();
   const hour = Number(now.toLocaleString("en-US", { hour: "numeric", hour12: false, timeZone: TZ })) % 24;
   const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
@@ -178,6 +180,9 @@ export function TodayView({ pulse, work, review, upcoming, behavior, comments = 
               </div>
               <p className="m-0 mt-1 text-sm text-[var(--tq-ink-mute)]">
                 <span className="font-medium text-[var(--st-rose)]">+n</span> under a day = new families who reached out that day.
+              </p>
+              <p className="m-0 mt-1 text-sm text-[var(--tq-ink-mute)]">
+                Real visitors only. {networkExcluded ? "Your own visits, everyone on this network and test robots" : "Your own visits and test robots"} are not counted.
               </p>
             </div>
           </>
