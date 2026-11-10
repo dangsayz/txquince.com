@@ -127,8 +127,13 @@ function isOwnerBrowser(): boolean {
   }
 }
 
+/** A browser driven by a test tool (Playwright, Selenium, the secret shopper) is not a family. */
+function isAutomated(): boolean {
+  return typeof navigator !== "undefined" && navigator.webdriver === true;
+}
+
 function post(body: Record<string, unknown>) {
-  if (isOwnerBrowser()) return;
+  if (isOwnerBrowser() || isAutomated()) return;
   try {
     const json = JSON.stringify(body);
     if (navigator.sendBeacon) {
