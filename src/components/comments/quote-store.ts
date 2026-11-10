@@ -44,3 +44,23 @@ export function useQuote(slug: string): string {
 export function focusCommentBox(): void {
   window.dispatchEvent(new Event(COMMENT_FOCUS_EVENT));
 }
+
+/**
+ * Where the rail's form goes. The rail box registers its mount element here
+ * and the one Composer (bottom box) draws the rail form into it through a
+ * portal, so both forms live under a single Clerk provider (Clerk allows one).
+ */
+let railMount: HTMLElement | null = null;
+const railListeners = new Set<() => void>();
+export function setRailMount(el: HTMLElement | null) {
+  if (railMount === el) return;
+  railMount = el;
+  railListeners.forEach((fn) => fn());
+}
+export function subscribeRailMount(fn: () => void) {
+  railListeners.add(fn);
+  return () => {
+    railListeners.delete(fn);
+  };
+}
+export const getRailMount = () => railMount;

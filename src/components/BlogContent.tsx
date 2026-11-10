@@ -111,7 +111,8 @@ const COPY = {
     topic: "Topic",
     published: "Published",
     updated: "Updated",
-    reading: "Reading",
+    reading: "Reading time",
+    readLong: (n: number) => `${n} minutes`,
     fig: "Fig.",
     faqTitle: "Frequently asked questions",
     seriesLabel: "Part of the series",
@@ -147,7 +148,8 @@ const COPY = {
     topic: "Tema",
     published: "Publicado",
     updated: "Actualizado",
-    reading: "Lectura",
+    reading: "Tiempo de lectura",
+    readLong: (n: number) => `${n} minutos`,
     fig: "Fig.",
     faqTitle: "Preguntas frecuentes",
     seriesLabel: "Parte de la serie",
@@ -724,28 +726,28 @@ export function BlogArticleView({
                 ) : null}
                 <BlogShare url={shareUrl} title={post.title} image={shareImage} lang={lang} placement="top" />
               </div>
-              <dl className="tq-blog-post__meta tq-mono">
+              <dl className="tq-blog-post__meta">
                 <div>
-                  <dt className="tq-muted">{c.topic}</dt>
+                  <dt>{c.topic}</dt>
                   <dd>{categoryLabel(post.category, lang)}</dd>
                 </div>
                 <div>
-                  <dt className="tq-muted">{c.published}</dt>
+                  <dt>{c.published}</dt>
                   <dd>
                     <time dateTime={post.publishedAt}>{formatDate(post.publishedAt, lang)}</time>
                   </dd>
                 </div>
                 {post.updatedAt && post.updatedAt !== post.publishedAt ? (
                   <div>
-                    <dt className="tq-muted">{c.updated}</dt>
+                    <dt>{c.updated}</dt>
                     <dd>
                       <time dateTime={post.updatedAt}>{formatDate(post.updatedAt, lang)}</time>
                     </dd>
                   </div>
                 ) : null}
                 <div>
-                  <dt className="tq-muted">{c.reading}</dt>
-                  <dd>{c.read(post.readMinutes)}</dd>
+                  <dt>{c.reading}</dt>
+                  <dd>{c.readLong(post.readMinutes)}</dd>
                 </div>
               </dl>
             </div>
