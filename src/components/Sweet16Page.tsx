@@ -2,7 +2,8 @@ import Link from "next/link";
 import { ogBase } from "@/lib/share-meta";
 import { site } from "@/content/site";
 import { getBlogPhoto } from "@/content/blog-photos";
-import { commissionLinks } from "@/content/commissions";
+import { commissionLinks, commissionsFor } from "@/content/commissions";
+import { getPriceBook } from "@/lib/pricing";
 import "@/components/txq/pages/places.css";
 import { jsonLdString } from "@/lib/json-ld";
 import { HREFLANG, OG_LOCALE, languageAlternates } from "@/lib/hreflang";
@@ -12,8 +13,9 @@ import { HREFLANG, OG_LOCALE, languageAlternates } from "@/lib/hreflang";
  *
  * Facts on this page come from the owner (2026-11-10): TX Quince photographs
  * and films sweet 16s, has covered sisters celebrating together (a quince and
- * a sweet 16 in one night), and birthdays up to 18. No price is stated here:
- * the page sends families to the published packages and to a conversation.
+ * a sweet 16 in one night), and birthdays up to 18. A sweet 16 uses the same
+ * packages and prices as a quinceañera (owner, 2026-11-10), so the price rows
+ * are read from the live price book; no price is typed in this file.
  * Photos are real celebrations from the published albums; the captions say so.
  */
 
@@ -54,8 +56,9 @@ const COPY = {
       "We also photograph birthdays up to eighteen. Tell us who is celebrating and we plan the day around them.",
     ],
     priceEyebrow: "03 / Packages and prices",
-    priceTitle: "Every price is published.",
-    priceBody: "Our packages and prices are on the budget page, with nothing hidden. Tell us the date and what you have in mind for her sweet 16, and we confirm which package fits. Nothing is charged to send a request.",
+    priceTitle: "The same packages as a quinceañera, every price published.",
+    priceBody: "A sweet 16 is booked with the same packages and the same prices as a quinceañera. Nothing is hidden, and nothing is charged to send a request.",
+    pick: "Our pick",
     budget: "See packages and prices",
     budgetHref: "/budget",
     faqEyebrow: "04 / Questions",
@@ -63,6 +66,7 @@ const COPY = {
     faqs: [
       { q: "Do you photograph sweet 16 parties, or only quinceañeras?", a: "Both. TX Quince photographs and films sweet 16 celebrations across Dallas–Fort Worth, as well as quinceañeras." },
       { q: "Can you cover two sisters celebrating together?", a: "Yes. We have covered sisters who shared one celebration, one turning fifteen and the other sixteen. We plan separate portraits, entrances and dances so each girl has her own moments." },
+      { q: "How much does a sweet 16 photographer cost?", a: "The same as a quinceañera. A sweet 16 uses the same packages at the same published prices, listed on this page and on the budget page." },
       { q: "Do you offer both photo and video for a sweet 16?", a: "Yes. One team makes the photos and the video, and we, the owners, edit every gallery and film." },
       { q: "Do you speak Spanish?", a: "Yes. Everything runs in English and Spanish, from the first message to the day itself." },
       { q: "Where can we order invitations, posters and shirts?", a: "We send every family to QuinceNetwork, our sister shop, at quincenetwork.com. Ask us for the TX Quince discount code." },
@@ -112,8 +116,9 @@ const COPY = {
       "También fotografiamos cumpleaños hasta los dieciocho. Díganos quién celebra y planeamos el día alrededor de ellas.",
     ],
     priceEyebrow: "03 / Paquetes y precios",
-    priceTitle: "Todos los precios están publicados.",
-    priceBody: "Nuestros paquetes y precios están en la página de presupuesto, sin nada escondido. Díganos la fecha y lo que tiene pensado para su sweet 16, y le confirmamos qué paquete le queda. No se cobra nada por enviar una solicitud.",
+    priceTitle: "Los mismos paquetes que unos quince, con todos los precios publicados.",
+    priceBody: "Un sweet 16 se reserva con los mismos paquetes y los mismos precios que una quinceañera. No hay nada escondido, y no se cobra nada por enviar una solicitud.",
+    pick: "Nuestra recomendación",
     budget: "Ver paquetes y precios",
     budgetHref: "/es/presupuesto",
     faqEyebrow: "04 / Preguntas",
@@ -121,6 +126,7 @@ const COPY = {
     faqs: [
       { q: "¿Fotografían fiestas de sweet 16 o solo quinceañeras?", a: "Las dos. TX Quince fotografía y graba fiestas de sweet 16 en todo Dallas–Fort Worth, además de quinceañeras." },
       { q: "¿Pueden cubrir a dos hermanas que celebran juntas?", a: "Sí. Hemos cubierto a hermanas que compartieron una celebración, una de quince y otra de dieciséis. Planeamos retratos, entradas y bailes por separado para que cada una tenga sus momentos." },
+      { q: "¿Cuánto cuesta un fotógrafo de sweet 16?", a: "Lo mismo que para una quinceañera. Un sweet 16 usa los mismos paquetes con los mismos precios publicados, que están en esta página y en la página de presupuesto." },
       { q: "¿Ofrecen foto y video para un sweet 16?", a: "Sí. Un solo equipo hace las fotos y el video, y nosotros, los dueños, editamos cada galería y cada video." },
       { q: "¿Hablan español?", a: "Sí. Todo se maneja en español y en inglés, desde el primer mensaje hasta el día de la fiesta." },
       { q: "¿Dónde podemos pedir invitaciones, pósters y playeras?", a: "A todas las familias las mandamos a QuinceNetwork, nuestra tienda hermana, en quincenetwork.com. Pídanos el código de descuento de TX Quince." },
@@ -161,8 +167,9 @@ export function sweet16Metadata(locale: Locale) {
 
 const fill = { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" } as const;
 
-export function Sweet16Page({ locale }: { locale: Locale }) {
+export async function Sweet16Page({ locale }: { locale: Locale }) {
   const t = COPY[locale];
+  const packages = commissionsFor(await getPriceBook());
   const links = commissionLinks[locale];
   const url = `${site.url}${t.path}`;
   const hero = getBlogPhoto(HERO);
@@ -325,6 +332,19 @@ export function Sweet16Page({ locale }: { locale: Locale }) {
           <div className="tq-place-prose">
             <p>{t.priceBody}</p>
           </div>
+          <ol className="tq-place-rows tq-place-rows--priced" style={{ paddingBottom: 0 }}>
+            {packages.map((c) => (
+              <li key={c.id} className="tq-place-row">
+                <span className="tq-mono tq-place-row__k">[{c.numeral}]</span>
+                <h3 className="tq-display tq-place-row__t">{c.name[locale]}</h3>
+                <p className="tq-place-row__b">
+                  {c.recommended ? `${t.pick}. ` : ""}
+                  {c.summary[locale]}
+                </p>
+                <p className="tq-display tq-nums tq-place-row__end">{c.priceLabel}</p>
+              </li>
+            ))}
+          </ol>
           <div className="tq-place-after" style={{ borderTop: 0 }}>
             <Link href={links.book} className="tq-btn tq-btn--lg">
               {t.check} <span className="tq-arrow" aria-hidden>↗</span>
