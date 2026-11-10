@@ -64,7 +64,8 @@ export type BlogThumb = {
 // Copy + helpers
 // ---------------------------------------------------------------------------
 
-const CATEGORY_KEY: Record<BlogCategory, string> = {
+/** The post's topic as a short key (filter pills, comment starters). */
+export const CATEGORY_KEY: Record<BlogCategory, "cost" | "planning" | "traditions" | "film" | "locations"> = {
   "Cost & Budget": "cost",
   Planning: "planning",
   Traditions: "traditions",
