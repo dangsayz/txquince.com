@@ -27,7 +27,7 @@ import { fillDeep } from "@/lib/price-text";
 import { tidyName } from "@/lib/person-name";
 
 /** Bump when the wording below changes; stored with every signature. */
-export const AGREEMENT_VERSION = "2026-11-09.1";
+export const AGREEMENT_VERSION = "2026-11-10.1";
 
 export type AgreementInput = {
   lang: Lang;
@@ -105,12 +105,14 @@ const T = {
       "Need a new date? Ask us as early as you can. If we are open on the new date, your deposit moves with it one time. If we are not, the cancellation rule below applies.",
       "If you cancel, your deposit is not refundable, because we save your date and turn other families away.",
       "If you cancel after the rest was due, nothing you paid is refunded.",
+      "If you cancel on the day of the event or the day before, for any reason, nothing you paid is refunded. A new date is a new booking.",
       "If the event can't happen because of something outside anyone's control (a storm, a venue closing, an emergency order), we move your booking to a new date we both agree on. The deposit is not refunded.",
       "If we ever have to cancel, we refund everything you've paid.",
     ],
     pay: "Late payments and disputes",
     payLines: [
       "The rest is due on the date in this agreement. If it is not paid by then, we may release your date and keep what you have paid.",
+      "If the rest is not paid in full before the event, our crew does not come. What you paid is kept.",
       "If you pay with Klarna, Afterpay or Affirm, your payment plan is between you and that company. It does not change what you owe us.",
       "If you have a problem, tell us first and give us 14 days to fix it.",
       "Disputing a charge with your bank or payment company for a date we held or work we did breaks this agreement. You then owe that amount again, plus any fee the bank charges us.",
@@ -123,7 +125,8 @@ const T = {
       "Tell us in writing before the event about any other photographer or videographer, hired or a friend. If one works the event without our OK, we may stop coverage and keep what you have paid. Guests using phones is fine.",
       "If we work more than 4 hours, you give each crew member a meal and a 30-minute break. With no meal, the crew takes a 30-minute break away from the event, and that time is not added back.",
       "You make sure we are allowed to work at your venue, church and photo locations. Any fee, permit or parking they charge is yours to pay.",
-      "If a crew member is harassed, threatened or unsafe, we may leave. There is no refund.",
+      "If a guest is drunk, aggressive, or touches our crew or our equipment, we tell your contact adult one time. If it happens again, we pack up and leave. There is no refund.",
+      "If a crew member is threatened or in danger, we leave right away. There is no refund.",
     ],
     time: "Time and schedule",
     timeLines: [
@@ -138,7 +141,7 @@ const T = {
       "We are not responsible for moments missed because of venue or church rules, poor light, weather, a late schedule, or people blocking the camera.",
       "The editing style, the music and which photos we deliver are our creative choice. You get the edited photos and films listed in your package. Unedited photos and raw video are not included unless your package lists them.",
       "If you find a mistake in what we deliver, tell us within 14 days of getting it and we will fix it. We do not re-edit for a change of taste.",
-      "After we deliver, keeping your files safe and backed up is your job.",
+      "After we deliver, keeping your files safe and backed up is your job. We do not promise to keep a copy. If we still have your files we may send them again, but we do not have to.",
       "If a crew member is sick or has an emergency, we send another member of our team. If we can't cover your date at all, we refund everything you paid.",
       "If our equipment fails or files are lost, we refund a fair share of what you paid for the missing part. The most we can ever owe you, for any reason, is the total you paid us.",
     ],
@@ -147,6 +150,8 @@ const T = {
       "Your gallery and films arrive between 30 and 90 days after the event. Any day in that window is on time.",
       "We edit in the order the events happened. In busy seasons, expect closer to 90 days.",
       "We email you the day they are ready. You do not need to ask.",
+      "There is no rush delivery.",
+      "If your package has a printed album, you have 30 days after your gallery arrives to pick the photos. After 30 days, we pick them and print it.",
       "Asking early does not move your place in line. Before day 90, the answer to \"when?\" is this section. If day 90 passes, write to us and we will give you a date.",
       "Be kind to our team, in person and in messages. Threats, insults, or message after message pressing for early delivery are harassment. If that happens we answer by email only, and we still deliver on the schedule above.",
     ],
@@ -215,12 +220,14 @@ const T = {
       "¿Necesitas otra fecha? Avísanos lo antes posible. Si tenemos libre la nueva fecha, tu depósito se pasa a ella una sola vez. Si no, aplica la regla de cancelación de abajo.",
       "Si cancelas, el depósito no es reembolsable, porque apartamos tu fecha y rechazamos a otras familias.",
       "Si cancelas después de la fecha límite para pagar el resto, no se reembolsa nada de lo que pagaste.",
+      "Si cancelas el día del evento o el día anterior, por cualquier motivo, no se reembolsa nada de lo que pagaste. Una nueva fecha es una nueva reservación.",
       "Si el evento no puede hacerse por algo fuera del control de todos (una tormenta, el cierre del salón, una orden de emergencia), pasamos tu reservación a una nueva fecha que acordemos. El depósito no se reembolsa.",
       "Si nosotros tuviéramos que cancelar, te devolvemos todo lo que hayas pagado.",
     ],
     pay: "Pagos atrasados y disputas",
     payLines: [
       "El resto se paga en la fecha de este contrato. Si no está pagado para entonces, podemos liberar tu fecha y quedarnos con lo que hayas pagado.",
+      "Si el resto no está pagado por completo antes del evento, nuestro equipo no asiste. Lo que pagaste no se reembolsa.",
       "Si pagas con Klarna, Afterpay o Affirm, tu plan de pagos es entre tú y esa compañía. No cambia lo que nos debes.",
       "Si tienes un problema, dínoslo primero y danos 14 días para resolverlo.",
       "Disputar un cargo con tu banco o compañía de pagos por una fecha que apartamos o por trabajo que hicimos rompe este contrato. En ese caso debes esa cantidad otra vez, más cualquier cargo que el banco nos cobre.",
@@ -233,7 +240,8 @@ const T = {
       "Avísanos por escrito antes del evento si habrá otro fotógrafo o videógrafo, contratado o amigo. Si alguno trabaja en el evento sin nuestra aprobación, podemos detener la cobertura y quedarnos con lo que hayas pagado. Los invitados pueden usar sus celulares.",
       "Si trabajamos más de 4 horas, le das a cada persona del equipo una comida y un descanso de 30 minutos. Si no hay comida, el equipo toma un descanso de 30 minutos fuera del evento, y ese tiempo no se repone.",
       "Tú te aseguras de que podamos trabajar en tu salón, iglesia y lugares de fotos. Cualquier cuota, permiso o estacionamiento que cobren lo pagas tú.",
-      "Si alguien del equipo es acosado, amenazado o corre peligro, podemos retirarnos. No hay reembolso.",
+      "Si un invitado está borracho, agresivo, o toca a nuestro equipo o nuestras cámaras, se lo decimos una vez a tu adulto de contacto. Si vuelve a pasar, guardamos todo y nos vamos. No hay reembolso.",
+      "Si alguien del equipo es amenazado o corre peligro, nos vamos de inmediato. No hay reembolso.",
     ],
     time: "Horario",
     timeLines: [
@@ -248,7 +256,7 @@ const T = {
       "No somos responsables de momentos que se pierdan por reglas del salón o la iglesia, poca luz, el clima, atrasos en el horario o personas que tapen la cámara.",
       "El estilo de edición, la música y cuáles fotos entregamos son nuestra decisión creativa. Recibes las fotos editadas y los videos de tu paquete. Las fotos sin editar y el video crudo no están incluidos, a menos que tu paquete lo diga.",
       "Si encuentras un error en lo que entregamos, avísanos en los 14 días después de recibirlo y lo corregimos. No volvemos a editar por un cambio de gusto.",
-      "Después de la entrega, guardar y respaldar tus archivos es tu responsabilidad.",
+      "Después de la entrega, guardar y respaldar tus archivos es tu responsabilidad. No prometemos conservar una copia. Si todavía tenemos tus archivos podemos enviarlos otra vez, pero no estamos obligados.",
       "Si alguien del equipo se enferma o tiene una emergencia, mandamos a otra persona de nuestro equipo. Si no podemos cubrir tu fecha, te devolvemos todo lo que pagaste.",
       "Si nuestro equipo falla o se pierden archivos, te devolvemos una parte justa de lo que pagaste por lo que falte. Lo máximo que podemos deberte, por cualquier motivo, es el total que nos pagaste.",
     ],
@@ -257,6 +265,8 @@ const T = {
       "Tu galería y tus videos llegan entre 30 y 90 días después del evento. Cualquier día dentro de ese plazo es a tiempo.",
       "Editamos en el orden en que fueron los eventos. En temporada alta, espera más cerca de los 90 días.",
       "Te escribimos por correo el día que estén listos. No necesitas preguntar.",
+      "No hay entrega urgente.",
+      "Si tu paquete incluye álbum impreso, tienes 30 días después de recibir tu galería para elegir las fotos. Pasados los 30 días, las elegimos nosotros y lo imprimimos.",
       "Preguntar antes no adelanta tu lugar en la fila. Antes del día 90, la respuesta a \"¿cuándo?\" es esta sección. Si pasa el día 90, escríbenos y te damos una fecha.",
       "Trata bien a nuestro equipo, en persona y por mensaje. Las amenazas, los insultos o mensaje tras mensaje exigiendo una entrega adelantada son acoso. Si eso pasa, contestamos solo por correo, y entregamos en el plazo de arriba.",
     ],
