@@ -48,10 +48,11 @@ function Icon({ name }: { name: string }) {
   );
 }
 
-export function ShareBar({ placement }: { placement: string }) {
+/** `query` carries the typed budget ("?b=1500&v=1") so the family opens the same answer. */
+export function ShareBar({ placement, query = "" }: { placement: string; query?: string }) {
   const { lang } = useSite();
   const c = COPY[lang];
-  const url = `${site.url}${lang === "es" ? "/es/presupuesto" : "/budget"}`;
+  const url = `${site.url}${lang === "es" ? "/es/presupuesto" : "/budget"}${query}`;
   const body = `${c.message} ${url}`;
   const [copied, setCopied] = useState(false);
   // The phone's own share sheet, where it exists (decided after hydration).

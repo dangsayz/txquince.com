@@ -9,6 +9,7 @@
  * short themed block that opens to its full set, so the page stays easy to
  * read as events are added. Every "ask" keeps the venue (?venue=<slug>).
  */
+import { ogBase } from "@/lib/share-meta";
 import type { Metadata } from "next";
 import { VenueExperience } from "@/components/VenueExperience";
 import { getVenueExperience } from "@/lib/venue-experience-db";
@@ -25,7 +26,7 @@ import { getImagesByVenue, getVenueCopy } from "@/lib/content-db";
 import { withAlbums } from "@/content/albums";
 import { igUrl, websiteUrl, websiteLabel } from "@/lib/vendor-links";
 import { VenueEvents } from "@/components/venue/VenueEvents";
-import { venueEvents } from "@/lib/venue-events";
+import { eventsForClient, venueEvents } from "@/lib/venue-events";
 import { altPhraseFor } from "@/content/portfolio-taxonomy";
 import { publicPhotoCopy } from "@/lib/public-photo-copy";
 import "@/components/txq/pages/places.css";
@@ -61,7 +62,7 @@ export async function generateMetadata({
     // A venue page with no photos yet is a dead end for a family: keep it out
     // of search until the first shoot is published (links still count).
     ...(photos.length ? {} : { robots: { index: false, follow: true } }),
-    openGraph: {
+    openGraph: { ...ogBase("en"),
       title: `${venue.venue} · Quinceañera Photography`,
       description,
       url: `${site.url}/venues/${slug}`,
@@ -309,7 +310,7 @@ export default async function VenuePage({
             </h2>
           </header>
           {items.length ? (
-            <VenueEvents venue={venue.venue} askHref={askHref} pageHref={`/venues/${venue.slug}`} events={events} brand={site.brand} />
+            <VenueEvents venue={venue.venue} askHref={askHref} pageHref={`/venues/${venue.slug}`} events={eventsForClient(events)} brand={site.brand} />
           ) : (
             <p className="tq-place-empty">
               No photographs from this venue are published yet.{" "}

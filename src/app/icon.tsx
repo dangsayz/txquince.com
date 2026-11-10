@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 
-export const size = { width: 64, height: 64 };
+// Google shows a site icon in search results only at a multiple of 48px.
+export const size = { width: 96, height: 96 };
 export const contentType = "image/png";
 
 export default function Icon() {
@@ -15,7 +16,7 @@ export default function Icon() {
           justifyContent: "center",
           background: "#1d1d1f",
           color: "#ffffff",
-          fontSize: 30,
+          fontSize: 45,
           fontWeight: 600,
           letterSpacing: "-0.04em",
         }}

@@ -3,6 +3,7 @@
  * what they do, each linking to their own credit page. A real local-SEO asset
  * (vendor names + categories + DFW) and a cross-promotion hub.
  */
+import { ogBase } from "@/lib/share-meta";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
@@ -22,7 +23,7 @@ const baseMetadata: Metadata = {
   description:
     "The venues, florists, glam artists, bakers, DJs, and planners we love working with on quinceañeras across Dallas–Fort Worth.",
   alternates: { canonical: "/vendors" },
-  openGraph: {
+  openGraph: { ...ogBase("en"),
     title: `Quinceañera Vendors · ${site.brand}`,
     description:
       "Our favorite quinceañera vendors across Dallas–Fort Worth — venues, florists, HMUA, bakeries, DJs, and more.",

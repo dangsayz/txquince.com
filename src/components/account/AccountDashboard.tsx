@@ -58,6 +58,7 @@ const COPY = {
     payError: "We couldn't open checkout. Please try again.",
     overTime: "At checkout, pay by card, or split it into smaller payments with Klarna, Afterpay or Affirm if you qualify. Secure payment by Stripe.",
     agreement: "See your signed agreement",
+    pdf: "Download your signed agreement (PDF)",
     start: "Book in 4 steps",
     startLead: "You have no booking under this email yet. Follow the steps. We tell you what to do at each one.",
     stepOf: (n: number, total: number) => `Step ${n} of ${total}`,
@@ -152,6 +153,7 @@ const COPY = {
     payError: "No pudimos abrir el pago. Inténtalo de nuevo.",
     overTime: "Al pagar puedes usar tarjeta, o dividirlo en pagos más pequeños con Klarna, Afterpay o Affirm si calificas. Pago seguro con Stripe.",
     agreement: "Ver tu contrato firmado",
+    pdf: "Descargar tu contrato firmado (PDF)",
     start: "Reserva en 4 pasos",
     startLead: "Todavía no tienes una reservación con este correo. Sigue los pasos. En cada uno te decimos qué hacer.",
     stepOf: (n: number, total: number) => `Paso ${n} de ${total}`,
@@ -351,6 +353,9 @@ function BookingCard({ b, lang, bare = false }: { b: AccountBooking; lang: Lang;
       )}
       {b.payToken && (
         <a className="acct-link" href={`/booking/${b.id}?t=${encodeURIComponent(b.payToken)}`}>{c.agreement}</a>
+      )}
+      {b.state !== "closed" && (
+        <a className="acct-link" href={`/api/account/contract?id=${b.id}`}>{c.pdf}</a>
       )}
     </article>
   );

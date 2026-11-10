@@ -74,12 +74,10 @@ const META: Record<SiteLang, Metadata> = {
       description:
         `Quinceañera photos and video across Dallas–Fort Worth. Packages from ${commissionsFromLabel}.`,
     },
-    twitter: {
-      card: "summary_large_image",
-      title: `${site.brand} — Quinceañera Photos & Video`,
-      description:
-        `Quinceañera photos and video across Dallas–Fort Worth. Packages from ${commissionsFromLabel}.`,
-    },
+    // Card type only. Title, description and image are left out on purpose:
+    // Next then fills them from each page's own openGraph, so a shared link
+    // never shows the homepage's title on another page.
+    twitter: { card: "summary_large_image" },
   },
   es: {
     metadataBase: new URL(site.url),
@@ -102,12 +100,10 @@ const META: Record<SiteLang, Metadata> = {
       description:
         `Fotos y video de quinceañera en Dallas–Fort Worth. Paquetes desde ${commissionsFromLabel}.`,
     },
-    twitter: {
-      card: "summary_large_image",
-      title: `${site.brand} — Fotos y video de quinceañera`,
-      description:
-        `Fotos y video de quinceañera en Dallas–Fort Worth. Paquetes desde ${commissionsFromLabel}.`,
-    },
+    // Card type only. Title, description and image are left out on purpose:
+    // Next then fills them from each page's own openGraph, so a shared link
+    // never shows the homepage's title on another page.
+    twitter: { card: "summary_large_image" },
   },
 };
 

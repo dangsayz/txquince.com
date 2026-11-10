@@ -1,3 +1,4 @@
+import { ogBase } from "@/lib/share-meta";
 import type { Metadata } from "next";
 import { SlotImage } from "@/components/SlotImage";
 import Link from "next/link";
@@ -22,7 +23,7 @@ const META: Metadata = {
     canonical: "/es/fotografo-de-quinceaneras",
     languages: languageAlternates(site.url + "/quinceanera-photographer", site.url + "/es/fotografo-de-quinceaneras"),
   },
-  openGraph: {
+  openGraph: { ...ogBase("es"),
     title: "Fotógrafo de Quinceañeras — Dallas–Fort Worth · " + site.brand,
     description: `Fotos y video de quinceañera en todo el metroplex de DFW. Paquetes publicados desde ${FROM_TOKEN}.`,
     url: site.url + "/es/fotografo-de-quinceaneras",

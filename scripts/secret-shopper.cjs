@@ -6,7 +6,7 @@
  *   node scripts/secret-shopper.cjs --all            # every URL in the sitemap
  *   node scripts/secret-shopper.cjs --base http://localhost:3000
  *
- * It only LOOKS and CLICKS. It never submits a form, never pays, never signs
+ * It only LOOKS and CLICKS, and is never counted as a visitor. It never submits a form, never pays, never signs
  * up, never posts a comment. Needs Playwright (pre-installed in Claude cloud
  * sessions; locally: npx playwright install chromium).
  *
@@ -40,6 +40,17 @@ const VIEWPORTS = [
 // Console noise that is known and harmless (see src/lib/security-headers.ts).
 // "%c%d font-size:0" is Cloudflare Turnstile's own console probe.
 const IGNORE_CONSOLE = [/Content Security Policy/i, /cloudflareinsights/i, /Failed to load resource/i, /ERR_BLOCKED_BY_CLIENT/i, /report-only/i, /^%c%[do] font-size:0/];
+
+/**
+ * A fresh browser for one walk. The shopper is not a family: its page views
+ * are answered here and never reach the site's visitor numbers (the site also
+ * drops test browsers itself; see src/lib/own-traffic.ts).
+ */
+async function newShopper(browser, view) {
+  const ctx = await browser.newContext({ viewport: { width: view.width, height: view.height } });
+  await ctx.route("**/api/track", (route) => route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' }));
+  return ctx;
+}
 
 /** Load a page. Pages with live widgets (Turnstile, polling) never go "network idle", so wait for load + a beat. */
 async function open(page, url) {
@@ -152,7 +163,7 @@ async function checkPage(ctx, path, view, links) {
 /** The things a mom actually does. Each step says what it expected. */
 async function flows(browser) {
   const step = async (name, view, fn) => {
-    const ctx = await browser.newContext({ viewport: { width: view.width, height: view.height } });
+    const ctx = await newShopper(browser, view);
     const page = await ctx.newPage();
     try {
       await fn(page);
@@ -198,6 +209,14 @@ async function flows(browser) {
       await p.waitForTimeout(900);
       const after = await p.locator("main, body").first().innerText();
       expect(before !== after, "typing 2000 into the budget field changed nothing on the page");
+    });
+    await step("a shared budget link opens on the same answer; the offer form opens", view, async (p) => {
+      await open(p, BASE + "/budget?b=1500");
+      await p.waitForSelector(".bp-card", { timeout: 15000 }).catch(() => {});
+      expect(await p.locator(".bp-card").count(), "/budget?b=1500 shows no package (the link lost the number)");
+      expect((await p.locator(".bp-money input").first().inputValue()) === "1,500", "/budget?b=1500 did not fill the budget field with 1,500");
+      await p.locator(".bp-offer__toggle").click();
+      expect(await p.locator(".bp-offer form").count(), "the offer form did not open");
     });
   }
 
@@ -291,7 +310,7 @@ async function checkLinks(links) {
   const browser = await chromium.launch();
   const links = new Map();
   for (const view of VIEWPORTS) {
-    const ctx = await browser.newContext({ viewport: { width: view.width, height: view.height } });
+    const ctx = await newShopper(browser, view);
     let i = 0;
     await Promise.all(
       Array.from({ length: 4 }, async () => {

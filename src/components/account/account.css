@@ -830,3 +830,28 @@
     padding: var(--tq-space-6) var(--tq-space-12) var(--tq-space-12);
   }
 }
+
+/* Consent to sign electronically: one tap to read, right above the checkbox. */
+.txq .acct-esign {
+  border: 1px solid var(--tq-surface-2);
+  background: #fff;
+}
+.txq .acct-esign summary {
+  display: flex;
+  align-items: center;
+  min-height: var(--tq-tap-primary);
+  padding: 0 var(--tq-space-4);
+  cursor: pointer;
+  font-weight: var(--tq-weight-medium);
+}
+.txq .acct-esign summary:focus-visible {
+  outline: 2px solid var(--tq-ink);
+  outline-offset: 2px;
+}
+.txq .acct-esign p {
+  margin: 0;
+  padding: 0 var(--tq-space-4) var(--tq-space-3);
+  max-width: 62ch;
+  color: var(--tq-ink-mute);
+  line-height: var(--tq-leading-body);
+}

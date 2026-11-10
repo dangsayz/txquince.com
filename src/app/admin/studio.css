@@ -294,6 +294,15 @@ a:hover > .st-arrow {
 }
 /* "Nothing waiting" mark in an empty panel. */
 .st-clear { display: inline-flex; flex: none; width: 1.75rem; height: 1.75rem; align-items: center; justify-content: center; border-radius: 50%; background: var(--st-green-tint); color: var(--st-green); }
+/* A big number that opens its page: the arrow shows on hover and focus. */
+.st-statlink { display: inline-flex; align-items: center; gap: 0.5rem; min-height: var(--tq-tap); min-width: var(--tq-tap); text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 2px; text-underline-offset: 6px; transition: text-decoration-color var(--tq-dur-fast) var(--tq-ease); }
+a.st-statlink:hover, a.st-statlink:focus-visible { text-decoration-color: var(--tq-ink); }
+.st-statlink .st-arrow { color: var(--tq-ink-mute); opacity: 0; transform: translateX(-4px); transition: opacity var(--tq-dur-fast) var(--tq-ease), transform var(--tq-dur-fast) var(--tq-ease); }
+a.st-statlink:hover .st-arrow, a.st-statlink:focus-visible .st-arrow { opacity: 1; transform: translateX(0); }
+@media (hover: none) { .st-statlink .st-arrow { opacity: 1; transform: none; } }
+/* A link inside a sentence: underlined, with a tall hit area. */
+.st-textlink { display: inline-block; margin-block: -12px; padding-block: 12px; color: var(--tq-ink); text-decoration: underline; text-decoration-color: var(--tq-stone); text-underline-offset: 3px; transition: text-decoration-color var(--tq-dur-fast) var(--tq-ease); }
+.st-textlink:hover { text-decoration-color: var(--tq-ink); }
 /* A number's label with its color key. */
 .st-key { display: flex; align-items: center; gap: 0.5rem; }
 .st-key[data-hue]::before { content: ""; flex: none; width: 8px; height: 8px; border-radius: 2px; background: var(--hue); }

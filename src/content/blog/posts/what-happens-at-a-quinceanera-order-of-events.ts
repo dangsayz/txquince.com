@@ -100,7 +100,7 @@ const post: BlogPost = {
     },
     {
       type: "image",
-      slug: "convention-plaza-ballroom-clarissa-120",
+      slug: "convention-plaza-ballroom-quinceanera-b4d8",
       caption: "The grand entrance at Convention Plaza Ballroom in Irving.",
     },
     { type: "h2", text: "The vals and the father-daughter dance" },
@@ -110,7 +110,7 @@ const post: BlogPost = {
     },
     {
       type: "image",
-      slug: "convention-plaza-ballroom-clarissa-433",
+      slug: "convention-plaza-ballroom-quinceanera-c03b",
       caption: "The vals on the floor at Convention Plaza Ballroom in Irving.",
     },
     { type: "h2", text: "Changing of the shoes (cambio de zapatos)" },
@@ -123,6 +123,7 @@ const post: BlogPost = {
       type: "p",
       text: "The honoree is presented with her last doll — la última muñeca — often dressed to match her gown. It marks the end of childhood toys; in many families she then passes the doll to a younger sister or cousin, handing down a piece of her own childhood. Not every family includes this one, and that's fine.",
     },
+    { type: "p", text: "More answers: [the crowning ceremony](/blog/quinceanera-crowning-ceremony), [what to say in the toast](/blog/quinceanera-toast-brindis), [the hora loca](/blog/hora-loca-quinceanera) and [what guests wear](/blog/what-to-wear-to-a-quinceanera)." },
     {
       type: "cta",
       heading: "Have these moments captured by people who know the order",
@@ -137,7 +138,7 @@ const post: BlogPost = {
     },
     {
       type: "image",
-      slug: "convention-plaza-ballroom-clarissa-667",
+      slug: "convention-plaza-ballroom-quinceanera-0f96",
       caption: "The toast and cake at Convention Plaza Ballroom in Irving.",
     },
     { type: "h2", text: "The surprise dance (vals sorpresa) and Hora Loca" },
@@ -152,7 +153,7 @@ const post: BlogPost = {
     },
     {
       type: "image",
-      slug: "las-lomas-banquet-hall-valarie-539",
+      slug: "las-lomas-banquet-hall-quinceanera-e1ba",
       caption: "Open dancing at Las Lomas Banquet Hall in Irving.",
     },
     { type: "h2", text: "How long does the whole day run?" },

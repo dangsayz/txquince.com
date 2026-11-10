@@ -91,6 +91,7 @@ const post: BlogPost = {
       type: "p",
       text: "The surprise dance especially is once-and-done. The court rehearses it in secret for months, performs it one single time, and it's over in three minutes. There is no retake. If it isn't recorded on video well, it's gone — and that's the one moment families tell us, afterward, they wish they'd had on video. We break down exactly which moments belong to photo and which belong to video in [photo vs. video for a quinceañera](/blog/quinceanera-photo-vs-video).",
     },
+    { type: "p", text: "More answers: [what a dama is](/blog/what-is-a-dama-quinceanera), [what a chambelán is](/blog/what-is-a-chambelan), [how many damas and chambelanes to have](/blog/how-many-damas-and-chambelanes) and [the hora loca](/blog/hora-loca-quinceanera)." },
     {
       type: "cta",
       heading: "See a real vals and surprise dance on video",

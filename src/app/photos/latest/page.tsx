@@ -1,3 +1,4 @@
+import { ogBase } from "@/lib/share-meta";
 import type { Metadata } from "next";
 import { PhotoDumpPage } from "@/components/txq/PhotoDumpPage";
 import { site } from "@/content/site";
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
   description:
     "The newest quinceañera photos from TX Quince: portraits, church, the party, family and details from recent celebrations across Dallas–Fort Worth.",
   alternates: { canonical: "/photos/latest", languages: languageAlternates("/photos/latest", "/es/fotos-recientes") },
-  openGraph: {
+  openGraph: { ...ogBase("en"),
     title: "Latest Quinceañera Photos · TX Quince",
     description: "The newest quinceañera photos from recent celebrations across Dallas–Fort Worth.",
     url: `${site.url}/photos/latest`,

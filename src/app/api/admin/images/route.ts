@@ -1,3 +1,4 @@
+import { imageSlugBase } from "@/lib/image-slug";
 import { NextResponse } from "next/server";
 import { isColorId } from "@/lib/quince-colors";
 import { revalidatePath } from "next/cache";
@@ -64,13 +65,8 @@ export async function POST(request: Request) {
 
   // Permanent SEO slug, minted at insert (alt edits never change a shared
   // link). Descriptive when alt exists; date-stamped fallback otherwise.
-  const base = (alt || `${section} quinceanera dfw`)
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 64);
+  // Never from an upload filename: see src/lib/image-slug.ts.
+  const base = imageSlugBase(alt, section);
   const slug = `${base}-${crypto.randomUUID().slice(0, 4)}`;
 
   const { data, error } = await db

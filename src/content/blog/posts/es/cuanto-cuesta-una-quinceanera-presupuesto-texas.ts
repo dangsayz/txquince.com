@@ -91,6 +91,7 @@ const post: BlogPost = {
       type: "p",
       text: "Por eso vale la pena proteger ese 8 a 15 % aunque el presupuesto se apriete. Y por eso, si tiene que elegir, las familias lamentan mucho más haber recortado la cobertura que haber pedido un pastel más chico. Puede ver cómo se ve una cobertura completa en nuestro [portafolio](/portfolio), y si está decidiendo entre uno y otro, [foto o video](/es/blog/foto-o-video-quinceanera) sopesa qué guarda cada uno y qué le cuesta.",
     },
+    { type: "p", text: "Más respuestas: [quién paga cada cosa](/es/blog/quien-paga-la-quinceanera), [la lista de padrinos](/es/blog/padrinos-de-quinceanera-lista) y [cuántas damas y chambelanes llevar](/es/blog/cuantas-damas-y-chambelanes)." },
     {
       type: "cta",
       heading: "Vea exactamente qué incluye cada paquete",

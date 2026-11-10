@@ -1,3 +1,4 @@
+import { ogBase } from "@/lib/share-meta";
 import type { Metadata } from "next";
 import { PT } from "@/lib/price-text";
 
@@ -15,7 +16,7 @@ const META: Metadata = {
   title: "Videógrafo de Quinceañeras en Dallas–Fort Worth",
   description: `Videos de quinceañeras en Dallas–Fort Worth: videos completos en 4K, resúmenes cortos y videos verticales cortos para redes sociales. Mira celebraciones reales; paquetes publicados desde ${FROM_TOKEN}.`,
   alternates: { canonical: "/es/videografo-de-quinceaneras", languages: languageAlternates("/quinceanera-videographer", "/es/videografo-de-quinceaneras") },
-  openGraph: {
+  openGraph: { ...ogBase("es"),
     title: `Video de Quinceañeras en Dallas–Fort Worth · ${site.brand}`,
     description: "Celebraciones reales en video y paquetes de foto y video para quinceañeras en Dallas–Fort Worth.",
     url: `${site.url}/es/videografo-de-quinceaneras`,

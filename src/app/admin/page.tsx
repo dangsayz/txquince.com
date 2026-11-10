@@ -8,6 +8,8 @@ import { getPageBehavior } from "@/lib/analytics-db";
 import { getBlogPulse } from "@/lib/blog-pulse-db";
 import { listReviews } from "@/lib/reviews-db";
 import { listOpenTickets } from "@/lib/support-db";
+import { headers } from "next/headers";
+import { rememberOwnerNetwork } from "@/lib/own-traffic-db";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +26,8 @@ export default async function AdminHome() {
     getBlogPulse(14).catch(() => undefined),
   ]);
   const pulse = await getDayPulse(inquiries.map((i) => i.created_at));
+  // The owner is here: this network (home wifi) stops counting as visitors.
+  const networkExcluded = await rememberOwnerNetwork({ headers: await headers() });
   const today = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Chicago" }).format(new Date());
   return (
     <TodayView
@@ -32,6 +36,7 @@ export default async function AdminHome() {
       reviews={reviews}
       blog={blog}
       pulse={pulse}
+      networkExcluded={networkExcluded}
       work={buildLeadWork(inquiries, activity)}
       review={bookings.filter((b) => b.status === "payment_review")}
       behavior={behavior}

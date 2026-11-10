@@ -19,3 +19,22 @@ export function isFullName(v: string): boolean {
   if (s.length < 5 || s.length > NAME_MAX || !FULL_NAME.test(s)) return false;
   return s.split(" ").filter((w) => w.replace(/[^\p{L}]/gu, "").length >= 2).length >= 2;
 }
+
+const SMALL = new Set(["de", "del", "la", "las", "los", "y", "da", "do", "dos", "van", "von"]);
+/**
+ * "vida" → "Vida", "MARIA DE LA O" → "Maria de la O", "o'neil" → "O'Neil".
+ * Only fixes words typed all in one case; "McKenna" or "DeShawn" stay as typed.
+ */
+export function tidyName(v: string): string {
+  return v
+    .trim()
+    .replace(/\s+/g, " ")
+    .split(" ")
+    .map((w, i) => {
+      if (!w || (w !== w.toLowerCase() && w !== w.toUpperCase())) return w;
+      const low = w.toLowerCase();
+      if (i > 0 && SMALL.has(low)) return low;
+      return low.replace(/(^|[-'’])(\p{L})/gu, (_, sep: string, ch: string) => sep + ch.toUpperCase());
+    })
+    .join(" ");
+}

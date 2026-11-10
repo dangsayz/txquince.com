@@ -30,6 +30,22 @@ describe("what a budget covers", () => {
     expect(smallestCoverage(B, true)?.totalUsd).toBe(750);
   });
 
+  it("at the same price, the bigger package leads", () => {
+    const top = B.packages.trio.price;
+    const r = coverageForBudget(B, top, false);
+    const tied = r.fits.filter((o) => o.totalUsd === r.fits[0].totalUsd);
+    expect(r.fits[0].tier).toBe("trio");
+    // Every other fit at that price is a smaller package.
+    expect(tied.slice(1).every((o) => o.tier !== "trio")).toBe(true);
+  });
+
+  it("never repeats a package that fits as the step up", () => {
+    for (const budget of [500, 800, 1200, 1500, 2000, 2800, 3500, 6000]) {
+      const r = coverageForBudget(B, budget, false);
+      expect(r.fits.some((o) => o.tier === r.stretch?.tier)).toBe(false);
+    }
+  });
+
   it("reads every number from the price book it's given", () => {
     const book = { ...B, packages: { ...B.packages, moments: { price: 600, hours: 2, extraHour: 300, maxHours: 4 } } };
     expect(coverageForBudget(book, 600, false).fits[0]).toMatchObject({ tier: "moments", totalUsd: 600 });

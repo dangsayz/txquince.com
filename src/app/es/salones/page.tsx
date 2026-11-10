@@ -1,3 +1,4 @@
+import { ogBase } from "@/lib/share-meta";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { SlotImage } from "@/components/SlotImage";
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
   title: "Salones de Quinceañera en Dallas–Fort Worth",
   description: "Explora salones de quinceañera en Dallas–Fort Worth donde hemos fotografiado celebraciones reales. Encuentra tu lugar y consulta tu fecha.",
   alternates: { canonical: "/es/salones", languages: languageAlternates("/venues", "/es/salones") },
-  openGraph: { locale: OG_LOCALE.es },
+  openGraph: { ...ogBase("es"), locale: OG_LOCALE.es },
 };
 
 const pad = (n: number) => String(n).padStart(2, "0");

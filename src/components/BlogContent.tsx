@@ -329,7 +329,8 @@ export function BlogContent({
           case "callout":
             return (
               <aside key={i} className="tq-blog-flow__callout">
-                {renderInline(b.text)}
+                {/* A sentence, so a paragraph: its links are text links, not buttons. */}
+                <p>{renderInline(b.text)}</p>
               </aside>
             );
           case "image": {

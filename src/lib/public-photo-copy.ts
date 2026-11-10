@@ -1,3 +1,5 @@
+import { CATEGORIES } from "@/content/portfolio-taxonomy";
+
 type PhotoCopyInput = {
   title?: string | null;
   alt?: string | null;
@@ -30,4 +32,42 @@ export function publicPhotoCopy(image: PhotoCopyInput, categoryDescription: stri
     alt,
     description: writtenCopy(image.caption) || alt,
   };
+}
+
+/** Why a photo's alt text is not a real description yet. */
+export type DescriptionGap = "blank" | "filename" | "stock";
+
+type DescribedPhoto = { id: string; alt?: string | null; location?: string | null };
+
+const STOCK_PHRASES = new Set(CATEGORIES.map((c) => c.altPhrase.toLowerCase()));
+/** The line the venue import stamps on every photo of one venue. */
+const VENUE_IMPORT_LINE = /^quinceañera (?:portraits|celebration) at .+, texas$/i;
+
+/**
+ * Photos whose alt text does not describe the photo: empty, a leftover file
+ * name, or the stock line an upload starts with ("Quinceañera cake at <place>").
+ * A line shared word for word by three or more photos counts as stock too:
+ * three different photos cannot have one true description.
+ */
+export function photosNeedingDescription(photos: DescribedPhoto[]): Map<string, DescriptionGap> {
+  const key = (p: DescribedPhoto) => (p.alt ?? "").trim().toLowerCase();
+  const uses = new Map<string, number>();
+  for (const p of photos) uses.set(key(p), (uses.get(key(p)) ?? 0) + 1);
+
+  const out = new Map<string, DescriptionGap>();
+  for (const p of photos) {
+    const alt = key(p);
+    if (!alt) {
+      out.set(p.id, "blank");
+      continue;
+    }
+    if (!writtenCopy(alt)) {
+      out.set(p.id, "filename");
+      continue;
+    }
+    const place = (p.location ?? "").trim().toLowerCase();
+    const withoutPlace = place && alt.endsWith(` at ${place}`) ? alt.slice(0, -` at ${place}`.length) : alt;
+    if (STOCK_PHRASES.has(withoutPlace) || VENUE_IMPORT_LINE.test(alt) || (uses.get(alt) ?? 0) >= 3) out.set(p.id, "stock");
+  }
+  return out;
 }

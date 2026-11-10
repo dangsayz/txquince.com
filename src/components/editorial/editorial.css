@@ -248,6 +248,28 @@
 .ed-feature__plate { position: absolute; inset: 0; overflow: hidden; }
 .ed-feature__bg { position: absolute; inset: -8% 0; will-change: transform; }
 .ed-feature__plate::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, 0.16); }
+/* "Watch our films": shown with a film loop, at the foot of the scene (clear of the card). */
+.ed-feature__films {
+  position: absolute;
+  left: var(--ed-gutter);
+  bottom: max(4svh, calc(env(safe-area-inset-bottom) + 16px));
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 20px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: rgba(0, 0, 0, 0.42);
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 500;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background-color var(--tq-dur-fast) var(--tq-ease), border-color var(--tq-dur-fast) var(--tq-ease);
+}
+.ed-feature__films:hover { background: rgba(0, 0, 0, 0.6); border-color: #ffffff; }
+.ed-feature__films:focus-visible { outline: 2px solid #ffffff; outline-offset: 3px; }
 .ed-feature__track { position: relative; min-height: 160svh; padding: 14svh var(--ed-gutter); display: flex; justify-content: flex-end; }
 .ed-card {
   position: sticky;
