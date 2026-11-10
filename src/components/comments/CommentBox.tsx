@@ -82,6 +82,9 @@ export function CommentBox({ lang, slug, clerk, place }: { lang: CommentLang; sl
         <div className="tq-cmt__gate" aria-busy={state === "unknown" || undefined}>
           {chip}
           <p className="tq-cmt__gate-lead">{c.gate}</p>
+          <p className="tq-cmt__note">
+            <span className="tq-cmt__review">{c.review}</span>
+          </p>
           <div className="tq-cmt__actions">
             <a className="tq-btn tq-btn--lg" href={login} rel="nofollow">
               {c.logIn} <span className="tq-arrow" aria-hidden>↗</span>
