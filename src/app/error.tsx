@@ -1,9 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { useStaleBuildReload } from "@/components/useStaleBuildReload";
 import "@/components/txq/pages/pages.css";
 
-export default function ErrorPage({ reset }: { error: Error & { digest?: string }; reset: () => void }) {
+export default function ErrorPage({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+  const [reloading, retry] = useStaleBuildReload(error, reset);
+
+  if (reloading) return <div className="tq-wrap" style={{ minHeight: "calc(65svh - var(--header-h))" }} aria-busy="true" />;
+
   return (
     <div className="tq-wrap">
       <header className="tq-pg-mast" style={{ minHeight: "calc(65svh - var(--header-h))", alignContent: "center" }}>
@@ -16,7 +21,7 @@ export default function ErrorPage({ reset }: { error: Error & { digest?: string 
             Please try again. If it still doesn&apos;t work, you can return home and check your date from there.
           </p>
           <div className="tq-pg-actions">
-            <button type="button" onClick={reset} className="tq-btn tq-btn--lg">
+            <button type="button" onClick={retry} className="tq-btn tq-btn--lg">
               Try again
             </button>
             <Link href="/" className="tq-btn tq-btn--lg tq-btn--ghost">
