@@ -107,6 +107,8 @@ const post: BlogPost = {
       type: "p",
       text: "La sesión con caballo se puede reservar sola o como la sesión del vestido dentro de un paquete. Cuéntennos su fecha y si quieren el rancho, y les decimos qué les conviene. [Consulta tu fecha](/es/consulta?venue=fgs-ranch).",
     },
+    { type: "h2", text: "Más fotos de este día" },
+    { type: "gallery", album: "fgs-ranch-red" },
   ],
   faqs: [
     {

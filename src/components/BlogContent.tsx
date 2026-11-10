@@ -14,6 +14,7 @@ import { BudgetChart } from "@/components/blog/BudgetChart";
 import { QuickPoll } from "@/components/blog/QuickPoll";
 import { DatePlan } from "@/components/blog/DatePlan";
 import { planStages } from "@/content/plan-stages";
+import { ALBUMS, albumPhotos } from "@/content/albums";
 
 /**
  * The journal (blog) in the homepage's editorial system: Inter display type,
@@ -194,6 +195,20 @@ const BLOG_SLOT_CAP = 1600;
 const capped = (url: string, cap: number) =>
   url.startsWith("/api/img/") ? `${url}${url.includes("?") ? "&" : "?"}cap=${cap}` : url;
 
+/** Gallery thumbnails are small on the page; the tap opens a larger copy. */
+const GALLERY_THUMB_CAP = 640;
+const GALLERY_OPEN_W = 1920;
+
+/** Up to `limit` photos of an album, spread evenly, minus the ones already shown. */
+function galleryPhotos(albumId: string, used: Set<string>, limit = 30) {
+  const album = ALBUMS.find((a) => a.id === albumId);
+  if (!album) return [];
+  const rest = albumPhotos(album).filter((p) => !used.has(p.id));
+  if (rest.length <= limit) return rest;
+  const step = rest.length / limit;
+  return Array.from({ length: limit }, (_, i) => rest[Math.floor(i * step)]);
+}
+
 const isStatic = (url: string) => !url.startsWith("/api/img/") && !url.startsWith("http");
 
 const LINK_RE = /\[([^\]]+)\]\(([^)]+)\)/g;
@@ -368,6 +383,28 @@ export function BlogContent({
                   </figcaption>
                 ) : null}
               </figure>
+            );
+          }
+          case "gallery": {
+            const used = new Set(blocks.flatMap((x) => (x.type === "image" ? [x.slug] : [])));
+            const photos = galleryPhotos(b.album, used, b.limit);
+            if (photos.length === 0) return null;
+            return (
+              <div key={i} className="tq-blog-gallery">
+                {photos.map((ph) => (
+                  <a key={ph.id} href={`${ph.url}?w=${GALLERY_OPEN_W}`} target="_blank" rel="noopener" className="tq-blog-gallery__item">
+                    <Image
+                      src={capped(ph.url, GALLERY_THUMB_CAP)}
+                      alt={ph.alt}
+                      lang={lang === "es" ? "en" : undefined}
+                      width={ph.width ?? 1600}
+                      height={ph.height ?? 1067}
+                      sizes="(max-width: 639px) 50vw, 220px"
+                      loading="lazy"
+                    />
+                  </a>
+                ))}
+              </div>
             );
           }
           case "cta":

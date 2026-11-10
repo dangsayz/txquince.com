@@ -104,6 +104,8 @@ const post: BlogPost = {
       type: "p",
       text: "Decor photos are a small part of the day, but they are the part that shows the months of choices behind it. Tell us your date and your venue, and we will tell you what your budget covers. Text or call (972) 914-8617.",
     },
+    { type: "h2", text: "More photos from this day" },
+    { type: "gallery", album: "latino-ballroom-butterfly" },
     {
       type: "cta",
       heading: "Plan the photos for your quince",

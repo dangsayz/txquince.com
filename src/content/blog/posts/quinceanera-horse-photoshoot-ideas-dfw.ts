@@ -94,6 +94,8 @@ const post: BlogPost = {
         "Bring boots or flats, water and someone to fluff the skirt between frames.",
       ],
     },
+    { type: "h2", text: "More photos from this day" },
+    { type: "gallery", album: "horse-red" },
     {
       type: "cta",
       heading: "Want a horse session for her quince?",

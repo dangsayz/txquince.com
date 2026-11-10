@@ -26,6 +26,10 @@ export type BlogBlock =
   // alt; `alt`/`caption` here override. A missing slug renders nothing — never a
   // placeholder.
   | { type: "image"; slug: string; alt?: string; caption?: string }
+  // More photos from one published album (src/content/albums.ts), as a grid.
+  // Photos the post already shows as `image` blocks are left out, and the rest
+  // are sampled evenly across the album up to `limit` (default 30).
+  | { type: "gallery"; album: string; limit?: number }
   // Interactive: the budget post's percentages as a live chart
   // (src/content/budget-lines.ts). `packages` carry PT name/price tokens, so
   // the chart always reads the live price book.

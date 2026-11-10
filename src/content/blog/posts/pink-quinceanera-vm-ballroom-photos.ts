@@ -87,6 +87,8 @@ const post: BlogPost = {
       type: "p",
       text: "Planning a pink-and-black quince? Tell us your date and venue, and we will help you plan when the decor and portraits happen. Text or call (972) 914-8617.",
     },
+    { type: "h2", text: "More photos from this day" },
+    { type: "gallery", album: "vm-ballroom-pink" },
     {
       type: "cta",
       heading: "Plan your reception photos",

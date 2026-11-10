@@ -110,6 +110,8 @@ const post: BlogPost = {
       type: "p",
       text: "Decor photos take only a few minutes, but they need to happen at the right time. Tell us your date and your plans, and we will tell you what your budget covers. Text or call (972) 914-8617.",
     },
+    { type: "h2", text: "More photos from this day" },
+    { type: "gallery", album: "pink-candlelit-reception" },
     {
       type: "cta",
       heading: "Plan the photos for your reception",

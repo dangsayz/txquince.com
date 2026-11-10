@@ -107,6 +107,8 @@ const post: BlogPost = {
       type: "p",
       text: "¿Piensas en una sesión en jardín para los quince de tu hija? Cuéntanos tu fecha y el color de su vestido, y te ayudamos a planear el recorrido. Mándanos mensaje o llámanos al (972) 914-8617.",
     },
+    { type: "h2", text: "Más fotos de este día" },
+    { type: "gallery", album: "arboretum-red-garden" },
     {
       type: "cta",
       heading: "Planea tu sesión en jardín",

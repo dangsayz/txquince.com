@@ -110,6 +110,8 @@ const post: BlogPost = {
       type: "p",
       text: "¿Estás planeando una quince en rojo y blanco? Cuéntanos tu fecha y tu salón, y te ayudamos a planear las fotos de la decoración junto con todo lo demás. Manda un mensaje o llama al (972) 914-8617.",
     },
+    { type: "h2", text: "Más fotos de este día" },
+    { type: "gallery", album: "luxury-red-white-reception" },
     {
       type: "cta",
       heading: "Asegura que tu decoración quede en el álbum",

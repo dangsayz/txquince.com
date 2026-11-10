@@ -106,6 +106,8 @@ const post: BlogPost = {
       type: "p",
       text: "Thinking about a garden session for your daughter's quince? Tell us your date and the colors of her gown, and we will help you plan the flow. Text or call (972) 914-8617.",
     },
+    { type: "h2", text: "More photos from this day" },
+    { type: "gallery", album: "arboretum-red-garden" },
     {
       type: "cta",
       heading: "Plan your garden session",
