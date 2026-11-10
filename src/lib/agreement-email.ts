@@ -62,7 +62,10 @@ function agreementHtml(a: SignedAgreement) {
   </div>`;
 }
 
-async function send(to: string, subject: string, text: string, html: string): Promise<Result> {
+/** A file to attach (the signed contract PDF). */
+export type EmailAttachment = { filename: string; content: Uint8Array };
+
+async function send(to: string, subject: string, text: string, html: string, attachment?: EmailAttachment | null): Promise<Result> {
   const r = resend();
   if (!r) return { ok: false, error: "resend-not-configured" };
   try {
@@ -73,6 +76,7 @@ async function send(to: string, subject: string, text: string, html: string): Pr
       subject,
       text,
       html,
+      ...(attachment ? { attachments: [{ filename: attachment.filename, content: Buffer.from(attachment.content), contentType: "application/pdf" }] } : {}),
     });
     if (error) return { ok: false, error: String(error.message ?? error) };
     return { ok: true };
@@ -101,6 +105,7 @@ export async function sendAgreementSignedOperator(
   a: SignedAgreement,
   adminUrl: string,
   summary: string,
+  pdf?: EmailAttachment | null,
 ): Promise<Result> {
   const to = process.env.OPERATOR_NOTIFY_EMAIL;
   if (!to) return { ok: false, error: "no-operator-email" };
@@ -121,11 +126,11 @@ export async function sendAgreementSignedOperator(
      <pre style="white-space:pre-wrap;font:14px/1.5 ui-monospace,Menlo,monospace;margin:0 0 8px">${esc(summary)}</pre>${agreementHtml(a)}`,
     { url: adminUrl, label: "Review & approve" },
   );
-  return send(to, subject, text, html);
+  return send(to, subject, text, html, pdf);
 }
 
 /** → family: copy of what they signed + what happens next. */
-export async function sendAgreementSignedClient(b: BookingLite, a: SignedAgreement): Promise<Result> {
+export async function sendAgreementSignedClient(b: BookingLite, a: SignedAgreement, pdf?: EmailAttachment | null): Promise<Result> {
   const es = a.lang === "es";
   const name = first(b.name);
   const date = prettyDate(b.event_date, a.lang);
@@ -133,9 +138,13 @@ export async function sendAgreementSignedClient(b: BookingLite, a: SignedAgreeme
   const lead = es
     ? `¡Gracias, ${name}! Recibimos tu contrato firmado. Apartamos el ${date} para ti mientras lo revisamos — te escribimos en un día. Cuando lo aprobemos, te llegará un enlace para pagar tu depósito del ${signedDepositPercent(a)}% (${usd(a.depositUsd)}).`
     : `Thank you, ${name}! We got your signed agreement. ${date} is held for you while we review it — we'll write within one day. Once we approve it, you'll get a link to pay your ${signedDepositPercent(a)}% deposit (${usd(a.depositUsd)}).`;
-  const text = [lead, "", agreementToText(a)].join("\n");
-  const html = shell(es ? "Recibimos tu contrato" : "We got your agreement", `<p style="margin:0">${esc(lead)}</p>${agreementHtml(a)}`);
-  return send(b.email, subject, text, html);
+  const pdfNote = pdf ? (es ? "Tu contrato firmado va adjunto en PDF. Guárdalo." : "Your signed agreement is attached as a PDF. Keep it.") : "";
+  const text = [lead, ...(pdfNote ? ["", pdfNote] : []), "", agreementToText(a)].join("\n");
+  const html = shell(
+    es ? "Recibimos tu contrato" : "We got your agreement",
+    `<p style="margin:0">${esc(lead)}</p>${pdfNote ? `<p style="margin:12px 0 0"><strong>${esc(pdfNote)}</strong></p>` : ""}${agreementHtml(a)}`,
+  );
+  return send(b.email, subject, text, html, pdf);
 }
 
 /** → operator: a new booking REQUEST (unsigned) is waiting for confirmation. */

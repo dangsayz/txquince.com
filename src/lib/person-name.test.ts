@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cleanNameInput, isFullName } from "./person-name";
+import { cleanNameInput, isFullName, tidyName } from "./person-name";
 
 describe("isFullName", () => {
   it("accepts real names, accents and all", () => {
@@ -14,5 +14,16 @@ describe("cleanNameInput", () => {
     expect(cleanNameInput("dfdfdf43r34r")).toBe("dfdfdfrr");
     expect(cleanNameInput("  Mary-Jo   O'Neil 3rd!")).toBe("Mary-Jo O'Neil rd");
     expect(cleanNameInput("x".repeat(200))).toHaveLength(80);
+  });
+});
+
+describe("tidyName", () => {
+  it("capitalizes names typed in one case and leaves mixed case alone", () => {
+    expect(tidyName("vida")).toBe("Vida");
+    expect(tidyName("  maria   garcia ")).toBe("Maria Garcia");
+    expect(tidyName("MARIA DE LA O")).toBe("Maria de la O");
+    expect(tidyName("mary-jo o'neil")).toBe("Mary-Jo O'Neil");
+    expect(tidyName("McKenna DeShawn")).toBe("McKenna DeShawn");
+    expect(tidyName("")).toBe("");
   });
 });
