@@ -3,6 +3,7 @@
 import { SignaturePad } from "@/components/txq/SignaturePad";
 import type { Agreement } from "@/lib/agreement";
 import { cleanNameInput, NAME_MAX } from "@/lib/person-name";
+import { ESIGN_CONSENT } from "@/lib/esign-consent";
 
 export type SignValue = { name: string; signature: string | null; agree: boolean };
 export type SignErrors = { signName?: string; signature?: string; agree?: string };
@@ -16,7 +17,8 @@ const COPY = {
     sign: "Sign here with your finger or mouse",
     clear: "Clear",
     useTyped: "Use my typed name",
-    agree: "I have read this agreement and I agree to it.",
+    agree: "I have read this agreement and I agree to it. I agree to sign it electronically.",
+    esign: "What signing on your phone means",
     after: "After you sign: we check your date and email you within one day. Then you pay your deposit from your account page.",
   },
   es: {
@@ -27,7 +29,8 @@ const COPY = {
     sign: "Firma aquí con tu dedo o el mouse",
     clear: "Borrar",
     useTyped: "Usar mi nombre escrito",
-    agree: "Leí este contrato y estoy de acuerdo.",
+    agree: "Leí este contrato y estoy de acuerdo. Acepto firmarlo electrónicamente.",
+    esign: "Qué significa firmar desde tu teléfono",
     after: "Después de firmar: revisamos tu fecha y te escribimos en un día. Luego pagas tu depósito desde tu cuenta.",
   },
 } as const;
@@ -134,6 +137,12 @@ export function SignStep({ lang, agreement, value, onChange, errors }: {
         useTypedLabel={c.useTyped}
         error={errors.signature}
       />
+      <details className="acct-esign">
+        <summary>{c.esign}</summary>
+        {ESIGN_CONSENT[lang].split("\n").map((l) => (
+          <p key={l}>{l}</p>
+        ))}
+      </details>
       <label className="tq-check">
         <input type="checkbox" checked={value.agree} onChange={(e) => onChange({ agree: e.target.checked })} aria-invalid={errors.agree ? true : undefined} />
         <span className="tq-check__box" aria-hidden>{value.agree ? "✓" : ""}</span>

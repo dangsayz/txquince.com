@@ -24,9 +24,10 @@ import { addOnAllowed,
 } from "@/lib/commission";
 import { tierNameL, ADD_ONS, matrixFor, type Lang } from "@/components/txq/data";
 import { fillDeep } from "@/lib/price-text";
+import { tidyName } from "@/lib/person-name";
 
 /** Bump when the wording below changes; stored with every signature. */
-export const AGREEMENT_VERSION = "2026-10-31.2";
+export const AGREEMENT_VERSION = "2026-11-09.1";
 
 export type AgreementInput = {
   lang: Lang;
@@ -101,18 +102,72 @@ const T = {
     changes: "Changes and cancellations",
     changesLines: [
       "Want more hours or an extra later? Just ask — if we're available, we'll add it and update your total.",
+      "Need a new date? Ask us as early as you can. If we are open on the new date, your deposit moves with it one time. If we are not, the cancellation rule below applies.",
       "If you cancel, your deposit is not refundable, because we save your date and turn other families away.",
+      "If you cancel after the rest was due, nothing you paid is refunded.",
+      "If the event can't happen because of something outside anyone's control (a storm, a venue closing, an emergency order), we move your booking to a new date we both agree on. The deposit is not refunded.",
       "If we ever have to cancel, we refund everything you've paid.",
+    ],
+    pay: "Late payments and disputes",
+    payLines: [
+      "The rest is due on the date in this agreement. If it is not paid by then, we may release your date and keep what you have paid.",
+      "If you pay with Klarna, Afterpay or Affirm, your payment plan is between you and that company. It does not change what you owe us.",
+      "If you have a problem, tell us first and give us 14 days to fix it.",
+      "Disputing a charge with your bank or payment company for a date we held or work we did breaks this agreement. You then owe that amount again, plus any fee the bank charges us.",
+      "A refund, when one applies, goes back the same way you paid.",
+    ],
+    day: "Your part on the day",
+    dayLines: [
+      "One adult is our contact on the day. Our crew takes direction from that person only.",
+      "You are responsible for your guests, including children. If a guest damages or loses our equipment, you pay the full cost to repair or replace it.",
+      "Tell us in writing before the event about any other photographer or videographer, hired or a friend. If one works the event without our OK, we may stop coverage and keep what you have paid. Guests using phones is fine.",
+      "If we work more than 4 hours, you give each crew member a meal and a 30-minute break. With no meal, the crew takes a 30-minute break away from the event, and that time is not added back.",
+      "You make sure we are allowed to work at your venue, church and photo locations. Any fee, permit or parking they charge is yours to pay.",
+      "If a crew member is harassed, threatened or unsafe, we may leave. There is no refund.",
+    ],
+    time: "Time and schedule",
+    timeLines: [
+      "Coverage starts at the start time we confirm with you and runs for the hours in your package, in one block.",
+      "Time lost because the family, a vendor or the venue runs late is not added back.",
+      "Extra time on the day only happens if the crew can stay, and it is billed at our extra-hour price.",
+      "The date, times and addresses you give us must be right. Problems caused by wrong details are not ours to refund.",
+    ],
+    limits: "What we can and can't promise",
+    limitsLines: [
+      "We photograph and film the day as it happens. We can't promise one specific photo, pose, guest or moment.",
+      "We are not responsible for moments missed because of venue or church rules, poor light, weather, a late schedule, or people blocking the camera.",
+      "The editing style, the music and which photos we deliver are our creative choice. You get the edited photos and films listed in your package. Unedited photos and raw video are not included unless your package lists them.",
+      "If you find a mistake in what we deliver, tell us within 14 days of getting it and we will fix it. We do not re-edit for a change of taste.",
+      "After we deliver, keeping your files safe and backed up is your job.",
+      "If a crew member is sick or has an emergency, we send another member of our team. If we can't cover your date at all, we refund everything you paid.",
+      "If our equipment fails or files are lost, we refund a fair share of what you paid for the missing part. The most we can ever owe you, for any reason, is the total you paid us.",
+    ],
+    delivery: "When you get your photos and videos",
+    deliveryLines: [
+      "Your gallery and films arrive between 30 and 90 days after the event. Any day in that window is on time.",
+      "We edit in the order the events happened. In busy seasons, expect closer to 90 days.",
+      "We email you the day they are ready. You do not need to ask.",
+      "Asking early does not move your place in line. Before day 90, the answer to \"when?\" is this section. If day 90 passes, write to us and we will give you a date.",
+      "Be kind to our team, in person and in messages. Threats, insults, or message after message pressing for early delivery are harassment. If that happens we answer by email only, and we still deliver on the schedule above.",
+    ],
+    fine: "The fine print",
+    fineLines: [
+      "If you are unhappy with something, both sides agree to talk it through in writing first, before any other step.",
+      "You are at least 18, and you are the parent, the legal guardian or the person paying, with the right to sign this.",
+      "This agreement is the whole deal. A promise made by text, call or social media only counts once we write it into your booking.",
+      "If one part of this agreement can't be enforced, the rest still applies. Texas law applies to this agreement.",
     ],
     teamSolo: "Your team: 1 hybrid shooter taking photos and video at the same time, with a {{cameras.solo}} camera setup",
     crew: "Who covers your day",
     crewLines: [
       "Your day is covered by TX Quince's small in-house crew of photographers and videographers, sometimes with Dang or Yvonne, the owners, behind the camera. The studio puts the crew together for each date.",
       "Every gallery and film is edited by the owners.",
+      "We choose the crew. Who comes, the owners or the team, is not a reason to cancel, get a refund or dispute a charge.",
     ],
     media: "Your photos and videos",
     mediaLines: (share: boolean) => [
       "Everything we deliver is yours to keep, print and share with family and friends.",
+      "We own the copyright. Your photos and videos are for personal use. You may not sell them or let a business use them without our written OK.",
       share
         ? "You're okay with us sharing some of your photos and videos on our website and social media."
         : "We will not share your photos or videos publicly.",
@@ -157,18 +212,72 @@ const T = {
     changes: "Cambios y cancelaciones",
     changesLines: [
       "¿Quieres más horas o un extra después? Solo pídelo — si estamos disponibles, lo añadimos y actualizamos tu total.",
+      "¿Necesitas otra fecha? Avísanos lo antes posible. Si tenemos libre la nueva fecha, tu depósito se pasa a ella una sola vez. Si no, aplica la regla de cancelación de abajo.",
       "Si cancelas, el depósito no es reembolsable, porque apartamos tu fecha y rechazamos a otras familias.",
+      "Si cancelas después de la fecha límite para pagar el resto, no se reembolsa nada de lo que pagaste.",
+      "Si el evento no puede hacerse por algo fuera del control de todos (una tormenta, el cierre del salón, una orden de emergencia), pasamos tu reservación a una nueva fecha que acordemos. El depósito no se reembolsa.",
       "Si nosotros tuviéramos que cancelar, te devolvemos todo lo que hayas pagado.",
+    ],
+    pay: "Pagos atrasados y disputas",
+    payLines: [
+      "El resto se paga en la fecha de este contrato. Si no está pagado para entonces, podemos liberar tu fecha y quedarnos con lo que hayas pagado.",
+      "Si pagas con Klarna, Afterpay o Affirm, tu plan de pagos es entre tú y esa compañía. No cambia lo que nos debes.",
+      "Si tienes un problema, dínoslo primero y danos 14 días para resolverlo.",
+      "Disputar un cargo con tu banco o compañía de pagos por una fecha que apartamos o por trabajo que hicimos rompe este contrato. En ese caso debes esa cantidad otra vez, más cualquier cargo que el banco nos cobre.",
+      "Un reembolso, cuando aplica, regresa por el mismo medio con el que pagaste.",
+    ],
+    day: "Tu parte el día del evento",
+    dayLines: [
+      "Un adulto es nuestro contacto ese día. Nuestro equipo recibe indicaciones solo de esa persona.",
+      "Tú eres responsable de tus invitados, incluidos los niños. Si un invitado daña o pierde nuestro equipo, tú pagas el costo completo de repararlo o reponerlo.",
+      "Avísanos por escrito antes del evento si habrá otro fotógrafo o videógrafo, contratado o amigo. Si alguno trabaja en el evento sin nuestra aprobación, podemos detener la cobertura y quedarnos con lo que hayas pagado. Los invitados pueden usar sus celulares.",
+      "Si trabajamos más de 4 horas, le das a cada persona del equipo una comida y un descanso de 30 minutos. Si no hay comida, el equipo toma un descanso de 30 minutos fuera del evento, y ese tiempo no se repone.",
+      "Tú te aseguras de que podamos trabajar en tu salón, iglesia y lugares de fotos. Cualquier cuota, permiso o estacionamiento que cobren lo pagas tú.",
+      "Si alguien del equipo es acosado, amenazado o corre peligro, podemos retirarnos. No hay reembolso.",
+    ],
+    time: "Horario",
+    timeLines: [
+      "La cobertura empieza a la hora que confirmemos contigo y dura las horas de tu paquete, en un solo bloque.",
+      "El tiempo que se pierde porque la familia, un proveedor o el salón se atrasan no se repone.",
+      "El tiempo extra ese día solo es posible si el equipo puede quedarse, y se cobra a nuestro precio por hora extra.",
+      "La fecha, las horas y las direcciones que nos das deben ser correctas. No reembolsamos problemas causados por datos equivocados.",
+    ],
+    limits: "Lo que podemos y no podemos prometer",
+    limitsLines: [
+      "Fotografiamos y grabamos el día tal como sucede. No podemos prometer una foto, pose, invitado o momento en particular.",
+      "No somos responsables de momentos que se pierdan por reglas del salón o la iglesia, poca luz, el clima, atrasos en el horario o personas que tapen la cámara.",
+      "El estilo de edición, la música y cuáles fotos entregamos son nuestra decisión creativa. Recibes las fotos editadas y los videos de tu paquete. Las fotos sin editar y el video crudo no están incluidos, a menos que tu paquete lo diga.",
+      "Si encuentras un error en lo que entregamos, avísanos en los 14 días después de recibirlo y lo corregimos. No volvemos a editar por un cambio de gusto.",
+      "Después de la entrega, guardar y respaldar tus archivos es tu responsabilidad.",
+      "Si alguien del equipo se enferma o tiene una emergencia, mandamos a otra persona de nuestro equipo. Si no podemos cubrir tu fecha, te devolvemos todo lo que pagaste.",
+      "Si nuestro equipo falla o se pierden archivos, te devolvemos una parte justa de lo que pagaste por lo que falte. Lo máximo que podemos deberte, por cualquier motivo, es el total que nos pagaste.",
+    ],
+    delivery: "Cuándo recibes tus fotos y videos",
+    deliveryLines: [
+      "Tu galería y tus videos llegan entre 30 y 90 días después del evento. Cualquier día dentro de ese plazo es a tiempo.",
+      "Editamos en el orden en que fueron los eventos. En temporada alta, espera más cerca de los 90 días.",
+      "Te escribimos por correo el día que estén listos. No necesitas preguntar.",
+      "Preguntar antes no adelanta tu lugar en la fila. Antes del día 90, la respuesta a \"¿cuándo?\" es esta sección. Si pasa el día 90, escríbenos y te damos una fecha.",
+      "Trata bien a nuestro equipo, en persona y por mensaje. Las amenazas, los insultos o mensaje tras mensaje exigiendo una entrega adelantada son acoso. Si eso pasa, contestamos solo por correo, y entregamos en el plazo de arriba.",
+    ],
+    fine: "La letra chica",
+    fineLines: [
+      "Si algo no te gusta, las dos partes acordamos hablarlo primero por escrito, antes de cualquier otro paso.",
+      "Tienes al menos 18 años y eres la madre, el padre, el tutor legal o la persona que paga, con derecho a firmar esto.",
+      "Este contrato es el acuerdo completo. Una promesa hecha por mensaje, llamada o redes sociales solo cuenta cuando la escribimos en tu reservación.",
+      "Si una parte de este contrato no se puede hacer valer, el resto sigue vigente. Este contrato se rige por las leyes de Texas.",
     ],
     teamSolo: "Tu equipo: 1 fotógrafo y videógrafo en uno, que toma fotos y graba al mismo tiempo con {{cameras.solo}} cámaras",
     crew: "Quién cubre tu día",
     crewLines: [
       "Tu día lo cubre el pequeño equipo de casa de TX Quince, de fotógrafos y videógrafos, a veces con Dang o Yvonne, los dueños, detrás de la cámara. El estudio arma el equipo para cada fecha.",
       "Cada galería y cada video lo editan los dueños.",
+      "Nosotros elegimos al equipo. Quién asista, los dueños o el equipo, no es motivo para cancelar, pedir reembolso o disputar un cargo.",
     ],
     media: "Tus fotos y videos",
     mediaLines: (share: boolean) => [
       "Todo lo que te entregamos es tuyo para guardar, imprimir y compartir con familia y amigos.",
+      "Los derechos de autor son nuestros. Tus fotos y videos son para uso personal. No puedes venderlos ni dejar que un negocio los use sin nuestro permiso por escrito.",
       share
         ? "Estás de acuerdo con que compartamos algunas de tus fotos y videos en nuestra página y redes sociales."
         : "No compartiremos tus fotos ni videos públicamente.",
@@ -242,15 +351,21 @@ export function buildAgreement(input: AgreementInput, book: PriceBook): Agreemen
     },
     { title: t.how, lines: [...t.howLines(book.holdDays)] },
     { title: t.crew, lines: [...t.crewLines] },
+    { title: t.day, lines: [...t.dayLines] },
+    { title: t.time, lines: [...t.timeLines] },
+    { title: t.delivery, lines: [...t.deliveryLines] },
+    { title: t.limits, lines: [...t.limitsLines] },
     { title: t.changes, lines: [...t.changesLines] },
+    { title: t.pay, lines: [...t.payLines] },
     { title: t.media, lines: [...t.mediaLines(input.sharePermission)] },
+    { title: t.fine, lines: [...t.fineLines] },
   ];
 
   return {
     version: AGREEMENT_VERSION,
     lang: input.lang,
     title: t.title,
-    intro: t.intro(input.name, input.honoree),
+    intro: t.intro(tidyName(input.name), tidyName(input.honoree)),
     sections,
     totalUsd: q.totalUsd,
     depositUsd: q.retainerUsd,
