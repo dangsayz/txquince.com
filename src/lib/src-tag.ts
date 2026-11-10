@@ -6,6 +6,12 @@
  * whatsapp (links sent in WhatsApp chats). Links between our own pages never
  * carry a tag.
  *
+ * A venue we work with gets its own tag, `venue-<name>` (VENUE_NAMES below):
+ * `txquince.com/budget?src=venue-vm-ballroom` is the link that venue hands to
+ * its families, so the inquiry says which venue sent them and the venue
+ * discount can be applied. The list is closed: an unknown venue tag is dropped
+ * like any other unknown tag. To add a venue, add one line to VENUE_NAMES.
+ *
  * The browser keeps the LATEST src it saw (Tracker), so a visitor who first
  * arrived from Google and later tapped a ?src=instagram link still gets the
  * tag; the first-touch source is kept alongside it. Every inquiry, plan,
@@ -16,11 +22,41 @@
 export const SRC_TAGS = ["instagram", "facebook", "tiktok", "youtube", "pinterest", "quora", "gbp", "whatsapp"] as const;
 export type SrcTag = (typeof SRC_TAGS)[number];
 
-/** One of the eight tags ("Instagram " → "instagram"), or null for anything else. */
-export function normalizeSrc(v: unknown): SrcTag | null {
+/** Venues that have (or may be given) a link for their families: tag name → display name. */
+export const VENUE_NAMES: Record<string, string> = {
+  "tp-station": "T&P Station",
+  "convention-plaza": "Convention Plaza",
+  "las-lomas": "Las Lomas",
+  "slate-venues": "Slate Venues",
+  "vm-ballroom": "VM Ballroom",
+  "luxury-venue": "Luxury Wedding & Event Venue",
+  "enchanted-event-hall": "Enchanted Event Hall",
+  "the-hamptons": "The Hamptons",
+  dreamhaus: "Dreamhaus",
+  "fgs-ranch": "FGS Ranch",
+  "la-prada": "La Prada Event Center",
+  "latino-ballroom": "Latino Ballroom",
+};
+const VENUE_PREFIX = "venue-";
+export type VenueTag = `venue-${string}`;
+
+/** "venue-vm-ballroom" → "VM Ballroom"; null when the key is not a known venue tag. */
+export function venueTagName(key: string | null | undefined): string | null {
+  const t = (key ?? "").trim().toLowerCase();
+  if (!t.startsWith(VENUE_PREFIX)) return null;
+  const name = t.slice(VENUE_PREFIX.length);
+  return Object.hasOwn(VENUE_NAMES, name) ? VENUE_NAMES[name] : null;
+}
+
+/**
+ * One of the eight platform tags ("Instagram " → "instagram") or a known venue
+ * tag ("venue-vm-ballroom"), or null for anything else.
+ */
+export function normalizeSrc(v: unknown): SrcTag | VenueTag | null {
   if (typeof v !== "string") return null;
   const t = v.trim().toLowerCase();
-  return (SRC_TAGS as readonly string[]).includes(t) ? (t as SrcTag) : null;
+  if ((SRC_TAGS as readonly string[]).includes(t)) return t as SrcTag;
+  return venueTagName(t) ? (t as VenueTag) : null;
 }
 
 /**
