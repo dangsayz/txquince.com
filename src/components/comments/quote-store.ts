@@ -64,3 +64,31 @@ export function subscribeRailMount(fn: () => void) {
   };
 }
 export const getRailMount = () => railMount;
+
+/**
+ * A starter picked before logging in. It waits in this tab (sessionStorage)
+ * while the visitor logs in, then lands in the bottom comment field once.
+ */
+const draftKey = (slug: string) => `tq-cmt-start:${slug}`;
+export function saveStarter(slug: string, text: string) {
+  try {
+    window.sessionStorage.setItem(draftKey(slug), text);
+  } catch {
+    /* private mode: the visitor just starts with an empty field */
+  }
+}
+/** Read it (it stays until clearStarter, so a double render cannot lose it). */
+export function readStarter(slug: string): string {
+  try {
+    return (window.sessionStorage.getItem(draftKey(slug)) ?? "").slice(0, 200);
+  } catch {
+    return "";
+  }
+}
+export function clearStarter(slug: string) {
+  try {
+    window.sessionStorage.removeItem(draftKey(slug));
+  } catch {
+    /* nothing to clear */
+  }
+}

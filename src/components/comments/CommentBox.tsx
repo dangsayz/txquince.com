@@ -6,7 +6,7 @@ import { signedInHint } from "@/lib/signed-in-hint";
 import type { ClerkSettings } from "@/lib/clerk-config";
 import { COPY, startersFor, type CommentLang, type CommentTopic } from "./copy";
 import { ReviewNote } from "./ReviewNote";
-import { COMMENT_FOCUS_EVENT, setQuote, setRailMount, useQuote } from "./quote-store";
+import { COMMENT_FOCUS_EVENT, saveStarter, setQuote, setRailMount, useQuote } from "./quote-store";
 
 // Clerk's script (and the editor) load only for a visitor who is signed in.
 const Composer = dynamic(() => import("./Composer").then((m) => m.Composer), { ssr: false });
@@ -106,6 +106,17 @@ export function CommentBox({ lang, slug, clerk, place, topic }: { lang: CommentL
           {active ? chip : null}
           {place === "bottom" ? <p className="tq-cmt__label">{c.label}</p> : null}
           <p className="tq-cmt__gate-lead">{c.gate}</p>
+          {place === "bottom" && state === "out" ? (
+            // Pick how to begin, log in, and the words are waiting in the field.
+            <div className="tq-cmt__starters">
+              <span className="tq-cmt__starters-label">{c.startWith}</span>
+              {startersFor(lang, topic).map((st) => (
+                <a key={st.label} className="tq-pill" href={login} rel="nofollow" onClick={() => saveStarter(slug, st.text)}>
+                  {st.label}
+                </a>
+              ))}
+            </div>
+          ) : null}
           <div className="tq-cmt__actions">
             <a className="tq-btn tq-btn--lg" href={login} rel="nofollow">
               {c.logIn} <span className="tq-arrow" aria-hidden>↗</span>

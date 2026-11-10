@@ -11,6 +11,8 @@ export type HomeClipSlot = (typeof HOME_CLIP_SLOTS)[number];
 export const MAX_CLIP_BYTES = 12 * 1024 * 1024;
 /** Longer than this is a film, not a loop. */
 export const MAX_CLIP_SECONDS = 20;
+/** A clip longer than that is cut to this before upload: the length a loop should be. */
+export const LOOP_SECONDS = 12;
 
 export type HomeClip = { name: string; size: number; updatedAt: string };
 export type HomeClips = Partial<Record<HomeClipSlot, HomeClip>>;

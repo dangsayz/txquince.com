@@ -425,3 +425,8 @@
 .tq-cmt__box[data-place="bottom"] .tq-cmt__input { margin-top: var(--tq-space-4); }
 .tq-cmt__box[data-place="bottom"] .tq-cmt__actions { margin-top: var(--tq-space-4); }
 .tq-cmt__hint { color: var(--tq-ink-mute); }
+
+/* Logged out: the same starters, as links to log in. The choice is kept and
+   is waiting in the field after login. */
+.tq-cmt__box[data-place="bottom"] .tq-cmt__gate .tq-cmt__starters { margin-bottom: var(--tq-space-2); }
+.txq .tq-cmt__starters a.tq-pill { text-decoration: none; }
