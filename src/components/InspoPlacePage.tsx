@@ -30,6 +30,8 @@ const UI = {
 } as const;
 
 function cityHref(place: InspoPlace, lang: Lang): string {
+  // A spot whose city has no page links to the list of cities.
+  if (!place.citySlug) return lang === "es" ? "/es/fotografo-de-quinceaneras" : "/quinceanera-photographer";
   return lang === "es"
     ? `/es/fotografo-de-quinceaneras/${place.citySlug}`
     : `/quinceanera-photographer/${place.citySlug}`;
