@@ -82,6 +82,20 @@
   --tq-dur-base: 250ms; /* most UI state changes */
   --tq-dur-slow: 400ms; /* reveals, sheets */
   --tq-dur-theme: 900ms; /* cinema-room dim only */
+
+  /* Quince tints (added 2026-11-10, Dang's ask): five soft dress colors for the
+     booking package cards only. Each is a wash + a line color. Text on a wash
+     stays --tq-ink (15:1 or more); never set text in the line color. */
+  --tq-quince-rose: #f7e4e7;
+  --tq-quince-rose-line: #cf8f9b;
+  --tq-quince-champagne: #f6ebd5;
+  --tq-quince-champagne-line: #c2a05c;
+  --tq-quince-lilac: #ece5f4;
+  --tq-quince-lilac-line: #a892c9;
+  --tq-quince-sage: #e3eee4;
+  --tq-quince-sage-line: #86ab8a;
+  --tq-quince-sky: #e1ecf4;
+  --tq-quince-sky-line: #86a8c4;
 }
 
 @media (prefers-reduced-motion: reduce) {
