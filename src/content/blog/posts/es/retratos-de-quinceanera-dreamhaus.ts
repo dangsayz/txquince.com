@@ -111,6 +111,8 @@ const post: BlogPost = {
       type: "p",
       text: "Los retratos en interior funcionan con cualquier clima y les quedan muy bien a los vestidos con mucho detalle. Cuéntanos tu fecha y el estilo que quieres, y te decimos qué te conviene. Manda mensaje o llama al (972) 914-8617.",
     },
+    { type: "h2", text: "Más fotos de este día" },
+    { type: "gallery", album: "dreamhaus-pink-tiara" },
     {
       type: "cta",
       heading: "Planea los retratos de tus quince",

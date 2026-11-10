@@ -108,6 +108,8 @@ const post: BlogPost = {
       type: "p",
       text: "Planning a red-and-white quince? Tell us your date and your venue, and we will help you plan the decor shots along with everything else. Text or call (972) 914-8617.",
     },
+    { type: "h2", text: "More photos from this day" },
+    { type: "gallery", album: "luxury-red-white-reception" },
     {
       type: "cta",
       heading: "Make sure your decor ends up in the album",

@@ -778,6 +778,33 @@
   width: 100%;
   height: auto;
 }
+/* More photos from the album: a tight grid that keeps each photo's own shape.
+   Columns, not rows, so tall and wide photos sit together with no cropping. */
+.txq .tq-blog-gallery {
+  columns: 2;
+  column-gap: 8px;
+  margin-block: 1.5em 2em;
+}
+.txq .tq-blog-gallery__item {
+  display: block;
+  margin-bottom: 8px;
+  break-inside: avoid;
+  background: var(--bg-surface);
+}
+.txq .tq-blog-gallery__item img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.txq .tq-blog-gallery__item:focus-visible {
+  outline: 2px solid var(--tq-ink);
+  outline-offset: 2px;
+}
+@media (min-width: 640px) {
+  .txq .tq-blog-gallery {
+    columns: 3;
+  }
+}
 .txq .tq-blog-flow__cta {
   display: grid;
   justify-items: start;

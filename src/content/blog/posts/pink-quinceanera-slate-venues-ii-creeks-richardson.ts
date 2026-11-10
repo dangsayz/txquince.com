@@ -113,6 +113,8 @@ const post: BlogPost = {
       type: "p",
       text: "Planning a pink quince? Tell us your date and your venue, and we will help you plan the portraits and decor shots for the day. Text or call (972) 914-8617.",
     },
+    { type: "h2", text: "More photos from this day" },
+    { type: "gallery", album: "slate-pink-gown" },
     {
       type: "cta",
       heading: "Plan the photos for your pink quince",

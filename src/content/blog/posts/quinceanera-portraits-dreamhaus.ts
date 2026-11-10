@@ -110,6 +110,8 @@ const post: BlogPost = {
       type: "p",
       text: "Indoor portraits are a good choice in any weather, and they suit gowns with a lot of detail. Tell us your date and the look you want, and we will tell you what fits. Text or call (972) 914-8617.",
     },
+    { type: "h2", text: "More photos from this day" },
+    { type: "gallery", album: "dreamhaus-pink-tiara" },
     {
       type: "cta",
       heading: "Plan your quince portraits",

@@ -106,6 +106,8 @@ const post: BlogPost = {
       type: "p",
       text: "Want a dress session with stone, ivy and city views? Tell us your date and the look you have in mind, and we will help you plan it. Text or call (972) 914-8617.",
     },
+    { type: "h2", text: "More photos from this day" },
+    { type: "gallery", album: "mandalay-black-floral" },
     {
       type: "cta",
       heading: "Plan your dress session",

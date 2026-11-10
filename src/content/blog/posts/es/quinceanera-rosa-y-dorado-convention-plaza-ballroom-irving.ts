@@ -182,6 +182,8 @@ const post: BlogPost = {
       type: "callout",
       text: "Vea todas las fotos de esta celebración en la [página de Convention Plaza Ballroom](/venues/convention-plaza-ballroom).",
     },
+    { type: "h2", text: "Más fotos de este día" },
+    { type: "gallery", album: "plaza-pink-gold" },
     { type: "cta", heading: "Vea qué se ajusta a su presupuesto", body: "Escriba su presupuesto y vea qué paquete de foto y video le queda, con todos los precios publicados. No se cobra nada por enviar una solicitud.", href: "/es/presupuesto", label: "Abrir la página de presupuesto" },
     { type: "p", text: "¿Prefiere platicarlo? [Mande un texto](sms:+19729148617) o [llame](tel:+19729148617) al (972) 914-8617, en español o en inglés." },
   ],

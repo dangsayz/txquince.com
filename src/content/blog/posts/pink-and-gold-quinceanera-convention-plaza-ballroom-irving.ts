@@ -181,6 +181,8 @@ const post: BlogPost = {
       type: "callout",
       text: "See every photo from this celebration on the [Convention Plaza Ballroom page](/venues/convention-plaza-ballroom).",
     },
+    { type: "h2", text: "More photos from this day" },
+    { type: "gallery", album: "plaza-pink-gold" },
     { type: "cta", heading: "See what fits your budget", body: "Type your budget and see which photo and video package fits, with every price published. Nothing is charged to send a request.", href: "/budget", label: "Open the budget page" },
     { type: "p", text: "Prefer to talk it through? [Text](sms:+19729148617) or [call](tel:+19729148617) (972) 914-8617, in English or Spanish." },
   ],

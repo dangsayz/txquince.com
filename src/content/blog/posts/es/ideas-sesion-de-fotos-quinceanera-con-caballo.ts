@@ -94,6 +94,8 @@ const post: BlogPost = {
         "Lleven botas o zapatos planos, agua y alguien que esponje la falda entre foto y foto.",
       ],
     },
+    { type: "h2", text: "Más fotos de este día" },
+    { type: "gallery", album: "horse-red" },
     {
       type: "cta",
       heading: "¿Quieren una sesión con caballo para sus quince?",

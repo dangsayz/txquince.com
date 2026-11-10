@@ -88,6 +88,8 @@ const post: BlogPost = {
       type: "p",
       text: "¿Estás planeando unos quince en rosa y negro? Cuéntanos tu fecha y tu salón, y te ayudamos a planear cuándo van las fotos de la decoración y los retratos. Mándanos mensaje o llámanos al (972) 914-8617.",
     },
+    { type: "h2", text: "Más fotos de este día" },
+    { type: "gallery", album: "vm-ballroom-pink" },
     {
       type: "cta",
       heading: "Planea las fotos de tu fiesta",

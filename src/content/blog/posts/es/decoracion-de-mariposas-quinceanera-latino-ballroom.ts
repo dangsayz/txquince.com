@@ -105,6 +105,8 @@ const post: BlogPost = {
       type: "p",
       text: "Las fotos de la decoración son una parte chiquita del día, pero son las que muestran los meses de decisiones que hay detrás. Cuéntanos tu fecha y tu salón, y te decimos qué alcanza con tu presupuesto. Manda mensaje o llama al (972) 914-8617.",
     },
+    { type: "h2", text: "Más fotos de este día" },
+    { type: "gallery", album: "latino-ballroom-butterfly" },
     {
       type: "cta",
       heading: "Planea las fotos de tus quince",

@@ -106,6 +106,8 @@ const post: BlogPost = {
       type: "p",
       text: "A horse session can be booked on its own or as the dress session in a package. Tell us your date and whether you want the ranch, and we will tell you what fits. [Check your date](/check-your-date?venue=fgs-ranch).",
     },
+    { type: "h2", text: "More photos from this day" },
+    { type: "gallery", album: "fgs-ranch-red" },
   ],
   faqs: [
     {
