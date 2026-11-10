@@ -90,8 +90,8 @@ export const content: CityContent = {
     },
     {
       name: "Towne Lake Recreation Area (McKinney)",
-      why: "In McKinney, a 22-acre lake with a fishing pier and a paved path around the water. Open lakeside light for sunset portraits.",
-      whyEs: "En McKinney, un lago de 22 acres con muelle de pesca y un sendero pavimentado alrededor del agua. Luz abierta junto al lago para fotos de atardecer.",
+      why: "In McKinney, a lake with a fishing pier and a paved path around the water. Open lakeside light for sunset portraits.",
+      whyEs: "En McKinney, un lago con muelle de pesca y un sendero pavimentado alrededor del agua. Luz abierta junto al lago para fotos de atardecer.",
     },
     {
       name: "Historic Downtown McKinney (McKinney)",

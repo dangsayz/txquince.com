@@ -17,6 +17,7 @@
  */
 
 import { PT } from "@/lib/price-text";
+import { extraLocations } from "@/content/cities";
 
 const RETAINER_PCT = PT.deposit.percent;
 
@@ -518,6 +519,7 @@ export const locations: Location[] = [
       },
     ],
   },
+  ...extraLocations,
 ];
 
 /** Public city centroids (lat/lon) for ProfessionalService `geo` structured data. */
@@ -533,6 +535,16 @@ export const cityGeo: Record<string, { lat: number; lon: number }> = {
   frisco: { lat: 33.1507, lon: -96.8236 },
   plano: { lat: 33.0198, lon: -96.6989 },
   mckinney: { lat: 33.1972, lon: -96.6398 },
+  mesquite: { lat: 32.7668, lon: -96.5992 },
+  "balch-springs": { lat: 32.7287, lon: -96.6228 },
+  carrollton: { lat: 32.9756, lon: -96.89 },
+  lewisville: { lat: 33.0462, lon: -96.9942 },
+  allen: { lat: 33.1032, lon: -96.6706 },
+  anna: { lat: 33.349, lon: -96.5486 },
+  melissa: { lat: 33.2859, lon: -96.5728 },
+  duncanville: { lat: 32.6518, lon: -96.9083 },
+  desoto: { lat: 32.5899, lon: -96.857 },
+  "cedar-hill": { lat: 32.5885, lon: -96.9561 },
 };
 
 export function getLocation(slug: string): Location | undefined {

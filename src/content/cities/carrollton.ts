@@ -27,7 +27,7 @@ export const location: Location = {
   ],
   lead: "A historic square, a river-bottom preserve, and room for a full quinceañera day.",
   intro: [
-    "Carrollton sits north of Dallas along I-35E and spreads across parts of Dallas, Denton and Collin counties. It is a city of brick-lined downtown blocks, creekside greenbelts and busy corridors like Belt Line Road and Old Denton Road, and families here plan a quinceañera the full way. From a misa at a parish like St. Catherine of Siena to receptions off Belt Line Road or up toward Hebron Parkway, I document all of it.",
+    "Carrollton sits north of Dallas along I-35E and spreads across parts of Dallas, Denton and Collin counties. It is a city of brick-lined downtown blocks, creekside greenbelts and busy corridors like Belt Line Road and Old Denton Road, and families here plan a quinceañera the full way. From the morning misa to receptions off Belt Line Road or up toward Hebron Parkway, I document all of it.",
     "We keep the quality where it should be by editing every gallery and film ourselves, as the owners. Your misa, your portraits, your entrada and vals and the celebration after — a TX Quince team, fully present, the entire day.",
   ],
   faqs: [
@@ -42,7 +42,7 @@ export const location: Location = {
   ],
   leadEs: "Un centro histórico, un bosque junto al río y todo el espacio para un quince completo.",
   introEs: [
-    "Carrollton está al norte de Dallas, a lo largo de la I-35E, y se extiende por partes de los condados de Dallas, Denton y Collin. Es una ciudad de cuadras de ladrillo en el centro, senderos junto a los arroyos y avenidas muy transitadas como Belt Line Road y Old Denton Road, y las familias de aquí hacen el quince completo. Desde una misa en una parroquia como St. Catherine of Siena hasta recepciones por Belt Line Road o rumbo a Hebron Parkway, lo documento todo.",
+    "Carrollton está al norte de Dallas, a lo largo de la I-35E, y se extiende por partes de los condados de Dallas, Denton y Collin. Es una ciudad de cuadras de ladrillo en el centro, senderos junto a los arroyos y avenidas muy transitadas como Belt Line Road y Old Denton Road, y las familias de aquí hacen el quince completo. Desde la misa de la mañana hasta recepciones por Belt Line Road o rumbo a Hebron Parkway, lo documento todo.",
     "Mantenemos la calidad donde debe estar porque nosotros, los dueños, editamos cada galería y cada video. Tu misa, tus fotos, tu entrada y vals y la celebración después: un equipo de TX Quince, presente por completo, todo el día.",
   ],
   faqsEs: [

@@ -81,8 +81,8 @@ export const content: CityContent = {
     },
     {
       name: "Duncanville Historical Park windmill (Armstrong Park)",
-      why: "The park's historic sites include a restored windmill and the city's first music room. A rustic, old-Texas backdrop for a portrait in a ball gown.",
-      whyEs: "Los sitios históricos del parque incluyen un molino restaurado y el primer salón de música de la ciudad. Un fondo rústico del Texas de antes para un retrato con vestido de gala.",
+      why: "The park's historic sites include a restored windmill and a historic music room. A rustic, old-Texas backdrop for a portrait in a ball gown.",
+      whyEs: "Los sitios históricos del parque incluyen un molino restaurado y un salón de música histórico. Un fondo rústico del Texas de antes para un retrato con vestido de gala.",
     },
     {
       name: "Lakeside Park",
