@@ -14,6 +14,12 @@ const post: BlogPost = {
   lang: "es",
   lead: "El chambelán es un joven que acompaña a la quinceañera y baila con ella durante su celebración. La mayoría de las cortes tienen varios, y uno de ellos es el chambelán de honor, su acompañante principal. Aquí le explicamos qué hacen, cómo se escogen y qué hacer si su hija todavía no tiene a nadie en mente.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-064",
+      alt: "Chambelán con sombrero vaquero y chaleco color champaña visto de espaldas, bailando con una dama de botas blancas mientras el resto de la corte baila al fondo en una quinceañera en Irving",
+      caption: "Un chambelán y una dama abren la pista con el resto de la corte.",
+    },
     { type: "h2", text: "Qué es un chambelán" },
     {
       type: "p",

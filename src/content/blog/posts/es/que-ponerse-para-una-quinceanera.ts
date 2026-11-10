@@ -12,8 +12,15 @@ const post: BlogPost = {
   publishedAt: "2026-11-10",
   readMinutes: 5,
   lang: "es",
+  coverFull: true,
   lead: "Vista semiformal o formal, y revise primero la invitación. Evite el color del vestido de la quinceañera y cubra los hombros si hay misa. Lo demás son detalles que le ayudan a estar cómodo desde la iglesia hasta el último baile. Esto es lo que suelen usar los invitados y lo que conviene evitar.",
   content: [
+    {
+      type: "image",
+      slug: "album-luxury-red-white-reception-104",
+      alt: "Mesa de invitados de quinceañera con centro de rosas rojas y blancas, servilletas rojas sobre platos dorados y copas en un salón de DFW",
+      caption: "Una mesa de invitados con los colores de la fiesta.",
+    },
     { type: "h2", text: "Empiece por la invitación" },
     {
       type: "p",

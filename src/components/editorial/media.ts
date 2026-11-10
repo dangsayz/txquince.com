@@ -153,7 +153,7 @@ export const DETAILS: Detail[] = [
   },
 ];
 
-/** Full-bleed black-and-white backdrop behind the featured-package card. */
+/** Full-bleed backdrop behind the featured-package card: the default for the `home.feature` image slot. */
 export const FEATURE_STILL: Still = {
   src: "/portfolio/gown-overhead.webp",
   width: 1600,

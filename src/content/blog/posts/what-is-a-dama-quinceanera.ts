@@ -13,6 +13,12 @@ const post: BlogPost = {
   readMinutes: 5,
   lead: "A dama is a young woman who stands with the quinceañera as part of her court of honor. She is usually a close friend or a cousin, and she walks, dances and celebrates beside her all day. Here is who damas are, how families choose them, what they do and how to ask someone to be one.",
   content: [
+    {
+      type: "image",
+      slug: "album-plaza-pink-gold-153",
+      alt: "Quinceañera court seen from behind, damas and chambelanes huddled with their hands and hats in the air on the dance floor at a reception in Irving",
+      caption: "The court together on the dance floor, right after the surprise dance.",
+    },
     { type: "h2", text: "Who the damas are" },
     {
       type: "p",

@@ -116,7 +116,8 @@ async function checkPage(ctx, path, view, links) {
       const broken = [...document.images].filter((i) => i.complete && i.naturalWidth === 0 && i.currentSrc).map((i) => i.currentSrc.slice(0, 90));
       return {
         overflow: document.documentElement.scrollWidth - window.innerWidth,
-        h1: document.querySelectorAll("h1").length,
+        // Top-level headings as a reader meets them: an <h1> marked aria-level 2+ is not one.
+        h1: [...document.querySelectorAll("h1")].filter((h) => !(Number(h.getAttribute("aria-level")) > 1)).length,
         title: document.title,
         small: [...new Set(small)],
         tiny: [...new Set(tiny)],

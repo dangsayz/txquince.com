@@ -91,5 +91,5 @@
 .ed-how .ed-promises__more { margin-top: clamp(24px, 3vw, 36px); border: 0; background: #ffffff; color: var(--ed-ink); padding: 0 clamp(16px, 2vw, 28px); }
 .ed-how .ed-promises__more summary { min-height: 64px; color: var(--ed-ink); }
 .ed-how .ed-promises__list li { color: var(--ed-ink); }
-/* The band already divides the sections; the panel needs no rule of its own. */
-.ed-how + .ed-panel { border-top: 0; margin-top: clamp(40px, 5vw, 64px); }
+/* The band is its own block now, between the reviews and the package list. */
+.ed-how { margin-top: 0; }

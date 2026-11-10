@@ -7,7 +7,7 @@ import { Intake, bookHref } from "@/components/txq/Intake";
 import { BudgetCta } from "@/components/budget/BudgetCta";
 import { useShell } from "@/components/txq/SiteShell";
 import { useSite } from "@/components/txq/state";
-import { TIERS, money, tierBullets, tierDetail, tierNameL, tierTeam, type CinemaFilm } from "@/components/txq/data";
+import { TIERS, money, tierBullets, tierNameL, type CinemaFilm } from "@/components/txq/data";
 import type { Journal } from "@/components/txq/Editorial";
 import { usePriceBook } from "@/components/PriceBookProvider";
 import { SlotPicture } from "@/components/slots/SlotPicture";
@@ -238,7 +238,6 @@ function Statement() {
 /* Favorites: the contact sheet of starred portfolio photos            */
 /* ------------------------------------------------------------------ */
 
-const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"];
 
 /** Starred portfolio photos; the six static stills when the database is unreachable. */
 function FavoritesSection({ favorites }: { favorites: Favorite[] }) {
@@ -466,25 +465,22 @@ function Collage({ galleries }: { galleries: HomeGallery[] }) {
 /* Feature: the most-chosen package on a black-and-white plate         */
 /* ------------------------------------------------------------------ */
 
+const FEATURE_SLOT = "home.feature";
+
 function Feature() {
   const { lang, pickPackage } = useSite();
   const { book } = usePriceBook();
   const e = ED[lang];
   const tier = TIERS.find((x) => x.recommended) ?? TIERS[2];
   const p = book.packages[tier.id];
+  // Replaceable in Admin → Website → Every image, or "Replace photo" on the live page.
+  const image = useSlot(FEATURE_SLOT, { src: FEATURE_STILL.src, alt: FEATURE_STILL.alt, width: FEATURE_STILL.width, height: FEATURE_STILL.height });
   return (
     <section className="ed-feature" data-ed="feature" data-header-tone="dark" aria-labelledby="ed-feature-title">
       <div className="ed-feature__plate" data-allow-upscale>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          data-ed="feature-bg"
-          src={FEATURE_STILL.src}
-          width={FEATURE_STILL.width}
-          height={FEATURE_STILL.height}
-          alt={FEATURE_STILL.alt[lang]}
-          loading="lazy"
-          decoding="async"
-        />
+        <div className="ed-feature__bg" data-ed="feature-bg">
+          <SlotPicture image={image} lang={lang} fill sizes="100vw" />
+        </div>
       </div>
       <div className="ed-feature__track">
         <div className="ed-card" data-header-tone="light">
@@ -516,6 +512,7 @@ function Feature() {
           </a>
         </div>
       </div>
+      <SlotAdminControl slot={FEATURE_SLOT} />
     </section>
   );
 }
@@ -525,71 +522,35 @@ function Feature() {
 /* ------------------------------------------------------------------ */
 
 function Packages({ children }: { children: ReactNode }) {
-  const { lang, pickPackage } = useSite();
-  const { book } = usePriceBook();
+  const { lang } = useSite();
   const p = ED[lang].packages;
   return (
-    <section id="commissions" className="ed-packages" aria-labelledby="ed-pk-title">
+    <>
+      {/* A black band, edge to edge: how booking works, before she picks. */}
       <div className="ed-wrap">
-        <div className="ed-head" data-ed="rise">
-          <h2 id="ed-pk-title" className="ed-display ed-display--lg">
-            {p.title}
-          </h2>
-          <p className="ed-dek">{p.dek}</p>
-        </div>
-        <ul className="ed-pkgs">
-          {TIERS.map((x, i) => {
-            const pp = book.packages[x.id];
-            const name = tierNameL(book, x.id)[lang];
-            const pick = !!x.recommended;
-            return (
-              <li key={x.id} className="ed-pkg">
-                <span className="ed-roman ed-pkg__n" aria-hidden>
-                  {ROMAN[i]}
-                </span>
-                <div className="ed-pkg__main">
-                  <h3 className="ed-pkg__name">
-                    {name}
-                    {pick && <span className="ed-pkg__pick">{p.pick}</span>}
-                  </h3>
-                  <p className="ed-pkg__desc">{tierDetail(book, x.id)[lang]}</p>
-                  <p className="ed-pkg__meta">
-                    {p.hours(pp.hours)} · {tierTeam(book, x.id)[lang]}
-                  </p>
-                  {x.id === "trio" && book.trioSpotsLeft > 0 && (
-                    <p className="ed-offer">{p.offer(book.trioSpotsLeft, book.trioSpotsTotal, money(pp.price))}</p>
-                  )}
-                </div>
-                <span className="ed-pkg__price">{money(pp.price)}</span>
-                <a
-                  href={bookHref(x.id)}
-                  className="ed-btn ed-pkg__btn"
-                  data-variant={pick ? undefined : "line"}
-                  aria-label={p.bookAria(name)}
-                  onClick={(ev) => {
-                    ev.preventDefault();
-                    pickPackage(x.id);
-                  }}
-                >
-                  {p.book}
-                </a>
-              </li>
-            );
-          })}
-        </ul>
-        <p className="ed-crew">{p.crew}</p>
-        {/* A black band, edge to edge: the steps and promises stand apart from the price list. */}
         <div className="ed-how" data-header-tone="dark">
           <Steps />
           <Promises />
         </div>
-        <div className="ed-panel">
-          <h3 className="ed-display ed-display--sm">{p.panelTitle}</h3>
-          <p className="ed-dek">{p.panelDek}</p>
-          {children}
-        </div>
       </div>
-    </section>
+      {/* One package list: the booking panel's own (name, what's in it, crew,
+          price). Tapping a row picks it; Next carries on to her date. */}
+      <section id="commissions" className="ed-packages" aria-labelledby="ed-pk-title">
+        <div className="ed-wrap">
+          <div className="ed-head" data-ed="rise">
+            <h2 id="ed-pk-title" className="ed-display ed-display--lg">
+              {p.title}
+            </h2>
+            <p className="ed-dek">{p.dek}</p>
+          </div>
+          <div className="ed-panel">
+            <p className="ed-dek">{p.panelDek}</p>
+            {children}
+          </div>
+          <p className="ed-crew">{p.crew}</p>
+        </div>
+      </section>
+    </>
   );
 }
 

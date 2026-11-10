@@ -11,8 +11,15 @@ const post: BlogPost = {
     "Padrinos are the people who stand with a family and help with one part of the quince. Here is who they are, what they often sponsor, and how to ask well.",
   publishedAt: "2026-11-10",
   readMinutes: 5,
+  coverFull: true,
   lead: "Padrinos and madrinas are the godparents and sponsors of a quinceañera. Each one helps with one part of the celebration and stands with the family on the day. Here is who they are, a list of items families often ask them to sponsor, and how to ask in a way that honors them.",
   content: [
+    {
+      type: "image",
+      slug: "album-la-prada-pink-103",
+      alt: "Quinceañera last doll: a white teddy bear with a tiara in a hot pink tulle dress on a sequin table at a DFW reception",
+      caption: "The last doll is one of the gifts padrinos often give.",
+    },
     { type: "h2", text: "What padrinos and madrinas are" },
     {
       type: "p",
