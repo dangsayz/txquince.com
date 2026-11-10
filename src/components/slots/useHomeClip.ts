@@ -6,7 +6,7 @@
  * the live page, so both follow the same rules and say the same words.
  */
 import { useEffect, useState } from "react";
-import { clampFocus, CLIP_PLACE, MAX_CLIP_BYTES, MAX_CLIP_SECONDS, type HomeClip, type HomeClipSlot } from "@/lib/home-clip-shared";
+import { clampFocus, CLIP_PLACE, MAX_CLIP_BYTES, MAX_CLIP_SECONDS, type ClipVariant, type HomeClip, type HomeClipSlot } from "@/lib/home-clip-shared";
 
 /** Length of a local video file in seconds (null when the browser cannot read it). */
 function duration(file: File): Promise<number | null> {
@@ -33,7 +33,7 @@ export const mb = (n: number) => `${Number((n / 1024 / 1024).toFixed(1))} MB`;
 export function useHomeClip(slot: HomeClipSlot | null, initial?: HomeClip | null) {
   const [clip, setClip] = useState<HomeClip | null>(initial ?? null);
   const [ready, setReady] = useState(initial !== undefined || !slot);
-  const [busy, setBusy] = useState<"shrink" | "upload" | "remove" | "focus" | null>(null);
+  const [busy, setBusy] = useState<"shrink" | "upload" | "remove" | "focus" | "phone" | null>(null);
   /** 0 to 100 while a large video is being made smaller. */
   const [percent, setPercent] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -54,7 +54,8 @@ export function useHomeClip(slot: HomeClipSlot | null, initial?: HomeClip | null
     };
   }, [slot, initial]);
 
-  async function upload(file: File | undefined) {
+  /** `variant` "phone" stores a tall cut that phones play in place of the wide clip. */
+  async function upload(file: File | undefined, variant: ClipVariant = "wide") {
     if (!slot || !file || busy) return;
     setError(null);
     setStatus(null);
@@ -80,14 +81,14 @@ export function useHomeClip(slot: HomeClipSlot | null, initial?: HomeClip | null
         return setError(e instanceof Error && e.name === "ShrinkError" ? e.message : "Could not prepare that video. Try again.");
       }
     }
-    setBusy("upload");
+    setBusy(variant === "phone" ? "phone" : "upload");
     try {
-      const res = await fetch(`/api/admin/home-clip?slot=${slot}`, { method: "POST", headers: { "content-type": "video/mp4" }, body });
+      const res = await fetch(`/api/admin/home-clip?slot=${slot}&variant=${variant}`, { method: "POST", headers: { "content-type": "video/mp4" }, body });
       const d = (await res.json().catch(() => ({}))) as { error?: string; clip?: HomeClip | null };
       if (!res.ok || !d.clip) throw new Error(d.error ?? "Could not save the clip. Try again.");
       setClip(d.clip);
       setChanged(true);
-      setStatus(`Film loop saved. It now plays ${CLIP_PLACE[slot]}.${note}`);
+      setStatus(variant === "phone" ? `Tall clip saved. Phones now play it ${CLIP_PLACE[slot]}.${note}` : `Film loop saved. It now plays ${CLIP_PLACE[slot]}.${note}`);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not save the clip. Try again.");
     } finally {
@@ -114,6 +115,26 @@ export function useHomeClip(slot: HomeClipSlot | null, initial?: HomeClip | null
     }
   }
 
+  /** Remove only the tall cut: phones go back to the wide clip. */
+  async function removePhone() {
+    if (!slot || busy) return;
+    setBusy("phone");
+    setError(null);
+    setStatus(null);
+    try {
+      const res = await fetch(`/api/admin/home-clip?slot=${slot}&variant=phone`, { method: "DELETE" });
+      const d = (await res.json().catch(() => ({}))) as { error?: string; clip?: HomeClip | null };
+      if (!res.ok) throw new Error(d.error ?? "Could not remove the tall clip. Try again.");
+      setClip(d.clip ?? null);
+      setChanged(true);
+      setStatus("Tall clip removed. Phones play the wide clip again.");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not remove the tall clip. Try again.");
+    } finally {
+      setBusy(null);
+    }
+  }
+
   /** Save which part of the clip stays in view where the frame crops its sides (0 left, 100 right). */
   async function saveFocus(focusX: number) {
     if (!slot || !clip || busy) return;
@@ -134,5 +155,5 @@ export function useHomeClip(slot: HomeClipSlot | null, initial?: HomeClip | null
     }
   }
 
-  return { clip, ready, busy, percent, error, status, changed, upload, remove, saveFocus };
+  return { clip, ready, busy, percent, error, status, changed, upload, remove, removePhone, saveFocus };
 }

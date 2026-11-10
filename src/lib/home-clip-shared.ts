@@ -15,7 +15,18 @@ export const MAX_CLIP_SECONDS = 20;
 export const LOOP_SECONDS = 12;
 
 /** `focusX`: the part of the clip kept in view when the frame crops its sides, 0 (left) to 100 (right). */
-export type HomeClip = { name: string; size: number; updatedAt: string; focusX?: number };
+export type HomeClip = {
+  name: string;
+  size: number;
+  updatedAt: string;
+  focusX?: number;
+  /** A tall (9:16) cut of the same loop that phones play in place of the wide one. */
+  phone?: { name: string; size: number };
+};
+
+/** Which file of a loop: the wide one every screen can play, or the tall cut for phones. */
+export type ClipVariant = "wide" | "phone";
+export const isClipVariant = (v: unknown): v is ClipVariant => v === "wide" || v === "phone";
 
 /** A whole percent from 0 to 100; anything else is the centre. */
 export function clampFocus(v: unknown): number {
@@ -25,6 +36,12 @@ export function clampFocus(v: unknown): number {
 
 /** CSS object-position for a clip. */
 export const clipFocus = (clip: HomeClip) => `${clampFocus(clip.focusX ?? 50)}% 50%`;
+
+/** A stored loop as the homepage plays it: the wide file, the tall cut for phones, the focus. */
+export function homeClip(clip: HomeClip | undefined): { mp4: string; mp4Mobile?: string; focus: string } | null {
+  if (!clip) return null;
+  return { mp4: clipUrl(clip.name), ...(clip.phone ? { mp4Mobile: clipUrl(clip.phone.name) } : {}), focus: clipFocus(clip) };
+}
 
 export type HomeClips = Partial<Record<HomeClipSlot, HomeClip>>;
 
@@ -49,8 +66,8 @@ export function isMp4(head: Uint8Array): boolean {
 }
 
 /** A fresh file name per upload: clips are cached for a year, so names never repeat. */
-export function clipName(slot: HomeClipSlot, now: number): string {
-  return `${slot}-${now.toString(36)}.mp4`;
+export function clipName(slot: HomeClipSlot, now: number, variant: ClipVariant = "wide"): string {
+  return `${slot}-${variant === "phone" ? "phone-" : ""}${now.toString(36)}.mp4`;
 }
 
 /** Public URL of a stored clip (the film route serves `home-film/<name>`). */

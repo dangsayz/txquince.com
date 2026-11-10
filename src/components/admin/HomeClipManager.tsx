@@ -9,7 +9,7 @@ import { mb, useHomeClip } from "@/components/slots/useHomeClip";
  * private until the upload finishes; removing it puts the photo back.
  */
 export function HomeClipManager({ slot, initial }: { slot: HomeClipSlot; initial: HomeClip | null }) {
-  const { clip, busy, percent, error, status, upload, remove, saveFocus } = useHomeClip(slot, initial);
+  const { clip, busy, percent, error, status, upload, remove, removePhone, saveFocus } = useHomeClip(slot, initial);
   const saved = clampFocus(clip?.focusX ?? 50);
   // The slider's own value while it is dragged; null = showing the saved one.
   const [draft, setDraft] = useState<number | null>(null);
@@ -49,17 +49,47 @@ export function HomeClipManager({ slot, initial }: { slot: HomeClipSlot; initial
         </div>
         {clip ? (
           <div className="mt-5 grid grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-4 border-t border-[var(--tq-surface-2)] pt-5">
-            {/* A phone shows only a narrow slice of a wide clip: this is that slice. */}
+            {/* What a phone plays: the tall cut, or a narrow slice of the wide clip. */}
             <div className="relative aspect-[9/19] w-full overflow-hidden rounded-[var(--tq-radius-sm)] bg-[var(--tq-surface-2)]">
-              <video key={clip.name} src={clipUrl(clip.name)} muted loop playsInline autoPlay preload="metadata" className="absolute inset-0 size-full object-cover" style={{ objectPosition: `${focus}% 50%` }} aria-hidden tabIndex={-1} />
+              {clip.phone ? (
+                <video key={clip.phone.name} src={clipUrl(clip.phone.name)} muted loop playsInline autoPlay preload="metadata" className="absolute inset-0 size-full object-cover" aria-hidden tabIndex={-1} />
+              ) : (
+                <video key={clip.name} src={clipUrl(clip.name)} muted loop playsInline autoPlay preload="metadata" className="absolute inset-0 size-full object-cover" style={{ objectPosition: `${focus}% 50%` }} aria-hidden tabIndex={-1} />
+              )}
             </div>
             <div className="min-w-0">
-              <label htmlFor={`focus-${slot}`} className="block text-base font-medium text-[var(--tq-ink)]">What a phone shows</label>
-              <p className="st-note mt-1">A phone is tall, so it shows a slice of a wide clip. Slide to the part that matters.</p>
-              <input id={`focus-${slot}`} type="range" min={0} max={100} step={1} value={focus} disabled={busy !== null} onChange={(e) => setDraft(Number(e.target.value))} className="mt-2 block min-h-11 w-full accent-[var(--tq-ink)]" aria-valuetext={focus < 34 ? "left" : focus > 66 ? "right" : "middle"} />
-              <button type="button" disabled={busy !== null || focus === saved} onClick={() => void saveFocus(focus).then(() => setDraft(null))} className="st-btn-ghost mt-2 whitespace-nowrap">
-                {busy === "focus" ? "Saving…" : "Save framing"}
-              </button>
+              {clip.phone ? (
+                <>
+                  <p className="m-0 text-base font-medium text-[var(--tq-ink)]">Phones play this tall clip</p>
+                  <p className="st-note mt-1">Computers and tablets play the wide clip.</p>
+                </>
+              ) : (
+                <>
+                  <label htmlFor={`focus-${slot}`} className="block text-base font-medium text-[var(--tq-ink)]">What a phone shows</label>
+                  <p className="st-note mt-1">A phone is tall, so it shows a slice of a wide clip. Slide to the part that matters, or upload a tall clip (9:16) of the same moment.</p>
+                  <input id={`focus-${slot}`} type="range" min={0} max={100} step={1} value={focus} disabled={busy !== null} onChange={(e) => setDraft(Number(e.target.value))} className="mt-2 block min-h-11 w-full accent-[var(--tq-ink)]" aria-valuetext={focus < 34 ? "left" : focus > 66 ? "right" : "middle"} />
+                </>
+              )}
+              <div className="mt-2 flex flex-wrap items-center gap-3">
+                {clip.phone ? null : (
+                  <button type="button" disabled={busy !== null || focus === saved} onClick={() => void saveFocus(focus).then(() => setDraft(null))} className="st-btn-ghost whitespace-nowrap">
+                    {busy === "focus" ? "Saving…" : "Save framing"}
+                  </button>
+                )}
+                <input type="file" accept="video/*" className="peer sr-only" id={`clip-phone-${slot}`} disabled={busy !== null} onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  e.target.value = "";
+                  void upload(file, "phone");
+                }} />
+                <label htmlFor={`clip-phone-${slot}`} className="st-btn-ghost cursor-pointer whitespace-nowrap peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[var(--tq-ink)] peer-disabled:opacity-50">
+                  {busy === "phone" ? "Working…" : clip.phone ? "Replace tall clip" : "Upload tall clip"}
+                </label>
+                {clip.phone ? (
+                  <button type="button" onClick={() => void removePhone()} disabled={busy !== null} className="st-btn-ghost whitespace-nowrap">
+                    Remove tall clip
+                  </button>
+                ) : null}
+              </div>
             </div>
           </div>
         ) : null}
