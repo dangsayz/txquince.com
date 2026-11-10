@@ -61,7 +61,7 @@ export default async function HomePage() {
       <FavoritesJsonLd favorites={favorites} lang="en" />
       <SlotProvider slots={await resolveHomeSlots(overrides)}>
         <div className={editorialFonts}>
-          <EditorialHome journal={fillDeep(await latestJournal(), book)} films={films} overrides={overrides} galleries={galleriesFromImages(portfolio)} work={homeLocations(portfolio, getAllPosts(), "/blog")} cities={homeCities()} favorites={favorites} reviews={reviews} featureClip={clips.feature ? { mp4: clipUrl(clips.feature.name) } : null} />
+          <EditorialHome journal={fillDeep(await latestJournal(), book)} films={films} overrides={overrides} galleries={galleriesFromImages(portfolio)} work={homeLocations(portfolio, getAllPosts(), "/blog")} cities={homeCities()} favorites={favorites} reviews={reviews} heroClip={clips.hero ? { mp4: clipUrl(clips.hero.name) } : null} featureClip={clips.feature ? { mp4: clipUrl(clips.feature.name) } : null} />
         </div>
       </SlotProvider>
     </>

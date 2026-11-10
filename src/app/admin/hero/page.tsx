@@ -50,15 +50,18 @@ export default async function AdminHero() {
     <StudioPage
       wide
       title="Page imagery"
-      intro="The film loop on the homepage and the first photo on each page."
+      intro="The film loops on the homepage and the first photo on each page."
       actions={
         <Link href="/admin/images" className="st-btn-ghost whitespace-nowrap">
           Homepage photos
         </Link>
       }
     >
-      <StudioSection title="Homepage film loop" intro="A short silent clip that plays behind the featured package.">
-        <HomeClipManager slot="feature" initial={clips.feature ?? null} />
+      <StudioSection title="Film loop at the top of the homepage" intro="A short silent clip that plays over the first photo a family sees.">
+        <HomeClipManager slot="hero" place="at the top of the homepage" initial={clips.hero ?? null} />
+      </StudioSection>
+      <StudioSection title="Film loop behind the featured package" intro="A short silent clip that plays behind the featured package. It also adds a “Watch our films” button there.">
+        <HomeClipManager slot="feature" place="behind the featured package" initial={clips.feature ?? null} />
       </StudioSection>
       {/* The homepage's photos (top photo, featured-package background, questions)
           are image slots: Every image, or "Replace photo" on the live page. */}
