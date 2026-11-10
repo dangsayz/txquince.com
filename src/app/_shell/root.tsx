@@ -13,6 +13,7 @@ import "../globals.css";
 import { commissionsFromLabel } from "@/content/commissions";
 import { site } from "@/content/site";
 import { getPriceBook } from "@/lib/pricing";
+import { getSiteBanner } from "@/lib/site-banner";
 import { fillDeep } from "@/lib/price-text";
 import { OG_LOCALE, type SiteLang } from "@/lib/hreflang";
 import { PublicSiteFrame } from "@/components/PublicSiteFrame";
@@ -120,7 +121,7 @@ export const rootViewport: Viewport = {
 export async function RootDocument({ children }: Readonly<{ children: React.ReactNode }>) {
   // The live price book (read from R2 per request; launch defaults when unreachable).
   // Handed to every public page's client UI through the site shell.
-  const book = await getPriceBook();
+  const [book, banner] = await Promise.all([getPriceBook(), getSiteBanner()]);
   return (
     <html
       lang="en"
@@ -128,7 +129,7 @@ export async function RootDocument({ children }: Readonly<{ children: React.Reac
       className={`${sans.variable} ${display.variable} ${mono.variable} h-full`}
     >
       <body className="flex min-h-dvh flex-col bg-cream">
-        <PublicSiteFrame book={book}>{children}</PublicSiteFrame>
+        <PublicSiteFrame book={book} banner={banner}>{children}</PublicSiteFrame>
         <Suspense fallback={null}>
           <Tracker />
         </Suspense>

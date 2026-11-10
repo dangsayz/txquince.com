@@ -25,6 +25,10 @@ const GROUPS: { title: string; links: { href: string; label: string; what: strin
     ],
   },
   {
+    title: "Announcements",
+    links: [{ href: "/admin/banner", label: "Banner", what: "The thin line under the menu: payment plans, plus a sale line when you run one." }],
+  },
+  {
     title: "Reviews",
     links: [
       { href: "/admin/reviews", label: "Reviews", what: "Make a private review link for each mom, then approve what shows on the site." },
