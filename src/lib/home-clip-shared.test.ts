@@ -1,10 +1,19 @@
 import { describe, expect, it } from "vitest";
-import { CLIP_FOR_IMAGE_SLOT, CLIP_PLACE, clipName, clipUrl, HOME_CLIP_SLOTS, isHomeClipSlot, isMp4 } from "./home-clip-shared";
+import { CLIP_FOR_IMAGE_SLOT, CLIP_PLACE, clampFocus, clipFocus, clipName, clipUrl, HOME_CLIP_SLOTS, isHomeClipSlot, isMp4 } from "./home-clip-shared";
 import { isSlotId } from "./image-slots";
 
 const bytes = (s: string) => new Uint8Array([...s].map((c) => c.charCodeAt(0)));
 
 describe("home clips", () => {
+  it("keeps the focus a whole percent, centred by default", () => {
+    expect(clampFocus(15.4)).toBe(15);
+    expect(clampFocus(-3)).toBe(0);
+    expect(clampFocus(250)).toBe(100);
+    expect(clampFocus("left")).toBe(50);
+    expect(clipFocus({ name: "a.mp4", size: 1, updatedAt: "" })).toBe("50% 50%");
+    expect(clipFocus({ name: "a.mp4", size: 1, updatedAt: "", focusX: 0 })).toBe("0% 50%");
+  });
+
   it("accepts an MP4 container and nothing else", () => {
     expect(isMp4(bytes("\0\0\0\x20ftypisom\0\0\x02\0"))).toBe(true);
     expect(isMp4(bytes("<!doctype html><html>"))).toBe(false);

@@ -23,6 +23,8 @@ export type Clip = {
   webm?: string;
   mp4Mobile?: string;
   webmMobile?: string;
+  /** CSS object-position: the part kept in view when the frame crops the clip. */
+  focus?: string;
 };
 
 export type Still = { src: string; width: number; height: number; alt: L; focus?: string };

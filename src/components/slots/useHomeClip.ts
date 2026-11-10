@@ -6,7 +6,7 @@
  * the live page, so both follow the same rules and say the same words.
  */
 import { useEffect, useState } from "react";
-import { CLIP_PLACE, MAX_CLIP_BYTES, MAX_CLIP_SECONDS, type HomeClip, type HomeClipSlot } from "@/lib/home-clip-shared";
+import { clampFocus, CLIP_PLACE, MAX_CLIP_BYTES, MAX_CLIP_SECONDS, type HomeClip, type HomeClipSlot } from "@/lib/home-clip-shared";
 
 /** Length of a local video file in seconds (null when the browser cannot read it). */
 function duration(file: File): Promise<number | null> {
@@ -33,7 +33,7 @@ export const mb = (n: number) => `${Number((n / 1024 / 1024).toFixed(1))} MB`;
 export function useHomeClip(slot: HomeClipSlot | null, initial?: HomeClip | null) {
   const [clip, setClip] = useState<HomeClip | null>(initial ?? null);
   const [ready, setReady] = useState(initial !== undefined || !slot);
-  const [busy, setBusy] = useState<"shrink" | "upload" | "remove" | null>(null);
+  const [busy, setBusy] = useState<"shrink" | "upload" | "remove" | "focus" | null>(null);
   /** 0 to 100 while a large video is being made smaller. */
   const [percent, setPercent] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -114,5 +114,25 @@ export function useHomeClip(slot: HomeClipSlot | null, initial?: HomeClip | null
     }
   }
 
-  return { clip, ready, busy, percent, error, status, changed, upload, remove };
+  /** Save which part of the clip stays in view where the frame crops its sides (0 left, 100 right). */
+  async function saveFocus(focusX: number) {
+    if (!slot || !clip || busy) return;
+    setBusy("focus");
+    setError(null);
+    setStatus(null);
+    try {
+      const res = await fetch(`/api/admin/home-clip?slot=${slot}`, { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ focusX: clampFocus(focusX) }) });
+      const d = (await res.json().catch(() => ({}))) as { error?: string; clip?: HomeClip | null };
+      if (!res.ok || !d.clip) throw new Error(d.error ?? "Could not save the framing. Try again.");
+      setClip(d.clip);
+      setChanged(true);
+      setStatus("Framing saved.");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not save the framing. Try again.");
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  return { clip, ready, busy, percent, error, status, changed, upload, remove, saveFocus };
 }

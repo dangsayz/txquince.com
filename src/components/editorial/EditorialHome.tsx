@@ -484,7 +484,7 @@ function Feature({ clip }: { clip: Clip | null }) {
   return (
     <section className="ed-feature" data-ed="feature" data-header-tone="dark" aria-labelledby="ed-feature-title">
       <div className="ed-feature__plate" data-allow-upscale>
-        <div className="ed-feature__bg" data-ed="feature-bg">
+        <div className="ed-feature__bg">
           <SlotPicture image={image} lang={lang} fill sizes="100vw" />
           <LazyVideo clip={clip} className="ed-video" />
         </div>

@@ -23,7 +23,6 @@ function whenIdle(fn: () => void) {
  *   data-ed="lines"    children marked data-line brighten one after another
  *   data-ed="band"     the black band opens from an inset like a curtain
  *   data-ed="depth"    a collage plate drifts at its own depth (data-depth 0–1)
- *   data-ed="feature-bg" the black-and-white plate behind the featured package
  *   data-ed="rise"     a heading rises in once, if it starts below the fold
  *
  * The libraries are fetched on the visitor's first scroll, touch, key or mouse
@@ -103,10 +102,6 @@ export function useScenes(rootRef: RefObject<HTMLElement | null>) {
             gsap.fromTo(el, { y: dist * 0.45 }, { y: -dist, ease: "none", scrollTrigger: { trigger: el.parentElement, start: "top bottom", end: "bottom top", scrub: 0.55, invalidateOnRefresh: true } });
           });
         });
-
-        q('[data-ed="feature-bg"]').forEach((el) =>
-          gsap.fromTo(el, { yPercent: -6 }, { yPercent: 6, ease: "none", scrollTrigger: { trigger: el.closest('[data-ed="feature"]'), start: "top bottom", end: "bottom top", scrub: true } }),
-        );
 
         q('[data-ed="rise"]').forEach((el) => {
           if (el.getBoundingClientRect().top < window.innerHeight) return;

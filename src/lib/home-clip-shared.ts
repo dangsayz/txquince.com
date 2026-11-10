@@ -14,7 +14,18 @@ export const MAX_CLIP_SECONDS = 20;
 /** A clip longer than that is cut to this before upload: the length a loop should be. */
 export const LOOP_SECONDS = 12;
 
-export type HomeClip = { name: string; size: number; updatedAt: string };
+/** `focusX`: the part of the clip kept in view when the frame crops its sides, 0 (left) to 100 (right). */
+export type HomeClip = { name: string; size: number; updatedAt: string; focusX?: number };
+
+/** A whole percent from 0 to 100; anything else is the centre. */
+export function clampFocus(v: unknown): number {
+  const n = typeof v === "number" ? v : Number.NaN;
+  return Number.isFinite(n) ? Math.min(100, Math.max(0, Math.round(n))) : 50;
+}
+
+/** CSS object-position for a clip. */
+export const clipFocus = (clip: HomeClip) => `${clampFocus(clip.focusX ?? 50)}% 50%`;
+
 export type HomeClips = Partial<Record<HomeClipSlot, HomeClip>>;
 
 /** The image slots that can also play a loop: "Replace photo" on the live page offers video there. */

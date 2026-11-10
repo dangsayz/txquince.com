@@ -1,6 +1,7 @@
 /**
  * /api/admin/home-clip?slot=feature — read (GET), upload (POST, raw MP4 bytes)
- * or remove (DELETE) a homepage background film loop. Admin only. The bytes themselves
+ * or remove (DELETE) a homepage background film loop; PATCH `{ focusX }` moves
+ * the part kept in view. Admin only. The bytes themselves
  * must be an MP4; the size cap keeps a loop a loop.
  */
 import { NextResponse } from "next/server";
@@ -8,7 +9,7 @@ import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/require-admin";
 import { unauthorizedAdminResponse } from "@/lib/admin-auth";
 import { isHomeClipSlot, isMp4, MAX_CLIP_BYTES } from "@/lib/home-clip-shared";
-import { getHomeClips, removeHomeClip, saveHomeClip } from "@/lib/home-clips";
+import { getHomeClips, removeHomeClip, saveHomeClip, setHomeClipFocus } from "@/lib/home-clips";
 
 export const dynamic = "force-dynamic";
 
@@ -41,6 +42,24 @@ export async function POST(request: Request) {
   }
   try {
     const clips = await saveHomeClip(slot, bytes);
+    refresh();
+    return NextResponse.json({ ok: true, clip: clips[slot] ?? null });
+  } catch {
+    return NextResponse.json({ error: "Storage not available. Try again." }, { status: 503 });
+  }
+}
+
+export async function PATCH(request: Request) {
+  if (!(await requireAdmin())) return unauthorizedAdminResponse();
+  const slot = new URL(request.url).searchParams.get("slot");
+  if (!isHomeClipSlot(slot)) return NextResponse.json({ error: "Unknown place for a clip." }, { status: 400 });
+  const body = (await request.json().catch(() => null)) as { focusX?: unknown } | null;
+  if (typeof body?.focusX !== "number" || !Number.isFinite(body.focusX)) {
+    return NextResponse.json({ error: "Missing framing." }, { status: 400 });
+  }
+  try {
+    const clips = await setHomeClipFocus(slot, body.focusX);
+    if (!clips) return NextResponse.json({ error: "Upload a film loop first." }, { status: 404 });
     refresh();
     return NextResponse.json({ ok: true, clip: clips[slot] ?? null });
   } catch {
