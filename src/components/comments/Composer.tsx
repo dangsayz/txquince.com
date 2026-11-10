@@ -8,6 +8,7 @@ import { COMMENT_MAX } from "@/lib/comments";
 import { COPY, type CommentLang } from "./copy";
 import { getRailMount, setQuote, subscribeRailMount, useQuote } from "./quote-store";
 import type { CommentPlace } from "./CommentBox";
+import { ReviewNote } from "./ReviewNote";
 
 /**
  * Loaded on demand (signed-in visitors only): Clerk + the comment form.
@@ -62,14 +63,12 @@ function Form({ lang, slug, place, chip }: { lang: CommentLang; slug: string; pl
     return (
       <div className="tq-cmt__gate">
         <p className="tq-cmt__gate-lead">{c.gate}</p>
-        <p className="tq-cmt__note">
-          <span className="tq-cmt__review">{c.review}</span>
-        </p>
         <div className="tq-cmt__actions">
           <a className="tq-btn tq-btn--lg" href={login} rel="nofollow">
             {c.logIn} <span className="tq-arrow" aria-hidden>↗</span>
           </a>
         </div>
+        <ReviewNote text={c.review} />
       </div>
     );
   }
@@ -122,7 +121,15 @@ function Form({ lang, slug, place, chip }: { lang: CommentLang; slug: string; pl
   }
 
   return (
-    <form className="tq-cmt__form" onSubmit={submit} noValidate>
+    <form className="tq-cmt__form" onSubmit={submit} noValidate data-open={body.length > 0 || error ? "true" : undefined}>
+      {name ? (
+        <p className="tq-cmt__as">
+          <span className="tq-cmt__avatar tq-cmt__avatar--me" aria-hidden>
+            {name.slice(0, 1).toUpperCase()}
+          </span>
+          <span>{c.postingAs(name)}</span>
+        </p>
+      ) : null}
       <label htmlFor={`${id}-body`} className="tq-cmt__label">
         {c.label}
       </label>
@@ -149,26 +156,31 @@ function Form({ lang, slug, place, chip }: { lang: CommentLang; slug: string; pl
         value={website}
         onChange={(e) => setWebsite(e.target.value)}
       />
-      <p id={`${id}-help`} className="tq-cmt__note">
-        {name ? <span className="tq-cmt__who">{c.postingAs(name)}</span> : null}
-        <span className="tq-cmt__review">{c.review}</span>
-      </p>
-      {error ? (
-        <p className="tq-cmt__error" role="alert">
-          {error}
-          {status === "error" && error === c.expired ? (
-            <>
-              {" "}
-              <a href={login}>{c.logIn}</a>
-            </>
+      {/* In the rail this part opens when the field is in use (comments.css). */}
+      <div className="tq-cmt__more">
+        <div className="tq-cmt__more-in">
+          {error ? (
+            <p className="tq-cmt__error" role="alert">
+              {error}
+              {status === "error" && error === c.expired ? (
+                <>
+                  {" "}
+                  <a href={login}>{c.logIn}</a>
+                </>
+              ) : null}
+            </p>
           ) : null}
-        </p>
-      ) : null}
-      <div className="tq-cmt__actions">
-        <button type="submit" className="tq-btn tq-btn--lg" disabled={status === "sending" || body.trim().length < 2}>
-          {status === "sending" ? c.sending : c.submit}
-        </button>
+          <div className="tq-cmt__actions">
+            <button type="submit" className="tq-btn tq-btn--lg" disabled={status === "sending" || body.trim().length < 2}>
+              {status === "sending" ? c.sending : c.submit}
+            </button>
+            <span className="tq-cmt__count tq-nums" aria-hidden>
+              {body.length} / {COMMENT_MAX}
+            </span>
+          </div>
+        </div>
       </div>
+      <ReviewNote id={`${id}-help`} text={c.review} />
     </form>
   );
 }

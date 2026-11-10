@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { StudioPage } from "@/components/admin/StudioPage";
 import { BookingsBoard, splitBookings } from "@/components/admin/BookingsBoard";
 import { getBookings, countPaid } from "@/lib/clients-db";
@@ -15,6 +16,7 @@ export default async function AdminBookings() {
     <StudioPage
       title="Bookings"
       intro={`${countPaid(bookings)} paid · ${upcoming.length} coming up${needs.length ? ` · ${needs.length} need${needs.length === 1 ? "s" : ""} you` : ""}.`}
+      actions={<Link href="/admin/payments" className="st-btn-ghost">Payments</Link>}
     >
       <BookingsBoard bookings={bookings} today={today} />
     </StudioPage>

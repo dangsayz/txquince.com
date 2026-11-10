@@ -5,6 +5,7 @@ import { Component, useEffect, useRef, useState, type ReactNode } from "react";
 import { signedInHint } from "@/lib/signed-in-hint";
 import type { ClerkSettings } from "@/lib/clerk-config";
 import { COPY, type CommentLang } from "./copy";
+import { ReviewNote } from "./ReviewNote";
 import { COMMENT_FOCUS_EVENT, setQuote, setRailMount, useQuote } from "./quote-store";
 
 // Clerk's script (and the editor) load only for a visitor who is signed in.
@@ -88,7 +89,7 @@ export function CommentBox({ lang, slug, clerk, place }: { lang: CommentLang; sl
 
   return (
     <div ref={root} className="tq-cmt__box" data-place={place}>
-      {place === "rail" ? <p className="tq-cmt__box-title tq-mono tq-muted">{c.railTitle}</p> : null}
+      {place === "rail" ? <p className="tq-cmt__box-title">{c.railTitle}</p> : null}
       {!clerk ? (
         <p className="tq-cmt__note">{c.soon}</p>
       ) : state === "in" ? (
@@ -104,9 +105,6 @@ export function CommentBox({ lang, slug, clerk, place }: { lang: CommentLang; sl
         <div className="tq-cmt__gate" aria-busy={state === "unknown" || undefined}>
           {active ? chip : null}
           <p className="tq-cmt__gate-lead">{c.gate}</p>
-          <p className="tq-cmt__note">
-            <span className="tq-cmt__review">{c.review}</span>
-          </p>
           <div className="tq-cmt__actions">
             <a className="tq-btn tq-btn--lg" href={login} rel="nofollow">
               {c.logIn} <span className="tq-arrow" aria-hidden>↗</span>
@@ -115,6 +113,7 @@ export function CommentBox({ lang, slug, clerk, place }: { lang: CommentLang; sl
               {c.signUp}
             </a>
           </div>
+          <ReviewNote text={c.review} />
         </div>
       )}
       <p className="tq-cmt__note tq-cmt__tip">{c.tip}</p>

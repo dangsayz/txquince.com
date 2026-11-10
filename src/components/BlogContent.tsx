@@ -6,6 +6,7 @@ import { slugifyHeading } from "@/content/blog";
 import { BlogShare } from "@/components/BlogShare";
 import { BlogPlanCta } from "@/components/BlogPlanCta";
 import { SlotImage } from "@/components/SlotImage";
+import { TocSpy } from "@/components/blog/TocSpy";
 import { blogCoverSlotId } from "@/lib/image-slots";
 import type { Series } from "@/content/blog-clusters";
 import "@/components/txq/pages/blog.css";
@@ -279,7 +280,9 @@ export function BlogContent({
                 {numbers.h2[i] === midBefore ? midSlot : null}
                 <h2 id={slugifyHeading(b.text)} className="tq-display tq-blog-flow__h2">
                   <span className="tq-mono tq-muted" aria-hidden>
-                    [{pad(numbers.h2[i])}]
+                    <Brk>[</Brk>
+                    {pad(numbers.h2[i])}
+                    <Brk>]</Brk>
                   </span>
                   {b.text}
                 </h2>
@@ -448,6 +451,13 @@ function PostRow({ post, n, lang, thumb, featured, headingLevel = "h3" }: RowPro
   );
 }
 
+/** The index-label bracket. A post page drops it (blog.css, .tq-blog--post). */
+const Brk = ({ children }: { children: string }) => (
+  <span className="tq-brk" aria-hidden>
+    {children}
+  </span>
+);
+
 export function SectionHead({
   index,
   title,
@@ -462,7 +472,9 @@ export function SectionHead({
   return (
     <header className="tq-head tq-blog-head">
       <p className="tq-head__index tq-mono" style={{ margin: 0 }}>
-        [{index}]
+        <Brk>[</Brk>
+        {index}
+        <Brk>]</Brk>
       </p>
       <h2 id={id} className="tq-display tq-head__title">
         {title}
@@ -479,7 +491,11 @@ function Closing({ lang }: { lang: BlogLang }) {
     <section className="tq-section" aria-labelledby="tq-blog-close-title">
       <div className="tq-wrap">
         <div className="tq-blog-close">
-          <p className="tq-mono tq-muted tq-blog-close__index">[{c.closeIndex}]</p>
+          <p className="tq-mono tq-muted tq-blog-close__index">
+            <Brk>[</Brk>
+            {c.closeIndex}
+            <Brk>]</Brk>
+          </p>
           <h2 id="tq-blog-close-title" className="tq-display tq-blog-close__title">
             {c.closeTitle[0]} <em>{c.closeTitle[1]}</em>
           </h2>
@@ -696,7 +712,7 @@ export function BlogArticleView({
   );
 
   return (
-    <div className="tq-blog">
+    <div className="tq-blog tq-blog--post">
       <article aria-labelledby="tq-blog-title">
         <div className="tq-wrap">
           {/* A portrait cover shown whole (coverFull) sits beside the title on
@@ -800,8 +816,14 @@ export function BlogArticleView({
               <div className="tq-blog-rail__stick">
                 {toc.length >= 3 ? (
                   <nav aria-label={c.tocLabel} className="tq-blog-toc tq-blog-toc--d">
-                    <p className="tq-mono tq-muted">{c.tocLabel}</p>
+                    <p className="tq-blog-toc__head">
+                      <span>{c.tocLabel}</span>
+                      <span className="tq-nums" data-toc-count aria-hidden>
+                        {toc.length}
+                      </span>
+                    </p>
                     {tocList}
+                    <TocSpy ids={toc.map((h) => slugifyHeading(h.text))} />
                   </nav>
                 ) : null}
                 {commentRail}
