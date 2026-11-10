@@ -103,6 +103,7 @@ const post: BlogPost = {
         "When in doubt — dress as you would for a wedding at the same church. You'll never be wrong.",
       ],
     },
+    { type: "p", text: "More answers: [a quinceañera without a mass or a court](/blog/quinceanera-without-mass-or-court), [the padrinos list](/blog/quinceanera-padrinos-list) and [what guests wear](/blog/what-to-wear-to-a-quinceanera)." },
     {
       type: "cta",
       heading: "Make sure your date is open before the parish locks it in",

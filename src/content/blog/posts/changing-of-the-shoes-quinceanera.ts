@@ -101,6 +101,7 @@ const post: BlogPost = {
       type: "p",
       text: "If you're deciding between photo and video, this moment is one of the clearest reasons to weigh both — we lay out the trade-offs in [quinceañera photo vs. video](/blog/quinceanera-photo-vs-video). And you can see the kneel and the reaction shots, side by side, throughout our [portfolio](/portfolio).",
     },
+    { type: "p", text: "More answers: [the crowning ceremony](/blog/quinceanera-crowning-ceremony), [the padrinos list](/blog/quinceanera-padrinos-list) and [what to say in the toast](/blog/quinceanera-toast-brindis)." },
     {
       type: "cta",
       heading: "Cover both faces, not just one",

@@ -107,6 +107,7 @@ const post: BlogPost = {
         "Si tiene dudas: vístase como lo haría para una boda en esa misma iglesia. Así nunca se va a equivocar.",
       ],
     },
+    { type: "p", text: "Más respuestas: [una quinceañera sin misa o sin corte](/es/blog/quinceanera-sin-misa-o-sin-corte), [la lista de padrinos](/es/blog/padrinos-de-quinceanera-lista) y [qué se ponen los invitados](/es/blog/que-ponerse-para-una-quinceanera)." },
     {
       type: "cta",
       heading: "Confirme que su fecha esté libre antes de apartarla con la parroquia",

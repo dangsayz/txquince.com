@@ -102,6 +102,7 @@ const post: BlogPost = {
       type: "p",
       text: "Si está decidiendo entre foto y video, este momento es una de las razones más claras para sopesar ambos; le exponemos las ventajas de cada uno en [foto o video en una quinceañera](/es/blog/foto-o-video-quinceanera). Y puede ver el momento de hincarse y las reacciones, lado a lado, a lo largo de nuestro [portafolio](/portfolio).",
     },
+    { type: "p", text: "Más respuestas: [la coronación](/es/blog/la-coronacion-de-la-quinceanera), [la lista de padrinos](/es/blog/padrinos-de-quinceanera-lista) y [qué decir en el brindis](/es/blog/brindis-de-quinceanera-que-decir)." },
     {
       type: "cta",
       heading: "Cubra los dos rostros, no solo uno",

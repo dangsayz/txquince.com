@@ -51,6 +51,7 @@ const post: BlogPost = {
       type: "p",
       text: "Casi todo lo demás en esta lista tiene reemplazo. Floristerías, pastelerías, DJ, tiendas de vestidos: hay docenas de cada uno en el metroplex, y siempre se consigue uno bueno aunque falten pocos meses. El salón y un fotógrafo con experiencia son distintos. Un salón atiende un solo evento por fecha. Un fotógrafo cubre una sola quinceañera por sábado. Cuando su calendario se llena, está lleno, y los más solicitados se ocupan de nueve a catorce meses antes para los sábados de primavera y otoño. Por eso estos dos van antes que el vestido; lea [cuándo reservar a su fotógrafo](/es/blog/cuando-reservar-fotografo-quinceanera-dfw) para conocer el razonamiento completo y las temporadas que se van primero.",
     },
+    { type: "p", text: "Más respuestas: [cuántas damas y chambelanes llevar](/es/blog/cuantas-damas-y-chambelanes), [quién paga cada cosa](/es/blog/quien-paga-la-quinceanera), [la lista de padrinos](/es/blog/padrinos-de-quinceanera-lista) y [qué decir en el brindis](/es/blog/brindis-de-quinceanera-que-decir)." },
     {
       type: "cta",
       heading: "Aparte su fecha antes de que alguien más lo haga",
