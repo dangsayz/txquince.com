@@ -210,6 +210,24 @@ export const getImageBySlug = cache(
   },
 );
 
+/**
+ * The current slug of a photo whose address was replaced (old_slug), or null.
+ * Lets the serve route and the photo page redirect an old address.
+ */
+export const getSlugForOldSlug = cache(async (oldSlug: string): Promise<{ slug: string; section: string } | null> => {
+  if (!isDbConfigured()) return null;
+  try {
+    const { data, error } = await getDb()
+      .from("portfolio_images")
+      .select("slug, section")
+      .eq("old_slug", oldSlug)
+      .maybeSingle();
+    return error || !data?.slug ? null : { slug: data.slug as string, section: data.section as string };
+  } catch {
+    return null;
+  }
+});
+
 export type ResolvedBlogImage = {
   url: string;
   width: number | null;
@@ -239,9 +257,11 @@ export async function getBlogImages(
         out[s] = { url: local.src, width: local.width, height: local.height, alt: local.alt, caption: null };
         return;
       }
-      const im = await getImageBySlug(s);
+      // A post may still name a photo by an address it used to have.
+      const moved = (await getImageBySlug(s)) ? null : await getSlugForOldSlug(s);
+      const im = await getImageBySlug(moved?.slug ?? s);
       if (im?.slug) {
-        out[im.slug] = {
+        out[s] = {
           url: im.url,
           width: im.width,
           height: im.height,

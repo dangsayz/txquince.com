@@ -3,14 +3,16 @@
  * Sharing an image shares THIS page (rich branded preview), never a file.
  * Editorial-system layout; ImageObject JSON-LD; quiet CTA to book.
  */
+import { publicTags } from "@/lib/venue-events";
 import type { Metadata } from "next";
 import { priceFloor, usd } from "@/lib/commission";
 import { getPriceBook } from "@/lib/pricing";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { site } from "@/content/site";
 import {
   getImageBySlug,
+  getSlugForOldSlug,
   getImagesBySection,
   imagePagePath,
 } from "@/lib/content-db";
@@ -48,7 +50,7 @@ export async function generateMetadata({
   return {
     title: `${copy.title} · ${categoryLabel(img.section)}`,
     description,
-    ...(img.tags ? { keywords: img.tags } : {}),
+    ...(publicTags(img.tags) ? { keywords: publicTags(img.tags) } : {}),
     alternates: { canonical: pagePath },
     // A single photograph is a share target, not a search landing page: ~200
     // words of templated copy per photo, ~100 near-identical pages. Keep them
@@ -80,6 +82,11 @@ export default async function PhotoPage({
 }) {
   const { category, slug } = await params;
   const img = await getImageBySlug(slug);
+  if (!img) {
+    // An address this photo used to have: send it to the current one.
+    const moved = await getSlugForOldSlug(slug);
+    if (moved) permanentRedirect(imagePagePath(moved.section, moved.slug));
+  }
   if (!img || !img.slug || img.section !== category) notFound();
 
   const label = categoryLabel(img.section);
@@ -100,7 +107,7 @@ export default async function PhotoPage({
         url: pageUrl,
         name: copy.title,
         description: copy.description,
-        ...(img.tags ? { keywords: img.tags } : {}),
+        ...(publicTags(img.tags) ? { keywords: publicTags(img.tags) } : {}),
         ...(img.width && img.height ? { width: img.width, height: img.height } : {}),
         creator: { "@type": "Organization", name: site.brand, url: site.url },
         copyrightHolder: { "@type": "Organization", name: site.brand },
