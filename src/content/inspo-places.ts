@@ -355,8 +355,9 @@ const mandalay: InspoPlace = {
 // (Type-only import in those files, so there is no runtime cycle.)
 import { place as dallasArboretum } from "./inspo/dallas-arboretum";
 import { place as fgsRanch } from "./inspo/fgs-ranch";
+import { place as dreamhaus } from "./inspo/dreamhaus";
 
-export const INSPO_PLACES: InspoPlace[] = [mandalay, dallasArboretum, fgsRanch];
+export const INSPO_PLACES: InspoPlace[] = [mandalay, dallasArboretum, fgsRanch, dreamhaus];
 
 export function getInspoPlace(slug: string): InspoPlace | undefined {
   return INSPO_PLACES.find((p) => p.slug === slug);
