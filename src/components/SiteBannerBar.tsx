@@ -20,7 +20,7 @@ const COPY = {
 const LOGOS = [
   { name: "Klarna", src: "/pay/klarna.svg", w: 38, h: 16 },
   { name: "Afterpay", src: "/pay/afterpay.svg", w: 83, h: 16 },
-  { name: "Affirm", src: "/pay/affirm.svg", w: 45, h: 18 },
+  { name: "Affirm", src: "/pay/affirm.svg", w: 45, h: 18, plate: true },
 ] as const;
 
 const TURN_MS = 6000;
@@ -55,12 +55,10 @@ export function SiteBannerBar({ banner, overHero }: { banner: SiteBanner; overHe
         <span className="tq-banner__text" data-size="full">{c.plans}</span>
         {/* A phone has no room for the full sentence beside three names. */}
         <span className="tq-banner__text" data-size="short">{c.short}</span>
-        {/* Over the homepage film the names are set as type; a row of colored badges fights the photo. */}
-        <span className="tq-banner__names">Klarna · Afterpay · Affirm</span>
         <span className="tq-banner__logos">
           {LOGOS.map((l) => (
             // eslint-disable-next-line @next/next/no-img-element -- official logo files, served as they are
-            <img key={l.name} src={l.src} alt="" width={l.w} height={l.h} decoding="async" />
+            <img key={l.name} src={l.src} alt="" width={l.w} height={l.h} decoding="async" data-plate={"plate" in l || undefined} />
           ))}
         </span>
       </span>
