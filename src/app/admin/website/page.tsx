@@ -13,7 +13,7 @@ const GROUPS: { title: string; links: { href: string; label: string; what: strin
       { href: "/admin/photos", label: "Photo dump", what: "Add new photos fast. They show under “Latest photos” on the homepage." },
       { href: "/admin/portfolio", label: "Portfolio", what: "Sort, star and tag the photographs families see across the site." },
       { href: "/admin/videos", label: "Films", what: "The films and the featured story." },
-      { href: "/admin/hero", label: "Page imagery", what: "The first image or film on each page." },
+      { href: "/admin/hero", label: "Page imagery", what: "The homepage film loop and the first photo on other pages." },
       { href: "/admin/images", label: "Every image", what: "Every photo on the site, page by page, with Replace and Undo." },
     ],
   },

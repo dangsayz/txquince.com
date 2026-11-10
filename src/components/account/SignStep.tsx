@@ -32,6 +32,52 @@ const COPY = {
   },
 } as const;
 
+/**
+ * One section's lines, laid out for reading (same words, nothing dropped):
+ *   "Total: $400"                      → label on the left, value in bold
+ *   "Deposit: $100 (25%). You pay …"   → label, bold value, the rest as a note
+ *   a full sentence                    → a bullet
+ */
+function splitLine(line: string): { label: string; value: string; note: string } | null {
+  const m = /^([^:.]{2,42}): (.+)$/.exec(line);
+  if (!m) return null;
+  const rest = m[2];
+  const cut = rest.search(/[.·] /);
+  return cut > 0 && cut < rest.length - 2
+    ? { label: m[1], value: rest.slice(0, cut + (rest[cut] === "." ? 1 : 0)).trim(), note: rest.slice(cut + 1).replace(/^[·\s]+/, "").trim() }
+    : { label: m[1], value: rest, note: "" };
+}
+
+function Lines({ lines }: { lines: string[] }) {
+  const facts = lines.map((l) => ({ l, f: splitLine(l) }));
+  const rows = facts.filter((x) => x.f);
+  const prose = facts.filter((x) => !x.f);
+  return (
+    <>
+      {rows.length > 0 && (
+        <dl className="acct-doc__facts">
+          {rows.map(({ l, f }) => (
+            <div key={l}>
+              <dt>{f!.label}</dt>
+              <dd>
+                <strong>{f!.value}</strong>
+                {f!.note ? <span className="acct-doc__note">{f!.note}</span> : null}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      )}
+      {prose.length > 0 && (
+        <ul className="acct-doc__points">
+          {prose.map(({ l }) => (
+            <li key={l}>{l}</li>
+          ))}
+        </ul>
+      )}
+    </>
+  );
+}
+
 /** The agreement to read, then typed name + drawn signature + consent. */
 export function SignStep({ lang, agreement, value, onChange, errors }: {
   lang: "en" | "es";
@@ -46,19 +92,19 @@ export function SignStep({ lang, agreement, value, onChange, errors }: {
       <h4 className="tq-bk-label">{c.title}</h4>
       <p className="acct-sign__lead">{c.lead}</p>
       <article className="acct-doc" aria-label={agreement.title}>
-        <h5 className="acct-doc__title">{agreement.title}</h5>
-        <p className="acct-doc__intro">{agreement.intro}</p>
+        <header className="acct-doc__top">
+          <h5 className="acct-doc__title">{agreement.title}</h5>
+          <p className="acct-doc__intro">{agreement.intro}</p>
+        </header>
         {agreement.sections.map((sec, i) => (
-          <section key={sec.title} className="acct-doc__sec">
+          <section key={sec.title} className="acct-doc__sec" data-money={sec.lines.some((l) => /^Total: /.test(l)) || undefined}>
             <h6 className="acct-doc__h">
               <span className="acct-doc__n" aria-hidden>{i + 1}</span>
               {sec.title}
             </h6>
-            <ul>
-              {sec.lines.map((l) => (
-                <li key={l}>{l}</li>
-              ))}
-            </ul>
+            <div className="acct-doc__body">
+              <Lines lines={sec.lines} />
+            </div>
           </section>
         ))}
       </article>

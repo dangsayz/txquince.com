@@ -684,16 +684,149 @@
   color: var(--tq-ink-mute);
   min-width: 1.5em;
 }
-.txq .acct-doc ul {
+/* Facts: label left, value bold. Rules: short bullets with room between them. */
+.txq .acct-doc__facts {
   display: grid;
-  gap: var(--tq-space-2);
   margin: 0;
-  padding: 0 0 0 calc(1.5em + var(--tq-space-3));
+}
+.txq .acct-doc__facts > div {
+  display: grid;
+  gap: 2px;
+  padding: var(--tq-space-3) 0;
+}
+.txq .acct-doc__facts > div + div {
+  border-top: 1px dashed var(--tq-surface-2);
+}
+.txq .acct-doc__facts dt {
+  color: var(--tq-ink-mute);
+  font-size: var(--tq-text-sm);
+}
+.txq .acct-doc__facts dd {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+}
+.txq .acct-doc__facts strong {
+  font-size: var(--tq-text-lg);
+  font-weight: var(--tq-weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+.txq .acct-doc__note {
+  color: var(--tq-ink-mute);
+  max-width: 52ch;
+}
+.txq .acct-doc__points {
+  display: grid;
+  gap: var(--tq-space-4);
+  margin: 0;
+  padding: 0;
   list-style: none;
-  max-width: 68ch;
+  max-width: 58ch;
+}
+.txq .acct-doc__points li {
+  display: grid;
+  grid-template-columns: 1.25rem minmax(0, 1fr);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+}
+.txq .acct-doc__points li::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  margin-top: 0.62em;
+  background: var(--tq-ink);
+}
+.txq .acct-doc__sec {
+  gap: var(--tq-space-4);
+  padding-top: var(--tq-space-8);
+}
+.txq .acct-doc__h {
+  font-size: var(--tq-text-h3);
+}
+@media (min-width: 700px) {
+  .txq .acct-doc__facts > div {
+    grid-template-columns: 11rem minmax(0, 1fr);
+    gap: var(--tq-space-6);
+    align-items: baseline;
+  }
+  .txq .acct-doc__facts dt {
+    font-size: var(--tq-text-body);
+  }
 }
 @media (min-width: 700px) {
   .txq .acct-doc {
     padding: var(--tq-space-12) var(--tq-space-12);
+  }
+}
+
+/* Contrast between the agreement's parts: a black title band, a linen header
+   band with a black number chip per section, white bodies, and the money
+   section set apart on linen with an ink edge. Brand kit colors only. */
+.txq .acct-doc {
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+.txq .acct-doc__top {
+  display: grid;
+  gap: var(--tq-space-3);
+  padding: var(--tq-space-8) var(--tq-space-6);
+  background: var(--tq-ink);
+  color: var(--tq-ink-on);
+}
+.txq .acct-doc__top .acct-doc__title {
+  color: var(--tq-ink-on);
+}
+.txq .acct-doc__top .acct-doc__intro {
+  color: #d9d5cd; /* 11:1 on ink */
+}
+.txq .acct-doc__sec {
+  gap: 0;
+  padding: 0;
+  border-top: 0;
+}
+.txq .acct-doc__h {
+  align-items: center;
+  gap: var(--tq-space-4);
+  padding: var(--tq-space-4) var(--tq-space-6);
+  background: var(--tq-surface);
+  border-top: 1px solid var(--tq-surface-2);
+  border-bottom: 1px solid var(--tq-surface-2);
+}
+.txq .acct-doc__n {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  min-width: 2rem;
+  background: var(--tq-ink);
+  color: var(--tq-ink-on);
+  font-size: var(--tq-text-sm);
+}
+.txq .acct-doc__body {
+  display: grid;
+  gap: var(--tq-space-4);
+  padding: var(--tq-space-4) var(--tq-space-6) var(--tq-space-8);
+  background: #fff;
+}
+.txq .acct-doc__sec[data-money] .acct-doc__facts {
+  padding: var(--tq-space-2) var(--tq-space-4);
+  background: var(--tq-surface);
+  border-left: 4px solid var(--tq-ink);
+}
+.txq .acct-doc__sec[data-money] .acct-doc__facts > div + div {
+  border-top-color: var(--tq-stone);
+}
+@media (min-width: 700px) {
+  .txq .acct-doc {
+    padding: 0;
+  }
+  .txq .acct-doc__top,
+  .txq .acct-doc__h {
+    padding-inline: var(--tq-space-12);
+  }
+  .txq .acct-doc__body {
+    padding: var(--tq-space-6) var(--tq-space-12) var(--tq-space-12);
   }
 }

@@ -6,6 +6,8 @@ import { latestJournal } from "@/components/txq/journal";
 import { getCinemaFilms } from "@/components/txq/films";
 import { HomeJsonLd } from "@/components/txq/HomeJsonLd";
 import { getHomeOverrides } from "@/lib/photo-dump";
+import { getHomeClips } from "@/lib/home-clips";
+import { clipUrl } from "@/lib/home-clip-shared";
 import { priceFloor, usd } from "@/lib/commission";
 import { getPriceBook } from "@/lib/pricing";
 import { fillDeep } from "@/lib/price-text";
@@ -42,12 +44,13 @@ export default async function InicioEs() {
   // are empty (section hidden, original images) when storage is unreachable.
   // The gallery section is the real portfolio, grouped by shoot (empty when
   // the database is unreachable; the section then shows real photos instead).
-  const [films, overrides, book, portfolio, reviews] = await Promise.all([
+  const [films, overrides, book, portfolio, reviews, clips] = await Promise.all([
     getCinemaFilms(),
     getHomeOverrides(),
     getPriceBook(),
     getPortfolioImages(),
     getPublicReviews(),
+    getHomeClips(),
   ]);
   const favorites = favoritesFromImages(portfolio);
   return (
@@ -56,7 +59,7 @@ export default async function InicioEs() {
       <FavoritesJsonLd favorites={favorites} lang="es" />
       <SlotProvider slots={await resolveHomeSlots(overrides)}>
         <div className={editorialFonts}>
-          <EditorialHome journal={fillDeep(await latestJournal(), book)} films={films} overrides={overrides} galleries={galleriesFromImages(portfolio)} work={homeLocations(portfolio, getAllEsPosts(), "/es/blog")} cities={homeCities()} favorites={favorites} reviews={reviews} />
+          <EditorialHome journal={fillDeep(await latestJournal(), book)} films={films} overrides={overrides} galleries={galleriesFromImages(portfolio)} work={homeLocations(portfolio, getAllEsPosts(), "/es/blog")} cities={homeCities()} favorites={favorites} reviews={reviews} featureClip={clips.feature ? { mp4: clipUrl(clips.feature.name) } : null} />
         </div>
       </SlotProvider>
     </>

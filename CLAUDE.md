@@ -33,6 +33,12 @@ what's included, links, policies, wording rules), rewrite that doc's facts and a
 Prices and package wording are owner-editable at /admin/prices and /admin/packages, so tell
 Grokbot to confirm numbers on txquince.com/budget before posting.
 
+## Photo releases (standing rule from Dang, 2026-11-10)
+
+Dang, in his words: "moms put on contracts they agree all images can be release - this is how we get new clients." So faces, the court and family may be published, and a name that shows inside a photo (a DJ screen, a sign) does not block it. This narrows the "no client names or identifiable portraits in public assets" gate in HOW-WE-WORK.md: that gate now covers the words we write. Never put a girl's or family's name in a file name, slug, alt text or caption.
+
+To pick a photo for a post, search the published albums by what they show: `node scripts/find-photo.cjs waltz father` (`--wide` for a cover, `--cat the-court` by category).
+
 ## Design workflow — every UI job (standing rule from Dang)
 
 Claude is design + frontend lead for every page, template and rewrite here. Never ship generic AI UI. Run `scripts/install-design-stack.sh` at the start of a UI session (skills are gitignored; `skills-lock.json` pins them). Mobbin and frontend-design are Claude plugins/connectors, not repo files.

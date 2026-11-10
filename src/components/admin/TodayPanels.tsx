@@ -22,7 +22,7 @@ const pct = (x: number) => `${Math.round(x * 100)}%`;
 const TOPIC: Record<string, string> = { booking: "Booking or date", payment: "Payment", contract: "Agreement", other: "Other" };
 const SHOWN = 4;
 
-function PanelHead({ id, title, count, href, link, hue }: { id: string; title: string; count: number; href: string; link: string; hue: string }) {
+export function PanelHead({ id, title, count, href, link, hue }: { id: string; title: string; count: number; href: string; link: string; hue: string }) {
   return (
     <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-5 pb-3 pt-5 sm:px-6">
       <h2 id={id} className="st-h2">
@@ -35,11 +35,19 @@ function PanelHead({ id, title, count, href, link, hue }: { id: string; title: s
   );
 }
 
-function Empty({ title, note }: { title: string; note: string }) {
+/** Nothing waiting: a green check, one line, and what will show up here. */
+export function Empty({ title, note }: { title: string; note: string }) {
   return (
-    <div className="border-t border-[var(--tq-surface-2)] px-5 py-8 sm:px-6">
-      <p className="m-0 text-[17px] font-medium">{title}</p>
-      <p className="m-0 mt-1 text-[15px] text-[var(--tq-ink-mute)]">{note}</p>
+    <div className="flex items-start gap-3 border-t border-[var(--tq-surface-2)] px-5 py-5 sm:px-6">
+      <span aria-hidden="true" className="st-clear">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3.5 8.5l3 3 6-7" />
+        </svg>
+      </span>
+      <span className="min-w-0">
+        <span className="block text-[17px] font-medium leading-7">{title}</span>
+        <span className="mt-0.5 block text-[15px] text-[var(--tq-ink-mute)]">{note}</span>
+      </span>
     </div>
   );
 }
@@ -76,7 +84,7 @@ function More({ href, n, word }: { href: string; n: number; word: [string, strin
 
 export function SupportPanel({ tickets, now }: { tickets: OpenTicket[]; now: Date }) {
   return (
-    <section aria-labelledby="support-title" className="st-card">
+    <section aria-labelledby="support-title" className="st-card h-full">
       <PanelHead id="support-title" title="Support" count={tickets.length} href="/admin/support" link="All messages" hue="amber" />
       {tickets.length === 0 ? (
         <Empty title="No one is waiting." note="Messages families send from their account page show up here." />
@@ -109,7 +117,7 @@ function Stars({ rating }: { rating: number }) {
 export function ReviewsPanel({ waiting, live, unused, now }: { waiting: ReviewRecord[]; live: number; unused: number; now: Date }) {
   const facts = [live ? `${num(live)} on the site` : "", unused ? `${plural(unused, "link")} not used yet` : ""].filter(Boolean).join(" · ");
   return (
-    <section aria-labelledby="reviews-title" className="st-card">
+    <section aria-labelledby="reviews-title" className="st-card h-full">
       <PanelHead id="reviews-title" title="Reviews" count={waiting.length} href="/admin/reviews" link="All reviews" hue="gold" />
       {waiting.length === 0 ? (
         <Empty title="Nothing to approve." note="When a mom sends her review, you approve, hide or edit it here first." />

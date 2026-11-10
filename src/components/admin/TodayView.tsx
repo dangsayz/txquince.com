@@ -7,7 +7,7 @@ import type { BookingRow } from "@/lib/clients-db";
 import type { DayPulse } from "@/lib/day-pulse";
 import type { BehaviorSummary } from "@/lib/page-behavior";
 import { VisitorBehavior } from "@/components/admin/VisitorBehavior";
-import { BlogPanel, ReviewsPanel, SupportPanel } from "@/components/admin/TodayPanels";
+import { BlogPanel, Empty, PanelHead, ReviewsPanel, SupportPanel } from "@/components/admin/TodayPanels";
 import type { BlogPulseData } from "@/lib/blog-pulse-db";
 import { needsOwner, type ReviewRecord } from "@/lib/review";
 import type { OpenTicket } from "@/lib/support-db";
@@ -137,22 +137,12 @@ export function TodayView({ pulse, work, review, upcoming, behavior, comments = 
 
       {behavior ? <VisitorBehavior data={behavior} /> : null}
 
-      <div className="mt-6 grid items-start gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(18rem,1fr)]">
+      <div className="mt-6 grid items-stretch gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(18rem,1fr)]">
         {/* 2. What needs you */}
-        <section aria-labelledby="needs-title" className="st-card">
-          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-5 pb-3 pt-5 sm:px-6">
-            <h2 id="needs-title" className="st-h2">
-              Needs you {todo > 0 && <span className="st-pill" data-hue="amber">{todo}</span>}
-            </h2>
-            <Link href="/admin/inquiries" className="st-link">
-              All inquiries <ArrowIcon />
-            </Link>
-          </div>
+        <section aria-labelledby="needs-title" className="st-card h-full">
+          <PanelHead id="needs-title" title="Needs you" count={todo} href="/admin/inquiries" link="All inquiries" hue="amber" />
           {todo === 0 ? (
-            <div className="border-t border-[var(--tq-surface-2)] px-5 py-10 sm:px-6">
-              <p className="m-0 text-lg font-medium">You&apos;re all caught up.</p>
-              <p className="m-0 mt-1 text-[15px] text-[var(--tq-ink-mute)]">New families and planned follow-ups show up here.</p>
-            </div>
+            <Empty title="You're all caught up." note="New families and planned follow-ups show up here." />
           ) : (
             <ul className="m-0 list-none p-0">
               {review.map((b) => (
@@ -183,14 +173,14 @@ export function TodayView({ pulse, work, review, upcoming, behavior, comments = 
         </section>
 
         {/* 3. Coming up */}
-        <section aria-labelledby="upcoming-title" className="st-card px-5 pb-2 pt-5 sm:px-6">
-          <h2 id="upcoming-title" className="st-h2">Coming up</h2>
+        <section aria-labelledby="upcoming-title" className="st-card h-full">
+          <PanelHead id="upcoming-title" title="Coming up" count={upcoming.length} href="/admin/bookings" link="All bookings" hue="green" />
           {upcoming.length ? (
-            <ul className="m-0 mt-3 list-none p-0">
+            <ul className="m-0 list-none p-0">
               {upcoming.slice(0, 4).map((b) => (
-                <li key={b.id} className="flex items-baseline justify-between gap-4 border-t border-[var(--tq-surface-2)] py-3">
+                <li key={b.id} className="flex items-baseline justify-between gap-4 border-t border-[var(--tq-surface-2)] px-5 py-3 sm:px-6">
                   <span className="min-w-0">
-                    <span className="block truncate text-[15px] font-medium">{b.name}</span>
+                    <span className="block truncate text-[15px] font-semibold">{b.name}</span>
                     <time dateTime={b.event_date} className="text-sm text-[var(--tq-ink-mute)]">
                       {dayLabel(b.event_date, { weekday: "short", month: "short", day: "numeric" })}
                     </time>
@@ -200,18 +190,16 @@ export function TodayView({ pulse, work, review, upcoming, behavior, comments = 
               ))}
             </ul>
           ) : (
-            <p className="m-0 mt-3 border-t border-[var(--tq-surface-2)] pt-3 text-[15px] text-[var(--tq-ink-mute)]">Booked celebrations show up here.</p>
+            <div className="border-t border-[var(--tq-surface-2)] px-5 py-5 sm:px-6">
+              <p className="m-0 text-[17px] font-medium leading-7">No booked dates yet.</p>
+              <p className="m-0 mt-0.5 text-[15px] text-[var(--tq-ink-mute)]">Booked celebrations show up here.</p>
+            </div>
           )}
-          <div className="border-t border-[var(--tq-surface-2)]">
-            <Link href="/admin/bookings" className="st-link">
-              All bookings <ArrowIcon />
-            </Link>
-          </div>
         </section>
       </div>
 
       {/* 4. Who is waiting, and how the blog is doing */}
-      <div className="mt-6 grid items-start gap-6 lg:grid-cols-2">
+      <div className="mt-6 grid items-stretch gap-6 lg:grid-cols-2">
         <SupportPanel tickets={tickets} now={now} />
         <ReviewsPanel
           waiting={waitingReviews}
