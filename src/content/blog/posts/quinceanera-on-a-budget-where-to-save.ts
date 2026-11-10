@@ -5,7 +5,7 @@ const post: BlogPost = {
   title: "Quinceañera on a Budget: Where to Save and What Not to Cut",
   metaTitle: "Quinceañera on a Budget: Where to Save and What Not to Cut",
   description:
-    "Plan a quinceañera on a tight budget. Honest ways to save, like a smaller guest list, an off-peak date and a simpler court, and what families often regret cutting.",
+    "Plan a quinceañera on a tight budget. Honest ways to save, like a smaller guest list, an off-peak date and a simpler court, and what families regret cutting.",
   category: "Cost & Budget",
   excerpt:
     "You can hold a beautiful quinceañera without spending like a wedding. Here is where families save the most, and the few things many wish they had not cut.",

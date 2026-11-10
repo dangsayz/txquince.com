@@ -5,7 +5,7 @@ const post: BlogPost = {
   title: "Cómo compartir las fotos de la quinceañera con familia y amigos",
   metaTitle: "Cómo compartir las fotos de la quinceañera con la familia",
   description:
-    "Ya llegaron las fotos. Cómo compartir la galería con la familia lejana, escoger favoritas, imprimir un álbum, publicar con cuidado y guardar todo en dos lugares.",
+    "Ya llegaron las fotos. Cómo compartir la galería con la familia lejana, escoger favoritas, imprimir un álbum, publicar con cuidado y guardar todo en dos sitios.",
   category: "Photography & Film",
   excerpt:
     "Un solo enlace de galería, favoritas escogidas en familia, un álbum para los abuelos, publicaciones con cuidado y dos copias de respaldo. Una guía sencilla para después de recibir las fotos.",

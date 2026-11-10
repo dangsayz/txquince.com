@@ -5,7 +5,7 @@ const post: BlogPost = {
   title: "Quinceañera Traditions: A Plain List of Each One and What It Means",
   metaTitle: "Quinceañera Traditions: Each One and What It Means",
   description:
-    "A plain list of quinceañera traditions: the mass, court, waltz, crowning, shoes, last doll, toast, hora loca and more. What happens and what families say it means.",
+    "A plain list of quinceañera traditions: mass, court, waltz, crowning, shoes, last doll, toast, hora loca and more. What happens and what families say it means.",
   category: "Traditions",
   excerpt:
     "Every common quinceañera tradition in one place: what happens, what families say it means, and where to read more on each one.",

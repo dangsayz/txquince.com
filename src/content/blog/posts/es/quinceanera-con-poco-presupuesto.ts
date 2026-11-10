@@ -3,9 +3,9 @@ import type { BlogPost } from "@/content/blog";
 const post: BlogPost = {
   slug: "quinceanera-con-poco-presupuesto",
   title: "Quinceañera con poco presupuesto: dónde ahorrar y qué no recortar",
-  metaTitle: "Quinceañera con poco presupuesto: dónde ahorrar y qué no recortar",
+  metaTitle: "Quinceañera con poco presupuesto: dónde ahorrar",
   description:
-    "Cómo planear una quinceañera con poco presupuesto. Formas honestas de ahorrar, como menos invitados, otra fecha y una corte sencilla, y lo que muchas familias lamentan recortar.",
+    "Cómo planear una quinceañera con poco presupuesto. Formas honestas de ahorrar, como menos invitados, otra fecha y una corte sencilla, y qué no recortar.",
   category: "Cost & Budget",
   excerpt:
     "Se puede hacer una quinceañera bonita sin gastar como en una boda. Le contamos dónde ahorran las familias y qué cosas muchas desearían no haber recortado.",

@@ -96,10 +96,6 @@ const post: BlogPost = {
       text: "Photos show color differently than the eye does. Very bright colors can look heavy, and white or ivory on damas can blend into her gown. Matte fabric looks calm in pictures and shiny fabric can throw light. Colors that match the room often look rich, and colors that clash with it can look flat. Ask for a swatch and look at it in the room if you can.",
     },
     {
-      type: "p",
-      text: "Pictures are also where small choices show. Same shoes, same hem length and the same accessory style make the group look planned. If your photographer will shoot the court together, tell the group the dress code early so everyone arrives ready. See also [how to choose a quinceañera photographer in DFW](/blog/how-to-choose-quinceanera-photographer-dfw).",
-    },
-    {
       type: "cta",
       heading: "See what fits your budget",
       body: "Type your budget and see which photo and video package fits, with every price published. Nothing is charged to send a request.",

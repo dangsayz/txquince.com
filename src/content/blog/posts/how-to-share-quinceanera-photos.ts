@@ -5,7 +5,7 @@ const post: BlogPost = {
   title: "How to Share Quinceañera Photos With Family and Friends",
   metaTitle: "How to Share Quinceañera Photos With Family and Friends",
   description:
-    "The photos are in. Now what? Simple ways to share a quinceañera gallery with far-away family, pick favorites, print an album, post online safely and back up the files.",
+    "The photos are in. Now what? Simple ways to share a quinceañera gallery with far-away family, pick favorites, print an album, post safely and back up the files.",
   category: "Photography & Film",
   excerpt:
     "Share one gallery link, pick favorites together, print an album for the grandparents, post with care and keep two backups. A plain guide for after the photos arrive.",

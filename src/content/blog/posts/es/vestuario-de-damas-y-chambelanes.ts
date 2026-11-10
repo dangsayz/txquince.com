@@ -97,10 +97,6 @@ const post: BlogPost = {
       text: "Las fotos muestran el color distinto a como lo ve el ojo. Los colores muy brillantes pueden verse pesados, y el blanco o el marfil en las damas se puede confundir con el vestido de ella. La tela mate se ve tranquila en las fotos y la tela brillante puede reflejar la luz. Los colores que van con el salón suelen verse ricos, y los que chocan con él pueden verse planos. Pida una muestra y véala en el salón si puede.",
     },
     {
-      type: "p",
-      text: "Las fotos también muestran los detalles pequeños. Los mismos zapatos, el mismo largo de falda y el mismo estilo de accesorios hacen que el grupo se vea planeado. Si su fotógrafo va a retratar a la corte junta, avise el código de vestimenta con tiempo para que todos lleguen listos. Vea también [cómo elegir fotógrafo de quinceañera en DFW](/es/blog/como-elegir-fotografo-de-quinceanera-dfw).",
-    },
-    {
       type: "cta",
       heading: "Vea qué paquete se ajusta a su presupuesto",
       body: "Escriba su presupuesto y vea qué paquete de foto y video le conviene, con todos los precios publicados. No se cobra nada por enviar una solicitud.",

@@ -53,7 +53,7 @@ const post: BlogPost = {
     { type: "h3", text: "La última muñeca" },
     {
       type: "p",
-      text: "Le entregan una muñeca, a veces vestida como ella, y puede sostenerla o regalársela a una niña más chica. Muchas familias dicen que simboliza dejar atrás los juguetes de la niñez. Otras familias la guardan como recuerdo. La puede conocer mejor en nuestra nota en inglés sobre [the last doll](/blog/what-is-the-last-doll-quinceanera).",
+      text: "Le entregan una muñeca, a veces vestida como ella, y puede sostenerla o regalársela a una niña más chica. Muchas familias dicen que simboliza dejar atrás los juguetes de la niñez. Otras familias la guardan como recuerdo.",
     },
     { type: "h2", text: "Los bailes" },
     { type: "h3", text: "El vals" },
