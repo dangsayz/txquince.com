@@ -2,7 +2,7 @@
    ink, hairlines, pill buttons, Jost for display. Mobile first, from 360px. */
 .txq .bp {
   --bp-display: var(--tq-font-label), Futura, "Century Gothic", sans-serif;
-  max-width: 1160px;
+  max-width: 1440px; /* the site frame, same as the header */
   margin: 0 auto;
   padding: calc(var(--header-h, 64px) + 20px) 16px 112px;
   color: var(--tq-ink);
@@ -360,7 +360,8 @@
   .txq .bp-share { padding: 24px 28px; }
 }
 @media (min-width: 1024px) {
-  .txq .bp { padding-top: calc(var(--header-h, 64px) + 56px); }
+  /* Page edge 40px: the same line as MENU. */
+  .txq .bp { padding-top: calc(var(--header-h, 64px) + 56px); padding-left: 40px; padding-right: 40px; }
   .txq .bp-head { margin-bottom: 40px; }
   .txq .bp-dek { font-size: var(--tq-text-lg); }
   .txq .bp-grid { grid-template-columns: minmax(0, 380px) minmax(0, 1fr); gap: 56px; align-items: start; }

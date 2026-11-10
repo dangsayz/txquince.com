@@ -65,6 +65,11 @@
 @media (min-width: 960px) {
   .txq { --margin: 48px; }
 }
+/* --edge: where page content starts. Matches the header (.sh-in: 40px from 1024). */
+.txq { --edge: var(--margin); }
+@media (min-width: 1024px) {
+  .txq { --edge: 40px; }
+}
 @media (min-width: 1280px) {
   .txq { --pad: 32px; }
 }
@@ -174,8 +179,10 @@
 }
 
 /* ---------- 3. Architecture: frame, sections, heads ---------- */
+/* The frame: same 1440 cap and edge as the header, so its hairline sits on the
+   MENU line at every width (desktop). Below 1024px it keeps the page margin. */
 .tq-wrap {
-  margin-inline: var(--margin);
+  margin-inline: max(var(--edge), calc((100% - 1440px) / 2 + var(--edge)));
 }
 @media (min-width: 640px) {
   .tq-wrap {

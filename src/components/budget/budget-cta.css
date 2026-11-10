@@ -1,7 +1,7 @@
 /* Budget call to action: a black band with a live demo (see BudgetCta.tsx). */
 .txq .bc { background: #0b0b0c; color: #fff; overflow: hidden; }
 .txq .bc-in {
-  max-width: 1200px;
+  max-width: 1440px; /* the site frame, same as the header */
   margin: 0 auto;
   padding: 72px 16px;
   display: grid;

@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { getDeploymentId } from "@opennextjs/cloudflare";
 import { securityHeaders } from "./src/lib/security-headers";
 
 /**
@@ -15,6 +16,10 @@ const WWW_REDIRECTS = [
 ];
 
 const nextConfig: NextConfig = {
+  // A new id per build. Next tags asset and page requests with it, and the
+  // Worker sends requests from an older build to that older version
+  // (skew protection, see open-next.config.ts), so open tabs survive a deploy.
+  deploymentId: getDeploymentId(),
   images: {
     // Every site image is served by /api/img (protected derivatives). A custom
     // loader appends ?w= so next/image emits a true responsive srcset — sharp
@@ -45,6 +50,8 @@ const nextConfig: NextConfig = {
       { source: "/packages", destination: "/#commissions", permanent: true },
       { source: "/pricing", destination: "/#commissions", permanent: true },
       { source: "/contact", destination: "/check-your-date", permanent: true },
+      // /photos has category pages under it but no page of its own; the gallery is /portfolio.
+      { source: "/photos", destination: "/portfolio", permanent: true },
       // Slate's official name is "Slate Venues at II Creeks" (Richardson, not Allen).
       { source: "/venues/slate-at-eleven-creeks", destination: "/venues/slate-venues-at-ii-creeks", permanent: true },
       { source: "/es/contacto", destination: "/es/consulta", permanent: true },

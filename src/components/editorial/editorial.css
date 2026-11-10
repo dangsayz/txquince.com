@@ -39,15 +39,12 @@
    line as MENU in the header. Photos may run edge to edge; words never do.
    `100%` is the full-width section, so this works inside any full-bleed block. */
 .txq .ed { --ed-edge: max(var(--ed-gutter), calc((100% - 1440px) / 2 + var(--ed-gutter))); }
-/* Blocks shared with other pages, lined up to that edge when they sit on the home page. */
+/* Shared blocks below 1024px follow the home gutter (16px) like the rest of the page. */
 .txq .ed .vs-head,
 .txq .ed .vs-find,
-.txq .ed .vs-foot { max-width: 1440px; padding-inline: var(--ed-gutter); }
-.txq .ed .vs ul.vs-track {
-  padding-inline: var(--ed-edge);
-  scroll-padding-inline: var(--ed-edge);
-}
-.txq .ed .bc-in { max-width: 1440px; padding-inline: var(--ed-gutter); }
+.txq .ed .vs-foot,
+.txq .ed .bc-in { padding-inline: var(--ed-gutter); }
+.txq .ed .vs ul.vs-track { padding-inline: var(--ed-edge); scroll-padding-inline: var(--ed-edge); }
 .ed-block { display: block; }
 
 /* ---------- Type ---------- */
