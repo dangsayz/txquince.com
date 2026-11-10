@@ -9,7 +9,7 @@
  */
 import "server-only";
 import { getPortfolioBucket } from "@/lib/r2-portfolio";
-import { clipName, isHomeClipSlot, type HomeClips, type HomeClipSlot } from "@/lib/home-clip-shared";
+import { clampFocus, clipName, isHomeClipSlot, type HomeClips, type HomeClipSlot } from "@/lib/home-clip-shared";
 
 const MANIFEST = "config/home-clips.json";
 
@@ -23,9 +23,9 @@ export async function getHomeClips(): Promise<HomeClips> {
     if (!raw || typeof raw !== "object") return {};
     const out: HomeClips = {};
     for (const [slot, v] of Object.entries(raw as Record<string, unknown>)) {
-      const c = v as { name?: unknown; size?: unknown; updatedAt?: unknown } | null;
+      const c = v as { name?: unknown; size?: unknown; updatedAt?: unknown; focusX?: unknown } | null;
       if (isHomeClipSlot(slot) && c && typeof c.name === "string" && /^[a-z0-9][a-z0-9-]{0,80}\.mp4$/.test(c.name)) {
-        out[slot] = { name: c.name, size: Number(c.size) || 0, updatedAt: String(c.updatedAt ?? "") };
+        out[slot] = { name: c.name, size: Number(c.size) || 0, updatedAt: String(c.updatedAt ?? ""), focusX: clampFocus(c.focusX) };
       }
     }
     return out;
@@ -52,6 +52,16 @@ export async function saveHomeClip(slot: HomeClipSlot, bytes: ArrayBuffer): Prom
   clips[slot] = { name, size: bytes.byteLength, updatedAt: new Date().toISOString() };
   await write(clips);
   if (previous && previous !== name) await bucket.delete(`home-film/${previous}`).catch(() => undefined);
+  return clips;
+}
+
+/** Move the part of the clip kept in view; null when the slot has no clip. */
+export async function setHomeClipFocus(slot: HomeClipSlot, focusX: number): Promise<HomeClips | null> {
+  const clips = await getHomeClips();
+  const clip = clips[slot];
+  if (!clip) return null;
+  clips[slot] = { ...clip, focusX: clampFocus(focusX) };
+  await write(clips);
   return clips;
 }
 
