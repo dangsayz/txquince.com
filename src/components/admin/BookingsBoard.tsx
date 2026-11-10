@@ -237,7 +237,7 @@ function Summary({ bookings, upcoming, today }: { bookings: BookingRow[]; upcomi
   return (
     <dl className="bk-summary st-card">
       <div>
-        <dt>Deposits in</dt>
+        <dt>Booking deposits in</dt>
         <dd className="st-num">{formatMoney(collected, currency)}</dd>
       </div>
       <div>
