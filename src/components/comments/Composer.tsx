@@ -93,7 +93,12 @@ function Form({ lang, slug, place, chip, starters }: { lang: CommentLang; slug: 
 
   if (status === "done") {
     return (
-      <div className="tq-cmt__gate" role="status">
+      <div className="tq-cmt__gate tq-cmt__sent" role="status">
+        <span className="tq-cmt__sent-mark" aria-hidden>
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m3.5 8.4 3 3 6-6.6" />
+          </svg>
+        </span>
         <p className="tq-cmt__gate-lead">{c.thanks}</p>
         <div className="tq-cmt__actions">
           <button type="button" className="tq-btn tq-btn--lg tq-btn--ghost" onClick={() => setStatus("idle")}>
