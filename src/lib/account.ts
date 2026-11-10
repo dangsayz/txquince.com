@@ -33,7 +33,8 @@ export type AccountBooking = {
 };
 
 export type AccountPayment = {
-  kind: "deposit" | "balance";
+  /** "test" = the owner's $1 payment test from the Studio; never a booking. */
+  kind: "deposit" | "balance" | "test";
   amountCents: number;
   paidAt: string | null;
   /** Stripe payment id, kept server-side to look up the receipt. Never rendered. */
@@ -42,6 +43,8 @@ export type AccountPayment = {
   method: string;
   /** Stripe's receipt page, filled in by account-db when available. */
   receiptUrl?: string | null;
+  /** The money went back (only tracked for tests today). */
+  refunded?: boolean;
 };
 
 type Row = Record<string, unknown>;

@@ -554,6 +554,10 @@
   font-variant-numeric: tabular-nums;
   font-weight: var(--tq-weight-medium);
 }
+.txq .acct-pays__amt--back {
+  color: var(--tq-ink-mute);
+  text-decoration: line-through;
+}
 
 /* Booking inside the dashboard, and the sign step. */
 .txq .acct-book {
