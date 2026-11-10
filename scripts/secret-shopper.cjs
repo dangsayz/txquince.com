@@ -210,6 +210,15 @@ async function flows(browser) {
       const after = await p.locator("main, body").first().innerText();
       expect(before !== after, "typing 2000 into the budget field changed nothing on the page");
     });
+    await step("the payment-plans banner sits under the menu, with its three logos, and stays off log in", view, async (p) => {
+      await open(p, BASE + "/budget");
+      const bar = p.locator(".tq-banner");
+      expect(await bar.count(), "no payment-plans banner on /budget");
+      const logos = await bar.locator("img").evaluateAll((imgs) => imgs.filter((i) => i.complete && i.naturalWidth > 0).length);
+      expect(logos === 3, `the banner shows ${logos} of 3 payment logos`);
+      await open(p, BASE + "/login");
+      expect((await p.locator(".tq-banner").count()) === 0, "the banner shows on /login, over a form");
+    });
     await step("a shared budget link opens on the same answer; the offer form opens", view, async (p) => {
       await open(p, BASE + "/budget?b=1500");
       await p.waitForSelector(".bp-card", { timeout: 15000 }).catch(() => {});
