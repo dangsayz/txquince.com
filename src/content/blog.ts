@@ -130,6 +130,7 @@ import ansHoraLoca from "./blog/posts/hora-loca-quinceanera";
 import ansPadrinos from "./blog/posts/quinceanera-padrinos-list";
 import ansWhatToWear from "./blog/posts/what-to-wear-to-a-quinceanera";
 import ansVsSweet16 from "./blog/posts/quinceanera-vs-sweet-16";
+import evPlazaPinkGold from "./blog/posts/pink-and-gold-quinceanera-convention-plaza-ballroom-irving";
 // Answer posts, second batch (Nov 10, 2026).
 import ansHowMany from "./blog/posts/how-many-damas-and-chambelanes";
 import ansWhoPays from "./blog/posts/who-pays-for-a-quinceanera";
@@ -139,6 +140,7 @@ import ansCrowning from "./blog/posts/quinceanera-crowning-ceremony";
 import ansNoMass from "./blog/posts/quinceanera-without-mass-or-court";
 
 export const posts: BlogPost[] = [
+  evPlazaPinkGold,
   ansHowMany,
   ansWhoPays,
   ansGifts,
@@ -278,6 +280,7 @@ import esAnsHoraLoca from "./blog/posts/es/la-hora-loca-en-una-quinceanera";
 import esAnsPadrinos from "./blog/posts/es/padrinos-de-quinceanera-lista";
 import esAnsWhatToWear from "./blog/posts/es/que-ponerse-para-una-quinceanera";
 import esAnsVsSweet16 from "./blog/posts/es/quinceanera-o-sweet-16";
+import esEvPlazaPinkGold from "./blog/posts/es/quinceanera-rosa-y-dorado-convention-plaza-ballroom-irving";
 import esAnsHowMany from "./blog/posts/es/cuantas-damas-y-chambelanes";
 import esAnsWhoPays from "./blog/posts/es/quien-paga-la-quinceanera";
 import esAnsGifts from "./blog/posts/es/que-regalar-en-una-quinceanera";
@@ -286,6 +289,7 @@ import esAnsCrowning from "./blog/posts/es/la-coronacion-de-la-quinceanera";
 import esAnsNoMass from "./blog/posts/es/quinceanera-sin-misa-o-sin-corte";
 
 export const esPosts: BlogPost[] = [
+  esEvPlazaPinkGold,
   esAnsHowMany,
   esAnsWhoPays,
   esAnsGifts,
@@ -375,6 +379,7 @@ const EN_ES_PAIRS: { en: string; es: string }[] = [
   { en: "quinceanera-padrinos-list", es: "padrinos-de-quinceanera-lista" },
   { en: "what-to-wear-to-a-quinceanera", es: "que-ponerse-para-una-quinceanera" },
   { en: "quinceanera-vs-sweet-16", es: "quinceanera-o-sweet-16" },
+  { en: "pink-and-gold-quinceanera-convention-plaza-ballroom-irving", es: "quinceanera-rosa-y-dorado-convention-plaza-ballroom-irving" },
   { en: "how-many-damas-and-chambelanes", es: "cuantas-damas-y-chambelanes" },
   { en: "who-pays-for-a-quinceanera", es: "quien-paga-la-quinceanera" },
   { en: "quinceanera-gift-ideas", es: "que-regalar-en-una-quinceanera" },
