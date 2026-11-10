@@ -93,6 +93,13 @@ export function albumObjectKey(slug: string): string | null {
   return `albums/${album.id}/${m[2]}.${ext}`;
 }
 
+/** Natural pixel size of an album photo by slug, or null when it is not one. */
+export function albumPhotoSize(slug: string): { width: number; height: number } | null {
+  const m = /^album-([a-z0-9-]+)-(\d{3})$/.exec(slug);
+  const photo = m ? ALBUMS.find((a) => a.id === m[1])?.photos.find(([n]) => pad3(n) === m[2]) : undefined;
+  return photo ? { width: photo[1], height: photo[2] } : null;
+}
+
 /** FNV-1a, 32-bit, hex — matches the hash stored in `replacesDbEvent`. */
 export function shortHash(s: string): string {
   let h = 0x811c9dc5;

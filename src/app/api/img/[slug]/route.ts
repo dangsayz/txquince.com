@@ -8,6 +8,8 @@
  *     photos large; an image address opened on its own, or a blog post, is
  *     sent to the 1440px copy instead (maxWidthForReferer)
  *   · WebP, quality-tuned; EXIF stripped by the transform pipeline
+ *   · signed: a small wordmark in the corner of every content photo 640px
+ *     and wider (lib/watermark.ts); page banners (hero, cover-*) stay clean
  *   · hotlink-checked (empty referer allowed — iMessage/OG fetchers send none;
  *     Pinterest allowed so its "Save" picker can preview the pin image)
  *   · immutable edge cache (slugs are permanent)
@@ -22,7 +24,8 @@ import { getPortfolioBucket, storageKeyFromUrl } from "@/lib/r2-portfolio";
 import { FULL_MAX_WIDTH, OPEN_MAX_WIDTH, imageTransformForWidth, maxWidthForReferer } from "@/lib/image-derivative";
 import { site } from "@/content/site";
 import { isPinterestHost } from "@/lib/pinterest";
-import { albumObjectKey } from "@/content/albums";
+import { albumObjectKey, albumPhotoSize } from "@/content/albums";
+import { MARK_OPACITY, markPlan, markStream, scaledSize, slugTakesMark } from "@/lib/watermark";
 
 export const dynamic = "force-dynamic";
 
@@ -148,6 +151,8 @@ async function serve(
 
   // Resolve the internal source (never revealed to the client).
   let sourceUrl: string | null = null;
+  // Natural size, when known: sizes the signature to the file actually sent.
+  let natural: { width?: number | null; height?: number | null } | null = null;
   if (slug === "hero") {
     sourceUrl = await getHeroRawImageUrl();
   } else if (slug.startsWith("album-")) {
@@ -155,11 +160,15 @@ async function serve(
     // private bucket under albums/, resolved by the registry, never by the URL.
     const key = albumObjectKey(slug);
     if (key) sourceUrl = storageUrl(key);
+    natural = albumPhotoSize(slug);
   } else if (isCover) {
     sourceUrl = await getCoverRawImageUrl(slug.slice("cover-".length));
   } else {
     const img = await getImageBySlug(slug);
-    if (img) sourceUrl = storageUrl(img.storage_path);
+    if (img) {
+      sourceUrl = storageUrl(img.storage_path);
+      natural = { width: img.width, height: img.height };
+    }
   }
   if (!sourceUrl) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
@@ -193,7 +202,16 @@ async function serve(
   }
 
   try {
-    const chain = images.input(upstream.body).transform(imageTransformForWidth(width));
+    let chain = images.input(upstream.body).transform(imageTransformForWidth(width));
+    const size = scaledSize(width, natural?.width, natural?.height);
+    const mark = slugTakesMark(slug) ? markPlan(size.w, size.h) : null;
+    if (mark) {
+      chain = chain.draw(images.input(markStream()).transform({ width: mark.width }), {
+        bottom: mark.inset,
+        right: mark.inset,
+        opacity: MARK_OPACITY,
+      });
+    }
 
     const out = await chain.output({ format: "image/webp", quality: QUALITY });
     const res = out.response();
@@ -202,7 +220,7 @@ async function serve(
         "content-type": res.headers.get("content-type") ?? "image/webp",
         "cache-control": cacheHeader,
         "x-content-type-options": "nosniff",
-        "x-img": `transformed:w${width}`,
+        "x-img": `transformed:w${width}${mark ? ":signed" : ""}`,
       },
     });
   } catch (err) {

@@ -46,3 +46,11 @@ export const SLOT_MEDIA_KEY_RE = /^slots\/[a-z0-9-]+(?:\.[a-z0-9-]+){1,3}\/[a-z0
 export function focalPosition(f: { x: number; y: number }): string {
   return `${Math.round(f.x * 1000) / 10}% ${Math.round(f.y * 1000) / 10}%`;
 }
+
+/** Drop srcset entries wider than `max`; keep the narrowest if none fit. */
+export function capSrcSet(srcSet: string | undefined, max: number | undefined): string | undefined {
+  if (!srcSet || !max) return srcSet;
+  const entries = srcSet.split(", ").map((e) => ({ e, w: Number(/ (\d+)w$/.exec(e)?.[1] ?? 0) }));
+  const fit = entries.filter((x) => x.w <= max);
+  return (fit.length ? fit : entries.slice(0, 1)).map((x) => x.e).join(", ");
+}

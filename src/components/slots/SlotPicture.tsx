@@ -13,6 +13,7 @@
 import type { CSSProperties } from "react";
 import { preload } from "react-dom";
 import type { ResolvedSlotImage } from "@/lib/image-slot-resolve";
+import { capSrcSet } from "@/lib/image-slot-shared";
 
 export function SlotPicture({
   image,
@@ -23,6 +24,7 @@ export function SlotPicture({
   alt,
   className,
   style,
+  maxWidth,
 }: {
   image: ResolvedSlotImage;
   lang: "en" | "es";
@@ -35,14 +37,17 @@ export function SlotPicture({
   alt?: string;
   className?: string;
   style?: CSSProperties;
+  /** Leave files wider than this out of the srcset (blog pages may not load them). */
+  maxWidth?: number;
 }) {
   const eager = priority ?? image.lcp;
-  const sizesHint = image.srcSet ? (sizes ?? image.sizes) : undefined;
+  const srcSet = capSrcSet(image.srcSet, maxWidth);
+  const sizesHint = srcSet ? (sizes ?? image.sizes) : undefined;
   if (eager) {
     preload(image.src, {
       as: "image",
       fetchPriority: "high",
-      ...(image.srcSet ? { imageSrcSet: image.srcSet, imageSizes: sizesHint } : {}),
+      ...(srcSet ? { imageSrcSet: srcSet, imageSizes: sizesHint } : {}),
     });
   }
   const frame: CSSProperties = fill
@@ -52,7 +57,7 @@ export function SlotPicture({
     // eslint-disable-next-line @next/next/no-img-element -- slot renditions carry their own srcset (next/image's loader is reserved for /api/img)
     <img
       src={image.src}
-      srcSet={image.srcSet}
+      srcSet={srcSet}
       sizes={sizesHint}
       alt={alt ?? image.alt[lang] ?? image.alt.en}
       width={fill ? undefined : image.width}
