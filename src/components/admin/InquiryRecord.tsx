@@ -6,6 +6,7 @@ import { InquiryActions } from "@/components/InquiryActions";
 import { InquiryActivityPanel } from "@/components/admin/InquiryActivityPanel";
 import { countdownLabel, dallasDateTime, daysUntil, formatPhone, hoursSince, phoneDigits, waitLabel } from "@/lib/inquiry-time";
 import { venues } from "@/content/venues";
+import { callScript, parsePickedRequest } from "@/lib/inquiry-message";
 
 /**
  * InquiryRecord — one family's inquiry, laid out for the owner on a phone
@@ -32,6 +33,8 @@ const TONE: Record<Tone, { band: string; pill: string }> = {
 // Tailwind's layered text colors on links. Without it the label is dark on dark.
 const btnPrimary = "st-btn";
 const btnGhost = "st-btn-ghost bg-white";
+/** The small label above a value: one style for every group on the page. */
+const eyebrow = "m-0 text-[13px] font-medium uppercase leading-5 tracking-[0.08em] text-[var(--tq-ink-mute)]";
 
 function firstName(name: string): string {
   return name.trim().split(/\s+/)[0] || name;
@@ -119,6 +122,25 @@ export function InquiryRecord({
     { label: "Budget", value: inquiry.budget_range || "Not given" },
   ];
 
+  // A package-picker request reads as fields and as a call script; a typed message stays as written.
+  const picked = parsePickedRequest(inquiry.message);
+  const script = picked ? callScript(picked, eventLabel) : [];
+  const requestRows = picked
+    ? ([
+        ["Hours on the day", picked.hours],
+        ["Team", picked.team],
+        ["Extras", picked.extras.length ? picked.extras.map((e) => (e.price ? `${e.name} · ${e.price}` : e.name)).join("\n") : null],
+        ["Coordinator", picked.coordinatorIncluded ? "Included" : null],
+        ["City", picked.city],
+        ["Venue", picked.venue],
+        ["Starts", picked.startTime],
+        ["Quinceañera", picked.honoree],
+        ["Language", picked.language],
+        ["Photo sharing", picked.sharePhotos === null ? null : picked.sharePhotos ? "Yes, some photos can be public" : "No public photos"],
+        ["Signed by", picked.signedBy],
+      ].filter(([, v]) => v) as [string, string][])
+    : [];
+
   const source = [
     ["How they found us", inquiry.referral || inquiry.attribution?.source],
     ["Link tag", inquiry.attribution?.src ? `${inquiry.attribution.src}${inquiry.attribution.srcLanding ? ` · on ${inquiry.attribution.srcLanding}` : ""}` : inquiry.attribution?.ref ?? null],
@@ -176,7 +198,73 @@ export function InquiryRecord({
         ))}
       </dl>
 
-      {inquiry.message ? (
+      {picked ? (
+        <div className="mt-6 grid items-start gap-6 lg:grid-cols-2">
+          {/* Left: what they picked, read top to bottom (package, money, the day, their words). */}
+          <section aria-labelledby="request-title" className="st-card px-5 py-6 sm:px-7 sm:py-7">
+            <h2 id="request-title" className="st-h2">Their request</h2>
+            {picked.intro ? <p className="st-note mt-2 max-w-[38rem]">{picked.intro}</p> : null}
+
+            <div className="mt-6">
+              <p className={eyebrow}>Package</p>
+              <p className="m-0 mt-1 break-words text-[1.75rem] font-medium leading-tight tracking-[-0.01em]">{picked.packageName}</p>
+              <p className="m-0 mt-1 text-base text-[var(--tq-ink-mute)]">
+                {[picked.packagePrice, picked.includedHours ? `${picked.includedHours} ${picked.includedHours === "1" ? "hour" : "hours"} included` : null].filter(Boolean).join(" · ")}
+              </p>
+            </div>
+
+            {picked.total ? (
+              <dl className="m-0 mt-6 grid grid-cols-3 gap-px overflow-hidden rounded-[var(--tq-radius-sm)] border border-[var(--tq-surface-2)] bg-[var(--tq-surface-2)]">
+                {[
+                  ["Total", picked.total],
+                  [picked.depositPercent ? `Deposit · ${picked.depositPercent}%` : "Deposit", picked.deposit],
+                  ["Balance", picked.balance],
+                ].map(([label, value]) => (
+                  <div key={label} className="min-w-0 bg-white px-3 py-3 sm:px-4">
+                    <dt className="text-[13px] leading-5 text-[var(--tq-ink-mute)]">{label}</dt>
+                    <dd className="m-0 mt-0.5 text-lg font-medium tabular-nums sm:text-xl">{value ?? "—"}</dd>
+                  </div>
+                ))}
+              </dl>
+            ) : null}
+
+            <dl className="m-0 mt-6 divide-y divide-[var(--tq-surface-2)] border-y border-[var(--tq-surface-2)]">
+              {requestRows.map(([label, value]) => (
+                <div key={label} className="grid gap-x-4 gap-y-0.5 py-3 sm:grid-cols-[8.5rem_minmax(0,1fr)]">
+                  <dt className="text-[15px] leading-6 text-[var(--tq-ink-mute)]">{label}</dt>
+                  <dd className="m-0 min-w-0 whitespace-pre-line break-words text-base font-medium leading-6">{value}</dd>
+                </div>
+              ))}
+            </dl>
+
+            {picked.note ? (
+              <div className="mt-6">
+                <p className={eyebrow}>Note from the family</p>
+                <blockquote className="m-0 mt-2 whitespace-pre-wrap break-words border-l-2 border-[var(--tq-ink)] pl-4 text-[17px] leading-7">{picked.note}</blockquote>
+              </div>
+            ) : null}
+          </section>
+
+          {/* Right: the same request, said back to them on a call, one point at a time. */}
+          <section aria-labelledby="script-title" className="st-card bg-[var(--tq-canvas)] px-5 py-6 sm:px-7 sm:py-7">
+            <h2 id="script-title" className="st-h2">Say it back</h2>
+            <p className="st-note mt-2">For the phone call. Read each line, then wait for a yes.</p>
+            <p className="m-0 mt-6 text-[1.375rem] font-medium leading-snug">“So {name}, let me make sure I have this right.”</p>
+            <ol className="m-0 mt-5 grid list-none gap-3 p-0">
+              {script.map((step, i) => (
+                <li key={step.topic} className="grid grid-cols-[1.75rem_minmax(0,1fr)] gap-x-3 rounded-[var(--tq-radius-sm)] bg-white px-4 py-4">
+                  <span aria-hidden="true" className="pt-0.5 text-[13px] tabular-nums leading-6 text-[var(--tq-ink-mute)]">{String(i + 1).padStart(2, "0")}</span>
+                  <div className="min-w-0">
+                    <p className={eyebrow}>{step.topic}</p>
+                    <p className="m-0 mt-1 break-words text-lg leading-7">{step.say.startsWith("You told us") ? step.say : `“${step.say}”`}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+            <p className="m-0 mt-5 text-[1.375rem] font-medium leading-snug">“Did I get all of that right?”</p>
+          </section>
+        </div>
+      ) : inquiry.message ? (
         <figure className="st-card m-0 mt-6 px-5 py-5 sm:px-6">
           <figcaption className="st-h2">Their message</figcaption>
           <blockquote className="m-0 mt-3 max-w-[44rem] whitespace-pre-wrap break-words text-[17px] leading-7">{inquiry.message}</blockquote>
