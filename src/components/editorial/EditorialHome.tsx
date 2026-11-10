@@ -30,6 +30,7 @@ import { useScenes } from "./scenes";
 import { CONTACT_EVENT, whatsappHref } from "@/lib/contact";
 import { trackEvent } from "@/components/Tracker";
 import { WhatsAppFloat } from "@/components/WhatsAppFloat";
+import { QuinceNetworkPromo } from "@/components/promo/QuinceNetworkPromo";
 import { ReviewStrip } from "@/components/review/ReviewStrip";
 import type { PublicReview } from "@/lib/review-public";
 import "./editorial.css";
@@ -135,6 +136,7 @@ export function EditorialHome({
       <JournalRow journal={journal} />
       <WhereWeWork cities={cities} />
       <WhatsAppFloat lang={lang} hidden={intakeOnScreen} />
+      <QuinceNetworkPromo lang={lang} />
     </div>
   );
 }

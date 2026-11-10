@@ -85,6 +85,7 @@ const en = {
     services: [
       { href: "/quinceanera-videographer", label: "Quinceañera videographer" },
       { href: "/quinceanera-photoshoot", label: "Quinceañera photoshoot" },
+      { href: "/sweet-16-photographer", label: "Sweet 16" },
       { href: "/about", label: "About us" },
     ],
   },
@@ -436,6 +437,7 @@ const es: Copy = {
     services: [
       { href: "/es/videografo-de-quinceaneras", label: "Videógrafo de quinceañeras" },
       { href: "/es/sesion-de-fotos-quinceanera", label: "Sesión de fotos de quinceañera" },
+      { href: "/es/fotografo-de-sweet-16", label: "Sweet 16" },
       { href: "/about", label: "Sobre nosotros" },
     ],
   },
