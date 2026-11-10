@@ -200,6 +200,17 @@ async function flows(browser) {
       const controls = await p.locator("#intake button, #intake input, #intake a").count();
       expect(controls > 2, "the booking panel has nothing to tap");
     });
+    await step("the QuinceNetwork pop-out opens on the landing page and closes with Esc", view, async (p) => {
+      await open(p, BASE + "/");
+      await p.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight * 0.4));
+      await p.waitForSelector('.tq-qn[data-show="true"]', { timeout: 8000 }).catch(() => {});
+      expect(await p.locator('.tq-qn[data-show="true"]').count(), "the QuinceNetwork pop-out did not open after scrolling the landing page");
+      const href = await p.locator(".tq-qn__cta").getAttribute("href");
+      expect(href && href.startsWith("https://quincenetwork.com"), "the pop-out button does not point to quincenetwork.com");
+      await p.keyboard.press("Escape");
+      await p.waitForTimeout(400);
+      expect((await p.locator(".tq-qn").count()) === 0, "Esc did not close the QuinceNetwork pop-out");
+    });
     await step("budget page answers a typed budget", view, async (p) => {
       await open(p, BASE + "/budget");
       const input = p.locator("input[inputmode='numeric'], input[type='number'], input[type='text']").first();

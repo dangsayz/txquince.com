@@ -71,8 +71,11 @@
   margin: 0 0 16px;
   color: var(--text-muted);
 }
+/* The page headline. Without a size here it fell back to body text (16px). */
 .txq .tq-place-ledger .tq-ledger__head h1 {
   max-width: 18ch;
+  font-size: clamp(2.125rem, 1.2rem + 2.6vw, 4rem);
+  text-wrap: balance;
 }
 .txq .tq-place-meta dd a {
   display: inline-flex;

@@ -113,6 +113,7 @@ describe("Where we work", () => {
     expect(COPY.es.places.services.map((s) => s.href)).toEqual([
       "/es/videografo-de-quinceaneras",
       "/es/sesion-de-fotos-quinceanera",
+      "/es/fotografo-de-sweet-16",
       "/about",
     ]);
     for (const s of [...COPY.en.places.services, ...COPY.es.places.services]) {

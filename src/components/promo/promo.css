@@ -1,0 +1,125 @@
+/* QuinceNetwork pop-out (landing page). Brand kit only: paper card, ink pill.
+   Desktop: bottom-left, clear of the WhatsApp capsule on the right.
+   Phones: full width, above the WhatsApp capsule and the "Reserve" dock. */
+.tq-qn {
+  position: fixed;
+  z-index: 41;
+  left: max(16px, env(safe-area-inset-left));
+  right: max(16px, env(safe-area-inset-right));
+  bottom: calc(148px + env(safe-area-inset-bottom));
+  padding: 16px 18px 12px;
+  border: 1px solid color-mix(in srgb, var(--tq-ink) 14%, transparent);
+  border-radius: var(--tq-radius-md);
+  background: var(--tq-paper);
+  color: var(--tq-ink);
+  box-shadow: var(--tq-shadow-overlay);
+  opacity: 0;
+  transform: translateY(16px);
+  visibility: hidden;
+  transition:
+    opacity var(--tq-dur-slow) var(--tq-ease),
+    transform var(--tq-dur-slow) var(--tq-ease),
+    visibility 0s linear var(--tq-dur-slow);
+}
+.tq-qn[data-show="true"] {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+  transition:
+    opacity var(--tq-dur-slow) var(--tq-ease),
+    transform var(--tq-dur-slow) var(--tq-ease),
+    visibility 0s;
+}
+.tq-qn p {
+  margin: 0;
+}
+.tq-qn__eyebrow {
+  padding-right: 40px;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tq-ink-mute);
+}
+.tq-qn__title {
+  margin-top: 4px !important;
+  padding-right: 24px;
+  font-size: 1.0625rem;
+  font-weight: 560;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+.tq-qn__body {
+  margin-top: 6px !important;
+  font-size: 1rem;
+  line-height: 1.45;
+  color: var(--tq-ink-mute);
+}
+.tq-qn__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-top: 10px;
+}
+.tq-qn__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 18px;
+  border-radius: var(--tq-radius-pill);
+  background: var(--tq-ink);
+  color: var(--tq-ink-on);
+  font-size: 1rem;
+  font-weight: 510;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color var(--tq-dur-fast) var(--tq-ease);
+}
+.tq-qn__cta:hover {
+  background: color-mix(in srgb, var(--tq-ink) 86%, white);
+}
+.tq-qn__later {
+  min-height: 44px;
+  padding: 0 12px;
+  border: 0;
+  background: none;
+  color: var(--tq-ink-mute);
+  font: inherit;
+  font-size: 1rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.tq-qn__x {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: var(--tq-radius-pill);
+  background: none;
+  color: var(--tq-ink);
+  cursor: pointer;
+  transition: background-color var(--tq-dur-fast) var(--tq-ease);
+}
+.tq-qn__x:hover {
+  background: color-mix(in srgb, var(--tq-ink) 8%, transparent);
+}
+.tq-qn__cta:focus-visible,
+.tq-qn__later:focus-visible,
+.tq-qn__x:focus-visible {
+  outline: 2px solid var(--tq-ink);
+  outline-offset: 2px;
+}
+@media (min-width: 720px) {
+  .tq-qn {
+    right: auto;
+    bottom: max(24px, env(safe-area-inset-bottom));
+    width: min(380px, calc(100vw - 32px));
+  }
+}
