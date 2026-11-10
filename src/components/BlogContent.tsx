@@ -6,6 +6,7 @@ import { slugifyHeading } from "@/content/blog";
 import { BlogShare } from "@/components/BlogShare";
 import { BlogPlanCta } from "@/components/BlogPlanCta";
 import { SlotImage } from "@/components/SlotImage";
+import { TocSpy } from "@/components/blog/TocSpy";
 import { blogCoverSlotId } from "@/lib/image-slots";
 import type { Series } from "@/content/blog-clusters";
 import "@/components/txq/pages/blog.css";
@@ -815,8 +816,14 @@ export function BlogArticleView({
               <div className="tq-blog-rail__stick">
                 {toc.length >= 3 ? (
                   <nav aria-label={c.tocLabel} className="tq-blog-toc tq-blog-toc--d">
-                    <p className="tq-mono tq-muted">{c.tocLabel}</p>
+                    <p className="tq-blog-toc__head">
+                      <span>{c.tocLabel}</span>
+                      <span className="tq-nums" data-toc-count aria-hidden>
+                        {toc.length}
+                      </span>
+                    </p>
                     {tocList}
+                    <TocSpy ids={toc.map((h) => slugifyHeading(h.text))} />
                   </nav>
                 ) : null}
                 {commentRail}

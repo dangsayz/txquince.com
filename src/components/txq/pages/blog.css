@@ -604,34 +604,73 @@
   .txq .tq-blog-prose { grid-column: 4 / span 8; }
   .txq .tq-blog-toc--m { display: none; }
   .txq .tq-blog-toc--d { display: block; }
-  /* Contents + comment box follow the reader down the article. No inner
-     scroll area (it clipped focus rings and showed its own scrollbar). On a
-     short window the contents list gives way so the comment box always fits. */
-  /* A white panel on the warm canvas, so the contents and the comment box
-     stand apart from the article. Padding keeps everything off its edge. */
+  /* The rail follows the reader down the article: the contents list, open on
+     the canvas, then the comment box as a raised card. Two different things,
+     so they are no longer one white box. On a short window the list scrolls
+     inside itself so the comment box always fits. */
   .txq .tq-blog-rail__stick {
     position: sticky;
     top: calc(var(--header-h) + 24px);
     display: grid;
-    gap: 20px;
-    padding: 20px;
-    background: var(--tq-paper);
-    border: 1px solid var(--border-hairline);
+    gap: 28px;
   }
   .txq .tq-blog-rail__stick:empty { display: none; }
+  .txq .tq-blog-toc__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+    font-size: 1rem;
+    font-weight: var(--weight-medium);
+    line-height: 1.3;
+  }
+  .txq .tq-blog-toc__head [data-toc-count] {
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: var(--tq-ink-mute);
+  }
+  /* A hairline track down the left; an ink marker rides it to the section
+     being read (TocSpy sets --tq-toc-y / --tq-toc-h). */
   .txq .tq-blog-toc--d .tq-blog-toc__list {
-    max-height: max(132px, calc(100svh - var(--header-h) - 510px));
+    position: relative;
+    max-height: max(132px, calc(100svh - var(--header-h) - 400px));
     overflow-y: auto;
     scrollbar-width: none;
+    border-left: 1px solid var(--border-hairline);
   }
   .txq .tq-blog-toc--d .tq-blog-toc__list::-webkit-scrollbar { display: none; }
-  .txq .tq-blog-toc--d > p {
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border-hairline);
+  /* The comment box is open (in use): the list gives it the room. */
+  .txq .tq-blog-rail__stick:has(.tq-cmt__form:focus-within, .tq-cmt__form[data-open]) .tq-blog-toc__list {
+    max-height: max(96px, calc(100svh - var(--header-h) - 560px));
   }
-  .txq .tq-blog-toc__list a {
+  .txq .tq-blog-toc--d .tq-blog-toc__list::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 2px;
+    height: var(--tq-toc-h, 0px);
+    transform: translateY(var(--tq-toc-y, 0px));
+    background: var(--tq-ink);
+    transition: transform var(--tq-dur-base) var(--tq-ease), height var(--tq-dur-base) var(--tq-ease);
+  }
+  .txq .tq-blog-toc--d .tq-blog-toc__list a {
+    padding: 10px 8px 10px 16px;
     font-size: 0.9375rem;
-    padding-block: 10px;
+    color: var(--tq-ink-mute);
+    transition: color var(--tq-dur-fast) var(--tq-ease);
+  }
+  .txq .tq-blog-toc--d .tq-blog-toc__list a:hover { color: var(--text-primary); }
+  .txq .tq-blog-toc--d .tq-blog-toc__list a[aria-current] {
+    color: var(--text-primary);
+    font-weight: var(--weight-medium);
+  }
+  .txq .tq-blog-toc--d .tq-blog-toc__list a[aria-current] .tq-mono {
+    color: var(--text-primary);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .txq .tq-blog-toc--d .tq-blog-toc__list::before { transition: none; }
   }
 }
 
