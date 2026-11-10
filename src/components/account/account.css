@@ -637,3 +637,63 @@
     max-width: none;
   }
 }
+
+/* The agreement to read before signing: a white page, whole text on screen (no inner scroll), numbered sections. */
+.txq .acct-doc {
+  display: grid;
+  gap: var(--tq-space-6);
+  padding: var(--tq-space-8) var(--tq-space-6);
+  background: #fff;
+  border: 1px solid var(--tq-surface-2);
+  box-shadow: var(--tq-shadow-card);
+  font-size: var(--tq-text-body);
+  line-height: var(--tq-leading-body);
+  min-width: 0;
+}
+.txq .acct-doc__title {
+  margin: 0;
+  font-size: var(--tq-text-h3);
+  line-height: 1.2;
+  font-weight: var(--tq-weight-semibold);
+  letter-spacing: var(--tq-tracking-display);
+}
+.txq .acct-doc__intro {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--tq-ink-mute);
+}
+.txq .acct-doc__sec {
+  display: grid;
+  gap: var(--tq-space-3);
+  padding-top: var(--tq-space-6);
+  border-top: 1px solid var(--tq-surface-2);
+}
+.txq .acct-doc__h {
+  display: flex;
+  align-items: baseline;
+  gap: var(--tq-space-3);
+  margin: 0;
+  font-size: var(--tq-text-lg);
+  font-weight: var(--tq-weight-semibold);
+  color: var(--tq-ink);
+}
+.txq .acct-doc__n {
+  font-family: var(--tq-font-mono);
+  font-size: var(--tq-text-sm);
+  font-weight: var(--tq-weight-regular);
+  color: var(--tq-ink-mute);
+  min-width: 1.5em;
+}
+.txq .acct-doc ul {
+  display: grid;
+  gap: var(--tq-space-2);
+  margin: 0;
+  padding: 0 0 0 calc(1.5em + var(--tq-space-3));
+  list-style: none;
+  max-width: 68ch;
+}
+@media (min-width: 700px) {
+  .txq .acct-doc {
+    padding: var(--tq-space-12) var(--tq-space-12);
+  }
+}

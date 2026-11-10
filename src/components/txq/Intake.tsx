@@ -30,6 +30,7 @@ import { CompareDialog, ExtrasStep, PackageStep, useTween } from "./Commissions"
 import { CITY_NAME, normalizeCrew } from "@/lib/commission";
 import { buildAgreement } from "@/lib/agreement";
 import { SignStep, type SignValue } from "@/components/account/SignStep";
+import { isFullName } from "@/lib/person-name";
 import "./booking-glass.css";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -89,8 +90,8 @@ const isTextField = (el: EventTarget | null) =>
  */
 export type IntakeAccount = { email: string; done: string };
 const SIGN_COPY = {
-  en: { send: "Sign and send", sending: "Sending…", name: "Type your full name to sign.", signature: "Please sign in the box.", agree: "Please check the box to agree.", emailNote: "This is your account email. Your booking shows under it." },
-  es: { send: "Firmar y enviar", sending: "Enviando…", name: "Escribe tu nombre completo para firmar.", signature: "Firma en el cuadro.", agree: "Marca la casilla para aceptar.", emailNote: "Este es el correo de tu cuenta. Tu reservación aparece con él." },
+  en: { send: "Sign and send", sending: "Sending…", name: "Type your first and last name, letters only.", signature: "Please sign in the box.", agree: "Please check the box to agree.", emailNote: "This is your account email. Your booking shows under it." },
+  es: { send: "Firmar y enviar", sending: "Enviando…", name: "Escribe tu nombre y apellido, solo letras.", signature: "Firma en el cuadro.", agree: "Marca la casilla para aceptar.", emailNote: "Este es el correo de tu cuenta. Tu reservación aparece con él." },
 } as const;
 
 export const Intake = forwardRef<HTMLDivElement | null, { pickFromList?: string; account?: IntakeAccount }>(function Intake({ pickFromList, account }, ref) {
@@ -271,7 +272,8 @@ export const Intake = forwardRef<HTMLDivElement | null, { pickFromList?: string;
   }, [done]);
   // The bar steps aside while the keyboard is up (a text field has focus) and
   // whenever the step's own Back/Next row is on screen.
-  const showBar = !done && inView && !navInView && !typing;
+  // On the sign step the only send button is the one under the signature.
+  const showBar = !done && inView && !navInView && !typing && !(account && step === LAST);
 
   const onPanelFocus = (e: React.FocusEvent) => {
     const text = isTextField(e.target);
@@ -308,7 +310,7 @@ export const Intake = forwardRef<HTMLDivElement | null, { pickFromList?: string;
     if (account) {
       const sc = SIGN_COPY[lang];
       const e: Errors = {};
-      if (sign.name.trim().length < 2) e.signName = sc.name;
+      if (!isFullName(sign.name)) e.signName = sc.name;
       if (!sign.signature) e.signature = sc.signature;
       if (!sign.agree) e.agree = sc.agree;
       if (Object.keys(e).length) return setErrors(e);
@@ -804,7 +806,8 @@ export const Intake = forwardRef<HTMLDivElement | null, { pickFromList?: string;
               {step !== LAST ? <ContactLine lang={lang} placement="booking-nav" className="tq-bk-help" /> : null}
             </form>
 
-            <Totals nextLabel={nextLabel} sending={sending} chosen={chosen} />
+            {/* On the sign step there is ONE send button: under the signature, after she has read and signed. */}
+            <Totals nextLabel={nextLabel} sending={sending} chosen={chosen} hideButton={Boolean(account) && step === LAST} />
           </div>
 
           {/* Phones + tablets: total · deposit and Next, pinned to the bottom. */}
@@ -893,7 +896,7 @@ function PackageRows({ chosen, error, onPick }: { chosen: boolean; error?: strin
   );
 }
 
-function Totals({ nextLabel, sending, chosen }: { nextLabel: string; sending: boolean; chosen: boolean }) {
+function Totals({ nextLabel, sending, chosen, hideButton = false }: { nextLabel: string; sending: boolean; chosen: boolean; hideButton?: boolean }) {
   const { t, lang, tier, addOns, hours } = useSite();
   const { book } = usePriceBook();
   const q = useQuote();
@@ -937,9 +940,11 @@ function Totals({ nextLabel, sending, chosen }: { nextLabel: string; sending: bo
       ) : (
         <p className="tq-bk-side__hint">{t.booking.listTotalHint}</p>
       )}
-      <button type="submit" form="tq-bk-form" className="tq-btn tq-btn--lg tq-btn--block" disabled={sending}>
-        {nextLabel} {sending ? null : <span className="tq-arrow" aria-hidden>→</span>}
-      </button>
+      {hideButton ? null : (
+        <button type="submit" form="tq-bk-form" className="tq-btn tq-btn--lg tq-btn--block" disabled={sending}>
+          {nextLabel} {sending ? null : <span className="tq-arrow" aria-hidden>→</span>}
+        </button>
+      )}
       <p className="tq-bk-fine">
         {t.booking.noCharge} {t.commissions.fine}
       </p>

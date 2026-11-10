@@ -41,6 +41,7 @@ import { getPriceBook } from "@/lib/pricing";
 import { clientIp } from "@/lib/client-ip";
 import { rateLimiter } from "@/lib/rate-limit";
 import { sameOriginRequest } from "@/lib/same-origin";
+import { isFullName } from "@/lib/person-name";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -81,6 +82,7 @@ export async function POST(req: NextRequest) {
   if (!r.signed_name || !r.signature || !r.agree) {
     return fail(422, "unsigned", "Please sign the agreement and check the box to agree.");
   }
+  if (!isFullName(r.signed_name)) return fail(422, "invalid", "Type your first and last name to sign, letters only.");
 
   const book = await getPriceBook();
   const q = quoteCommission(book, r.tier, r.add_ons, r.hours);

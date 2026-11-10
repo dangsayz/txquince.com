@@ -75,7 +75,7 @@ const T = {
     startTbd: "To be confirmed",
     pkg: "Your package",
     hours: (h: number, base: number) =>
-      h > base ? `${h} hours on the day (${base} included + ${h - base} extra)` : `${h} hours on the day`,
+      h > base ? `${h} hours on the day (${base} included + ${h - base} extra)` : `${h} ${h === 1 ? "hour" : "hours"} on the day`,
     hoursArchive: (h: number) => `${h} hours on the celebration day, plus a second day for portraits`,
     team: (p: number, v: number) =>
       `Your team: ${p} ${p === 1 ? "photographer" : "photographers"}${v ? ` and ${v} ${v === 1 ? "videographer" : "videographers"}` : ""}`,
@@ -131,7 +131,7 @@ const T = {
     startTbd: "Por confirmar",
     pkg: "Tu paquete",
     hours: (h: number, base: number) =>
-      h > base ? `${h} horas el día del evento (${base} incluidas + ${h - base} extra)` : `${h} horas el día del evento`,
+      h > base ? `${h} horas el día del evento (${base} incluidas + ${h - base} extra)` : `${h} ${h === 1 ? "hora" : "horas"} el día del evento`,
     hoursArchive: (h: number) => `${h} horas el día de la celebración, más un segundo día para retratos`,
     team: (p: number, v: number) =>
       `Tu equipo: ${p} ${p === 1 ? "fotógrafo" : "fotógrafos"}${v ? ` y ${v} ${v === 1 ? "videógrafo" : "videógrafos"}` : ""}`,
