@@ -1,10 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { useStaleBuildReload } from "@/components/useStaleBuildReload";
 import "@/components/txq/pages/pages.css";
 
 /** Error boundary for the Spanish subtree (mirrors app/error.tsx). */
-export default function ErrorPageEs({ reset }: { error: Error & { digest?: string }; reset: () => void }) {
+export default function ErrorPageEs({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+  const [reloading, retry] = useStaleBuildReload(error, reset);
+  if (reloading) return <div className="tq-wrap" style={{ minHeight: "calc(65svh - var(--header-h))" }} aria-busy="true" />;
+
   return (
     <div className="tq-wrap">
       <header className="tq-pg-mast" style={{ minHeight: "calc(65svh - var(--header-h))", alignContent: "center" }}>
@@ -17,7 +21,7 @@ export default function ErrorPageEs({ reset }: { error: Error & { digest?: strin
             Inténtalo de nuevo. Si sigue sin funcionar, vuelve al inicio y consulta tu fecha desde ahí.
           </p>
           <div className="tq-pg-actions">
-            <button type="button" onClick={reset} className="tq-btn tq-btn--lg">
+            <button type="button" onClick={retry} className="tq-btn tq-btn--lg">
               Intentar de nuevo
             </button>
             <Link href="/es" className="tq-btn tq-btn--lg tq-btn--ghost">

@@ -35,6 +35,19 @@
 .txq .ed img { max-width: 100%; }
 
 .ed-wrap { width: 100%; max-width: 1440px; margin: 0 auto; padding: 0 var(--ed-gutter); }
+/* One edge for the whole home page: the 1440 frame plus the gutter, the same
+   line as MENU in the header. Photos may run edge to edge; words never do.
+   `100%` is the full-width section, so this works inside any full-bleed block. */
+.txq .ed { --ed-edge: max(var(--ed-gutter), calc((100% - 1440px) / 2 + var(--ed-gutter))); }
+/* Blocks shared with other pages, lined up to that edge when they sit on the home page. */
+.txq .ed .vs-head,
+.txq .ed .vs-find,
+.txq .ed .vs-foot { max-width: 1440px; padding-inline: var(--ed-gutter); }
+.txq .ed .vs ul.vs-track {
+  padding-inline: var(--ed-edge);
+  scroll-padding-inline: var(--ed-edge);
+}
+.txq .ed .bc-in { max-width: 1440px; padding-inline: var(--ed-gutter); }
 .ed-block { display: block; }
 
 /* ---------- Type ---------- */
@@ -142,7 +155,8 @@
   right: 0;
   bottom: 0;
   z-index: 2;
-  padding: 0 var(--ed-gutter) clamp(32px, 6vh, 56px);
+  /* Photo is full-bleed; the words sit on the site edge (1440 frame + gutter), under MENU. */
+  padding: 0 var(--ed-edge) clamp(32px, 6vh, 56px);
   display: flex;
   flex-direction: column;
   gap: 28px;
