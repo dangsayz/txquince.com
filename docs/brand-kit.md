@@ -32,3 +32,20 @@ Older names still resolve: `--color-*` (Tailwind `@theme`), `--bg-*`/`--text-*`/
 ## Baseline (2026-11-05)
 
 `impeccable detect src/app src/components` (regex pass) found 0 anti-patterns. There is 1 advisory: a hairline grid background in `components/admin/charts/hud.css`, which is admin only and was left alone. A full pass needs a running server: `npx impeccable detect http://localhost:3000`.
+
+## Studio colors (admin only, added 2026-11-10)
+
+The public site stays warm neutrals and carbon ink. The Studio (`/admin`) sits on a pure white page and adds seven colors, defined on `.studio-skin` in `src/app/admin/studio.css`. Each color means one thing everywhere, so a color is information, never decoration.
+
+| Token | Value | Tint | Means |
+| --- | --- | --- | --- |
+| `--st-rose` | #a3264f | #fbe9ef | Families: inquiries, free plans, new families |
+| `--st-green` | #2e6f40 | #e8f0ea | Money, booked, live, went on |
+| `--st-blue` | #1d5a9e | #e6eff9 | Traffic and reading (charts, scroll bars); `--st-blue-soft` #6b97cc for past days |
+| `--st-amber` | #a14f12 | #fbeee2 | Waiting on you, visits lost |
+| `--st-gold` | #7a5c00 | #f8f0d8 | Reviews |
+| `--st-teal` | #0f6b6b | #e0f1f0 | Comments |
+| `--st-slate` | #44506b | #eceef3 | Neutral facts (accounts, language) |
+
+Use them through `data-hue="rose|green|blue|amber|gold|teal|slate"` on `.st-chip`, `.st-pill` (a count beside a title) and `.st-key` (a label's color key). Every dark value is 5:1 or more on white and on its own tint. `--st-line` #d6d1c8 is the card edge on the white page. Do not use these on public pages.
+

@@ -27,7 +27,7 @@ export function StudioBars({ days, unit, extraUnit, todayLast = true }: { days: 
             {!many && <span aria-hidden="true" className="st-num text-sm">{d.value.toLocaleString("en-US")}</span>}
             <span aria-hidden="true" className={`flex w-full items-end ${many ? "h-24" : "mt-1.5 h-28"}`}>
               <span
-                className={`st-bar w-full rounded-t-[var(--tq-radius-xs)] ${isLast ? "bg-[var(--tq-ink)]" : "bg-[var(--tq-surface-2)]"}`}
+                className={`st-bar w-full rounded-t-[var(--tq-radius-xs)] ${isLast ? "bg-[var(--st-blue)]" : "bg-[var(--st-blue-soft)]"}`}
                 style={{ height: `${Math.max(3, (d.value / peak) * 100)}%`, animationDelay: `${Math.min(i * 30, 400)}ms` }}
               />
             </span>
@@ -35,7 +35,7 @@ export function StudioBars({ days, unit, extraUnit, todayLast = true }: { days: 
               {showLabel ? (isLast ? "Today" : many ? label(d.date, { month: "short", day: "numeric" }) : label(d.date, { weekday: "short" })) : ""}
             </span>
             {extraUnit && !many && (
-              <span aria-hidden="true" className="h-5 text-[13px] text-[var(--tq-status-open)]">{d.extra ? `+${d.extra}` : ""}</span>
+              <span aria-hidden="true" className="h-5 text-[13px] font-medium text-[var(--st-rose)]">{d.extra ? `+${d.extra}` : ""}</span>
             )}
           </li>
         );

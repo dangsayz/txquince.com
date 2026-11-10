@@ -15,7 +15,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { BellIcon } from "@/components/admin/StudioIcons";
-import { badgeText, KIND_LABEL, timeAgo, unreadCount, type Notice } from "@/lib/notifications";
+import { badgeText, KIND_HUE, KIND_LABEL, timeAgo, unreadCount, type Notice } from "@/lib/notifications";
 
 const POLL_MS = 20_000;
 const TOAST_MS = 7_000;
@@ -151,7 +151,7 @@ export function NotificationBell() {
                   <>
                     <span className="st-notes__meta">
                       {isNew(n) ? <span className="st-notes__new" aria-hidden="true" /> : null}
-                      <span className="st-chip">{KIND_LABEL[n.kind]}</span>
+                      <span className="st-chip" data-hue={KIND_HUE[n.kind]}>{KIND_LABEL[n.kind]}</span>
                       <time dateTime={n.at}>{timeAgo(n.at, now)}</time>
                       {isNew(n) ? <span className="sr-only">New</span> : null}
                     </span>
