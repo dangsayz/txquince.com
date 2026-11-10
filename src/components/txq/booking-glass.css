@@ -10,11 +10,13 @@
    ========================================================================== */
 
 .txq .tq-bk {
-  --g-ink: #1d1d1f;
-  --g-mute: #6e6e73; /* 4.95:1 on white */
-  --g-fill: #f5f5f7;
-  --g-fill-2: #e8e8ed;
-  --g-line: rgba(0, 0, 0, 0.08);
+  /* Brand kit values (src/app/brand.css): warm gallery neutrals, carbon ink.
+     These were cold Apple greys; the panel read as a different product. */
+  --g-ink: var(--tq-ink);
+  --g-mute: var(--tq-ink-mute); /* 8.2:1 on canvas, 7.6:1 on linen */
+  --g-fill: var(--tq-surface);
+  --g-fill-2: var(--tq-surface-2);
+  --g-line: var(--tq-surface-2);
   --g-card: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 28px rgba(0, 0, 0, 0.06);
   --g-lift: 0 2px 6px rgba(0, 0, 0, 0.06), 0 18px 44px rgba(0, 0, 0, 0.1);
   --g-r-card: 24px;
@@ -71,71 +73,104 @@
 .txq .tq-bk .tq-bk-steps li[data-state="locked"] .tq-bk-steps__n { background: var(--g-fill); color: var(--g-mute); }
 .txq .tq-bk .tq-bk-steps__label { font-family: var(--font-sans); font-size: 14px; letter-spacing: -0.01em; text-transform: none; }
 
-/* ---------- Package cards ---------- */
-.txq .tq-bk .tq-pkgs { gap: 14px; }
+/* ---------- Package cards ----------
+   A gallery price ticket: paper, one hairline, no drop shadow. Jost uppercase
+   for the number and the hours line (the brand's second voice), the price set
+   light and large, a pill to choose. Refs (Mobbin): Revolut "Choose your plan"
+   (name over price, quiet card), Corgi packages (hairline bands, ink action),
+   OpenPhone pricing (hairline card, oversized numeral). */
+.txq .tq-bk .tq-pkgs { gap: 16px; }
 .txq .tq-bk .tq-pkg {
-  gap: 10px;
-  padding: 24px;
-  border: 1px solid var(--g-line);
-  border-radius: var(--g-r-card);
-  background: #ffffff;
-  box-shadow: var(--g-card);
-  transition: box-shadow 260ms var(--g-ease), transform 260ms var(--g-ease), border-color 260ms var(--g-ease);
+  gap: 0;
+  padding: 24px 24px 20px;
+  border: 1px solid var(--tq-surface-2);
+  border-radius: var(--tq-radius-md);
+  background: var(--tq-paper);
+  box-shadow: none;
+  transition: border-color var(--tq-dur-base) var(--tq-ease), background-color var(--tq-dur-base) var(--tq-ease);
 }
-.txq .tq-bk .tq-pkg:hover { border-color: rgba(0, 0, 0, 0.14); box-shadow: var(--g-lift); }
+.txq .tq-bk .tq-pkg:hover { border-color: var(--tq-stone); box-shadow: none; }
 .txq .tq-bk .tq-pkg[data-sel="true"] {
-  background: #ffffff;
-  border-color: transparent;
-  box-shadow: 0 0 0 2px var(--g-ink), var(--g-lift);
+  background: var(--tq-paper);
+  border-color: var(--tq-ink);
+  box-shadow: inset 0 0 0 1px var(--tq-ink);
 }
-.txq .tq-bk .tq-pkg:has(.tq-pkg__input:focus-visible) { outline: 2px solid var(--g-ink); outline-offset: 3px; }
-.txq .tq-bk .tq-pkg__num { font-size: 13px; font-weight: 600; color: var(--g-mute); letter-spacing: 0.02em; }
+.txq .tq-bk .tq-pkg:has(.tq-pkg__input:focus-visible) { outline: 2px solid var(--tq-ink); outline-offset: 3px; }
+.txq .tq-bk .tq-pkg__top { min-height: 28px; margin-bottom: 18px; }
+.txq .tq-bk .tq-pkg__num {
+  font-family: var(--tq-font-label);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--tq-ink-mute);
+}
+.txq .tq-bk .tq-pkg__num::before { content: "No. "; }
 .txq .tq-bk .tq-pkg__badge {
   min-height: 28px;
   padding: 0 12px;
-  border-radius: 999px;
-  background: var(--g-ink);
-  color: #ffffff;
-  font-family: var(--font-sans);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0;
-  text-transform: none;
+  border-radius: var(--tq-radius-pill);
+  background: var(--tq-ink);
+  color: var(--tq-ink-on);
+  font-family: var(--tq-font-label);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
-.txq .tq-bk .tq-pkg__name { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; }
-.txq .tq-bk .tq-pkg__price { font-size: 34px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.05; }
-.txq .tq-bk .tq-pkg__meta { font-size: 15px; color: var(--g-mute); font-weight: 500; }
-.txq .tq-bk .tq-pkg__list { display: grid; gap: 8px; margin: 6px 0 4px; padding: 14px 0 0; border-top: 1px solid var(--g-line); list-style: none; }
+.txq .tq-bk .tq-pkg__name { font-size: 22px; font-weight: var(--tq-weight-medium); letter-spacing: -0.02em; line-height: 1.2; }
+.txq .tq-bk .tq-pkg__price {
+  margin-top: 6px;
+  font-size: clamp(40px, 3.2vw, 48px);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+.txq .tq-bk .tq-pkg__meta {
+  margin-top: 14px;
+  font-family: var(--tq-font-label);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  line-height: 1.5;
+  text-transform: uppercase;
+  color: var(--tq-ink-mute);
+}
+.txq .tq-bk .tq-pkg__list { display: grid; gap: 10px; margin: 18px 0 22px; padding: 18px 0 0; border-top: 1px solid var(--tq-surface-2); list-style: none; }
 .txq .tq-bk .tq-pkg__list li {
   position: relative;
-  padding-left: 28px;
+  padding-left: 26px;
   font-size: 16px;
   line-height: 1.45;
 }
+/* A plain ink check, no grey disc behind it. */
 .txq .tq-bk .tq-pkg__list li::before {
   content: "";
   position: absolute;
   left: 0;
-  top: 2px;
+  top: 3px;
   width: 18px;
   height: 18px;
-  border-radius: 999px;
-  background: var(--g-fill) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M5 9.4l2.6 2.6L13 6.6' fill='none' stroke='%231d1d1f' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 18px 18px no-repeat;
+  border-radius: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M3.5 9.6l3.4 3.4 7.6-8' fill='none' stroke='%23111110' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 18px 18px no-repeat;
 }
 .txq .tq-bk .tq-pkg__mark {
   min-height: 48px;
-  margin-top: 8px;
-  border: 0;
-  border-radius: var(--g-r-ctl);
-  background: var(--g-fill);
-  color: var(--g-ink);
+  margin-top: auto;
+  border: 1px solid var(--tq-ink);
+  border-radius: var(--tq-radius-pill);
+  background: transparent;
+  color: var(--tq-ink);
   font-family: var(--font-sans);
   font-size: 16px;
-  font-weight: 600;
+  font-weight: var(--tq-weight-medium);
   letter-spacing: -0.01em;
-  text-transform: none;
+  transition: background-color var(--tq-dur-fast) var(--tq-ease), color var(--tq-dur-fast) var(--tq-ease);
 }
-.txq .tq-bk .tq-pkg[data-sel="true"] .tq-pkg__mark { background: var(--g-ink); color: #ffffff; }
+@media (hover: hover) {
+  .txq .tq-bk .tq-pkg:hover .tq-pkg__mark { background: var(--tq-ink); color: var(--tq-ink-on); }
+}
+.txq .tq-bk .tq-pkg[data-sel="true"] .tq-pkg__mark { background: var(--tq-ink); color: var(--tq-ink-on); }
 
 /* ---------- Segmented choices: hours, city, language ---------- */
 .txq .tq-bk .tq-hours { gap: 8px; }
