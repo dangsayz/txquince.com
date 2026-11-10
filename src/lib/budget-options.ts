@@ -72,7 +72,9 @@ export function coverageForBudget(book: PriceBook, budgetUsd: number, wantVideo:
     mine.sort((a, b) => b.hours - a.hours || (wantVideo ? 0 : Number(a.video) - Number(b.video)) || b.totalUsd - a.totalUsd);
     fits.push(mine[0]);
   }
-  fits.sort((a, b) => b.totalUsd - a.totalUsd);
+  // Closest to the budget first. At the same price the bigger package leads: its
+  // starting price is the number she tapped, so that is the one she expects to see.
+  fits.sort((a, b) => b.totalUsd - a.totalUsd || EVENT_TIERS.indexOf(b.tier) - EVENT_TIERS.indexOf(a.tier));
   // The step up: the next package's starting coverage (what a little more buys),
   // else the smallest option over budget.
   const over = all.filter((o) => o.totalUsd > budgetUsd).sort((a, b) => a.totalUsd - b.totalUsd);

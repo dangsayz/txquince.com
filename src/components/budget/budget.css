@@ -49,7 +49,7 @@
 
 /* ---------- The tool: budget, starting prices, video ---------- */
 .txq .bp-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; }
-.txq .bp-tool { padding: 20px 16px; border-radius: var(--tq-radius-lg); background: var(--tq-surface); }
+.txq .bp-tool { padding: 20px 16px; border-radius: var(--tq-radius-lg); background: var(--tq-paper); border: 1px solid var(--tq-surface-2); }
 .txq .bp-money {
   display: flex;
   align-items: center;
