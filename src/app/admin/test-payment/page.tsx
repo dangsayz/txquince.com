@@ -81,7 +81,7 @@ export default async function TestPayment({ searchParams }: { searchParams: Prom
     <StudioPage
       title="Payment test"
       intro="Pay $1 with your own card to prove that a mom’s payment reaches the site. Then refund it here."
-      back={{ href: "/admin/bookings", label: "Bookings" }}
+      back={{ href: "/admin/payments", label: "Payments" }}
       actions={<StartTestPayment />}
     >
       <div className="grid gap-4">

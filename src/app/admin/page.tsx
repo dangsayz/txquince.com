@@ -8,6 +8,7 @@ import { getPageBehavior } from "@/lib/analytics-db";
 import { getBlogPulse } from "@/lib/blog-pulse-db";
 import { listReviews } from "@/lib/reviews-db";
 import { listOpenTickets } from "@/lib/support-db";
+import { getMoney } from "@/lib/money-db";
 import { headers } from "next/headers";
 import { rememberOwnerNetwork } from "@/lib/own-traffic-db";
 
@@ -15,7 +16,7 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminHome() {
   await requireAdminPage("/admin"); // server-side gate; middleware is not enough
-  const [inquiries, activity, bookings, behavior, comments, tickets, reviews, blog] = await Promise.all([
+  const [inquiries, activity, bookings, behavior, comments, tickets, reviews, blog, money] = await Promise.all([
     getInquiries(),
     getInquiryActivity(),
     getBookings(),
@@ -24,6 +25,7 @@ export default async function AdminHome() {
     listOpenTickets(),
     listReviews().catch(() => []),
     getBlogPulse(14).catch(() => undefined),
+    getMoney(6).catch(() => undefined),
   ]);
   const pulse = await getDayPulse(inquiries.map((i) => i.created_at));
   // The owner is here: this network (home wifi) stops counting as visitors.
@@ -35,6 +37,7 @@ export default async function AdminHome() {
       tickets={tickets}
       reviews={reviews}
       blog={blog}
+      money={money}
       pulse={pulse}
       networkExcluded={networkExcluded}
       work={buildLeadWork(inquiries, activity)}
