@@ -10,6 +10,8 @@ import { PhotoGuard } from "./PhotoGuard";
 import { AvailabilityProvider, SiteProvider, useSite } from "./state";
 import { PriceBookProvider } from "@/components/PriceBookProvider";
 import type { PriceBook } from "@/lib/commission";
+import { SiteBannerBar } from "@/components/SiteBannerBar";
+import { bannerShowsOn, type SiteBanner } from "@/lib/site-banner-shared";
 import "./txq.css";
 
 /**
@@ -32,7 +34,7 @@ export const useShell = () => useContext(ShellCtx);
 /** Spanish pages that live outside /es (their URL is the Spanish search phrase). */
 const SPANISH_ROOT_PATHS = new Set(["/precios-quince-dfw"]);
 
-export function SiteShell({ children, book }: { children: ReactNode; book: PriceBook }) {
+export function SiteShell({ children, book, banner }: { children: ReactNode; book: PriceBook; banner: SiteBanner }) {
   const pathname = usePathname() || "/";
   const isHome = pathname === "/" || pathname === "/es";
   const urlLang = pathname === "/es" || pathname.startsWith("/es/") || SPANISH_ROOT_PATHS.has(pathname) ? "es" : "en";
@@ -43,7 +45,7 @@ export function SiteShell({ children, book }: { children: ReactNode; book: Price
         <AvailabilityProvider>
           <MotionConfig reducedMotion="user">
             {/* A client's private review link is not a sales page: no booking dock, not even for a frame. */}
-            <Frame key={pathname} dockStartsHidden={isHome || pathname.startsWith("/review/")}>
+            <Frame key={pathname} dockStartsHidden={isHome || pathname.startsWith("/review/")} banner={bannerShowsOn(pathname) ? banner : null} overHero={isHome}>
               {children}
             </Frame>
           </MotionConfig>
@@ -76,7 +78,7 @@ function useScrollTopOnNewPage() {
   }, []);
 }
 
-function Frame({ children, dockStartsHidden }: { children: ReactNode; dockStartsHidden: boolean }) {
+function Frame({ children, dockStartsHidden, banner, overHero }: { children: ReactNode; dockStartsHidden: boolean; banner: SiteBanner | null; overHero: boolean }) {
   useScrollTopOnNewPage();
   const { lang, t } = useSite();
   const [cinema, setCinema] = useState(false);
@@ -99,6 +101,7 @@ function Frame({ children, dockStartsHidden }: { children: ReactNode; dockStarts
         </a>
         <SiteHeader />
         <main id="content" className="tq-main">
+          {banner ? <SiteBannerBar banner={banner} overHero={overHero} /> : null}
           {children}
         </main>
         <SiteFooter />

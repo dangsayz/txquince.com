@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowIcon } from "@/components/admin/StudioIcons";
 import type { MoneyRow, MoneySummary } from "@/lib/money-db";
+import { METHOD_LABEL } from "@/lib/offline-payment";
 
 const TZ = "America/Chicago";
 export const usd = (cents: number) => (cents / 100).toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: cents % 100 ? 2 : 0 });
@@ -26,6 +27,7 @@ export function MoneyRows({ rows, now }: { rows: MoneyRow[]; now: Date }) {
             <span className="block truncate text-[16px] font-semibold">{r.name}</span>
             <span className="mt-0.5 block text-[15px] text-[var(--tq-ink-mute)]">
               {KIND[r.kind]}
+              {r.method !== "stripe" ? ` · ${METHOD_LABEL[r.method] ?? r.method}` : ""}
               {r.eventDate ? ` · event ${eventDay(r.eventDate)}` : ""} · <time dateTime={r.paidAt}>{paidWhen(r.paidAt, now)}</time>
             </span>
           </span>
@@ -40,10 +42,10 @@ export function MoneyRows({ rows, now }: { rows: MoneyRow[]; now: Date }) {
 }
 
 /** Today: the latest payments and this month's total. */
-export function MoneyPanel({ money, now }: { money: MoneySummary; now: Date }) {
+export function MoneyPanel({ money, now, className = "" }: { money: MoneySummary; now: Date; className?: string }) {
   const month = now.toLocaleDateString("en-US", { month: "long", timeZone: TZ });
   return (
-    <section aria-labelledby="money-title" className="st-card mt-8">
+    <section aria-labelledby="money-title" className={`st-card ${className}`}>
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-5 pb-3 pt-5 sm:px-6">
         <div>
           <h2 id="money-title" className="st-h2">Payments</h2>

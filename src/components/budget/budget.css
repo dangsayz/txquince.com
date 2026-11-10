@@ -197,6 +197,15 @@
 .txq .bp-nots li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 12px; align-items: start; font-size: 0.9375rem; line-height: 1.45; color: var(--tq-ink-mute); }
 .txq .bp-nots .bp-ico { width: 18px; height: 18px; margin-top: 2px; color: var(--tq-stone); }
 
+/* Payment plans, under the budget panel: the companies' own logos, untouched. */
+.txq .bp-side { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; min-width: 0; }
+.txq .bp-pay { padding: 20px 16px; border-radius: var(--tq-radius-lg); background: var(--tq-paper); border: 1px solid var(--tq-surface-2); }
+.txq .bp-pay__title { margin: 0; font-family: var(--bp-display); font-weight: 500; font-size: 1.1875rem; line-height: 1.2; }
+.txq .bp-pay__logos { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 14px; }
+.txq .bp-pay__logos li { display: flex; align-items: center; min-height: 28px; }
+.txq .bp-pay__logos img { display: block; height: auto; max-width: 100%; }
+.txq .bp-pay .bp-hint { margin-top: 14px; font-size: 0.9375rem; text-wrap: pretty; }
+
 /* ---------- Buttons: one shape ---------- */
 .txq .bp-btn {
   display: inline-flex;
@@ -335,6 +344,7 @@
   .txq .bp { padding-left: 24px; padding-right: 24px; padding-bottom: 96px; }
   .txq .bp-dock { display: none; }
   .txq .bp-tool { padding: 28px; }
+  .txq .bp-pay { padding: 24px 28px; }
   .txq .bp-card:not(.bp-card--best) { padding: 20px; }
   .txq .bp-card--best > .bp-card__body { padding: 20px 24px 24px; }
   .txq .bp-card > .bp-btn,
@@ -354,7 +364,7 @@
   .txq .bp-head { margin-bottom: 40px; }
   .txq .bp-dek { font-size: var(--tq-text-lg); }
   .txq .bp-grid { grid-template-columns: minmax(0, 380px) minmax(0, 1fr); gap: 56px; align-items: start; }
-  .txq .bp-tool { position: sticky; top: calc(var(--header-h, 64px) + 24px); }
+  .txq .bp-side { position: sticky; top: calc(var(--header-h, 64px) + 24px); }
   .txq .bp-card__photo { aspect-ratio: 21 / 9; }
   .txq .bp-lines--know { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }

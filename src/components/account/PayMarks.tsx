@@ -4,6 +4,8 @@
  * official marks. Whether Klarna / Afterpay / Affirm is offered depends on the
  * family and the amount, so the line under them says "if you qualify".
  */
+import "./pay-marks.css";
+
 const MARKS = [
   { id: "card", en: "Card", es: "Tarjeta" },
   { id: "klarna", en: "Klarna", es: "Klarna" },

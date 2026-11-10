@@ -24,11 +24,11 @@ export async function getAccountBookings(verifiedEmails: string[]): Promise<Acco
   const ids = bookings.map((b) => String(b.id));
   const pays = await db
     .prepare(
-      `SELECT booking_id, status, amount_cents, paid_at, stripe_payment_intent_id FROM booking_payments
+      `SELECT booking_id, status, amount_cents, paid_at, stripe_payment_intent_id, method FROM booking_payments
         WHERE kind = 'balance' AND booking_id IN (${ids.map(() => "?").join(", ")})`,
     )
     .bind(...ids)
-    .all<{ booking_id: string; status: string; amount_cents: number; paid_at: string | null; stripe_payment_intent_id: string | null }>();
+    .all<{ booking_id: string; status: string; amount_cents: number; paid_at: string | null; stripe_payment_intent_id: string | null; method: string | null }>();
   return sortAccountBookings(
     bookings.map((b) => toAccountBooking(b, pays.results)).filter((b): b is AccountBooking => b !== null),
   );

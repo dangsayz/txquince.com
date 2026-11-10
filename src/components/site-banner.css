@@ -1,0 +1,101 @@
+/* The thin banner under the header (SiteBannerBar.tsx). Brand kit tokens only:
+   paper, a hairline, ink. One line, 44px, the whole bar is the tap target. */
+.txq .tq-banner {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--tq-tap);
+  padding: 0 16px;
+  border-bottom: 1px solid var(--tq-surface-2);
+  background: var(--tq-canvas);
+  color: var(--tq-ink-mute);
+  /* The same small uppercase label as the menu, so it reads as part of the header, not an ad. */
+  font-family: var(--tq-font-label);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  text-decoration: none;
+}
+/* Logos sit back in grey and take their color only when the bar is pointed at. */
+.txq .tq-banner__logos img { filter: grayscale(1); opacity: 0.8; transition: filter var(--tq-dur-base) var(--tq-ease), opacity var(--tq-dur-base) var(--tq-ease); }
+.txq .tq-banner__names { display: none; white-space: nowrap; }
+.txq .tq-banner__names::before { content: "·"; margin-right: 0.9em; opacity: 0.6; }
+@media (hover: hover) {
+  .txq .tq-banner:hover { color: var(--tq-ink); }
+  .txq .tq-banner:hover .tq-banner__logos img { filter: none; opacity: 1; }
+}
+/* The homepage film runs up under the header, so there the bar lies on top of it. */
+.txq .tq-banner[data-over-hero] {
+  position: absolute;
+  inset: var(--header-h) 0 auto;
+  /* No band across the photo: white type on the film, one faint line under it. */
+  background: transparent;
+  border-bottom-color: rgb(255 255 255 / 0.22);
+  color: rgb(255 255 255 / 0.92);
+  text-shadow: 0 1px 12px rgb(0 0 0 / 0.45);
+}
+.txq .tq-banner[data-over-hero] .tq-banner__logos { display: none; }
+.txq .tq-banner[data-over-hero] .tq-banner__names { display: inline; }
+.txq .tq-banner[data-over-hero]:focus-visible { outline-color: #fff; }
+@media (hover: hover) {
+  .txq .tq-banner[data-over-hero]:hover { color: #fff; }
+}
+.txq .tq-banner:focus-visible { outline: 2px solid var(--tq-ink); outline-offset: -3px; }
+
+/* Both lines share one cell; the one that is on fades in. */
+.txq .tq-banner__line {
+  grid-area: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 0;
+  opacity: 0;
+  transform: translateY(4px);
+  visibility: hidden;
+  transition: opacity var(--tq-dur-slow) var(--tq-ease), transform var(--tq-dur-slow) var(--tq-ease), visibility 0s var(--tq-dur-slow);
+}
+.txq .tq-banner__line[data-on] {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+  transition: opacity var(--tq-dur-slow) var(--tq-ease), transform var(--tq-dur-slow) var(--tq-ease), visibility 0s;
+}
+.txq .tq-banner__text { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* A sale line may take two lines on a phone; the bar keeps its height, so nothing shifts when they take turns. */
+.txq .tq-banner__text[data-wrap] { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; text-align: center; text-wrap: balance; }
+.txq .tq-banner__logos { flex: none; display: flex; align-items: center; gap: 8px; }
+.txq .tq-banner__logos img { display: block; }
+.txq .tq-banner__arrow { transition: transform var(--tq-dur-fast) var(--tq-ease); }
+@media (hover: hover) {
+  .txq .tq-banner:hover .tq-banner__arrow { transform: translateX(3px); }
+  .txq .tq-banner:hover .tq-banner__text { text-decoration: underline; text-underline-offset: 4px; }
+}
+@media (max-width: 399px) {
+  .txq .tq-banner { grid-template-columns: minmax(0, 1fr); padding: 0 12px; }
+  .txq .tq-banner__arrow { display: none; }
+  .txq .tq-banner__line { gap: 8px; }
+  .txq .tq-banner__logos { gap: 6px; }
+  .txq .tq-banner__logos img { height: 13px; width: auto; }
+}
+@media (min-width: 1024px) {
+  .txq .tq-banner { padding: 0 40px; }
+  .txq .tq-banner__line { gap: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .txq .tq-banner__line { transform: none; }
+}
+
+/* Narrow screens: the short wording, tighter tracking, so nothing is cut off. */
+.txq .tq-banner__text[data-size="short"] { display: none; }
+@media (max-width: 519px) {
+  .txq .tq-banner { font-size: 0.75rem; letter-spacing: 0.09em; }
+  .txq .tq-banner__text[data-size="full"] { display: none; }
+  .txq .tq-banner__text[data-size="short"] { display: inline; }
+  .txq .tq-banner__names::before { margin-right: 0.6em; }
+}

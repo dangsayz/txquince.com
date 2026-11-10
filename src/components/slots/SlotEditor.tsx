@@ -9,11 +9,18 @@
  * important point → check the phone and computer crops → describe it in
  * English and Spanish → Save. Earlier versions can be restored at any time.
  * Built phone-first: a full-height sheet with 48px actions.
+ *
+ * Two homepage spots (the top photo, the featured-package background) can
+ * also play a silent film loop over the photo: there the sheet has a Photo /
+ * Video switch. A loop saves as soon as it uploads; the photo stays as the
+ * poster and as what slow phones and reduced-motion visitors see.
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ALT_MAX, ALT_MIN, focalPosition, renditionUrl } from "@/lib/image-slot-shared";
+import { CLIP_FOR_IMAGE_SLOT, CLIP_PLACE, clipUrl, MAX_CLIP_BYTES } from "@/lib/home-clip-shared";
 import { decodePhoto, encodeRenditions, sourceProblem, type Encoded } from "./encode-renditions";
+import { mb, useHomeClip } from "./useHomeClip";
 
 type L = { en: string; es: string };
 type Version = {
@@ -79,8 +86,16 @@ export function SlotEditor({
   const [focal, setFocal] = useState(initial?.current?.focal ?? { x: 0.5, y: 0.4 });
   const [alt, setAlt] = useState<L>(initial?.current?.alt ?? initial?.defaultAlt ?? { en: "", es: "" });
   const [dirty, setDirty] = useState(false);
-  const [busy, setBusy] = useState<string | null>(null);
+  const [photoBusy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const clipSlot = CLIP_FOR_IMAGE_SLOT[slot] ?? null;
+  const film = useHomeClip(clipSlot);
+  const [tab, setTab] = useState<"photo" | "video">("photo");
+  const clipRef = useRef<HTMLInputElement>(null);
+  const filmBusy = film.busy === "upload" ? "Uploading the video…" : film.busy === "remove" ? "Removing…" : null;
+  const busy = photoBusy ?? filmBusy;
+  // A saved or removed loop is already live: closing reloads the page to show it.
+  const close = useCallback(() => (film.changed ? onSaved() : onClose()), [film.changed, onSaved, onClose]);
   const fileRef = useRef<HTMLInputElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -108,7 +123,7 @@ export function SlotEditor({
 
   // Esc closes; the page behind does not scroll; focus moves into the dialog.
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && !busy && onClose();
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && !busy && close();
     document.addEventListener("keydown", onKey);
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -117,7 +132,7 @@ export function SlotEditor({
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = prev;
     };
-  }, [onClose, busy]);
+  }, [close, busy]);
 
   useEffect(() => () => void (preview && URL.revokeObjectURL(preview)), [preview]);
 
@@ -236,7 +251,7 @@ export function SlotEditor({
       className="fixed inset-0 z-[200] flex items-end justify-center bg-black/70 sm:items-center sm:p-6"
       onClick={(e) => {
         e.stopPropagation();
-        if (e.target === e.currentTarget && !busy) onClose();
+        if (e.target === e.currentTarget && !busy) close();
       }}
     >
       <div
@@ -251,12 +266,12 @@ export function SlotEditor({
       >
         <header className="flex items-start gap-3 border-b px-4 py-3 sm:px-6" style={{ borderColor: INK }}>
           <div className="min-w-0 flex-1">
-            <h2 id="slot-editor-title" className="text-lg font-semibold leading-snug">Replace photo</h2>
+            <h2 id="slot-editor-title" className="text-lg font-semibold leading-snug">{clipSlot ? "Replace photo or video" : "Replace photo"}</h2>
             <p className="text-base leading-snug">{info?.label ?? "Loading…"}</p>
           </div>
           <button
             type="button"
-            onClick={onClose}
+            onClick={close}
             disabled={!!busy}
             aria-label="Close"
             className="inline-flex h-11 w-11 shrink-0 items-center justify-center border text-2xl leading-none disabled:opacity-40"
@@ -266,6 +281,77 @@ export function SlotEditor({
           </button>
         </header>
 
+        {clipSlot ? (
+          <div role="group" aria-label="What to change" className="grid grid-cols-2 gap-2 border-b px-4 py-3 sm:px-6" style={{ borderColor: INK }}>
+            {(["photo", "video"] as const).map((k) => (
+              <button
+                key={k}
+                type="button"
+                aria-pressed={tab === k}
+                disabled={!!busy}
+                onClick={() => setTab(k)}
+                className="inline-flex min-h-12 items-center justify-center whitespace-nowrap border px-4 text-base font-medium disabled:opacity-40"
+                style={{ borderColor: INK, background: tab === k ? INK : "#fff", color: tab === k ? "#fff" : INK }}
+              >
+                {k === "photo" ? "Photo" : film.clip ? "Video · on" : "Video"}
+              </button>
+            ))}
+          </div>
+        ) : null}
+
+        {clipSlot && tab === "video" ? (
+          <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-6 pt-4 sm:px-6">
+            <section aria-labelledby="slot-film-h">
+              <h3 id="slot-film-h" className="text-base font-semibold">Film loop</h3>
+              <p className="mt-1 text-base leading-snug">
+                A short silent clip that plays {CLIP_PLACE[clipSlot]}, over the photo. It goes live as soon as it uploads.
+              </p>
+              <div className="relative mt-3 aspect-video w-full overflow-hidden" style={{ background: "#f4f4f2" }} data-testid="slot-film-stage">
+                {film.clip ? (
+                  <video key={film.clip.name} src={clipUrl(film.clip.name)} muted loop playsInline autoPlay preload="metadata" className="absolute inset-0 h-full w-full object-cover" aria-label="Current film loop" />
+                ) : (
+                  <p className="absolute inset-0 grid place-items-center px-4 text-center text-base">
+                    {film.ready ? "No film loop yet. This spot shows its photo." : "Loading…"}
+                  </p>
+                )}
+              </div>
+              <div className="mt-3 flex flex-wrap items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => clipRef.current?.click()}
+                  disabled={!!busy || !film.ready}
+                  className="inline-flex min-h-12 items-center whitespace-nowrap px-5 text-base font-medium text-white disabled:opacity-40"
+                  style={{ background: INK }}
+                >
+                  {film.clip ? "Replace the video" : "Upload a video"}
+                </button>
+                <input
+                  ref={clipRef}
+                  type="file"
+                  accept="video/mp4"
+                  className="sr-only"
+                  tabIndex={-1}
+                  aria-hidden
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    e.target.value = "";
+                    void film.upload(file);
+                  }}
+                />
+                {film.clip ? (
+                  <button type="button" onClick={film.remove} disabled={!!busy} className="inline-flex min-h-12 items-center whitespace-nowrap border px-5 text-base disabled:opacity-40" style={{ borderColor: INK }}>
+                    Remove the video
+                  </button>
+                ) : null}
+              </div>
+              <ul className="mt-4 grid list-disc gap-1 pl-5 text-base leading-snug">
+                <li>8 to 12 seconds, MP4 (H.264), 1920 × 1080, under {mb(MAX_CLIP_BYTES)}.</li>
+                <li>Slow motion works best: the dress, hands, the room.</li>
+                <li>It plays silent. Slow phones and visitors who turn motion off keep the photo.</li>
+              </ul>
+            </section>
+          </div>
+        ) : (
         <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-6 pt-4 sm:px-6">
           {/* 1. The photo + focal point */}
           <section aria-labelledby="slot-photo-h">
@@ -418,26 +504,41 @@ export function SlotEditor({
             </section>
           ) : null}
         </div>
+        )}
 
         <footer
           className="flex flex-wrap items-center gap-3 border-t px-4 pt-3 sm:px-6"
           style={{ borderColor: INK, paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}
         >
           <p role="status" aria-live="polite" className="min-w-0 flex-1 text-base">
-            {error ? <span role="alert" className="font-semibold">{error}</span> : busy}
+            {clipSlot && tab === "video" ? (
+              film.error ? <span role="alert" className="font-semibold">{film.error}</span> : (busy ?? film.status)
+            ) : error ? (
+              <span role="alert" className="font-semibold">{error}</span>
+            ) : (
+              busy
+            )}
           </p>
-          <button type="button" onClick={onClose} disabled={!!busy} className="inline-flex min-h-12 items-center whitespace-nowrap border px-5 text-base disabled:opacity-40" style={{ borderColor: INK }}>
-            Cancel
-          </button>
-          <button
-            type="button"
-            onClick={save}
-            disabled={!!busy}
-            className="inline-flex min-h-12 items-center whitespace-nowrap px-6 text-base font-semibold text-white disabled:opacity-40"
-            style={{ background: INK }}
-          >
-            Save
-          </button>
+          {clipSlot && tab === "video" ? (
+            <button type="button" onClick={close} disabled={!!busy} className="inline-flex min-h-12 items-center whitespace-nowrap px-6 text-base font-semibold text-white disabled:opacity-40" style={{ background: INK }}>
+              Done
+            </button>
+          ) : (
+            <>
+              <button type="button" onClick={close} disabled={!!busy} className="inline-flex min-h-12 items-center whitespace-nowrap border px-5 text-base disabled:opacity-40" style={{ borderColor: INK }}>
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={save}
+                disabled={!!busy}
+                className="inline-flex min-h-12 items-center whitespace-nowrap px-6 text-base font-semibold text-white disabled:opacity-40"
+                style={{ background: INK }}
+              >
+                Save
+              </button>
+            </>
+          )}
         </footer>
       </div>
     </div>,

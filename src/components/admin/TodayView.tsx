@@ -130,7 +130,7 @@ export function TodayView({ pulse, networkExcluded = false, work, review, upcomi
       </header>
 
       {/* 0. Money first: who paid, newest on top */}
-      {money ? <MoneyPanel money={money} now={now} /> : null}
+      {money ? <MoneyPanel money={money} now={now} className="mt-8" /> : null}
 
       {/* 1. The site today */}
       <section aria-labelledby="site-title" className="st-card mt-6">

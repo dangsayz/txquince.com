@@ -3,6 +3,8 @@ import { formatMoney, packageLabel } from "@/lib/booking";
 import { BookingActions } from "@/components/admin/BookingActions";
 import { TIER_NAME_EN, type TierId } from "@/lib/commission";
 import { isSignedAgreement } from "@/lib/agreement";
+import { RecordPayment } from "@/components/admin/RecordPayment";
+import { balanceOf, isOffline } from "@/lib/offline-payment";
 import { BookingTidy } from "@/components/admin/BookingTidy";
 import { canArchive, canRemove, isArchived } from "@/lib/booking-tidy";
 
@@ -22,6 +24,9 @@ const COLLECTION_LABEL: Record<string, string> = {
 };
 
 type Tone = "good" | "urgent" | "ink" | undefined;
+
+/** A received balance payment (card through Stripe, or recorded by hand). */
+export type LedgerRow = { id: string; booking_id: string; amount_cents: number; method: string; paid_at: string | null; note: string | null };
 
 function statusPill(status: string, signed: boolean): { label: string; tone: Tone } {
   switch (status) {
@@ -92,12 +97,12 @@ function DateTile({ ymd, muted }: { ymd: string; muted: boolean }) {
   );
 }
 
-function Ledger({ b, closed }: { b: BookingRow; closed: boolean }) {
+function Ledger({ b, closed, later }: { b: BookingRow; closed: boolean; later: number }) {
   const total = totalCents(b);
   const deposit = b.deposit_amount_cents;
   const paid = b.status === "paid";
   const money = (c: number) => formatMoney(c, b.currency);
-  const pct = total ? Math.min(100, Math.round((deposit / total) * 100)) : null;
+  const pct = total ? Math.min(100, Math.round(((deposit + (paid ? later : 0)) / total) * 100)) : null;
   return (
     <div className="min-w-0">
       {total !== null ? (
@@ -114,10 +119,16 @@ function Ledger({ b, closed }: { b: BookingRow; closed: boolean }) {
       <dl className="m-0 mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-sm">
         <dt className="text-[var(--tq-ink-mute)]">{paid ? "Deposit in" : closed ? "Deposit" : "Deposit due"}</dt>
         <dd className="st-num m-0 text-right">{money(deposit)}</dd>
+        {paid && later > 0 && (
+          <>
+            <dt className="text-[var(--tq-ink-mute)]">Paid since</dt>
+            <dd className="st-num m-0 text-right">{money(later)}</dd>
+          </>
+        )}
         {total !== null && (
           <>
             <dt className="text-[var(--tq-ink-mute)]">{paid && !closed ? "Balance due" : "Balance"}</dt>
-            <dd className="st-num m-0 text-right">{money(Math.max(0, total - deposit))}</dd>
+            <dd className="st-num m-0 text-right">{money(Math.max(0, total - deposit - (paid ? later : 0)))}</dd>
           </>
         )}
       </dl>
@@ -126,7 +137,9 @@ function Ledger({ b, closed }: { b: BookingRow; closed: boolean }) {
   );
 }
 
-function BookingRecord({ booking: b, today, closed }: { booking: BookingRow; today: string; closed: boolean }) {
+function BookingRecord({ booking: b, today, closed, ledger }: { booking: BookingRow; today: string; closed: boolean; ledger: LedgerRow[] }) {
+  const later = ledger.reduce((n, r) => n + r.amount_cents, 0);
+  const balance = balanceOf(b);
   const agreement = isSignedAgreement(b.metadata?.agreement) ? b.metadata.agreement : null;
   const pill = statusPill(b.status, Boolean(agreement));
   const parts = dayParts(b.event_date);
@@ -152,7 +165,7 @@ function BookingRecord({ booking: b, today, closed }: { booking: BookingRow; tod
       </div>
 
       <div className="bk-money">
-        <Ledger b={b} closed={closed} />
+        <Ledger b={b} closed={closed} later={later} />
       </div>
 
       <div className="bk-status">
@@ -200,6 +213,16 @@ function BookingRecord({ booking: b, today, closed }: { booking: BookingRow; tod
           </details>
         )}
 
+        {b.status === "paid" && !isArchived(b) ? (
+          <RecordPayment
+            bookingId={b.id}
+            name={firstName}
+            today={today}
+            leftCents={balance === null ? null : Math.max(0, balance - later)}
+            recorded={ledger.filter((r) => isOffline(r.method)).map((r) => ({ id: r.id, amountCents: r.amount_cents, method: r.method, paidAt: r.paid_at, note: r.note }))}
+          />
+        ) : null}
+
         <BookingActions id={b.id} status={b.status} signed={Boolean(agreement)} />
         {isArchived(b) || canArchive(b, today) ? <BookingTidy id={b.id} name={firstName} archived={isArchived(b)} removable={canRemove(b)} /> : null}
       </div>
@@ -224,12 +247,13 @@ export function splitBookings(all: BookingRow[], today: string) {
 }
 
 /** Three numbers the owner actually asks: what's in, what's still owed, what's next. */
-function Summary({ bookings, upcoming, today }: { bookings: BookingRow[]; upcoming: BookingRow[]; today: string }) {
+function Summary({ bookings, upcoming, today, ledger }: { bookings: BookingRow[]; upcoming: BookingRow[]; today: string; ledger: LedgerRow[] }) {
   const currency = bookings[0]?.currency ?? "usd";
   const collected = bookings.filter((b) => b.status === "paid").reduce((s, b) => s + b.deposit_amount_cents, 0);
   const owed = upcoming.reduce((s, b) => {
     const t = totalCents(b);
-    return t === null ? s : s + Math.max(0, t - b.deposit_amount_cents);
+    const later = ledger.filter((r) => r.booking_id === b.id).reduce((n, r) => n + r.amount_cents, 0);
+    return t === null ? s : s + Math.max(0, t - b.deposit_amount_cents - later);
   }, 0);
   const next = upcoming[0];
   const nextParts = next ? dayParts(next.event_date) : null;
@@ -237,7 +261,7 @@ function Summary({ bookings, upcoming, today }: { bookings: BookingRow[]; upcomi
   return (
     <dl className="bk-summary st-card">
       <div>
-        <dt>Deposits in</dt>
+        <dt>Booking deposits in</dt>
         <dd className="st-num">{formatMoney(collected, currency)}</dd>
       </div>
       <div>
@@ -261,7 +285,7 @@ function Summary({ bookings, upcoming, today }: { bookings: BookingRow[]; upcomi
   );
 }
 
-export function BookingsBoard({ bookings, today }: { bookings: BookingRow[]; today: string }) {
+export function BookingsBoard({ bookings, today, ledger = [] }: { bookings: BookingRow[]; today: string; ledger?: LedgerRow[] }) {
   if (bookings.length === 0) {
     return (
       <div className="st-card st-empty">
@@ -283,13 +307,13 @@ export function BookingsBoard({ bookings, today }: { bookings: BookingRow[]; tod
 
   return (
     <>
-      <Summary bookings={live} upcoming={upcoming} today={today} />
+      <Summary bookings={live} upcoming={upcoming} today={today} ledger={ledger} />
       {nothingLive ? <p className="st-card m-0 px-5 py-5 text-base sm:px-6">No open bookings. Everything here is archived.</p> : null}
       {groups.map((g) => {
         const closed = g.id === "past" || g.id === "archived";
         const rows = (
           <div className="border-t border-[var(--tq-surface-2)]">
-            {g.rows.map((b) => <BookingRecord key={b.id} booking={b} today={today} closed={closed} />)}
+            {g.rows.map((b) => <BookingRecord key={b.id} booking={b} today={today} closed={closed} ledger={ledger.filter((r) => r.booking_id === b.id)} />)}
           </div>
         );
         const heading = (

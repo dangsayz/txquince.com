@@ -58,10 +58,10 @@ export default async function AdminHero() {
       }
     >
       <StudioSection title="Film loop at the top of the homepage" intro="A short silent clip that plays over the first photo a family sees.">
-        <HomeClipManager slot="hero" place="at the top of the homepage" initial={clips.hero ?? null} />
+        <HomeClipManager slot="hero" initial={clips.hero ?? null} />
       </StudioSection>
       <StudioSection title="Film loop behind the featured package" intro="A short silent clip that plays behind the featured package. It also adds a “Watch our films” button there.">
-        <HomeClipManager slot="feature" place="behind the featured package" initial={clips.feature ?? null} />
+        <HomeClipManager slot="feature" initial={clips.feature ?? null} />
       </StudioSection>
       {/* The homepage's photos (top photo, featured-package background, questions)
           are image slots: Every image, or "Replace photo" on the live page. */}
