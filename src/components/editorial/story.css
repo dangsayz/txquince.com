@@ -68,3 +68,28 @@
 @keyframes ed-draw {
   to { stroke-dashoffset: 0; }
 }
+
+/* ---------- The black band behind Steps + Promises ---------- */
+/* Full-bleed without overflow: the shadow paints past the column, the clip
+   trims it top and bottom only. */
+.ed-how {
+  margin-top: clamp(56px, 7vw, 96px);
+  padding: clamp(56px, 7vw, 104px) 0;
+  background: #000000;
+  color: #ffffff;
+  box-shadow: 0 0 0 100vmax #000000;
+  clip-path: inset(0 -100vmax);
+}
+.ed-how .ed-steps { margin-top: 0; padding-top: 0; border-top: 0; }
+.ed-how .ed-display,
+.ed-how .ed-step__art,
+.ed-how .ed-step__title { color: #ffffff; }
+.ed-how .ed-step__body { color: rgba(255, 255, 255, 0.82); }
+.ed-how .ed-step__n { color: rgba(255, 255, 255, 0.7); }
+.ed-how .ed-promises__short li { color: #ffffff; }
+/* The terms row: a white bar on the black band. */
+.ed-how .ed-promises__more { margin-top: clamp(24px, 3vw, 36px); border: 0; background: #ffffff; color: var(--ed-ink); padding: 0 clamp(16px, 2vw, 28px); }
+.ed-how .ed-promises__more summary { min-height: 64px; color: var(--ed-ink); }
+.ed-how .ed-promises__list li { color: var(--ed-ink); }
+/* The band already divides the sections; the panel needs no rule of its own. */
+.ed-how + .ed-panel { border-top: 0; margin-top: clamp(40px, 5vw, 64px); }

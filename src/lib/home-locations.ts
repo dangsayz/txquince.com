@@ -33,14 +33,32 @@ type Photo = {
 const pct = (v: number | null | undefined, d: number) => `${Math.round((v ?? d) * 100)}%`;
 const portrait = (p: Photo) => !p.width || !p.height || p.height >= p.width;
 
-function cover(photos: Photo[]): HomeGallery["cover"] {
-  const c = photos.find((p) => p.is_feature && portrait(p)) ?? photos.find(portrait) ?? photos[0];
+/** Sections that show a table, a cake or a room, not her. A card should open on a person. */
+const NOT_HER = /^(the-details|venue-decor|cake|dinner|films|vendor-)/;
+const ofHer = (p: Photo) => !NOT_HER.test(p.section);
+const focusOf = (p: Photo) => `${pct(p.focus_x, 0.5)} ${pct(p.focus_y, 0.4)}`;
+
+/** The card photo: a starred portrait of her first, then any portrait of her, then what there is. */
+function pickCover(photos: Photo[]): Photo {
+  return (
+    photos.find((p) => p.is_feature && portrait(p) && ofHer(p)) ??
+    photos.find((p) => portrait(p) && ofHer(p)) ??
+    photos.find((p) => p.is_feature && portrait(p)) ??
+    photos.find(portrait) ??
+    photos[0]
+  );
+}
+
+function cover(photos: Photo[]): Pick<HomeGallery, "cover" | "previews"> {
+  const c = pickCover(photos);
+  // Two more upright photos, spread through the gallery so they differ from the cover.
+  const rest = photos.filter((p) => p !== c && p.url !== c.url && portrait(p));
+  const spread = [rest[Math.floor(rest.length / 3)], rest[Math.floor((rest.length * 2) / 3)]].filter(
+    (p, i, all): p is Photo => !!p && all.indexOf(p) === i,
+  );
   return {
-    src: c.url,
-    width: c.width,
-    height: c.height,
-    alt: publicPhotoCopy(c, altPhraseFor(c.section)).alt,
-    focus: `${pct(c.focus_x, 0.5)} ${pct(c.focus_y, 0.4)}`,
+    cover: { src: c.url, width: c.width, height: c.height, alt: publicPhotoCopy(c, altPhraseFor(c.section)).alt, focus: focusOf(c) },
+    previews: spread.map((p) => ({ src: p.url, focus: focusOf(p) })),
   };
 }
 
@@ -56,7 +74,7 @@ export function homeLocations(
     const rows = db.map((p, i) => ({ ...p, id: p.id ?? `db-${i}`, sort_order: i })) as unknown as Parameters<typeof withAlbums>[0];
     const photos = withAlbums(rows, v.slug) as unknown as Photo[];
     if (!photos.length) continue;
-    out.push({ key: `venue:${v.slug}`, title: v.venue, city: v.city, href: `/venues/${v.slug}`, count: photos.length, cover: cover(photos) });
+    out.push({ key: `venue:${v.slug}`, title: v.venue, city: v.city, href: `/venues/${v.slug}`, count: photos.length, ...cover(photos) });
   }
 
   // Named places without a venue page: one card per place (a place can hold
@@ -71,7 +89,7 @@ export function homeLocations(
     const post = posts.find((p) => p.content.some((b) => b.type === "image" && slugs.has(b.slug)));
     if (!post) continue;
     const photos = albums.flatMap((a) => albumPhotos(a)) as unknown as Photo[];
-    out.push({ key: `place:${place}`, title: place, city: albums[0].city, href: `${blogBase}/${post.slug}`, count: photos.length, cover: cover(photos) });
+    out.push({ key: `place:${place}`, title: place, city: albums[0].city, href: `${blogBase}/${post.slug}`, count: photos.length, ...cover(photos) });
   }
 
   // Most photos first, so the strip opens on the fullest galleries.

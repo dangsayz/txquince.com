@@ -17,13 +17,13 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: var(--tq-space-6);
-  margin-bottom: var(--tq-space-8);
+  margin-bottom: var(--tq-space-6);
 }
 .vs-intro { max-width: 36rem; }
 .vs h2.vs-title {
   margin: 0 0 var(--tq-space-4);
   font-family: var(--tq-font-sans);
-  font-size: var(--tq-text-h2);
+  font-size: clamp(1.625rem, 1.3rem + 1.2vw, 2.25rem);
   font-weight: var(--tq-weight-semibold);
   line-height: var(--tq-leading-tight);
   letter-spacing: var(--tq-tracking-display);
@@ -81,11 +81,15 @@
 .vs ul.vs-track::-webkit-scrollbar { display: none; }
 .vs-item { scroll-snap-align: start; min-width: 0; }
 .vs-card {
-  display: flex;
-  flex-direction: column;
-  color: var(--tq-ink);
+  position: relative;
+  display: block;
+  color: var(--tq-ink-on);
+  /* Dark base: the white label stays readable while a photo loads, or if it never does. */
+  background: var(--tq-cinema);
   text-decoration: none;
   border-radius: var(--tq-radius-lg);
+  overflow: hidden;
+  -webkit-user-drag: none;
 }
 .vs-card:focus-visible { outline: 2px solid var(--tq-ink); outline-offset: 4px; }
 .vs-media {
@@ -93,9 +97,8 @@
   aspect-ratio: 4 / 5;
   overflow: hidden;
   border-radius: var(--tq-radius-lg);
-  background: var(--tq-surface);
-  margin-bottom: var(--tq-space-4);
 }
+.vs-media { position: relative; }
 .vs-media img {
   width: 100%;
   height: 100%;
@@ -103,18 +106,149 @@
   transition: transform var(--tq-dur-slow) var(--tq-ease);
 }
 .vs-card:hover .vs-media img { transform: scale(1.03); }
+/* A soft shade under the label only, so the name reads on any photo. */
+.vs-media::after {
+  content: "";
+  position: absolute;
+  inset: 45% 0 0;
+  background: linear-gradient(180deg, rgba(13, 13, 12, 0) 0%, rgba(13, 13, 12, 0.78) 100%);
+  pointer-events: none;
+}
+/* Two more photos from the gallery, faded through while the card is hovered or focused. */
+.vs-media img.vs-peek { position: absolute; inset: 0; opacity: 0; }
+.vs-label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--tq-space-1);
+  padding: var(--tq-space-4);
+}
 .vs-name {
   font-size: var(--tq-text-lg);
   font-weight: var(--tq-weight-medium);
-  line-height: 1.3;
+  line-height: 1.25;
   letter-spacing: var(--tq-tracking-body);
+  text-wrap: balance;
 }
 .vs-meta {
-  margin-top: var(--tq-space-1);
   font-family: var(--tq-font-mono);
   font-size: var(--tq-text-sm);
-  color: var(--tq-ink-mute);
+  color: var(--tq-ink-on);
 }
+
+/* ---------- Find your venue ---------- */
+.vs-find {
+  max-width: 1200px;
+  margin: 0 auto var(--tq-space-6);
+  padding: 0 var(--tq-space-4);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--tq-space-3) var(--tq-space-4);
+}
+.vs-search {
+  flex: 1 1 240px;
+  max-width: 340px;
+  display: flex;
+  align-items: center;
+  gap: var(--tq-space-2);
+  min-height: var(--tq-tap-primary);
+  padding: 0 var(--tq-space-4);
+  border: 1px solid var(--tq-stone);
+  border-radius: var(--tq-radius-pill);
+  background: var(--tq-canvas);
+  color: var(--tq-ink);
+}
+.vs-search:focus-within { box-shadow: var(--tq-ring); border-color: var(--tq-ink); }
+.vs-search input {
+  flex: 1;
+  min-width: 0;
+  height: var(--tq-tap);
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--tq-ink);
+  font: inherit;
+  font-size: var(--tq-text-body);
+}
+.vs-search input::placeholder { color: var(--tq-ink-mute); opacity: 1; }
+.vs-search input::-webkit-search-cancel-button { cursor: pointer; }
+.vs ul.vs-chips {
+  list-style: none;
+  margin: 0 calc(-1 * var(--tq-space-4));
+  padding: 0 var(--tq-space-4);
+  flex: 1 1 100%;
+  display: flex;
+  gap: var(--tq-space-2);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.vs ul.vs-chips::-webkit-scrollbar { display: none; }
+.vs-chip {
+  min-height: var(--tq-tap);
+  padding: 0 var(--tq-space-4);
+  border: 1px solid var(--tq-stone);
+  border-radius: var(--tq-radius-pill);
+  background: transparent;
+  color: var(--tq-ink);
+  font: inherit;
+  font-size: var(--tq-text-body);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--tq-dur-fast) var(--tq-ease), color var(--tq-dur-fast) var(--tq-ease), border-color var(--tq-dur-fast) var(--tq-ease);
+}
+.vs-chip:hover { background: var(--tq-surface); }
+.vs-chip[aria-pressed="true"] { background: var(--tq-ink); border-color: var(--tq-ink); color: var(--tq-ink-on); }
+.vs-chip:focus-visible { outline: 2px solid var(--tq-ink); outline-offset: 2px; }
+.vs-sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* ---------- "Don't see your venue?" ---------- */
+.vs-ask {
+  height: 100%;
+  aspect-ratio: 4 / 5;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: var(--tq-space-3);
+  padding: var(--tq-space-6);
+  border-radius: var(--tq-radius-lg);
+  background: var(--tq-ink);
+  color: var(--tq-ink-on);
+}
+.vs .vs-ask p { margin: 0; }
+.vs .vs-ask p.vs-ask__title { font-size: var(--tq-text-h3); font-weight: var(--tq-weight-semibold); line-height: 1.15; letter-spacing: var(--tq-tracking-display); text-wrap: balance; }
+.vs .vs-ask p.vs-ask__body { font-size: var(--tq-text-body); line-height: 1.5; color: var(--tq-ink-on); }
+.vs-ask__btn {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tq-space-2);
+  min-height: var(--tq-tap-primary);
+  margin-top: var(--tq-space-2);
+  padding: 0 var(--tq-space-6);
+  border-radius: var(--tq-radius-pill);
+  background: var(--tq-canvas);
+  color: var(--tq-ink);
+  font-size: var(--tq-text-body);
+  font-weight: var(--tq-weight-medium);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color var(--tq-dur-fast) var(--tq-ease);
+}
+.vs-ask__btn:hover { background: var(--tq-hover); }
+.vs-ask__btn:focus-visible { outline: 2px solid var(--tq-ink-on); outline-offset: 2px; }
+
+/* ---------- Drag (mouse) ---------- */
+@media (hover: hover) and (pointer: fine) {
+  .vs ul.vs-track { cursor: grab; }
+}
+.vs ul.vs-track[data-dragging] { cursor: grabbing; scroll-snap-type: none; user-select: none; }
+.vs ul.vs-track[data-dragging] a { pointer-events: none; }
+
 .vs-foot { margin-top: var(--tq-space-8); }
 .vs-all {
   display: inline-flex;
@@ -136,7 +270,9 @@
 @media (min-width: 900px) {
   .vs { padding: var(--tq-space-section-lg) 0; }
   .vs-head,
+  .vs-find,
   .vs-foot { padding: 0 var(--tq-space-12); }
+  .vs ul.vs-chips { flex: 1 1 0; margin: 0; padding: 0; flex-wrap: wrap; overflow: visible; }
   .vs ul.vs-track {
     padding: var(--tq-space-2) var(--tq-space-12);
     scroll-padding-inline: var(--tq-space-12);
@@ -150,6 +286,24 @@
     padding-left: calc((100% - 1200px) / 2 + var(--tq-space-12));
     scroll-padding-inline: calc((100% - 1200px) / 2 + var(--tq-space-12));
   }
+}
+/* ---------- Motion (only when allowed) ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  /* Held back only once the script has run ([data-armed]); drawn in on first sight. */
+  .vs[data-armed] .vs-item { opacity: 0; transform: translateY(28px); }
+  .vs[data-armed][data-seen] .vs-item { animation: vs-rise 0.8s var(--tq-ease) calc(var(--i, 0) * 80ms) both; }
+  /* Hover or keyboard focus: fade through the two extra photos, then back to the cover. */
+  .vs-card:is(:hover, :focus-visible) .vs-peek { animation: vs-peek 5.4s var(--tq-ease) 0.5s infinite; }
+  .vs-card:is(:hover, :focus-visible) .vs-peek[data-k="1"] { animation-delay: 2.3s; }
+}
+@keyframes vs-rise {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes vs-peek {
+  0% { opacity: 0; }
+  10%, 33% { opacity: 1; }
+  43%, 100% { opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .vs-card:hover .vs-media img { transform: none; }

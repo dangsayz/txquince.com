@@ -578,8 +578,11 @@ function Packages({ children }: { children: ReactNode }) {
           })}
         </ul>
         <p className="ed-crew">{p.crew}</p>
-        <Steps />
-        <Promises />
+        {/* A black band, edge to edge: the steps and promises stand apart from the price list. */}
+        <div className="ed-how" data-header-tone="dark">
+          <Steps />
+          <Promises />
+        </div>
         <div className="ed-panel">
           <h3 className="ed-display ed-display--sm">{p.panelTitle}</h3>
           <p className="ed-dek">{p.panelDek}</p>
