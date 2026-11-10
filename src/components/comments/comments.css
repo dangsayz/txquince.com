@@ -244,7 +244,9 @@
 .tq-cmt__box {
   --cmt-pad: var(--tq-space-6);
   margin-top: var(--tq-space-8);
-  padding: var(--cmt-pad) var(--cmt-pad) 0;
+  /* Padded on every side, so no state can sit on the card's edge; the linen
+     foot pulls itself back out to the edges (negative margins below). */
+  padding: var(--cmt-pad);
   background: var(--tq-paper);
   border: 1px solid var(--tq-surface-2);
   box-shadow: var(--tq-shadow-card);
@@ -256,7 +258,6 @@
 }
 .tq-cmt__box > .tq-cmt__note {
   margin: 0;
-  padding-bottom: var(--cmt-pad);
 }
 .tq-cmt__box .tq-cmt__box-title {
   margin: 0 0 var(--tq-space-4);
@@ -311,7 +312,7 @@
   grid-template-columns: 18px minmax(0, 1fr);
   gap: var(--tq-space-3);
   align-items: start;
-  margin: var(--cmt-pad) calc(var(--cmt-pad) * -1) 0;
+  margin: var(--cmt-pad) calc(var(--cmt-pad) * -1) calc(var(--cmt-pad) * -1);
   padding: var(--tq-space-3) var(--cmt-pad);
   background: var(--tq-surface);
   border-top: 1px solid var(--tq-surface-2);
@@ -430,3 +431,30 @@
    is waiting in the field after login. */
 .tq-cmt__box[data-place="bottom"] .tq-cmt__gate .tq-cmt__starters { margin-bottom: var(--tq-space-2); }
 .txq .tq-cmt__starters a.tq-pill { text-decoration: none; }
+
+/* ---------- Sent: a clear "we have it" ---------- */
+.tq-cmt__box .tq-cmt__sent {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: var(--tq-space-3);
+  align-items: start;
+}
+.tq-cmt__box .tq-cmt__sent-mark {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--tq-radius-pill);
+  background: var(--tq-status-open);
+  color: var(--tq-paper);
+}
+.tq-cmt__box .tq-cmt__sent .tq-cmt__gate-lead {
+  margin: 2px 0 0;
+  font-size: var(--tq-text-body);
+  line-height: 1.5;
+  color: var(--tq-ink);
+}
+.tq-cmt__box .tq-cmt__sent .tq-cmt__actions {
+  grid-column: 2;
+  margin-top: var(--tq-space-2);
+}
