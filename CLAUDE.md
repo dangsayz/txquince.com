@@ -33,6 +33,10 @@ what's included, links, policies, wording rules), rewrite that doc's facts and a
 Prices and package wording are owner-editable at /admin/prices and /admin/packages, so tell
 Grokbot to confirm numbers on txquince.com/budget before posting.
 
+## Claude Duet's brief (standing rule from Dang, 2026-11-10)
+
+Dang uses Claude Duet as his day-to-day agent. It reads one Google Doc: **"TX Quince · Brief for Claude Duet (kept current by Claude Code)"**, Drive file id `1iXD9yNLQfzZwRWfWsxBZ7LlylbNusDmEJZXDxwLa8ik`, in the same folder as Grokbot's doc. It lists who does what, what is live, what waits on Dang, what is scheduled, and his rules. When work ships that changes any of those (new pages, a finished or new item waiting on Dang, a new scheduled task), update that doc in the same session. Only true, live facts.
+
 ## Muse's blog feed (standing rule from Dang, 2026-11-10)
 
 Muse posts TX Quince's Journal on Facebook. It reads one address that always lists every post, newest first, with summary, cover photo and the Spanish version: `https://txquince.com/blog/feed.json` (`src/app/blog/feed.json/route.ts`). A new post appears there when it deploys, so never hand Dang a list of links for Muse again. Keep that route working when the blog model changes, and end a report that ships new posts with one line saying they are in the feed.
