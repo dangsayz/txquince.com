@@ -179,16 +179,16 @@
    rose = rings (the tiers of a skirt) · champagne = sun rays · lilac = pleats ·
    sage = a field of dots (beading) · sky = waves (tulle). */
 .txq .tq-bk {
-  --q-pat-rings: repeating-radial-gradient(circle at 50% 50%, #000 0 1px, transparent 1px 15px);
-  --q-pat-rays: repeating-conic-gradient(from 0deg at 50% 50%, #000 0deg 0.5deg, transparent 0.5deg 6deg);
-  --q-pat-pleats: repeating-linear-gradient(118deg, #000 0 1px, transparent 1px 12px);
-  --q-pat-dots: radial-gradient(circle at 50% 50%, #000 0 1.3px, transparent 1.6px);
+  --q-pat-rings: repeating-radial-gradient(circle at 50% 50%, #000 0 1px, transparent 1px 20px);
+  --q-pat-rays: repeating-conic-gradient(from 0deg at 50% 50%, #000 0deg 0.35deg, transparent 0.35deg 9deg);
+  --q-pat-pleats: repeating-linear-gradient(118deg, #000 0 1px, transparent 1px 16px);
+  --q-pat-dots: radial-gradient(circle at 50% 50%, #000 0 1px, transparent 1.3px);
   --q-pat-waves: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='16' viewBox='0 0 56 16'%3E%3Cpath d='M0 8c7 0 7-5 14-5s7 5 14 5 7 5 14 5 7-5 14-5' fill='none' stroke='%23000' stroke-width='1'/%3E%3C/svg%3E");
 }
 .txq .tq-bk .tq-pkg { isolation: isolate; overflow: clip; --q-wash: var(--tq-quince-rose); --q-line: var(--tq-quince-rose-line); --q-pat: var(--q-pat-rings); --q-pat-size: auto; }
 .txq .tq-bk .tq-pkg:nth-of-type(5n + 2) { --q-wash: var(--tq-quince-champagne); --q-line: var(--tq-quince-champagne-line); --q-pat: var(--q-pat-rays); }
 .txq .tq-bk .tq-pkg:nth-of-type(5n + 3) { --q-wash: var(--tq-quince-lilac); --q-line: var(--tq-quince-lilac-line); --q-pat: var(--q-pat-pleats); }
-.txq .tq-bk .tq-pkg:nth-of-type(5n + 4) { --q-wash: var(--tq-quince-sage); --q-line: var(--tq-quince-sage-line); --q-pat: var(--q-pat-dots); --q-pat-size: 14px 14px; }
+.txq .tq-bk .tq-pkg:nth-of-type(5n + 4) { --q-wash: var(--tq-quince-sage); --q-line: var(--tq-quince-sage-line); --q-pat: var(--q-pat-dots); --q-pat-size: 18px 18px; }
 .txq .tq-bk .tq-pkg:nth-of-type(5n + 5) { --q-wash: var(--tq-quince-sky); --q-line: var(--tq-quince-sky-line); --q-pat: var(--q-pat-waves); --q-pat-size: 56px 16px; }
 .txq .tq-bk .tq-pkg::before,
 .txq .tq-bk .tq-pkg::after {
@@ -199,8 +199,8 @@
 }
 .txq .tq-bk .tq-pkg::before {
   inset: 0;
-  background: radial-gradient(120% 70% at 100% 0%, var(--q-wash) 0%, color-mix(in srgb, var(--q-wash) 55%, transparent) 38%, transparent 72%);
-  opacity: 0.85;
+  background: radial-gradient(110% 60% at 100% 0%, var(--q-wash) 0%, color-mix(in srgb, var(--q-wash) 45%, transparent) 36%, transparent 68%);
+  opacity: 0.55;
   transition: opacity var(--tq-dur-base) var(--tq-ease);
 }
 .txq .tq-bk .tq-pkg::after {
@@ -209,7 +209,7 @@
   width: 420px;
   height: 420px;
   background: var(--q-line);
-  opacity: 0.5;
+  opacity: 0.2; /* a whisper: seen on a second look, never before the price */
   -webkit-mask-image: var(--q-pat), radial-gradient(circle at 50% 50%, #000 20%, transparent 68%);
   mask-image: var(--q-pat), radial-gradient(circle at 50% 50%, #000 20%, transparent 68%);
   -webkit-mask-size: var(--q-pat-size), auto;
@@ -218,10 +218,10 @@
   mask-composite: intersect;
 }
 .txq .tq-bk .tq-pkg:hover::before,
-.txq .tq-bk .tq-pkg[data-sel="true"]::before { opacity: 1; }
-.txq .tq-bk .tq-pkg:hover { border-color: var(--q-line); }
+.txq .tq-bk .tq-pkg[data-sel="true"]::before { opacity: 0.8; }
+.txq .tq-bk .tq-pkg:hover { border-color: color-mix(in srgb, var(--q-line) 60%, var(--tq-stone)); }
 .txq .tq-bk .tq-pkg[data-sel="true"]:hover { border-color: var(--tq-ink); }
-.txq .tq-bk .tq-pkg__list { border-top-color: color-mix(in srgb, var(--q-line) 45%, var(--tq-surface-2)); }
+.txq .tq-bk .tq-pkg__list { border-top-color: color-mix(in srgb, var(--q-line) 22%, var(--tq-surface-2)); }
 
 /* Scroll motion: each card rises in as it enters the screen, and its arcs
    drift a little while it crosses. Scroll-driven, so it costs no script; a
@@ -242,12 +242,12 @@
   }
 }
 @keyframes tq-pkg-rise {
-  from { opacity: 0.4; transform: translateY(22px); }
+  from { opacity: 0.6; transform: translateY(12px); }
   to { opacity: 1; transform: none; }
 }
 @keyframes tq-pkg-drift {
-  from { transform: translate(18px, -26px) rotate(-8deg) scale(0.94); }
-  to { transform: translate(-14px, 30px) rotate(8deg) scale(1.06); }
+  from { transform: translate(8px, -12px) rotate(-3deg); }
+  to { transform: translate(-6px, 14px) rotate(3deg); }
 }
 
 /* ---------- Segmented choices: hours, city, language ---------- */
@@ -384,14 +384,14 @@
 .txq .tq-bk .tq-bk-side[data-q="1"] { --q-pat: var(--q-pat-rings); --q-wash: var(--tq-quince-rose); --q-line: var(--tq-quince-rose-line); }
 .txq .tq-bk .tq-bk-side[data-q="2"] { --q-pat: var(--q-pat-rays); --q-wash: var(--tq-quince-champagne); --q-line: var(--tq-quince-champagne-line); }
 .txq .tq-bk .tq-bk-side[data-q="3"] { --q-pat: var(--q-pat-pleats); --q-wash: var(--tq-quince-lilac); --q-line: var(--tq-quince-lilac-line); }
-.txq .tq-bk .tq-bk-side[data-q="4"] { --q-pat: var(--q-pat-dots); --q-pat-size: 14px 14px; --q-wash: var(--tq-quince-sage); --q-line: var(--tq-quince-sage-line); }
+.txq .tq-bk .tq-bk-side[data-q="4"] { --q-pat: var(--q-pat-dots); --q-pat-size: 18px 18px; --q-wash: var(--tq-quince-sage); --q-line: var(--tq-quince-sage-line); }
 .txq .tq-bk .tq-bk-side[data-q="5"] { --q-pat: var(--q-pat-waves); --q-pat-size: 56px 16px; --q-wash: var(--tq-quince-sky); --q-line: var(--tq-quince-sky-line); }
-.txq .tq-bk .tq-bk-side[data-q] { border-color: color-mix(in srgb, var(--q-line) 55%, var(--tq-surface-2)); }
+.txq .tq-bk .tq-bk-side[data-q] { border-color: color-mix(in srgb, var(--q-line) 30%, var(--tq-surface-2)); }
 .txq .tq-bk .tq-bk-side::before,
 .txq .tq-bk .tq-bk-side::after { content: ""; position: absolute; z-index: -1; pointer-events: none; }
 .txq .tq-bk .tq-bk-side::before {
   inset: 0;
-  background: linear-gradient(180deg, var(--q-wash) 0%, color-mix(in srgb, var(--q-wash) 45%, var(--tq-paper)) 34%, var(--tq-paper) 70%);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--q-wash) 60%, var(--tq-paper)) 0%, color-mix(in srgb, var(--q-wash) 25%, var(--tq-paper)) 30%, var(--tq-paper) 62%);
   transition: background-color var(--tq-dur-slow) var(--tq-ease);
 }
 .txq .tq-bk .tq-bk-side::after {
@@ -400,7 +400,7 @@
   width: 440px;
   height: 440px;
   background: var(--q-line);
-  opacity: 0.45;
+  opacity: 0.18;
   -webkit-mask-image: var(--q-pat), radial-gradient(circle at 50% 50%, #000 20%, transparent 68%);
   mask-image: var(--q-pat), radial-gradient(circle at 50% 50%, #000 20%, transparent 68%);
   -webkit-mask-size: var(--q-pat-size), auto;
@@ -412,7 +412,7 @@
   height: 6px;
   margin: 2px 0 14px;
   border-radius: var(--tq-radius-pill);
-  background: color-mix(in srgb, var(--q-line) 38%, var(--tq-surface-2));
+  background: color-mix(in srgb, var(--q-line) 22%, var(--tq-surface-2));
   overflow: hidden;
 }
 .txq .tq-bk .tq-bk-split > span {
@@ -422,7 +422,7 @@
   background: var(--tq-ink);
   transition: width var(--tq-dur-slow) var(--tq-ease);
 }
-.txq .tq-bk .tq-bk-lines div { border-color: color-mix(in srgb, var(--q-line) 40%, var(--tq-surface-2)); }
+.txq .tq-bk .tq-bk-lines div { border-color: color-mix(in srgb, var(--q-line) 22%, var(--tq-surface-2)); }
 .txq .tq-bk .tq-bk-side .tq-btn .tq-arrow { display: inline-block; transition: transform var(--tq-dur-fast) var(--tq-ease); }
 @media (hover: hover) {
   .txq .tq-bk .tq-bk-side .tq-btn:hover .tq-arrow { transform: translateX(4px); }
@@ -430,7 +430,7 @@
 @media (prefers-reduced-motion: no-preference) {
   .txq .tq-bk .tq-bk-tick { animation: tq-tick var(--tq-dur-slow) var(--tq-ease) both; }
   /* The arcs turn very slowly, so the card never sits completely still. */
-  .txq .tq-bk .tq-bk-side::after { animation: tq-side-turn 90s linear infinite; }
+  .txq .tq-bk .tq-bk-side::after { animation: tq-side-turn 180s linear infinite; }
 }
 @keyframes tq-tick {
   from { opacity: 0; transform: translateY(6px); }
