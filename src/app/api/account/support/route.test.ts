@@ -9,7 +9,7 @@ vi.mock("server-only", () => ({}));
 vi.mock("@/lib/rate-limit", () => ({ rateLimiter: () => async () => false }));
 vi.mock("@/lib/clerk-user", () => ({ getSignedInUser: async () => state.user }));
 vi.mock("@/lib/d1", () => ({ getD1: async () => raw }));
-vi.mock("@/lib/db", () => ({ isDbConfigured: () => true, getDb: () => createD1Client(async () => raw) }));
+vi.mock("@/lib/db", () => ({ isDbConfigured: () => true, getDb: () => createD1Client(async () => raw), releaseExpiredHolds: async () => {} }));
 vi.mock("resend", () => ({ Resend: class { emails = { send: async (e: Record<string, unknown>) => (state.mail.push(e), { error: null }) }; } }));
 
 import { POST } from "./route";

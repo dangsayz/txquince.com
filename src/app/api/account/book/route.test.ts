@@ -11,7 +11,11 @@ vi.mock("@/lib/rate-limit", () => ({ rateLimiter: () => async () => false }));
 vi.mock("@/lib/turnstile", () => ({ verifyTurnstile: async () => ({ ok: true }) }));
 vi.mock("@/lib/clerk-user", () => ({ getSignedInUser: async () => state.user }));
 vi.mock("@/lib/pricing", () => ({ getPriceBook: async () => DEFAULT_PRICE_BOOK }));
-vi.mock("@/lib/db", () => ({ isDbConfigured: () => true, getDb: () => createD1Client(async () => raw) }));
+vi.mock("@/lib/db", () => ({
+  isDbConfigured: () => true,
+  getDb: () => createD1Client(async () => raw),
+  releaseExpiredHolds: async () => void (await createD1Client(async () => raw).rpc("release_expired_booking_holds")),
+}));
 vi.mock("@/lib/agreement-email", () => ({
   sendAgreementSignedOperator: async () => (state.mail.push("owner"), { ok: true }),
   sendAgreementSignedClient: async () => (state.mail.push("family"), { ok: true }),
@@ -85,6 +89,15 @@ describe("book from the dashboard", () => {
     const old = quoteCommission(DEFAULT_PRICE_BOOK, "archive", [], undefined);
     expect((await post(body({ tier: "archive", quoted_total_usd: old.totalUsd, quoted_deposit_usd: old.retainerUsd }))).status).toBe(422);
     expect((await post(body(), "https://evil.example")).status).toBe(403);
+  });
+
+  it("a hold that ran out no longer blocks the date", async () => {
+    const c = createD1Client(async () => raw);
+    for (let i = 0; i < 3; i++) {
+      await c.from("bookings").insert({ name: "Stale", email: `s${i}@x.com`, event_date: `${year}-05-15`, package: "both", status: "requested", deposit_amount_cents: 100, expires_at: "2020-01-01T00:00:00.000Z" });
+    }
+    expect((await post(body())).status).toBe(200);
+    expect(rows().filter((b) => b.status === "expired")).toHaveLength(3);
   });
 
   it("a full date is refused; signing again for the same date replaces her own request", async () => {

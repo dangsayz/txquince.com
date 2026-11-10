@@ -24,3 +24,18 @@ export function isDbConfigured(): boolean {
   ];
   return Boolean(ctx?.env?.DB);
 }
+
+/**
+ * Frees dates whose hold ran out: unpaid 'requested' / 'pending_payment'
+ * bookings past expires_at become 'expired'. Postgres ran this on a timer;
+ * D1 has no timer, so the paths that read or claim a date call it first.
+ * One cheap UPDATE; never throws (a failed sweep must not block a booking).
+ */
+export async function releaseExpiredHolds(): Promise<void> {
+  if (!isDbConfigured()) return;
+  try {
+    await getDb().rpc("release_expired_booking_holds");
+  } catch (err) {
+    console.error("[db] release holds:", err);
+  }
+}

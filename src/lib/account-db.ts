@@ -1,6 +1,7 @@
 /** account-db.ts — SERVER-ONLY: the bookings that belong to an account's verified emails. */
 import "server-only";
 import { getD1 } from "@/lib/d1";
+import { releaseExpiredHolds } from "@/lib/db";
 import { fromDb } from "@/lib/db/d1-query";
 import { isStripeConfigured, retrieveReceiptUrl } from "@/lib/stripe";
 import { sortAccountBookings, toAccountBooking, type AccountBooking } from "@/lib/account";
@@ -9,6 +10,7 @@ export async function getAccountBookings(verifiedEmails: string[]): Promise<Acco
   const emails = [...new Set(verifiedEmails.map((e) => e.trim().toLowerCase()).filter(Boolean))].slice(0, 10);
   const db = await getD1();
   if (!db || emails.length === 0) return [];
+  await releaseExpiredHolds();
   const marks = emails.map(() => "?").join(", ");
   const rows = await db
     .prepare(

@@ -31,7 +31,7 @@ import {
 import { buildAgreement, type SignedAgreement } from "@/lib/agreement";
 import { HONEYPOT_FIELD, TURNSTILE_FIELD } from "@/lib/booking";
 import { sanitizeAttribution } from "@/lib/attribution";
-import { getDb, isDbConfigured } from "@/lib/db";
+import { getDb, isDbConfigured, releaseExpiredHolds } from "@/lib/db";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { sendAgreementSignedClient, sendAgreementSignedOperator } from "@/lib/agreement-email";
 import { getSignedInUser } from "@/lib/clerk-user";
@@ -147,6 +147,8 @@ export async function POST(req: NextRequest) {
   };
 
   const db = getDb();
+  // A hold that ran out must not keep this date (or this family) blocked.
+  await releaseExpiredHolds();
   // Re-signing for the same date (she changed her package) replaces her own
   // unconfirmed request. Approved or paid bookings are never touched.
   await db.from("bookings").update({ status: "expired" }).eq("event_date", r.event_date).eq("email", email).in("status", ["requested"]);
