@@ -3,8 +3,8 @@
  * (safe for client components and tests). Storage lives in home-clips.ts.
  */
 
-/** Where a loop can play. One for now: behind the featured-package card. */
-export const HOME_CLIP_SLOTS = ["feature"] as const;
+/** Where a loop can play: the top of the homepage, and behind the featured-package card. */
+export const HOME_CLIP_SLOTS = ["hero", "feature"] as const;
 export type HomeClipSlot = (typeof HOME_CLIP_SLOTS)[number];
 
 /** A background loop is short: 10 s of 1080p H.264 is 4–6 MB. */

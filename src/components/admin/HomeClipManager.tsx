@@ -22,11 +22,11 @@ function duration(file: File): Promise<number | null> {
 const mb = (n: number) => `${Number((n / 1024 / 1024).toFixed(1))} MB`;
 
 /**
- * Upload or remove the silent film loop behind the featured package on the
- * homepage. The clip stays private until the upload finishes; removing it puts
+ * Upload or remove one of the homepage's silent film loops (`place` says
+ * where it plays, e.g. "behind the featured package"). The clip stays private until the upload finishes; removing it puts
  * the photo back.
  */
-export function HomeClipManager({ slot, initial }: { slot: HomeClipSlot; initial: HomeClip | null }) {
+export function HomeClipManager({ slot, place, initial }: { slot: HomeClipSlot; place: string; initial: HomeClip | null }) {
   const [clip, setClip] = useState(initial);
   const [busy, setBusy] = useState<"upload" | "remove" | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -52,7 +52,7 @@ export function HomeClipManager({ slot, initial }: { slot: HomeClipSlot; initial
       const d = (await res.json().catch(() => ({}))) as { error?: string; clip?: HomeClip | null };
       if (!res.ok || !d.clip) throw new Error(d.error ?? "Could not save the clip. Try again.");
       setClip(d.clip);
-      setStatus("Film loop saved. It now plays behind the featured package.");
+      setStatus(`Film loop saved. It now plays ${place}.`);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not save the clip. Try again.");
     } finally {
@@ -91,7 +91,6 @@ export function HomeClipManager({ slot, initial }: { slot: HomeClipSlot; initial
         <ul className="m-0 grid list-none gap-1 p-0 text-base leading-6 text-[var(--tq-ink)]">
           <li>8 to 12 seconds, MP4 (H.264), 1920 × 1080, under {mb(MAX_CLIP_BYTES)}.</li>
           <li>Slow motion works best: the dress, hands, the room.</li>
-          <li>No close faces of family or court.</li>
         </ul>
         <p className="st-note mt-2">It plays silent, behind a light dark tint. Slow phones and visitors who turn motion off keep the photo.</p>
         <div className="mt-4 flex flex-wrap items-center gap-3">

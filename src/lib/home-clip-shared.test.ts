@@ -20,7 +20,8 @@ describe("home clips", () => {
 
   it("knows its slots", () => {
     expect(isHomeClipSlot("feature")).toBe(true);
-    expect(isHomeClipSlot("hero")).toBe(false);
+    expect(isHomeClipSlot("hero")).toBe(true);
+    expect(isHomeClipSlot("band")).toBe(false);
     expect(isHomeClipSlot(null)).toBe(false);
   });
 });

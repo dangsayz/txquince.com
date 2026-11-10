@@ -56,6 +56,7 @@ export function EditorialHome({
   work = [],
   reviews = [],
   featureClip = null,
+  heroClip = null,
 }: {
   journal: Journal;
   films: CinemaFilm[];
@@ -73,6 +74,8 @@ export function EditorialHome({
   reviews?: PublicReview[];
   /** Silent film loop behind the featured package (Studio → Page imagery); null = the photo only. */
   featureClip?: Clip | null;
+  /** Silent film loop over the top photo (Studio → Page imagery); null = the photo only. */
+  heroClip?: Clip | null;
 }) {
   const { setDockHidden } = useShell();
   const { lang } = useSite();
@@ -113,7 +116,7 @@ export function EditorialHome({
 
   return (
     <div ref={rootRef} className="ed">
-      <Hero overrides={overrides} />
+      <Hero overrides={overrides} clip={heroClip} />
       {/* Proof, then the price, then how to book: the browsing sections
           (venues, galleries, blog) come after the questions. */}
       <VenueStrip lang={lang} galleries={work.length ? work : galleries} />
@@ -152,7 +155,7 @@ function heroFallback(swap: HomeOverrides[string] | undefined) {
   };
 }
 
-function Hero({ overrides }: { overrides: HomeOverrides }) {
+function Hero({ overrides, clip }: { overrides: HomeOverrides; clip: Clip | null }) {
   const { t, lang, homeHref } = useSite();
   const { book } = usePriceBook();
   const e = ED[lang];
@@ -165,7 +168,7 @@ function Hero({ overrides }: { overrides: HomeOverrides }) {
       <div className="ed-hero__frame" data-ed="hero-frame" data-header-tone="dark" data-allow-upscale>
         <div className="ed-hero__media" data-ed="hero-media">
           <SlotPicture image={image} lang={lang} fill priority sizes="100vw" />
-          <LazyVideo clip={HERO.video} eager className="ed-video" />
+          <LazyVideo clip={clip ?? HERO.video} eager className="ed-video" />
         </div>
         <span className="ed-hero__shade" aria-hidden />
         <SlotAdminControl slot={HERO_SLOTS[0]} />
@@ -516,6 +519,15 @@ function Feature({ clip }: { clip: Clip | null }) {
           </a>
         </div>
       </div>
+      {/* The loop is a taste of the films: one tap to the film band below. */}
+      {clip && (
+        <a href="#cinema" className="ed-feature__films">
+          <svg width="12" height="12" viewBox="0 0 16 16" aria-hidden>
+            <path d="M4.5 2.5v11l9-5.5z" fill="currentColor" />
+          </svg>
+          {e.feature.films}
+        </a>
+      )}
       <SlotAdminControl slot={FEATURE_SLOT} />
     </section>
   );
