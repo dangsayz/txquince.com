@@ -292,6 +292,8 @@ a:hover > .st-arrow {
   letter-spacing: 0;
   vertical-align: middle;
 }
+/* "Nothing waiting" mark in an empty panel. */
+.st-clear { display: inline-flex; flex: none; width: 1.75rem; height: 1.75rem; align-items: center; justify-content: center; border-radius: 50%; background: var(--st-green-tint); color: var(--st-green); }
 /* A number's label with its color key. */
 .st-key { display: flex; align-items: center; gap: 0.5rem; }
 .st-key[data-hue]::before { content: ""; flex: none; width: 8px; height: 8px; border-radius: 2px; background: var(--hue); }
