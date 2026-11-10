@@ -1,6 +1,6 @@
 "use client";
 
-import { clipUrl, MAX_CLIP_BYTES, type HomeClip, type HomeClipSlot } from "@/lib/home-clip-shared";
+import { clipUrl, LOOP_SECONDS, MAX_CLIP_BYTES, type HomeClip, type HomeClipSlot } from "@/lib/home-clip-shared";
 import { mb, useHomeClip } from "@/components/slots/useHomeClip";
 
 /**
@@ -8,7 +8,7 @@ import { mb, useHomeClip } from "@/components/slots/useHomeClip";
  * private until the upload finishes; removing it puts the photo back.
  */
 export function HomeClipManager({ slot, initial }: { slot: HomeClipSlot; initial: HomeClip | null }) {
-  const { clip, busy, error, status, upload, remove } = useHomeClip(slot, initial);
+  const { clip, busy, percent, error, status, upload, remove } = useHomeClip(slot, initial);
 
   return (
     <div className="grid min-w-0 gap-5 md:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] md:items-start">
@@ -21,18 +21,19 @@ export function HomeClipManager({ slot, initial }: { slot: HomeClipSlot; initial
       </div>
       <div className="min-w-0">
         <ul className="m-0 grid list-none gap-1 p-0 text-base leading-6 text-[var(--tq-ink)]">
-          <li>8 to 12 seconds, MP4 (H.264), 1920 × 1080, under {mb(MAX_CLIP_BYTES)}.</li>
+          <li>Best: 8 to 12 seconds, filmed wide. Any video file works, also straight from an iPhone.</li>
+          <li>Large files are made smaller here before they upload (under {mb(MAX_CLIP_BYTES)}, no sound). A long clip keeps its first {LOOP_SECONDS} seconds.</li>
           <li>Slow motion works best: the dress, hands, the room.</li>
         </ul>
         <p className="st-note mt-2">It plays silent, behind a light dark tint. Slow phones and visitors who turn motion off keep the photo.</p>
         <div className="mt-4 flex flex-wrap items-center gap-3">
-          <input type="file" accept="video/mp4" className="peer sr-only" id={`clip-${slot}`} disabled={busy !== null} onChange={(e) => {
+          <input type="file" accept="video/*" className="peer sr-only" id={`clip-${slot}`} disabled={busy !== null} onChange={(e) => {
             const file = e.target.files?.[0];
             e.target.value = "";
             void upload(file);
           }} />
           <label htmlFor={`clip-${slot}`} className="st-btn cursor-pointer whitespace-nowrap peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[var(--tq-ink)] peer-disabled:opacity-50">
-            {busy === "upload" ? "Uploading…" : clip ? "Replace film loop" : "Upload film loop"}
+            {busy === "shrink" ? `Making it smaller… ${percent}%` : busy === "upload" ? "Uploading…" : clip ? "Replace film loop" : "Upload film loop"}
           </label>
           {clip ? (
             <button type="button" onClick={remove} disabled={busy !== null} className="st-btn-ghost whitespace-nowrap">
