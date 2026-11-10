@@ -123,6 +123,7 @@ const post: BlogPost = {
       type: "p",
       text: "The honoree is presented with her last doll — la última muñeca — often dressed to match her gown. It marks the end of childhood toys; in many families she then passes the doll to a younger sister or cousin, handing down a piece of her own childhood. Not every family includes this one, and that's fine.",
     },
+    { type: "p", text: "More answers: [the crowning ceremony](/blog/quinceanera-crowning-ceremony), [what to say in the toast](/blog/quinceanera-toast-brindis), [the hora loca](/blog/hora-loca-quinceanera) and [what guests wear](/blog/what-to-wear-to-a-quinceanera)." },
     {
       type: "cta",
       heading: "Have these moments captured by people who know the order",

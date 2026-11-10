@@ -100,6 +100,7 @@ const post: BlogPost = {
       type: "p",
       text: "El baile sorpresa, sobre todo, es de una sola vez. La corte lo ensaya en secreto durante meses, lo baila una única vez y se acaba en tres minutos. No hay segunda toma. Si no queda bien grabado, se perdió, y ese es justo el momento que las familias nos dicen, después, que hubieran querido tener en video. Desglosamos exactamente qué momentos son de foto y cuáles son de video en [foto o video para una quinceañera](/es/blog/foto-o-video-quinceanera).",
     },
+    { type: "p", text: "Más respuestas: [qué es una dama](/es/blog/que-es-una-dama-de-quinceanera), [qué es un chambelán](/es/blog/que-es-un-chambelan), [cuántas damas y chambelanes llevar](/es/blog/cuantas-damas-y-chambelanes) y [la hora loca](/es/blog/la-hora-loca-en-una-quinceanera)." },
     {
       type: "cta",
       heading: "Vea un vals y un baile sorpresa de verdad en video",

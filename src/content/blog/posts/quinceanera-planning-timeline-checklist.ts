@@ -49,6 +49,7 @@ const post: BlogPost = {
       type: "p",
       text: "Almost everything else on this list has a substitute. Florists, bakeries, DJs, dress shops — there are dozens of each in the metroplex, and a great one is usually available even a few months out. Venues and experienced photographers are different. A venue can host one event per date. A photographer can shoot one quince per Saturday. When their calendar fills, it's full, and the popular ones fill nine to fourteen months ahead for prime spring and fall weekends — so when you start touring, our guide to [quinceañera reception venues and salones in DFW](/blog/quinceanera-reception-venues-dfw) maps the options by city. That's why these two come before the dress — read [when to book your photographer](/blog/when-to-book-quinceanera-photographer-dfw) for the full reasoning and the seasons that go first.",
     },
+    { type: "p", text: "More answers: [how many damas and chambelanes to have](/blog/how-many-damas-and-chambelanes), [who pays for what](/blog/who-pays-for-a-quinceanera), [the padrinos list](/blog/quinceanera-padrinos-list) and [what to say in the toast](/blog/quinceanera-toast-brindis)." },
     {
       type: "cta",
       heading: "Lock your date before someone else does",

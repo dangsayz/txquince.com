@@ -114,6 +114,7 @@ const post: BlogPost = {
       type: "p",
       text: "A la festejada se le presenta su última muñeca, muchas veces vestida a juego con su vestido. Marca el fin de los juguetes de la niñez; en muchas familias ella se la entrega después a una hermana o prima menor, regalando un pedazo de su propia infancia. No todas las familias incluyen esta tradición, y está bien si la suya no la hace.",
     },
+    { type: "p", text: "Más respuestas: [la coronación](/es/blog/la-coronacion-de-la-quinceanera), [qué decir en el brindis](/es/blog/brindis-de-quinceanera-que-decir), [la hora loca](/es/blog/la-hora-loca-en-una-quinceanera) y [qué se ponen los invitados](/es/blog/que-ponerse-para-una-quinceanera)." },
     {
       type: "cta",
       heading: "Que estos momentos los capte gente que conoce el orden del día",
