@@ -8,7 +8,6 @@ const CINEMA = PT.price.cinema;
 const TRIO = PT.price.trio;
 const COORDINATOR = PT.addon.coordinator;
 const RETAINER_PCT = PT.deposit.percent;
-const HRS_STUDY = PT.hours.study;
 const HRS_SOLO = PT.hours.solo;
 const HRS_CINEMA = PT.hours.cinema;
 const HRS_TRIO = PT.hours.trio;
