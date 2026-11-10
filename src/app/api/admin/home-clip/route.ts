@@ -8,12 +8,18 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/require-admin";
 import { unauthorizedAdminResponse } from "@/lib/admin-auth";
-import { isHomeClipSlot, isMp4, MAX_CLIP_BYTES } from "@/lib/home-clip-shared";
+import { isClipVariant, isHomeClipSlot, isMp4, MAX_CLIP_BYTES, type ClipVariant } from "@/lib/home-clip-shared";
 import { getHomeClips, removeHomeClip, saveHomeClip, setHomeClipFocus } from "@/lib/home-clips";
 
 export const dynamic = "force-dynamic";
 
 const TOO_LARGE = `That file is too large. A loop is 8 to 12 seconds and under ${MAX_CLIP_BYTES / 1024 / 1024} MB.`;
+
+/** `?variant=phone` is the tall cut for phones; anything else is the wide clip. */
+function variantOf(request: Request): ClipVariant {
+  const v = new URL(request.url).searchParams.get("variant");
+  return isClipVariant(v) ? v : "wide";
+}
 
 function refresh() {
   revalidatePath("/");
@@ -41,7 +47,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Use an MP4 file (H.264)." }, { status: 415 });
   }
   try {
-    const clips = await saveHomeClip(slot, bytes);
+    const clips = await saveHomeClip(slot, bytes, variantOf(request));
+    if (!clips) return NextResponse.json({ error: "Upload the wide film loop first." }, { status: 409 });
     refresh();
     return NextResponse.json({ ok: true, clip: clips[slot] ?? null });
   } catch {
@@ -72,9 +79,10 @@ export async function DELETE(request: Request) {
   const slot = new URL(request.url).searchParams.get("slot");
   if (!isHomeClipSlot(slot)) return NextResponse.json({ error: "Unknown place for a clip." }, { status: 400 });
   try {
-    await removeHomeClip(slot);
+    const variant = variantOf(request);
+    const clips = await removeHomeClip(slot, variant);
     refresh();
-    return NextResponse.json({ ok: true, clip: null });
+    return NextResponse.json({ ok: true, clip: clips[slot] ?? null });
   } catch {
     return NextResponse.json({ error: "Storage not available. Try again." }, { status: 503 });
   }

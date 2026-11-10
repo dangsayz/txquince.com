@@ -81,7 +81,8 @@ export function LazyVideo({ clip, eager = false, className }: { clip: Clip | nul
       ref={ref}
       className={className}
       data-playing={playing || undefined}
-      style={clip.focus ? { objectPosition: clip.focus } : undefined}
+      // The focus frames the wide clip; a tall phone cut already fits and stays centred.
+      style={clip.focus && src?.mp4 !== clip.mp4Mobile ? { objectPosition: clip.focus } : undefined}
       muted
       loop
       playsInline
