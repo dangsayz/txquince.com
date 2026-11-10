@@ -7,7 +7,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { getDb, isDbConfigured } from "@/lib/db";
 import { clientIp } from "@/lib/client-ip";
 import { rateLimiter } from "@/lib/rate-limit";
-import { deviceOf } from "@/lib/device";
+import { deviceOf, isAutomatedUA } from "@/lib/device";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -28,6 +28,9 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
+
+  // Crawlers, scripts and automated browsers are not visitors: drop quietly.
+  if (isAutomatedUA(req.headers.get("user-agent"))) return NextResponse.json({ ok: true });
 
   if (await rateLimited(clientIp(req))) return NextResponse.json({ ok: true }); // silently drop
 

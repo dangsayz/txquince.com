@@ -1,5 +1,6 @@
 "use client";
 
+import { isAutomatedUA } from "@/lib/device";
 import { useEffect, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { attributedSearch } from "@/lib/bio-utm";
@@ -127,8 +128,21 @@ function isOwnerBrowser(): boolean {
   }
 }
 
+/**
+ * Automated browsers never count: test runs (Playwright and friends set
+ * navigator.webdriver), headless Chrome and crawlers. Without this, one test
+ * pass over the live site looks like hundreds of "visitors" who leave at once.
+ */
+function isAutomated(): boolean {
+  try {
+    return navigator.webdriver === true || isAutomatedUA(navigator.userAgent);
+  } catch {
+    return false;
+  }
+}
+
 function post(body: Record<string, unknown>) {
-  if (isOwnerBrowser()) return;
+  if (isOwnerBrowser() || isAutomated()) return;
   try {
     const json = JSON.stringify(body);
     if (navigator.sendBeacon) {
