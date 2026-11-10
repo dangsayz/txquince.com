@@ -17,6 +17,7 @@ import { detailsFor, goodToKnow, type Details } from "./budget-details";
 import { BUDGET_PHOTOS, budgetPhotoSrc } from "./budget-photos";
 import { DetailIcon } from "./DetailIcon";
 import { ShareBar } from "./ShareBar";
+import { PayMarks } from "@/components/account/PayMarks";
 import "./budget.css";
 import { TrustLine } from "@/components/TrustLine";
 import { WhatsAppChatButton } from "@/components/WhatsAppChatButton";
@@ -351,6 +352,11 @@ export function BudgetPlanner() {
               ) : null}
             </ul>
           ) : null}
+          <div className="bp-pay">
+            <p className="bp-label bp-label--first">{c.payTitle}</p>
+            <PayMarks lang={lang} />
+            <p className="bp-hint">{c.payLine}</p>
+          </div>
           {budget ? (
             <button type="button" className="bp-link" onClick={() => startOffer(true)}>
               {c.offerTitle}
