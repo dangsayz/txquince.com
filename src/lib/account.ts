@@ -38,12 +38,14 @@ export type AccountPayment = {
   paidAt: string | null;
   /** Stripe payment id, kept server-side to look up the receipt. Never rendered. */
   paymentIntent: string | null;
+  /** "cash" | "zelle" | "check" | "other" when the studio recorded it by hand; otherwise "stripe". */
+  method: string;
   /** Stripe's receipt page, filled in by account-db when available. */
   receiptUrl?: string | null;
 };
 
 type Row = Record<string, unknown>;
-type PaymentRow = { booking_id: string; status: string; amount_cents: number; paid_at?: string | null; stripe_payment_intent_id?: string | null };
+type PaymentRow = { booking_id: string; status: string; amount_cents: number; paid_at?: string | null; stripe_payment_intent_id?: string | null; method?: string | null };
 
 export function toAccountBooking(row: Row, payments: PaymentRow[], now = Date.now()): AccountBooking | null {
   const meta = (row.metadata ?? {}) as Row;
@@ -73,10 +75,10 @@ export function toAccountBooking(row: Row, payments: PaymentRow[], now = Date.no
     payments:
       state === "booked"
         ? [
-            { kind: "deposit" as const, amountCents: deposit, paidAt: row.paid_at ? String(row.paid_at) : null, paymentIntent: row.stripe_payment_intent_id ? String(row.stripe_payment_intent_id) : null },
+            { kind: "deposit" as const, amountCents: deposit, paidAt: row.paid_at ? String(row.paid_at) : null, paymentIntent: row.stripe_payment_intent_id ? String(row.stripe_payment_intent_id) : null, method: "stripe" },
             ...mine
               .filter((p) => p.status === "paid")
-              .map((p) => ({ kind: "balance" as const, amountCents: p.amount_cents, paidAt: p.paid_at ?? null, paymentIntent: p.stripe_payment_intent_id ?? null }))
+              .map((p) => ({ kind: "balance" as const, amountCents: p.amount_cents, paidAt: p.paid_at ?? null, paymentIntent: p.stripe_payment_intent_id ?? null, method: p.method ?? "stripe" }))
               .sort((a, b) => String(a.paidAt).localeCompare(String(b.paidAt))),
           ]
         : [],

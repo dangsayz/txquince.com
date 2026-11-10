@@ -903,24 +903,29 @@ function Totals({ nextLabel, sending, chosen, hideButton = false }: { nextLabel:
   const shown = useTween(q.totalUsd);
   const x = tierById(tier);
   return (
-    <aside className="tq-bk-side" aria-label={t.booking.total}>
+    <aside className="tq-bk-side" aria-label={t.booking.total} data-q={chosen ? (TIERS.findIndex((y) => y.id === x.id) % 5) + 1 : undefined}>
       <p className="tq-bk-kicker">{t.booking.total}</p>
       {chosen ? (
         <>
           <p className="tq-display tq-bk-side__total tq-nums" aria-hidden>
             {money(shown)}
           </p>
+          {/* How the total splits: the deposit (ink) and the rest. Decoration; the rows below say it in words. */}
+          <div className="tq-bk-split" aria-hidden>
+            <span style={{ width: `${q.totalUsd > 0 ? Math.round((q.retainerUsd / q.totalUsd) * 100) : 0}%` }} />
+          </div>
+          {/* A value that changes gets a new key, so it ticks in (tq-tick) instead of swapping silently. */}
           <dl className="tq-bk-lines tq-nums">
             <div>
-              <dt>{pick(lang, tierNameL(book, x.id))}</dt>
-              <dd>{money(q.tierUsd)}</dd>
+              <dt key={x.id} className="tq-bk-tick">{pick(lang, tierNameL(book, x.id))}</dt>
+              <dd key={q.tierUsd} className="tq-bk-tick">{money(q.tierUsd)}</dd>
             </div>
             <div>
-              <dt>{t.booking.hourOption(hours)}</dt>
-              <dd>{hours > q.baseHours ? `+${money(q.extraHoursUsd)}` : t.booking.includedTag}</dd>
+              <dt key={hours} className="tq-bk-tick">{t.booking.hourOption(hours)}</dt>
+              <dd key={`${hours}-${q.extraHoursUsd}`} className="tq-bk-tick">{hours > q.baseHours ? `+${money(q.extraHoursUsd)}` : t.booking.includedTag}</dd>
             </div>
             {ADD_ONS.filter((a) => addOns.includes(a.id)).map((a) => (
-              <div key={a.id}>
+              <div key={a.id} className="tq-bk-tick">
                 <dt>{pick(lang, a.name)}</dt>
                 <dd>+{money(book.addOns[a.id])}</dd>
               </div>
@@ -929,11 +934,11 @@ function Totals({ nextLabel, sending, chosen, hideButton = false }: { nextLabel:
               <dt>
                 {t.booking.deposit} <span className="tq-bk-lines__when">({t.booking.depositWhen})</span>
               </dt>
-              <dd>{money(q.retainerUsd)}</dd>
+              <dd key={q.retainerUsd} className="tq-bk-tick">{money(q.retainerUsd)}</dd>
             </div>
             <div>
               <dt>{t.booking.rest}</dt>
-              <dd>{money(q.balanceUsd)}</dd>
+              <dd key={q.balanceUsd} className="tq-bk-tick">{money(q.balanceUsd)}</dd>
             </div>
           </dl>
         </>

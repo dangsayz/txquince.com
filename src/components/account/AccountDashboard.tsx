@@ -33,6 +33,7 @@ const COPY = {
     payments: "Payments and receipts",
     paymentsLead: "Every payment we received from you. Stripe also emails you a receipt each time.",
     payKind: { deposit: "Deposit", balance: "Payment toward the rest" },
+    payMethod: { cash: "Paid in cash", zelle: "Paid by Zelle", check: "Paid by check", other: "Paid to the studio" },
     receipt: "Receipt",
     waysToPay: "Ways to pay",
     hi: (n: string) => `Hi, ${n}.`,
@@ -128,6 +129,7 @@ const COPY = {
     payments: "Pagos y recibos",
     paymentsLead: "Cada pago que recibimos de ti. Stripe también te manda un recibo por correo cada vez.",
     payKind: { deposit: "Depósito", balance: "Pago del resto" },
+    payMethod: { cash: "Pagado en efectivo", zelle: "Pagado por Zelle", check: "Pagado con cheque", other: "Pagado al estudio" },
     receipt: "Recibo",
     waysToPay: "Formas de pago",
     hi: (n: string) => `Hola, ${n}.`,
@@ -506,6 +508,8 @@ export function AccountView({ lang, displayName, email, bookings, book, justBook
                     <a className="acct-link" href={p.receiptUrl} target="_blank" rel="noopener noreferrer">
                       {c.receipt}&nbsp;<span aria-hidden>↗</span>
                     </a>
+                  ) : p.method !== "stripe" ? (
+                    <span className="acct-pays__when">{c.payMethod[p.method as keyof typeof c.payMethod] ?? c.payMethod.other}</span>
                   ) : <span />}
                 </li>
               ))}

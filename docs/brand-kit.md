@@ -49,3 +49,7 @@ The public site stays warm neutrals and carbon ink. The Studio (`/admin`) sits o
 
 Use them through `data-hue="rose|green|blue|amber|gold|teal|slate"` on `.st-chip`, `.st-pill` (a count beside a title) and `.st-key` (a label's color key). Every dark value is 5:1 or more on white and on its own tint. `--st-line` #d6d1c8 is the card edge on the white page. Do not use these on public pages.
 
+
+## Quince tints (booking cards only, added 2026-11-10)
+
+Dang asked for soft quinceañera colors on the booking package cards. This is the one place the "no brand hue, no gradients" line is relaxed. Five washes with a line color each, in `brand.css`: `--tq-quince-rose`, `-champagne`, `-lilac`, `-sage`, `-sky` (+ `-line`). Each package has its own pattern in the line color (rings, sun rays, pleats, dots, waves), masked to fade out; the total card takes the chosen package's tint and pattern. Rules: text on a wash stays `--tq-ink`; never set text in a line color; decoration sits under the text and is never the only signal; scroll motion is CSS scroll-driven and is off under `prefers-reduced-motion`. Do not use the tints on other pages without asking.
