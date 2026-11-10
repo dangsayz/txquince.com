@@ -9,7 +9,7 @@
  * device (set by the server from the User-Agent, never by the client).
  */
 import { deviceOf } from "@/lib/device";
-import { normalizeSrc, sourceKey } from "@/lib/src-tag";
+import { normalizeSrc, sourceKey, venueTagName } from "@/lib/src-tag";
 
 const ALLOWED_KEYS = ["source", "medium", "campaign", "referrer", "landing", "ts", "srcLanding", "srcTs", "page", "vid"];
 
@@ -41,10 +41,12 @@ const SOURCE_NAMES: Record<string, string> = {
   direct: "Direct / typed in",
 };
 
-/** "instagram" → "Instagram", "google.com" → "Google", "l.instagram.com" → "Instagram". */
+/** "instagram" → "Instagram", "google.com" → "Google", "venue-vm-ballroom" → "Venue: VM Ballroom". */
 export function sourceName(key: string): string {
   const k = key.toLowerCase().replace(/^www\./, "");
   if (SOURCE_NAMES[k]) return SOURCE_NAMES[k];
+  const venue = venueTagName(k);
+  if (venue) return `Venue: ${venue}`;
   const known = Object.keys(SOURCE_NAMES).find((n) => n !== "direct" && (k === `${n}.com` || k.endsWith(`.${n}.com`)));
   if (known) return SOURCE_NAMES[known];
   if (/(^|\.)google\./.test(k)) return "Google";
