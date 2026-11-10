@@ -513,34 +513,6 @@
   overflow-wrap: anywhere;
 }
 
-/* Ways to pay: name badges in each company's colors (labels, not logo artwork). */
-.txq .acct-marks {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--tq-space-2);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.txq .acct-mark {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 32px;
-  padding: 0 12px;
-  border-radius: var(--tq-radius-xs);
-  border: 1px solid var(--tq-surface-2);
-  background: #fff;
-  color: var(--tq-ink);
-  font-weight: var(--tq-weight-semibold);
-  font-size: var(--tq-text-sm);
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-}
-.txq .acct-mark[data-brand="klarna"] { background: #ffb3c7; border-color: #ffb3c7; color: #17120f; }
-.txq .acct-mark[data-brand="afterpay"] { background: #b2fce4; border-color: #b2fce4; color: #000; }
-.txq .acct-mark[data-brand="affirm"] { background: #fff; border-color: #4a4af4; color: #101820; }
-
 /* "We got it" after signing. */
 .txq .acct-flash {
   margin: 0;
