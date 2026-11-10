@@ -21,13 +21,9 @@
   line-height: 1.2;
   text-decoration: none;
 }
-/* Logos sit back in grey and take their color only when the bar is pointed at. */
-.txq .tq-banner__logos img { filter: grayscale(1); opacity: 0.8; transition: filter var(--tq-dur-base) var(--tq-ease), opacity var(--tq-dur-base) var(--tq-ease); }
-.txq .tq-banner__names { display: none; white-space: nowrap; }
-.txq .tq-banner__names::before { content: "·"; margin-right: 0.9em; opacity: 0.6; }
+/* The logos are each company's own file in its own colors, on every page (public/pay/README.md). */
 @media (hover: hover) {
   .txq .tq-banner:hover { color: var(--tq-ink); }
-  .txq .tq-banner:hover .tq-banner__logos img { filter: none; opacity: 1; }
 }
 /* The homepage film runs up under the header, so there the bar lies on top of it. */
 .txq .tq-banner[data-over-hero] {
@@ -39,8 +35,6 @@
   color: rgb(255 255 255 / 0.92);
   text-shadow: 0 1px 12px rgb(0 0 0 / 0.45);
 }
-.txq .tq-banner[data-over-hero] .tq-banner__logos { display: none; }
-.txq .tq-banner[data-over-hero] .tq-banner__names { display: inline; }
 .txq .tq-banner[data-over-hero]:focus-visible { outline-color: #fff; }
 @media (hover: hover) {
   .txq .tq-banner[data-over-hero]:hover { color: #fff; }
@@ -69,8 +63,11 @@
 .txq .tq-banner__text { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 /* A sale line may take two lines on a phone; the bar keeps its height, so nothing shifts when they take turns. */
 .txq .tq-banner__text[data-wrap] { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; text-align: center; text-wrap: balance; }
-.txq .tq-banner__logos { flex: none; display: flex; align-items: center; gap: 8px; }
-.txq .tq-banner__logos img { display: block; }
+.txq .tq-banner__logos { flex: none; display: flex; align-items: center; gap: 6px; }
+/* Three plates, one size and one shape, so the row reads as a set whatever each logo's own outline is. */
+.txq .tq-banner__plate { display: grid; place-items: center; width: 78px; height: 28px; border-radius: var(--tq-radius-xs); background: #fff; border: 1px solid var(--tq-surface-2); }
+.txq .tq-banner[data-over-hero] .tq-banner__plate { border-color: transparent; }
+.txq .tq-banner__logos img { display: block; max-width: 62px; height: auto; }
 .txq .tq-banner__arrow { transition: transform var(--tq-dur-fast) var(--tq-ease); }
 @media (hover: hover) {
   .txq .tq-banner:hover .tq-banner__arrow { transform: translateX(3px); }
@@ -80,8 +77,7 @@
   .txq .tq-banner { grid-template-columns: minmax(0, 1fr); padding: 0 12px; }
   .txq .tq-banner__arrow { display: none; }
   .txq .tq-banner__line { gap: 8px; }
-  .txq .tq-banner__logos { gap: 6px; }
-  .txq .tq-banner__logos img { height: 13px; width: auto; }
+  .txq .tq-banner__logos { gap: 4px; }
 }
 @media (min-width: 1024px) {
   .txq .tq-banner { padding: 0 40px; }
@@ -97,5 +93,10 @@
   .txq .tq-banner { font-size: 0.75rem; letter-spacing: 0.09em; }
   .txq .tq-banner__text[data-size="full"] { display: none; }
   .txq .tq-banner__text[data-size="short"] { display: inline; }
-  .txq .tq-banner__names::before { margin-right: 0.6em; }
+}
+
+/* Phones: smaller plates, still all the same. */
+@media (max-width: 519px) {
+  .txq .tq-banner__plate { width: 64px; height: 24px; }
+  .txq .tq-banner__logos img { max-width: 52px; max-height: 13px; width: auto; }
 }

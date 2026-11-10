@@ -33,7 +33,9 @@ export const mb = (n: number) => `${Number((n / 1024 / 1024).toFixed(1))} MB`;
 export function useHomeClip(slot: HomeClipSlot | null, initial?: HomeClip | null) {
   const [clip, setClip] = useState<HomeClip | null>(initial ?? null);
   const [ready, setReady] = useState(initial !== undefined || !slot);
-  const [busy, setBusy] = useState<"upload" | "remove" | null>(null);
+  const [busy, setBusy] = useState<"shrink" | "upload" | "remove" | null>(null);
+  /** 0 to 100 while a large video is being made smaller. */
+  const [percent, setPercent] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
   /** True once a loop was saved or removed here (the live page needs a reload). */
@@ -56,22 +58,36 @@ export function useHomeClip(slot: HomeClipSlot | null, initial?: HomeClip | null
     if (!slot || !file || busy) return;
     setError(null);
     setStatus(null);
-    if (file.type !== "video/mp4") return setError("Use an MP4 file (H.264). Export it from your editor as MP4.");
-    if (file.size > MAX_CLIP_BYTES) {
-      return setError(`That file is ${mb(file.size)}. Keep the loop under ${mb(MAX_CLIP_BYTES)}: 8 to 12 seconds at 1080p.`);
-    }
+    if (!file.type.startsWith("video/")) return setError("Choose a video file.");
     const seconds = await duration(file);
-    if (seconds !== null && seconds > MAX_CLIP_SECONDS) {
-      return setError(`That clip is ${Math.round(seconds)} seconds. Cut it to 8 to 12 seconds so it loops.`);
+    // Small MP4 loops go up as they are. Anything else (a big export, an iPhone
+    // .mov, a long clip) is made into a small silent MP4 here first.
+    let body: Blob = file;
+    let note = "";
+    if (file.type !== "video/mp4" || file.size > MAX_CLIP_BYTES || (seconds !== null && seconds > MAX_CLIP_SECONDS)) {
+      setBusy("shrink");
+      setPercent(0);
+      try {
+        const { shrinkClip } = await import("./shrink-clip");
+        const out = await shrinkClip(file, (f) => setPercent(Math.round(f * 100)));
+        body = out.blob;
+        note =
+          out.trimmedFrom !== null
+            ? ` Your clip was ${Math.round(out.trimmedFrom)} seconds, so the loop uses the first ${Math.round(out.seconds)}.`
+            : ` Made smaller: ${mb(file.size)} to ${mb(out.blob.size)}.`;
+      } catch (e) {
+        setBusy(null);
+        return setError(e instanceof Error && e.name === "ShrinkError" ? e.message : "Could not prepare that video. Try again.");
+      }
     }
     setBusy("upload");
     try {
-      const res = await fetch(`/api/admin/home-clip?slot=${slot}`, { method: "POST", headers: { "content-type": "video/mp4" }, body: file });
+      const res = await fetch(`/api/admin/home-clip?slot=${slot}`, { method: "POST", headers: { "content-type": "video/mp4" }, body });
       const d = (await res.json().catch(() => ({}))) as { error?: string; clip?: HomeClip | null };
       if (!res.ok || !d.clip) throw new Error(d.error ?? "Could not save the clip. Try again.");
       setClip(d.clip);
       setChanged(true);
-      setStatus(`Film loop saved. It now plays ${CLIP_PLACE[slot]}.`);
+      setStatus(`Film loop saved. It now plays ${CLIP_PLACE[slot]}.${note}`);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not save the clip. Try again.");
     } finally {
@@ -98,5 +114,5 @@ export function useHomeClip(slot: HomeClipSlot | null, initial?: HomeClip | null
     }
   }
 
-  return { clip, ready, busy, error, status, changed, upload, remove };
+  return { clip, ready, busy, percent, error, status, changed, upload, remove };
 }
