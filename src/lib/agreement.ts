@@ -155,6 +155,14 @@ const T = {
       "Asking early does not move your place in line. Before day 90, the answer to \"when?\" is this section. If day 90 passes, write to us and we will give you a date.",
       "Be kind to our team, in person and in messages. Threats, insults, or message after message pressing for early delivery are harassment. If that happens we answer by email only, and we still deliver on the schedule above.",
     ],
+    legal: "If there is a legal dispute",
+    legalLines: [
+      "Before filing any court case, you send us the problem in writing and give us 30 days to fix it or answer.",
+      "If you threaten a lawsuit or bring in a lawyer, we stop talking with you directly. From then on, all contact is in writing, between your lawyer and ours.",
+      "While a legal dispute is open, our editing and delivery are on pause. They start again when the dispute is settled in writing.",
+      "Any court case must be filed in Dallas County, Texas.",
+      "Each side pays its own lawyer and court costs.",
+    ],
     fine: "The fine print",
     fineLines: [
       "If you are unhappy with something, both sides agree to talk it through in writing first, before any other step.",
@@ -270,6 +278,14 @@ const T = {
       "Preguntar antes no adelanta tu lugar en la fila. Antes del día 90, la respuesta a \"¿cuándo?\" es esta sección. Si pasa el día 90, escríbenos y te damos una fecha.",
       "Trata bien a nuestro equipo, en persona y por mensaje. Las amenazas, los insultos o mensaje tras mensaje exigiendo una entrega adelantada son acoso. Si eso pasa, contestamos solo por correo, y entregamos en el plazo de arriba.",
     ],
+    legal: "Si hay una disputa legal",
+    legalLines: [
+      "Antes de presentar cualquier demanda, nos mandas el problema por escrito y nos das 30 días para resolverlo o contestar.",
+      "Si amenazas con una demanda o metes a un abogado, dejamos de hablar contigo directamente. Desde ese momento, todo contacto es por escrito, entre tu abogado y el nuestro.",
+      "Mientras haya una disputa legal abierta, nuestra edición y entrega quedan en pausa. Se reanudan cuando la disputa se resuelva por escrito.",
+      "Cualquier demanda debe presentarse en el condado de Dallas, Texas.",
+      "Cada parte paga su propio abogado y sus costos de corte.",
+    ],
     fine: "La letra chica",
     fineLines: [
       "Si algo no te gusta, las dos partes acordamos hablarlo primero por escrito, antes de cualquier otro paso.",
@@ -368,6 +384,7 @@ export function buildAgreement(input: AgreementInput, book: PriceBook): Agreemen
     { title: t.changes, lines: [...t.changesLines] },
     { title: t.pay, lines: [...t.payLines] },
     { title: t.media, lines: [...t.mediaLines(input.sharePermission)] },
+    { title: t.legal, lines: [...t.legalLines] },
     { title: t.fine, lines: [...t.fineLines] },
   ];
 
