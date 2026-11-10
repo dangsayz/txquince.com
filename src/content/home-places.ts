@@ -23,6 +23,16 @@ const ORDER = [
   "mckinney",
   "mansfield",
   "farmers-branch",
+  "mesquite",
+  "carrollton",
+  "lewisville",
+  "allen",
+  "duncanville",
+  "desoto",
+  "cedar-hill",
+  "balch-springs",
+  "anna",
+  "melissa",
 ];
 
 export function homeCities(): HomeCity[] {

@@ -9,6 +9,7 @@
  * /admin/prices updates every city page without a deploy.
  */
 import { PT } from "@/lib/price-text";
+import { extraCityContent } from "@/content/cities";
 
 const STUDY = PT.price.study;
 const SOLO = PT.price.solo;
@@ -983,7 +984,8 @@ export const cityContent: Record<string, CityContent> = {
         "a": "McKinney está entre Allen, Frisco, Prosper, Fairview, Melissa y Princeton, con Plano a unos minutos al sur, y fotografío quinceañeras en todas y en el resto de Dallas–Fort Worth sin cargo por traslado."
       }
     ]
-  }
+  },
+  ...extraCityContent,
 };
 
 export function getCityContent(slug: string): CityContent | undefined {
