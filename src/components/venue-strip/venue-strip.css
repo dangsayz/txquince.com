@@ -7,7 +7,7 @@
 }
 .vs-head,
 .vs-foot {
-  max-width: 1200px;
+  max-width: 1440px; /* the site frame, same as the header */
   margin: 0 auto;
   padding: 0 var(--tq-space-4);
 }
@@ -142,7 +142,7 @@
 
 /* ---------- Find your venue ---------- */
 .vs-find {
-  max-width: 1200px;
+  max-width: 1440px;
   margin: 0 auto var(--tq-space-6);
   padding: 0 var(--tq-space-4);
   display: flex;
@@ -281,11 +281,15 @@
     gap: var(--tq-space-6);
   }
 }
-/* Wide screens: the strip starts on the page's 1200px column, then runs to the edge. */
-@media (min-width: 1296px) {
+/* From 1024px: words and the first card start on the site edge, the MENU line
+   (1440 frame + --edge, set in txq.css). The cards still run off to the right. */
+@media (min-width: 1024px) {
+  .vs-head,
+  .vs-find,
+  .vs-foot { padding: 0 var(--edge, 40px); }
   .vs ul.vs-track {
-    padding-left: calc((100% - 1200px) / 2 + var(--tq-space-12));
-    scroll-padding-inline: calc((100% - 1200px) / 2 + var(--tq-space-12));
+    padding-inline: max(var(--edge, 40px), calc((100% - 1440px) / 2 + var(--edge, 40px)));
+    scroll-padding-inline: max(var(--edge, 40px), calc((100% - 1440px) / 2 + var(--edge, 40px)));
   }
 }
 /* ---------- Motion (only when allowed) ---------- */

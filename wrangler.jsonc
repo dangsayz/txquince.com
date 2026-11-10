@@ -63,6 +63,10 @@
   },
   "vars": {
     "NEXT_PUBLIC_SITE_URL": "https://txquince.com",
+    // Skew protection (open-next.config.ts): old versions are reached at
+    // <version>-txquince.12img.workers.dev.
+    "CF_WORKER_NAME": "txquince",
+    "CF_PREVIEW_DOMAIN": "12img",
     // Clerk: TX Quince's own app (production on txquince.com). Public values,
     // read at runtime by src/lib/clerk-config.ts. The secret key is a Worker
     // secret: npx wrangler secret put CLERK_SECRET_KEY
