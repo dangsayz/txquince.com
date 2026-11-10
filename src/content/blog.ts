@@ -123,8 +123,21 @@ import hBlackFloralGownQuinceaneraMandalayCanalL from "./blog/posts/black-floral
 import hRedGownQuinceaneraPhotosDallasArboretum from "./blog/posts/red-gown-quinceanera-photos-dallas-arboretum";
 import hPinkQuinceaneraLaPradaEventCenter from "./blog/posts/pink-quinceanera-la-prada-event-center";
 import hPinkQuinceaneraVmBallroomPhotos from "./blog/posts/pink-quinceanera-vm-ballroom-photos";
+// Answer posts (Nov 10, 2026): the plain questions moms and guests search.
+import ansDama from "./blog/posts/what-is-a-dama-quinceanera";
+import ansChambelan from "./blog/posts/what-is-a-chambelan";
+import ansHoraLoca from "./blog/posts/hora-loca-quinceanera";
+import ansPadrinos from "./blog/posts/quinceanera-padrinos-list";
+import ansWhatToWear from "./blog/posts/what-to-wear-to-a-quinceanera";
+import ansVsSweet16 from "./blog/posts/quinceanera-vs-sweet-16";
 
 export const posts: BlogPost[] = [
+  ansDama,
+  ansChambelan,
+  ansHoraLoca,
+  ansPadrinos,
+  ansWhatToWear,
+  ansVsSweet16,
   hQuinceaneraStorybookDecorTheHamptonsRedO,
   hTwinQuinceaneraDressSessionTheHamptonsRe,
   hRedAndWhiteQuinceaneraLuxuryWeddingEvent,
@@ -246,8 +259,20 @@ import esThemes from "./blog/posts/es/temas-y-colores-para-quinceanera";
 import esVmBallroom from "./blog/posts/es/quinceanera-en-vm-ballroom-balch-springs";
 import esEntrega from "./blog/posts/es/cuanto-tardan-las-fotos-y-video-de-quinceanera";
 import esProveedores from "./blog/posts/es/como-contratar-proveedores-de-quinceanera-sin-que-le-estafen";
+import esAnsDama from "./blog/posts/es/que-es-una-dama-de-quinceanera";
+import esAnsChambelan from "./blog/posts/es/que-es-un-chambelan";
+import esAnsHoraLoca from "./blog/posts/es/la-hora-loca-en-una-quinceanera";
+import esAnsPadrinos from "./blog/posts/es/padrinos-de-quinceanera-lista";
+import esAnsWhatToWear from "./blog/posts/es/que-ponerse-para-una-quinceanera";
+import esAnsVsSweet16 from "./blog/posts/es/quinceanera-o-sweet-16";
 
 export const esPosts: BlogPost[] = [
+  esAnsDama,
+  esAnsChambelan,
+  esAnsHoraLoca,
+  esAnsPadrinos,
+  esAnsWhatToWear,
+  esAnsVsSweet16,
   hEsQuinceaneraDecoracionDeCuentoTheHamptons,
   hEsSesionDeVestidoQuinceaneraGemelasTheHamp,
   hEsQuinceaneraRojoYBlancoLuxuryWeddingEvent,
@@ -319,6 +344,12 @@ const EN_ES_PAIRS: { en: string; es: string }[] = [
   { en: "quinceanera-at-vm-ballroom-balch-springs", es: "quinceanera-en-vm-ballroom-balch-springs" },
   { en: "quinceanera-photographer-cost-dallas-fort-worth", es: "cuanto-cuesta-fotografo-quinceanera-dallas-fort-worth" },
   { en: "quinceanera-songs-for-every-moment", es: "canciones-para-quinceanera" },
+  { en: "what-is-a-dama-quinceanera", es: "que-es-una-dama-de-quinceanera" },
+  { en: "what-is-a-chambelan", es: "que-es-un-chambelan" },
+  { en: "hora-loca-quinceanera", es: "la-hora-loca-en-una-quinceanera" },
+  { en: "quinceanera-padrinos-list", es: "padrinos-de-quinceanera-lista" },
+  { en: "what-to-wear-to-a-quinceanera", es: "que-ponerse-para-una-quinceanera" },
+  { en: "quinceanera-vs-sweet-16", es: "quinceanera-o-sweet-16" },
   { en: "quinceanera-payment-plans-deposits-dfw", es: "planes-de-pago-fotografia-quinceanera-dfw" },
   { en: "when-to-book-quinceanera-photographer-dfw", es: "cuando-reservar-fotografo-quinceanera-dfw" },
   { en: "questions-to-ask-quinceanera-photographer", es: "preguntas-para-tu-fotografo-de-quinceanera" },

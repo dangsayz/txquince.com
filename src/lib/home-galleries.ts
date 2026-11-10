@@ -45,6 +45,8 @@ export type HomeGallery = {
   /** Photos in the gallery. */
   count: number;
   cover: { src: string; width: number | null; height: number | null; alt: string; focus: string };
+  /** Up to two more photos from the same gallery, for the card's hover preview. */
+  previews?: { src: string; focus: string }[];
 };
 
 /** A gallery needs at least this many photos to be called one. */
