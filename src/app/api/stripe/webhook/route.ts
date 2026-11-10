@@ -20,6 +20,7 @@ import {
   refundBalancePayment,
 } from "@/lib/balance-fulfillment";
 import { getDb } from "@/lib/db";
+import { isTestSession, recordTestWebhook } from "@/lib/payment-test";
 import type { StripeCheckoutSession } from "@/lib/stripe";
 
 export const runtime = "nodejs";
@@ -154,7 +155,9 @@ export async function POST(request: NextRequest) {
       case "checkout.session.completed":
       case "checkout.session.async_payment_succeeded": {
         const session = checkoutSessionFromEvent(event.data.object);
-        if (session && isBalanceSession(session)) await fulfillBalanceSession(session);
+        // The owner's $1 test: record that the message arrived; never a booking.
+        if (session && isTestSession(session)) await recordTestWebhook(session);
+        else if (session && isBalanceSession(session)) await fulfillBalanceSession(session);
         else if (session && isTxQuinceSession(session)) await fulfillCheckoutSession(session);
         break;
       }
@@ -164,6 +167,7 @@ export async function POST(request: NextRequest) {
       case "checkout.session.expired":
       case "checkout.session.async_payment_failed": {
         const session = checkoutSessionFromEvent(event.data.object);
+        if (session && isTestSession(session)) break;
         if (session && isBalanceSession(session)) {
           if (event.type === "checkout.session.expired") await expireBalanceSession(session);
           else await failBalanceSession(session);
