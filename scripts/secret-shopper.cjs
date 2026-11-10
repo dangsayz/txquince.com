@@ -199,6 +199,14 @@ async function flows(browser) {
       const after = await p.locator("main, body").first().innerText();
       expect(before !== after, "typing 2000 into the budget field changed nothing on the page");
     });
+    await step("a shared budget link opens on the same answer; the offer form opens", view, async (p) => {
+      await open(p, BASE + "/budget?b=1500");
+      await p.waitForSelector(".bp-card", { timeout: 15000 }).catch(() => {});
+      expect(await p.locator(".bp-card").count(), "/budget?b=1500 shows no package (the link lost the number)");
+      expect((await p.locator(".bp-money input").first().inputValue()) === "1,500", "/budget?b=1500 did not fill the budget field with 1,500");
+      await p.locator(".bp-offer__toggle").click();
+      expect(await p.locator(".bp-offer form").count(), "the offer form did not open");
+    });
   }
 
   await step("highlight a sentence → Comment on this → it lands in the comment box", desktop, async (p) => {
