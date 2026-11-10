@@ -31,6 +31,7 @@ import { requireAdmin } from "@/lib/require-admin";
 import { site } from "@/content/site";
 import { SLOT_MEDIA_KEY_RE } from "@/lib/image-slot-state";
 import { getSlotBucket } from "@/lib/image-slot-store";
+import { FULL_MAX_WIDTH, maxWidthForReferer } from "@/lib/image-derivative";
 
 export const dynamic = "force-dynamic";
 
@@ -49,6 +50,16 @@ function hotlinked(req: Request): boolean {
     return false;
   }
 }
+
+const isSiteHost = (host: string) => ALLOWED_HOSTS.includes(host) || PREVIEW_HOST.test(host);
+
+/**
+ * Replaced site photos are stored as ready-made copies (…-480, -960, -1600,
+ * -2400). The largest is only for pages that show photos large — the same
+ * rule as /api/img (maxWidthForReferer). Anything else is sent to this copy.
+ */
+const SLOT_OPEN_WIDTH = 1600;
+const SLOT_WIDTH_RE = /-(\d{1,4})\.(webp|jpg)$/;
 
 type EdgeCache = { match(r: Request): Promise<Response | undefined>; put(r: Request, res: Response): Promise<void> };
 function edgeCache(): EdgeCache | null {
@@ -104,6 +115,22 @@ export async function GET(request: Request, ctx: { params: Promise<{ key: string
   const dumpBucket = isSlot ? null : await getDumpBucket();
   const bucket = isSlot ? await getSlotBucket() : dumpBucket;
   if (!bucket) return notFound();
+
+  if (isSlot) {
+    const m = SLOT_WIDTH_RE.exec(key);
+    if (m && Number(m[1]) > SLOT_OPEN_WIDTH && maxWidthForReferer(request.headers.get("referer"), isSiteHost) < FULL_MAX_WIDTH) {
+      const smaller = key.replace(SLOT_WIDTH_RE, `-${SLOT_OPEN_WIDTH}.$2`);
+      // Only when that copy exists (a small original has no 1600px copy).
+      const has = await bucket.get(smaller).catch(() => null);
+      if (has) {
+        await has.body.cancel().catch(() => undefined);
+        return new Response(null, {
+          status: 302,
+          headers: { location: `/api/photos/media/${smaller}`, "cache-control": "no-store", vary: "Referer" },
+        });
+      }
+    }
+  }
 
   const visibility: MediaVisibility = dumpBucket ? await visibilityOf(dumpBucket, key) : "public";
   if (visibility === "missing") return notFound();

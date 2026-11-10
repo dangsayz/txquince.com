@@ -185,6 +185,8 @@ function focal(fx?: number | null, fy?: number | null): string {
  */
 const BLOG_PHOTO_CAP = 1080;
 const BLOG_COVER_CAP = 1440;
+/** A replaced cover is stored in fixed sizes; 1600px is the largest a blog page may load. */
+const BLOG_SLOT_CAP = 1600;
 const capped = (url: string, cap: number) =>
   url.startsWith("/api/img/") ? `${url}${url.includes("?") ? "&" : "?"}cap=${cap}` : url;
 
@@ -549,6 +551,7 @@ export function BlogIndexView({
                   lang={lang}
                   fill
                   priority
+                  maxWidth={BLOG_SLOT_CAP}
                   sizes="(max-width: 959px) calc(100vw - 48px), 58vw"
                   // `width` caps the srcset at what a blog page may load (OPEN_MAX_WIDTH).
                   fallback={featuredImage?.url ? { src: featuredImage.url, alt: featuredImage.alt || c.fallbackAlt, width: BLOG_COVER_CAP, focus: focal(featuredImage.focus_x, featuredImage.focus_y) } : null}
@@ -759,6 +762,7 @@ export function BlogArticleView({
                 lang={lang}
                 fill
                 priority
+                maxWidth={BLOG_SLOT_CAP}
                 sizes={
                   split
                     ? "(max-width: 639px) calc(100vw - 48px), (max-width: 959px) calc(100vw - 96px), 440px"

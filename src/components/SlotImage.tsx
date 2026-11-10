@@ -30,6 +30,7 @@ export async function SlotImage({
   alt,
   className,
   style,
+  maxWidth,
 }: {
   slot: string;
   lang: "en" | "es";
@@ -41,11 +42,13 @@ export async function SlotImage({
   alt?: string;
   className?: string;
   style?: CSSProperties;
+  /** Leave files wider than this out of the srcset. */
+  maxWidth?: number;
 }) {
   const image = await resolveSlot(slot, fallback);
   return (
     <>
-      <SlotPicture image={image} lang={lang} fill={fill} priority={priority} sizes={sizes} alt={alt} className={className} style={style} />
+      <SlotPicture image={image} lang={lang} fill={fill} priority={priority} sizes={sizes} alt={alt} className={className} style={style} maxWidth={maxWidth} />
       <SlotAdminControl slot={slot} />
     </>
   );
