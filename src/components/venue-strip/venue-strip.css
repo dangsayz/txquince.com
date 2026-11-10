@@ -151,8 +151,8 @@
   gap: var(--tq-space-3) var(--tq-space-4);
 }
 .vs-search {
-  flex: 1 1 240px;
-  max-width: 340px;
+  flex: 0 1 340px;
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: var(--tq-space-2);
@@ -272,7 +272,8 @@
   .vs-head,
   .vs-find,
   .vs-foot { padding: 0 var(--tq-space-12); }
-  .vs ul.vs-chips { flex: 1 1 0; margin: 0; padding: 0; flex-wrap: wrap; overflow: visible; }
+  /* Search on its own row, the city chips in one row under it, both on the left edge. */
+  .vs ul.vs-chips { margin: 0; padding: 0; flex-wrap: wrap; overflow: visible; }
   .vs ul.vs-track {
     padding: var(--tq-space-2) var(--tq-space-12);
     scroll-padding-inline: var(--tq-space-12);

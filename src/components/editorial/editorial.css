@@ -273,26 +273,6 @@
 /* ---------- Packages ---------- */
 .ed-packages { padding: clamp(96px, 12vw, 160px) 0; }
 .ed-head { display: flex; flex-direction: column; gap: 18px; margin-bottom: clamp(32px, 4vw, 56px); }
-.ed-pkgs { display: grid; gap: 12px; }
-.ed-pkg {
-  display: grid;
-  grid-template-columns: 56px minmax(0, 1fr) 120px 140px;
-  gap: 24px;
-  align-items: center;
-  padding: 26px 28px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 24px;
-  background: #ffffff;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 28px rgba(0, 0, 0, 0.06);
-  transition: box-shadow 260ms ease;
-}
-.ed-pkg:hover { box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06), 0 18px 44px rgba(0, 0, 0, 0.1); }
-.ed-pkg__n { align-self: start; padding-top: 6px; }
-.ed-pkg__main { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-.ed-pkg__name { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; font-family: var(--ed-display); font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; font-size: clamp(22px, 2vw, 28px); line-height: 1; }
-.ed-pkg__pick { font-size: 11px; letter-spacing: 0.08em; padding: 6px 10px; border-radius: 999px; background: var(--ed-ink); color: #ffffff; line-height: 1; white-space: nowrap; }
-.ed-pkg__desc { color: var(--ed-ink); }
-.ed-pkg__meta { font-size: 14px; color: var(--ed-mute); }
 .ed-offer {
   align-self: flex-start;
   border-radius: 999px;
@@ -307,11 +287,9 @@
   line-height: 1.2;
 }
 .ed-crew { margin-top: 20px !important; font-size: 14px; color: var(--ed-mute); }
-.ed-pkg__price { font-family: var(--ed-display); font-size: 28px; letter-spacing: 0.02em; text-align: right; font-variant-numeric: tabular-nums; line-height: 1; }
-.ed-pkg__btn { width: 140px; padding: 0 12px; }
 /* Flat, not a card: the package cards inside carry their own border and
    shadow, so a grey rounded box around them was a card inside a card. */
-.ed-panel { margin-top: clamp(48px, 6vw, 80px); border-top: 1px solid var(--ed-line); padding: clamp(32px, 4vw, 48px) 0 0; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.ed-panel { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 .ed-panel > .ed-dek { margin-bottom: 10px; }
 
 /* "Latest photos" (Photo dump) in the same quiet type. */
@@ -385,13 +363,6 @@
 
   /* Price drops under the details on phones: beside them it squeezed each
      description into a 4-line strip at 390px. */
-  /* Phones: words on top, then price and Reserve side by side (the roman
-     numeral column is dropped; it cost 46px of reading width). */
-  .ed-pkg { grid-template-columns: minmax(0, 1fr) auto; gap: 14px 12px; padding: 20px; border-radius: 22px; }
-  .ed-pkg__n { display: none; }
-  .ed-pkg__main { grid-column: 1 / -1; }
-  .ed-pkg__price { text-align: left; }
-  .ed-pkg__btn { width: 132px; }
 
   .ed-news { grid-template-columns: minmax(0, 1fr); }
   .ed-q__text { font-size: 17px; }

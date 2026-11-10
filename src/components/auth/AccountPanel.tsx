@@ -57,6 +57,24 @@ const appearance = {
 } as const;
 
 /**
+ * Clerk titles its form with an <h1> on every step, but the page it sits on
+ * already has the page's <h1>. Mark the form's title as a level-2 heading
+ * (each time Clerk redraws a step) so the page has one top heading.
+ */
+function demoteFormTitle(box: HTMLDivElement | null) {
+  if (!box) return;
+  const fix = () =>
+    box.querySelectorAll("h1:not([aria-level])").forEach((h) => {
+      h.setAttribute("role", "heading");
+      h.setAttribute("aria-level", "2");
+    });
+  fix();
+  const mo = new MutationObserver(fix);
+  mo.observe(box, { childList: true, subtree: true });
+  return () => mo.disconnect();
+}
+
+/**
  * Log in or create an account, on this site, for a page inside <ClerkShell>.
  * Signed out: Clerk's own form (email code, no password). Signed in: who you
  * are + log out, or whatever `signedIn` renders. `returnPath` is where a new
@@ -152,7 +170,7 @@ function Panel({
   const q = next ? `?next=${encodeURIComponent(next)}` : "";
   const paths = AUTH_PATHS[lang];
   return (
-    <div className="tq-auth tq-auth--form">
+    <div className="tq-auth tq-auth--form" ref={demoteFormTitle}>
       {mode === "sign-up" ? (
         <SignUp
           routing="hash"
