@@ -5,6 +5,7 @@ import { sqliteD1 } from "@/lib/db/sqlite-d1.test-helper";
 let raw: ReturnType<typeof sqliteD1>;
 vi.mock("server-only", () => ({}));
 vi.mock("@/lib/d1", () => ({ getD1: async () => raw }));
+vi.mock("@/lib/db", () => ({ releaseExpiredHolds: async () => void (await createD1Client(async () => raw).rpc("release_expired_booking_holds")) }));
 import { getAccountBookings, ownsBooking } from "./account-db";
 
 const agreement = { lang: "en", title: "x", intro: "x", sections: [], totalUsd: 3000, depositUsd: 750, balanceUsd: 2250, signedName: "A", signature: "x", signedAt: "2026-01-01", ip: "x", userAgent: "x", version: "x", payToken: "abcdefghijklmnopqrstuvwx" };
@@ -28,6 +29,10 @@ describe("getAccountBookings", () => {
     await add("mom@example.com");
     expect(await getAccountBookings([])).toEqual([]);
     expect(await getAccountBookings(["", "  "])).toEqual([]);
+  });
+  it("a request whose hold ran out shows as closed, so she can book again", async () => {
+    await add("mom@example.com", { status: "requested", expires_at: "2020-01-01T00:00:00.000Z" });
+    expect((await getAccountBookings(["mom@example.com"]))[0].state).toBe("closed");
   });
   it("counts settled balance payments", async () => {
     const id = (await add("mom@example.com")).data.id;

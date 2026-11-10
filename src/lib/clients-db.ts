@@ -1,6 +1,6 @@
 import "server-only";
 import { cache } from "react";
-import { getDb, isDbConfigured } from "@/lib/db";
+import { getDb, isDbConfigured, releaseExpiredHolds } from "@/lib/db";
 import { ACTIVE_BOOKING_STATUSES, fullDates } from "@/lib/booking-capacity";
 
 /**
@@ -134,6 +134,7 @@ export const getTakenEventDates = cache(async (): Promise<string[]> => {
   if (!isDbConfigured()) return [];
   try {
     const dbc = getDb();
+    await releaseExpiredHolds();
     const today = new Date().toISOString().slice(0, 10);
     const { data, error } = await dbc
       .from("bookings")
