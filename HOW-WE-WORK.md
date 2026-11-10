@@ -55,6 +55,8 @@ I may Accept All on a small personal hack. Stop and show me the plan or the diff
 
 Merging is your job, never mine. Once a change is verified (and, for the risky kinds above, once I said go to the plan), merge it yourself and tell me what you merged. Do not ask me whether to merge. Deploying and running database migrations are your job too: after a merge, deploy from a fresh copy of main with the repo's documented command, run any migration it needs, then check the live site and tell me what shipped.
 
+When you finish work that can go live, end by asking me one yes/no question: "Deploy this to production?" Use the app's question card with Yes and No buttons when you have one; otherwise make it the last line of your reply. On Yes, deploy with the repo's documented path, check the live site, and tell me what is live. Skip the question when nothing is deployable. This replaces deploying without asking in the paragraph above; merging stays your job.
+
 ## Hard gates
 
 - Do not invent business facts (prices, hours, legal claims, who we may contact). Look them up in the repo or the project’s source-of-truth doc, or ask me. For TX Quince, live prices and hours come from the current live-facts doc or the live /budget page, never from memory.
