@@ -465,25 +465,22 @@ function Collage({ galleries }: { galleries: HomeGallery[] }) {
 /* Feature: the most-chosen package on a black-and-white plate         */
 /* ------------------------------------------------------------------ */
 
+const FEATURE_SLOT = "home.feature";
+
 function Feature() {
   const { lang, pickPackage } = useSite();
   const { book } = usePriceBook();
   const e = ED[lang];
   const tier = TIERS.find((x) => x.recommended) ?? TIERS[2];
   const p = book.packages[tier.id];
+  // Replaceable in Admin → Website → Every image, or "Replace photo" on the live page.
+  const image = useSlot(FEATURE_SLOT, { src: FEATURE_STILL.src, alt: FEATURE_STILL.alt, width: FEATURE_STILL.width, height: FEATURE_STILL.height });
   return (
     <section className="ed-feature" data-ed="feature" data-header-tone="dark" aria-labelledby="ed-feature-title">
       <div className="ed-feature__plate" data-allow-upscale>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          data-ed="feature-bg"
-          src={FEATURE_STILL.src}
-          width={FEATURE_STILL.width}
-          height={FEATURE_STILL.height}
-          alt={FEATURE_STILL.alt[lang]}
-          loading="lazy"
-          decoding="async"
-        />
+        <div className="ed-feature__bg" data-ed="feature-bg">
+          <SlotPicture image={image} lang={lang} fill sizes="100vw" />
+        </div>
       </div>
       <div className="ed-feature__track">
         <div className="ed-card" data-header-tone="light">
@@ -515,6 +512,7 @@ function Feature() {
           </a>
         </div>
       </div>
+      <SlotAdminControl slot={FEATURE_SLOT} />
     </section>
   );
 }

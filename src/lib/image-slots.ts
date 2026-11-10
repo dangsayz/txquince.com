@@ -66,6 +66,8 @@ const F = {
   placeStage: { phone: "9 / 10", desktop: "2 / 1" },
   blogCover: { phone: "4 / 3", desktop: "2 / 1" },
   blogFeature: { phone: "4 / 3", desktop: "3 / 2" },
+  // The featured-package scene is taller than the screen (130svh phone, 160svh desktop).
+  featurePlate: { phone: "9 / 25", desktop: "1 / 1" },
   og: { phone: "1200 / 630", desktop: "1200 / 630" },
 } satisfies Record<string, Crops>;
 
@@ -139,6 +141,23 @@ const homeSlots: SlotDef[] = [
       lcp: true,
     };
   }),
+  // The full-width photo behind the featured-package card (the tall scroll scene).
+  {
+    id: "home.feature",
+    group: "Homepage",
+    page: "/",
+    paths: HOME,
+    label: "Homepage — background behind the featured package",
+    defaultSrc: "/portfolio/gown-overhead.webp",
+    defaultAlt: {
+      en: "A quinceañera ball gown seen from above, its skirt spread in soft folds",
+      es: "Un vestido de quinceañera visto desde arriba, con la falda extendida en pliegues suaves",
+    },
+    defaultWidth: 1600,
+    defaultHeight: 1066,
+    crops: F.featurePlate,
+    sizes: SIZES.full,
+  },
   // The homepage gallery is not a slot: it shows the real portfolio galleries
   // (src/lib/home-galleries.ts; manage them in Admin → Portfolio).
   // (The intake portrait slot is gone: booking is now one panel inside

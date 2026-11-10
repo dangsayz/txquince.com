@@ -246,7 +246,7 @@
 /* ---------- Feature (sticky card over B&W plate) ---------- */
 .ed-feature { position: relative; min-height: 160svh; overflow: clip; background: #111111; }
 .ed-feature__plate { position: absolute; inset: 0; overflow: hidden; }
-.ed-feature__plate img { position: absolute; inset: -8% 0; width: 100%; height: 116%; object-fit: cover; will-change: transform; }
+.ed-feature__bg { position: absolute; inset: -8% 0; will-change: transform; }
 .ed-feature__plate::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, 0.16); }
 .ed-feature__track { position: relative; min-height: 160svh; padding: 14svh var(--ed-gutter); display: flex; justify-content: flex-end; }
 .ed-card {
