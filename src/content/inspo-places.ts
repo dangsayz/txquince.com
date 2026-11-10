@@ -21,7 +21,7 @@ import { PT } from "@/lib/price-text";
 type L = { en: string; es: string };
 
 export type InspoPhoto = {
-  /** File stem in public/spots/{slug}/ ({file}.webp and {file}-800.webp). */
+  /** File stem in public/spots/{slug}/ ({file}.webp and {file}-800.webp), or an album photo slug ("album-<id>-<nnn>"). */
   file: string;
   width: number;
   height: number;
@@ -55,6 +55,7 @@ export type InspoCopy = {
 
 export type InspoPlace = {
   slug: string;
+  /** City page this spot links to (locations.ts slug); "" when its city has no page. */
   citySlug: string;
   path: L;
   /** schema.org Place (never a LocalBusiness). */
@@ -350,7 +351,12 @@ const mandalay: InspoPlace = {
   },
 };
 
-export const INSPO_PLACES: InspoPlace[] = [mandalay];
+// Newer spots live one per file in ./inspo and use photos from the published albums.
+// (Type-only import in those files, so there is no runtime cycle.)
+import { place as dallasArboretum } from "./inspo/dallas-arboretum";
+import { place as fgsRanch } from "./inspo/fgs-ranch";
+
+export const INSPO_PLACES: InspoPlace[] = [mandalay, dallasArboretum, fgsRanch];
 
 export function getInspoPlace(slug: string): InspoPlace | undefined {
   return INSPO_PLACES.find((p) => p.slug === slug);
@@ -362,5 +368,7 @@ export function inspoPlacesForCity(citySlug: string): InspoPlace[] {
 }
 
 export function inspoImageSrc(place: InspoPlace, file: string, w: 800 | 1600 = 1600): string {
+  // A photo from a published album (src/content/albums.ts) is served by /api/img.
+  if (file.startsWith("album-")) return `/api/img/${file}?w=${w === 800 ? 828 : 1920}`;
   return `/spots/${place.slug}/${file}${w === 800 ? "-800" : ""}.webp`;
 }
