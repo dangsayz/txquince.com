@@ -18,7 +18,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ALT_MAX, ALT_MIN, focalPosition, renditionUrl } from "@/lib/image-slot-shared";
-import { CLIP_FOR_IMAGE_SLOT, CLIP_PLACE, clipUrl, MAX_CLIP_BYTES } from "@/lib/home-clip-shared";
+import { CLIP_FOR_IMAGE_SLOT, CLIP_PLACE, clipUrl, LOOP_SECONDS, MAX_CLIP_BYTES } from "@/lib/home-clip-shared";
 import { decodePhoto, encodeRenditions, sourceProblem, type Encoded } from "./encode-renditions";
 import { mb, useHomeClip } from "./useHomeClip";
 
@@ -92,7 +92,7 @@ export function SlotEditor({
   const film = useHomeClip(clipSlot);
   const [tab, setTab] = useState<"photo" | "video">("photo");
   const clipRef = useRef<HTMLInputElement>(null);
-  const filmBusy = film.busy === "upload" ? "Uploading the video…" : film.busy === "remove" ? "Removing…" : null;
+  const filmBusy = film.busy === "shrink" ? `Making the video smaller… ${film.percent}%` : film.busy === "upload" ? "Uploading the video…" : film.busy === "remove" ? "Removing…" : null;
   const busy = photoBusy ?? filmBusy;
   // A saved or removed loop is already live: closing reloads the page to show it.
   const close = useCallback(() => (film.changed ? onSaved() : onClose()), [film.changed, onSaved, onClose]);
@@ -328,7 +328,7 @@ export function SlotEditor({
                 <input
                   ref={clipRef}
                   type="file"
-                  accept="video/mp4"
+                  accept="video/*"
                   className="sr-only"
                   tabIndex={-1}
                   aria-hidden
@@ -345,7 +345,8 @@ export function SlotEditor({
                 ) : null}
               </div>
               <ul className="mt-4 grid list-disc gap-1 pl-5 text-base leading-snug">
-                <li>8 to 12 seconds, MP4 (H.264), 1920 × 1080, under {mb(MAX_CLIP_BYTES)}.</li>
+                <li>Best: 8 to 12 seconds, filmed wide. Any video file works, also straight from an iPhone.</li>
+                <li>Large files are made smaller here before they upload (under {mb(MAX_CLIP_BYTES)}, no sound). A long clip keeps its first {LOOP_SECONDS} seconds.</li>
                 <li>Slow motion works best: the dress, hands, the room.</li>
                 <li>It plays silent. Slow phones and visitors who turn motion off keep the photo.</li>
               </ul>
