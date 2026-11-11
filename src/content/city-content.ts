@@ -33,8 +33,23 @@ export type CityPhotoSpot = {
   name: string;
   why: string;
   whyEs: string;
+  /** Spanish display name; the Spanish page falls back to `name` when missing. */
+  nameEs?: string;
   /** Slug of this spot's photo-inspiration page (src/content/inspo-places.ts), if it has one. */
   inspo?: string;
+};
+
+/** One step of a city's own "whole day" timeline. */
+export type CityDayStep = { when: string; title: string; body: string };
+
+/** A city's own day timeline; the page falls back to the shared one when missing. */
+export type CityDay = {
+  /** Heading before the italic part, e.g. "A Dallas quince,". */
+  title: string;
+  /** Italic end of the heading. */
+  em: string;
+  dek: string;
+  steps: CityDayStep[];
 };
 
 export type CityContent = {
@@ -43,6 +58,12 @@ export type CityContent = {
   photoSpots: CityPhotoSpot[];
   faqs: { q: string; a: string }[];
   faqsEs: { q: string; a: string }[];
+  /** City-specific lead for the packages section (price tokens only). Falls back to the shared lead. */
+  packagesLead?: string;
+  packagesLeadEs?: string;
+  /** City-specific day timeline. Falls back to the shared timeline (EN) or no section (ES). */
+  day?: CityDay;
+  dayEs?: CityDay;
 };
 
 export const cityContent: Record<string, CityContent> = {
@@ -303,180 +324,188 @@ export const cityContent: Record<string, CityContent> = {
   },
   "dallas": {
     "intro": [
-      "Walk Jefferson Boulevard in Oak Cliff and you can read the whole tradition straight off the shop windows: bridal stores with quinceañera ball gowns on display, paleterías and taquerías a few doors down, the same blocks Mexican families have kept alive since the 1960s. That stretch is the commercial heart of Mexican-American Dallas, and it tells you everything about how seriously this city takes a girl's fifteenth birthday.",
-      "Dallas is big, and the celebrations are spread across it. A morning misa at a parish in Oak Cliff or Pleasant Grove, portraits in Bishop Arts or out by White Rock Lake, then a reception that might land anywhere from a hall off Jefferson to a salón on the east side near Mesquite. Most families here keep the order intact, church first, then the formal portraits, then the vals and the party, and I photograph the day in that sequence, the way it's meant to flow.",
-      "A TX Quince team covers your day in English or Spanish, with no travel fee anywhere in Dallas or the wider metroplex, and we, the owners, edit every gallery and film. Every package comes with edited photos, and {{name.cinema}} and {{name.trio}} add a short highlight — {{highlight.cinema}} with {{name.cinema}}, {{highlight.trio}} with {{name.trio}} — so you have something to share long before the full-length film is finished. When you reach out, tell us your church and your venue and we'll build the timeline around both."
+      "Walk West Jefferson Boulevard in Oak Cliff and the tradition is right there in the shop windows: quinceañera gowns, tiaras, matching pillows and Bibles. Hispanic shop owners have filled this stretch since the late 1970s, when the first bridal and quince shops moved in. For a lot of Dallas families, the planning starts here, long before the misa.",
+      "Dallas is big, so the day usually crosses town. A misa at your parish in Oak Cliff, West Dallas or Pleasant Grove. Portraits at Kiest Park, in Bishop Arts, or at the Dallas Arboretum on White Rock Lake. Then a reception at a salón in the city or out in Irving or Mesquite. Tell us your church and your salón, and we plan the drive and the light between them, so nobody rushes the portraits.",
+      "A TX Quince team covers the whole day in English or Spanish, and we, the owners, edit every gallery and film. There's no travel fee anywhere in Dallas or the rest of DFW. {{sessionIn}} include a dress or save-the-date session after the deposit, and {{name.cinema}} and {{name.trio}} add a highlight film ({{highlight.cinema}} and {{highlight.trio}}), so you have something to share before the full-length film is ready.",
     ],
     "introEs": [
-      "Camina por Jefferson Boulevard en Oak Cliff y vas a leer toda la tradición en los aparadores: tiendas de novias con vestidos de quinceañera, paleterías y taquerías a unos pasos, las mismas cuadras que las familias mexicanas han mantenido vivas desde los años sesenta. Ese tramo es el corazón comercial del Dallas mexicano, y te dice todo sobre lo en serio que esta ciudad se toma los quince años de una niña.",
-      "Dallas es grande y las celebraciones están repartidas por toda la ciudad. Una misa de mañana en una parroquia de Oak Cliff o Pleasant Grove, las fotos en Bishop Arts o por White Rock Lake, y luego una recepción que lo mismo cae en un salón por Jefferson que en uno del lado este, cerca de Mesquite. Aquí casi todas las familias respetan el orden: primero la iglesia, luego las fotos formales, después el vals y la fiesta. Así fotografío el día, como debe fluir.",
-      "Un equipo de TX Quince cubre tu día en inglés o español, sin cargo por traslado en Dallas ni en todo el metroplex, y nosotros, los dueños, editamos cada galería y cada video. Cada paquete trae fotos editadas, y {{nameEs.cinema}} y {{nameEs.trio}} suman un resumen corto —de {{highlightEs.cinema}} con {{nameEs.cinema}}, de {{highlightEs.trio}} con {{nameEs.trio}}— para que tengas algo que compartir mucho antes de que esté listo el video completo. Cuando nos escribas, dinos tu iglesia y tu salón y armamos el itinerario alrededor de los dos."
+      "Camina por West Jefferson Boulevard en Oak Cliff y la tradición está en los aparadores: vestidos de quinceañera, tiaras, cojines y biblias que hacen juego. Los comerciantes hispanos llenaron esta calle desde finales de los setenta, cuando llegaron las primeras tiendas de novias y de quince. Para muchas familias de Dallas, la planeación empieza aquí, mucho antes de la misa.",
+      "Dallas es grande, así que el día casi siempre cruza la ciudad. La misa en tu parroquia de Oak Cliff, West Dallas o Pleasant Grove. Las fotos en Kiest Park, en Bishop Arts o en el Dallas Arboretum, junto a White Rock Lake. Y la recepción en un salón de la ciudad o en Irving o Mesquite. Dinos tu iglesia y tu salón, y planeamos el trayecto y la luz entre los dos, para que las fotos no salgan a las carreras.",
+      "Un equipo de TX Quince cubre todo el día en español o en inglés, y nosotros, los dueños, editamos cada galería y cada video. No cobramos traslado en Dallas ni en el resto de DFW. {{sessionInEs}} incluyen una sesión con el vestido o de save the date después del depósito, y {{nameEs.cinema}} y {{nameEs.trio}} suman un video resumen ({{highlightEs.cinema}} y {{highlightEs.trio}}), para que tengas algo que compartir antes de que esté listo el video completo.",
     ],
     "photoSpots": [
       {
-        "name": "Bishop Arts District (Oak Cliff)",
-        "why": "Walkable blocks of hand-painted murals, vintage storefronts, and bright alleyways in the heart of Oak Cliff. Colorful, free to shoot, and minutes from most of the city's parishes.",
-        "whyEs": "Cuadras caminables con murales pintados a mano, fachadas antiguas y callejones de colores en pleno Oak Cliff. Vistoso, sin costo para fotografiar y a minutos de la mayoría de las parroquias."
+        "name": "Dallas Arboretum and Botanical Garden (White Rock Lake)",
+        "nameEs": "Dallas Arboretum (White Rock Lake)",
+        "inspo": "dallas-arboretum",
+        "why": "Formal gardens, fountains and seasonal color on the shore of White Rock Lake, and one of our most-used spots for dress sessions. Everyone in the group pays admission; a portrait session needs no separate photo permit. Come already dressed, because changing in the public restrooms isn't allowed (the garden rents a private dressing room). Tripods and lights are only allowed from 3 to 5 pm, so we plan the shoot around that window.",
+        "whyEs": "Jardines formales, fuentes y flores de temporada a la orilla de White Rock Lake, y uno de los lugares donde más hacemos sesiones con el vestido. Todos en el grupo pagan entrada; una sesión de retratos no necesita permiso aparte. Lleguen ya vestidos, porque no se permite cambiarse en los baños públicos (el jardín renta un cuarto privado para vestirse). Los tripiés y las luces solo se permiten de 3 a 5 pm, así que planeamos la sesión en ese horario.",
       },
       {
         "name": "Kiest Park Memorial Garden (Oak Cliff)",
-        "why": "A 1930s WPA stone water rill, pergola, and formal flower beds tucked inside a large Oak Cliff park. Quiet, green, and classic for gown portraits without leaving the neighborhood.",
-        "whyEs": "Un canal de piedra de los años treinta, una pérgola y jardines formales dentro de un parque grande de Oak Cliff. Tranquilo, verde y clásico para las fotos del vestido sin salir del barrio."
+        "nameEs": "Jardín conmemorativo de Kiest Park (Oak Cliff)",
+        "why": "A 1934 memorial garden in Oak Cliff: a long stone water rill, a rebuilt pergola and formal beds, with Depression-era stonework around the park. Quiet, green and classic for gown portraits without leaving the neighborhood.",
+        "whyEs": "Un jardín conmemorativo de 1934 en Oak Cliff: un canal largo de piedra, una pérgola restaurada y jardines formales, con obras de piedra de los años treinta alrededor del parque. Tranquilo, verde y clásico para las fotos del vestido sin salir del barrio.",
       },
       {
-        "name": "Dallas Arboretum and Botanical Garden (White Rock Lake)",
-        "inspo": "dallas-arboretum",
-        "why": "Manicured formal gardens, fountains, and seasonal blooms on the shore of White Rock Lake, the city's premier garden backdrop. It's ticketed and needs a photo pass, so we plan the time slot in advance.",
-        "whyEs": "Jardines formales, fuentes y flores de temporada a la orilla de White Rock Lake, el mejor fondo de jardín de la ciudad. Cobra entrada y pide permiso de fotografía, así que apartamos el horario con tiempo."
+        "name": "Bishop Arts District (Oak Cliff)",
+        "nameEs": "Bishop Arts District (Oak Cliff)",
+        "why": "Walkable blocks of murals, small storefronts and bright doors in the heart of Oak Cliff. Colorful, public and close to the Jefferson corridor.",
+        "whyEs": "Cuadras caminables con murales, tienditas y puertas de colores en pleno Oak Cliff. Colorido, público y cerca del corredor de Jefferson.",
       },
       {
-        "name": "Latino Cultural Center (near Downtown)",
-        "why": "Ricardo Legorreta's pumpkin-orange walls and purple 'lighthouse' tower with an open plaza, bold Mexican modernist color that ties the portraits straight back to the community.",
-        "whyEs": "Los muros color calabaza y la torre morada estilo faro de Ricardo Legorreta, con una plaza abierta. Color modernista mexicano que conecta las fotos directamente con la comunidad."
+        "name": "Latino Cultural Center (Live Oak Street)",
+        "nameEs": "Latino Cultural Center (calle Live Oak)",
+        "why": "Ricardo Legorreta's orange walls and purple tower, bold Mexican modernist color that ties the portraits back to the community. The center is open Tuesday to Saturday, 10 to 5, so we confirm with the staff before we plan a shoot there.",
+        "whyEs": "Los muros naranjas y la torre morada de Ricardo Legorreta, color modernista mexicano que conecta las fotos con la comunidad. El centro abre de martes a sábado, de 10 a 5, así que confirmamos con el personal antes de planear una sesión ahí.",
       },
       {
-        "name": "Ronald Kirk Bridge / Trinity Overlook (West Dallas)",
-        "why": "A pedestrian-only bridge over the Trinity with the downtown skyline, Reunion Tower, and Calatrava's white Margaret Hunt Hill arch behind you. Best at golden hour, and free to walk on.",
-        "whyEs": "Un puente peatonal sobre el río Trinity con el horizonte del centro, la Reunion Tower y el arco blanco del puente Margaret Hunt Hill de fondo. Ideal a la hora dorada y gratis para caminar."
+        "name": "Ronald Kirk Bridge (West Dallas)",
+        "nameEs": "Puente Ronald Kirk (West Dallas)",
+        "why": "A walking-only bridge over the Trinity, with the downtown skyline, Reunion Tower and the white Margaret Hunt Hill arch behind her. Free, and best at golden hour.",
+        "whyEs": "Un puente peatonal sobre el río Trinity, con el horizonte del centro, la Reunion Tower y el arco blanco del Margaret Hunt Hill detrás de ella. Gratis, y mejor a la hora dorada.",
       },
       {
         "name": "Fair Park (East Dallas)",
-        "why": "A National Historic Landmark with the country's largest collection of Art Deco architecture. The Esplanade's fountains and lagoon and the grand 1936 facades make a dramatic, distinctly Dallas backdrop.",
-        "whyEs": "Un sitio histórico nacional con la mayor colección de arquitectura Art Déco del país. Las fuentes y la laguna de la Esplanade y las fachadas de 1936 dan un fondo dramático y muy de Dallas."
-      }
+        "nameEs": "Fair Park (este de Dallas)",
+        "why": "Built for the 1936 Texas Centennial Exposition and now a National Historic Landmark. Art Deco facades and the long reflecting pool of the Esplanade make a dramatic, very Dallas backdrop.",
+        "whyEs": "Construido para la Exposición del Centenario de Texas de 1936 y hoy sitio histórico nacional. Las fachadas Art Déco y el largo espejo de agua de la Esplanade dan un fondo dramático y muy de Dallas.",
+      },
     ],
+    "packagesLead": "Every price is published, and a Dallas date costs the same as any date in DFW. A {{deposit.percent}} deposit holds it and goes toward your total. {{name.trio}}, our pick for most Dallas families, puts {{team.trio}} on her day and adds a printed album.",
+    "packagesLeadEs": "Todos los precios están publicados, y una fecha en Dallas cuesta lo mismo que cualquier fecha en DFW. Un depósito del {{deposit.percent}} la aparta y se abona a tu total. {{nameEs.trio}}, nuestra recomendación para la mayoría de las familias de Dallas, pone {{teamEs.trio}} en su día y suma un álbum impreso.",
+    "day": {
+      "title": "A Dallas quince,",
+      "em": "church to last dance.",
+      "dek": "Here's how the day unfolds for most Dallas families, and how we cover each part of it.",
+      "steps": [
+        { "when": "Morning", "title": "Getting ready", "body": "Most Dallas families get ready at home. We photograph the dress, the shoes and the details, and the padrinos arriving with what they sponsor: the tiara, the cojín, the last doll." },
+        { "when": "Midday", "title": "La misa", "body": "At your parish, in Oak Cliff, West Dallas, Pleasant Grove or wherever your family worships. Each parish sets its own photo rules, so we ask the office ahead and work quietly from where the priest wants us." },
+        { "when": "Afternoon", "title": "Portraits", "body": "The window between the misa and the salón. From an Oak Cliff church, Kiest Park or Bishop Arts keeps the drive short. If she wants the Arboretum, we plan around its admission and its 3 to 5 pm equipment window, or move it to the dress session." },
+        { "when": "Early evening", "title": "La entrada", "body": "At the salón, in the city or out in Irving or Mesquite. We arrive before her, so the grand entrance and the brindis are covered from the first second." },
+        { "when": "Evening", "title": "El vals & baile sorpresa", "body": "The waltz with her father, the vals with her chambelanes and the surprise dance. Dallas halls differ a lot in light and space, so we walk the room first and pick our angles." },
+        { "when": "Night", "title": "The celebration", "body": "La última muñeca, dinner and the dance floor until your hours end. Want a longer night? Ask us about adding hours." },
+      ]
+    },
+    "dayEs": {
+      "title": "Un quince en Dallas,",
+      "em": "de la iglesia al último baile.",
+      "dek": "Así se vive el día para la mayoría de las familias de Dallas, y así cubrimos cada parte.",
+      "steps": [
+        { "when": "Mañana", "title": "Arreglarse", "body": "Casi todas las familias de Dallas se arreglan en casa. Fotografiamos el vestido, los zapatos y los detalles, y a los padrinos llegando con lo que regalan: la tiara, el cojín, la última muñeca." },
+        { "when": "Mediodía", "title": "La misa", "body": "En tu parroquia, en Oak Cliff, West Dallas, Pleasant Grove o donde vaya tu familia. Cada parroquia pone sus propias reglas de fotos, así que preguntamos en la oficina antes y trabajamos en silencio desde donde el padre nos indique." },
+        { "when": "Tarde", "title": "Retratos", "body": "El tiempo entre la misa y el salón. Desde una iglesia de Oak Cliff, Kiest Park o Bishop Arts dejan el trayecto corto. Si ella quiere el Arboretum, lo planeamos con la entrada y el horario de equipo de 3 a 5 pm, o lo pasamos a la sesión con el vestido." },
+        { "when": "Atardecer", "title": "La entrada", "body": "En el salón, en la ciudad o en Irving o Mesquite. Llegamos antes que ella, para cubrir la entrada y el brindis desde el primer segundo." },
+        { "when": "Noche", "title": "El vals y el baile sorpresa", "body": "El vals con su papá, el vals con sus chambelanes y el baile sorpresa. Los salones de Dallas cambian mucho en luz y espacio, así que recorremos el salón primero y escogemos los ángulos." },
+        { "when": "Noche", "title": "La fiesta", "body": "La última muñeca, la cena y la pista hasta que terminen tus horas. ¿Quieren más noche? Pregúntanos por horas extra." },
+      ]
+    },
     "faqs": [
-      {
-        "q": "How much does a quinceañera photographer cost in Dallas?",
-        "a": `{{name.study}} is ${STUDY}, {{name.solo}} ${SOLO} (one shooter for photos and video), {{name.cinema}} ${CINEMA} and {{name.trio}} ${TRIO} — the one I recommend for most celebrations, with {{team.trio}} and a printed photo album. {{sessionIn}} include a dress or save-the-date session, booked after the deposit. Extras include a Second Portrait Day, a separate day for portraits in her dress with photos and video at up to 2 locations (${SECONDDAY}), a Vintage Film Clip (Super 8) added to the full-length film (${SUPER8}), and a Day-of Coordinator who runs the day (${COORDINATOR} a day). There's no travel fee anywhere in Dallas or DFW, and a ${RETAINER_PCT} deposit locks in the date once your agreement is approved.`
-      },
-      {
-        "q": "Where are the best places to take quince pictures in Dallas?",
-        "a": "For portraits I keep coming back to the murals of Bishop Arts, the WPA gardens at Kiest Park in Oak Cliff, the formal grounds of the Dallas Arboretum on White Rock Lake, the colorful Latino Cultural Center near downtown, the skyline view from the Ronald Kirk Bridge in West Dallas, and the Art Deco Esplanade at Fair Park. We pick spots close to your church so the timeline stays easy."
-      },
-      {
-        "q": "What part of Dallas do receptions usually happen in?",
-        "a": "All over the city, banquet halls along the Jefferson Boulevard corridor in Oak Cliff, salones on the southeast side around Pleasant Grove and Buckner, newer spaces near West Dallas and the Design District, and halls out toward Mesquite and the east side. Tell me your venue when you book and I'll plan the night around it."
-      },
-      {
-        "q": "Do you offer both photo and video for quinceañeras in Dallas?",
-        "a": `Yes. {{name.cinema}} and {{name.trio}} pair photos with the full-length 4K film of her whole day — la misa, every presentation and toast in full and 15–20 minutes of the dance floor — plus a highlight: {{highlight.cinema}} with {{name.cinema}}, {{highlight.trio}} with {{name.trio}}. {{name.solo}} (${SOLO}) is the budget-friendly way to get both: one shooter with a {{cameras.solo}} camera setup, the full-length film of her day and {{photos.solo}} edited photos. Everything is offered fully in English or Spanish.`
-      },
-      {
-        "q": "Do you cover the suburbs around Dallas too?",
-        "a": "Yes, we photograph across all of Dallas County and the metroplex with no travel fee, including Irving, Grand Prairie, Garland, Mesquite, Farmers Branch, DeSoto, Duncanville, Cedar Hill, and Carrollton. Wherever in DFW your day takes us, a TX Quince team covers it from start to finish."
-      }
+      { "q": "How much does a quinceañera photographer cost in Dallas?", "a": "{{name.study}} is {{price.study}}, {{name.moments}} is {{price.moments}}, {{name.solo}} is {{price.solo}} (one shooter for photos and video), {{name.cinema}} is {{price.cinema}} and {{name.trio}} is {{price.trio}}, our pick for most celebrations, with {{team.trio}} and a printed album. There's no travel fee anywhere in Dallas or DFW. A {{deposit.percent}} deposit locks the date once your agreement is approved, and the rest is due {{balance.days}} days before the event." },
+      { "q": "Do we need a permit for quince photos at the Dallas Arboretum?", "a": "No separate permit for a portrait session. Everyone in the group pays admission. Professional photography starts at 9 am, and tripods or lights are only allowed from 3 to 5 pm. She has to arrive already dressed, because changing in the public restrooms isn't allowed; the garden rents a private dressing room. Photo shoots are not allowed in the Children's Adventure Garden. We check the garden's current rules before your date." },
+      { "q": "Where are quince receptions usually held in Dallas?", "a": "All over the city and the suburbs around it. Our Dallas-area celebrations have taken us to salones in Dallas, Irving and Mesquite. Send us your venue when you check your date, and we build the night around it." },
+      { "q": "Can you photograph inside our church during the misa?", "a": "Yes, within your parish's rules. Each parish in the Diocese of Dallas sets its own rules for photos during the Mass, such as no flash or staying at the back. We ask the parish office ahead and follow them, so the misa is never interrupted." },
+      { "q": "Do you cover the cities around Dallas?", "a": "Yes, with no travel fee: Irving, Grand Prairie, Garland, Mesquite, Farmers Branch, Carrollton, DeSoto, Duncanville, Cedar Hill and the rest of DFW." },
     ],
     "faqsEs": [
-      {
-        "q": "¿Cuánto cuesta un fotógrafo de quinceañera en Dallas?",
-        "a": `{{nameEs.study}} cuesta ${STUDY}, {{nameEs.solo}} ${SOLO} (una sola persona para foto y video), {{nameEs.cinema}} ${CINEMA} y {{nameEs.trio}} ${TRIO} —el que recomiendo para la mayoría de las celebraciones, con {{teamEs.trio}} y un álbum de fotos impreso—. {{sessionInEs}} incluyen una sesión con el vestido o de save the date, que se agenda después del depósito. Entre los extras están un Segundo día de retratos, un día aparte para retratos con su vestido, con fotos y video en hasta 2 lugares (${SECONDDAY}), un Clip de película vintage (Super 8) dentro del video completo (${SUPER8}) y una Coordinadora del día que lleva el día (${COORDINATOR} por día). No cobro traslado en Dallas ni en todo DFW, y un depósito del ${RETAINER_PCT} asegura la fecha una vez aprobado tu contrato.`
-      },
-      {
-        "q": "¿Cuáles son los mejores lugares para tomar fotos de quince en Dallas?",
-        "a": "Para las fotos siempre regreso a los murales de Bishop Arts, los jardines de Kiest Park en Oak Cliff, el Dallas Arboretum a la orilla de White Rock Lake, el colorido Latino Cultural Center cerca del centro, la vista del horizonte desde el Ronald Kirk Bridge en West Dallas y la Esplanade Art Déco de Fair Park. Elegimos lugares cerca de tu iglesia para que el itinerario quede fácil."
-      },
-      {
-        "q": "¿En qué parte de Dallas suelen ser las recepciones?",
-        "a": "Por toda la ciudad: salones por el corredor de Jefferson Boulevard en Oak Cliff, salones del lado sureste por Pleasant Grove y Buckner, lugares más nuevos cerca de West Dallas y el Design District, y salones rumbo a Mesquite y el lado este. Dime tu salón al reservar y armo la noche alrededor de él."
-      },
-      {
-        "q": "¿Ofreces foto y video para quinceañeras en Dallas?",
-        "a": `Sí. {{nameEs.cinema}} y {{nameEs.trio}} combinan las fotos con el video completo en 4K de todo su día —la misa, cada presentación y cada brindis completos, y de 15 a 20 minutos de la pista de baile— más un resumen: de {{highlightEs.cinema}} con {{nameEs.cinema}}, de {{highlightEs.trio}} con {{nameEs.trio}}. {{nameEs.solo}} (${SOLO}) es la forma más económica de tener los dos: una sola persona con {{cameras.solo}} cámaras, el video completo de su día y {{photos.solo}} fotos editadas. Todo se ofrece por completo en inglés o español.`
-      },
-      {
-        "q": "¿También cubres los suburbios alrededor de Dallas?",
-        "a": "Sí, fotografiamos en todo el condado de Dallas y el metroplex sin cargo por traslado, incluyendo Irving, Grand Prairie, Garland, Mesquite, Farmers Branch, DeSoto, Duncanville, Cedar Hill y Carrollton. Donde sea que nos lleve tu día en DFW, un equipo de TX Quince lo cubre de principio a fin."
-      }
-    ]
+      { "q": "¿Cuánto cuesta un fotógrafo de quinceañera en Dallas?", "a": "{{nameEs.study}} cuesta {{price.study}}, {{nameEs.moments}} {{price.moments}}, {{nameEs.solo}} {{price.solo}} (una sola persona para foto y video), {{nameEs.cinema}} {{price.cinema}} y {{nameEs.trio}} {{price.trio}}, nuestra recomendación para la mayoría de las celebraciones, con {{teamEs.trio}} y un álbum impreso. No cobramos traslado en Dallas ni en todo DFW. Un depósito del {{deposit.percent}} asegura la fecha cuando se aprueba tu contrato, y el resto se paga {{balance.days}} días antes del evento." },
+      { "q": "¿Necesitamos permiso para fotos de quince en el Dallas Arboretum?", "a": "No hace falta un permiso aparte para una sesión de retratos. Todos en el grupo pagan entrada. La fotografía profesional empieza a las 9 am, y los tripiés o luces solo se permiten de 3 a 5 pm. Ella tiene que llegar ya vestida, porque no se permite cambiarse en los baños públicos; el jardín renta un cuarto privado para vestirse. No se permiten sesiones en el Children's Adventure Garden. Revisamos las reglas vigentes del jardín antes de tu fecha." },
+      { "q": "¿Dónde suelen ser las recepciones de quince en Dallas?", "a": "Por toda la ciudad y los suburbios de alrededor. Nuestras celebraciones en la zona de Dallas nos han llevado a salones en Dallas, Irving y Mesquite. Mándanos tu salón cuando consultes tu fecha y armamos la noche alrededor de él." },
+      { "q": "¿Pueden tomar fotos dentro de la iglesia durante la misa?", "a": "Sí, dentro de las reglas de tu parroquia. Cada parroquia de la Diócesis de Dallas pone sus propias reglas de fotos en la misa, como no usar flash o quedarse atrás. Preguntamos en la oficina parroquial antes y las seguimos, para que la misa nunca se interrumpa." },
+      { "q": "¿Cubren las ciudades alrededor de Dallas?", "a": "Sí, sin cargo por traslado: Irving, Grand Prairie, Garland, Mesquite, Farmers Branch, Carrollton, DeSoto, Duncanville, Cedar Hill y el resto de DFW." },
+    ],
   },
   "fort-worth": {
     "intro": [
-      "Fort Worth's Mexican heritage didn't start downtown — it started a mile north of the Trinity River, where families came to work the Swift and Armour packing plants in the early 1900s and built the North Side into the city's oldest barrio. More than a century later, North Main Street, Marine Park, and the parishes around them are still where a lot of Fort Worth quinceañeras begin. Cross town to the South Freeway and you hit the other anchor: La Gran Plaza, the Hispanic mercado where families pick out the dress, the cake, and the recuerdos. I know how a quinceañera moves between these two sides of the city, and I build the day around the route your family actually takes.",
-      "Fort Worth gives you a backdrop for whatever look you are after. Want something modern and dramatic? The Fort Worth Water Gardens downtown are free and open daily, all terraced concrete and falling water. Want the classic garden shots in the gown? The Japanese Garden inside the Botanic Garden has the koi ponds, red bridges, and maples for it. Want Fort Worth unmistakable in the frame? The Stockyards' brick streets and Mule Alley do that in a single block. Most days we work portraits in between the misa and the reception, but if your schedule is tight we can make the spot you love a portrait session before the celebration — the heart of the {{name.study}}, and included in {{sessionIn}} as a dress or save-the-date session after the deposit — and keep the day itself relaxed.",
-      "We only photograph quinceañeras — this is not a wedding studio fitting yours in on the side. A TX Quince team covers your day, and every gallery and film is edited by us, the owners. That means the morning at the church, the portraits, the vals, the surprise dance, and the last hour on the floor all get the same care, from the camera to the final edit. Everything runs in English and Spanish, so your tías and your abuelos understand every direction we give. There is no travel fee anywhere in Tarrant County or the rest of DFW, and every package with video comes with a short highlight and short vertical videos for social media alongside the full-length film of her whole day."
+      "Fort Worth's Mexican-American story starts north of the Trinity. When the Swift and Armour packing plants opened there in the early 1900s, families came for the work and built a barrio along North Main Street. The North Side and its parishes still matter to many Fort Worth families. On the south side, La Gran Plaza on the South Freeway is the other anchor: a Hispanic mall where families shop for the quince dress.",
+      "Fort Worth gives you three different looks without a long drive. Gardens: the Japanese Garden inside the Fort Worth Botanic Garden, with koi ponds, bridges and maples. Western: the brick streets of the Stockyards and Mule Alley, where we've photographed quince portraits. Clean and modern: the lawns and museum walls of the Cultural District. We fit portraits between the misa and the reception, or move the spot she loves to the dress session so the day itself stays relaxed.",
+      "A TX Quince team covers your day in English and Spanish, so abuelos and padrinos always know what comes next, and we, the owners, edit every gallery and film. There's no travel fee in Fort Worth, the rest of Tarrant County or anywhere in DFW. {{name.cinema}} and {{name.trio}} add a highlight film and short vertical videos for social media to the full-length film of her day.",
     ],
     "introEs": [
-      "La herencia mexicana de Fort Worth no empezó en el centro, sino una milla al norte del río Trinity, donde las familias llegaron a trabajar a los empacadores de carne Swift y Armour a principios de los 1900 y levantaron el North Side, el barrio más antiguo de la ciudad. Más de cien años después, North Main Street, Marine Park y las parroquias de por ahí siguen siendo donde arrancan muchas quinceañeras de Fort Worth. Del otro lado, por la South Freeway, está el otro punto de reunión: La Gran Plaza, el mercado donde las familias escogen el vestido, el pastel y los recuerdos. Conozco cómo se mueve una quinceañera entre estos dos lados de la ciudad y armo el día según la ruta que de verdad sigue tu familia.",
-      "Fort Worth te da el fondo que quieras. ¿Algo moderno y de impacto? Los Fort Worth Water Gardens, en el centro, son gratis y abren todos los días, puro concreto en terrazas y agua cayendo. ¿Las fotos clásicas de jardín con el vestido? El Japanese Garden, dentro del Botanic Garden, tiene los estanques de koi, los puentes rojos y los maples. ¿Que se note que es Fort Worth? Las calles de ladrillo de los Stockyards y Mule Alley lo logran en una sola cuadra. Casi siempre hacemos las fotos entre la misa y la recepción, pero si el tiempo está apretado podemos hacer en el lugar que más te guste una sesión de retrato antes de la celebración —el corazón de la {{nameEs.study}}, e incluida en {{sessionInEs}} como sesión con el vestido o de save the date después del depósito— y dejar tranquilo el día de la fiesta.",
-      "Solo fotografiamos quinceañeras: no somos un estudio de bodas que acomoda la tuya de pasada. Un equipo de TX Quince cubre tu día, y nosotros, los dueños, editamos cada galería y cada video. Eso quiere decir que la mañana en la iglesia, las fotos, el vals, el baile sorpresa y la última hora en la pista reciben el mismo cuidado, desde la cámara hasta la edición final. Todo es bilingüe, para que tus tías y tus abuelos entiendan cada indicación que damos. No hay cargo por traslado en todo el condado de Tarrant ni en el resto de DFW, y cada paquete con video trae un resumen corto y videos verticales cortos para redes sociales junto con el video completo de todo su día."
+      "La historia mexicana de Fort Worth empieza al norte del río Trinity. Cuando abrieron ahí los empacadores de carne Swift y Armour a principios de los 1900, las familias llegaron por el trabajo y levantaron un barrio a lo largo de North Main Street. El North Side y sus parroquias siguen siendo importantes para muchas familias de Fort Worth. Del lado sur, La Gran Plaza, en la South Freeway, es el otro punto de reunión: un centro comercial hispano donde las familias compran el vestido de quince.",
+      "Fort Worth te da tres estilos distintos sin manejar lejos. Jardín: el Japanese Garden dentro del Fort Worth Botanic Garden, con estanques de koi, puentes y maples. Vaquero: las calles de ladrillo de los Stockyards y Mule Alley, donde ya hemos hecho retratos de quince. Limpio y moderno: los jardines y las paredes de los museos del Cultural District. Hacemos las fotos entre la misa y la recepción, o pasamos el lugar que ella quiere a la sesión con el vestido para que el día de la fiesta sea tranquilo.",
+      "Un equipo de TX Quince cubre tu día en español y en inglés, para que los abuelos y los padrinos siempre sepan qué sigue, y nosotros, los dueños, editamos cada galería y cada video. No cobramos traslado en Fort Worth, en el resto del condado de Tarrant ni en todo DFW. {{nameEs.cinema}} y {{nameEs.trio}} suman un video resumen y videos verticales cortos para redes sociales al video completo de su día.",
     ],
     "photoSpots": [
       {
-        "name": "Fort Worth Water Gardens (downtown)",
-        "why": "Free and open daily on the south edge of downtown — Philip Johnson's terraced concrete pools and falling water give you a bold, modern set just minutes from most churches.",
-        "whyEs": "Gratis y abierto todos los días en el borde sur del centro: las terrazas de concreto y el agua cayendo de Philip Johnson te dan un fondo moderno y de impacto, a minutos de casi cualquier iglesia."
-      },
-      {
         "name": "Japanese Garden, Fort Worth Botanic Garden",
-        "why": "A traditional strolling garden with koi ponds, red bridges, and Japanese maples — the classic garden look for the gown. It welcomes quinceañera sessions for a small photo fee plus admission.",
-        "whyEs": "Un jardín de paseo con estanques de koi, puentes rojos y maples japoneses: el fondo clásico de jardín para el vestido. Reciben sesiones de quinceañera con una cuota pequeña de foto más la entrada."
+        "nameEs": "Japanese Garden del Fort Worth Botanic Garden",
+        "why": "A 7.5-acre strolling garden from 1973, with koi ponds, bridges and Japanese maples. Quince sessions buy a two-hour photo pass plus admission. The last pass sells two hours before closing, and none are sold during the garden's Japanese festivals or its Día de Muertos procession, so we check your date first.",
+        "whyEs": "Un jardín de paseo de 1973, de 7.5 acres, con estanques de koi, puentes y maples japoneses. Las sesiones de quince compran un pase de fotos de dos horas más la entrada. El último pase se vende dos horas antes de cerrar, y no se venden durante los festivales japoneses ni la procesión de Día de Muertos, así que revisamos tu fecha primero.",
       },
       {
         "name": "Fort Worth Stockyards & Mule Alley",
-        "why": "Brick streets and Western facades that read as Fort Worth in a single frame. The historic district is public and walkable — best early, before the crowds build.",
-        "whyEs": "Calles de ladrillo y fachadas del Viejo Oeste que se ven Fort Worth en una sola foto. El distrito histórico es público y se camina; mejor temprano, antes de que se llene de gente."
-      },
-      {
-        "name": "Trinity Park & Trinity Trails",
-        "why": "Tree-lined paths along the Trinity River next to the Zoo, off University Drive — easy, green, and beautiful at golden hour for relaxed portraits.",
-        "whyEs": "Senderos arbolados junto al río Trinity, al lado del zoológico, por University Drive: verde, cómodo y precioso a la hora dorada para fotos relajadas."
+        "nameEs": "Stockyards de Fort Worth y Mule Alley",
+        "why": "Brick streets and Western storefronts that say Fort Worth in one frame. We've photographed quince portraits here. Public and walkable; go early, before the crowds.",
+        "whyEs": "Calles de ladrillo y fachadas del Viejo Oeste que dicen Fort Worth en una sola foto. Ya hemos hecho retratos de quince aquí. Es público y se camina; mejor temprano, antes de que llegue la gente.",
       },
       {
         "name": "Marine Park, North Side",
-        "why": "The green heart of the historic Northside barrio off North Main, walking distance from the parishes — a meaningful spot if your family's roots are in the neighborhood.",
-        "whyEs": "El corazón verde del histórico barrio del Northside, por North Main, a unos pasos de las parroquias: un lugar con sentido si las raíces de tu familia están en el vecindario."
+        "nameEs": "Marine Park, North Side",
+        "why": "A North Side park on NW 20th Street, just west of North Main, dedicated in 1894. Big old trees and a 1930s shelter, and a meaningful spot if your family's roots are in the neighborhood.",
+        "whyEs": "Un parque del North Side en la calle NW 20th, al oeste de North Main, inaugurado en 1894. Árboles grandes y un pabellón de los años treinta, y un lugar con sentido si las raíces de tu familia están en el vecindario.",
+      },
+      {
+        "name": "Trinity Park & Trinity Trails",
+        "nameEs": "Trinity Park y Trinity Trails",
+        "why": "Tree-lined paths along the Trinity River off University Drive. Easy, green and soft at golden hour for relaxed portraits.",
+        "whyEs": "Senderos con árboles junto al río Trinity, por University Drive. Cómodo, verde y suave a la hora dorada para fotos relajadas.",
       },
       {
         "name": "Fort Worth Cultural District",
-        "why": "Open lawns and clean modernist architecture around the museums and the Will Rogers Memorial — an elegant, uncluttered backdrop a few minutes west of downtown.",
-        "whyEs": "Jardines abiertos y arquitectura moderna y limpia alrededor de los museos y el Will Rogers Memorial: un fondo elegante y despejado, a unos minutos al oeste del centro."
-      }
+        "nameEs": "Cultural District de Fort Worth",
+        "why": "Open lawns and clean modern architecture around the museums and Will Rogers Memorial Center, a few minutes west of downtown. Elegant and uncluttered.",
+        "whyEs": "Jardines abiertos y arquitectura moderna y limpia alrededor de los museos y el Will Rogers Memorial Center, a unos minutos al oeste del centro. Elegante y despejado.",
+      },
+      {
+        "name": "Fort Worth Water Gardens (downtown)",
+        "nameEs": "Fort Worth Water Gardens (centro)",
+        "why": "Philip Johnson's terraced pools and falling water on the south edge of downtown. The city has a renovation planned through 2027, so we check what's open before we plan a shoot there.",
+        "whyEs": "Las terrazas de agua de Philip Johnson en el borde sur del centro. La ciudad tiene una renovación planeada hasta 2027, así que revisamos qué está abierto antes de planear una sesión ahí.",
+      },
     ],
+    "packagesLead": "The Fort Worth price is the published price, with no travel fee from the North Side to Benbrook. A {{deposit.percent}} deposit holds the date and goes toward your total. {{name.trio}}, our pick for most families, puts {{team.trio}} on her day and adds a printed album.",
+    "packagesLeadEs": "El precio en Fort Worth es el precio publicado, sin cargo por traslado del North Side a Benbrook. Un depósito del {{deposit.percent}} aparta la fecha y se abona a tu total. {{nameEs.trio}}, nuestra recomendación para la mayoría de las familias, pone {{teamEs.trio}} en su día y suma un álbum impreso.",
+    "day": {
+      "title": "A Fort Worth quince,",
+      "em": "church to last dance.",
+      "dek": "Here's how the day unfolds for most Fort Worth families, and how we cover each part of it.",
+      "steps": [
+        { "when": "Morning", "title": "Getting ready", "body": "On the North Side, the south side or in a town like Haltom City or Saginaw, we start at home with the dress, the details, and the padrinos arriving with the tiara, the cojín and the last doll." },
+        { "when": "Midday", "title": "La misa", "body": "At your parish. Each parish in the Diocese of Fort Worth sets its own rules for the misa and for photos, so we ask the office ahead and work quietly from where the priest wants us." },
+        { "when": "Afternoon", "title": "Portraits", "body": "From a North Side church, Marine Park and the Stockyards are close by. For the Japanese Garden, we time it to the two-hour photo pass and the garden's closing time." },
+        { "when": "Early evening", "title": "La entrada", "body": "At the salón, in Fort Worth or a few towns over, like Haltom City. We arrive before her, so the grand entrance and the brindis are covered from the first second." },
+        { "when": "Evening", "title": "El vals & baile sorpresa", "body": "The waltz with her father, the vals with her chambelanes and the surprise dance. We walk the room first and pick our angles, so the court's months of practice are on camera from start to finish." },
+        { "when": "Night", "title": "The celebration", "body": "La última muñeca, dinner and the dance floor until your hours end. Want a longer night? Ask us about adding hours." },
+      ]
+    },
+    "dayEs": {
+      "title": "Un quince en Fort Worth,",
+      "em": "de la iglesia al último baile.",
+      "dek": "Así se vive el día para la mayoría de las familias de Fort Worth, y así cubrimos cada parte.",
+      "steps": [
+        { "when": "Mañana", "title": "Arreglarse", "body": "En el North Side, en el lado sur o en un pueblo como Haltom City o Saginaw, empezamos en casa con el vestido, los detalles y los padrinos llegando con la tiara, el cojín y la última muñeca." },
+        { "when": "Mediodía", "title": "La misa", "body": "En tu parroquia. Cada parroquia de la Diócesis de Fort Worth pone sus propias reglas para la misa y para las fotos, así que preguntamos en la oficina antes y trabajamos en silencio desde donde el padre nos indique." },
+        { "when": "Tarde", "title": "Retratos", "body": "Desde una iglesia del North Side, Marine Park y los Stockyards quedan cerca. Para el Japanese Garden, lo cuadramos con el pase de fotos de dos horas y la hora de cierre del jardín." },
+        { "when": "Atardecer", "title": "La entrada", "body": "En el salón, en Fort Worth o a unos pueblos, como Haltom City. Llegamos antes que ella, para cubrir la entrada y el brindis desde el primer segundo." },
+        { "when": "Noche", "title": "El vals y el baile sorpresa", "body": "El vals con su papá, el vals con sus chambelanes y el baile sorpresa. Recorremos el salón primero y escogemos los ángulos, para que los meses de ensayo de la corte queden grabados de principio a fin." },
+        { "when": "Noche", "title": "La fiesta", "body": "La última muñeca, la cena y la pista hasta que terminen tus horas. ¿Quieren más noche? Pregúntanos por horas extra." },
+      ]
+    },
     "faqs": [
-      {
-        "q": "How much does a quinceañera photographer cost in Fort Worth?",
-        "a": `My packages are ${STUDY} ({{name.study}}, photo only), ${SOLO} ({{name.solo}}, photo and video from one shooter), ${CINEMA} ({{name.cinema}}) and ${TRIO} ({{name.trio}} — the one I recommend for most celebrations). There is no travel fee anywhere in Tarrant County or DFW, so the Fort Worth price is the price. You can see exactly what is in each on our Packages & Prices page, then sign the agreement online and lock in your date with a ${RETAINER_PCT} deposit once it's approved — or email us if you'd like a quick call first.`
-      },
-      {
-        "q": "Where are the best places to take quince pictures in Fort Worth?",
-        "a": "A few favorites: the Fort Worth Water Gardens downtown (free, dramatic concrete and water), the Japanese Garden inside the Botanic Garden (koi ponds and red bridges, small photo fee), the brick streets of the Stockyards and Mule Alley, and the riverside greenery of Trinity Park. Tell me the look you want and I will match the spot — and we can make it your portrait session before the celebration or fold it into the day."
-      },
-      {
-        "q": "What part of Fort Worth do families hold the reception?",
-        "a": "All over, depending on the parish. A lot of North Side families keep it close to North Main; others book halls along the South Freeway near La Gran Plaza, the east-side corridors around East Lancaster, or the event barns out by the Stockyards. Send me your church and your venue when you reach out and I will build the timeline so the drive between them works."
-      },
-      {
-        "q": "Do you offer photo and video for Fort Worth quinceañeras?",
-        "a": `Yes. {{name.cinema}} and {{name.trio}} come with a team — {{team.cinema}} with {{name.cinema}}, {{team.trio}} with {{name.trio}} — so you get both, with a short highlight and short vertical videos for social media alongside the full-length film. {{name.solo}} (${SOLO}) gets you both on a smaller budget: one shooter with a {{cameras.solo}} camera setup, the full-length film of her day and {{photos.solo}} edited photos. If you only want portraits, the {{name.study}} (${STUDY}) is photos only: a ${HRS_STUDY}-hour session with {{team.study}}.`
-      },
-      {
-        "q": "What areas around Fort Worth do you cover?",
-        "a": "All of Tarrant County and the wider metroplex — Haltom City, North Richland Hills, Saginaw, White Settlement, Benbrook, Crowley, Burleson, Arlington and beyond — with no travel fee. If your church is in Fort Worth and your reception is a few towns over, that is a normal Fort Worth quinceañera day for me. Reserve your date on our booking form."
-      }
+      { "q": "How much does a quinceañera photographer cost in Fort Worth?", "a": "{{name.study}} is {{price.study}} (photos only), {{name.moments}} is {{price.moments}}, {{name.solo}} is {{price.solo}} (photos and video from one shooter), {{name.cinema}} is {{price.cinema}} and {{name.trio}} is {{price.trio}}, our pick for most celebrations. There's no travel fee anywhere in Tarrant County or DFW, so the Fort Worth price is the price. Sign the agreement online, and a {{deposit.percent}} deposit locks the date once it's approved." },
+      { "q": "Can we take quince photos at the Fort Worth Botanic Garden?", "a": "Yes. Quinceañera sessions buy a two-hour photo pass plus admission at the garden. The last pass sells two hours before closing, and no passes are sold during the Japanese festivals or the Día de Muertos procession. Professional photos are not allowed in the Rainforest Conservatory. We check your date and the current rules before we plan it." },
+      { "q": "Where do Fort Worth families hold the reception?", "a": "It depends on the family. Our Tarrant County celebrations have taken us to salones in Fort Worth and Haltom City. Send us your church and your venue, and we plan the timeline so the drive between them works." },
+      { "q": "Can you photograph inside our church during the misa?", "a": "Yes, within your parish's rules. Each parish in the Diocese of Fort Worth sets its own rules for photos during the Mass, such as no flash or staying at the back. We ask the parish office ahead and follow them, so the misa is never interrupted." },
+      { "q": "What areas around Fort Worth do you cover?", "a": "All of Tarrant County and the rest of DFW, with no travel fee: Haltom City, North Richland Hills, Saginaw, White Settlement, Benbrook, Crowley, Burleson, Arlington and more. A church in Fort Worth and a salón a few towns over is a normal day for us." },
     ],
     "faqsEs": [
-      {
-        "q": "¿Cuánto cuesta un fotógrafo de quinceañera en Fort Worth?",
-        "a": `Mis paquetes son de ${STUDY} ({{nameEs.study}}, solo foto), ${SOLO} ({{nameEs.solo}}, foto y video con una sola persona), ${CINEMA} ({{nameEs.cinema}}) y ${TRIO} ({{nameEs.trio}} — el que recomiendo para la mayoría de las celebraciones). No hay cargo por traslado en el condado de Tarrant ni en DFW, así que el precio en Fort Worth es el precio. Puedes ver qué incluye cada uno en nuestra página de Paquetes y precios y luego firmar el contrato en línea y asegurar tu fecha con un depósito del ${RETAINER_PCT} cuando esté aprobado, o escríbenos si prefieres una llamada rápida primero.`
-      },
-      {
-        "q": "¿Cuáles son los mejores lugares para tomar fotos de quinceañera en Fort Worth?",
-        "a": "Algunos favoritos: los Fort Worth Water Gardens en el centro (gratis, concreto y agua de mucho impacto), el Japanese Garden dentro del Botanic Garden (estanques de koi y puentes rojos, con una cuota pequeña de foto), las calles de ladrillo de los Stockyards y Mule Alley, y el verde junto al río en Trinity Park. Dime el estilo que buscas y te acomodo el lugar; lo podemos hacer como tu sesión de retrato antes de la celebración o dentro del mismo día."
-      },
-      {
-        "q": "¿En qué parte de Fort Worth hacen la recepción las familias?",
-        "a": "En todos lados, según la parroquia. Muchas familias del North Side la dejan cerca de North Main; otras reservan salones por la South Freeway cerca de La Gran Plaza, por los corredores del este como East Lancaster, o en los salones tipo granero por los Stockyards. Mándame tu iglesia y tu salón cuando me escribas y armo el itinerario para que el traslado entre los dos funcione."
-      },
-      {
-        "q": "¿Ofreces foto y video para quinceañeras en Fort Worth?",
-        "a": `Sí. {{nameEs.cinema}} y {{nameEs.trio}} traen un equipo —{{teamEs.cinema}} con {{nameEs.cinema}}, {{teamEs.trio}} con {{nameEs.trio}}— para que tengas los dos, con un resumen corto y videos verticales cortos para redes sociales junto con el video completo. {{nameEs.solo}} (${SOLO}) te da las dos cosas con un presupuesto más chico: una sola persona con {{cameras.solo}} cámaras, el video completo de su día y {{photos.solo}} fotos editadas. Si solo quieres retratos, la {{nameEs.study}} (${STUDY}) es solo de fotos: una sesión de ${HRS_STUDY} h con {{teamEs.study}}.`
-      },
-      {
-        "q": "¿Qué zonas alrededor de Fort Worth cubres?",
-        "a": "Todo el condado de Tarrant y el resto del metroplex — Haltom City, North Richland Hills, Saginaw, White Settlement, Benbrook, Crowley, Burleson, Arlington y más — sin cargo por traslado. Si tu iglesia está en Fort Worth y tu recepción queda a unos pueblos de distancia, para mí es un día normal de quinceañera en Fort Worth. Aparta tu fecha en nuestro formulario de reservación."
-      }
-    ]
+      { "q": "¿Cuánto cuesta un fotógrafo de quinceañera en Fort Worth?", "a": "{{nameEs.study}} cuesta {{price.study}} (solo fotos), {{nameEs.moments}} {{price.moments}}, {{nameEs.solo}} {{price.solo}} (foto y video con una sola persona), {{nameEs.cinema}} {{price.cinema}} y {{nameEs.trio}} {{price.trio}}, nuestra recomendación para la mayoría de las celebraciones. No cobramos traslado en el condado de Tarrant ni en DFW, así que el precio en Fort Worth es el precio. Firma el contrato en línea, y un depósito del {{deposit.percent}} asegura la fecha cuando se aprueba." },
+      { "q": "¿Podemos tomar fotos de quince en el Fort Worth Botanic Garden?", "a": "Sí. Las sesiones de quinceañera compran un pase de fotos de dos horas más la entrada del jardín. El último pase se vende dos horas antes de cerrar, y no se venden pases durante los festivales japoneses ni la procesión de Día de Muertos. No se permiten fotos profesionales en el Rainforest Conservatory. Revisamos tu fecha y las reglas vigentes antes de planearlo." },
+      { "q": "¿Dónde hacen la recepción las familias de Fort Worth?", "a": "Depende de la familia. Nuestras celebraciones en el condado de Tarrant nos han llevado a salones en Fort Worth y Haltom City. Mándanos tu iglesia y tu salón, y planeamos el itinerario para que el trayecto funcione." },
+      { "q": "¿Pueden tomar fotos dentro de la iglesia durante la misa?", "a": "Sí, dentro de las reglas de tu parroquia. Cada parroquia de la Diócesis de Fort Worth pone sus propias reglas de fotos en la misa, como no usar flash o quedarse atrás. Preguntamos en la oficina parroquial antes y las seguimos, para que la misa nunca se interrumpa." },
+      { "q": "¿Qué zonas alrededor de Fort Worth cubren?", "a": "Todo el condado de Tarrant y el resto de DFW, sin cargo por traslado: Haltom City, North Richland Hills, Saginaw, White Settlement, Benbrook, Crowley, Burleson, Arlington y más. Una iglesia en Fort Worth y un salón a unos pueblos de distancia es un día normal para nosotros." },
+    ],
   },
   "arlington": {
     "intro": [
