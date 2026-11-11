@@ -45,6 +45,8 @@ When packaging work for reuse, the valuable artifact is the data plus a short ag
 
 I handle account-bound or browser-only steps: API keys, buying a domain, DNS, booting a server, anything that spends money, and anything that messages a real person as me. After those exist, I give you the IP or the path to what you need, and you do the rest I asked for.
 
+When a step needs me to act outside this app (a dashboard, an admin panel, any site where I am signed in), do not give me click-by-click steps. Give me one prompt in a code block to paste into my Claude browser extension. Make it complete: the goal, the exact page, what it must not touch, and what to report back. I paste its report to you. For anything that moves money, deletes, or cannot be undone, the prompt tells the extension to stop and show me before the final click.
+
 If something in the workflow annoys me, build the smallest working fix now. Do not write a proposal first.
 
 ## Check your work
