@@ -14,12 +14,11 @@
  *     Pinterest allowed so its "Save" picker can preview the pin image)
  *   · immutable edge cache (slugs are permanent)
  *
- * `hero` is a reserved slug serving the admin-set homepage hero.
  * Without the IMAGES binding (local `next dev`), proxies the original so
  * development still renders — protection applies on Cloudflare.
  */
 import { NextResponse } from "next/server";
-import { getImageBySlug, getSlugForOldSlug, getHeroRawImageUrl, getCoverRawImageUrl, storageUrl } from "@/lib/content-db";
+import { getImageBySlug, getSlugForOldSlug, getCoverRawImageUrl, storageUrl } from "@/lib/content-db";
 import { getPortfolioBucket, storageKeyFromUrl } from "@/lib/r2-portfolio";
 import { FULL_MAX_WIDTH, OPEN_MAX_WIDTH, imageTransformForWidth, maxWidthForReferer } from "@/lib/image-derivative";
 import { site } from "@/content/site";
@@ -65,7 +64,7 @@ function hotlinked(req: Request): boolean {
 }
 
 const CACHE = "public, max-age=31536000, immutable";
-// `hero` is the one mutable slug (admin can swap it) — short cache, no immutable.
+// `cover-<slot>` is mutable (admin can swap it) — short cache, no immutable.
 const HERO_CACHE = "public, max-age=3600";
 
 function pickWidth(request: Request): number {
@@ -144,18 +143,16 @@ async function serve(
       headers: { location: `${to.pathname}${to.search}`, "cache-control": "no-store", vary: "Referer", "x-img": `capped:w${allowed}` },
     });
   }
-  // `hero` and `cover-<slot>` are the mutable slugs (admin can swap them) — short
-  // cache, never immutable. Permanent portfolio slugs stay year-long immutable.
+  // `cover-<slot>` is the mutable slug (admin can swap it) — short cache, never
+  // immutable. Permanent portfolio slugs stay year-long immutable.
   const isCover = slug.startsWith("cover-");
-  const cacheHeader = slug === "hero" || isCover ? HERO_CACHE : CACHE;
+  const cacheHeader = isCover ? HERO_CACHE : CACHE;
 
   // Resolve the internal source (never revealed to the client).
   let sourceUrl: string | null = null;
   // Natural size, when known: sizes the signature to the file actually sent.
   let natural: { width?: number | null; height?: number | null } | null = null;
-  if (slug === "hero") {
-    sourceUrl = await getHeroRawImageUrl();
-  } else if (slug.startsWith("album-")) {
+  if (slug.startsWith("album-")) {
     // Curated 12img albums (src/content/albums.ts): originals live in the same
     // private bucket under albums/, resolved by the registry, never by the URL.
     const key = albumObjectKey(slug);

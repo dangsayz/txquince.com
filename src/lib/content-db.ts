@@ -5,9 +5,7 @@ import type { VideoProvider } from "@/lib/video";
 import type { BlogBlock } from "@/content/blog";
 import { getVenue, venueSlugify } from "@/content/venues";
 import { getBlogPhoto } from "@/content/blog-photos";
-import { resolveHeroFocus } from "@/lib/hero-focus";
 import { IMAGE_PIPELINE_EPOCH } from "@/lib/image-derivative";
-import { heroImageSource, HeroStoredSchema } from "@/lib/hero-cover";
 
 /**
  * INTERNAL storage URL — only ever fetched server-side (by /api/img). Raw
@@ -396,79 +394,6 @@ export async function getImagesByCity(citySlug: string, limit = 6): Promise<Port
     .filter((i) => (i.city ?? "").trim().toLowerCase() === target)
     .slice(0, limit);
 }
-
-/** Raw hero image source — server-only, consumed by /api/img/hero. */
-export async function getHeroRawImageUrl(): Promise<string | null> {
-  if (!isDbConfigured()) return null;
-  try {
-    const db = getDb();
-    const { data } = await db
-      .from("site_settings")
-      .select("value")
-      .eq("key", "hero_media")
-      .maybeSingle();
-    const parsed = HeroStoredSchema.safeParse(data?.value);
-    if (!parsed.success) return null;
-    const source = heroImageSource(parsed.data);
-    if (!source) return null;
-    return parsed.data.storage_path ? storageUrl(source) : source;
-  } catch {
-    return null;
-  }
-}
-
-export type HeroMedia = {
-  kind: "image" | "video";
-  imageUrl: string | null;
-  imageAlt: string;
-  videoUrl: string | null;
-  provider: VideoProvider | null;
-  videoId: string | null;
-  posterUrl: string | null;
-  focusX: number;
-  focusY: number;
-  updatedAt: string;
-};
-
-export function heroMediaFromSetting(value: unknown, updatedAt: string): HeroMedia | null {
-  const parsed = HeroStoredSchema.safeParse(value);
-  if (!parsed.success) return null;
-  const v = parsed.data;
-  const source = heroImageSource(v);
-  if (v.kind === "image" && !source) return null;
-  if (v.kind === "video" && !v.videoUrl) return null;
-  return {
-    kind: v.kind,
-    imageUrl: v.kind === "image" && source ? imageServeUrl("hero", source) : null,
-    imageAlt: v.imageAlt || "Quinceañera portrait",
-    videoUrl: v.videoUrl ?? null,
-    provider: v.provider ?? null,
-    videoId: v.videoId ?? null,
-    posterUrl: v.posterUrl ?? null,
-    ...resolveHeroFocus(v),
-    updatedAt,
-  };
-}
-
-/**
- * The hero showcase media set in /admin/hero — a photo or a video link
- * (YouTube/Vimeo/MP4). Null means "fall back to the top featured photo."
- */
-export const getHeroMedia = cache(async (): Promise<HeroMedia | null> => {
-  if (!isDbConfigured()) return null;
-  try {
-    const db = getDb();
-    const { data, error } = await db
-      .from("site_settings")
-      .select("value, updated_at")
-      .eq("key", "hero_media")
-      .maybeSingle();
-    if (error || !data?.value) return null;
-    return heroMediaFromSetting(data.value, data.updated_at as string);
-  } catch {
-    return null;
-  }
-});
 
 /**
  * Pages that support an operator-chosen hero (each leads with a full-bleed

@@ -126,48 +126,163 @@ export function parsePickedRequest(message: string | null | undefined): PickedRe
   return r.packageName ? r : null;
 }
 
-/** "a, b and c" */
-function list(items: string[]): string {
+/** "a, b and c" (or "a, b y c"). */
+function list(items: string[], and = "and"): string {
   if (items.length <= 1) return items[0] ?? "";
-  return `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
+  return `${items.slice(0, -1).join(", ")} ${and} ${items[items.length - 1]}`;
 }
 
 export type ScriptStep = { topic: string; say: string };
+export type ScriptLang = "en" | "es";
+
+/** Words the script uses, per language. Only the owner's own phrasing: no facts. */
+const WORDS = {
+  en: {
+    open: (name: string) => `So ${name}, let me make sure I have this right.`,
+    close: "Did I get all of that right?",
+    day: "The day",
+    start: "Start time",
+    pkg: "The package",
+    extras: "Extras",
+    coordinator: "Coordinator",
+    price: "The price",
+    note: "Your note",
+    photos: "Photos",
+    whose: (h: string | null) => (h ? `${h}'s quinceañera` : "The quinceañera"),
+    on: (d: string) => `on ${d}`,
+    inCity: (c: string) => `in ${c}`,
+    atVenue: (v: string) => `at ${v}`,
+    is: "is",
+    startAt: (t: string) => `We start at ${t}.`,
+    picked: (p: string) => `You picked ${p}`,
+    withTeam: (t: string) => `, with ${t.replace(" + ", " and ")}`,
+    forHours: (h: string) => `, for ${h} ${h === "1" ? "hour" : "hours"}`,
+    added: (x: string) => `You added ${x}.`,
+    extraFor: (n: string, p: string) => `${n} for ${p}`,
+    and: "and",
+    coordinatorIncluded: "A day-of coordinator is included.",
+    total: (t: string) => `The total is ${t}.`,
+    deposit: (d: string, pct: string | null) => ` The deposit is ${d}${pct ? `, that is ${pct}%` : ""}.`,
+    balance: (b: string) => ` The balance is ${b}.`,
+    told: (n: string) => `You told us: “${n}”`,
+    shareYes: "You are okay with us sharing some photos publicly.",
+    shareNo: "You do not want us to share photos publicly.",
+  },
+  es: {
+    open: (name: string) => `Entonces ${name}, déjeme confirmar que tengo todo bien.`,
+    close: "¿Tengo todo bien?",
+    day: "El día",
+    start: "Hora de inicio",
+    pkg: "El paquete",
+    extras: "Extras",
+    coordinator: "Coordinadora",
+    price: "El precio",
+    note: "Su nota",
+    photos: "Fotos",
+    whose: (h: string | null) => (h ? `Los quince de ${h} son` : "Los quince son"),
+    on: (d: string) => `el ${d}`,
+    inCity: (c: string) => `en ${c}`,
+    atVenue: (v: string) => `en ${v}`,
+    is: "",
+    startAt: (t: string) => `Empezamos a las ${t}.`,
+    picked: (p: string) => `Eligió ${p}`,
+    withTeam: (t: string) =>
+      `, con ${t
+        .replace(/(\d+) photographers?/, (_, n: string) => `${n} ${n === "1" ? "fotógrafo" : "fotógrafos"}`)
+        .replace(/(\d+) videographers?/, (_, n: string) => `${n} ${n === "1" ? "videógrafo" : "videógrafos"}`)
+        .replace(" + ", " y ")}`,
+    forHours: (h: string) => `, por ${h} ${h === "1" ? "hora" : "horas"}`,
+    added: (x: string) => `Agregó ${x}.`,
+    extraFor: (n: string, p: string) => `${n} por ${p}`,
+    and: "y",
+    coordinatorIncluded: "Incluye una coordinadora para el día.",
+    total: (t: string) => `El total es ${t}.`,
+    deposit: (d: string, pct: string | null) => ` El depósito es ${d}${pct ? `, o sea el ${pct}%` : ""}.`,
+    balance: (b: string) => ` El resto es ${b}.`,
+    told: (n: string) => `Nos dijo: “${n}”`,
+    shareYes: "Está de acuerdo con que compartamos algunas fotos en público.",
+    shareNo: "Prefiere que no compartamos fotos en público.",
+  },
+} as const;
+
+/** The opening and closing lines of the call, in the family's language. */
+export function scriptBookends(lang: ScriptLang, name: string): { open: string; close: string } {
+  return { open: WORDS[lang].open(name), close: WORDS[lang].close };
+}
+
+/** "Español" on the request means the call goes in Spanish. */
+export const scriptLangFor = (r: PickedRequest): ScriptLang => (r.language === "Español" ? "es" : "en");
 
 /**
  * The request said back to the family, one point at a time, in the order a
  * call goes: the day, the package, extras, the money, their note, photo sharing.
- * `eventLabel` is the formatted date ("Saturday, January 23, 2027") when known.
+ * `eventLabel` is the formatted date in the script's language, when known.
+ * Package and extra names stay as the family saw them on the site.
  */
-export function callScript(r: PickedRequest, eventLabel: string | null): ScriptStep[] {
+export function callScript(r: PickedRequest, eventLabel: string | null, lang: ScriptLang = "en"): ScriptStep[] {
+  const w = WORDS[lang];
   const steps: ScriptStep[] = [];
 
-  const where = [r.city ? `in ${r.city}` : "", r.venue ? `at ${r.venue}` : ""].filter(Boolean).join(", ");
-  const whose = r.honoree ? `${r.honoree}'s quinceañera` : "The quinceañera";
+  const where = [r.city ? w.inCity(r.city) : "", r.venue ? w.atVenue(r.venue) : ""].filter(Boolean).join(", ");
   if (eventLabel || where) {
-    steps.push({ topic: "The day", say: `${whose} is ${[eventLabel ? `on ${eventLabel}` : "", where].filter(Boolean).join(", ")}.` });
+    const when = [eventLabel ? w.on(eventLabel) : "", where].filter(Boolean).join(", ");
+    steps.push({ topic: w.day, say: `${[w.whose(r.honoree), w.is, when].filter(Boolean).join(" ")}.` });
   }
-  if (r.startTime) steps.push({ topic: "Start time", say: `We start at ${r.startTime}.` });
+  if (r.startTime) steps.push({ topic: w.start, say: w.startAt(r.startTime) });
 
-  const withTeam = r.team ? `, with ${r.team.replace(" + ", " and ")}` : "";
-  const forHours = r.hours ? `, for ${r.hours} ${r.hours === "1" ? "hour" : "hours"}` : "";
-  steps.push({ topic: "The package", say: `You picked ${r.packageName}${withTeam}${forHours}.` });
+  steps.push({ topic: w.pkg, say: `${w.picked(r.packageName)}${r.team ? w.withTeam(r.team) : ""}${r.hours ? w.forHours(r.hours) : ""}.` });
 
-  const extras = r.extras.map((e) => (e.price ? `${e.name} for ${e.price}` : e.name));
-  if (extras.length) steps.push({ topic: "Extras", say: `You added ${list(extras)}.` });
-  if (r.coordinatorIncluded) steps.push({ topic: "Coordinator", say: "A day-of coordinator is included." });
+  const extras = r.extras.map((e) => (e.price ? w.extraFor(e.name, e.price) : e.name));
+  if (extras.length) steps.push({ topic: w.extras, say: w.added(list(extras, w.and)) });
+  if (r.coordinatorIncluded) steps.push({ topic: w.coordinator, say: w.coordinatorIncluded });
 
   if (r.total) {
-    const deposit = r.deposit ? ` The deposit is ${r.deposit}${r.depositPercent ? `, that is ${r.depositPercent}%` : ""}.` : "";
-    const balance = r.balance ? ` The balance is ${r.balance}.` : "";
-    steps.push({ topic: "The price", say: `The total is ${r.total}.${deposit}${balance}` });
+    steps.push({ topic: w.price, say: `${w.total(r.total)}${r.deposit ? w.deposit(r.deposit, r.depositPercent) : ""}${r.balance ? w.balance(r.balance) : ""}` });
   }
-  if (r.note) steps.push({ topic: "Your note", say: `You told us: “${r.note.replace(/\s*\n\s*/g, " ")}”` });
-  if (r.sharePhotos !== null) {
-    steps.push({
-      topic: "Photos",
-      say: r.sharePhotos ? "You are okay with us sharing some photos publicly." : "You do not want us to share photos publicly.",
-    });
-  }
+  if (r.note) steps.push({ topic: w.note, say: w.told(r.note.replace(/\s*\n\s*/g, " ")) });
+  if (r.sharePhotos !== null) steps.push({ topic: w.photos, say: r.sharePhotos ? w.shareYes : w.shareNo });
   return steps;
+}
+
+/** Minutes after midnight for "4:47 PM", "1", "6pm", "10:30 p.m.". `pm` guesses afternoon for a bare hour. */
+function minutes(h: string, m: string | undefined, ampm: string | undefined, pmGuess: boolean): number {
+  let hour = Number(h) % 12;
+  const isPm = ampm ? /^p/i.test(ampm) : pmGuess;
+  if (isPm) hour += 12;
+  return hour * 60 + (m ? Number(m) : 0);
+}
+
+const clock = (mins: number) => {
+  const h = Math.floor(mins / 60), m = mins % 60;
+  return `${h % 12 || 12}${m ? `:${String(m).padStart(2, "0")}` : ""} ${h >= 12 ? "PM" : "AM"}`;
+};
+
+/**
+ * A warning when the family's note names times and the start time is not one
+ * of them (the form's start time vs "church at 1 then event at 6"). Null when
+ * they agree or the note names no time. Only compares what they wrote.
+ */
+export function startTimeCheck(r: PickedRequest, lang: ScriptLang = "en"): string | null {
+  if (!r.startTime || !r.note) return null;
+  const start = /^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)$/i.exec(r.startTime.trim());
+  if (!start) return null;
+  const startMins = minutes(start[1], start[2], start[3], false);
+  // A time in the note: "at 1", "a la 1", "1pm", "6:30", "6 - 10pm", "de 6 a 10" (both ends of a range).
+  const found: number[] = [];
+  const re = /(?:\bat\s+|\ba las?\s+|\b)(\d{1,2})(?::(\d{2}))?\s*(a\.?m\.?|p\.?m\.?)?(?=\b|\s|$)/gi;
+  for (const m of r.note.matchAll(re)) {
+    const hasAt = /^(at|a las?)\s/i.test(m[0].trim());
+    const n = Number(m[1]);
+    if (n < 1 || n > 12) continue;
+    // A bare number only counts when it reads as a time ("at 1", "1pm", "6:30", "6 - 10pm").
+    const rangeStart = /^\s*(?:[-–]|a)\s*\d/.test(r.note.slice((m.index ?? 0) + m[0].length));
+    if (!m[2] && !m[3] && !hasAt && !rangeStart) continue;
+    // Quince days run late morning to night: a bare 1 to 11 is afternoon or evening.
+    found.push(minutes(m[1], m[2], m[3], n < 12 && n >= 1));
+  }
+  if (!found.length || found.includes(startMins)) return null;
+  const listed = list([...new Set(found)].sort((a, b) => a - b).map(clock), lang === "es" ? "y" : "and");
+  return lang === "es"
+    ? `La hora de inicio dice ${r.startTime}, pero su nota menciona ${listed}. Pregunte a qué hora empezamos.`
+    : `The start time says ${r.startTime}, but their note mentions ${listed}. Ask which time we start.`;
 }

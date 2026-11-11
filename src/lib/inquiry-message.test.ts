@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { callScript, parsePickedRequest } from "./inquiry-message";
+import { callScript, parsePickedRequest, scriptBookends, scriptLangFor, startTimeCheck } from "./inquiry-message";
 
 const MESSAGE = [
   "Sent from the package picker. Nothing was booked or charged.",
@@ -99,5 +99,51 @@ describe("callScript", () => {
   it("skips what the request does not say", () => {
     const steps = callScript(parsePickedRequest("Package: Portrait Session — $450 (1 hrs included)\nHours on the day: 1")!, null);
     expect(steps).toEqual([{ topic: "The package", say: "You picked Portrait Session, for 1 hour." }]);
+  });
+});
+
+describe("startTimeCheck", () => {
+  const withNote = (startTime: string | null, note: string | null) => ({ ...parsePickedRequest(MESSAGE)!, startTime, note });
+
+  it("flags a start time the note does not mention", () => {
+    expect(startTimeCheck(withNote("4:47 PM", "church at 1 then event at 6 - 10pm"))).toBe(
+      "The start time says 4:47 PM, but their note mentions 1 PM, 6 PM and 10 PM. Ask which time we start.",
+    );
+  });
+
+  it("stays quiet when they agree, or the note names no time", () => {
+    expect(startTimeCheck(withNote("4:30 PM", "Mass at 4:30 then the party"))).toBeNull();
+    expect(startTimeCheck(withNote("1:00 PM", "church at 1 then event at 6"))).toBeNull();
+    expect(startTimeCheck(withNote("6:00 PM", "We love pink. 3 kids in the court, 14 chambelanes."))).toBeNull();
+    expect(startTimeCheck(withNote(null, "church at 1"))).toBeNull();
+    expect(startTimeCheck(withNote("4:47 PM", null))).toBeNull();
+  });
+
+  it("reads Spanish notes and says it in Spanish", () => {
+    expect(startTimeCheck(withNote("4:47 PM", "misa a la 1 y fiesta de 6 a 10pm"))).toBe(
+      "The start time says 4:47 PM, but their note mentions 1 PM, 6 PM and 10 PM. Ask which time we start.",
+    );
+    expect(startTimeCheck(withNote("6:00 PM", "de 3 damas y 14 chambelanes"))).toBeNull();
+    expect(startTimeCheck(withNote("2:00 PM", "misa a las 3 y fiesta a las 7"), "es")).toBe(
+      "La hora de inicio dice 2:00 PM, pero su nota menciona 3 PM y 7 PM. Pregunte a qué hora empezamos.",
+    );
+  });
+});
+
+describe("Spanish call script", () => {
+  it("says the same facts in Spanish, keeping package names as the site shows them", () => {
+    const r = { ...parsePickedRequest(MESSAGE)!, language: "Español" };
+    expect(scriptLangFor(r)).toBe("es");
+    expect(callScript(r, "sábado, 23 de enero de 2027", "es").map((s) => s.say)).toEqual([
+      "Los quince de goya son el sábado, 23 de enero de 2027, en Houston, en test.",
+      "Empezamos a las 4:47 PM.",
+      "Eligió The Trio, con 2 fotógrafos y 1 videógrafo, por 7 horas.",
+      "Agregó Day-of Coordinator (per day) por $500.",
+      "El total es $3,300. El depósito es $825, o sea el 25%. El resto es $2,475.",
+      "Nos dijo: “church at 1 then event at 6 - 10pm”",
+      "Está de acuerdo con que compartamos algunas fotos en público.",
+    ]);
+    expect(scriptBookends("es", "Ana")).toEqual({ open: "Entonces Ana, déjeme confirmar que tengo todo bien.", close: "¿Tengo todo bien?" });
+    expect(scriptLangFor(parsePickedRequest(MESSAGE)!)).toBe("en");
   });
 });

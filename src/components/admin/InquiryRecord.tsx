@@ -6,7 +6,7 @@ import { InquiryActions } from "@/components/InquiryActions";
 import { InquiryActivityPanel } from "@/components/admin/InquiryActivityPanel";
 import { countdownLabel, dallasDateTime, daysUntil, formatPhone, hoursSince, phoneDigits, waitLabel } from "@/lib/inquiry-time";
 import { venues } from "@/content/venues";
-import { callScript, parsePickedRequest } from "@/lib/inquiry-message";
+import { callScript, parsePickedRequest, scriptBookends, scriptLangFor, startTimeCheck } from "@/lib/inquiry-message";
 
 /**
  * InquiryRecord — one family's inquiry, laid out for the owner on a phone
@@ -124,7 +124,14 @@ export function InquiryRecord({
 
   // A package-picker request reads as fields and as a call script; a typed message stays as written.
   const picked = parsePickedRequest(inquiry.message);
-  const script = picked ? callScript(picked, eventLabel) : [];
+  // The script goes in the family's language; package names stay as the site shows them.
+  const scriptLang = picked ? scriptLangFor(picked) : "en";
+  const eventLabelEs = inquiry.event_date
+    ? new Date(`${inquiry.event_date.slice(0, 10)}T12:00:00Z`).toLocaleDateString("es-MX", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })
+    : null;
+  const script = picked ? callScript(picked, scriptLang === "es" ? eventLabelEs : eventLabel, scriptLang) : [];
+  const bookends = scriptBookends(scriptLang, name);
+  const timeCheck = picked ? startTimeCheck(picked) : null;
   const requestRows = picked
     ? ([
         ["Hours on the day", picked.hours],
@@ -248,20 +255,28 @@ export function InquiryRecord({
           {/* Right: the same request, said back to them on a call, one point at a time. */}
           <section aria-labelledby="script-title" className="st-card bg-[var(--tq-canvas)] px-5 py-6 sm:px-7 sm:py-7">
             <h2 id="script-title" className="st-h2">Say it back</h2>
-            <p className="st-note mt-2">For the phone call. Read each line, then wait for a yes.</p>
-            <p className="m-0 mt-6 text-[1.375rem] font-medium leading-snug">“So {name}, let me make sure I have this right.”</p>
-            <ol className="m-0 mt-5 grid list-none gap-3 p-0">
+            <p className="st-note mt-2">
+              {scriptLang === "es" ? "For the phone call, in Spanish: they picked Español. Read each line, then wait for a yes." : "For the phone call. Read each line, then wait for a yes."}
+            </p>
+            {timeCheck ? (
+              <p role="note" className="m-0 mt-4 rounded-[var(--tq-radius-sm)] border border-[var(--tq-ink)] bg-white px-4 py-3 text-base leading-6">
+                <span className="font-medium">Check on the call: </span>
+                {timeCheck}
+              </p>
+            ) : null}
+            <p lang={scriptLang} className="m-0 mt-6 text-[1.375rem] font-medium leading-snug">“{bookends.open}”</p>
+            <ol lang={scriptLang} className="m-0 mt-5 grid list-none gap-3 p-0">
               {script.map((step, i) => (
                 <li key={step.topic} className="grid grid-cols-[1.75rem_minmax(0,1fr)] gap-x-3 rounded-[var(--tq-radius-sm)] bg-white px-4 py-4">
                   <span aria-hidden="true" className="pt-0.5 text-[13px] tabular-nums leading-6 text-[var(--tq-ink-mute)]">{String(i + 1).padStart(2, "0")}</span>
                   <div className="min-w-0">
                     <p className={eyebrow}>{step.topic}</p>
-                    <p className="m-0 mt-1 break-words text-lg leading-7">{step.say.startsWith("You told us") ? step.say : `“${step.say}”`}</p>
+                    <p className="m-0 mt-1 break-words text-lg leading-7">{/^(You told us|Nos dijo)/.test(step.say) ? step.say : `“${step.say}”`}</p>
                   </div>
                 </li>
               ))}
             </ol>
-            <p className="m-0 mt-5 text-[1.375rem] font-medium leading-snug">“Did I get all of that right?”</p>
+            <p lang={scriptLang} className="m-0 mt-5 text-[1.375rem] font-medium leading-snug">“{bookends.close}”</p>
           </section>
         </div>
       ) : inquiry.message ? (
