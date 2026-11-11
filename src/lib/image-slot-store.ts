@@ -8,7 +8,7 @@
  * reads as "no override" and the page renders its normal photo.
  *
  * Writes are read-modify-write with optimistic concurrency on `updated_at`,
- * the same contract as /api/admin/hero, so two saves at once never lose one.
+ * optimistic concurrency (expected updated_at), so two saves at once never lose one.
  */
 import "server-only";
 import { cache } from "react";
