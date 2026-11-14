@@ -109,7 +109,7 @@ const post: BlogPost = {
     { type: "h2", text: "Más salones para quinceañeras en Irving" },
     {
       type: "p",
-      text: "¿Está comparando salones en Irving? Vea una [quinceañera rosa y dorado en Convention Plaza Ballroom](/es/blog/quinceanera-rosa-y-dorado-convention-plaza-ballroom-irving) y la [guía de salones para quinceañeras en DFW](/es/blog/salones-para-quinceaneras-dfw). Después junte todos los números con [cuánto cuesta una quinceañera en Texas](/es/blog/cuanto-cuesta-una-quinceanera-presupuesto-texas).",
+      text: "¿Está comparando salones en Irving? Vea una [quinceañera rosa y dorado en Convention Plaza Ballroom](/es/blog/quinceanera-rosa-y-dorado-convention-plaza-ballroom-irving), nuestra página de [fotografía de quinceañeras en Irving](/es/fotografo-de-quinceaneras/irving) y la [guía de salones para quinceañeras en DFW](/es/blog/salones-para-quinceaneras-dfw). Después junte todos los números con [cuánto cuesta una quinceañera en Texas](/es/blog/cuanto-cuesta-una-quinceanera-presupuesto-texas).",
     },
     {
       type: "cta",

@@ -107,7 +107,7 @@ const post: BlogPost = {
     { type: "h2", text: "More Irving quinceañera venues" },
     {
       type: "p",
-      text: "Comparing halls in Irving? See a full [pink and gold quinceañera at Convention Plaza Ballroom](/blog/pink-and-gold-quinceanera-convention-plaza-ballroom-irving), our [Irving quinceañera photography](/irving) page, and the [DFW reception venue guide](/blog/quinceanera-reception-venues-dfw). Then put the full numbers together with the [quinceañera budget breakdown for Texas](/blog/quinceanera-budget-breakdown-texas).",
+      text: "Comparing halls in Irving? See a full [pink and gold quinceañera at Convention Plaza Ballroom](/blog/pink-and-gold-quinceanera-convention-plaza-ballroom-irving), our [Irving quinceañera photography](/quinceanera-photographer/irving) page, and the [DFW reception venue guide](/blog/quinceanera-reception-venues-dfw). Then put the full numbers together with the [quinceañera budget breakdown for Texas](/blog/quinceanera-budget-breakdown-texas).",
     },
     {
       type: "cta",
