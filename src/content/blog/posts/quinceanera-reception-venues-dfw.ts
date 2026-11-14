@@ -72,7 +72,7 @@ const post: BlogPost = {
       type: "ul",
       items: [
         "DFW Celebrations — about 75–400 guests. A large, flexible event space.",
-        "The Oasis Ballroom — a popular quinceañera salón; confirm current capacity when you tour.",
+        "[The Oasis Ballroom](/blog/quinceanera-at-the-oasis-ballroom-irving) — three ballrooms in Irving, from 80 to 400 seated, per its listings.",
         "Luxor Banquet Hall — roughly 50–250 guests. A dependable mid-size choice.",
         "Dallas Palms — a well-known banquet venue in the corridor with multiple room configurations.",
       ],

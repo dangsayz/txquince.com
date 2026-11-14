@@ -135,6 +135,7 @@ import ansPadrinos from "./blog/posts/quinceanera-padrinos-list";
 import ansWhatToWear from "./blog/posts/what-to-wear-to-a-quinceanera";
 import ansVsSweet16 from "./blog/posts/quinceanera-vs-sweet-16";
 import evPlazaPinkGold from "./blog/posts/pink-and-gold-quinceanera-convention-plaza-ballroom-irving";
+import oasisBallroom from "./blog/posts/quinceanera-at-the-oasis-ballroom-irving";
 // Third batch (Nov 10, 2026): planning, songs, traditions and photo guides.
 import b3p00 from "./blog/posts/quinceanera-hairstyles";
 import b3p01 from "./blog/posts/quinceanera-makeup";
@@ -196,6 +197,7 @@ export const posts: BlogPost[] = [
   b3p23,
   b3p24,
   evPlazaPinkGold,
+  oasisBallroom,
   ansHowMany,
   ansWhoPays,
   ansGifts,
@@ -361,6 +363,7 @@ import esb3p22 from "./blog/posts/es/quinceanera-con-poco-presupuesto";
 import esb3p23 from "./blog/posts/es/tradiciones-de-quinceanera";
 import esb3p24 from "./blog/posts/es/como-compartir-las-fotos-de-la-quinceanera";
 import esEvPlazaPinkGold from "./blog/posts/es/quinceanera-rosa-y-dorado-convention-plaza-ballroom-irving";
+import esOasisBallroom from "./blog/posts/es/quinceanera-en-the-oasis-ballroom-irving";
 import esAnsHowMany from "./blog/posts/es/cuantas-damas-y-chambelanes";
 import esAnsWhoPays from "./blog/posts/es/quien-paga-la-quinceanera";
 import esAnsGifts from "./blog/posts/es/que-regalar-en-una-quinceanera";
@@ -395,6 +398,7 @@ export const esPosts: BlogPost[] = [
   esb3p23,
   esb3p24,
   esEvPlazaPinkGold,
+  esOasisBallroom,
   esAnsHowMany,
   esAnsWhoPays,
   esAnsGifts,
@@ -510,6 +514,7 @@ const EN_ES_PAIRS: { en: string; es: string }[] = [
   { en: "quinceanera-traditions-list", es: "tradiciones-de-quinceanera" },
   { en: "how-to-share-quinceanera-photos", es: "como-compartir-las-fotos-de-la-quinceanera" },
   { en: "pink-and-gold-quinceanera-convention-plaza-ballroom-irving", es: "quinceanera-rosa-y-dorado-convention-plaza-ballroom-irving" },
+  { en: "quinceanera-at-the-oasis-ballroom-irving", es: "quinceanera-en-the-oasis-ballroom-irving" },
   { en: "how-many-damas-and-chambelanes", es: "cuantas-damas-y-chambelanes" },
   { en: "who-pays-for-a-quinceanera", es: "quien-paga-la-quinceanera" },
   { en: "quinceanera-gift-ideas", es: "que-regalar-en-una-quinceanera" },

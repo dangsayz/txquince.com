@@ -88,6 +88,13 @@ export const BLOG_PHOTOS: Record<string, BlogPhoto> = {
     height: 2400,
     alt: "Quinceañera last doll: a white teddy bear in a pink gown with rose-gold embroidery and a small crown, between jeweled keepsake pillows on a rose-gold table, DFW reception",
   },
+  // The Oasis Ballroom, Irving: the front entrance at dusk (owner photo, Nov 14, 2026).
+  "oasis-ballroom-irving-entrance-sign-dusk": {
+    src: `${dir}/oasis-ballroom-irving-entrance-sign-dusk.webp`,
+    width: 1600,
+    height: 1200,
+    alt: "The lit sign of The Oasis Ballroom over its glass front doors at Suite 200, between two arched brick towers with wall lanterns, under a blue dusk sky on West Airport Freeway in Irving",
+  },
 };
 
 export function getBlogPhoto(slug: string): BlogPhoto | undefined {

@@ -69,7 +69,7 @@ const post: BlogPost = {
       type: "ul",
       items: [
         "DFW Celebrations — alrededor de 75 a 400 invitados. Un espacio amplio y flexible para eventos.",
-        "The Oasis Ballroom — un salón muy pedido para quinceañeras; confirme la capacidad vigente cuando lo visite.",
+        "[The Oasis Ballroom](/es/blog/quinceanera-en-the-oasis-ballroom-irving) — tres salones en Irving, de 80 a 400 invitados sentados, según sus anuncios.",
         "Luxor Banquet Hall — más o menos de 50 a 250 invitados. Una opción mediana confiable.",
         "Dallas Palms — un salón muy conocido del corredor, con varias configuraciones de salón.",
       ],
