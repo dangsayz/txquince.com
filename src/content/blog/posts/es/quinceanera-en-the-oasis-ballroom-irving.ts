@@ -53,6 +53,7 @@ const post: BlogPost = {
         "En línea: theoasisballroom.com y @theoasisballroom en Instagram",
       ],
     },
+    { type: "image", slug: "oasis-ballroom-irving-dinner-tables-ceiling-draping", alt: "Vista amplia de un salón de The Oasis Ballroom durante la cena: invitados en mesas redondas con manteles blancos adamascados, servilletas rojas y sillas doradas con bandas rojas, tela blanca en el techo, un candelabro de cristal, luces rojas en la pared y una mesa principal con arco al fondo", caption: "Una quinceañera durante la cena: tela en el techo, un candelabro de cristal y la mesa principal al fondo." },
     { type: "h2", text: "Qué salón le queda a su lista de invitados" },
     {
       type: "p",
@@ -70,6 +71,7 @@ const post: BlogPost = {
       type: "p",
       text: "Pida a la coordinadora el plano del salón con su número real de invitados y la pista de baile puesta. Si está cerca del máximo de un salón, vea el siguiente más grande. Reservar un salón donde apenas cabe su lista es el arrepentimiento más común que escuchamos.",
     },
+    { type: "image", slug: "oasis-ballroom-irving-dance-floor-chandelier-stage", alt: "Pista de baile de madera oscura vacía en The Oasis Ballroom bajo un candelabro de cristal en un marco octagonal con tela blanca, frente a un escenario de DJ con cortina negra, pantalla, bocinas, columnas de globos rojos y dorados, banners con retratos y letras gigantes iluminadas", caption: "La pista de baile queda frente al escenario del DJ. Pregunte dónde queda con sus mesas puestas: aquí pasan el vals y el baile sorpresa." },
     { type: "h2", text: "Cuánto cuesta una quinceañera en The Oasis Ballroom" },
     {
       type: "p",
@@ -93,6 +95,15 @@ const post: BlogPost = {
         "Pongan los momentos grandes dentro de las horas de cobertura. Entrada, vals, coronación, brindis, baile sorpresa: armen el programa con la coordinadora y su fotógrafo juntos, para que nada pase cuando las cámaras ya se fueron.",
       ],
     },
+    { type: "image", slug: "oasis-ballroom-irving-ceiling-draping-dance-floor-wide", alt: "Vista hacia arriba de la tela blanca en el techo de The Oasis Ballroom, recogida en un candelabro de cristal sobre la pista, con mesas, luces rojas en la pared y el escenario del DJ iluminado al fondo", caption: "Tela blanca sobre la pista, recogida en un candelabro de cristal. Las fotos amplias del salón necesitan un poco más de luz, así que planeen una antes de que empiece el baile." },
+    { type: "image", slug: "oasis-ballroom-irving-red-gold-table-candles", alt: "Mesa redonda en The Oasis Ballroom con mantel blanco adamascado, camino de lentejuelas doradas, olán de satín rojo, charola de espejo, velas blancas en candeleros dorados y rosas rojas en floreros de vidrio, con sillas doradas con bandas rojas, cortinas blancas en el techo y luces rojas en la pared", caption: "Decorado en rojo y dorado. Las luces rojas de la pared dan ambiente en persona, pero en cámara tiñen la piel; pidan luz más suave para el vals y el pastel." },
+    { type: "p", text: "Fotografíen primero los detalles. El pastel, la mesa de postres y los centros de mesa se ven mejor antes de que lleguen los invitados, y cuentan el tema mejor que cualquier foto amplia. Vea más [ideas de fotos de quinceañera](/es/blog/ideas-de-fotos-de-quinceanera-dfw)." },
+    { type: "image", slug: "oasis-ballroom-irving-quinceanera-cake-mis-quince-anos", alt: "Pastel blanco de quinceañera de cuatro pisos con bandas doradas, cascada de rosas rojas, un 15 y una corona en una base dorada, frente a un fondo blanco y de lentejuelas plateadas bajo una guirnalda de flores y un letrero de neón Mis Quince Años en The Oasis Ballroom", caption: "El pastel frente al fondo de lentejuelas y el letrero de neón, fotografiado antes de que empiece la fiesta." },
+    { type: "image", slug: "oasis-ballroom-irving-red-gold-dessert-table", alt: "Mesa de postres roja y dorada en The Oasis Ballroom: cupcakes con rosas rojas de betún en bases doradas, mini pasteles de queso con frutos rojos y adornos de 15, galletas decoradas y dulces cubiertos de chocolate en charolas doradas", caption: "Una mesa de postres en el mismo rojo y dorado del salón." },
+    // Photo slot. Renders nothing until the album "oasis-ballroom-irving"
+    // exists in src/content/albums.ts; then up to 24 photos appear here, in
+    // EN and ES. Event 2026-11-14; photos are delivered about 30 days later.
+    { type: "gallery", album: "oasis-ballroom-irving", limit: 24 },
     { type: "h2", text: "Preguntas para su recorrido en The Oasis Ballroom" },
     {
       type: "ol",
