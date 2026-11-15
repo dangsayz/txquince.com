@@ -34,6 +34,15 @@ const post: BlogPost = {
       slug: "oasis-ballroom-irving-entrance-sign-dusk",
       caption: "The front entrance at dusk, on West Airport Freeway in Irving.",
     },
+    { type: "h2", text: "Inside The Oasis Ballroom: phone photos from a red and gold quinceañera" },
+    { type: "p", text: "We took these on our phones during a quinceañera here, so you can see the real room before you tour it: the dinner tables, the dance floor, the ceiling and the details. The professional photos from the same night come later in this guide." },
+    { type: "image", slug: "oasis-ballroom-irving-dinner-tables-ceiling-draping", caption: "A quinceañera during dinner: ceiling draping, a crystal chandelier and a head table at the far end." },
+    { type: "image", slug: "oasis-ballroom-irving-dance-floor-chandelier-stage", caption: "The dance floor faces the DJ stage. Ask where it sits with your tables in place: this is where the waltz and the surprise dance happen." },
+    { type: "image", slug: "oasis-ballroom-irving-ceiling-draping-dance-floor-wide", caption: "White draping over the dance floor, gathered at a crystal chandelier. Wide shots of the room need the lights up a little, so plan one before the dancing starts." },
+    { type: "image", slug: "oasis-ballroom-irving-red-gold-table-candles", caption: "Set in red and gold. Red wall lights set the mood in person but tint skin on camera, so ask for softer light during the waltz and the cake." },
+    { type: "image", slug: "oasis-ballroom-irving-quinceanera-cake-mis-quince-anos", caption: "The cake in front of the sequin backdrop and neon sign, photographed before the party starts." },
+    { type: "image", slug: "oasis-ballroom-irving-red-gold-dessert-table", caption: "A dessert table in the same red and gold as the room." },
+    // Add new phone photos above this line (newest last).
     { type: "h2", text: "What The Oasis Ballroom is" },
     {
       type: "p",
@@ -51,7 +60,6 @@ const post: BlogPost = {
         "Online: theoasisballroom.com and @theoasisballroom on Instagram",
       ],
     },
-    { type: "image", slug: "oasis-ballroom-irving-dinner-tables-ceiling-draping", caption: "A quinceañera during dinner: ceiling draping, a crystal chandelier and a head table at the far end." },
     { type: "h2", text: "Which room fits your guest list" },
     {
       type: "p",
@@ -69,7 +77,6 @@ const post: BlogPost = {
       type: "p",
       text: "Ask the coordinator to show you the floor plan for your real guest count, with the dance floor in place. If you are near the top of a room's number, look at the next room up. A room your list barely fits is the most common venue regret we hear about.",
     },
-    { type: "image", slug: "oasis-ballroom-irving-dance-floor-chandelier-stage", caption: "The dance floor faces the DJ stage. Ask where it sits with your tables in place: this is where the waltz and the surprise dance happen." },
     { type: "h2", text: "What a quinceañera at The Oasis Ballroom costs" },
     {
       type: "p",
@@ -93,15 +100,7 @@ const post: BlogPost = {
         "Put the big moments inside your coverage hours. Entrance, waltz, crowning, brindis, surprise dance: set the run of show with the coordinator and your photographer together, so nothing lands after the cameras leave.",
       ],
     },
-    { type: "image", slug: "oasis-ballroom-irving-ceiling-draping-dance-floor-wide", caption: "White draping over the dance floor, gathered at a crystal chandelier. Wide shots of the room need the lights up a little, so plan one before the dancing starts." },
-    { type: "image", slug: "oasis-ballroom-irving-red-gold-table-candles", caption: "Set in red and gold. Red wall lights set the mood in person but tint skin on camera, so ask for softer light during the waltz and the cake." },
     { type: "p", text: "Photograph the details first. The cake, the dessert table and the centerpieces look their best before guests arrive, and they tell the story of the theme better than any wide shot. Here is our list of [reception details to photograph](/blog/quinceanera-reception-details-to-photograph)." },
-    { type: "image", slug: "oasis-ballroom-irving-quinceanera-cake-mis-quince-anos", caption: "The cake in front of the sequin backdrop and neon sign, photographed before the party starts." },
-    { type: "image", slug: "oasis-ballroom-irving-red-gold-dessert-table", caption: "A dessert table in the same red and gold as the room." },
-    // Photo slot. Renders nothing until the album "oasis-ballroom-irving"
-    // exists in src/content/albums.ts; then up to 24 photos appear here, in
-    // EN and ES. Event 2026-11-14; photos are delivered about 30 days later.
-    { type: "gallery", album: "oasis-ballroom-irving", limit: 24 },
     { type: "h2", text: "Questions to ask on your Oasis Ballroom tour" },
     {
       type: "ol",
@@ -115,6 +114,8 @@ const post: BlogPost = {
         "How do deposits and payments work, and what happens if we need to move the date?",
       ],
     },
+    { type: "h2", text: "Professional photos from this quinceañera" },
+    { type: "gallery", album: "oasis-ballroom-irving", limit: 24, pending: "Coming soon. The full professional gallery from this quinceañera at The Oasis Ballroom posts here a few weeks after the event. Until then, see our [Irving quinceañera photography](/quinceanera-photographer/irving) page." },
     { type: "h2", text: "More Irving quinceañera venues" },
     {
       type: "p",

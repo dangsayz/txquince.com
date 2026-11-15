@@ -28,8 +28,11 @@ export type BlogBlock =
   | { type: "image"; slug: string; alt?: string; caption?: string }
   // More photos from one published album (src/content/albums.ts), as a grid.
   // Photos the post already shows as `image` blocks are left out, and the rest
-  // are sampled evenly across the album up to `limit` (default 30).
-  | { type: "gallery"; album: string; limit?: number }
+  // are sampled evenly across the album up to `limit` (default 30). `pending`
+  // is shown as a callout while the album does not exist yet (e.g. "coming
+  // soon" before the professional gallery is delivered); without it an empty
+  // gallery renders nothing.
+  | { type: "gallery"; album: string; limit?: number; pending?: string }
   // Interactive: the budget post's percentages as a live chart
   // (src/content/budget-lines.ts). `packages` carry PT name/price tokens, so
   // the chart always reads the live price book.

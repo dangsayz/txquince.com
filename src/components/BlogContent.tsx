@@ -388,7 +388,13 @@ export function BlogContent({
           case "gallery": {
             const used = new Set(blocks.flatMap((x) => (x.type === "image" ? [x.slug] : [])));
             const photos = galleryPhotos(b.album, used, b.limit);
-            if (photos.length === 0) return null;
+            if (photos.length === 0) {
+              return b.pending ? (
+                <aside key={i} className="tq-blog-flow__callout">
+                  <p>{renderInline(b.pending)}</p>
+                </aside>
+              ) : null;
+            }
             return (
               <div key={i} className="tq-blog-gallery">
                 {photos.map((ph) => (
