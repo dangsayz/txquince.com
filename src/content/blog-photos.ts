@@ -101,6 +101,36 @@ export const BLOG_PHOTOS: Record<string, BlogPhoto> = {
     height: 2016,
     alt: "Round guest table at The Oasis Ballroom with a white damask cloth, a gold sequin runner, a red satin ruffle, a mirror tray, white taper candles in gold holders and red roses in clear bud vases, with gold chairs in red sashes, white ceiling draping and red wall lights behind",
   },
+  "oasis-ballroom-irving-dinner-tables-ceiling-draping": {
+    src: `${dir}/oasis-ballroom-irving-dinner-tables-ceiling-draping.webp`,
+    width: 1600,
+    height: 1200,
+    alt: "Wide view of a ballroom at The Oasis Ballroom during dinner: guests at round tables with white damask cloths, red napkins and gold chairs with red sashes, white fabric draped across the ceiling, a crystal chandelier, red wall lights and a head table with an arched backdrop at the far end",
+  },
+  "oasis-ballroom-irving-dance-floor-chandelier-stage": {
+    src: `${dir}/oasis-ballroom-irving-dance-floor-chandelier-stage.webp`,
+    width: 1512,
+    height: 2016,
+    alt: "Empty dark wood dance floor at The Oasis Ballroom under a crystal chandelier in an octagonal ceiling frame with white draping, facing a DJ stage with a black curtain, a screen, speakers, red and gold balloon columns, portrait banners and giant light-up marquee letters",
+  },
+  "oasis-ballroom-irving-ceiling-draping-dance-floor-wide": {
+    src: `${dir}/oasis-ballroom-irving-ceiling-draping-dance-floor-wide.webp`,
+    width: 1512,
+    height: 2016,
+    alt: "Looking up at white fabric draped across the ceiling of The Oasis Ballroom, gathered at a crystal chandelier over the dance floor, with guest tables, red wall lights and the lit DJ stage in the distance",
+  },
+  "oasis-ballroom-irving-quinceanera-cake-mis-quince-anos": {
+    src: `${dir}/oasis-ballroom-irving-quinceanera-cake-mis-quince-anos.webp`,
+    width: 1512,
+    height: 2016,
+    alt: "Four-tier white quinceañera cake with gold bands, cascading red roses, a 15 topper and a crown on a gold stand, in front of a white and silver sequin backdrop under a flower garland and a neon Mis Quince Años sign at The Oasis Ballroom",
+  },
+  "oasis-ballroom-irving-red-gold-dessert-table": {
+    src: `${dir}/oasis-ballroom-irving-red-gold-dessert-table.webp`,
+    width: 1512,
+    height: 2016,
+    alt: "Red and gold quinceañera dessert table at The Oasis Ballroom: cupcakes with red rose frosting on gold tiered stands, mini cheesecakes with berries and 15 toppers, decorated cookies, and chocolate-dipped treats on sticks on gold trays",
+  },
 };
 
 export function getBlogPhoto(slug: string): BlogPhoto | undefined {
