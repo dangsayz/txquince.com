@@ -93,6 +93,7 @@ const post: BlogPost = {
         "Pongan los momentos grandes dentro de las horas de cobertura. Entrada, vals, coronación, brindis, baile sorpresa: armen el programa con la coordinadora y su fotógrafo juntos, para que nada pase cuando las cámaras ya se fueron.",
       ],
     },
+    { type: "image", slug: "oasis-ballroom-irving-red-gold-table-candles", alt: "Mesa redonda en The Oasis Ballroom con mantel blanco adamascado, camino de lentejuelas doradas, olán de satín rojo, charola de espejo, velas blancas en candeleros dorados y rosas rojas en floreros de vidrio, con sillas doradas con bandas rojas, cortinas blancas en el techo y luces rojas en la pared", caption: "Decorado en rojo y dorado. Las luces rojas de la pared dan ambiente en persona, pero en cámara tiñen la piel; pidan luz más suave para el vals y el pastel." },
     // Photo slot. Renders nothing until the album "oasis-ballroom-irving"
     // exists in src/content/albums.ts; then up to 24 photos appear here, in
     // EN and ES. Event 2026-11-14; photos are delivered about 30 days later.

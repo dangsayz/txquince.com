@@ -91,6 +91,7 @@ const post: BlogPost = {
         "Put the big moments inside your coverage hours. Entrance, waltz, crowning, brindis, surprise dance: set the run of show with the coordinator and your photographer together, so nothing lands after the cameras leave.",
       ],
     },
+    { type: "image", slug: "oasis-ballroom-irving-red-gold-table-candles", caption: "Set in red and gold. Red wall lights set the mood in person but tint skin on camera, so ask for softer light during the waltz and the cake." },
     // Photo slot. Renders nothing until the album "oasis-ballroom-irving"
     // exists in src/content/albums.ts; then up to 24 photos appear here, in
     // EN and ES. Event 2026-11-14; photos are delivered about 30 days later.

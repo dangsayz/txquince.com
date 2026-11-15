@@ -95,6 +95,12 @@ export const BLOG_PHOTOS: Record<string, BlogPhoto> = {
     height: 1200,
     alt: "The lit sign of The Oasis Ballroom over its glass front doors at Suite 200, between two arched brick towers with wall lanterns, under a blue dusk sky on West Airport Freeway in Irving",
   },
+  "oasis-ballroom-irving-red-gold-table-candles": {
+    src: `${dir}/oasis-ballroom-irving-red-gold-table-candles.webp`,
+    width: 1512,
+    height: 2016,
+    alt: "Round guest table at The Oasis Ballroom with a white damask cloth, a gold sequin runner, a red satin ruffle, a mirror tray, white taper candles in gold holders and red roses in clear bud vases, with gold chairs in red sashes, white ceiling draping and red wall lights behind",
+  },
 };
 
 export function getBlogPhoto(slug: string): BlogPhoto | undefined {
