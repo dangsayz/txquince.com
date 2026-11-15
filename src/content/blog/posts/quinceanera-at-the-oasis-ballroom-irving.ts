@@ -91,6 +91,10 @@ const post: BlogPost = {
         "Put the big moments inside your coverage hours. Entrance, waltz, crowning, brindis, surprise dance: set the run of show with the coordinator and your photographer together, so nothing lands after the cameras leave.",
       ],
     },
+    // Photo slot. Renders nothing until the album "oasis-ballroom-irving"
+    // exists in src/content/albums.ts; then up to 24 photos appear here, in
+    // EN and ES. Event 2026-11-14; photos are delivered about 30 days later.
+    { type: "gallery", album: "oasis-ballroom-irving", limit: 24 },
     { type: "h2", text: "Questions to ask on your Oasis Ballroom tour" },
     {
       type: "ol",

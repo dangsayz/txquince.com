@@ -93,6 +93,10 @@ const post: BlogPost = {
         "Pongan los momentos grandes dentro de las horas de cobertura. Entrada, vals, coronación, brindis, baile sorpresa: armen el programa con la coordinadora y su fotógrafo juntos, para que nada pase cuando las cámaras ya se fueron.",
       ],
     },
+    // Photo slot. Renders nothing until the album "oasis-ballroom-irving"
+    // exists in src/content/albums.ts; then up to 24 photos appear here, in
+    // EN and ES. Event 2026-11-14; photos are delivered about 30 days later.
+    { type: "gallery", album: "oasis-ballroom-irving", limit: 24 },
     { type: "h2", text: "Preguntas para su recorrido en The Oasis Ballroom" },
     {
       type: "ol",
